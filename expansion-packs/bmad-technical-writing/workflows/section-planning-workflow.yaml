@@ -1,0 +1,121 @@
+workflow:
+  id: section-planning-workflow
+  name: Plan Chapter Sections
+  description: Break chapter outline into deliverable section units (BMad story analog). Creates section-level work items with acceptance criteria, enabling incremental chapter development. Each section is 2-5 pages with clear learning objectives and success criteria.
+  type: section-planning
+  project_types:
+    - technical-book
+    - tutorial-series
+    - training-materials
+    - technical-documentation
+  sequence:
+    - agent: tutorial-architect
+      creates: section-analysis.md
+      requires: chapter-outline.md
+      notes: "Analyze chapter outline structure. Review learning objectives, main sections, and code examples. Identify natural breaking points for sections (2-5 pages each). Consider logical learning progression and dependencies between concepts. SAVE OUTPUT: Create section-analysis.md documenting chapter structure."
+
+    - agent: tutorial-architect
+      creates: preliminary-section-list.md
+      requires: section-analysis.md
+      notes: "Break chapter into 5-8 logical sections. Each section should teach 1-2 concepts, include 1-3 code examples, and be 2-5 pages. Name each section clearly. Define what each section teaches. Identify dependencies (which sections must come first). SAVE OUTPUT: Create preliminary-section-list.md with section titles and brief descriptions."
+
+    - agent: tutorial-architect
+      creates: section-plans/
+      requires: preliminary-section-list.md
+      notes: "For each section, create detailed section plan using section-plan-tmpl.yaml. Define learning objectives (1-2 max), prerequisites, content plan, code examples needed, success criteria, and dependencies. Use *create-doc with section-plan-tmpl to generate each plan. SAVE OUTPUT: Create section-plans/section-{{n}}.md for each section."
+
+    - agent: instructional-designer
+      reviews: section-plans/
+      requires: section-plans/
+      notes: "Validate learning flow across all sections. Verify sections scaffold properly (each builds on previous). Check that prerequisites are met in correct order. Ensure no learning gaps or concept jumps. Verify section granularity is appropriate (not too small, not too large). SAVE OUTPUT: Create section-flow-validation.md with approval or revision recommendations."
+
+    - agent: tutorial-architect
+      finalizes: section-list-final.md
+      requires: section-flow-validation.md
+      notes: "Incorporate instructional designer feedback. Adjust section order, prerequisites, or granularity if needed. Create final prioritized section list with dependencies mapped. Number sections sequentially. Mark any sections that can be developed in parallel. SAVE OUTPUT: Create docs/sections/chapter-{{chapter_number}}-section-list.md as authoritative section plan."
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: Chapter Outline Ready] --> B[tutorial-architect: Analyze Chapter Structure]
+        B --> C[tutorial-architect: Identify Section Boundaries]
+        C --> D[tutorial-architect: Create Section Plans]
+        D --> E[instructional-designer: Validate Learning Flow]
+        E --> F{Flow Issues?}
+        F -->|Yes| G[tutorial-architect: Adjust Sections]
+        G --> D
+        F -->|No| H[tutorial-architect: Finalize Section List]
+        H --> I[Section Plans Ready for Development]
+
+        D -.-> D1[Use section-plan-tmpl.yaml]
+        E -.-> E1[Check: Proper scaffolding]
+        E -.-> E2[Check: No learning gaps]
+        H -.-> H1[Mark parallel-safe sections]
+
+        style I fill:#90EE90
+        style B fill:#FFE4B5
+        style C fill:#FFE4B5
+        style D fill:#FFE4B5
+        style E fill:#ADD8E6
+        style H fill:#F0E68C
+    ```
+
+  decision_guidance:
+    when_to_use:
+      - Breaking down chapter outline into work units
+      - Need incremental development approach
+      - Want to track section-by-section progress
+      - Planning parallel section development
+      - Chapter is 15+ pages (needs breakdown)
+
+    when_not_to_use:
+      - Short chapters (<10 pages) can be written as single unit
+      - Simple reference sections without tutorials
+      - Already have section breakdown from outline
+
+  quality_gates:
+    analysis_complete:
+      - Chapter structure understood
+      - Natural section boundaries identified
+      - Learning progression mapped
+      - Code example distribution planned
+
+    section_plans_complete:
+      - 5-8 sections defined (typical)
+      - Each section has clear learning objective
+      - Prerequisites identified for each section
+      - Success criteria defined per section
+      - Dependencies mapped
+      - Checklist: section-plan-tmpl validates
+
+    learning_flow_validated:
+      - Sections scaffold properly
+      - No learning gaps between sections
+      - Prerequisites met in correct order
+      - Section granularity appropriate (2-5 pages each)
+      - Parallel development opportunities identified
+
+  handoff_prompts:
+    outline_to_analysis: "Chapter outline complete with {{objective_count}} learning objectives. Analyze structure and identify section boundaries for incremental development."
+    analysis_to_sections: "Chapter analysis complete. Identified {{section_count}} natural section boundaries. Create detailed section plans for each unit."
+    sections_to_designer: "{{section_count}} section plans created. Each section 2-5 pages with clear objectives. Please validate learning flow and scaffolding."
+    designer_to_architect: "Learning flow validated. {{issue_count}} adjustments recommended. Sections scaffold properly with dependencies mapped."
+    architect_final: "Section list finalized. {{section_count}} sections ready for development. {{parallel_count}} sections can be developed in parallel. Section list saved to docs/sections/chapter-{{chapter_number}}-section-list.md"
+
+  time_estimates:
+    analyze_chapter: "1-2 hours"
+    identify_sections: "1-2 hours"
+    create_section_plans: "2-4 hours (30-45 min per section)"
+    validate_flow: "1-2 hours"
+    finalize_list: "1 hour"
+    total_time: "6-11 hours per chapter"
+
+  best_practices:
+    - Aim for 5-8 sections per chapter (typical)
+    - Each section should be 2-5 pages (manageable unit)
+    - Section = 1-2 learning objectives (not more)
+    - Each section should have clear "done" criteria
+    - Map dependencies to enable parallel development
+    - Consider code example distribution across sections
+    - Test section boundaries with reader perspective
+    - Sections should feel like natural stopping points

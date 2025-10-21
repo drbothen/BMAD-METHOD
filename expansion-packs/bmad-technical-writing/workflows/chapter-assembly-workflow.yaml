@@ -1,0 +1,178 @@
+workflow:
+  id: chapter-assembly-workflow
+  name: Assemble and Polish Chapter
+  description: Integrate all completed sections into cohesive chapter (BMad Sprint Review analog). Merges sections, improves transitions, validates learning flow, performs full technical review, and finalizes chapter for publication.
+  type: chapter-integration
+  project_types:
+    - technical-book
+    - tutorial-series
+    - training-materials
+    - technical-documentation
+  sequence:
+    - agent: tutorial-architect
+      creates: chapter-integrated.md
+      requires: completed-sections[]
+      notes: "Merge all completed sections into single chapter file. Preserve section content. Add chapter introduction (if not in section 1) and chapter summary (if not in final section). Verify all sections present in correct order. SAVE OUTPUT: Create docs/chapters/chapter-{{chapter_number}}-integrated.md"
+
+    - agent: tutorial-architect
+      improves: chapter-integrated.md
+      requires: chapter-integrated.md
+      notes: "Review and improve transitions between sections. Add bridging paragraphs where sections feel disconnected. Ensure smooth flow from one concept to next. Check that prerequisites mentioned in earlier sections are fulfilled. Add cross-references where helpful. SAVE OUTPUT: Update chapter-integrated.md with improved transitions."
+
+    - agent: instructional-designer
+      validates: chapter-integrated.md
+      requires: chapter-integrated.md
+      notes: "Validate overall learning progression. Verify chapter builds concepts logically. Check that exercises progress from easy to challenging. Ensure no learning gaps or concept jumps. Confirm chapter learning objectives (from chapter outline) are achieved. SAVE OUTPUT: Create learning-flow-validation.md with findings."
+
+    - agent: technical-reviewer
+      reviews: chapter-integrated.md
+      requires: chapter-integrated.md
+      notes: "Perform comprehensive technical review of full chapter using *review-chapter command. Verify technical accuracy across all sections, test all code examples in sequence, check security best practices, assess performance implications. Use technical-accuracy-checklist, security-best-practices-checklist, and performance-considerations-checklist. SAVE OUTPUT: Create reviews/technical-review-chapter-{{chapter_number}}.md using technical-review-report-tmpl."
+
+    - agent: tutorial-architect
+      revises: chapter-integrated.md
+      requires:
+        - learning-flow-validation.md
+        - technical-review-report.md
+      notes: "Incorporate all review feedback. Address instructional designer learning flow issues. Fix all critical and major technical issues from technical review. Update code examples if needed. Re-test modified code. SAVE OUTPUT: Update chapter-integrated.md with all revisions."
+
+    - agent: technical-editor
+      edits: chapter-integrated.md
+      requires: revised-chapter-integrated.md
+      notes: "Perform professional copy edit using *edit-chapter command. Improve clarity, check terminology consistency, enhance transitions, verify publisher style compliance, review accessibility. Use accessibility-checklist and publisher-specific checklist. SAVE OUTPUT: Create edited-chapter.md with change summary."
+
+    - agent: tutorial-architect
+      finalizes: chapter-final.md
+      requires:
+        - edited-chapter.md
+        - chapter-completeness-checklist.md
+      notes: "Review and approve editorial changes. Verify technical accuracy preserved during editing. Run chapter-completeness-checklist to ensure all requirements met. Mark chapter status as 'Ready for Publication'. SAVE OUTPUT: Create docs/chapters/chapter-{{chapter_number}}-final.md as publisher-ready manuscript."
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: All Sections DONE] --> B[tutorial-architect: Merge Sections]
+        B --> C[tutorial-architect: Improve Transitions]
+        C --> D[instructional-designer: Validate Learning Flow]
+        D --> E[technical-reviewer: Full Chapter Review]
+        E --> F{Critical Issues?}
+        F -->|Yes| G[tutorial-architect: Revise Chapter]
+        G --> H[Update Code if Needed?]
+        H -->|Yes| I[Retest Code]
+        I --> E
+        H -->|No| E
+        F -->|No| J[technical-editor: Copy Edit]
+        J --> K[tutorial-architect: Review Edits]
+        K --> L{Approve Edits?}
+        L -->|No| M[Discuss with Editor]
+        M --> J
+        L -->|Yes| N[tutorial-architect: Run Completeness Checklist]
+        N --> O{All Criteria Met?}
+        O -->|No| P[Address Missing Items]
+        P --> N
+        O -->|Yes| Q[Chapter Ready for Publication]
+
+        B -.-> B1[Preserve section content]
+        C -.-> C1[Add bridging paragraphs]
+        D -.-> D1[Check learning progression]
+        E -.-> E1[Test all code in sequence]
+        J -.-> J1[Maintain author voice]
+        N -.-> N1[chapter-completeness-checklist]
+
+        style Q fill:#90EE90
+        style B fill:#FFE4B5
+        style C fill:#FFE4B5
+        style D fill:#ADD8E6
+        style E fill:#ADD8E6
+        style J fill:#ADD8E6
+        style N fill:#F0E68C
+    ```
+
+  decision_guidance:
+    when_to_use:
+      - All chapter sections marked DONE
+      - Using section-driven development approach
+      - Ready to integrate sections into cohesive chapter
+      - Need full chapter review and polish
+      - Preparing chapter for publication
+
+    when_not_to_use:
+      - Sections still in development (wait until all DONE)
+      - Chapter written as single unit (already integrated)
+      - Quick draft without full review process
+
+  quality_gates:
+    integration_complete:
+      - All sections merged in correct order
+      - Chapter introduction present
+      - Chapter summary present
+      - No missing sections
+      - Section boundaries clear
+
+    transitions_complete:
+      - Smooth flow between sections
+      - No jarring concept jumps
+      - Cross-references added where helpful
+      - Bridging paragraphs where needed
+      - Reader guidance clear
+
+    learning_flow_validated:
+      - Concepts build logically
+      - Prerequisites met in order
+      - No learning gaps
+      - Exercises progress appropriately
+      - Chapter objectives achieved
+      - Checklist: instructional-designer validation
+
+    technical_review_passed:
+      - No critical technical errors
+      - All code tested in sequence
+      - Security best practices followed
+      - Performance considerations addressed
+      - No outdated information
+      - Checklists: technical-accuracy, security-best-practices, performance-considerations
+
+    editorial_complete:
+      - Grammar and spelling clean
+      - Terminology consistent throughout
+      - Publisher style followed
+      - Accessibility requirements met
+      - Author voice maintained
+      - Checklists: accessibility-checklist, publisher-specific
+
+    chapter_complete:
+      - All quality gates passed
+      - chapter-completeness-checklist verified
+      - Ready for publication
+      - All review feedback addressed
+
+  handoff_prompts:
+    sections_to_architect: "All {{section_count}} sections DONE. Total content: ~{{page_count}} pages. Ready to merge and assemble chapter."
+    merge_to_transitions: "Chapter sections merged. {{section_count}} sections integrated. Review transitions between sections for smooth flow."
+    transitions_to_designer: "Transitions improved. Chapter flows from {{first_section}} to {{last_section}}. Please validate learning progression."
+    designer_to_reviewer: "Learning flow validated. Chapter builds concepts logically with no gaps. Ready for comprehensive technical review."
+    reviewer_to_architect: "Technical review complete. Found {{critical_count}} critical, {{major_count}} major, {{minor_count}} minor issues. Full report at reviews/technical-review-chapter-{{chapter_number}}.md"
+    revised_to_editor: "All review feedback addressed. Chapter revised and code re-tested. Ready for copy editing."
+    editor_to_architect: "Copy editing complete. Improved clarity, consistency, and style while maintaining your voice. Change summary attached for approval."
+    architect_final: "Chapter {{chapter_number}} FINAL. All reviews passed, completeness checklist verified. {{page_count}} pages publisher-ready. Status: Ready for Publication."
+
+  time_estimates:
+    merge_sections: "1-2 hours"
+    improve_transitions: "2-3 hours"
+    validate_learning_flow: "1-2 hours"
+    technical_review: "3-5 hours (full chapter)"
+    revise_chapter: "3-6 hours (depending on issues)"
+    copy_edit: "2-4 hours"
+    finalize_chapter: "1-2 hours"
+    total_time: "13-24 hours per chapter"
+
+  best_practices:
+    - Wait until ALL sections DONE before assembly
+    - Preserve section content - don't rewrite during merge
+    - Focus on transitions and flow, not content changes
+    - Test all code examples in sequence (order matters)
+    - Address critical issues before copy editing
+    - Maintain author voice during editorial polish
+    - Use completeness checklist as final gate
+    - Chapter assembly is Sprint Review - celebrate progress
+    - All sections done = major milestone achieved
