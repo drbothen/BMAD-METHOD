@@ -1,22 +1,31 @@
 # <!-- Powered by BMAD™ Core -->
 name: bmad-technical-writing
-version: 1.0.0
+version: 1.1.0
 short-title: Technical Book Writing Studio
 description: >-
   Production-ready AI-powered technical writing framework for technical book
-  authors, technical trainers, and documentation specialists. Provides 10
-  specialized agents (9 greenfield + 1 brownfield), 12 workflows (9 greenfield + 3 brownfield),
-  and professional quality assurance tools for planning, writing, revising,
-  reviewing, and publishing technical books with code examples, tutorials, and
-  learning objectives. Includes 21 checklists for technical accuracy, security,
+  authors, technical trainers, and documentation specialists. Provides 13
+  specialized agents (10 required + 3 optional), 15 workflows, and comprehensive
+  quality assurance tools for planning, writing, revising, reviewing, and
+  publishing technical books with code examples, tutorials, and learning
+  objectives. Includes 31 checklists for technical accuracy, security,
   performance, publisher compliance, accessibility, visual quality, documentation,
-  and brownfield integration. 15 professional templates cover book planning,
-  chapter development, API reference, diagrams, publishing, book analysis, and
-  revision planning. Section-driven workflows enable incremental chapter
-  development (2-5 pages per section) with parallel development capabilities.
-  Brownfield support enables 2nd/3rd edition updates, technology version migrations,
-  chapter additions to existing books, and systematic reviewer feedback incorporation.
-  Supports publishers like PacktPub, O'Reilly, Manning, and self-publishing
-  platforms (Leanpub/KDP/Gumroad).
+  cross-platform compatibility, inclusive language, readability, indexing,
+  citations, final manuscript review, book proposals, self-publishing standards,
+  repository quality, and MEAP readiness. 18 professional templates cover book
+  planning, chapter development, API reference, diagrams, publishing, book
+  analysis, revision planning, and glossary entries. 33 tasks handle all
+  authoring workflows from learning path design to version matrix testing,
+  code repository setup, solutions creation, index generation, screenshot
+  management, publisher packaging, MEAP preparation, self-publishing prep,
+  preface/appendix creation, diagram set design, and cross-reference validation.
+  Section-driven workflows enable incremental chapter development (2-5 pages per
+  section) with parallel development capabilities. Brownfield support enables
+  2nd/3rd edition updates, technology version migrations, chapter additions to
+  existing books, and systematic reviewer feedback incorporation. Optional agents
+  (Learning Path Designer, Sample Code Maintainer, Version Manager) enhance
+  advanced scenarios without complexity overhead. Achieves 100% coverage of
+  research specifications. Supports publishers like PacktPub, O'Reilly, Manning,
+  and self-publishing platforms (Leanpub/KDP/Gumroad).
 author: Wes
 slashPrefix: bmad-tw

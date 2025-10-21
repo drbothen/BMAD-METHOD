@@ -1,0 +1,111 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: glossary-entry
+  name: Glossary Entry
+  version: 1.0
+  description: Define individual glossary term with concise definition, context, and cross-references
+  output:
+    format: markdown
+    filename: "glossary-{{term_id}}.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: term
+    title: Term
+    instruction: |
+      Provide the term to be defined:
+      - Exact spelling and capitalization
+      - Alternative spellings or variations (if any)
+      - Acronym expansion (if applicable)
+      - Pronunciation guide (if non-obvious)
+
+      Example: "API (Application Programming Interface)"
+    elicit: true
+  - id: definition
+    title: Definition
+    instruction: |
+      Write a clear, concise definition (1-2 sentences maximum):
+      - Use simple, direct language
+      - Define in terms the target audience understands
+      - Avoid circular definitions (don't use term in its definition)
+      - Focus on what it IS, not just what it does
+
+      Example: "An API is a set of rules and protocols that allows different software applications to communicate with each other."
+    elicit: true
+  - id: context
+    title: Context and Usage
+    instruction: |
+      Provide context for when and how the term is used:
+      - Common usage scenarios
+      - Why it matters in this book's context
+      - Typical example or analogy
+      - When readers will encounter this term
+
+      Example: "APIs are used throughout this book to demonstrate how web services exchange data. You'll build several APIs starting in Chapter 3."
+  - id: example
+    title: Usage Example
+    instruction: |
+      Provide a concrete example showing the term in use:
+      - Code snippet (if technical term)
+      - Sentence demonstrating proper usage
+      - Real-world application
+      - Visual example if helpful
+
+      Example code:
+      ```python
+      # Using a weather API to get current temperature
+      response = requests.get('https://api.weather.com/current')
+      temperature = response.json()['temp']
+      ```
+
+      Example sentence: "The mobile app calls the backend API to retrieve user data."
+  - id: related_terms
+    title: Related Terms
+    instruction: |
+      List related glossary terms or concepts:
+      - Similar or contrasting terms
+      - Broader or narrower concepts
+      - Terms often used together
+      - Prerequisites for understanding this term
+
+      Format as bulleted list with brief explanations:
+      - REST API: A specific architectural style for APIs
+      - Endpoint: A specific URL path in an API
+      - HTTP: The protocol most web APIs use for communication
+
+      Use "See also [Term]" format for cross-references.
+  - id: chapter_references
+    title: Chapter References
+    instruction: |
+      List where this term appears in the book:
+      - First introduction (definition) chapter
+      - Chapters with significant coverage
+      - Where term is applied in practice
+      - Related exercises or examples
+
+      Example:
+      - Introduced: Chapter 3, page 45
+      - Main coverage: Chapter 4-6
+      - Applied in project: Chapter 8
+  - id: common_misconceptions
+    title: Common Misconceptions (Optional)
+    instruction: |
+      Address frequent misunderstandings:
+      - What people often think the term means (but doesn't)
+      - Common confusions with similar terms
+      - Clarify nuances or edge cases
+
+      Example: "APIs are not the same as databases. An API is an interface that may provide access to a database, but the two are distinct components."
+  - id: additional_resources
+    title: Additional Resources (Optional)
+    instruction: |
+      Provide links or references for deeper learning:
+      - Official documentation
+      - Standards or specifications (RFC, W3C, etc.)
+      - Authoritative blog posts or articles
+      - Related chapters in this book
+
+      Keep list short (2-3 items maximum).

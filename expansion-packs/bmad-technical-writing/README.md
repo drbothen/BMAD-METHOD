@@ -8,12 +8,12 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 
 ### Key Features
 
-- 🤖 **10 Specialized Agents** - Complete writing team with greenfield (planning, writing, review) + brownfield (book analysis, revision planning) specialists
-- 📝 **20 Core Tasks** - Full chapter development, API documentation, diagram design, publishing workflows, PLUS brownfield tasks for book analysis, revision planning, version updates, pattern extraction, and feedback incorporation
-- 📋 **21 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility, visual quality, glossary accuracy, PLUS brownfield checklists for version updates, revision completeness, and existing book integration
-- 🎯 **15 Professional Templates** - Book planning, chapter development, API reference, diagrams, preface, appendix, publishing, PLUS brownfield templates for book analysis reports and revision plans
+- 🤖 **13 Specialized Agents** - Complete writing team with 10 required agents (greenfield planning/writing/review + brownfield book analysis) + 3 optional agents (Learning Path Designer, Sample Code Maintainer, Version Manager) for advanced scenarios
+- 📝 **33 Core Tasks** - Full chapter development, API documentation, diagram design, publishing workflows, PLUS learning path design, code repository setup, version matrix testing, solutions creation, index generation, screenshot management, publisher packaging, MEAP preparation, self-publishing prep, preface/appendix creation, diagram set design, cross-reference validation, and brownfield tasks
+- 📋 **31 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility, visual quality, PLUS cross-platform compatibility, inclusive language, readability, index completeness, citation accuracy, final manuscript review, book proposals, self-publishing standards, repository quality, MEAP readiness, and brownfield checklists
+- 🎯 **18 Professional Templates** - Book planning, chapter development, API reference, diagrams, preface, appendix, publishing, brownfield templates, PLUS glossary entry template
 - 📚 **6 Knowledge Bases** - Comprehensive publisher guidelines and technical writing standards
-- 🔄 **12 Workflows** - Section-driven development, publisher-specific submission workflows (PacktPub, O'Reilly, Manning, Self-Publishing), PLUS brownfield workflows for edition updates, review feedback incorporation, and chapter additions
+- 🔄 **15 Workflows** - Section-driven development, publisher-specific submission workflows (PacktPub, O'Reilly, Manning, Self-Publishing), brownfield workflows for edition updates, and complete book lifecycle management
 
 ## ✍️ Included Agents
 
@@ -38,6 +38,12 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 ### Brownfield Team (Sprint 4)
 
 10. **Book Analyst** 📖 - Existing book analysis, revision planning, 2nd/3rd edition updates, version migrations, pattern extraction, and reviewer feedback incorporation
+
+### Optional Specialist Team (Sprint 5)
+
+11. **Learning Path Designer** 🗺️ - Prerequisite mapping, skill progression design, knowledge scaffolding, learning flow validation (can merge with Instructional Designer for simpler deployments)
+12. **Sample Code Maintainer** 🔧 - Code repository management, CI/CD pipelines, dependency management, automated testing (can merge with Code Curator for simpler deployments)
+13. **Version Manager** 🔢 - Multi-version compatibility testing, platform-specific code handling, version matrix management (can merge with Code Curator for simpler deployments)
 
 ## 🚀 Installation
 
@@ -408,6 +414,20 @@ Special thanks to Brian (BMad) for creating the BMad Method framework.
 - ✅ Surgical update workflows that preserve learning flow and voice/tone
 - ✅ Version bumped to 1.0.0 (production ready - complete greenfield + brownfield support)
 
+**Sprint 5 (Complete):** 100% Research Coverage Achievement - v1.1.0 COMPREHENSIVE RELEASE
+
+- ✅ 3 optional agents: Learning Path Designer (prerequisite mapping), Sample Code Maintainer (repository/CI/CD management), Version Manager (multi-version compatibility testing)
+- ✅ 13 remaining tasks: design-learning-path, setup-code-repository, version-matrix-check, create-solutions, create-index-entries, take-screenshots, package-for-publisher, prepare-meap-chapter, self-publish-prep, create-preface, create-appendix, design-diagram-set, validate-cross-references
+- ✅ 10 additional checklists: cross-platform, inclusive-language, readability, index-completeness, citation-accuracy, final-manuscript, book-proposal, self-publishing-standards, repository-quality, meap-readiness
+- ✅ 1 new template: glossary-entry-tmpl.yaml
+- ✅ Total: 13 agents (10 required + 3 optional), 18 templates, 33 tasks, 15 workflows, 31 checklists
+- ✅ Optional agents can work standalone or merge with existing agents for flexibility
+- ✅ Complete coverage of all authoring workflows from planning through publication
+- ✅ Enhanced quality assurance with comprehensive checklist coverage
+- ✅ Advanced scenarios supported: learning path design, code repository automation, multi-version testing
+- ✅ 100% coverage of research specifications achieved
+- ✅ Version bumped to 1.1.0 (comprehensive - all research requirements implemented)
+
 ## 📚 Section-Driven Development Approach (NEW in Sprint 2.6)
 
 The section-driven approach mirrors BMad's story-driven development workflow, enabling incremental chapter writing:
@@ -455,13 +475,13 @@ The section-driven approach mirrors BMad's story-driven development workflow, en
 
 ## 🚧 Roadmap
 
-**Future Enhancements** (Post-v1.0):
+**Future Enhancements** (Post-v1.1.0):
 
 - Video tutorial support and transcription tools
 - Internationalization and translation workflows
-- Learning Path Designer agent (multi-book series planning)
-- Sample Code Maintainer agent (code repository management)
-- Version Manager agent (update tracking across versions)
 - Audio/podcast supplement tools
 - Interactive exercise platform integration
-- Code testing automation for book examples
+- AI-powered diagram generation from descriptions
+- Advanced code quality automation (linting, security scanning)
+- Multi-book series planning and cross-book consistency tools
+- Publishing platform API integrations (Leanpub, KDP automation)
