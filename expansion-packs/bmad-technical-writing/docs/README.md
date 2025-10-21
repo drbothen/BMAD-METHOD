@@ -295,9 +295,9 @@ Choose the path that matches your goal:
 - ✅ 33 tasks referenced
 - ✅ 31 checklists detailed
 
-**Word Count**: ~30,000+ words of comprehensive documentation
+**Word Count**: ~35,000+ words of comprehensive documentation
 
-**Time to Read Everything**: ~8-10 hours (not required - read what you need!)
+**Time to Read Everything**: ~10-12 hours (not required - read what you need!)
 
 **Time to Productivity**: ~2-3 hours (Quick Reference + Getting Started Tutorial + User Guide)
 

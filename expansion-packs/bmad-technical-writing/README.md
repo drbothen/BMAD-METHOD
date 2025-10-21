@@ -27,10 +27,15 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 ### 📚 Complete Documentation
 - **[Documentation Index](docs/README.md)** - Navigation hub for all documentation
 - **[Process Flows](docs/process-flows.md)** - Visual workflow diagrams
+- **[Agent Reference Guide](docs/agent-reference.md)** - All 13 agents in detail
+- **[Workflow Guide](docs/workflow-guide.md)** - All 15 workflows explained
+- **[Template Gallery](docs/template-gallery.md)** - All 18 templates with examples
+- **[Task Reference](docs/task-reference.md)** - All 33 tasks organized by phase
+- **[Checklist Reference](docs/checklist-reference.md)** - All 31 checklists with quality gates
 - **[FAQ](docs/faq.md)** - Frequently asked questions
 - **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
 
-**See [docs/README.md](docs/README.md) for complete documentation map with 13 guides + 4 examples.**
+**See [docs/README.md](docs/README.md) for complete documentation map with 13 guides + 4 examples (~35,000 words).**
 
 ## ✍️ Included Agents
 
