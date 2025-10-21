@@ -8,12 +8,12 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 
 ### Key Features
 
-- 🤖 **9 Specialized Agents** - Complete writing team with specialists for API docs, visuals, and exercises
-- 📝 **15 Core Tasks** - Full chapter development, API documentation, diagram design, and publishing workflows
-- 📋 **18 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility, visual quality, glossary accuracy
-- 🎯 **15 Professional Templates** - Book planning, chapter development, API reference, diagrams, preface, appendix, and publishing
+- 🤖 **10 Specialized Agents** - Complete writing team with greenfield (planning, writing, review) + brownfield (book analysis, revision planning) specialists
+- 📝 **20 Core Tasks** - Full chapter development, API documentation, diagram design, publishing workflows, PLUS brownfield tasks for book analysis, revision planning, version updates, pattern extraction, and feedback incorporation
+- 📋 **21 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility, visual quality, glossary accuracy, PLUS brownfield checklists for version updates, revision completeness, and existing book integration
+- 🎯 **15 Professional Templates** - Book planning, chapter development, API reference, diagrams, preface, appendix, publishing, PLUS brownfield templates for book analysis reports and revision plans
 - 📚 **6 Knowledge Bases** - Comprehensive publisher guidelines and technical writing standards
-- 🔄 **12 Core Workflows** - Section-driven development plus publisher-specific submission workflows (PacktPub, O'Reilly, Manning, Self-Publishing)
+- 🔄 **12 Workflows** - Section-driven development, publisher-specific submission workflows (PacktPub, O'Reilly, Manning, Self-Publishing), PLUS brownfield workflows for edition updates, review feedback incorporation, and chapter additions
 
 ## ✍️ Included Agents
 
@@ -34,6 +34,10 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 7. **API Documenter** 📚 - API reference documentation, technical specifications, glossaries, and appendices
 8. **Screenshot Specialist** 📸 - Visual documentation, technical diagrams, screenshot planning, and annotations
 9. **Exercise Creator** 🏋️ - Practice problems, assessments, exercises aligned with learning objectives
+
+### Brownfield Team (Sprint 4)
+
+10. **Book Analyst** 📖 - Existing book analysis, revision planning, 2nd/3rd edition updates, version migrations, pattern extraction, and reviewer feedback incorporation
 
 ## 🚀 Installation
 
@@ -59,6 +63,8 @@ npx bmad-method install
 
 ```bash
 # Activate individual agents in your IDE
+
+# Greenfield agents (new book writing)
 /bmad-tw:instructional-designer
 /bmad-tw:tutorial-architect
 /bmad-tw:code-curator
@@ -68,6 +74,9 @@ npx bmad-method install
 /bmad-tw:api-documenter
 /bmad-tw:screenshot-specialist
 /bmad-tw:exercise-creator
+
+# Brownfield agent (existing book updates)
+/bmad-tw:book-analyst
 ```
 
 ### Core Workflows (Sprint 2, 2.5, 2.6)
@@ -386,6 +395,19 @@ Special thanks to Brian (BMad) for creating the BMad Method framework.
 - ✅ Complete technical writing system from planning through publication
 - ✅ Version bumped to 0.3.0 (beta - specialist agents complete)
 
+**Sprint 4 (Complete):** Brownfield book authoring support - v1.0.0 PRODUCTION RELEASE
+
+- ✅ 1 brownfield agent: Book Analyst (existing book analysis and revision planning specialist)
+- ✅ 2 brownfield templates: Book Analysis Report, Revision Plan
+- ✅ 5 brownfield tasks: Analyze Existing Book, Plan Book Revision, Update Chapter for Version, Extract Code Patterns, Incorporate Reviewer Feedback
+- ✅ 3 brownfield workflows: Book Edition Update, Incorporate Review Feedback, Add Chapter to Existing Book
+- ✅ 3 brownfield checklists: Version Update, Revision Completeness, Existing Book Integration
+- ✅ Total: 10 agents, 15 templates, 20 tasks, 12 workflows, 21 checklists
+- ✅ Brownfield capabilities: 2nd/3rd edition updates, technology version migrations (Python 3.9→3.12), chapter additions to existing books, systematic reviewer feedback incorporation
+- ✅ Pattern extraction for maintaining consistency in existing books
+- ✅ Surgical update workflows that preserve learning flow and voice/tone
+- ✅ Version bumped to 1.0.0 (production ready - complete greenfield + brownfield support)
+
 ## 📚 Section-Driven Development Approach (NEW in Sprint 2.6)
 
 The section-driven approach mirrors BMad's story-driven development workflow, enabling incremental chapter writing:
@@ -440,5 +462,6 @@ The section-driven approach mirrors BMad's story-driven development workflow, en
 - Learning Path Designer agent (multi-book series planning)
 - Sample Code Maintainer agent (code repository management)
 - Version Manager agent (update tracking across versions)
-- Enhanced brownfield book update workflows
 - Audio/podcast supplement tools
+- Interactive exercise platform integration
+- Code testing automation for book examples

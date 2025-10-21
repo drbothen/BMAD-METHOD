@@ -1,0 +1,215 @@
+workflow:
+  id: book-edition-update-workflow
+  name: Update Book for New Edition
+  description: Complete workflow for updating existing technical book to 2nd/3rd edition with technology version updates. Coordinates book analysis, revision planning, code pattern extraction, chapter updates, testing, technical review, learning flow validation, and editorial polish for brownfield book authoring.
+  type: book-revision
+  project_types:
+    - book-edition-update
+    - version-migration
+    - brownfield-book-authoring
+  sequence:
+    - agent: book-analyst
+      creates: book-analysis-report.md
+      requires:
+        - existing_book_path
+        - revision_motivation
+      notes: "Analyze existing book completely using *analyze-book command (runs analyze-existing-book.md task). Understand structure, code inventory, technical currency, writing patterns, cross-references, and issues. Output comprehensive analysis report covering metadata, structure, code versions, outdated content, style patterns, and recommendations. SAVE OUTPUT: Copy report to docs/analysis/{{book_title}}-analysis-report.md"
+
+    - agent: book-analyst
+      creates: revision-plan.md
+      requires: book-analysis-report.md
+      notes: "Create strategic revision plan using *plan-revision command (runs plan-book-revision.md task). Define scope (full edition? specific chapters?), document technology version changes (e.g., Python 3.9→3.12), create chapter revision matrix with complexity/effort/priority for each chapter, plan testing strategy, define timeline with milestones, set success criteria, assess risks. Use templates/revision-plan-tmpl.yaml. SAVE OUTPUT: Copy plan to docs/planning/{{book_title}}-revision-plan.md"
+
+    - agent: book-analyst
+      creates: code-patterns.md
+      requires: book-analysis-report.md
+      notes: "Extract code style patterns using *extract-patterns command (runs extract-code-patterns.md task). Learn existing import organization, naming conventions, comment styles, error handling patterns, code structure patterns, formatting choices, file organization. Generate style guide for maintaining consistency in updated code. SAVE OUTPUT: Copy to docs/style/{{book_title}}-code-patterns.md"
+
+    - agent: tutorial-architect
+      updates: chapters (iterative)
+      requires:
+        - revision-plan.md
+        - code-patterns.md
+      notes: "Update chapters according to revision plan using update-chapter-for-version.md task for each chapter marked for revision. Follow priority order (Critical→Important→Nice-to-have). For each chapter: update imports, replace deprecated APIs, adopt new syntax, test code on target versions, revise text for accuracy, add migration notes. Follow code-patterns.md for consistency. Use version-update-checklist.md to verify each chapter. TRACK PROGRESS: Update chapter revision matrix as chapters complete."
+
+    - agent: code-curator
+      tests: all_updated_code
+      requires: updated chapters
+      notes: "Test all updated code examples using *test-code command (runs test-code-examples.md task). Test on exact target versions (e.g., Python 3.12, Node 20), verify all examples run without errors, check outputs match text, run regression tests on unchanged examples, test across platforms (Windows/macOS/Linux if applicable). Document test results. SAVE OUTPUT: Create test-results.md with pass/fail for every example."
+
+    - agent: technical-reviewer
+      reviews: updated chapters
+      requires: tested code
+      notes: "Technical review of all revised chapters using *review-accuracy command. Verify technical accuracy, check code follows current best practices, validate new syntax usage is appropriate, ensure deprecated features are fully replaced, confirm security best practices are current, verify version-specific content is correct. Provide feedback using incorporate-reviewer-feedback.md task format. SAVE OUTPUT: Create technical-review-notes.md"
+
+    - agent: instructional-designer
+      validates: learning_flow
+      requires: updated chapters
+      notes: "Verify learning progression intact after revisions using *validate-learning-path command. Check prerequisite flow still works (chapter dependencies maintained), concepts build logically, difficulty curve is smooth, no knowledge gaps introduced by changes, learning objectives still met, exercises still appropriate. Use learning-objectives-checklist.md and prerequisite-clarity-checklist.md. SAVE OUTPUT: Create learning-flow-validation.md"
+
+    - agent: technical-editor
+      polishes: final_chapters
+      requires:
+        - technical review complete
+        - learning flow validated
+      notes: "Editorial polish for consistency and quality using *review-consistency command. Check voice and tone match original book, terminology is consistent (old and new content), heading styles consistent, cross-references accurate (chapter numbers, section numbers), code patterns followed, formatting consistent throughout. Use existing-book-integration-checklist.md and revision-completeness-checklist.md. SAVE OUTPUT: Create editorial-review-notes.md with final approval or change requests."
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: Existing Book + New Version Target] --> B[book-analyst: Analyze Book]
+        B --> C[book-analyst: Create Revision Plan]
+        C --> D[book-analyst: Extract Code Patterns]
+        D --> E[tutorial-architect: Update Chapters - Critical Priority]
+        E --> F[tutorial-architect: Update Chapters - Important Priority]
+        F --> G[tutorial-architect: Update Chapters - Nice-to-have]
+        G --> H[code-curator: Test All Updated Code]
+        H --> I{All Tests Pass?}
+        I -->|Failures| J[tutorial-architect: Fix Failed Examples]
+        J --> H
+        I -->|Pass| K[technical-reviewer: Technical Review]
+        K --> L{Technical Issues?}
+        L -->|Issues Found| M[tutorial-architect: Address Review Feedback]
+        M --> K
+        L -->|Approved| N[instructional-designer: Validate Learning Flow]
+        N --> O{Flow Intact?}
+        O -->|Issues| P[tutorial-architect: Adjust for Flow]
+        P --> N
+        O -->|Valid| Q[technical-editor: Editorial Polish]
+        Q --> R{Consistency Check?}
+        R -->|Issues| S[tutorial-architect: Final Adjustments]
+        S --> Q
+        R -->|Approved| T[Edition Update Complete]
+        T --> U[Ready for Publisher Submission]
+
+        B -.-> B1[Analysis Report Generated]
+        C -.-> C1[Revision Plan with Timeline]
+        D -.-> D1[Code Style Guide]
+        H -.-> H1[Test Results Report]
+        K -.-> K1[Technical Review Notes]
+        N -.-> N1[Learning Flow Validation]
+        Q -.-> Q1[Editorial Approval]
+
+        style U fill:#90EE90
+        style B fill:#FFE4B5
+        style C fill:#FFE4B5
+        style D fill:#FFE4B5
+        style E fill:#FFD700
+        style F fill:#FFD700
+        style G fill:#FFD700
+        style H fill:#ADD8E6
+        style K fill:#F0E68C
+        style N fill:#DDA0DD
+        style Q fill:#F0E68C
+    ```
+
+  decision_guidance:
+    when_to_use:
+      - Updating book for 2nd or 3rd edition
+      - Migrating book to new technology versions (Python 3.9→3.12, Node 16→20, etc.)
+      - Comprehensive book revision with code and text updates
+      - Publisher-requested edition update
+      - Addressing accumulated technical debt in existing book
+
+    when_not_to_use:
+      - Writing new book from scratch (use book-planning-workflow)
+      - Adding single new chapter only (use add-chapter-to-existing-book-workflow)
+      - Addressing reviewer feedback only (use incorporate-review-feedback-workflow)
+      - Minor typo fixes (no workflow needed)
+
+  quality_gates:
+    analysis_complete:
+      - Book structure fully documented
+      - Code inventory complete with versions
+      - Technical currency assessed
+      - Writing patterns extracted
+      - Issues and gaps identified
+      - Recommendations provided
+
+    revision_plan_approved:
+      - Scope clearly defined
+      - Technology versions documented
+      - Chapter revision matrix complete
+      - Timeline with milestones defined
+      - Success criteria set
+      - Risks assessed
+      - Stakeholder approval obtained
+
+    code_patterns_extracted:
+      - Import patterns documented
+      - Naming conventions extracted
+      - Comment styles identified
+      - Error handling patterns noted
+      - Formatting standards defined
+      - Style guide generated
+
+    chapters_updated:
+      - All planned chapters revised
+      - Code follows extracted patterns
+      - Text updated for accuracy
+      - Migration notes added where needed
+      - Cross-references verified
+      - Checklist: version-update-checklist.md for each chapter
+
+    testing_complete:
+      - All code tested on target versions
+      - No broken examples
+      - Outputs verified
+      - Regression tests passed
+      - Test results documented
+
+    technical_review_passed:
+      - Technical accuracy verified
+      - Best practices confirmed
+      - Security reviewed
+      - No blocking issues
+      - Approval documented
+
+    learning_flow_validated:
+      - Prerequisites still flow correctly
+      - Difficulty curve maintained
+      - No knowledge gaps
+      - Learning objectives met
+      - Checklists: learning-objectives-checklist.md, prerequisite-clarity-checklist.md
+
+    editorial_approved:
+      - Consistency maintained
+      - Voice and tone consistent
+      - Terminology consistent
+      - Cross-references accurate
+      - Checklists: existing-book-integration-checklist.md, revision-completeness-checklist.md
+
+  handoff_prompts:
+    start_to_analysis: "Starting edition update for {{book_title}} from {{current_version}} to {{target_version}}. Analyzing existing book to understand current state."
+    analysis_to_planning: "Book analysis complete. Found {{issue_count}} issues. Creating strategic revision plan for {{chapter_count}} chapters."
+    planning_to_patterns: "Revision plan approved. Timeline: {{weeks}} weeks. Extracting code patterns to maintain consistency."
+    patterns_to_updates: "Code patterns extracted. Beginning chapter updates starting with {{critical_count}} critical-priority chapters."
+    updates_to_testing: "All {{chapter_count}} chapters updated. Testing {{example_count}} code examples on {{target_version}}."
+    testing_to_review: "Testing complete. {{pass_count}}/{{example_count}} examples passing. Ready for technical review."
+    review_to_flow: "Technical review approved. Validating learning progression across revised chapters."
+    flow_to_editorial: "Learning flow validated successfully. Ready for editorial consistency review."
+    editorial_to_complete: "Editorial review approved. Edition update complete. Ready for publisher submission."
+
+  time_estimates:
+    book_analysis: "8-12 hours (thorough analysis of existing book)"
+    revision_planning: "8-12 hours (strategic planning and stakeholder alignment)"
+    pattern_extraction: "4-6 hours (code style analysis)"
+    chapter_updates: "Varies by chapter: Low=2-4h, Medium=5-10h, High=12-20h per chapter"
+    code_testing: "1-2 hours per chapter (comprehensive testing)"
+    technical_review: "2-3 hours per chapter"
+    learning_flow_validation: "6-10 hours (full book assessment)"
+    editorial_review: "1-2 hours per chapter"
+    total_time_small_book: "200-300 hours for 10-chapter book with medium complexity"
+    total_time_large_book: "400-600 hours for 20-chapter book with high complexity"
+
+  best_practices:
+    - Thorough analysis first - understand before changing
+    - Extract patterns early - consistency is critical in brownfield
+    - Prioritize critical issues - not all chapters need equal effort
+    - Test incrementally - don't wait until all chapters are done
+    - Maintain learning flow - revisions shouldn't break pedagogy
+    - Document everything - future editions will need this history
+    - Follow extracted patterns - consistency matters more than "better" style
+    - Plan realistic timeline - edition updates take longer than expected
+    - Get stakeholder buy-in - revision plan needs approval
+    - Version everything - use git tags for edition milestones
