@@ -15,6 +15,23 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 - 📚 **6 Knowledge Bases** - Comprehensive publisher guidelines and technical writing standards
 - 🔄 **15 Workflows** - Section-driven development, publisher-specific submission workflows (PacktPub, O'Reilly, Manning, Self-Publishing), brownfield workflows for edition updates, and complete book lifecycle management
 
+## 📖 Documentation
+
+**New to Technical Writing Pack? Start here!**
+
+### 🚀 Quick Start
+- **[Quick Reference Card](docs/quick-reference.md)** - One-page cheat sheet (5 min read)
+- **[Getting Started Tutorial](docs/getting-started.md)** - Write your first chapter hands-on (1-2 hours)
+- **[User Guide](docs/user-guide.md)** - Complete system overview (60-90 min read)
+
+### 📚 Complete Documentation
+- **[Documentation Index](docs/README.md)** - Navigation hub for all documentation
+- **[Process Flows](docs/process-flows.md)** - Visual workflow diagrams
+- **[FAQ](docs/faq.md)** - Frequently asked questions
+- **[Troubleshooting](docs/troubleshooting.md)** - Common issues and solutions
+
+**See [docs/README.md](docs/README.md) for complete documentation map with 13 guides + 4 examples.**
+
 ## ✍️ Included Agents
 
 ### Planning & Design Team (Sprint 1)

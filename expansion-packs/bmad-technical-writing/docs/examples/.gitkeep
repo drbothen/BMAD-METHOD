@@ -1,0 +1,14 @@
+# Examples Directory
+
+This directory contains real-world examples of BMad Technical Writing outputs.
+
+## Available Examples
+
+The following example files demonstrate complete workflows:
+
+- `book-outline-example.md` - Complete book outline using book-outline-tmpl
+- `chapter-outline-example.md` - Chapter breakdown with section planning
+- `section-plan-example.md` - Detailed section plan
+- `complete-chapter-example.md` - Full chapter from section-driven workflow
+
+These examples use "Python Data Structures Handbook" as a consistent demonstration project.
