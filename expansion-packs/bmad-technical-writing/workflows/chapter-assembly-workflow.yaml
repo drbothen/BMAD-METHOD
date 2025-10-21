@@ -12,7 +12,7 @@ workflow:
     - agent: tutorial-architect
       creates: chapter-integrated.md
       requires: completed-sections[]
-      notes: "Merge all completed sections into single chapter file. Preserve section content. Add chapter introduction (if not in section 1) and chapter summary (if not in final section). Verify all sections present in correct order. SAVE OUTPUT: Create docs/chapters/chapter-{{chapter_number}}-integrated.md"
+      notes: "Merge all completed sections into single chapter file. Preserve section content. Add chapter introduction (if not in section 1) and chapter summary (if not in final section). Verify all sections present in correct order. SAVE OUTPUT: Create manuscript/chapters/chapter-{{chapter_number}}-integrated.md"
 
     - agent: tutorial-architect
       improves: chapter-integrated.md
@@ -46,7 +46,7 @@ workflow:
       requires:
         - edited-chapter.md
         - chapter-completeness-checklist.md
-      notes: "Review and approve editorial changes. Verify technical accuracy preserved during editing. Run chapter-completeness-checklist to ensure all requirements met. Mark chapter status as 'Ready for Publication'. SAVE OUTPUT: Create docs/chapters/chapter-{{chapter_number}}-final.md as publisher-ready manuscript."
+      notes: "Review and approve editorial changes. Verify technical accuracy preserved during editing. Run chapter-completeness-checklist to ensure all requirements met. Mark chapter status as 'Ready for Publication'. SAVE OUTPUT: Create manuscript/chapters/chapter-{{chapter_number}}-final.md as publisher-ready manuscript."
 
   flow_diagram: |
     ```mermaid

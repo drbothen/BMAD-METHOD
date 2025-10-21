@@ -13,25 +13,25 @@ workflow:
     - agent: tutorial-architect
       creates: chapter-outline.md
       requires: book-outline.md
-      notes: "Create detailed chapter outline using *create-chapter-outline command. Define learning objectives, prerequisites, main sections, exercises, and code examples needed. SAVE OUTPUT: Copy final chapter-outline.md to docs/outlines/chapter-{{chapter_number}}-outline.md"
+      notes: "Create detailed chapter outline using *create-chapter-outline command. Define learning objectives, prerequisites, main sections, exercises, and code examples needed. SAVE OUTPUT: Copy final chapter-outline.md to manuscript/outlines/chapter-{{chapter_number}}-outline.md"
 
     - agent: tutorial-architect
       creates: section-list.md
       orchestrates: section-planning-workflow
       requires: chapter-outline.md
-      notes: "SECTION-DRIVEN APPROACH: Break chapter into 5-8 deliverable sections using section-planning-workflow. Each section 2-5 pages with clear acceptance criteria. Tutorial Architect and Instructional Designer identify section boundaries, create section plans, and validate learning flow. SAVE OUTPUT: docs/sections/chapter-{{chapter_number}}-section-list.md with all section plans. ALTERNATIVE: Skip this step for traditional full-chapter writing approach."
+      notes: "SECTION-DRIVEN APPROACH: Break chapter into 5-8 deliverable sections using section-planning-workflow. Each section 2-5 pages with clear acceptance criteria. Tutorial Architect and Instructional Designer identify section boundaries, create section plans, and validate learning flow. SAVE OUTPUT: manuscript/sections/chapter-{{chapter_number}}-section-list.md with all section plans. ALTERNATIVE: Skip this step for traditional full-chapter writing approach."
 
     - agent: tutorial-architect
       creates: completed-sections[]
       orchestrates: section-development-workflow
       requires: section-list.md
-      notes: "SECTION-DRIVEN APPROACH: For each section in section-list, execute section-development-workflow (Code Curator develops code → Tutorial Architect writes section → Technical Reviewer reviews → Tutorial Architect finalizes). Sections can be developed in parallel if dependencies allow. Mark each section DONE when acceptance criteria met. SAVE OUTPUT: docs/sections/chapter-{{chapter_number}}/section-{{n}}-final.md for each section. ALTERNATIVE: Skip and use traditional drafting if not using section approach."
+      notes: "SECTION-DRIVEN APPROACH: For each section in section-list, execute section-development-workflow (Code Curator develops code → Tutorial Architect writes section → Technical Reviewer reviews → Tutorial Architect finalizes). Sections can be developed in parallel if dependencies allow. Mark each section DONE when acceptance criteria met. SAVE OUTPUT: manuscript/sections/chapter-{{chapter_number}}/section-{{n}}-final.md for each section. ALTERNATIVE: Skip and use traditional drafting if not using section approach."
 
     - agent: tutorial-architect
       creates: chapter-integrated.md
       orchestrates: chapter-assembly-workflow
       requires: completed-sections[]
-      notes: "SECTION-DRIVEN APPROACH: Execute chapter-assembly-workflow to merge all completed sections. Tutorial Architect merges and improves transitions → Instructional Designer validates learning flow → Technical Reviewer performs full chapter review → Tutorial Architect revises → Technical Editor copy edits → Tutorial Architect finalizes. SAVE OUTPUT: docs/chapters/chapter-{{chapter_number}}-final.md. ALTERNATIVE: For traditional approach, use original sequence (code-curator develops all code → tutorial-architect writes full draft → technical-reviewer reviews → revise → copy-edit → finalize)."
+      notes: "SECTION-DRIVEN APPROACH: Execute chapter-assembly-workflow to merge all completed sections. Tutorial Architect merges and improves transitions → Instructional Designer validates learning flow → Technical Reviewer performs full chapter review → Tutorial Architect revises → Technical Editor copy edits → Tutorial Architect finalizes. SAVE OUTPUT: manuscript/chapters/chapter-{{chapter_number}}-final.md. ALTERNATIVE: For traditional approach, use original sequence (code-curator develops all code → tutorial-architect writes full draft → technical-reviewer reviews → revise → copy-edit → finalize)."
 
     - agent: tutorial-architect
       validates: chapter-final.md
@@ -139,15 +139,15 @@ workflow:
       assembly_to_final: "Chapter assembly complete. All sections integrated with improved transitions. Full technical review and copy editing done. Final validation in progress."
 
     traditional_flow:
-      architect_to_curator: "Chapter outline complete with {{code_count}} code examples identified. Save outline to docs/outlines/, then develop and test all code examples."
+      architect_to_curator: "Chapter outline complete with {{code_count}} code examples identified. Save outline to manuscript/outlines/, then develop and test all code examples."
       curator_to_architect: "All code examples developed and tested in chapter-{{chapter_number}}/ folder. Tests passing. Ready for chapter draft writing."
-      architect_to_reviewer: "Chapter draft complete at docs/chapters/chapter-{{chapter_number}}-draft.md. All {{objective_count}} learning objectives addressed. Ready for technical review."
+      architect_to_reviewer: "Chapter draft complete at manuscript/chapters/chapter-{{chapter_number}}-draft.md. All {{objective_count}} learning objectives addressed. Ready for technical review."
       reviewer_to_architect: "Technical review complete. Found {{critical_count}} critical, {{major_count}} major, and {{minor_count}} minor issues. Review report at reviews/technical-review-chapter-{{chapter_number}}.md. Please address and revise."
       revised_to_editor: "Technical review issues addressed. Revised chapter ready for copy editing."
 
     both_approaches:
       editor_to_architect: "Copy editing complete. Made improvements to clarity, consistency, and style. Change summary attached. Please review and approve."
-      architect_final: "Editorial changes approved. Chapter finalized at docs/chapters/chapter-{{chapter_number}}-final.md. Status: Ready for Publication."
+      architect_final: "Editorial changes approved. Chapter finalized at manuscript/chapters/chapter-{{chapter_number}}-final.md. Status: Ready for Publication."
 
   time_estimates:
     section_driven_approach:

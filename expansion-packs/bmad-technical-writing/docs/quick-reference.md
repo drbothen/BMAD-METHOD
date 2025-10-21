@@ -131,7 +131,7 @@ One-page cheat sheet for most common workflows, agents, and commands.
 ### Project Structure
 ```
 your-book-project/
-├── docs/
+├── manuscript/
 │   ├── planning/
 │   │   ├── book-outline.md
 │   │   └── chapter-outlines/

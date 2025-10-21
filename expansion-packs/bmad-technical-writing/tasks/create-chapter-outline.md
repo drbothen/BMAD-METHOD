@@ -27,7 +27,7 @@ inputs:
 - Validate against book-level learning path
 - Use template chapter-outline-tmpl.yaml with create-doc.md task
 - Run execute-checklist.md with prerequisite-clarity-checklist.md
-  output: docs/outlines/chapter-{{chapter_number}}-outline.md
+  output: manuscript/outlines/chapter-{{chapter_number}}-outline.md
 
 ---
 

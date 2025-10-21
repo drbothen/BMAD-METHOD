@@ -27,7 +27,7 @@ task:
     - Use template revision-plan-tmpl.yaml with create-doc.md task
     - Run execute-checklist.md with revision-completeness-checklist.md
     - Generate comprehensive revision plan
-  output: docs/planning/{{book_title}}-revision-plan.md
+  output: manuscript/planning/{{book_title}}-revision-plan.md
 
 ---
 

@@ -87,27 +87,27 @@ Complete book planning from concept to approved outline. Guides technical author
 1. **Draft Proposal** (`book-publisher`)
    - Creates `book-proposal.md` using `book-proposal-tmpl.yaml`
    - Includes: market analysis, competitive titles, target audience profile, unique value proposition, chapter list, author platform, timeline
-   - Save to: `docs/planning/book-proposal.md`
+   - Save to: `manuscript/planning/book-proposal.md`
 
 2. **Design Outline** (`instructional-designer`)
    - Creates `book-outline.md` using `book-outline-tmpl.yaml`
    - Defines: learning progression, prerequisites per chapter, topics/subtopics, exercise strategy, difficulty curve
    - Ensures pedagogical soundness and logical skill building
-   - Save to: `docs/planning/book-outline.md`
+   - Save to: `manuscript/planning/book-outline.md`
 
 3. **Validate Learning Path** (`instructional-designer`)
    - Validates prerequisite flow ensures no knowledge gaps
    - Checks concepts build logically chapter by chapter
    - Verifies exercises progress from basic to advanced
    - Uses `learning-objectives-checklist.md` and `prerequisite-clarity-checklist.md`
-   - Save to: `docs/planning/learning-path-validation.md`
+   - Save to: `manuscript/planning/learning-path-validation.md`
 
 4. **Editorial Review** (`technical-editor`)
    - Reviews outline for clarity, consistency, professional quality
    - Checks chapter titles are clear and compelling
    - Ensures terminology is consistent
    - Verifies structure follows publisher best practices
-   - Save to: `docs/planning/book-outline-edited.md`
+   - Save to: `manuscript/planning/book-outline-edited.md`
 
 5. **Publisher Format Check** (`book-publisher`)
    - Verifies outline matches publisher chapter count guidelines
@@ -115,7 +115,7 @@ Complete book planning from concept to approved outline. Guides technical author
    - Ensures format follows publisher template
    - Confirms timeline is realistic
    - Uses publisher-specific checklist (PacktPub, O'Reilly, or Manning)
-   - Save to: `docs/planning/book-outline-final.md`
+   - Save to: `manuscript/planning/book-outline-final.md`
    - **Status**: Ready for Chapter Development
 
 #### Quality Gates
@@ -231,19 +231,19 @@ Complete chapter creation from outline to publisher-ready manuscript. v2.0 orche
 1. **Create Chapter Outline** (`tutorial-architect`)
    - Defines learning objectives, prerequisites, main sections, exercises, code examples
    - Uses `create-chapter-outline.md` task
-   - Save to: `docs/outlines/chapter-{n}-outline.md`
+   - Save to: `manuscript/outlines/chapter-{n}-outline.md`
 
 2. **Plan Sections** (`tutorial-architect` → **section-planning-workflow**)
    - Breaks chapter into 5-8 deliverable sections (2-5 pages each)
    - Creates section plans with clear acceptance criteria
    - Validates learning flow across sections
-   - Save to: `docs/sections/chapter-{n}-section-list.md`
+   - Save to: `manuscript/sections/chapter-{n}-section-list.md`
 
 3. **Develop Sections** (`tutorial-architect` → **section-development-workflow**)
    - For each section: Code Curator develops code → Tutorial Architect writes section → Technical Reviewer reviews → Tutorial Architect finalizes
    - Sections can be developed in parallel if dependencies allow
    - Mark each section DONE when acceptance criteria met
-   - Save to: `docs/sections/chapter-{n}/section-{i}-final.md`
+   - Save to: `manuscript/sections/chapter-{n}/section-{i}-final.md`
 
 4. **Assemble Chapter** (`tutorial-architect` → **chapter-assembly-workflow**)
    - Merges all completed sections
@@ -251,7 +251,7 @@ Complete chapter creation from outline to publisher-ready manuscript. v2.0 orche
    - Validates learning flow (Instructional Designer)
    - Full technical review (Technical Reviewer)
    - Copy edit (Technical Editor)
-   - Save to: `docs/chapters/chapter-{n}-final.md`
+   - Save to: `manuscript/chapters/chapter-{n}-final.md`
 
 5. **Final Validation** (`tutorial-architect`)
    - Runs `chapter-completeness-checklist.md`

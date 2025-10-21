@@ -11,7 +11,7 @@ description: Develop complete chapter manuscript from outline with introduction,
 persona_default: tutorial-architect
 inputs: - chapter-outline - learning-objectives - target-page-count
 steps: - Review chapter outline for structure and objectives - Write compelling introduction (hook, context, overview, prerequisites) - Draft main content sections (concept → tutorial → examples progression) - Create and test all code examples inline - Develop practice exercises with progressive difficulty - Write chapter summary with key takeaways - Add cross-references to other chapters and resources - Include further reading references - Verify all learning objectives are addressed - Run execute-checklist.md with chapter-completeness-checklist.md - Use template chapter-draft-tmpl.yaml with create-doc.md task
-output: docs/chapters/chapter-{{chapter_number}}-draft.md
+output: manuscript/chapters/chapter-{{chapter_number}}-draft.md
 
 ---
 
@@ -313,7 +313,7 @@ Final quality check before review:
 The completed chapter draft should be:
 
 - **Format:** Markdown (.md file)
-- **Location:** docs/chapters/chapter-{{chapter_number}}-draft.md
+- **Location:** manuscript/chapters/chapter-{{chapter_number}}-draft.md
 - **Code Examples:** In separate repository folder with clear organization
 - **Length:** Typically 15-30 pages (adjust based on topic complexity)
 - **Status:** Ready for technical review

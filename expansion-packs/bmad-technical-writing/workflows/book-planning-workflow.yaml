@@ -14,27 +14,27 @@ workflow:
         - book_topic
         - target_audience
         - publisher (optional)
-      notes: "Draft comprehensive book proposal using *create-proposal command. Include market analysis, competitive titles, target audience profile, unique value proposition, chapter list (high-level), author platform, and timeline. Use templates/book-proposal-tmpl.yaml. SAVE OUTPUT: Copy final proposal to docs/planning/book-proposal.md"
+      notes: "Draft comprehensive book proposal using *create-proposal command. Include market analysis, competitive titles, target audience profile, unique value proposition, chapter list (high-level), author platform, and timeline. Use templates/book-proposal-tmpl.yaml. SAVE OUTPUT: Copy final proposal to manuscript/planning/book-proposal.md"
 
     - agent: instructional-designer
       creates: book-outline.md
       requires: book-proposal.md
-      notes: "Create detailed book outline using *design-outline command. Define learning progression across chapters, prerequisites for each chapter, main topics and subtopics, exercise strategy, and difficulty curve. Use templates/book-outline-tmpl.yaml. Ensure pedagogical soundness and logical skill building. SAVE OUTPUT: Copy outline to docs/planning/book-outline.md"
+      notes: "Create detailed book outline using *design-outline command. Define learning progression across chapters, prerequisites for each chapter, main topics and subtopics, exercise strategy, and difficulty curve. Use templates/book-outline-tmpl.yaml. Ensure pedagogical soundness and logical skill building. SAVE OUTPUT: Copy outline to manuscript/planning/book-outline.md"
 
     - agent: instructional-designer
       validates: book-outline.md
       requires: book-outline.md
-      notes: "Validate learning progression and difficulty curve. Check prerequisite flow ensures no knowledge gaps, concepts build logically chapter by chapter, exercises progress from basic to advanced, reader can complete book successfully with stated prerequisites. Use learning-objectives-checklist.md and prerequisite-clarity-checklist.md. SAVE OUTPUT: Create validation report at docs/planning/learning-path-validation.md"
+      notes: "Validate learning progression and difficulty curve. Check prerequisite flow ensures no knowledge gaps, concepts build logically chapter by chapter, exercises progress from basic to advanced, reader can complete book successfully with stated prerequisites. Use learning-objectives-checklist.md and prerequisite-clarity-checklist.md. SAVE OUTPUT: Create validation report at manuscript/planning/learning-path-validation.md"
 
     - agent: technical-editor
       reviews: book-outline.md
       requires: validated outline
-      notes: "Review outline for clarity, consistency, and professional quality using *review-outline command. Check chapter titles are clear and compelling, topics avoid duplication, terminology is consistent, structure follows publisher best practices, accessibility considerations addressed. SAVE OUTPUT: Return polished outline with editorial notes at docs/planning/book-outline-edited.md"
+      notes: "Review outline for clarity, consistency, and professional quality using *review-outline command. Check chapter titles are clear and compelling, topics avoid duplication, terminology is consistent, structure follows publisher best practices, accessibility considerations addressed. SAVE OUTPUT: Return polished outline with editorial notes at manuscript/planning/book-outline-edited.md"
 
     - agent: book-publisher
       finalizes: book-outline.md
       requires: polished outline
-      notes: "Verify publisher requirements and format compliance. Check outline matches publisher chapter count guidelines, technical depth appropriate for series/imprint, format follows publisher template, timeline is realistic for publication schedule. Use publisher-specific checklist (packtpub-submission-checklist.md, oreilly-format-checklist.md, or manning-meap-checklist.md). SAVE OUTPUT: Copy final approved outline to docs/planning/book-outline-final.md and set status to 'Ready for Chapter Development'"
+      notes: "Verify publisher requirements and format compliance. Check outline matches publisher chapter count guidelines, technical depth appropriate for series/imprint, format follows publisher template, timeline is realistic for publication schedule. Use publisher-specific checklist (packtpub-submission-checklist.md, oreilly-format-checklist.md, or manning-meap-checklist.md). SAVE OUTPUT: Copy final approved outline to manuscript/planning/book-outline-final.md and set status to 'Ready for Chapter Development'"
 
   flow_diagram: |
     ```mermaid
@@ -125,7 +125,7 @@ workflow:
     outline_to_validation: "Book outline complete. Validating prerequisite flow and difficulty curve across {{chapter_count}} chapters."
     validation_to_editorial: "Learning path validated successfully. Ready for editorial review to ensure clarity and consistency."
     editorial_to_publisher: "Editorial review complete. Checking outline against {{publisher}} format requirements and submission guidelines."
-    publisher_to_final: "Publisher requirements verified. Book outline approved and ready for chapter development. Save to docs/planning/book-outline-final.md."
+    publisher_to_final: "Publisher requirements verified. Book outline approved and ready for chapter development. Save to manuscript/planning/book-outline-final.md."
 
   time_estimates:
     draft_proposal: "4-8 hours"

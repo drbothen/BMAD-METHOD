@@ -132,7 +132,7 @@ git merge chapter-03-dictionaries
 **Section-Based Commits**:
 ```bash
 # Commit after each section completes
-git add docs/sections/chapter-01/section-1.1.md
+git add manuscript/sections/chapter-01/section-1.1.md
 git commit -m "feat(ch01): complete section 1.1 - Lists Introduction"
 
 git add code-examples/chapter-01/section-1.1/

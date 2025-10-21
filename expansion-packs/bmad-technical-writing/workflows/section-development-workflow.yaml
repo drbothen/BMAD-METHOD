@@ -25,7 +25,7 @@ workflow:
         - section-plan.md
         - section-code-examples/
         - chapter-outline.md
-      notes: "Write section content (2-5 pages). Follow section plan learning objectives and content plan. Include concept explanation, tutorial walkthrough with code examples inline, and practical applications. Address prerequisites and connect to previous sections. SAVE OUTPUT: Create docs/sections/chapter-{{chapter_number}}/section-{{section_number}}-draft.md"
+      notes: "Write section content (2-5 pages). Follow section plan learning objectives and content plan. Include concept explanation, tutorial walkthrough with code examples inline, and practical applications. Address prerequisites and connect to previous sections. SAVE OUTPUT: Create manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-draft.md"
 
     - agent: technical-reviewer
       reviews: section-draft.md
@@ -40,7 +40,7 @@ workflow:
     - agent: tutorial-architect
       finalizes: section-final.md
       requires: revised-section-draft.md
-      notes: "Verify section meets all success criteria from section plan. Check learning objectives addressed, code tested, length appropriate (2-5 pages), transitions clear. Mark section status as DONE. SAVE OUTPUT: Create docs/sections/chapter-{{chapter_number}}/section-{{section_number}}-final.md and mark in section list as complete."
+      notes: "Verify section meets all success criteria from section plan. Check learning objectives addressed, code tested, length appropriate (2-5 pages), transitions clear. Mark section status as DONE. SAVE OUTPUT: Create manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-final.md and mark in section list as complete."
 
   flow_diagram: |
     ```mermaid

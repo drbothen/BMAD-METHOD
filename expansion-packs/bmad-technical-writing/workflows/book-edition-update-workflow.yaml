@@ -18,7 +18,7 @@ workflow:
     - agent: book-analyst
       creates: revision-plan.md
       requires: book-analysis-report.md
-      notes: "Create strategic revision plan using *plan-revision command (runs plan-book-revision.md task). Define scope (full edition? specific chapters?), document technology version changes (e.g., Python 3.9→3.12), create chapter revision matrix with complexity/effort/priority for each chapter, plan testing strategy, define timeline with milestones, set success criteria, assess risks. Use templates/revision-plan-tmpl.yaml. SAVE OUTPUT: Copy plan to docs/planning/{{book_title}}-revision-plan.md"
+      notes: "Create strategic revision plan using *plan-revision command (runs plan-book-revision.md task). Define scope (full edition? specific chapters?), document technology version changes (e.g., Python 3.9→3.12), create chapter revision matrix with complexity/effort/priority for each chapter, plan testing strategy, define timeline with milestones, set success criteria, assess risks. Use templates/revision-plan-tmpl.yaml. SAVE OUTPUT: Copy plan to manuscript/planning/{{book_title}}-revision-plan.md"
 
     - agent: book-analyst
       creates: code-patterns.md

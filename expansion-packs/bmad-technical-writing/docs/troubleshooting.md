@@ -95,7 +95,7 @@ ls expansion-packs/bmad-technical-writing/checklists/
 **Solution**:
 ```bash
 # Check directory exists
-mkdir -p docs/planning docs/sections docs/chapters
+mkdir -p manuscript/planning manuscript/sections manuscript/chapters
 
 # Check write permissions
 ls -la docs/

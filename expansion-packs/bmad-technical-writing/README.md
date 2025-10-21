@@ -85,6 +85,54 @@ npx bmad-method install
    ```
 3. Run the BMad installer to register the pack
 
+## 📁 Project Structure
+
+The Technical Writing Expansion Pack uses `manuscript/` as the primary directory for your book content, aligning with publishing industry terminology and avoiding semantic confusion.
+
+### Directory Structure
+
+```
+your-book-project/
+├── manuscript/              # ← Your book content (the manuscript)
+│   ├── planning/
+│   │   ├── book-proposal.md
+│   │   ├── book-outline.md
+│   │   └── learning-path-validation.md
+│   ├── outlines/
+│   │   └── chapter-01-outline.md
+│   ├── sections/
+│   │   └── chapter-01/
+│   │       ├── section-1.1-draft.md
+│   │       └── section-1.1-final.md
+│   ├── chapters/
+│   │   ├── chapter-01-integrated.md
+│   │   └── chapter-01-final.md
+│   └── reviews/
+│       └── chapter-01-review.md
+├── code-examples/           # Supporting code and tests
+│   └── chapter-01/
+├── images/                  # Diagrams, screenshots, figures
+├── submission/              # Publisher-ready packages
+│   ├── packtpub/
+│   └── oreilly/
+├── docs/                    # Optional: PROJECT documentation
+│   ├── README.md
+│   └── publisher-notes.md
+└── README.md
+```
+
+### Why `manuscript/` instead of `docs/`?
+
+**Semantic Clarity**: In software projects, `docs/` typically means "technical documentation about the codebase" (API docs, setup guides). For book authoring, `manuscript/` clearly indicates "the book you're writing" using standard publishing industry terminology.
+
+**Benefits**:
+- ✅ **Industry standard**: Publishers use "manuscript submission" terminology
+- ✅ **Clear separation**: Book content (`manuscript/`) vs project docs (`docs/`)
+- ✅ **Professional**: Authors think in terms of "working on my manuscript"
+- ✅ **GitHub clarity**: Contributors immediately understand what `manuscript/` contains
+
+**Note**: The optional `docs/` directory can still be used for meta-documentation about the book project itself (e.g., publisher correspondence, project notes), maintaining clear separation from your manuscript content.
+
 ## 💡 Usage
 
 ### Quick Start
