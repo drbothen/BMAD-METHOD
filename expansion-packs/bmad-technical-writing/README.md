@@ -8,19 +8,26 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 
 ### Key Features
 
-- 🤖 **3 Specialized Agents** (Sprint 1) - Instructional design, tutorial architecture, and code curation
-- 📝 **5 Core Tasks** - Book outline design, code example creation, testing workflows
-- 📋 **8 Quality Checklists** - Learning objectives, code quality, tutorial effectiveness
-- 🎯 **3 Professional Templates** - Book outlines, chapter planning, code examples
-- 📚 **6 Knowledge Bases** - Publisher guidelines, learning frameworks, code style guides
+- 🤖 **6 Specialized Agents** - Complete writing team from planning to publication
+- 📝 **10 Core Tasks** - Full chapter development workflow
+- 📋 **15 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility
+- 🎯 **9 Professional Templates** - Book planning, chapter development, review, and publishing
+- 📚 **6 Knowledge Bases** - Comprehensive publisher guidelines and technical writing standards
+- 🔄 **2 Core Workflows** - Chapter development and tutorial creation workflows
 
-## ✍️ Included Agents (Sprint 1)
+## ✍️ Included Agents
 
-### Core Technical Writing Team
+### Planning & Design Team (Sprint 1)
 
-1. **Instructional Designer** - Learning objectives, pedagogical structure, and instructional scaffolding
-2. **Tutorial Architect** - Hands-on tutorial design, exercise creation, and progressive learning paths
-3. **Code Curator** - Code example development, testing, version management, and quality assurance
+1. **Instructional Designer** 🎓 - Learning objectives, pedagogical structure, and instructional scaffolding
+2. **Tutorial Architect** 🏗️ - Hands-on tutorial design, exercise creation, and progressive learning paths
+3. **Code Curator** 🔧 - Code example development, testing, version management, and quality assurance
+
+### Review & Publishing Team (Sprint 2)
+
+4. **Technical Reviewer** 🔍 - Technical accuracy verification, security audits, best practices validation
+5. **Technical Editor** ✍️ - Clarity improvement, style consistency, publisher formatting, accessibility
+6. **Book Publisher** 📦 - Publication preparation, manuscript packaging, publisher-specific formatting
 
 ## 🚀 Installation
 
@@ -49,33 +56,76 @@ npx bmad-method install
 /bmad-tw:instructional-designer
 /bmad-tw:tutorial-architect
 /bmad-tw:code-curator
+/bmad-tw:technical-reviewer
+/bmad-tw:technical-editor
+/bmad-tw:book-publisher
 ```
 
-### Common Workflows
+### Core Workflows (Sprint 2)
+
+**Chapter Development Workflow** - Complete chapter creation from outline to publisher-ready:
+1. Tutorial Architect creates chapter outline
+2. Code Curator develops and tests all code examples
+3. Tutorial Architect writes complete chapter draft
+4. Technical Reviewer performs comprehensive technical review
+5. Tutorial Architect revises based on review feedback
+6. Technical Editor performs professional copy editing
+7. Tutorial Architect finalizes chapter for publication
+
+**Tutorial Creation Workflow** - Build effective hands-on tutorials:
+1. Instructional Designer designs learning path
+2. Tutorial Architect creates step-by-step structure
+3. Code Curator develops and tests tutorial code
+4. Tutorial Architect writes complete tutorial
+5. Code Curator tests end-to-end
+6. Tutorial Architect revises based on testing
+7. Instructional Designer validates learning effectiveness
+
+### Common Use Cases
 
 - **Book Planning** - Create comprehensive book outlines with learning objectives
-- **Chapter Development** - Design chapter structure with tutorials and exercises
+- **Chapter Development** - Full workflow from outline to publication-ready manuscript
 - **Code Example Creation** - Develop, test, and document working code examples
-- **Quality Assurance** - Validate learning objectives, code quality, and tutorial effectiveness
+- **Technical Review** - Verify accuracy, security, and best practices
+- **Editorial Polish** - Ensure clarity, consistency, and publisher compliance
+- **Quality Assurance** - 15 checklists covering all aspects of technical writing quality
 
 ## 📋 Key Components
 
-### Templates (Sprint 1)
+### Templates (9 Total)
 
+**Sprint 1 (Planning):**
 - `book-outline-tmpl.yaml` - Complete book structure with learning path
 - `chapter-outline-tmpl.yaml` - Individual chapter planning with exercises
 - `code-example-tmpl.yaml` - Code examples with explanations and testing
 
-### Tasks (Sprint 1)
+**Sprint 2 (Writing & Publishing):**
+- `chapter-draft-tmpl.yaml` - Complete chapter manuscript structure
+- `technical-review-report-tmpl.yaml` - Review findings and recommendations
+- `tutorial-section-tmpl.yaml` - Step-by-step tutorial structure
+- `exercise-set-tmpl.yaml` - Practice exercises with solutions
+- `book-proposal-tmpl.yaml` - Publisher proposal document
+- `introduction-tmpl.yaml` - Chapter introduction structure
 
+### Tasks (10 Total)
+
+**Sprint 1 (Planning):**
 - `design-book-outline.md` - Create publisher-aligned book structures
 - `create-code-example.md` - Develop tested, documented code examples
 - `test-code-examples.md` - Automated testing workflow for all examples
 - `create-learning-objectives.md` - Define measurable learning outcomes
 - `create-chapter-outline.md` - Plan chapter structure and content
 
-### Checklists (Sprint 1)
+**Sprint 2 (Writing & Review):**
+- `write-chapter-draft.md` - Complete chapter manuscript writing workflow
+- `technical-review-chapter.md` - Comprehensive chapter review workflow
+- `copy-edit-chapter.md` - Editorial polish workflow
+- `develop-tutorial.md` - Hands-on tutorial creation workflow
+- `design-exercises.md` - Exercise creation workflow
 
+### Checklists (15 Total)
+
+**Sprint 1 (Quality Foundations):**
 - Learning objectives validation
 - Code quality verification
 - Code testing requirements
@@ -85,14 +135,31 @@ npx bmad-method install
 - Prerequisite clarity
 - Version compatibility
 
-### Knowledge Bases (Sprint 1)
+**Sprint 2 (Review & Publishing):**
+- Technical accuracy checklist
+- Security best practices checklist
+- Performance considerations checklist
+- PacktPub submission checklist
+- O'Reilly format checklist
+- Manning MEAP checklist
+- Accessibility checklist
+
+### Workflows (2 Core Workflows)
+
+**Sprint 2:**
+- `chapter-development-workflow.yaml` - Complete chapter creation workflow
+- `tutorial-creation-workflow.yaml` - Tutorial development workflow
+
+**Note:** Sprint 2.5 will add 3 additional workflows (book planning, code example creation, technical review) for a total of 5 core workflows.
+
+### Knowledge Bases (6 Total)
 
 - `bmad-kb.md` - Core technical writing methodology
 - `book-structures.md` - PacktPub, O'Reilly, Manning formats
 - `learning-frameworks.md` - Bloom's Taxonomy, scaffolding principles
-- `code-style-guides.md` - Python, JavaScript, Java standards
-- `publisher-guidelines.md` - Publisher-specific requirements (placeholder)
-- `technical-writing-standards.md` - Writing standards (placeholder)
+- `code-style-guides.md` - Python, JavaScript, Java standards (COMPLETE)
+- `publisher-guidelines.md` - Publisher-specific requirements (EXPANDED in Sprint 2)
+- `technical-writing-standards.md` - Writing standards (COMPLETE in Sprint 2)
 
 ## 🎯 Use Cases
 
@@ -145,17 +212,36 @@ Special thanks to Brian (BMad) for creating the BMad Method framework.
 
 ---
 
-**Version:** 0.1.0 (Sprint 1 - Alpha Release)
+**Version:** 0.2.0 (Sprint 2 - Beta Release)
 **Compatible with:** BMad Method v4.0+
 **Last Updated:** 2024
 
+## ✅ Sprint Status
+
+**Sprint 1 (Complete):** Planning and design foundation
+- ✅ 3 planning agents (Instructional Designer, Tutorial Architect, Code Curator)
+- ✅ 5 core tasks for book and chapter planning
+- ✅ 8 quality checklists
+- ✅ 3 templates for planning
+- ✅ 6 knowledge bases (initial versions)
+
+**Sprint 2 (Complete):** Review, workflows, and quality assurance
+- ✅ 3 review agents (Technical Reviewer, Technical Editor, Book Publisher)
+- ✅ 5 additional tasks for writing and review
+- ✅ 7 additional checklists (technical, security, performance, publisher, accessibility)
+- ✅ 6 additional templates for writing and publishing
+- ✅ 2 core workflows (chapter development, tutorial creation)
+- ✅ Expanded knowledge bases (publisher guidelines, writing standards)
+
 ## 🚧 Roadmap
 
-**Sprint 2** (Planned):
+**Sprint 2.5** (Next):
+- 3 additional workflows: Book Planning Workflow, Code Example Workflow, Technical Review Workflow
+- Total: 5 core workflows for complete book development
 
-- Technical Reviewer agent
-- Technical Editor agent
-- Book Publisher agent
-- Additional templates and workflows
-- Enhanced publisher guidelines
-- Complete writing standards documentation
+**Sprint 3** (Planned):
+- API Documenter agent
+- Screenshot Specialist agent
+- Additional publisher-specific agents
+- Video tutorial support
+- Internationalization support

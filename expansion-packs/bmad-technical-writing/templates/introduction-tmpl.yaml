@@ -1,0 +1,140 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: introduction
+  name: Chapter Introduction
+  version: 1.0
+  description: Compelling chapter introduction that hooks readers and sets clear expectations
+  output:
+    format: markdown
+    filename: "chapter-{{chapter_number}}-introduction.md"
+
+workflow:
+  elicitation: false
+  allow_skip: false
+sections:
+  - id: hook
+    title: Opening Hook
+    instruction: |
+      Compelling opening (1-2 paragraphs):
+      - Real-world scenario or problem
+      - Relatable pain point or challenge
+      - Intriguing question or statement
+      - Story or anecdote
+
+      **Purpose:** Grab reader attention immediately and make them want to keep reading.
+
+      **Examples:**
+      - "Have you ever deployed code to production only to watch your application crash under real user load? You're not alone..."
+      - "In 2023, a misconfigured authentication system exposed 100 million user records. This chapter teaches you how to avoid becoming the next headline..."
+      - "What if you could reduce your API response time from 2 seconds to 200 milliseconds? In this chapter, you'll learn exactly how..."
+
+      The hook should connect to reader pain points or aspirations.
+  - id: context
+    title: Context and Importance
+    instruction: |
+      Why this chapter matters (1-2 paragraphs):
+      - Industry relevance
+      - Common use cases
+      - Skills gap this addresses
+      - How it fits in the bigger picture
+      - Connection to previous chapters
+
+      Help readers understand the "why" before diving into the "how".
+
+      Example:
+      "Authentication is the foundation of application security. According to OWASP, broken authentication is consistently one of the top 10 security risks. Yet many developers rely on outdated or insecure patterns. This chapter introduces modern authentication using JWTs and OAuth2, the current industry standard for securing APIs."
+  - id: overview
+    title: Chapter Overview
+    instruction: |
+      What this chapter covers (3-5 sentences):
+      - Main topics in order
+      - High-level learning path
+      - Key concepts introduced
+      - Practical outcomes
+
+      Give readers a roadmap without overwhelming detail.
+
+      Example:
+      "This chapter begins with authentication fundamentals, then walks you through implementing JWT-based authentication in a Flask API. You'll create user registration and login endpoints, secure routes with token validation, and implement refresh token rotation. By the end, you'll have a production-ready authentication system."
+  - id: learning_objectives
+    title: Learning Objectives
+    instruction: |
+      What you'll be able to do (4-6 objectives):
+      - Use action verbs (implement, analyze, create, design, debug)
+      - Be specific and measurable
+      - Align with Bloom's taxonomy
+      - Focus on skills, not just knowledge
+
+      Format as bullet list starting with "By the end of this chapter, you will be able to:"
+
+      **Examples:**
+      - Implement JWT authentication in a REST API
+      - Validate and decode JWT tokens securely
+      - Design a refresh token rotation strategy
+      - Identify and prevent common authentication vulnerabilities
+      - Create middleware for protecting API routes
+      - Test authentication flows with integration tests
+
+      These set clear expectations for what readers will achieve.
+  - id: prerequisites
+    title: Prerequisites
+    instruction: |
+      What readers need to know (bullet list):
+      - Previous chapters to complete
+      - Assumed knowledge or skills
+      - Software versions required
+      - Estimated time for chapter completion
+
+      **Examples:**
+      - Completion of Chapter 3: Building REST APIs
+      - Basic understanding of HTTP headers and status codes
+      - Python 3.11+ installed
+      - PostgreSQL 15+ running (or Docker installed)
+      - Estimated reading time: 45-60 minutes
+      - Hands-on exercises: 2-3 hours
+
+      Be honest about prerequisites - frustration from missing knowledge hurts learning.
+  - id: what_youll_build
+    title: What You'll Build
+    instruction: |
+      Concrete deliverable or outcome (1-2 paragraphs):
+      - Specific project, feature, or system
+      - End state description
+      - Practical application
+      - Connection to real-world usage
+
+      Make the outcome tangible and motivating.
+
+      Example:
+      "In this chapter's tutorial, you'll build a complete user authentication system for a task management API. The system includes user registration with password hashing, secure login with JWT tokens, protected routes accessible only to authenticated users, and automatic token refresh for seamless user experience. By the chapter's end, you'll have a working authentication system you can adapt for your own projects."
+  - id: time_estimate
+    title: Time Estimate
+    instruction: |
+      How long this chapter takes:
+      - Reading time: [minutes]
+      - Tutorial/hands-on time: [hours]
+      - Exercise completion time: [hours]
+      - Total time commitment: [hours]
+
+      Break down time investment so readers can plan accordingly.
+  - id: section_roadmap
+    title: Section Roadmap
+    instruction: |
+      Chapter structure preview (bullet list of main sections):
+      - Section 1: [Title] - Brief 1-sentence description
+      - Section 2: [Title] - Brief 1-sentence description
+      - Section 3: [Title] - Brief 1-sentence description
+      - ...
+
+      Show the logical flow through the chapter.
+
+      Example:
+      - **Section 1: Authentication Fundamentals** - Core concepts of authentication, authorization, and session management
+      - **Section 2: JWT Architecture** - How JSON Web Tokens work and why they're used for API authentication
+      - **Section 3: Building Registration and Login** - Implementing user registration with secure password hashing
+      - **Section 4: Protecting Routes** - Creating authentication middleware and securing API endpoints
+      - **Section 5: Refresh Tokens** - Implementing token refresh for improved security and user experience
+      - **Section 6: Testing Authentication** - Writing tests to validate your authentication system
+
+      This gives readers a mental model before diving in.

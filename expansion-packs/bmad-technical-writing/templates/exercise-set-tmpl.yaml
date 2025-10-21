@@ -1,0 +1,156 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: exercise-set
+  name: Exercise Set
+  version: 1.0
+  description: Structured practice exercises with progressive difficulty, hints, and solution approaches
+  output:
+    format: markdown
+    filename: "exercises-{{chapter_number}}.md"
+
+workflow:
+  elicitation: false
+  allow_skip: false
+sections:
+  - id: metadata
+    title: Exercise Set Metadata
+    instruction: |
+      Exercise set information:
+      - Chapter number and title
+      - Overall difficulty range (e.g., "Beginner to Intermediate")
+      - Total estimated completion time
+      - Number of exercises (typically 4-6)
+      - Learning objectives assessed
+  - id: prerequisites
+    title: Prerequisites and Setup
+    instruction: |
+      Required before starting exercises:
+      - Chapter sections that must be read
+      - Code setup or environment needed
+      - Files or resources to download
+      - Starter code repository (if applicable)
+
+      Example:
+      "Complete Chapter 3 Sections 1-4. Clone starter code: `git clone https://github.com/book/chapter-03-exercises`"
+  - id: exercises
+    title: Exercises
+    instruction: |
+      Create 4-6 exercises with progressive difficulty:
+
+      **For Each Exercise, Include:**
+
+      **Exercise Header:**
+      - Exercise number and title
+      - Difficulty: ⭐ (Basic), ⭐⭐ (Intermediate), ⭐⭐⭐ (Advanced)
+      - Estimated time
+      - Learning objective addressed
+
+      **Problem Description:**
+      - Clear statement of what to build/solve
+      - Specific requirements (numbered list)
+      - Input/output examples
+      - Success criteria
+
+      **Hints Section:**
+      - 2-4 progressive hints (start general, get more specific)
+      - Hints reveal approach, not complete solution
+      - Example: "Hint 1: Consider using a dictionary to track counts"
+
+      **Solution Approach:**
+      - High-level algorithm or strategy
+      - Key concepts to apply
+      - Common pitfalls to avoid
+      - Not full code solution (encourages independent work)
+
+      **Extension (optional for advanced exercises):**
+      - Ways to enhance the solution
+      - Additional challenges to try
+
+      ---
+      **EXERCISE FORMAT EXAMPLE:**
+
+      ### Exercise 1: User Input Validation ⭐
+      **Estimated Time:** 15 minutes
+      **Learning Objective:** Apply regex patterns for input validation
+
+      **Problem:**
+      Create a function `validate_email(email: str) -> bool` that validates email addresses according to these rules:
+      1. Must contain exactly one @ symbol
+      2. Local part (before @) must be 1-64 characters
+      3. Domain part must contain at least one period
+      4. Domain must end with 2-6 letter TLD
+
+      **Test Cases:**
+      ```python
+      validate_email("user@example.com")  # True
+      validate_email("invalid.email")     # False
+      validate_email("no@domain")         # False
+      ```
+
+      **Hints:**
+      1. Consider using Python's `re` module for regex matching
+      2. Break the problem into parts: check @, then validate each side
+      3. The pattern `^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$` covers most cases
+
+      **Solution Approach:**
+      - Import `re` module
+      - Define regex pattern matching email format
+      - Use `re.match()` or `re.fullmatch()` to test the input
+      - Return True if match found, False otherwise
+
+      **Common Pitfalls:**
+      - Forgetting to anchor regex with ^ and $
+      - Not escaping special regex characters like `.`
+      - Accepting emails with multiple @ symbols
+
+      ---
+
+      **Difficulty Progression:**
+      - Exercises 1-2: Basic (⭐) - Direct application of chapter concepts
+      - Exercises 3-4: Intermediate (⭐⭐) - Combine multiple concepts
+      - Exercise 5: Advanced (⭐⭐⭐) - Creative problem-solving, minimal guidance
+  - id: self_assessment
+    title: Self-Assessment Checklist
+    instruction: |
+      Students verify their learning:
+
+      **After completing all exercises, you should be able to:**
+      - [ ] Skill 1 demonstrated in exercises
+      - [ ] Skill 2 demonstrated in exercises
+      - [ ] Skill 3 demonstrated in exercises
+      - [ ] Concept 1 applied independently
+      - [ ] Concept 2 combined with other concepts
+
+      If you struggled with any exercises, review:
+      - Exercise 1-2 issues → Review Section 3.1 (topic reference)
+      - Exercise 3-4 issues → Review Section 3.3 (topic reference)
+      - Exercise 5 issues → Consider reviewing entire chapter
+
+      This helps students identify knowledge gaps.
+  - id: solutions_note
+    title: Solutions Note
+    instruction: |
+      How to access full solutions:
+      - Solutions location (e.g., "Appendix A", "GitHub repository /solutions folder")
+      - When to consult solutions (after attempting, not before)
+      - Multiple solution approaches may exist
+
+      Example:
+      "Full solution code is available in the `solutions/chapter-03/` directory. Try solving independently first, then compare your approach. Remember: different solutions can be equally valid!"
+  - id: extensions
+    title: Extension Challenges
+    instruction: |
+      Optional advanced challenges for deeper learning:
+
+      **Challenge 1:** [Title]
+      - Description of more complex problem
+      - Builds on exercise concepts
+      - Estimated time: [duration]
+      - No hints provided (fully independent)
+
+      **Challenge 2:** [Title]
+      - Another advanced application
+      - May combine topics from multiple chapters
+
+      These are for students who want extra practice or deeper mastery.
