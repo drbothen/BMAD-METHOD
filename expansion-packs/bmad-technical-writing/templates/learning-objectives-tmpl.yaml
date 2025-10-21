@@ -1,0 +1,73 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: learning-objectives
+  name: Learning Objectives
+  version: 1.0
+  description: Define measurable learning objectives for chapters or sections using Bloom's Taxonomy
+  output:
+    format: markdown
+    filename: "{{chapter_id}}-learning-objectives.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: context
+    title: Context
+    instruction: |
+      Specify the context for these learning objectives:
+      - Chapter or section number and title
+      - Topic area being covered
+      - Position in overall book learning path
+      - Target audience skill level
+    elicit: true
+  - id: objectives
+    title: Learning Objectives
+    instruction: |
+      Define 3-5 measurable learning objectives using action verbs from Bloom's Taxonomy:
+
+      **Remember** (recall facts): define, list, identify, name, recognize
+      **Understand** (explain concepts): describe, explain, summarize, interpret
+      **Apply** (use knowledge): demonstrate, implement, execute, solve, build
+      **Analyze** (examine parts): compare, contrast, differentiate, debug, troubleshoot
+      **Evaluate** (make judgments): assess, critique, validate, defend, justify
+      **Create** (produce new): design, develop, architect, compose, construct
+
+      For each objective:
+      - Start with "By the end of this [chapter/section], you will be able to..."
+      - Use specific action verbs
+      - Make it measurable and observable
+      - Align with content covered
+      - Progress from lower to higher cognitive levels
+
+      Example: "By the end of this chapter, you will be able to design a RESTful API with proper authentication."
+    elicit: true
+  - id: prerequisites
+    title: Prerequisites
+    instruction: |
+      List what learners need to know before starting:
+      - Previous chapters that must be completed
+      - External knowledge assumed (programming languages, tools, concepts)
+      - Skills required (command line proficiency, Git basics, etc.)
+      - Environment setup needed
+  - id: success_criteria
+    title: Success Criteria
+    instruction: |
+      Define how learners can verify they've achieved the objectives:
+      - Observable behaviors or deliverables
+      - Self-assessment questions
+      - Practical demonstrations
+      - Code that should run successfully
+      - Problems they can now solve
+
+      Example: "You can successfully build and deploy a containerized web application."
+  - id: assessment
+    title: Assessment Approach
+    instruction: |
+      Describe how learning will be assessed:
+      - Practice exercises aligned with objectives
+      - Quiz questions covering key concepts
+      - Hands-on projects that demonstrate mastery
+      - Code challenges at appropriate difficulty
+      - Self-check opportunities throughout chapter

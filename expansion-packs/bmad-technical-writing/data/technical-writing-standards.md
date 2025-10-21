@@ -7,11 +7,13 @@ Comprehensive standards for creating clear, consistent, accessible, and well-str
 ### Use Simple, Direct Language
 
 **Do:**
+
 - "Click the Submit button" (clear, direct)
 - "The function returns a boolean value" (precise)
 - "Remove the file" (simple verb)
 
 **Don't:**
+
 - "Utilize the Submit functionality to initiate the process" (unnecessarily complex)
 - "The function facilitates the return of a boolean-type value" (wordy)
 - "Effect the removal of the file" (pretentious)
@@ -19,6 +21,7 @@ Comprehensive standards for creating clear, consistent, accessible, and well-str
 ### Explain Technical Terms
 
 **First Use Pattern:**
+
 ```
 JSON (JavaScript Object Notation) is a lightweight data format...
 [Later in text]
@@ -26,11 +29,13 @@ JSON (JavaScript Object Notation) is a lightweight data format...
 ```
 
 **Inline Explanation:**
+
 ```
 The API returns a 401 status code, which indicates unauthorized access.
 ```
 
 **Glossary Reference:**
+
 ```
 The service uses OAuth2 for authentication (see Glossary).
 ```
@@ -38,6 +43,7 @@ The service uses OAuth2 for authentication (see Glossary).
 ### Provide Examples
 
 **Abstract Concept:**
+
 ```
 ❌ "Functions should be idempotent."
 
@@ -45,6 +51,7 @@ The service uses OAuth2 for authentication (see Glossary).
 ```
 
 **Show, Then Tell:**
+
 ```python
 # Example first
 def calculate_total(items):
@@ -58,6 +65,7 @@ a Pythonic way to iterate and transform data in a single line.
 ### Break Down Complex Ideas
 
 **Step-by-Step:**
+
 ```
 To implement authentication:
 1. Create a User model with password hashing
@@ -69,6 +77,7 @@ To implement authentication:
 ```
 
 **Progressive Disclosure:**
+
 - Start with simplest case
 - Add complexity incrementally
 - Reference advanced topics for later
@@ -76,22 +85,26 @@ To implement authentication:
 ### Active Voice
 
 **Prefer Active:**
+
 - "The function returns an array" (active)
 - "Pass the parameter to the function" (active)
 - "The compiler throws an error" (active)
 
 **Avoid Passive:**
+
 - "An array is returned by the function" (passive)
 - "The parameter should be passed to the function" (passive)
 - "An error is thrown by the compiler" (passive)
 
 **Exception:** Passive voice appropriate when actor is unknown or unimportant:
+
 - "The file was corrupted" (we don't know who/what corrupted it)
 - "Python was released in 1991" (focus on Python, not Guido)
 
 ### Sentence Clarity
 
 **One Idea Per Sentence:**
+
 ```
 ❌ "The function validates the input and then transforms it to the required format and returns it to the caller or throws an error if validation fails."
 
@@ -99,6 +112,7 @@ To implement authentication:
 ```
 
 **Specific vs Vague:**
+
 ```
 ❌ "The database might have some issues with performance."
 ✓ "Query response time increases from 50ms to 2 seconds when the users table exceeds 1 million rows."
@@ -111,12 +125,14 @@ To implement authentication:
 ### Terminology Consistency
 
 **Choose One Term:**
+
 ```
 ✓ Consistent: "function" throughout
 ❌ Inconsistent: "function", "method", "routine", "procedure" interchangeably
 ```
 
 **Create a Term List:**
+
 ```
 Preferred Terms:
 - "filesystem" (not "file system")
@@ -129,6 +145,7 @@ Preferred Terms:
 ### Style Consistency
 
 **Code Formatting:**
+
 ```
 ✓ Consistent:
 Use `variable_name` for variables and `function_name()` for functions.
@@ -139,6 +156,7 @@ Use variable_name for variables and function_name() for functions.
 ```
 
 **Heading Capitalization:**
+
 ```
 ✓ Title Case Consistent:
 ## Chapter 1: Building Your First API
@@ -158,6 +176,7 @@ Use variable_name for variables and function_name() for functions.
 ### Voice and Tone
 
 **Maintain Consistent Perspective:**
+
 ```
 ✓ Second Person Throughout:
 "You create a function by using the def keyword. You then add parameters..."
@@ -168,6 +187,7 @@ Use variable_name for variables and function_name() for functions.
 ```
 
 **Consistent Formality Level:**
+
 - Casual: "Let's dive in!", "Cool!", "Pretty neat, right?"
 - Professional: "We'll begin", "Effective", "This demonstrates"
 - Pick one and maintain throughout
@@ -175,6 +195,7 @@ Use variable_name for variables and function_name() for functions.
 ### Formatting Patterns
 
 **Code Blocks:**
+
 ```
 ✓ Consistent:
 All code blocks use language tags and show complete context
@@ -184,6 +205,7 @@ Some with language tags, some without; some show imports, some don't
 ```
 
 **Lists:**
+
 ```
 ✓ Parallel Structure:
 - Create the database
@@ -203,6 +225,7 @@ Some with language tags, some without; some show imports, some don't
 ### Alt Text for Images
 
 **Descriptive Alt Text:**
+
 ```
 ❌ <img alt="screenshot">
 ❌ <img alt="Figure 1">
@@ -212,6 +235,7 @@ Some with language tags, some without; some show imports, some don't
 ```
 
 **Complex Diagrams:**
+
 ```
 <img alt="Authentication flow diagram" longdesc="auth-flow-description.html">
 
@@ -225,6 +249,7 @@ this token in subsequent requests via the Authorization header..."
 ### Color and Visual Information
 
 **Don't Rely on Color Alone:**
+
 ```
 ❌ "The red items are errors, green items are successes."
 
@@ -232,6 +257,7 @@ this token in subsequent requests via the Authorization header..."
 ```
 
 **Code Syntax Highlighting:**
+
 ```
 # Ensure code is understandable without color
 
@@ -245,6 +271,7 @@ api_key = "abc123xyz"
 ### Document Structure
 
 **Proper Heading Hierarchy:**
+
 ```
 ✓ Correct:
 # Chapter 1: Introduction (H1)
@@ -260,6 +287,7 @@ api_key = "abc123xyz"
 ```
 
 **Meaningful Headings:**
+
 ```
 ✓ Descriptive: "Installing PostgreSQL on macOS"
 ❌ Generic: "Installation" or "Next Steps"
@@ -268,6 +296,7 @@ api_key = "abc123xyz"
 ### Screen Reader Considerations
 
 **Link Text:**
+
 ```
 ❌ "Click [here] to download Python."
 ❌ "Learn more at [this link]."
@@ -277,6 +306,7 @@ api_key = "abc123xyz"
 ```
 
 **Table Structure:**
+
 ```
 | Header 1 | Header 2 | Header 3 |
 |----------|----------|----------|
@@ -287,6 +317,7 @@ api_key = "abc123xyz"
 ```
 
 **Code Examples:**
+
 ```python
 # Use descriptive variable names that make sense when read aloud
 ✓ user_email = "user@example.com"
@@ -300,6 +331,7 @@ api_key = "abc123xyz"
 ### Plain Language
 
 **Acronyms:**
+
 ```
 ✓ "REST (Representational State Transfer) is an architectural style..."
 Later: "...using REST APIs..."
@@ -308,6 +340,7 @@ Later: "...using REST APIs..."
 ```
 
 **Define Jargon:**
+
 ```
 ✓ "Idempotent operations produce the same result when executed multiple times."
 ❌ "Operations should be idempotent." (no explanation)
@@ -320,6 +353,7 @@ Later: "...using REST APIs..."
 ### Logical Topic Progression
 
 **Foundation First:**
+
 ```
 Chapter Sequence:
 1. Python Basics → 2. Functions → 3. Classes → 4. Advanced OOP
@@ -330,6 +364,7 @@ Chapter Sequence:
 ```
 
 **Dependency Management:**
+
 ```
 ✓ "In Chapter 2, we learned about functions. Now we'll use functions to..."
 ✓ "This builds on the authentication system from Chapter 5..."
@@ -340,6 +375,7 @@ Chapter Sequence:
 ### Section Organization
 
 **Consistent Chapter Structure:**
+
 ```
 Chapter Template:
 1. Introduction (hooks, context, objectives)
@@ -354,6 +390,7 @@ Use same structure for every chapter (readers know what to expect)
 ```
 
 **Section Length:**
+
 - Chapters: 15-30 pages typical
 - Major sections: 3-8 pages
 - Subsections: 1-3 pages
@@ -362,6 +399,7 @@ Use same structure for every chapter (readers know what to expect)
 ### Transitions
 
 **Between Sections:**
+
 ```
 ✓ "Now that you understand basic routing, let's add authentication to protect routes."
 
@@ -371,6 +409,7 @@ Use same structure for every chapter (readers know what to expect)
 ```
 
 **Between Chapters:**
+
 ```
 Chapter End: "In the next chapter, we'll deploy this application to production."
 
@@ -380,6 +419,7 @@ Next Chapter Start: "In Chapter 5, we built a REST API. Now we'll deploy it usin
 ### Cross-References
 
 **Specific References:**
+
 ```
 ✓ "See Chapter 3, Section 3.2: Database Setup"
 ✓ "As explained in the Authentication section on page 45..."
@@ -389,6 +429,7 @@ Next Chapter Start: "In Chapter 5, we built a REST API. Now we'll deploy it usin
 ```
 
 **Forward References:**
+
 ```
 ✓ "We'll cover error handling in depth in Chapter 8."
 ✓ "Advanced caching strategies are beyond this book's scope. See 'High Performance Python' by Gorelick and Ozsvald."
@@ -399,6 +440,7 @@ Manage expectations about what's covered where
 ### Visual Hierarchy
 
 **Use Formatting:**
+
 - **Bold** for emphasis or key terms
 - `Code formatting` for inline code
 - > Blockquotes for important callouts
@@ -406,6 +448,7 @@ Manage expectations about what's covered where
 - Tables for structured data
 
 **Consistent Callouts:**
+
 ```
 **Note:** Additional information
 **Warning:** Potential pitfall
@@ -420,6 +463,7 @@ Manage expectations about what's covered where
 ### Code Comments
 
 **Explain Why, Not What:**
+
 ```python
 ❌ # Set x to 5
 x = 5
@@ -433,6 +477,7 @@ for attempt in range(max_retries):
 ```
 
 **Document Intent:**
+
 ```python
 ✓ # Remove duplicates while preserving order
 seen = set()
@@ -447,6 +492,7 @@ for item in items:
 ### Function Documentation
 
 **Docstring Standard:**
+
 ```python
 def authenticate_user(username, password):
     """
@@ -473,6 +519,7 @@ def authenticate_user(username, password):
 ### API Documentation
 
 **Endpoint Description:**
+
 ```
 GET /api/users/:id
 
@@ -502,22 +549,26 @@ Response 404:
 ## References and Resources
 
 ### Style Guide Standards
+
 - Microsoft Writing Style Guide
 - Google Developer Documentation Style Guide
 - Chicago Manual of Style (for publishers)
 - AP Stylebook (for journalism-style technical writing)
 
 ### Accessibility Standards
+
 - WCAG 2.1 Level AA (minimum)
 - Section 508 (US government)
 - Plain Language guidelines
 
 ### Technical Writing Communities
+
 - Write the Docs: https://www.writethedocs.org/
 - TC (Technical Communication) Stack Exchange
 - Reddit: r/technicalwriting
 
 ### Tools
+
 - Hemingway Editor (readability)
 - Grammarly (grammar and style)
 - Vale (style guide linter)

@@ -5,31 +5,13 @@
 ---
 
 task:
-  id: technical-review-chapter
-  name: Technical Review Chapter
-  description: Comprehensive technical accuracy review with fact-checking, code validation, security audit, and best practices assessment
-  persona_default: technical-reviewer
-  inputs:
-    - chapter-draft
-    - chapter-number
-    - subject-area-expertise
-  steps:
-    - Read chapter draft completely for overview
-    - Verify technical accuracy against official documentation
-    - Review all code examples for correctness and best practices
-    - Test code examples to ensure they run properly
-    - Check for security vulnerabilities in code
-    - Assess performance implications of recommendations
-    - Identify outdated information or deprecated features
-    - Note factual errors or misconceptions
-    - Compile findings into structured review report
-    - Assign severity levels to issues (Critical/Major/Minor)
-    - Provide constructive recommendations with sources
-    - Run execute-checklist.md with technical-accuracy-checklist.md
-    - Run execute-checklist.md with security-best-practices-checklist.md
-    - Run execute-checklist.md with performance-considerations-checklist.md
-    - Use template technical-review-report-tmpl.yaml with create-doc.md
-  output: reviews/technical-review-chapter-{{chapter_number}}.md
+id: technical-review-chapter
+name: Technical Review Chapter
+description: Comprehensive technical accuracy review with fact-checking, code validation, security audit, and best practices assessment
+persona_default: technical-reviewer
+inputs: - chapter-draft - chapter-number - subject-area-expertise
+steps: - Read chapter draft completely for overview - Verify technical accuracy against official documentation - Review all code examples for correctness and best practices - Test code examples to ensure they run properly - Check for security vulnerabilities in code - Assess performance implications of recommendations - Identify outdated information or deprecated features - Note factual errors or misconceptions - Compile findings into structured review report - Assign severity levels to issues (Critical/Major/Minor) - Provide constructive recommendations with sources - Run execute-checklist.md with technical-accuracy-checklist.md - Run execute-checklist.md with security-best-practices-checklist.md - Run execute-checklist.md with performance-considerations-checklist.md - Use template technical-review-report-tmpl.yaml with create-doc.md
+output: reviews/technical-review-chapter-{{chapter_number}}.md
 
 ---
 
@@ -64,12 +46,14 @@ Get the full context before detailed review:
 Check all technical claims against authoritative sources:
 
 **For Each Technical Claim:**
+
 - Is this factually correct?
 - Is it current (not outdated)?
 - Can it be verified in official documentation?
 - Are version numbers specified correctly?
 
 **Sources to Check:**
+
 - Official language documentation (Python.org, MDN, etc.)
 - Framework official docs
 - RFCs and standards specifications
@@ -77,6 +61,7 @@ Check all technical claims against authoritative sources:
 - Release notes
 
 **Document Issues:**
+
 - Location (section, page, paragraph)
 - Incorrect statement
 - Correct information
@@ -92,18 +77,21 @@ Validate all code in the chapter:
 **For Each Code Example:**
 
 **Syntax and Logic:**
+
 - Does the code have syntax errors?
 - Will it run as shown?
 - Does it produce the claimed results?
 - Are there logic errors?
 
 **Completeness:**
+
 - Are all imports shown?
 - Are dependencies clear?
 - Is setup code included or explained?
 - Can a reader actually run this?
 
 **Accuracy:**
+
 - Does the code use APIs correctly?
 - Are parameters in the right order?
 - Are return types correct?
@@ -116,6 +104,7 @@ Validate all code in the chapter:
 Assess whether code follows current best practices:
 
 **Code Quality:**
+
 - Follows language style guides (PEP 8, ESLint, etc.)
 - Uses meaningful variable names
 - Includes appropriate comments
@@ -123,12 +112,14 @@ Assess whether code follows current best practices:
 - Handles errors properly
 
 **Design Patterns:**
+
 - Uses appropriate patterns
 - Avoids anti-patterns
 - Demonstrates scalable approaches
 - Shows proper separation of concerns
 
 **Modern Approaches:**
+
 - Uses current language features
 - Leverages modern libraries
 - Follows framework conventions
@@ -141,6 +132,7 @@ Assess whether code follows current best practices:
 Review for security vulnerabilities:
 
 **Critical Issues:**
+
 - Hardcoded credentials or API keys
 - SQL injection vulnerabilities
 - XSS (Cross-Site Scripting) risks
@@ -149,6 +141,7 @@ Review for security vulnerabilities:
 - Unsafe deserialization
 
 **Best Practices:**
+
 - HTTPS/TLS usage
 - Password hashing (bcrypt, Argon2)
 - JWT secret management
@@ -157,6 +150,7 @@ Review for security vulnerabilities:
 - Principle of least privilege
 
 **For Each Security Issue:**
+
 - Describe the vulnerability
 - Explain potential impact
 - Provide secure code example
@@ -170,6 +164,7 @@ Review for security vulnerabilities:
 Consider performance and scalability:
 
 **Inefficiencies:**
+
 - O(n²) algorithms where O(n) is possible
 - N+1 query problems
 - Missing database indexes
@@ -177,12 +172,14 @@ Consider performance and scalability:
 - Memory leaks or excessive allocation
 
 **Scalability:**
+
 - Will this approach scale to production?
 - Are there resource constraints?
 - Is caching appropriate?
 - Are there blocking operations in async code?
 
 **Recommendations:**
+
 - Better algorithms or data structures
 - Optimization techniques
 - Profiling suggestions
@@ -195,16 +192,19 @@ Consider performance and scalability:
 Check currency of all technical content:
 
 **Deprecated Features:**
+
 - Language features no longer recommended
 - Framework APIs deprecated
 - Tools superseded by newer alternatives
 
 **Version Issues:**
+
 - Library versions outdated or EOL
 - Examples using old syntax
 - Missing modern alternatives
 
 **Update Recommendations:**
+
 - Current best practices
 - Modern equivalents
 - Migration paths
@@ -219,6 +219,7 @@ Create structured technical review report:
 **Use template:** technical-review-report-tmpl.yaml
 
 **Report Sections:**
+
 - Executive summary (overall assessment)
 - Technical accuracy findings
 - Code quality issues
@@ -230,6 +231,7 @@ Create structured technical review report:
 - Prioritized recommendations
 
 **Assign Severity:**
+
 - **Critical:** Must fix (factual errors, security issues, broken code)
 - **Major:** Should fix (best practice violations, performance issues)
 - **Minor:** Nice to fix (style improvements, optimization suggestions)
@@ -239,6 +241,7 @@ Create structured technical review report:
 For each issue, provide actionable guidance:
 
 **Good Feedback Format:**
+
 ```
 Location: Section 2.3, page 12, code example
 Issue: Using `collections.MutableMapping` which is deprecated
@@ -252,12 +255,14 @@ class MyDict(MutableMapping):
 ```
 
 **Be Constructive:**
+
 - Explain why it's wrong
 - Show how to fix it
 - Provide source reference
 - Offer example code where helpful
 
 **Avoid:**
+
 - Vague criticism ("this is bad")
 - Nitpicking without explaining why
 - Rewriting the entire chapter
@@ -268,6 +273,7 @@ class MyDict(MutableMapping):
 Validate against standard checklists:
 
 **Execute:**
+
 - technical-accuracy-checklist.md
 - security-best-practices-checklist.md
 - performance-considerations-checklist.md

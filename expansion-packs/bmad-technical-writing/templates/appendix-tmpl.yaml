@@ -1,0 +1,106 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: appendix
+  name: Appendix
+  version: 1.0
+  description: Reference appendix with supplementary material, installation guides, and troubleshooting
+  output:
+    format: markdown
+    filename: "appendix-{{appendix_id}}.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: title_purpose
+    title: Appendix Title and Purpose
+    instruction: |
+      Define this appendix:
+      - Appendix letter/number (Appendix A, B, etc.)
+      - Clear, descriptive title
+      - What supplementary information it contains
+      - Why this content is in an appendix vs. main chapters
+      - Who should reference this appendix
+    elicit: true
+  - id: reference_material
+    title: Reference Material
+    instruction: |
+      Include reference tables, charts, or specifications:
+      - API reference tables
+      - Configuration options
+      - Error code listings
+      - Compatibility matrices
+      - Command-line flag references
+      - Keyboard shortcuts
+      - Regular expression patterns
+      - Data format specifications
+
+      Structure as tables or lists for easy scanning.
+  - id: installation
+    title: Installation and Setup Guides
+    instruction: |
+      Platform-specific installation instructions:
+
+      **For each platform (Windows, macOS, Linux):**
+      - Prerequisites check (OS version, dependencies)
+      - Step-by-step installation commands
+      - Verification steps
+      - Common installation issues
+      - Environment configuration
+
+      **Include:**
+      - Package manager commands (apt, brew, choco)
+      - Version constraints
+      - Path configuration
+      - IDE setup (if applicable)
+  - id: troubleshooting
+    title: Troubleshooting Common Issues
+    instruction: |
+      Document frequent problems and solutions:
+
+      **For each issue:**
+      - Symptom/error message
+      - Root cause explanation
+      - Step-by-step solution
+      - Prevention tips
+      - Related issues
+
+      Organize by category:
+      - Installation problems
+      - Environment/configuration issues
+      - Runtime errors
+      - Platform-specific problems
+      - Version compatibility issues
+  - id: additional_resources
+    title: Additional Resources and Links
+    instruction: |
+      Curated resource list:
+
+      **Official Documentation:**
+      - Language/framework docs
+      - API references
+      - Release notes
+
+      **Tools:**
+      - IDEs and editors
+      - Testing frameworks
+      - Deployment tools
+      - Debugging utilities
+
+      **Learning Resources:**
+      - Related books
+      - Online courses
+      - Video tutorials
+      - Blog posts and articles
+
+      **Community:**
+      - Forums and Stack Overflow tags
+      - Discord/Slack channels
+      - Mailing lists
+      - Conferences and meetups
+
+      For each resource:
+      - Name and URL
+      - Brief description
+      - Why it's useful

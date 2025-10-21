@@ -1,0 +1,125 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: api-reference
+  name: API Reference Documentation
+  version: 1.0
+  description: Comprehensive API/function reference documentation with parameters, return values, and examples
+  output:
+    format: markdown
+    filename: "{{api_name}}-reference.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: overview
+    title: API Overview
+    instruction: |
+      Provide high-level API information:
+      - Module, class, or function name
+      - Full signature (function signature, class definition, etc.)
+      - Import path or package location
+      - Version introduced (if applicable)
+      - Deprecation status (if applicable)
+    elicit: true
+  - id: purpose
+    title: Purpose and Description
+    instruction: |
+      Explain what this API does:
+      - Primary purpose in 1-2 sentences
+      - Use cases where this API is appropriate
+      - When NOT to use this API
+      - Related APIs that might be alternatives
+    elicit: true
+  - id: parameters
+    title: Parameters
+    instruction: |
+      Document all parameters in a table format:
+
+      | Parameter | Type | Required | Default | Description |
+      |-----------|------|----------|---------|-------------|
+      | name | string | Yes | - | The user's full name |
+      | age | int | No | 0 | User's age in years |
+
+      For each parameter:
+      - Name exactly as it appears in code
+      - Type (string, int, bool, object, array, etc.)
+      - Required or Optional
+      - Default value if optional
+      - Clear description of what it does
+      - Valid ranges or constraints (if applicable)
+      - Examples of valid values
+  - id: return_value
+    title: Return Value
+    instruction: |
+      Document what the API returns:
+      - Return type (including null/None if possible)
+      - Description of the returned value
+      - Structure of return object (if complex)
+      - Return value examples
+      - Conditions affecting return value
+  - id: exceptions
+    title: Exceptions and Errors
+    instruction: |
+      List possible errors and exceptions:
+
+      | Exception/Error | Condition | How to Handle |
+      |----------------|-----------|---------------|
+      | ValueError | Invalid input format | Validate input before calling |
+      | FileNotFoundError | File path doesn't exist | Check file exists first |
+
+      For each exception:
+      - Exception name or error code
+      - What triggers this exception
+      - How to prevent or handle it
+  - id: usage_examples
+    title: Usage Examples
+    instruction: |
+      Provide 2-3 realistic code examples:
+
+      **Example 1: Basic usage**
+      ```python
+      # Show the simplest, most common use case
+      result = api_function(required_param="value")
+      print(result)
+      ```
+
+      **Example 2: Advanced usage**
+      ```python
+      # Show more complex scenario with optional parameters
+      result = api_function(
+          required_param="value",
+          optional_param=42,
+          flags={"debug": True}
+      )
+      ```
+
+      **Example 3: Error handling**
+      ```python
+      # Show proper error handling
+      try:
+          result = api_function(param="value")
+      except ValueError as e:
+          print(f"Invalid input: {e}")
+      ```
+    elicit: true
+  - id: notes
+    title: Notes and Warnings
+    instruction: |
+      Include important considerations:
+      - Performance implications
+      - Thread safety
+      - Platform-specific behavior
+      - Common pitfalls
+      - Best practices
+      - Security considerations
+  - id: related
+    title: Related Functions and References
+    instruction: |
+      Link to related APIs:
+      - Similar functions that work together
+      - Alternative approaches
+      - Required setup functions
+      - Functions that use this API's output
+      - Relevant documentation sections

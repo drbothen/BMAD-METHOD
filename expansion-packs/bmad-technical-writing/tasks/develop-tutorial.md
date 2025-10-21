@@ -5,28 +5,13 @@
 ---
 
 task:
-  id: develop-tutorial
-  name: Develop Tutorial
-  description: Create hands-on step-by-step tutorial with tested code, clear instructions, and troubleshooting
-  persona_default: tutorial-architect
-  inputs:
-    - tutorial-topic
-    - learning-objective
-    - difficulty-level
-  steps:
-    - Identify specific learning objective for tutorial
-    - Define prerequisite knowledge and setup requirements
-    - Design step-by-step progression (8-15 steps typical)
-    - Write clear, actionable instructions for each step
-    - Create and test code examples for each step
-    - Document expected outputs at each step
-    - Add troubleshooting section for common issues
-    - Test complete tutorial end-to-end
-    - Verify progressive difficulty and skill building
-    - Include summary and next steps
-    - Run execute-checklist.md with tutorial-effectiveness-checklist.md
-    - Use template tutorial-section-tmpl.yaml with create-doc.md
-  output: tutorials/{{tutorial-slug}}.md
+id: develop-tutorial
+name: Develop Tutorial
+description: Create hands-on step-by-step tutorial with tested code, clear instructions, and troubleshooting
+persona_default: tutorial-architect
+inputs: - tutorial-topic - learning-objective - difficulty-level
+steps: - Identify specific learning objective for tutorial - Define prerequisite knowledge and setup requirements - Design step-by-step progression (8-15 steps typical) - Write clear, actionable instructions for each step - Create and test code examples for each step - Document expected outputs at each step - Add troubleshooting section for common issues - Test complete tutorial end-to-end - Verify progressive difficulty and skill building - Include summary and next steps - Run execute-checklist.md with tutorial-effectiveness-checklist.md - Use template tutorial-section-tmpl.yaml with create-doc.md
+output: tutorials/{{tutorial-slug}}.md
 
 ---
 
@@ -48,15 +33,18 @@ Create effective hands-on tutorials that guide learners through building somethi
 Define what students will accomplish:
 
 **Specific and Measurable:**
+
 - "Build a REST API with authentication" (good)
 - "Learn about APIs" (too vague)
 
 **Achievable Scope:**
+
 - 30-45 minutes for basic tutorials
 - 1-2 hours for intermediate
 - 2-4 hours for advanced
 
 **Clear Success Criteria:**
+
 - What will work at the end?
 - What skills will be demonstrated?
 - What can student verify?
@@ -66,21 +54,25 @@ Define what students will accomplish:
 Be explicit about requirements:
 
 **Knowledge Prerequisites:**
+
 - "Understanding of Python functions and classes"
 - "Completed Tutorial 2: Flask Basics"
 - "Familiarity with HTTP request/response cycle"
 
 **Software Requirements:**
+
 - "Python 3.11+"
 - "PostgreSQL 15+ running locally"
 - "VS Code or similar editor"
 
 **Setup Steps:**
+
 - "Clone starter repository"
 - "Create virtual environment"
 - "Install dependencies: `pip install -r requirements.txt`"
 
 **Time Estimates:**
+
 - Setup time: 10 minutes
 - Tutorial time: 45 minutes
 - Total: ~1 hour
@@ -90,6 +82,7 @@ Be explicit about requirements:
 Plan the tutorial flow (typically 8-15 steps):
 
 **Logical Progression:**
+
 1. Setup and initialization
 2. Core concept introduction
 3. Basic implementation
@@ -100,12 +93,14 @@ Plan the tutorial flow (typically 8-15 steps):
 8. Summary/reflection
 
 **Each Step Should:**
+
 - Build on previous steps
 - Accomplish one clear goal
 - Be testable/verifiable
 - Take 3-8 minutes
 
 **Progressive Difficulty:**
+
 - Start simple (foundational)
 - Add complexity gradually
 - End with realistic scenario
@@ -115,7 +110,8 @@ Plan the tutorial flow (typically 8-15 steps):
 Use consistent, actionable format:
 
 **Step Format:**
-```
+
+````
 **Step N: [Action-Oriented Title]**
 
 [Brief explanation of what this step accomplishes]
@@ -128,9 +124,10 @@ Use consistent, actionable format:
 **Code:**
 ```language
 [Complete code to add/modify]
-```
+````
 
 **Expected Output:**
+
 ```
 [What student should see]
 ```
@@ -140,6 +137,7 @@ Use consistent, actionable format:
 
 **Verification:**
 [How to confirm this step worked]
+
 ```
 
 **Imperative Voice:**
@@ -179,12 +177,15 @@ Show what success looks like:
 
 **After Key Steps:**
 ```
+
 After Step 3, running `python app.py` should display:
- * Running on http://127.0.0.1:5000
- * Debug mode: on
+
+- Running on http://127.0.0.1:5000
+- Debug mode: on
 
 Visiting http://localhost:5000/health should return:
 {"status": "healthy", "timestamp": "2024-01-15T10:30:00Z"}
+
 ```
 
 **Screenshots (where helpful):**
@@ -195,15 +196,17 @@ Visiting http://localhost:5000/health should return:
 
 **File Structure:**
 ```
+
 After Step 5, your project should look like:
 tutorial-app/
 ├── app.py
 ├── models/
-│   └── user.py
+│ └── user.py
 ├── routes/
-│   └── auth.py
+│ └── auth.py
 └── tests/
-    └── test_auth.py
+└── test_auth.py
+
 ```
 
 ### 7. Add Troubleshooting Section
@@ -224,20 +227,24 @@ Anticipate and solve common problems:
 
 **Example:**
 ```
+
 **Problem:** ImportError: No module named 'flask'
 
 **Cause:** Flask not installed or wrong Python environment
 
 **Diagnosis:**
+
 1. Check virtual environment activated: `which python`
 2. Check installed packages: `pip list | grep -i flask`
 
 **Fix:**
+
 1. Activate virtual environment: `source venv/bin/activate`
 2. Install Flask: `pip install flask`
 3. Verify: `python -c "import flask; print(flask.__version__)"`
 
 **Verification:** Re-run your app - should start without import errors
+
 ```
 
 **Include 3-5 most common issues** based on typical student mistakes.
@@ -364,3 +371,4 @@ After creating tutorial:
 3. Test with target audience if possible
 4. Gather feedback and iterate
 5. Update based on common student questions
+```

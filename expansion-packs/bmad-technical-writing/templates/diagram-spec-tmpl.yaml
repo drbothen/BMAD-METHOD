@@ -1,0 +1,123 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: diagram-spec
+  name: Diagram Specification
+  version: 1.0
+  description: Technical diagram design specification for visual documentation
+  output:
+    format: markdown
+    filename: "{{diagram_id}}-spec.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: purpose
+    title: Diagram Purpose and Context
+    instruction: |
+      Define why this diagram is needed:
+      - Chapter and section where diagram appears
+      - Concept or process being visualized
+      - Learning objective this diagram supports
+      - What text explanation it accompanies
+      - Audience skill level
+    elicit: true
+  - id: diagram_type
+    title: Diagram Type
+    instruction: |
+      Select the appropriate diagram type:
+
+      **Process/Flow Diagrams:**
+      - Flowchart: Decision trees, algorithms, processes
+      - Sequence diagram: Interactions over time, API calls
+      - Activity diagram: Workflows, user journeys
+      - Data flow diagram: Data movement through systems
+
+      **Structure Diagrams:**
+      - Architecture diagram: System components and relationships
+      - Class diagram: Object-oriented design
+      - Entity-relationship diagram: Database schemas
+      - Component diagram: Software architecture
+
+      **Other:**
+      - State diagram: State machines, lifecycle
+      - Network diagram: Infrastructure, deployment
+      - Timeline: Historical progression, versioning
+      - Comparison chart: Feature matrices, trade-offs
+
+      Specify the type and why it's appropriate for this content.
+    elicit: true
+  - id: elements
+    title: Key Elements and Components
+    instruction: |
+      List all elements that must appear in the diagram:
+      - Actors/entities (users, systems, services)
+      - Processes/functions (operations, transformations)
+      - Data stores (databases, caches, files)
+      - Decision points (conditionals, branches)
+      - Start/end points
+      - External systems or boundaries
+
+      For each element:
+      - Name/label text
+      - Shape or symbol to use
+      - Color or styling (if significant)
+  - id: relationships
+    title: Relationships and Flows
+    instruction: |
+      Define how elements connect:
+      - Arrows showing data/control flow
+      - Direction of relationships
+      - Sequence or order of operations
+      - Conditions or triggers
+      - Feedback loops
+      - Dependencies
+
+      Example: "User sends HTTP request → API Gateway → Authentication Service → Database"
+    elicit: true
+  - id: labels
+    title: Labels and Annotations
+    instruction: |
+      Specify all text labels needed:
+      - Edge labels (data types, protocols, methods)
+      - Callout boxes (important notes, explanations)
+      - Step numbers (for sequential processes)
+      - Legend entries (if symbols need explanation)
+      - Title and subtitle
+
+      Keep labels concise - detailed explanation belongs in body text.
+  - id: style
+    title: Style Requirements
+    instruction: |
+      Define visual styling:
+      - Color scheme (consistent with other book diagrams)
+      - Shape conventions (rectangles for processes, diamonds for decisions, etc.)
+      - Line styles (solid, dashed, dotted for different relationship types)
+      - Font size and style (must be legible when printed)
+      - Icon set or symbol library
+      - Background and borders
+  - id: size_format
+    title: Size and Format Requirements
+    instruction: |
+      Specify technical requirements:
+      - Dimensions (width x height in pixels or inches)
+      - Resolution (minimum DPI for print quality)
+      - File format (PNG, SVG, PDF)
+      - Orientation (portrait, landscape)
+      - Margin/padding requirements
+      - Page placement (full page, half page, inline)
+  - id: accessibility
+    title: Alternative Text Description
+    instruction: |
+      Write complete alt text for accessibility:
+      - Describe the diagram's purpose
+      - Explain the main flow or structure
+      - List key components
+      - Describe important relationships
+      - Provide equivalent information for screen readers
+
+      Alt text should enable someone who can't see the diagram to understand the concept.
+
+      Example: "Sequence diagram showing authentication flow: User submits credentials to web app, which forwards to auth service. Auth service validates against database and returns JWT token through web app to user."
+    elicit: true

@@ -1,0 +1,234 @@
+workflow:
+  id: self-publishing-workflow
+  name: Prepare for Self-Publishing
+  description: Package manuscript for self-publishing platforms (Leanpub, Amazon KDP, Gumroad). Supports multiple formats (markdown, DOCX, PDF), platform-specific optimization, metadata preparation, and pricing strategy.
+  type: publisher-submission
+  version: 1.0
+  project_types:
+    - technical-book
+  publisher: Self-Publishing (Leanpub/KDP/Gumroad)
+  sequence:
+    - agent: book-publisher
+      decides: platform-selection.md
+      requires: book-goals, target-audience
+      notes: "Choose self-publishing platform based on goals. Leanpub: Iterative publishing, markdown-based, developer audience. Amazon KDP: Wide distribution, royalties, print-on-demand. Gumroad: Direct sales, flexible pricing, no approval process. Can use multiple platforms simultaneously. SAVE OUTPUT: platform-strategy.md"
+
+    - agent: book-publisher
+      creates: formatted-manuscript/
+      requires: manuscript-chapters[], platform-selection
+      notes: "Format manuscript for target platform(s). Leanpub: Markdown with Leanpub extensions. KDP: Word .docx with styles, page breaks, TOC. Gumroad: PDF (professional typesetting). Optimize for platform requirements. SAVE OUTPUT: formatted-manuscript/{{platform}}/"
+
+    - agent: book-publisher
+      optimizes: images/
+      requires: book-images[]
+      notes: "Optimize images for each platform. Leanpub: PNG/JPEG, any DPI (responsive). KDP: 300 DPI minimum for print, RGB for Kindle. Gumroad: High-quality PDF-embedded images. Compress file sizes without quality loss. SAVE OUTPUT: optimized-images/{{platform}}/"
+
+    - agent: book-publisher
+      creates: metadata-package.md
+      requires: formatted-manuscript/
+      notes: "Create platform metadata. Title, subtitle, description (sales copy), author bio, keywords (SEO), categories, pricing, cover image requirements. Each platform has different metadata fields and character limits. SAVE OUTPUT: metadata/{{platform}}-metadata.yaml"
+
+    - agent: technical-editor
+      validates: platform-format.md
+      requires: formatted-manuscript/, metadata-package
+      notes: "Validate format meets platform requirements. Leanpub: Valid markdown, book.txt manifest, preview builds. KDP: Word .docx passes KDP validator, no formatting errors. Gumroad: PDF renders correctly, bookmarks work, links functional. SAVE OUTPUT: format-validation-{{platform}}.md"
+
+    - agent: book-publisher
+      creates: publication-package/
+      requires: format-validated
+      notes: "Finalize publication package for each platform. Leanpub: manuscript/ folder with chapters, images/, book.txt. KDP: .docx file, cover image, metadata. Gumroad: PDF file, cover image, sales page copy. SAVE OUTPUT: publication-packages/{{platform}}/"
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: Manuscript Ready] --> B[book-publisher: Choose Platform(s)]
+        B --> C{Which Platform?}
+        C -->|Leanpub| D[Format: Markdown]
+        C -->|Amazon KDP| E[Format: DOCX]
+        C -->|Gumroad| F[Format: PDF]
+        C -->|Multiple| G[Format: All Required]
+
+        D --> H[Optimize Images: Leanpub]
+        E --> I[Optimize Images: KDP Print/Kindle]
+        F --> J[Optimize Images: PDF]
+        G --> H
+        G --> I
+        G --> J
+
+        H --> K[Create Metadata: Leanpub]
+        I --> L[Create Metadata: KDP]
+        J --> M[Create Metadata: Gumroad]
+
+        K --> N[technical-editor: Validate Leanpub]
+        L --> O[technical-editor: Validate KDP]
+        M --> P[technical-editor: Validate Gumroad]
+
+        N --> Q{Valid?}
+        O --> R{Valid?}
+        P --> S{Valid?}
+
+        Q -->|No| T[Fix Leanpub Issues]
+        R -->|No| U[Fix KDP Issues]
+        S -->|No| V[Fix Gumroad Issues]
+
+        T --> N
+        U --> O
+        V --> P
+
+        Q -->|Yes| W[Finalize Leanpub Package]
+        R -->|Yes| X[Finalize KDP Package]
+        S -->|Yes| Y[Finalize Gumroad Package]
+
+        W --> Z[Publish]
+        X --> Z
+        Y --> Z
+
+        style Z fill:#90EE90
+        style B fill:#FFE4B5
+        style D fill:#ADD8E6
+        style E fill:#ADD8E6
+        style F fill:#ADD8E6
+    ```
+
+  platform_comparison:
+    leanpub:
+      format: "Markdown with Leanpub extensions"
+      distribution: "Leanpub marketplace only"
+      pricing: "Minimum/suggested/maximum flexible pricing"
+      royalties: "80% (minus 50¢ transaction fee)"
+      audience: "Developers, technical readers"
+      unique_features: "Iterative publishing, in-progress sales, variable pricing"
+      best_for: "Technical books, frequent updates, building in public"
+
+    amazon_kdp:
+      format: "Word .docx (Kindle), PDF or .docx (print)"
+      distribution: "Amazon worldwide, Kindle devices/apps"
+      pricing: "Fixed price or KDP Select (Kindle Unlimited)"
+      royalties: "35% or 70% (based on price), print cost deduction"
+      audience: "General public, wide reach"
+      unique_features: "Huge distribution, print-on-demand, KDP Select benefits"
+      best_for: "Maximum reach, print versions, broad audience"
+
+    gumroad:
+      format: "PDF (or any digital format)"
+      distribution: "Direct sales (your audience, your marketing)"
+      pricing: "Fully flexible, can include tiers, bundles"
+      royalties: "90% (10% Gumroad fee)"
+      audience: "Your existing audience, mailing list"
+      unique_features: "Direct relationship with buyers, flexible pricing, bundles"
+      best_for: "Building audience, premium pricing, bundled offers"
+
+  quality_gates:
+    format_requirements:
+      leanpub:
+        - Valid Leanpub-flavored markdown
+        - book.txt manifest lists all chapters
+        - Images in images/ folder
+        - Frontmatter and mainmatter sections
+        - Preview builds without errors
+        - Links and cross-references work
+
+      kdp:
+        - Word .docx with proper styles
+        - Table of contents auto-generated
+        - Page breaks before chapters
+        - Images embedded (not linked)
+        - Passes KDP file validator
+        - Cover image: 2560×1600 px minimum, JPEG/TIFF
+
+      gumroad:
+        - Professional PDF with bookmarks
+        - Embedded fonts (no missing font errors)
+        - Hyperlinks functional
+        - Table of contents bookmarks
+        - Optimized file size (<50 MB ideal)
+        - Cover page attractive
+
+    metadata_requirements:
+      all_platforms:
+        - Compelling title and subtitle
+        - Sales description (hook readers)
+        - Author bio (credibility)
+        - Keywords for discoverability
+        - Category selection
+        - Cover image (professional quality)
+        - Pricing strategy
+
+  handoff_prompts:
+    publisher_platform: "Platform selection complete. Target platform(s): {{platforms}}. Strategy: {{strategy}}. Leanpub for iterative updates, KDP for wide distribution, Gumroad for premium pricing. Formatting in progress for {{platform_count}} platform(s)."
+    publisher_format: "Formatting complete for {{platform}}. {{chapter_count}} chapters formatted. Leanpub: {{markdown_files}} markdown files. KDP: {{docx_status}}. Gumroad: {{pdf_status}}. Image optimization in progress."
+    publisher_images: "Image optimization complete. {{image_count}} images optimized for {{platform}}. Leanpub: Responsive sizing. KDP: 300 DPI print-ready. Gumroad: High-quality PDF-embedded. Metadata preparation in progress."
+    publisher_metadata: "Metadata package created for {{platform}}. Title: {{title}}. Subtitle: {{subtitle}}. Description: {{description_length}} characters. {{keyword_count}} keywords. Categories: {{categories}}. Pricing: {{pricing}}. Format validation in progress."
+    editor_validation: "Format validation complete for {{platform}}. Status: {{validation_status}}. {{issue_count}} issues found. Leanpub preview builds: {{leanpub_status}}. KDP validator: {{kdp_status}}. Gumroad PDF rendering: {{gumroad_status}}."
+    publisher_package: "Publication package finalized for {{platform}}. Location: publication-packages/{{platform}}/. Includes: {{package_contents}}. Ready for {{platform}} upload and publication."
+
+  platform_specific_details:
+    leanpub_workflow:
+      - Create manuscript/ folder structure
+      - Write book.txt manifest (lists chapter order)
+      - Use Leanpub markdown extensions (A>, T>, etc.)
+      - Preview book (builds PDF, EPUB, MOBI)
+      - Set minimum/suggested/maximum pricing
+      - Publish to Leanpub marketplace
+      - Update manuscript, click "Publish New Version"
+      - Readers get updates automatically
+
+    kdp_workflow:
+      - Format manuscript in Word with styles
+      - Generate automatic table of contents
+      - Upload .docx to KDP (Kindle) or PDF (print)
+      - Upload cover image (KDP Cover Creator or custom)
+      - Enter metadata (title, description, keywords)
+      - Set pricing (35% or 70% royalty)
+      - KDP Select (exclusive) or wide distribution
+      - Preview with Kindle Previewer
+      - Publish (24-48 hour review)
+      - Updates require re-uploading and re-publishing
+
+    gumroad_workflow:
+      - Create professional PDF (use Pandoc, LaTeX, InDesign)
+      - Optimize PDF file size
+      - Design sales page (Gumroad product page)
+      - Upload PDF to Gumroad
+      - Set pricing (single price or tiers)
+      - Create cover/preview images
+      - Write compelling product description
+      - Optional: Bundles (book + code + videos)
+      - Publish immediately (no approval process)
+      - Updates: Replace PDF file, notify customers
+
+  time_estimates:
+    platform_selection: "1-2 hours (research and strategy)"
+    leanpub_formatting: "4-6 hours (markdown conversion)"
+    kdp_formatting: "8-12 hours (Word styling, print formatting)"
+    gumroad_pdf_creation: "10-15 hours (professional typesetting)"
+    image_optimization: "2-4 hours (per platform)"
+    metadata_creation: "2-3 hours (per platform)"
+    format_validation: "2-3 hours (per platform)"
+    package_finalization: "1-2 hours (per platform)"
+    total_single_platform: "14-25 hours (Leanpub fastest)"
+    total_all_platforms: "30-50 hours"
+
+  best_practices:
+    - Start with Leanpub for fast market validation
+    - Add KDP for wider distribution after Leanpub success
+    - Use Gumroad for premium bundles (book + code + extras)
+    - Professional cover design matters (hire designer)
+    - Metadata keywords crucial for discoverability
+    - Price testing: Leanpub's variable pricing helps find sweet spot
+    - Build email list (own your audience)
+    - Iterative publishing on Leanpub builds momentum
+    - KDP Select benefits if exclusive is acceptable
+    - Gumroad bundles justify higher pricing
+
+  common_pitfalls:
+    - Poor cover design (readers judge books by covers)
+    - Weak sales description (first impression matters)
+    - Wrong pricing (too low devalues, too high reduces sales)
+    - No marketing plan (build audience before launch)
+    - Ignoring metadata/keywords (discoverability suffers)
+    - Format errors (unprofessional, bad reviews)
+    - No email list (can't reach buyers for updates)
+    - Platform exclusivity without strategy (limits options)
+    - No updates/revisions (technical books age quickly)
+    - Overlooking international pricing (currency matters)

@@ -1,17 +1,19 @@
 # <!-- Powered by BMAD™ Core -->
 name: bmad-technical-writing
-version: 0.2.6
+version: 0.3.0
 short-title: Technical Book Writing Studio
 description: >-
   Comprehensive AI-powered technical writing framework for technical book
-  authors, technical trainers, and documentation specialists. Provides 6
-  specialized agents, 8 core workflows with section-driven development (BMad story
+  authors, technical trainers, and documentation specialists. Provides 9
+  specialized agents, 12 core workflows with section-driven development (BMad story
   analog), and professional quality assurance tools for planning, writing,
   reviewing, and publishing technical books with code examples, tutorials, and
-  learning objectives. Includes 15 checklists for technical accuracy, security,
-  performance, publisher compliance, and accessibility. Section-driven workflows
-  enable incremental chapter development (2-5 pages per section) with parallel
-  development capabilities. Supports publishers like PacktPub, O'Reilly, Manning,
-  and self-publishing platforms.
+  learning objectives. Includes 18 checklists for technical accuracy, security,
+  performance, publisher compliance, accessibility, visual quality, and documentation.
+  15 professional templates cover book planning, chapter development, API reference,
+  diagrams, and publishing. Section-driven workflows enable incremental chapter
+  development (2-5 pages per section) with parallel development capabilities.
+  Supports publishers like PacktPub, O'Reilly, Manning, and self-publishing
+  platforms (Leanpub/KDP/Gumroad).
 author: Wes
 slashPrefix: bmad-tw

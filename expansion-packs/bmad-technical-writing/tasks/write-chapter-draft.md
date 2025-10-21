@@ -5,27 +5,13 @@
 ---
 
 task:
-  id: write-chapter-draft
-  name: Write Chapter Draft
-  description: Develop complete chapter manuscript from outline with introduction, main content, code examples, and exercises
-  persona_default: tutorial-architect
-  inputs:
-    - chapter-outline
-    - learning-objectives
-    - target-page-count
-  steps:
-    - Review chapter outline for structure and objectives
-    - Write compelling introduction (hook, context, overview, prerequisites)
-    - Draft main content sections (concept → tutorial → examples progression)
-    - Create and test all code examples inline
-    - Develop practice exercises with progressive difficulty
-    - Write chapter summary with key takeaways
-    - Add cross-references to other chapters and resources
-    - Include further reading references
-    - Verify all learning objectives are addressed
-    - Run execute-checklist.md with chapter-completeness-checklist.md
-    - Use template chapter-draft-tmpl.yaml with create-doc.md task
-  output: docs/chapters/chapter-{{chapter_number}}-draft.md
+id: write-chapter-draft
+name: Write Chapter Draft
+description: Develop complete chapter manuscript from outline with introduction, main content, code examples, and exercises
+persona_default: tutorial-architect
+inputs: - chapter-outline - learning-objectives - target-page-count
+steps: - Review chapter outline for structure and objectives - Write compelling introduction (hook, context, overview, prerequisites) - Draft main content sections (concept → tutorial → examples progression) - Create and test all code examples inline - Develop practice exercises with progressive difficulty - Write chapter summary with key takeaways - Add cross-references to other chapters and resources - Include further reading references - Verify all learning objectives are addressed - Run execute-checklist.md with chapter-completeness-checklist.md - Use template chapter-draft-tmpl.yaml with create-doc.md task
+output: docs/chapters/chapter-{{chapter_number}}-draft.md
 
 ---
 
@@ -64,29 +50,34 @@ Create a compelling chapter opening that hooks readers and sets expectations.
 **Introduction Components:**
 
 **Hook (1-2 paragraphs):**
+
 - Start with a real-world problem or relatable scenario
 - Make readers care about learning this content
 - Use questions, stories, or surprising facts
 - Connect to reader pain points or aspirations
 
 **Context (1-2 paragraphs):**
+
 - Explain why this topic matters
 - Industry relevance and use cases
 - How it fits in the bigger technical picture
 - Connection to previous chapters
 
 **Overview (1 paragraph):**
+
 - What will be covered in this chapter
 - High-level learning path
 - What readers will build or accomplish
 
 **Prerequisites:**
+
 - Previous chapters required
 - Assumed knowledge
 - Software/tools needed with versions
 - Estimated time commitment
 
 **Learning Objectives:**
+
 - 3-5 specific, measurable outcomes
 - Use action verbs (implement, analyze, create, debug)
 - Align with Bloom's taxonomy
@@ -100,12 +91,14 @@ For each major section (typically 3-5 sections per chapter):
 **Section Structure Pattern:**
 
 **a) Concept Introduction**
+
 - Explain the concept clearly and concisely
 - Use analogies or real-world comparisons where helpful
 - Define technical terms
 - Provide theoretical background without overwhelming
 
 **b) Tutorial/Walkthrough**
+
 - Step-by-step hands-on implementation
 - Clear, numbered steps
 - Imperative voice ("Create...", "Add...", "Run...")
@@ -113,6 +106,7 @@ For each major section (typically 3-5 sections per chapter):
 - Explain what each step accomplishes and why
 
 **c) Code Examples**
+
 - Complete, runnable code (not fragments unless explained)
 - Inline comments explaining key lines
 - Best practices demonstrated
@@ -120,6 +114,7 @@ For each major section (typically 3-5 sections per chapter):
 - Input/output examples showing expected results
 
 **d) Section Practice**
+
 - Mini-exercises reinforcing section concepts
 - Quick validation of understanding
 - Progressive difficulty within section
@@ -133,6 +128,7 @@ For each major section (typically 3-5 sections per chapter):
 Develop all code examples referenced in the chapter:
 
 **Code Quality Standards:**
+
 - All code must be tested and run successfully
 - Follow language-specific style guides
 - Include proper error handling
@@ -141,6 +137,7 @@ Develop all code examples referenced in the chapter:
 - Specify language version compatibility
 
 **Code Presentation:**
+
 - Use proper syntax highlighting (specify language)
 - Show complete context (imports, setup, etc.)
 - Provide expected output or results
@@ -148,6 +145,7 @@ Develop all code examples referenced in the chapter:
 - Reference code files in repository structure
 
 **Best Practices:**
+
 - Demonstrate current industry best practices
 - Avoid deprecated or outdated approaches
 - Show security-conscious coding
@@ -162,21 +160,25 @@ Develop all code examples referenced in the chapter:
 Create 4-6 end-of-chapter exercises with progressive difficulty:
 
 **Basic Exercises (2-3):**
+
 - Direct application of chapter concepts
 - Provide clear guidance and hints
 - Solutions or detailed hints included
 
 **Intermediate Exercises (1-2):**
+
 - Require combining multiple concepts
 - More independence required
 - Hints provided, full solutions optional
 
 **Challenge Exercise (1):**
+
 - Advanced application requiring creativity
 - Minimal guidance
 - Extension of chapter topics
 
 **For Each Exercise:**
+
 - Clear problem statement
 - Specific requirements
 - Estimated completion time
@@ -193,21 +195,25 @@ Create 4-6 end-of-chapter exercises with progressive difficulty:
 Conclude with effective summary (1-2 pages):
 
 **Key Takeaways:**
+
 - Bullet list of main concepts covered
 - Important terms and definitions
 - Core skills acquired
 
 **What You Accomplished:**
+
 - Concrete deliverables from this chapter
 - Skills checklist readers can verify
 - How this builds on previous learning
 
 **Looking Ahead:**
+
 - Preview of next chapter
 - How upcoming content will build on this foundation
 - Why the next topic matters
 
 **Further Reading (Optional):**
+
 - Official documentation links
 - Recommended articles or resources
 - Community resources
@@ -220,17 +226,20 @@ Conclude with effective summary (1-2 pages):
 Link to related content throughout the chapter:
 
 **Internal References:**
+
 - "See Chapter 2, Section 2.3 for database setup"
 - "We'll explore advanced patterns in Chapter 8"
 - "Review the glossary in Appendix A for term definitions"
 
 **External References:**
+
 - Official documentation (with URLs)
 - Standards or specifications (RFCs, PEPs, etc.)
 - Relevant research papers or articles
 - Community resources (forums, guides)
 
 **Best Practices:**
+
 - Be specific with chapter and section numbers
 - Test all URLs for validity
 - Prefer stable, official sources
@@ -241,18 +250,21 @@ Link to related content throughout the chapter:
 Provide curated resources for deeper learning:
 
 **Official Sources:**
+
 - Language documentation
 - Framework guides
 - API references
 - Release notes for features used
 
 **Community Resources:**
+
 - Well-regarded tutorials
 - Video explanations
 - Community forums or discussion
 - GitHub repositories
 
 **Quality Over Quantity:**
+
 - 5-8 truly helpful resources beats 20 mediocre ones
 - Annotate each resource with what it provides
 - Organize by topic or learning path
@@ -262,12 +274,14 @@ Provide curated resources for deeper learning:
 Ensure all promised learning outcomes are covered:
 
 **For Each Learning Objective:**
+
 - Where in the chapter is this taught?
 - Are there examples demonstrating this skill?
 - Can readers practice this skill in exercises?
 - Is there clear evidence of skill achievement?
 
 **Self-Check:**
+
 - Read each objective
 - Find the section(s) teaching it
 - Verify hands-on practice exists
@@ -282,6 +296,7 @@ Final quality check before review:
 **Run:** execute-checklist.md with chapter-completeness-checklist.md
 
 **Checklist Includes:**
+
 - All sections from outline present
 - Learning objectives fully addressed
 - Code examples tested and working

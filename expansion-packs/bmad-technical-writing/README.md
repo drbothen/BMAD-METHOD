@@ -8,12 +8,12 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 
 ### Key Features
 
-- 🤖 **6 Specialized Agents** - Complete writing team from planning to publication
-- 📝 **10 Core Tasks** - Full chapter development workflow
-- 📋 **15 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility
-- 🎯 **10 Professional Templates** - Book planning, chapter development, section planning, review, and publishing
+- 🤖 **9 Specialized Agents** - Complete writing team with specialists for API docs, visuals, and exercises
+- 📝 **15 Core Tasks** - Full chapter development, API documentation, diagram design, and publishing workflows
+- 📋 **18 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility, visual quality, glossary accuracy
+- 🎯 **15 Professional Templates** - Book planning, chapter development, API reference, diagrams, preface, appendix, and publishing
 - 📚 **6 Knowledge Bases** - Comprehensive publisher guidelines and technical writing standards
-- 🔄 **8 Core Workflows** - Section-driven development with complete orchestration from book planning to technical review
+- 🔄 **12 Core Workflows** - Section-driven development plus publisher-specific submission workflows (PacktPub, O'Reilly, Manning, Self-Publishing)
 
 ## ✍️ Included Agents
 
@@ -28,6 +28,12 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 4. **Technical Reviewer** 🔍 - Technical accuracy verification, security audits, best practices validation
 5. **Technical Editor** ✍️ - Clarity improvement, style consistency, publisher formatting, accessibility
 6. **Book Publisher** 📦 - Publication preparation, manuscript packaging, publisher-specific formatting
+
+### Specialist Team (Sprint 3)
+
+7. **API Documenter** 📚 - API reference documentation, technical specifications, glossaries, and appendices
+8. **Screenshot Specialist** 📸 - Visual documentation, technical diagrams, screenshot planning, and annotations
+9. **Exercise Creator** 🏋️ - Practice problems, assessments, exercises aligned with learning objectives
 
 ## 🚀 Installation
 
@@ -59,6 +65,9 @@ npx bmad-method install
 /bmad-tw:technical-reviewer
 /bmad-tw:technical-editor
 /bmad-tw:book-publisher
+/bmad-tw:api-documenter
+/bmad-tw:screenshot-specialist
+/bmad-tw:exercise-creator
 ```
 
 ### Core Workflows (Sprint 2, 2.5, 2.6)
@@ -154,7 +163,7 @@ _Traditional Approach (Original, still supported):_
 
 ## 📋 Key Components
 
-### Templates (10 Total)
+### Templates (15 Total)
 
 **Sprint 1 (Planning):**
 
@@ -175,7 +184,15 @@ _Traditional Approach (Original, still supported):_
 
 - `section-plan-tmpl.yaml` - Section plan with acceptance criteria (BMad story analog)
 
-### Tasks (10 Total)
+**Sprint 3 (Specialist Templates):**
+
+- `learning-objectives-tmpl.yaml` - Learning objective definition with Bloom's Taxonomy
+- `api-reference-tmpl.yaml` - API documentation structure with parameters and examples
+- `diagram-spec-tmpl.yaml` - Technical diagram specifications
+- `preface-tmpl.yaml` - Book preface/foreword structure
+- `appendix-tmpl.yaml` - Appendix content structure
+
+### Tasks (15 Total)
 
 **Sprint 1 (Planning):**
 
@@ -193,7 +210,15 @@ _Traditional Approach (Original, still supported):_
 - `develop-tutorial.md` - Hands-on tutorial creation workflow
 - `design-exercises.md` - Exercise creation workflow
 
-### Checklists (15 Total)
+**Sprint 3 (Specialist Tasks):**
+
+- `generate-api-docs.md` - API reference documentation workflow
+- `create-diagram-spec.md` - Diagram design workflow with accessibility
+- `write-introduction.md` - Chapter introduction creation with hooks and objectives
+- `write-summary.md` - Chapter summary creation with reinforcement
+- `build-glossary.md` - Glossary compilation workflow
+
+### Checklists (18 Total)
 
 **Sprint 1 (Quality Foundations):**
 
@@ -216,7 +241,13 @@ _Traditional Approach (Original, still supported):_
 - Manning MEAP checklist
 - Accessibility checklist
 
-### Workflows (8 Core Workflows)
+**Sprint 3 (Visual & Documentation Quality):**
+
+- Diagram clarity checklist
+- Screenshot quality checklist
+- Glossary accuracy checklist
+
+### Workflows (12 Core Workflows)
 
 **Sprint 2:**
 
@@ -234,6 +265,13 @@ _Traditional Approach (Original, still supported):_
 - `section-planning-workflow.yaml` - Break chapter into sections (BMad epic → stories analog)
 - `section-development-workflow.yaml` - Write one section (BMad story development analog)
 - `chapter-assembly-workflow.yaml` - Merge sections into chapter (BMad sprint review analog)
+
+**Sprint 3 (Publisher-Specific Workflows):**
+
+- `packtpub-submission-workflow.yaml` - PacktPub submission preparation workflow
+- `oreilly-submission-workflow.yaml` - O'Reilly submission preparation workflow
+- `manning-meap-workflow.yaml` - Manning MEAP chapter preparation workflow
+- `self-publishing-workflow.yaml` - Self-publishing preparation (Leanpub/KDP/Gumroad)
 
 ### Knowledge Bases (6 Total)
 
@@ -295,9 +333,9 @@ Special thanks to Brian (BMad) for creating the BMad Method framework.
 
 ---
 
-**Version:** 0.2.6 (Sprint 2.6 - Section-Driven Development)
+**Version:** 0.3.0 (Sprint 3 - Specialist Agents & Publisher Workflows Complete)
 **Compatible with:** BMad Method v4.0+
-**Last Updated:** 2024
+**Last Updated:** 2025
 
 ## ✅ Sprint Status
 
@@ -335,6 +373,18 @@ Special thanks to Brian (BMad) for creating the BMad Method framework.
 - ✅ Parallel section development supported
 - ✅ Backward compatible: Traditional full-chapter approach still supported
 - ✅ Version bumped to 0.2.6
+
+**Sprint 3 (Complete):** Specialist agents and publisher workflows
+
+- ✅ 3 specialist agents: API Documenter, Screenshot Specialist, Exercise Creator
+- ✅ 5 specialist templates: Learning Objectives, API Reference, Diagram Spec, Preface, Appendix
+- ✅ 5 specialist tasks: Generate API Docs, Create Diagram Spec, Write Introduction, Write Summary, Build Glossary
+- ✅ 4 publisher-specific submission workflows: PacktPub, O'Reilly, Manning MEAP, Self-Publishing
+- ✅ 3 visual/documentation checklists: Diagram Clarity, Screenshot Quality, Glossary Accuracy
+- ✅ Total: 9 agents, 15 templates, 15 tasks, 12 workflows, 18 checklists
+- ✅ Agent team bundle for web UI (technical-book-team.yaml)
+- ✅ Complete technical writing system from planning through publication
+- ✅ Version bumped to 0.3.0 (beta - specialist agents complete)
 
 ## 📚 Section-Driven Development Approach (NEW in Sprint 2.6)
 
@@ -383,10 +433,12 @@ The section-driven approach mirrors BMad's story-driven development workflow, en
 
 ## 🚧 Roadmap
 
-**Sprint 3** (Planned):
+**Future Enhancements** (Post-v1.0):
 
-- API Documenter agent
-- Screenshot Specialist agent
-- Additional publisher-specific agents
-- Video tutorial support
-- Internationalization support
+- Video tutorial support and transcription tools
+- Internationalization and translation workflows
+- Learning Path Designer agent (multi-book series planning)
+- Sample Code Maintainer agent (code repository management)
+- Version Manager agent (update tracking across versions)
+- Enhanced brownfield book update workflows
+- Audio/podcast supplement tools

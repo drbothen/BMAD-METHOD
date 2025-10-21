@@ -55,7 +55,7 @@ commands:
   - '*prepare-proposal - Use book-proposal-tmpl to create publisher proposal'
   - '*package-manuscript - Organize and format complete manuscript for submission'
   - '*format-for-packtpub - Apply PacktPub-specific formatting and requirements'
-  - '*format-for-oreilly - Apply O''Reilly-specific formatting (AsciiDoc, Chicago style)'
+  - "*format-for-oreilly - Apply O'Reilly-specific formatting (AsciiDoc, Chicago style)"
   - '*prepare-meap - Format chapter for Manning Early Access Program'
   - '*self-publish-prep - Prepare manuscript for self-publishing platforms'
   - '*create-index - Generate book index from marked terms'

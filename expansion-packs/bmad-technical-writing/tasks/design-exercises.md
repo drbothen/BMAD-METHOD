@@ -5,28 +5,13 @@
 ---
 
 task:
-  id: design-exercises
-  name: Design Exercises
-  description: Create practice exercises with progressive difficulty, hints, and solution approaches
-  persona_default: instructional-designer
-  inputs:
-    - chapter-number
-    - learning-objectives
-    - difficulty-range
-  steps:
-    - Identify learning objectives to assess
-    - Determine appropriate difficulty levels (basic to advanced)
-    - Create 4-6 exercises per chapter with progressive difficulty
-    - Progress from basic application to challenging problems
-    - Write clear instructions for each exercise
-    - Develop solution approaches (not full solutions)
-    - Add progressive hints for learners
-    - Create extension challenges for advanced students
-    - Estimate completion time for each exercise
-    - Validate exercises are solvable and appropriate
-    - Run execute-checklist.md with exercise-difficulty-checklist.md
-    - Use template exercise-set-tmpl.yaml with create-doc.md
-  output: exercises/chapter-{{chapter_number}}-exercises.md
+id: design-exercises
+name: Design Exercises
+description: Create practice exercises with progressive difficulty, hints, and solution approaches
+persona_default: instructional-designer
+inputs: - chapter-number - learning-objectives - difficulty-range
+steps: - Identify learning objectives to assess - Determine appropriate difficulty levels (basic to advanced) - Create 4-6 exercises per chapter with progressive difficulty - Progress from basic application to challenging problems - Write clear instructions for each exercise - Develop solution approaches (not full solutions) - Add progressive hints for learners - Create extension challenges for advanced students - Estimate completion time for each exercise - Validate exercises are solvable and appropriate - Run execute-checklist.md with exercise-difficulty-checklist.md - Use template exercise-set-tmpl.yaml with create-doc.md
+output: exercises/chapter-{{chapter_number}}-exercises.md
 
 ---
 
@@ -48,11 +33,13 @@ Create practice exercises that reinforce learning, assess comprehension, and bui
 Map exercises to specific learning goals:
 
 **For Each Learning Objective:**
+
 - Which exercises will assess this?
 - What demonstrates mastery?
 - How can students practice this skill?
 
 **Example Mapping:**
+
 ```
 Objective: "Implement JWT authentication"
 → Exercise 2: Build login endpoint (basic)
@@ -61,6 +48,7 @@ Objective: "Implement JWT authentication"
 ```
 
 **Coverage:**
+
 - Each objective addressed by at least one exercise
 - Core objectives get multiple exercises
 - Progressive difficulty across related exercises
@@ -70,18 +58,21 @@ Objective: "Implement JWT authentication"
 Plan difficulty range appropriate for chapter:
 
 **Basic (⭐):**
+
 - Direct application of chapter examples
 - Clear guidance and hints
 - Builds confidence
 - 2-3 exercises per chapter
 
 **Intermediate (⭐⭐):**
+
 - Combines multiple concepts
 - Requires problem-solving
 - Less hand-holding
 - 1-2 exercises per chapter
 
 **Advanced (⭐⭐⭐):**
+
 - Creative application
 - Minimal guidance
 - Extension of concepts
@@ -96,19 +87,22 @@ Design exercise sequence:
 **Exercise Structure:**
 
 **Exercise Header:**
+
 - Number and title
 - Difficulty indicator (⭐ ⭐⭐ ⭐⭐⭐)
 - Estimated time
 - Learning objective addressed
 
 **Problem Description:**
+
 - Clear problem statement
 - Specific requirements (numbered list)
 - Input/output examples
 - Success criteria
 
 **Example:**
-```
+
+````
 ### Exercise 3: User Input Validation ⭐⭐
 **Estimated Time:** 20 minutes
 **Learning Objective:** Apply regex for validation
@@ -129,13 +123,15 @@ validate_user_input("user123", "user@example.com", "Pass123!")
 
 validate_user_input("ab", "invalid", "weak")
 # Returns: {"username": False, "email": False, "password": False, "valid": False}
-```
+````
 
 **Success Criteria:**
+
 - All test cases pass
 - Clear error messages for invalid inputs
 - Uses regex for email validation
-```
+
+````
 
 ### 4. Write Clear Instructions
 
@@ -170,19 +166,21 @@ def validate_user_input(username, email, password):
     """
     # Your code here
     pass
-```
+````
 
 ### 5. Develop Solution Approaches
 
 Provide guidance without giving away the answer:
 
 **Solution Approach (Not Full Code):**
+
 - High-level algorithm
 - Key concepts to apply
 - Recommended data structures
 - Common pitfalls to avoid
 
 **Example:**
+
 ```
 **Solution Approach:**
 1. Create validation functions for each field type
@@ -209,11 +207,13 @@ Provide guidance without giving away the answer:
 Create hints that reveal information gradually:
 
 **Hint Structure:**
+
 - Hint 1: General approach or concept
 - Hint 2: More specific technique
 - Hint 3: Nearly complete solution approach
 
 **Example:**
+
 ```
 **Hints:**
 1. Break the problem into three separate validation functions
@@ -224,6 +224,7 @@ Create hints that reveal information gradually:
 ```
 
 **Good Hints:**
+
 - Guide thinking, don't solve the problem
 - Progressive reveal (start general)
 - Specific to common sticking points
@@ -234,13 +235,15 @@ Create hints that reveal information gradually:
 Add optional advanced problems:
 
 **Extension Characteristics:**
+
 - Builds on basic exercise
 - Requires creative thinking
 - No hints provided
 - Tests deeper mastery
 
 **Example Extensions:**
-```
+
+````
 **Extension Challenges:**
 
 **Challenge 1: Password Strength Meter**
@@ -257,7 +260,8 @@ rules = {
     "password": {"min": 12, "require_special": True, "require_number": True}
 }
 validate_with_rules(data, rules)
-```
+````
+
 ```
 
 **Purpose:** Challenges extend learning for students who want more practice.
@@ -283,12 +287,15 @@ Provide realistic time estimates:
 
 **State in Exercise:**
 ```
+
 **Estimated Time:** 25 minutes
 
 This includes:
+
 - Understanding requirements: 5 min
 - Implementation: 15 min
 - Testing: 5 min
+
 ```
 
 ### 9. Validate Exercises Are Solvable
@@ -381,3 +388,4 @@ After designing exercises:
 4. Iterate based on feedback
 5. Update hints if students commonly stuck
 6. Consider creating video solutions for complex exercises
+```

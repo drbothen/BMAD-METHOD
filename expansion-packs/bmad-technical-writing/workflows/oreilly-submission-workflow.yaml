@@ -1,0 +1,183 @@
+workflow:
+  id: oreilly-submission-workflow
+  name: Prepare O'Reilly Submission
+  description: Package manuscript and code for O'Reilly submission. Ensures AsciiDoc or DocBook format requirements, Chicago Manual of Style adherence, Atlas platform compatibility, and code repository meet O'Reilly standards.
+  type: publisher-submission
+  version: 1.0
+  project_types:
+    - technical-book
+  publisher: O'Reilly
+  sequence:
+    - agent: technical-editor
+      validates: manuscript-format.md
+      requires: manuscript-chapters[]
+      notes: "Verify manuscript meets O'Reilly format requirements using oreilly-format-checklist. Check for AsciiDoc/DocBook structure if required, chapter organization, code tag conventions, admonitions (NOTE, TIP, WARNING, IMPORTANT, CAUTION), Chicago Manual of Style compliance. SAVE OUTPUT: format-validation-report.md"
+
+    - agent: book-publisher
+      creates: asciidoc-chapters/ (if needed)
+      requires: manuscript-markdown-chapters[]
+      notes: "If manuscript is in markdown, convert to AsciiDoc for O'Reilly Atlas platform. Ensure proper heading levels (=, ==, ===), code blocks with callouts, cross-references, index entries, admonition syntax. Validate conversion accuracy. SAVE OUTPUT: asciidoc-chapters/ (or note if already in AsciiDoc)"
+
+    - agent: technical-editor
+      validates: chicago-style.md
+      requires: manuscript-chapters[]
+      notes: "Apply Chicago Manual of Style guidelines (O'Reilly standard). Check: serial comma usage, number style (spell out one through nine), capitalization in headings, punctuation in lists, quotation marks vs. italics for terms, abbreviation consistency. SAVE OUTPUT: style-validation-report.md"
+
+    - agent: technical-editor
+      validates: code-tags.md
+      requires: manuscript-chapters[]
+      notes: "Verify all code blocks use proper O'Reilly tagging. Ensure: language identifiers correct, callouts numbered consistently, code annotations clear, syntax highlighting compatible, example titles descriptive. Check inline code uses proper markup. SAVE OUTPUT: code-tag-validation.md"
+
+    - agent: book-publisher
+      creates: oreilly-submission-package/
+      requires: format-validated, style-validated
+      notes: "Prepare submission package for O'Reilly Atlas or editorial team. Structure: /chapters/ (AsciiDoc or DocBook files), /images/ (vector formats preferred: SVG, PDF), /code/ (organized by chapter), book.asciidoc (master file), atlas.json (metadata), README.md. SAVE OUTPUT: submission-package/oreilly-submission/"
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: Manuscript Ready] --> B[technical-editor: Verify Format]
+        B --> C{Format Valid?}
+        C -->|No| D[Fix Format Issues]
+        D --> B
+        C -->|Yes| E{AsciiDoc Required?}
+        E -->|Yes, Convert| F[book-publisher: Convert to AsciiDoc]
+        E -->|Already AsciiDoc| G[technical-editor: Apply Chicago Style]
+        F --> G
+        G --> H{Style Valid?}
+        H -->|No| I[Fix Style Issues]
+        I --> G
+        H -->|Yes| J[technical-editor: Verify Code Tags]
+        J --> K{Tags Valid?}
+        K -->|No| L[Fix Code Tags]
+        L --> J
+        K -->|Yes| M[book-publisher: Prepare Package]
+        M --> N[Submit to O'Reilly]
+
+        style N fill:#90EE90
+        style B fill:#FFE4B5
+        style F fill:#ADD8E6
+        style G fill:#FFE4B5
+        style J fill:#FFE4B5
+        style M fill:#F0E68C
+    ```
+
+  quality_gates:
+    format_requirements:
+      - AsciiDoc or DocBook format (Atlas compatible)
+      - Proper heading hierarchy (=, ==, ===, ====)
+      - Admonitions use correct syntax (NOTE, TIP, WARNING, etc.)
+      - Cross-references formatted correctly
+      - Index entries marked
+      - Figure captions descriptive
+      - Checklist: oreilly-format-checklist.md
+
+    style_requirements:
+      - Chicago Manual of Style compliance
+      - Serial comma (Oxford comma) used consistently
+      - Numbers one-nine spelled out, 10+ as numerals
+      - Heading capitalization (sentence case)
+      - Quotation marks and italics used appropriately
+      - Consistent abbreviation style
+      - Checklist: chicago-style-checklist.md (if exists)
+
+    code_requirements:
+      - Language identifiers on all code blocks
+      - Callouts numbered consistently [1], [2], etc.
+      - Code annotations explain non-obvious lines
+      - Inline code uses backticks or proper markup
+      - Long lines handled appropriately
+      - Syntax highlighting compatible
+
+  handoff_prompts:
+    editor_format_check: "Format validation complete. {{chapter_count}} chapters checked. Format: {{format_type}}. {{issue_count}} formatting issues identified. Corrections needed before proceeding."
+    publisher_conversion: "{{chapter_count}} markdown chapters converted to AsciiDoc. Verified heading levels, code blocks, cross-references, and admonitions. Ready for Chicago style check."
+    editor_style_check: "Chicago Manual of Style validation complete. Reviewed {{chapter_count}} chapters. {{serial_comma_fixes}} serial comma fixes, {{number_style_fixes}} number style fixes, {{other_fixes}} other style corrections applied. Code tag validation in progress."
+    editor_code_tags: "Code tag validation complete. {{code_block_count}} code blocks verified. All have language identifiers and proper callouts. {{inline_code_count}} inline code elements checked. Ready for package preparation."
+    publisher_package: "O'Reilly submission package prepared. Structure: chapters/ ({{chapter_count}} AsciiDoc files), images/ ({{image_count}} SVG/PDF), code/ (tested examples), atlas.json (metadata). Package location: submission-package/oreilly-submission/"
+    ready_for_submission: "O'Reilly submission complete. All quality gates passed. Format: AsciiDoc, Style: Chicago Manual, Platform: Atlas-compatible. Ready for editorial review."
+
+  oreilly_specific_requirements:
+    file_formats:
+      - AsciiDoc preferred (Atlas platform)
+      - DocBook XML accepted
+      - Markdown convertible to AsciiDoc
+      - Master file: book.asciidoc
+
+    heading_style:
+      - Level 0: = Chapter Title
+      - Level 1: == Section
+      - Level 2: === Subsection
+      - Level 3: ==== Subsubsection
+      - Sentence case capitalization
+
+    admonitions:
+      - NOTE: Additional information
+      - TIP: Helpful suggestion
+      - WARNING: Potential problem
+      - "IMPORTANT: Critical information"
+      - "CAUTION: Proceed carefully"
+      - "Syntax: [NOTE] followed by ==== on new lines with content"
+
+    code_blocks:
+      - "Language identifier: [source,python]"
+      - "Callouts: <1>, <2> in code with explanations below"
+      - "Example title: .Filename or description"
+      - "Syntax: [[example-id]] for cross-reference"
+
+    images:
+      - Vector formats preferred: SVG, PDF
+      - Raster: PNG (300 DPI minimum)
+      - Filename: descriptive-name.svg
+      - Caption: .Figure caption text
+      - Alt text for accessibility
+
+    chicago_style_highlights:
+      - "Serial comma: apples, oranges, and bananas"
+      - "Numbers: one through nine, 10 and above"
+      - "Headings: Sentence case, not title case"
+      - "Quotes: double quotes for dialogue/direct quotes"
+      - "Italics: Book titles, emphasis, new terms on first use"
+      - "Abbreviations: Spell out on first use with acronym in parentheses"
+
+  time_estimates:
+    format_validation: "3-5 hours (depends on chapter count)"
+    asciidoc_conversion: "6-10 hours (if converting from markdown)"
+    chicago_style_check: "4-6 hours (manual review required)"
+    code_tag_verification: "2-4 hours"
+    package_preparation: "2-3 hours"
+    total_time_asciidoc_already: "11-18 hours"
+    total_time_conversion_needed: "17-28 hours"
+
+  best_practices:
+    - Learn AsciiDoc syntax early if starting in markdown
+    - Use O'Reilly's style guide and AsciiDoc guide
+    - Chicago Manual of Style is non-negotiable for O'Reilly
+    - Vector images (SVG) scale better than raster (PNG)
+    - Atlas platform has specific requirements - test early
+    - Code callouts should explain non-obvious lines
+    - Index entries improve discoverability
+    - Cross-references link related sections
+    - Consistent terminology throughout manuscript
+    - Test AsciiDoc rendering in Atlas preview
+
+  common_pitfalls:
+    - Using title case instead of sentence case in headings
+    - Missing serial commas (required by Chicago style)
+    - Inconsistent number style (mixing "5" and "five")
+    - Code blocks without language identifiers
+    - Raster images instead of vector (poor print quality)
+    - Incorrect admonition syntax (breaks Atlas rendering)
+    - Missing index entries (reduces book usability)
+    - Broken cross-references
+    - Hardcoded file paths in code examples
+    - Inconsistent abbreviation usage
+
+  atlas_platform_notes:
+    - O'Reilly uses Atlas for book production
+    - Atlas requires valid AsciiDoc or DocBook
+    - Preview your content in Atlas before final submission
+    - atlas.json contains book metadata (title, authors, ISBN)
+    - Images referenced must exist in images/ folder
+    - Code examples can link to GitHub repository
+    - Atlas generates multiple formats (PDF, EPUB, MOBI, HTML)

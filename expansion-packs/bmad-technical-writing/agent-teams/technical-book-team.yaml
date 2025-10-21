@@ -1,0 +1,28 @@
+# <!-- Powered by BMAD™ Core -->
+bundle:
+  name: Technical Book Writing Team
+  icon: 📚
+  description: Complete technical writing team for programming books, tutorials, and training materials with all 9 specialized agents
+agents:
+  - instructional-designer
+  - tutorial-architect
+  - code-curator
+  - technical-reviewer
+  - technical-editor
+  - book-publisher
+  - api-documenter
+  - screenshot-specialist
+  - exercise-creator
+workflows:
+  - book-planning-workflow
+  - chapter-development-workflow
+  - tutorial-creation-workflow
+  - code-example-workflow
+  - technical-review-workflow
+  - section-planning-workflow
+  - section-development-workflow
+  - chapter-assembly-workflow
+  - packtpub-submission-workflow
+  - oreilly-submission-workflow
+  - manning-meap-workflow
+  - self-publishing-workflow

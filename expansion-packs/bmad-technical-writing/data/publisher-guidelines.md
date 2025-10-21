@@ -7,11 +7,13 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 ### Submission Requirements
 
 **Format:**
+
 - Microsoft Word (.docx) or Markdown per author agreement
 - SharePoint-based submission system
 - Chapter-by-chapter delivery typical
 
 **Chapter Structure:**
+
 - Chapter length: 20-30 pages typical
 - Learning objectives at beginning
 - Introduction section
@@ -20,6 +22,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Further reading or references
 
 **Style Guidelines:**
+
 - Chicago Manual of Style (CMS) 16th or 17th edition
 - Second person ("you") perspective
 - Active voice preferred
@@ -27,6 +30,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - British or American English (specify in contract)
 
 **Code Examples:**
+
 - All code must be tested and functional
 - Syntax highlighting specified
 - Comments explain key concepts
@@ -34,6 +38,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Version numbers for all dependencies
 
 **Visual Elements:**
+
 - Screenshots in PNG format (300 DPI minimum)
 - Figures numbered sequentially (Figure 1.1, 1.2, etc.)
 - Captions provided for all images
@@ -41,6 +46,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Author typically provides raw images; publisher may reformat
 
 **Timeline:**
+
 - Typical book: 6-12 months from contract to publication
 - Chapter milestones set by publisher
 - Technical review built into timeline
@@ -56,6 +62,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Beta reader feedback incorporated
 
 ### Resources
+
 - PacktPub Author Hub: https://www.packtpub.com/authors
 - Author guidelines provided in contract package
 - Technical editor assigned to each book
@@ -67,12 +74,14 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 ### Submission Requirements
 
 **Format:**
+
 - AsciiDoc or DocBook XML (Atlas platform)
 - Git-based workflow typical
 - Continuous integration with Atlas build system
 - HTML, PDF, and EPUB outputs generated automatically
 
 **Style Guidelines:**
+
 - Chicago Manual of Style (CMS)
 - O'Reilly Word List for technical terms
 - Title case for headings
@@ -80,6 +89,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Technical precision valued
 
 **Code Examples:**
+
 - Pygments language tags for syntax highlighting
 - Code callouts numbered
 - Tabs converted to spaces (4 spaces typical)
@@ -87,6 +97,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Code tested thoroughly
 
 **Structure Requirements:**
+
 - Preface explains audience, prerequisites, conventions
 - Chapter hierarchy: chapter → sect1 → sect2 → sect3
 - Cross-references use proper xref syntax
@@ -94,6 +105,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Appendices for reference material
 
 **Visual Elements:**
+
 - Vector formats preferred (EPS, PDF)
 - PNG for screenshots (high resolution)
 - Figure captions as complete sentences
@@ -101,6 +113,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Diagrams professionally rendered
 
 **Review Process:**
+
 - Technical review by external experts
 - Developmental editing
 - Copy editing
@@ -117,6 +130,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Future-proof content when possible
 
 ### Resources
+
 - O'Reilly Atlas Platform: https://atlas.oreilly.com/
 - O'Reilly Author Resources: https://www.oreilly.com/work-with-us.html
 - Style guide provided to authors
@@ -129,6 +143,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 ### Manning Early Access Program (MEAP)
 
 **MEAP Overview:**
+
 - Chapters published as completed
 - Reader feedback during writing process
 - Community engagement valued
@@ -136,12 +151,14 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Chapters must stand alone (readers may not have earlier chapters)
 
 **Format:**
+
 - Microsoft Word or Markdown accepted
 - Manning's production team handles final formatting
 - Author voice strongly encouraged
 - Conversational tone valued
 
 **Style Guidelines:**
+
 - Author personality and experience highlighted
 - "We" or "I" voice appropriate
 - Engaging, story-driven approach
@@ -149,6 +166,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Humor and personality welcomed (within professional bounds)
 
 **Chapter Structure:**
+
 - Context provided for standalone reading
 - Chapters in this chapter / Chapter summary
 - Margin notes or callouts for key points
@@ -156,6 +174,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Questions to engage readers
 
 **Code Examples:**
+
 - GitHub repository required
 - Code organized by chapter
 - README explains how to use examples
@@ -163,6 +182,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Version numbers specified
 
 **Visual Elements:**
+
 - Diagrams enhance understanding
 - Screenshots annotated helpfully
 - Manning's art team may redraw diagrams
@@ -179,6 +199,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Build community around your book
 
 ### Resources
+
 - Manning Author Center: https://www.manning.com/write-for-us
 - MEAP author guidelines in contract
 - Developmental editor works closely with author
@@ -191,12 +212,14 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 ### Amazon Kindle Direct Publishing (KDP)
 
 **Format:**
+
 - EPUB, MOBI, or Word formats
 - Kindle Create tool available
 - Preview tools for different devices
 - DRM optional
 
 **Requirements:**
+
 - Cover design (author provides or use KDP tools)
 - ISBN (Amazon provides free ASIN, or use your own ISBN)
 - Book description and keywords
@@ -204,6 +227,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Pricing set by author (royalty tiers: 35% or 70%)
 
 **Best Practices:**
+
 - Mobile-friendly formatting essential
 - Test on multiple Kindle devices/apps
 - Table of contents with links
@@ -213,12 +237,14 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 ### Leanpub
 
 **Format:**
+
 - Markdown or direct writing in Leanpub editor
 - Git integration available
 - Automatic PDF, EPUB, MOBI generation
 - Variable pricing model
 
 **Unique Features:**
+
 - Publish while writing (MVP approach)
 - Reader feedback during writing
 - Bundle options (book + code + videos)
@@ -226,6 +252,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Coupons and promotional tools
 
 **Best Practices:**
+
 - Minimum viable book to start (even a few chapters)
 - Iterate based on reader feedback
 - Keep readers updated with new content
@@ -233,6 +260,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Market directly to your audience
 
 ### Resources
+
 - KDP: https://kdp.amazon.com
 - Leanpub: https://leanpub.com
 - Gumroad for technical books: https://gumroad.com
@@ -243,23 +271,27 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 ## General Publisher Considerations
 
 ### Royalty Structures
+
 - Traditional publishers: 8-15% of net (after retailer cut)
 - Self-publishing: 35-70% of gross (varies by platform)
 - Advance payments vary widely (technical books: $5K-$25K typical, can be much higher for established authors)
 
 ### Rights and Licensing
+
 - Traditional: publisher typically gets exclusive rights for term
 - Self-publishing: you retain all rights
 - Code licensing: often separate from book copyright
 - Translation rights negotiable
 
 ### Marketing and Promotion
+
 - Traditional publisher provides some marketing, author expected to promote
 - Self-publishing: 100% author responsibility
 - Author platform important for both (blog, social media, speaking)
 - Technical community engagement valuable
 
 ### Timeline Considerations
+
 - Traditional: 6-18 months from contract to publication
 - Self-publishing: author controls timeline (can publish immediately or over time)
 - Both: writing typically takes 6-12 months for comprehensive book
@@ -269,6 +301,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 ## Choosing the Right Publisher
 
 ### Traditional Publisher When:
+
 - You want professional editing and production
 - Marketing support desired
 - Credibility and imprint important
@@ -277,6 +310,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Don't want to manage production details
 
 ### Self-Publishing When:
+
 - You want full control
 - Higher per-book royalty important
 - Quick time to market needed
@@ -285,6 +319,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Willing to handle production and marketing
 
 ### Hybrid Approach:
+
 - Self-publish first to build audience
 - Traditional deal for expanded/updated version
 - Or reverse: traditional first, then self-publish later editions
@@ -295,6 +330,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 ## Submission Best Practices (All Publishers)
 
 ### Proposal Elements
+
 - Book concept and unique value
 - Target audience definition
 - Competitive analysis
@@ -305,6 +341,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Timeline estimate
 
 ### Professional Presentation
+
 - Well-formatted proposal
 - Error-free writing
 - Realistic timeline
@@ -312,6 +349,7 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 - Clear differentiators from competing books
 
 ### Building Relationships
+
 - Network at conferences
 - Engage with publisher's community
 - Follow editors on social media
@@ -323,22 +361,26 @@ Comprehensive publisher-specific requirements for technical book authors. This k
 ## Resources and References
 
 ### Style Guides
+
 - Chicago Manual of Style: https://www.chicagomanualofstyle.org/
 - Microsoft Writing Style Guide: https://docs.microsoft.com/en-us/style-guide/
 - Google Developer Documentation Style Guide: https://developers.google.com/style
 
 ### Author Communities
+
 - Write the Docs: https://www.writethedocs.org/
 - Technical Writer HQ: https://technicalwriterhq.com/
 - Author platforms (varies by publisher)
 
 ### Tools
+
 - Atlas (O'Reilly): https://atlas.oreilly.com/
 - Leanpub: https://leanpub.com
 - Kindle Create: https://kdp.amazon.com/en_US/help/topic/G202131100
 - AsciiDoc: https://asciidoc.org/
 
 ### Legal and Rights
+
 - Authors Guild: https://www.authorsguild.org/
 - Contract review resources
 - Rights management tools

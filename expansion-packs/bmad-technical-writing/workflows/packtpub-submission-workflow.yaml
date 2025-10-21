@@ -1,0 +1,159 @@
+workflow:
+  id: packtpub-submission-workflow
+  name: Prepare PacktPub Submission
+  description: Package manuscript and code for PacktPub submission. Ensures SharePoint format requirements, learning objectives, hands-on project structure, and code repository meet PacktPub standards.
+  type: publisher-submission
+  version: 1.0
+  project_types:
+    - technical-book
+  publisher: PacktPub
+  sequence:
+    - agent: technical-editor
+      validates: manuscript-format.md
+      requires: manuscript-chapters[]
+      notes: "Verify manuscript meets PacktPub SharePoint format requirements using packtpub-submission-checklist. Check chapter structure (What You'll Learn, Prerequisites, sections, Summary, Q&A), markdown formatting, code block style, callout boxes, screenshot captions. SAVE OUTPUT: format-validation-report.md"
+
+    - agent: code-curator
+      validates: code-repository
+      requires: chapter-code[]
+      notes: "Validate all code examples are tested and working. Ensure repository structure follows PacktPub standards: chapter folders, README per chapter, working code for all examples, tests passing, version compatibility verified. Run code-testing-checklist. SAVE OUTPUT: code-validation-report.md"
+
+    - agent: instructional-designer
+      creates: learning-objectives-summary.md
+      requires: manuscript-chapters[]
+      notes: "PacktPub emphasizes learning outcomes. Extract learning objectives from all chapters, create summary document showing progression, validate against learning-objectives-checklist. Ensure objectives use action verbs and are measurable. SAVE OUTPUT: docs/learning-objectives-summary.md"
+
+    - agent: book-publisher
+      creates: sharepoint-package/
+      requires: format-validation-passed, code-validation-passed
+      notes: "Prepare submission package for SharePoint upload. Structure: /ChapterFiles/ (Word .docx or markdown), /CodeFiles/ (organized by chapter), /ImageFiles/ (high-res screenshots), author-questionnaire.md, learning-objectives-summary.md. Verify all files named per PacktPub conventions. SAVE OUTPUT: submission-package/packtpub-submission/"
+
+    - agent: book-publisher
+      validates: final-submission.md
+      requires: sharepoint-package/
+      notes: "Final validation before submission. Run complete packtpub-submission-checklist. Verify: all chapters present, code tested, images high-res, learning objectives clear, Q&A sections included, author questionnaire complete. Create submission checklist document. SAVE OUTPUT: docs/packtpub-submission-checklist-final.md with status"
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: Manuscript Ready] --> B[technical-editor: Verify Format]
+        B --> C{Format Valid?}
+        C -->|No| D[Fix Format Issues]
+        D --> B
+        C -->|Yes| E[code-curator: Validate Code]
+        E --> F{Code Tests Pass?}
+        F -->|No| G[Fix Code Issues]
+        G --> E
+        F -->|Yes| H[instructional-designer: Create Learning Objectives Summary]
+        H --> I[book-publisher: Prepare SharePoint Package]
+        I --> J[book-publisher: Final Validation]
+        J --> K{Ready?}
+        K -->|No| L[Address Issues]
+        L --> J
+        K -->|Yes| M[Submit to PacktPub]
+
+        style M fill:#90EE90
+        style B fill:#FFE4B5
+        style E fill:#FFE4B5
+        style I fill:#ADD8E6
+        style J fill:#F0E68C
+    ```
+
+  quality_gates:
+    format_requirements:
+      - SharePoint-compatible format (Word .docx or markdown)
+      - Chapter structure includes What You'll Learn section
+      - Prerequisites clearly stated in each chapter
+      - Summary and Q&A sections present
+      - Code blocks properly formatted with language tags
+      - Callout boxes for notes, warnings, tips
+      - Screenshot captions descriptive
+      - Checklist: packtpub-submission-checklist.md
+
+    code_requirements:
+      - All code examples tested and working
+      - Repository structure: chapter-XX/ folders
+      - README.md in each chapter folder
+      - Tests passing for all code
+      - Version compatibility verified
+      - No hardcoded credentials or secrets
+      - Checklist: code-testing-checklist.md
+
+    learning_requirements:
+      - Learning objectives for each chapter
+      - Objectives use action verbs
+      - Measurable outcomes defined
+      - Progression from simple to complex
+      - Hands-on project focus
+      - Checklist: learning-objectives-checklist.md
+
+  handoff_prompts:
+    editor_to_curator: "Format validation complete. {{chapter_count}} chapters meet PacktPub SharePoint requirements. All structural elements present (What You'll Learn, Prerequisites, Summary, Q&A). Code validation in progress."
+    curator_to_designer: "Code validation complete. {{example_count}} code examples tested and passing. Repository structure meets PacktPub standards. Learning objectives extraction in progress."
+    designer_to_publisher: "Learning objectives summary created. {{objective_count}} total objectives across {{chapter_count}} chapters. Clear learning progression demonstrated. Ready for submission package preparation."
+    publisher_validation: "Submission package prepared. Structure: ChapterFiles ({{chapter_count}} chapters), CodeFiles ({{example_count}} examples), ImageFiles ({{image_count}} images). Running final validation checklist."
+    ready_for_submission: "PacktPub submission package complete and validated. All quality gates passed. Package ready for SharePoint upload. Location: submission-package/packtpub-submission/"
+
+  packtpub_specific_requirements:
+    chapter_structure:
+      - What You Will Learn section (bullet points)
+      - Prerequisites section
+      - Main content sections
+      - Summary section (key takeaways)
+      - Q&A section (5-10 questions)
+      - Further reading (optional)
+
+    formatting:
+      - SharePoint-compatible format preferred
+      - Code blocks with language identifiers
+      - Callout boxes: Note, Tip, Warning, Important
+      - Screenshot captions: "Figure X.Y: Description"
+      - Numbered lists for procedures
+      - Bold for UI elements, italic for emphasis
+
+    code_repository:
+      - GitHub repository required
+      - Folder per chapter: chapter-01/, chapter-02/
+      - README.md in each folder with setup instructions
+      - requirements.txt or package.json for dependencies
+      - All code tested and working
+      - .gitignore for temporary files
+
+    images:
+      - High resolution (300 DPI minimum)
+      - PNG or JPEG format
+      - Clear, readable text in screenshots
+      - Annotations for important areas
+      - Filename convention: chapterXX-figureYY-description.png
+
+  time_estimates:
+    format_validation: "2-4 hours (depends on chapter count)"
+    code_validation: "3-6 hours (depends on code complexity)"
+    learning_objectives: "2-3 hours"
+    package_preparation: "2-4 hours"
+    final_validation: "1-2 hours"
+    total_time: "10-19 hours"
+
+  best_practices:
+    - Start format validation early (don't wait until end)
+    - Test all code in fresh environment before submission
+    - Learning objectives should match chapter content exactly
+    - Use PacktPub style guide for formatting consistency
+    - Keep code examples practical and hands-on
+    - Screenshot quality matters - retake blurry images
+    - Q&A questions should test chapter learning objectives
+    - Maintain consistent terminology across all chapters
+    - Verify all external links work
+    - Double-check author questionnaire accuracy
+
+  common_pitfalls:
+    - Missing "What You Will Learn" section (required by PacktPub)
+    - Code examples not tested (failures during review)
+    - Low-resolution screenshots (unusable in print)
+    - Inconsistent chapter structure
+    - Missing Q&A sections
+    - Code repository not organized by chapter
+    - Hardcoded credentials in code examples
+    - Vague learning objectives (not measurable)
+    - Missing prerequisites in chapters
+    - Incomplete author questionnaire
