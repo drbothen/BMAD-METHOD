@@ -13,7 +13,7 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 - 📋 **15 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility
 - 🎯 **9 Professional Templates** - Book planning, chapter development, review, and publishing
 - 📚 **6 Knowledge Bases** - Comprehensive publisher guidelines and technical writing standards
-- 🔄 **2 Core Workflows** - Chapter development and tutorial creation workflows
+- 🔄 **5 Core Workflows** - Complete orchestration from book planning to technical review
 
 ## ✍️ Included Agents
 
@@ -61,9 +61,16 @@ npx bmad-method install
 /bmad-tw:book-publisher
 ```
 
-### Core Workflows (Sprint 2)
+### Core Workflows (Sprint 2 & 2.5)
 
-**Chapter Development Workflow** - Complete chapter creation from outline to publisher-ready:
+**Book Planning Workflow** *(Sprint 2.5)* - Complete book planning from concept to approved outline:
+1. Book Publisher drafts comprehensive book proposal
+2. Instructional Designer creates detailed book outline
+3. Instructional Designer validates learning progression
+4. Technical Editor reviews outline for clarity
+5. Book Publisher verifies publisher requirements
+
+**Chapter Development Workflow** *(Sprint 2)* - Complete chapter creation from outline to publisher-ready:
 1. Tutorial Architect creates chapter outline
 2. Code Curator develops and tests all code examples
 3. Tutorial Architect writes complete chapter draft
@@ -72,7 +79,7 @@ npx bmad-method install
 6. Technical Editor performs professional copy editing
 7. Tutorial Architect finalizes chapter for publication
 
-**Tutorial Creation Workflow** - Build effective hands-on tutorials:
+**Tutorial Creation Workflow** *(Sprint 2)* - Build effective hands-on tutorials:
 1. Instructional Designer designs learning path
 2. Tutorial Architect creates step-by-step structure
 3. Code Curator develops and tests tutorial code
@@ -80,6 +87,19 @@ npx bmad-method install
 5. Code Curator tests end-to-end
 6. Tutorial Architect revises based on testing
 7. Instructional Designer validates learning effectiveness
+
+**Code Example Workflow** *(Sprint 2.5)* - Develop, test, and document code examples:
+1. Code Curator develops code example
+2. Code Curator tests on all target platforms
+3. Code Curator verifies code quality
+4. Code Curator performs security review
+5. Code Curator adds comprehensive documentation
+
+**Technical Review Workflow** *(Sprint 2.5)* - Comprehensive expert review of chapter:
+1. Technical Reviewer verifies technical accuracy
+2. Code Curator reviews all code examples
+3. Technical Reviewer validates best practices
+4. Technical Reviewer compiles comprehensive report
 
 ### Common Use Cases
 
@@ -144,13 +164,16 @@ npx bmad-method install
 - Manning MEAP checklist
 - Accessibility checklist
 
-### Workflows (2 Core Workflows)
+### Workflows (5 Core Workflows)
 
 **Sprint 2:**
 - `chapter-development-workflow.yaml` - Complete chapter creation workflow
 - `tutorial-creation-workflow.yaml` - Tutorial development workflow
 
-**Note:** Sprint 2.5 will add 3 additional workflows (book planning, code example creation, technical review) for a total of 5 core workflows.
+**Sprint 2.5:**
+- `book-planning-workflow.yaml` - Book planning from concept to approved outline
+- `code-example-workflow.yaml` - Code example development and testing
+- `technical-review-workflow.yaml` - Comprehensive technical review
 
 ### Knowledge Bases (6 Total)
 
@@ -212,7 +235,7 @@ Special thanks to Brian (BMad) for creating the BMad Method framework.
 
 ---
 
-**Version:** 0.2.0 (Sprint 2 - Beta Release)
+**Version:** 0.2.5 (Sprint 2.5 - Workflow Completion)
 **Compatible with:** BMad Method v4.0+
 **Last Updated:** 2024
 
@@ -233,11 +256,12 @@ Special thanks to Brian (BMad) for creating the BMad Method framework.
 - ✅ 2 core workflows (chapter development, tutorial creation)
 - ✅ Expanded knowledge bases (publisher guidelines, writing standards)
 
-## 🚧 Roadmap
+**Sprint 2.5 (Complete):** Workflow orchestration completion
+- ✅ 3 additional workflows: Book Planning Workflow, Code Example Workflow, Technical Review Workflow
+- ✅ Total: 5 core workflows for complete book development
+- ✅ Version bumped to 0.2.5
 
-**Sprint 2.5** (Next):
-- 3 additional workflows: Book Planning Workflow, Code Example Workflow, Technical Review Workflow
-- Total: 5 core workflows for complete book development
+## 🚧 Roadmap
 
 **Sprint 3** (Planned):
 - API Documenter agent

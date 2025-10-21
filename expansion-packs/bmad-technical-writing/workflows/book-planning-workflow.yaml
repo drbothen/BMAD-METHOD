@@ -1,0 +1,146 @@
+workflow:
+  id: book-planning-workflow
+  name: Technical Book Planning
+  description: Complete book planning workflow from concept to approved outline. Guides technical authors through proposal creation, outline design, learning path validation, editorial review, and publisher requirements verification. Ensures pedagogical soundness and publisher compliance before chapter development begins.
+  type: book-planning
+  project_types:
+    - technical-book
+    - tutorial-series
+    - training-materials
+  sequence:
+    - agent: book-publisher
+      creates: book-proposal.md
+      requires:
+        - book_topic
+        - target_audience
+        - publisher (optional)
+      notes: "Draft comprehensive book proposal using *create-proposal command. Include market analysis, competitive titles, target audience profile, unique value proposition, chapter list (high-level), author platform, and timeline. Use templates/book-proposal-tmpl.yaml. SAVE OUTPUT: Copy final proposal to docs/planning/book-proposal.md"
+
+    - agent: instructional-designer
+      creates: book-outline.md
+      requires: book-proposal.md
+      notes: "Create detailed book outline using *design-outline command. Define learning progression across chapters, prerequisites for each chapter, main topics and subtopics, exercise strategy, and difficulty curve. Use templates/book-outline-tmpl.yaml. Ensure pedagogical soundness and logical skill building. SAVE OUTPUT: Copy outline to docs/planning/book-outline.md"
+
+    - agent: instructional-designer
+      validates: book-outline.md
+      requires: book-outline.md
+      notes: "Validate learning progression and difficulty curve. Check prerequisite flow ensures no knowledge gaps, concepts build logically chapter by chapter, exercises progress from basic to advanced, reader can complete book successfully with stated prerequisites. Use learning-objectives-checklist.md and prerequisite-clarity-checklist.md. SAVE OUTPUT: Create validation report at docs/planning/learning-path-validation.md"
+
+    - agent: technical-editor
+      reviews: book-outline.md
+      requires: validated outline
+      notes: "Review outline for clarity, consistency, and professional quality using *review-outline command. Check chapter titles are clear and compelling, topics avoid duplication, terminology is consistent, structure follows publisher best practices, accessibility considerations addressed. SAVE OUTPUT: Return polished outline with editorial notes at docs/planning/book-outline-edited.md"
+
+    - agent: book-publisher
+      finalizes: book-outline.md
+      requires: polished outline
+      notes: "Verify publisher requirements and format compliance. Check outline matches publisher chapter count guidelines, technical depth appropriate for series/imprint, format follows publisher template, timeline is realistic for publication schedule. Use publisher-specific checklist (packtpub-submission-checklist.md, oreilly-format-checklist.md, or manning-meap-checklist.md). SAVE OUTPUT: Copy final approved outline to docs/planning/book-outline-final.md and set status to 'Ready for Chapter Development'"
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: Book Concept] --> B[book-publisher: Draft Proposal]
+        B --> C[instructional-designer: Design Outline]
+        C --> D[instructional-designer: Validate Learning Path]
+        D --> E{Prerequisites Flow?}
+        E -->|Issues Found| F[instructional-designer: Adjust Outline]
+        F --> D
+        E -->|Valid| G[technical-editor: Editorial Review]
+        G --> H[book-publisher: Publisher Format Check]
+        H --> I{Meets Requirements?}
+        I -->|Needs Changes| J[Adjust for Publisher]
+        J --> G
+        I -->|Approved| K[Final Outline Approved]
+        K --> L[Ready for Chapter Development]
+
+        B -.-> B1[Optional: Market Research]
+        C -.-> C1[Optional: Competitive Analysis]
+        D -.-> D1[Optional: Pedagogical Review]
+
+        style L fill:#90EE90
+        style B fill:#FFE4B5
+        style C fill:#FFE4B5
+        style D fill:#ADD8E6
+        style G fill:#ADD8E6
+        style H fill:#F0E68C
+    ```
+
+  decision_guidance:
+    when_to_use:
+      - Planning a new technical book from scratch
+      - Pitching book proposal to publisher
+      - Need structured approach to outline creation
+      - Want to validate pedagogical design before writing
+      - Working with traditional publisher with specific requirements
+
+    when_not_to_use:
+      - Book outline already approved (jump to chapter development)
+      - Self-publishing without strict format requirements
+      - Converting existing content to book (use revision workflow)
+
+  quality_gates:
+    proposal_complete:
+      - Market analysis included
+      - Target audience clearly defined
+      - Competitive titles identified
+      - Unique value proposition stated
+      - High-level chapter list provided
+      - Author platform described
+      - Realistic timeline included
+
+    outline_complete:
+      - All chapters have clear titles
+      - Learning objectives defined for each chapter
+      - Prerequisites stated for each chapter
+      - Topics and subtopics outlined
+      - Exercise strategy defined
+      - Estimated page counts provided
+      - Checklist: prerequisite-clarity-checklist.md
+
+    learning_path_validated:
+      - No knowledge gaps between chapters
+      - Difficulty curve is smooth
+      - Prerequisites are achievable
+      - Exercises progress appropriately
+      - Reader can succeed with stated background
+      - Checklists: learning-objectives-checklist.md, prerequisite-clarity-checklist.md
+
+    editorial_complete:
+      - Chapter titles are compelling
+      - No topic duplication
+      - Terminology consistent throughout
+      - Structure follows best practices
+      - Accessibility considerations addressed
+
+    publisher_approved:
+      - Chapter count matches guidelines
+      - Technical depth appropriate
+      - Format matches publisher template
+      - Timeline is realistic
+      - Checklists: publisher-specific (packtpub, oreilly, manning)
+
+  handoff_prompts:
+    concept_to_proposal: "Starting book planning for {{book_topic}} targeting {{target_audience}}. Publisher: {{publisher}}. Creating comprehensive proposal."
+    proposal_to_outline: "Proposal approved with {{chapter_count}} planned chapters. Creating detailed pedagogical outline with learning progression."
+    outline_to_validation: "Book outline complete. Validating prerequisite flow and difficulty curve across {{chapter_count}} chapters."
+    validation_to_editorial: "Learning path validated successfully. Ready for editorial review to ensure clarity and consistency."
+    editorial_to_publisher: "Editorial review complete. Checking outline against {{publisher}} format requirements and submission guidelines."
+    publisher_to_final: "Publisher requirements verified. Book outline approved and ready for chapter development. Save to docs/planning/book-outline-final.md."
+
+  time_estimates:
+    draft_proposal: "4-8 hours"
+    design_outline: "8-12 hours"
+    validate_learning_path: "3-5 hours"
+    editorial_review: "3-5 hours"
+    publisher_format_check: "2-3 hours"
+    total_time: "20-33 hours for complete book planning"
+
+  best_practices:
+    - Start with clear target audience definition - affects everything
+    - Research competitive titles before outlining
+    - Ensure realistic prerequisites (don't assume too much)
+    - Build difficulty progressively (avoid knowledge jumps)
+    - Plan exercises early (they affect chapter structure)
+    - Verify publisher requirements before deep work
+    - Get outline approved before writing any chapters
+    - Consider reader's learning journey, not just content coverage

@@ -1,0 +1,176 @@
+workflow:
+  id: technical-review-workflow
+  name: Chapter Technical Review
+  description: Comprehensive expert technical review workflow for chapter content. Guides technical reviewers and code curators through accuracy verification, code review, best practices validation, and report compilation. Ensures technical correctness, code quality, and adherence to industry best practices before editorial polish.
+  type: technical-review
+  project_types:
+    - technical-book
+    - tutorial-series
+    - training-materials
+    - technical-documentation
+  sequence:
+    - agent: technical-reviewer
+      reviews: chapter-draft.md
+      requires: chapter_draft
+      notes: "Verify technical accuracy of all content using *verify-accuracy command. Check technical concepts are explained correctly, terminology is used accurately, no outdated or deprecated information, facts and claims are verifiable, technical depth is appropriate for audience. Use technical-accuracy-checklist.md. SAVE OUTPUT: Create accuracy notes at reviews/{{chapter_number}}/accuracy-notes.md with findings categorized by severity (Critical/Major/Minor)"
+
+    - agent: code-curator
+      reviews: chapter-draft.md
+      requires: chapter_draft
+      notes: "Review all code examples in chapter using *review-code command. Check code runs correctly as shown, follows language best practices, error handling is appropriate, code is well-commented and explained, examples are production-quality. Use code-quality-checklist.md. Test each code example. SAVE OUTPUT: Create code review notes at reviews/{{chapter_number}}/code-notes.md with findings and test results"
+
+    - agent: technical-reviewer
+      validates: chapter-draft.md
+      requires: chapter_draft
+      notes: "Validate best practices and security using *validate-practices command. Check security best practices followed in examples, no security vulnerabilities demonstrated, performance considerations addressed where relevant, deprecated APIs not used without warnings, industry standards and conventions followed. Use security-best-practices-checklist.md and performance-considerations-checklist.md. SAVE OUTPUT: Create practices notes at reviews/{{chapter_number}}/practices-notes.md"
+
+    - agent: technical-reviewer
+      compiles: technical-review-report.md
+      requires:
+        - accuracy notes
+        - code notes
+        - practices notes
+      notes: "Compile comprehensive review report using *compile-report command. Summarize all findings by severity, provide actionable recommendations for each issue, identify patterns or recurring problems, assess overall technical quality, recommend revision priority. Use templates/technical-review-report-tmpl.yaml. SAVE OUTPUT: Create final report at reviews/{{chapter_number}}/technical-review-report.md with complete findings and recommendations"
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: Chapter Draft] --> B[technical-reviewer: Accuracy Check]
+        A --> C[code-curator: Code Review]
+        A --> D[technical-reviewer: Best Practices Check]
+
+        B --> E[Accuracy Notes]
+        C --> F[Code Notes]
+        D --> G[Practices Notes]
+
+        E --> H[technical-reviewer: Compile Report]
+        F --> H
+        G --> H
+
+        H --> I{Critical Issues?}
+        I -->|Yes| J[Recommend Major Revision]
+        I -->|No| K{Major Issues?}
+        K -->|Yes| L[Recommend Revision]
+        K -->|No| M{Minor Issues Only?}
+        M -->|Yes| N[Recommend Light Revision]
+        M -->|None| O[Approve for Editorial]
+
+        J --> P[Technical Review Complete]
+        L --> P
+        N --> P
+        O --> P
+
+        B -.-> B1[Optional: Fact Checking]
+        C -.-> C1[Optional: Performance Testing]
+        D -.-> D1[Optional: Security Audit]
+
+        style P fill:#90EE90
+        style B fill:#FFE4B5
+        style C fill:#FFE4B5
+        style D fill:#FFE4B5
+        style H fill:#ADD8E6
+        style J fill:#F08080
+        style L fill:#FFD700
+        style N fill:#98FB98
+        style O fill:#90EE90
+    ```
+
+  decision_guidance:
+    when_to_use:
+      - Chapter draft complete and ready for expert review
+      - Need comprehensive technical validation
+      - Code examples need expert verification
+      - Before editorial polish (technical review first)
+      - Quality standards require expert review
+
+    when_not_to_use:
+      - Chapter still in early draft (premature for review)
+      - Only editorial review needed (use editor workflow)
+      - Self-review by original author (biased review)
+
+  quality_gates:
+    accuracy_check_complete:
+      - All technical concepts verified
+      - Terminology usage validated
+      - No deprecated information found
+      - Facts and claims checked
+      - Appropriate depth confirmed
+      - Checklist: technical-accuracy-checklist.md
+
+    code_review_complete:
+      - All code examples tested
+      - Code quality assessed
+      - Best practices verified
+      - Error handling reviewed
+      - Comments and explanations checked
+      - Checklist: code-quality-checklist.md
+
+    practices_check_complete:
+      - Security practices validated
+      - No vulnerabilities found
+      - Performance considerations reviewed
+      - No deprecated APIs without warnings
+      - Industry standards followed
+      - Checklists: security-best-practices-checklist.md, performance-considerations-checklist.md
+
+    report_compiled:
+      - All findings categorized by severity
+      - Actionable recommendations provided
+      - Patterns identified
+      - Overall quality assessed
+      - Revision priority recommended
+
+  severity_definitions:
+    critical:
+      description: "Technical errors that would mislead readers or cause significant problems"
+      examples:
+        - Incorrect technical explanations
+        - Code that doesn't work as shown
+        - Security vulnerabilities in examples
+        - Dangerous or harmful practices demonstrated
+      action: "Must fix before publication"
+
+    major:
+      description: "Significant issues affecting quality or reader experience"
+      examples:
+        - Suboptimal code practices
+        - Missing error handling
+        - Outdated but functional approaches
+        - Incomplete explanations of complex concepts
+      action: "Should fix before editorial review"
+
+    minor:
+      description: "Small improvements that would enhance quality"
+      examples:
+        - Variable naming improvements
+        - Additional comments helpful
+        - Alternative approaches worth mentioning
+        - Minor optimizations
+      action: "Consider addressing if time permits"
+
+  handoff_prompts:
+    start_to_accuracy: "Beginning technical review of chapter {{chapter_number}} draft. Starting with technical accuracy verification of all concepts and claims."
+    start_to_code: "Reviewing all code examples in chapter {{chapter_number}}. Will test each example and verify quality standards."
+    start_to_practices: "Validating best practices and security in chapter {{chapter_number}}. Checking for vulnerabilities and industry standards compliance."
+    all_to_compile: "Individual reviews complete. Compiling comprehensive technical review report with {{critical_count}} critical, {{major_count}} major, and {{minor_count}} minor findings."
+    compile_to_author: "Technical review complete for chapter {{chapter_number}}. Report available at reviews/{{chapter_number}}/technical-review-report.md. Recommendation: {{revision_priority}}."
+
+  time_estimates:
+    accuracy_check: "2-3 hours (15-30 page chapter)"
+    code_review: "2-4 hours (depending on code complexity)"
+    best_practices_check: "1-2 hours"
+    compile_report: "1-2 hours"
+    total_time: "6-11 hours per chapter"
+
+  best_practices:
+    - Review with beginner's mindset (assume no prior knowledge beyond prerequisites)
+    - Test ALL code exactly as shown in chapter
+    - Focus on what reader will experience
+    - Categorize findings by severity objectively
+    - Provide specific, actionable recommendations
+    - Note both problems AND strengths
+    - Consider target audience when assessing depth
+    - Flag security issues immediately (critical)
+    - Verify version compatibility explicitly
+    - Be thorough but constructive in feedback
+    - Remember: goal is reader success, not perfectionism

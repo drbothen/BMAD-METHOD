@@ -1,11 +1,11 @@
 # <!-- Powered by BMAD™ Core -->
 name: bmad-technical-writing
-version: 0.2.0
+version: 0.2.5
 short-title: Technical Book Writing Studio
 description: >-
   Comprehensive AI-powered technical writing framework for technical book
   authors, technical trainers, and documentation specialists. Provides 6
-  specialized agents, 2 core workflows, and professional quality assurance tools
+  specialized agents, 5 core workflows, and professional quality assurance tools
   for planning, writing, reviewing, and publishing technical books with code
   examples, tutorials, and learning objectives. Includes 15 checklists for
   technical accuracy, security, performance, publisher compliance, and
