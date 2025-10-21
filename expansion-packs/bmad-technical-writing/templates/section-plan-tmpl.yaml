@@ -1,0 +1,106 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: section-plan
+  name: Section Plan
+  version: 1.0
+  description: Detailed section plan defining acceptance criteria for one deliverable section (BMad story analog). Section is 2-5 pages with 1-2 learning objectives and clear success criteria.
+  output:
+    format: markdown
+    filename: "section-{{section_number}}.md"
+
+workflow:
+  elicitation: false
+  allow_skip: false
+sections:
+  - id: metadata
+    title: Section Metadata
+    instruction: |
+      Basic information:
+      - Section ID (e.g., "section-3.2" for chapter 3, section 2)
+      - Section title (descriptive, clear)
+      - Chapter number and chapter title
+      - Position in chapter (e.g., "2 of 8")
+      - Estimated pages (2-5 pages typical)
+      - Story points equivalent (Small=3, Medium=5, Large=8)
+  - id: learning_objective
+    title: Learning Objective
+    instruction: |
+      What this section teaches (1-2 objectives max):
+      - Use action verbs from Bloom's Taxonomy (implement, explain, demonstrate, apply)
+      - Be specific and measurable
+      - Focus on single concept or skill
+      - Examples:
+        * "Implement basic list operations in Python"
+        * "Explain memory management in dictionary structures"
+        * "Demonstrate error handling in file operations"
+
+      Keep focused - if you have 3+ objectives, section is too large.
+  - id: prerequisites
+    title: Prerequisites
+    instruction: |
+      What reader needs before this section:
+      - Previous sections that must be completed (by section ID)
+      - Concepts from earlier chapters assumed
+      - Code from previous sections that will be extended
+      - Tools or setup required (if new to this section)
+  - id: content_plan
+    title: Content Plan
+    instruction: |
+      Concepts to explain in this section:
+      - Main concept/topic (1-2 paragraphs description)
+      - Key points to cover (bullet list, 3-5 points)
+      - Theory/background needed (minimal, just enough)
+      - Tutorial approach (step-by-step? example-driven? problem-solving?)
+      - Estimated breakdown:
+        * Concept explanation: X pages
+        * Tutorial/walkthrough: X pages
+        * Practice/exercises: X pages
+  - id: code_examples
+    title: Code Examples Needed
+    instruction: |
+      Code examples for this section:
+      - Example 1: [filename] - [purpose] - [complexity: simple/medium/complex]
+      - Example 2: [filename] - [purpose] - [complexity]
+      - (continue as needed, typically 1-3 examples per section)
+
+      For each example specify:
+      - What it demonstrates
+      - Input and expected output
+      - Testing approach
+      - Common mistakes to highlight
+  - id: success_criteria
+    title: Success Criteria
+    instruction: |
+      This section is "DONE" when:
+      - [ ] Learning objective(s) clearly explained
+      - [ ] All code examples developed and tested
+      - [ ] Tutorial walkthrough complete with explanations
+      - [ ] Common mistakes and troubleshooting covered
+      - [ ] Section length 2-5 pages (not too short, not too long)
+      - [ ] Transitions to next section clear
+      - [ ] Technical reviewer approved section accuracy
+      - [ ] No outstanding technical issues
+
+      Add section-specific criteria as needed (e.g., "Performance example runs in <100ms")
+  - id: dependencies
+    title: Dependencies
+    instruction: |
+      Dependencies on other sections:
+      - Must complete before starting: [list section IDs]
+      - Can develop in parallel with: [list section IDs]
+      - Blocks these sections: [list section IDs that need this one]
+
+      Example:
+      - Must complete: section-3.1 (introduces list basics)
+      - Can parallel: section-3.4 (different topic)
+      - Blocks: section-3.3 (extends this section's code)
+  - id: notes
+    title: Development Notes
+    instruction: |
+      Additional guidance for section development:
+      - Key resources or references
+      - Known complexity areas
+      - Reader perspective considerations
+      - Connection to real-world use cases
+      - Special attention areas (security, performance, etc.)

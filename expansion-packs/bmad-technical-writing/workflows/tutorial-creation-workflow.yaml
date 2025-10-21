@@ -1,0 +1,185 @@
+workflow:
+  id: tutorial-creation-workflow
+  name: Develop Hands-On Tutorial
+  description: Create effective step-by-step tutorials with tested code and clear instructions. Guides authors through tutorial design, code development, instruction writing, and testing. Emphasizes learning objectives, progressive difficulty, and student success.
+  type: tutorial-development
+  project_types:
+    - technical-tutorial
+    - hands-on-guide
+    - coding-workshop
+    - interactive-lesson
+  sequence:
+    - agent: instructional-designer
+      creates: tutorial-plan.md
+      notes: "Design tutorial learning path using *design-learning-path command. Define specific learning objective, target audience, prerequisites, and estimated completion time. Identify key concepts to teach and skills to practice. SAVE OUTPUT: Copy tutorial-plan.md to docs/tutorials/plans/"
+
+    - agent: tutorial-architect
+      creates: tutorial-structure.md
+      requires: tutorial-plan.md
+      notes: "Create detailed step-by-step structure (8-15 steps). Use develop-tutorial task. Plan progression from setup through completion. Design each step with clear action, code, and expected output. Include verification points. SAVE OUTPUT: Copy tutorial-structure.md to docs/tutorials/structures/"
+
+    - agent: code-curator
+      creates: tutorial-code/
+      requires: tutorial-structure.md
+      notes: "Develop and test all code for each tutorial step. Use *create-example command. Ensure progressive code builds properly at each step. Create starter code, complete code, and tests. Verify all code runs in fresh environment. SAVE OUTPUT: Commit code to repository in tutorials/{{tutorial_slug}}/ folder."
+
+    - agent: tutorial-architect
+      creates: complete-tutorial.md
+      requires:
+        - tutorial-structure.md
+        - tutorial-code/
+      notes: "Write complete tutorial using tutorial-section-tmpl template. Include compelling introduction, step-by-step instructions with code, expected outputs, troubleshooting guide, and summary. Ensure clear, actionable language throughout. SAVE OUTPUT: Copy complete tutorial to docs/tutorials/{{tutorial_slug}}.md"
+
+    - agent: code-curator
+      validates: tutorial-code/
+      requires: complete-tutorial.md
+      notes: "Test tutorial end-to-end following your own instructions exactly. Use *test-tutorial command. Test in fresh environment. Time completion. Document any unclear steps or missing prerequisites. Use tutorial-effectiveness-checklist. SAVE OUTPUT: Create test results report."
+
+    - agent: tutorial-architect
+      updates: complete-tutorial.md
+      requires: test-results.md
+      notes: "Revise tutorial based on testing feedback. Clarify unclear instructions, add missing prerequisites, adjust time estimates, enhance troubleshooting section. Ensure student success path is clear. SAVE OUTPUT: Update complete-tutorial.md with revisions."
+
+    - agent: instructional-designer
+      validates: complete-tutorial.md
+      requires: revised-tutorial.md
+      notes: "Validate tutorial meets learning objectives and pedagogical standards. Check progressive difficulty, scaffolding, cognitive load. Verify assessment alignment. Ensure prerequisites are accurate. Use learning-objectives-checklist. SAVE OUTPUT: Tutorial approved or feedback provided."
+
+    - agent: tutorial-architect
+      finalizes: tutorial-final.md
+      requires: validated-tutorial.md
+      notes: "Incorporate any final feedback. Create final version. Add to chapter or publish standalone. Mark tutorial status as 'Ready for Use'. SAVE OUTPUT: Copy final tutorial to appropriate location (chapter section or standalone tutorial)."
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: New Tutorial] --> B[instructional-designer: Design Learning Path]
+        B --> C[tutorial-architect: Create Step Structure]
+        C --> D[code-curator: Develop & Test Code]
+        D --> E[tutorial-architect: Write Tutorial]
+        E --> F[code-curator: Test End-to-End]
+        F --> G{Issues Found?}
+        G -->|Yes| H[tutorial-architect: Revise Tutorial]
+        G -->|No| I[instructional-designer: Validate Learning]
+        H --> F
+        I --> J{Meets Standards?}
+        J -->|Yes| K[Finalize Tutorial]
+        J -->|No| L[Provide Feedback]
+        L --> H
+        K --> M[Tutorial Ready for Students]
+
+        B -.-> B1[Optional: *analyze-difficulty-curve]
+        D -.-> D1[Optional: *test-code-examples]
+        F -.-> F1[Optional: Fresh environment test]
+        I -.-> I1[Optional: *assess-learning-objectives]
+
+        style M fill:#90EE90
+        style B fill:#FFE4B5
+        style C fill:#FFE4B5
+        style D fill:#ADD8E6
+        style E fill:#FFE4B5
+        style F fill:#ADD8E6
+        style I fill:#F0E68C
+        style K fill:#F0E68C
+    ```
+
+  decision_guidance:
+    when_to_use:
+      - Creating hands-on coding tutorials
+      - Building step-by-step technical guides
+      - Developing workshop materials
+      - Interactive learning experiences
+      - Need for student practice and skill building
+      - Code must be tested and reliable
+
+    when_not_to_use:
+      - Conceptual explanations without hands-on practice
+      - Quick code snippets or examples
+      - Reference documentation
+      - Theory-heavy content without application
+
+  quality_gates:
+    plan_complete:
+      - Learning objective clearly defined
+      - Prerequisites explicitly stated
+      - Target audience identified
+      - Realistic time estimate provided
+      - Success criteria measurable
+
+    structure_complete:
+      - 8-15 clear steps defined
+      - Progressive difficulty maintained
+      - Each step has verification point
+      - Troubleshooting points identified
+      - Summary and next steps planned
+
+    code_tested:
+      - All code runs without errors
+      - Outputs match documentation
+      - Tested in fresh environment
+      - Starter code provided
+      - Tests included
+      - Checklist: code-testing-checklist.md
+
+    tutorial_complete:
+      - Introduction hooks and motivates
+      - Instructions clear and actionable
+      - Expected outputs documented
+      - Troubleshooting guide included
+      - Summary reinforces learning
+      - Checklist: tutorial-effectiveness-checklist.md
+
+    learning_validated:
+      - Learning objective achieved
+      - Progressive difficulty appropriate
+      - Prerequisites accurate
+      - Cognitive load manageable
+      - Assessment aligns with objective
+      - Checklist: learning-objectives-checklist.md
+
+  handoff_prompts:
+    designer_to_architect: "Tutorial learning path complete. Learning objective: '{{objective}}'. Target time: {{time}}. Audience: {{audience}}. Ready for step-by-step structure design."
+    architect_to_curator: "Tutorial structure complete with {{step_count}} steps. Progression from {{start_point}} to {{end_point}}. Code examples identified. Ready for code development."
+    curator_to_architect: "All tutorial code developed and tested. {{file_count}} files created in tutorials/{{tutorial_slug}}/. Tests passing. Ready for tutorial writing."
+    architect_to_curator_test: "Tutorial draft complete at docs/tutorials/{{tutorial_slug}}.md. Please test end-to-end following instructions exactly and report any issues."
+    curator_to_architect_results: "Tutorial tested. Completion time: {{actual_time}} (estimated: {{estimated_time}}). Found {{issue_count}} issues or unclear steps. See test-results.md for details."
+    revised_to_designer: "Tutorial revised based on testing. All issues addressed. Ready for pedagogical validation."
+    designer_validation: "Tutorial validated. Learning objective met. Progressive difficulty appropriate. {{feedback}}. Ready for finalization."
+    finalization: "Tutorial finalized at {{location}}. Status: Ready for Students. Learning objective: '{{objective}}' - achievable in {{time}}."
+
+  time_estimates:
+    design_plan: "1-2 hours"
+    create_structure: "2-3 hours"
+    develop_code: "3-6 hours"
+    write_tutorial: "4-8 hours"
+    test_tutorial: "1-2 hours"
+    revisions: "2-4 hours"
+    validation: "1-2 hours"
+    finalization: "30 minutes - 1 hour"
+    total_time: "14-28 hours per tutorial"
+
+  best_practices:
+    - Start with ONE clear, specific learning objective
+    - Define prerequisites explicitly - test them
+    - Keep steps focused (one goal per step)
+    - Test in fresh environment every time
+    - Document expected outputs at every step
+    - Include troubleshooting for common errors
+    - Time yourself - add 50-100% for students
+    - Progressive difficulty - start simple
+    - Use imperative voice ("Create...", "Add...", "Run...")
+    - Verify success criteria at end
+    - Provide next steps for continued learning
+    - Maintain consistent formatting throughout
+
+  common_pitfalls:
+    - Assuming prerequisites not explicitly stated
+    - Code that works for you but not fresh environment
+    - Skipping intermediate steps (too big jumps)
+    - Unclear or vague instructions
+    - Missing expected outputs
+    - No troubleshooting section
+    - Unrealistic time estimates
+    - No way to verify success
+    - Too many concepts at once
+    - Boring or contrived examples

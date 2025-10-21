@@ -1,0 +1,114 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: code-example
+  name: Code Example Template
+  version: 1.0
+  description: Documented code example with explanation and testing approach
+  output:
+    format: markdown
+    filename: "{{example_name}}-example.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: metadata
+    title: Example Metadata
+    instruction: |
+      Basic information:
+      - Example name/title
+      - Programming language (e.g., Python, JavaScript, Java)
+      - Language version (e.g., Python 3.11+, Node 18+)
+      - Purpose (what this example demonstrates)
+      - Complexity level (basic, intermediate, advanced)
+      - Related chapter/section
+    elicit: true
+  - id: learning_objective
+    title: Learning Objective
+    instruction: |
+      What readers will learn from this example:
+      - Specific concept or technique demonstrated
+      - Why this approach is useful
+      - When to apply this pattern
+      - How it fits into the larger topic
+  - id: prerequisites
+    title: Prerequisites
+    instruction: |
+      What readers need before using this example:
+      - Prior knowledge required
+      - Software/tools needed (with installation links)
+      - Dependencies to install (with version requirements)
+      - Environment setup (virtual env, containers, etc.)
+  - id: setup
+    title: Setup Instructions
+    instruction: |
+      Step-by-step setup:
+      1. How to set up the environment
+      2. Dependencies to install (exact commands)
+      3. Configuration needed
+      4. File structure/organization
+      5. Verification steps (how to confirm setup worked)
+    elicit: true
+  - id: code
+    title: Code Implementation
+    instruction: |
+      The complete working code with inline comments:
+      - Include all necessary imports
+      - Add inline comments explaining WHY, not WHAT
+      - Highlight key concepts with comments
+      - Use descriptive variable/function names
+      - Follow language-specific style guide
+      - Ensure code is DRY and maintainable
+      - Include error handling
+
+      Format as code block with language identifier.
+    elicit: true
+  - id: explanation
+    title: Code Explanation
+    instruction: |
+      Detailed walkthrough of the code:
+      - Explain the overall structure/flow
+      - Highlight key concepts being demonstrated
+      - Explain design decisions and tradeoffs
+      - Connect code to theoretical concepts
+      - Point out important details readers might miss
+      - Explain how different parts work together
+    elicit: true
+  - id: common_mistakes
+    title: Common Mistakes to Avoid
+    instruction: |
+      Pitfalls and antipatterns:
+      - What mistakes do beginners commonly make?
+      - Why are these mistakes problematic?
+      - How to identify these issues
+      - Corrected examples
+  - id: variations
+    title: Variations & Extensions
+    instruction: |
+      How to adapt this example:
+      - Alternative implementations
+      - How to extend functionality
+      - When to use variations
+      - More advanced patterns building on this
+      - Real-world applications
+  - id: testing
+    title: Testing Approach
+    instruction: |
+      How to verify this code works:
+      - Test commands to run
+      - Expected output
+      - How to verify correctness
+      - Unit tests (if applicable)
+      - Edge cases to test
+      - Platform-specific testing notes (Windows/Mac/Linux)
+    elicit: true
+  - id: troubleshooting
+    title: Troubleshooting
+    instruction: |
+      Common issues and solutions:
+      - Error messages readers might encounter
+      - Debugging steps
+      - Platform-specific issues
+      - Version compatibility problems
+      - Where to get help

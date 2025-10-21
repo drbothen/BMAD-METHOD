@@ -1,0 +1,105 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: book-analysis-report
+  name: Book Analysis Report
+  version: 1.0
+  description: Comprehensive analysis report of existing technical book for revision planning
+  output:
+    format: markdown
+    filename: "{{book_title}}-analysis-report.md"
+
+workflow:
+  elicitation: false
+  allow_skip: false
+sections:
+  - id: metadata
+    title: Book Metadata
+    instruction: |
+      Document core book information:
+      - Title and subtitle
+      - Author(s)
+      - Current edition/version (1st, 2nd, 3rd, etc.)
+      - Publication date (original and current edition)
+      - Publisher (PacktPub, O'Reilly, Manning, Self-published)
+      - Target audience (skill level, role)
+      - Current page count
+      - ISBN/product identifiers
+      - Technology stack and versions currently used
+  - id: structure_analysis
+    title: Structure Analysis
+    instruction: |
+      Analyze book organization:
+      - Total chapter count
+      - Part/section breakdown (if applicable)
+      - Front matter (preface, introduction, how to use)
+      - Back matter (appendices, glossary, index)
+      - Chapter organization pattern (tutorial-based, reference-style, project-driven)
+      - Learning flow assessment (does progression make sense?)
+      - Table of contents structure
+  - id: code_inventory
+    title: Code Inventory
+    instruction: |
+      Catalog all code examples:
+      - Total number of code examples
+      - Programming languages used (Python, JavaScript, etc.)
+      - Technology versions targeted (Python 3.9, Node 16, etc.)
+      - Frameworks/libraries used
+      - Code testing status (tested? CI/CD? manual only?)
+      - Code repository location (if exists)
+      - Example complexity distribution (simple demos vs. complete projects)
+  - id: technical_currency
+    title: Technical Currency Assessment
+    instruction: |
+      Evaluate technical freshness:
+      - Current technology versions in book
+      - Latest stable versions available
+      - Deprecated content identified (APIs, methods, best practices)
+      - Breaking changes since publication
+      - Security vulnerabilities in examples
+      - Outdated terminology or concepts
+      - Technology sunset warnings (discontinued tools/frameworks)
+  - id: writing_style_patterns
+    title: Writing Style Patterns
+    instruction: |
+      Extract writing conventions:
+      - Voice and tone (friendly/formal, conversational/academic)
+      - Structural patterns (intro→concept→example→exercise)
+      - Heading hierarchy style (action-based? question-based? topic-based?)
+      - Terminology choices and consistency
+      - Code comment style (inline? docstrings? none?)
+      - Callout usage (tips, warnings, notes)
+      - Cross-reference patterns (chapter X, section Y.Z)
+  - id: cross_reference_map
+    title: Cross-Reference Map
+    instruction: |
+      Document internal dependencies:
+      - Which chapters reference other chapters
+      - Prerequisite flow (chapter X requires chapter Y)
+      - Concept dependencies (must understand A before B)
+      - Code dependencies (Chapter 5 builds on Chapter 3's code)
+      - Forward references (Chapter 2 mentions "we'll cover this in Chapter 7")
+      - Backward references ("as we learned in Chapter 4")
+  - id: identified_issues
+    title: Identified Issues
+    instruction: |
+      List problems found:
+      - Outdated sections (specific chapters/sections)
+      - Broken code examples (won't run on current versions)
+      - Inconsistencies (terminology, formatting, style)
+      - Coverage gaps (missing important topics)
+      - Deprecated warnings not present
+      - Technical inaccuracies
+      - Unclear explanations or confusing sections
+      - Missing prerequisites or assumptions
+  - id: recommendations
+    title: Recommendations
+    instruction: |
+      Provide actionable guidance:
+      - Priority updates (critical, important, nice-to-have)
+      - Scope suggestions (full 2nd edition? targeted chapter updates? version migration only?)
+      - Timeline estimates (weeks/months for different scope levels)
+      - Risk assessment (what could go wrong during revision)
+      - Testing strategy recommendations
+      - Consider learning flow impact
+      - Publisher communication needs

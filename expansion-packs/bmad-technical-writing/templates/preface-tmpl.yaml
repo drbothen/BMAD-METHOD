@@ -1,0 +1,104 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: preface
+  name: Book Preface
+  version: 1.0
+  description: Book preface/foreword structure introducing the book to readers
+  output:
+    format: markdown
+    filename: "preface.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: audience
+    title: Who This Book Is For
+    instruction: |
+      Define the target reader:
+      - Primary audience (role, skill level)
+      - Secondary audiences (related roles who may benefit)
+      - Specific skills or knowledge assumed
+      - Who this book is NOT for (helps set expectations)
+
+      Example: "This book is for intermediate Python developers who want to learn machine learning. You should be comfortable with Python syntax, functions, and object-oriented programming, but no ML experience is required."
+    elicit: true
+  - id: outcomes
+    title: What You'll Learn
+    instruction: |
+      High-level learning outcomes:
+      - 4-6 major skills or knowledge areas readers will gain
+      - Practical projects or deliverables they'll build
+      - How this knowledge advances their career or projects
+      - What makes this book's approach unique
+
+      Focus on transformation: "By the end of this book, you'll be able to..."
+    elicit: true
+  - id: prerequisites
+    title: Prerequisites
+    instruction: |
+      Explicitly state what readers need before starting:
+      - Programming languages and skill level
+      - Tools or software (IDEs, databases, cloud accounts)
+      - Concepts from other domains
+      - Hardware requirements (if applicable)
+      - Time commitment estimate
+
+      Be specific to prevent frustration: "Python 3.11+, Git basics, comfort with command line"
+  - id: organization
+    title: How This Book Is Organized
+    instruction: |
+      Explain the book's structure:
+      - Part/section breakdown (if applicable)
+      - Logical progression of topics
+      - Where beginners should start vs. experienced readers
+      - Chapters that can be skipped or read out of order
+      - How chapters build on each other
+
+      Example: "Part 1 covers fundamentals (Chapters 1-4), Part 2 applies these to real projects (Chapters 5-8), and Part 3 explores advanced topics (Chapters 9-12)."
+    elicit: true
+  - id: resources
+    title: Code Repository and Resources
+    instruction: |
+      Point readers to companion materials:
+      - GitHub repository URL
+      - Repository structure explanation
+      - How to download and use code examples
+      - Additional resources (datasets, APIs, tools)
+      - Errata and updates page
+      - Author website or contact info
+      - Community forum or Discord (if available)
+  - id: conventions
+    title: Conventions Used in This Book
+    instruction: |
+      Explain formatting and notation:
+
+      **Code formatting:**
+      - Inline code: `variable_name`
+      - Code blocks and how they're labeled
+      - Command-line vs. Python REPL examples
+      - Syntax highlighting conventions
+
+      **Callouts and notes:**
+      - 📝 Note: Additional information
+      - ⚠️ Warning: Important cautions
+      - 💡 Tip: Best practices and shortcuts
+      - 🔍 Deep Dive: Advanced details
+
+      **Special elements:**
+      - Exercises and how they're marked
+      - File paths and naming conventions
+      - Platform-specific instructions (Windows/Mac/Linux)
+  - id: acknowledgments
+    title: Acknowledgments
+    instruction: |
+      Thank those who contributed:
+      - Technical reviewers
+      - Publisher and editorial team
+      - Early readers or beta testers
+      - Open source projects used
+      - Family and supporters
+      - Community members
+
+      Keep it genuine and specific where possible.

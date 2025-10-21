@@ -1,0 +1,217 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: technical-review-report
+  name: Technical Review Report
+  version: 1.0
+  description: Comprehensive technical review findings with accuracy, security, performance, and best practices assessment
+  output:
+    format: markdown
+    filename: "technical-review-{{chapter_number}}-{{date}}.md"
+
+workflow:
+  elicitation: false
+  allow_skip: false
+sections:
+  - id: metadata
+    title: Review Metadata
+    instruction: |
+      Document review information:
+      - Chapter number and title reviewed
+      - Reviewer name and expertise area
+      - Review date
+      - Chapter version/draft number reviewed
+      - Review scope (full chapter, code only, specific sections)
+  - id: executive_summary
+    title: Executive Summary
+    instruction: |
+      High-level overview:
+      - Overall technical quality assessment (Excellent/Good/Needs Work/Major Issues)
+      - Critical issues count (must-fix before publication)
+      - Major issues count (should fix, impacts quality)
+      - Minor issues count (nice-to-fix, improvements)
+      - Recommendation: Ready for publication / Needs revision / Requires major rework
+  - id: technical_accuracy
+    title: Technical Accuracy Findings
+    instruction: |
+      Fact-checking and correctness:
+
+      **Issues Found:**
+      For each inaccuracy:
+      - Location (section, page, line)
+      - Issue description
+      - Severity (Critical/Major/Minor)
+      - Correct information with source reference
+      - Recommended fix
+
+      **Examples:**
+      - "Section 2.3, page 12: States Python 3.8 supports match/case. Actually introduced in 3.10. Source: PEP 634"
+      - "Code example line 45: Using deprecated 'collections.MutableMapping'. Should use 'collections.abc.MutableMapping' per Python 3.3+ docs"
+
+      **Verified Correct:**
+      - List sections that passed accuracy checks
+      - Note particularly well-researched or documented areas
+  - id: code_quality
+    title: Code Quality Issues
+    instruction: |
+      Code example review:
+
+      **Bugs and Errors:**
+      - Syntax errors or code that won't run
+      - Logic errors that produce wrong results
+      - Missing imports or dependencies
+      - Incorrect API usage
+
+      **Best Practices Violations:**
+      - Code style issues (PEP 8, ESLint, etc.)
+      - Inefficient algorithms or approaches
+      - Missing error handling
+      - Hard-coded values that should be configurable
+      - Poor naming conventions
+
+      **Code Organization:**
+      - Unclear or missing comments
+      - Inconsistent formatting
+      - Complex code needing simplification
+      - Missing type hints (if language supports)
+
+      For each issue, provide:
+      - Location (file, line number)
+      - Current code snippet
+      - Issue description
+      - Recommended fix with code example
+  - id: security_concerns
+    title: Security Concerns
+    instruction: |
+      Security review findings:
+
+      **Critical Security Issues:**
+      - Credentials or secrets in code
+      - SQL injection vulnerabilities
+      - XSS vulnerabilities
+      - Insecure authentication/authorization
+      - Unsafe deserialization
+      - Missing input validation
+
+      **Security Best Practices:**
+      - Use of deprecated crypto functions
+      - Weak password hashing
+      - Missing HTTPS/TLS
+      - Insufficient logging of security events
+      - Overly permissive access controls
+
+      For each finding:
+      - Location
+      - Vulnerability description
+      - Potential impact (data breach, code execution, etc.)
+      - Secure code example
+      - Reference to security standard (OWASP, CWE)
+  - id: performance_considerations
+    title: Performance Considerations
+    instruction: |
+      Performance analysis:
+
+      **Performance Issues:**
+      - Inefficient algorithms (O(n²) where O(n) possible)
+      - Unnecessary database queries (N+1 problem)
+      - Missing indexes or caching
+      - Memory leaks or excessive allocation
+      - Blocking operations in async code
+
+      **Scalability Concerns:**
+      - Approaches that won't scale
+      - Resource intensive operations
+      - Missing pagination or limits
+
+      **Recommendations:**
+      - Optimizations to suggest
+      - Better algorithms or data structures
+      - Caching strategies
+      - Profiling recommendations
+
+      Note: Balance between teaching clarity and production optimization.
+  - id: best_practices_assessment
+    title: Best Practices Assessment
+    instruction: |
+      Industry standards compliance:
+
+      **Design Patterns:**
+      - Appropriate use of patterns
+      - Anti-patterns to avoid
+      - Better architectural approaches
+
+      **Testing:**
+      - Test coverage adequacy
+      - Missing test cases
+      - Testing best practices
+
+      **Documentation:**
+      - Code comments quality
+      - Docstring completeness
+      - API documentation
+
+      **Dependencies:**
+      - Outdated packages
+      - Unnecessary dependencies
+      - Version compatibility issues
+  - id: outdated_information
+    title: Outdated Information
+    instruction: |
+      Currency check:
+
+      **Deprecated Features:**
+      - Language features deprecated
+      - Library versions outdated
+      - APIs no longer recommended
+
+      **Current Recommendations:**
+      - Modern alternatives to suggest
+      - Migration paths to mention
+      - Version updates needed
+
+      **Examples:**
+      - "Using React class components; recommend functional components with hooks (current best practice since 2019)"
+      - "References Node.js 12; now EOL. Update examples to Node.js 18 LTS or 20 LTS"
+  - id: positive_findings
+    title: Positive Findings
+    instruction: |
+      What worked well:
+      - Particularly clear explanations
+      - Excellent code examples
+      - Well-designed tutorials
+      - Good use of diagrams
+      - Effective learning progression
+      - Strong practical applications
+
+      Recognizing strengths helps maintain quality in revisions.
+  - id: recommendations
+    title: Recommended Actions
+    instruction: |
+      Prioritized fix list:
+
+      **Must Fix (Critical):**
+      1. [Issue with location and brief description]
+      2. ...
+
+      **Should Fix (Major):**
+      1. [Issue with location and brief description]
+      2. ...
+
+      **Nice to Fix (Minor):**
+      1. [Issue with location and brief description]
+      2. ...
+
+      **Overall Recommendation:**
+      - Ready to proceed? Yes/No
+      - Estimated effort to address issues (hours/days)
+      - Suggest re-review after fixes? Yes/No
+  - id: references
+    title: References Checked
+    instruction: |
+      Documentation and sources verified:
+      - Official documentation URLs
+      - Standards referenced (RFCs, PEPs, etc.)
+      - Third-party libraries checked
+      - Community best practices sources
+
+      This provides traceability for technical claims.

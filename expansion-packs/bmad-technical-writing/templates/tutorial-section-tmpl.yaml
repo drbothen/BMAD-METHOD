@@ -1,0 +1,200 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: tutorial-section
+  name: Tutorial Section
+  version: 1.0
+  description: Step-by-step hands-on tutorial with clear instructions, expected outputs, and troubleshooting
+  output:
+    format: markdown
+    filename: "tutorial-{{topic-slug}}.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: metadata
+    title: Tutorial Metadata
+    instruction: |
+      Tutorial identification:
+      - Tutorial title (clear, action-oriented)
+      - Primary learning objective (what will student accomplish)
+      - Difficulty level (beginner/intermediate/advanced)
+      - Estimated completion time (e.g., "30-45 minutes")
+      - Related chapter or section reference
+    elicit: true
+  - id: prerequisites
+    title: Prerequisites
+    instruction: |
+      What students need before starting:
+      - Prior knowledge required (specific concepts or skills)
+      - Previous tutorials that must be completed
+      - Software/tools needed with version numbers
+      - Environment setup required
+      - Estimated setup time
+      - Links to installation guides if needed
+
+      Be specific and verifiable. Example:
+      - "Python 3.11 or higher installed"
+      - "Completed Tutorial 2: Basic Flask Routes"
+      - "PostgreSQL 15+ running locally"
+    elicit: true
+  - id: overview
+    title: Tutorial Overview
+    instruction: |
+      What this tutorial teaches (2-3 paragraphs):
+      - Real-world problem or use case
+      - What students will build or accomplish
+      - Key concepts demonstrated
+      - Why this approach is valuable
+
+      Set clear expectations for outcomes.
+  - id: step_by_step
+    title: Step-by-Step Instructions
+    instruction: |
+      Numbered steps for tutorial (typically 8-15 steps):
+
+      For each step:
+      1. Clear, actionable instruction (imperative voice: "Create...", "Add...", "Run...")
+      2. Code to write or command to execute
+      3. Expected output or result
+      4. Explanation of what the step accomplishes
+      5. Why this step matters
+
+      **Step Format Example:**
+      ---
+      **Step 3: Create the Database Model**
+
+      Create a new file `models/user.py` and add the following:
+
+      ```python
+      from sqlalchemy import Column, Integer, String
+      from database import Base
+
+      class User(Base):
+          __tablename__ = 'users'
+          id = Column(Integer, primary_key=True)
+          username = Column(String(80), unique=True, nullable=False)
+          email = Column(String(120), unique=True, nullable=False)
+      ```
+
+      **What this does:** Defines a User model with SQLAlchemy ORM, creating a database table with columns for id, username, and email.
+
+      **Why it matters:** ORM models provide type-safe database access and automatic query generation, reducing SQL injection risks.
+
+      **Expected outcome:** File created with no errors. You can verify by running `python -c "from models.user import User; print('Success')"`.
+      ---
+
+      Maintain consistent formatting and depth of explanation throughout.
+    elicit: true
+  - id: expected_outputs
+    title: Expected Outputs
+    instruction: |
+      What students should see at key milestones:
+      - Terminal/console outputs
+      - Screenshots of UI results
+      - File structures created
+      - Test results
+      - Database states
+
+      Include both successful outputs and common intermediate states.
+
+      Example:
+      ```
+      After Step 5, running `flask run` should display:
+       * Running on http://127.0.0.1:5000
+       * Debug mode: on
+
+      After Step 8, visiting http://localhost:5000/users should show:
+      {
+        "users": [],
+        "count": 0
+      }
+      ```
+  - id: troubleshooting
+    title: Common Issues and Troubleshooting
+    instruction: |
+      Problems students might encounter:
+
+      **For each common issue:**
+      - Error message or symptom
+      - Likely cause
+      - How to diagnose
+      - Step-by-step fix
+      - How to verify it's resolved
+
+      **Example:**
+      ---
+      **Issue:** `ModuleNotFoundError: No module named 'flask'`
+
+      **Cause:** Flask not installed in current Python environment
+
+      **Fix:**
+      1. Check virtual environment is activated: `which python` should show venv path
+      2. Install Flask: `pip install flask`
+      3. Verify: `pip list | grep -i flask` should show Flask version
+
+      **Verification:** Re-run `flask run` - should start successfully
+      ---
+
+      Include 3-5 most common issues based on student experience level.
+  - id: verification
+    title: Completion Verification
+    instruction: |
+      How to verify tutorial success:
+      - Final code execution command
+      - Expected final output
+      - Tests to run
+      - Functionality checklist
+
+      Example:
+      ```
+      ✓ Run `python tests/test_user.py` - all tests pass
+      ✓ Visit http://localhost:5000/users - returns JSON
+      ✓ Create user via POST request - receives 201 status
+      ✓ Database contains user record - verify with SQL query
+      ```
+
+      Students should be confident they completed correctly.
+  - id: summary
+    title: What You Learned
+    instruction: |
+      Reinforce learning outcomes:
+      - Key concepts demonstrated in this tutorial
+      - Skills practiced
+      - Patterns or techniques learned
+      - Real-world applications
+
+      Connect back to learning objectives stated in metadata.
+  - id: next_steps
+    title: Next Steps and Extensions
+    instruction: |
+      How to build on this tutorial:
+
+      **Immediate Next Steps:**
+      - Next tutorial in sequence (if applicable)
+      - Related concepts to explore
+
+      **Extension Challenges (optional):**
+      - Enhancements to try independently
+      - Additional features to implement
+      - Performance optimizations to explore
+      - Security hardening to add
+
+      Examples:
+      - "Add password hashing using bcrypt"
+      - "Implement user registration endpoint"
+      - "Add input validation with Pydantic"
+      - "Write integration tests for the full API"
+
+      Extension challenges reinforce learning through application.
+  - id: resources
+    title: Additional Resources
+    instruction: |
+      Further learning materials:
+      - Official documentation links
+      - Relevant tutorials or guides
+      - Community resources
+      - Tools mentioned in tutorial
+
+      Keep focused - only include truly helpful resources.

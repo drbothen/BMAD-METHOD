@@ -1,0 +1,232 @@
+workflow:
+  id: add-chapter-to-existing-book-workflow
+  name: Add New Chapter to Existing Book
+  description: Workflow for adding new chapter while maintaining consistency with existing content. Analyzes existing structure and patterns, plans integration, drafts chapter matching existing style, tests code, reviews consistency, and verifies cross-references.
+  type: chapter-addition
+  project_types:
+    - chapter-addition
+    - content-expansion
+    - brownfield-book-extension
+  sequence:
+    - agent: book-analyst
+      analyzes: existing_structure
+      requires:
+        - existing_book_path
+        - new_chapter_topic
+        - insertion_point
+      notes: "Analyze existing book structure using analyze-existing-book.md task (abbreviated version focusing on structure and patterns). Understand chapter organization, learning progression, where new chapter fits in flow, prerequisites new chapter can assume, how chapter numbers will shift. SAVE OUTPUT: Create chapter-addition-analysis.md"
+
+    - agent: book-analyst
+      extracts: writing_patterns
+      requires: existing book content
+      notes: "Extract writing style patterns using extract-code-patterns.md task (both code and prose patterns). Learn voice/tone, heading hierarchy styles, typical chapter structure (intro→concepts→examples→exercises→summary), terminology conventions, callout usage patterns, code comment styles, cross-reference patterns. Generate style guide. SAVE OUTPUT: Create chapter-addition-style-guide.md"
+
+    - agent: instructional-designer
+      plans: chapter_integration
+      requires:
+        - chapter-addition-analysis.md
+        - new chapter topic
+      notes: "Plan new chapter integration using *design-chapter-outline command (create-chapter-outline.md task). Define learning objectives for new chapter, identify prerequisites (what prior chapters provide), plan how chapter fits learning progression, design chapter structure following existing patterns, plan code examples and exercises, estimate page count to match book style. Use chapter-outline-tmpl.yaml. SAVE OUTPUT: Create new-chapter-outline.md"
+
+    - agent: tutorial-architect
+      drafts: new_chapter
+      requires:
+        - new-chapter-outline.md
+        - chapter-addition-style-guide.md
+      notes: "Draft new chapter using *write-chapter command (write-chapter-draft.md task). Follow outline, match voice/tone from style guide, use extracted heading styles, follow structural patterns, create code examples following code patterns, write exercises matching complexity level, use consistent terminology, match callout styles. Use chapter-draft-tmpl.yaml. SAVE OUTPUT: Create new-chapter-draft.md"
+
+    - agent: code-curator
+      creates: code_examples
+      requires:
+        - new-chapter-draft.md
+        - chapter-addition-style-guide.md (code patterns)
+      notes: "Develop code examples following extracted patterns using *create-code-examples command. Follow import organization patterns, use consistent naming conventions, match comment styles, follow error handling patterns, match code structure patterns, use consistent formatting. Test all code on target versions. SAVE OUTPUT: Code examples integrated into new-chapter-draft.md"
+
+    - agent: technical-reviewer
+      reviews: new_chapter
+      requires: new-chapter-draft.md with code
+      notes: "Technical review of new chapter using *review-accuracy command. Verify technical accuracy, check code correctness, validate prerequisites are appropriate, ensure learning objectives achievable, check difficulty level fits book progression, verify examples teach concepts effectively. Provide feedback. SAVE OUTPUT: Create new-chapter-technical-review.md"
+
+    - agent: technical-editor
+      reviews: consistency
+      requires: new-chapter-draft.md
+      notes: "Editorial review for consistency using *review-consistency command. Verify voice/tone matches existing chapters, check terminology is consistent, validate heading hierarchy matches, ensure callout usage is consistent, check cross-references use book's style, verify formatting matches. Use existing-book-integration-checklist.md. SAVE OUTPUT: Create new-chapter-editorial-review.md"
+
+    - agent: book-analyst
+      validates: cross_references
+      requires: new-chapter-draft.md
+      notes: "Verify all cross-references using *verify-cross-references command. Check new chapter's prerequisites are correctly stated, verify new chapter is referenced from relevant existing chapters if needed, update table of contents with new chapter, adjust chapter numbers in cross-references if chapters shifted, verify index entries added. SAVE OUTPUT: Create cross-reference-updates.md listing all changes needed"
+
+    - agent: tutorial-architect
+      finalizes: new_chapter
+      requires:
+        - technical review feedback
+        - editorial review feedback
+        - cross-reference validation
+      notes: "Finalize new chapter incorporating all feedback. Address technical review comments, fix consistency issues, update cross-references, polish prose, verify code examples, run all checklists (technical-accuracy-checklist.md, code-quality-checklist.md, existing-book-integration-checklist.md). SAVE OUTPUT: Create final new chapter ready for integration"
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: New Chapter Topic + Insertion Point] --> B[book-analyst: Analyze Existing Structure]
+        B --> C[book-analyst: Extract Writing Patterns]
+        C --> D[instructional-designer: Plan Chapter Integration]
+        D --> E{Fits Learning Flow?}
+        E -->|Issues| F[Adjust Topic or Prerequisites]
+        F --> D
+        E -->|Good Fit| G[tutorial-architect: Draft New Chapter]
+        G --> H[code-curator: Create Code Examples]
+        H --> I[code-curator: Test Code Examples]
+        I --> J{Code Tests Pass?}
+        J -->|Failures| K[Fix Code Issues]
+        K --> I
+        J -->|Pass| L[technical-reviewer: Review Chapter]
+        L --> M{Technical Approval?}
+        M -->|Issues| N[Address Technical Feedback]
+        N --> L
+        M -->|Approved| O[technical-editor: Review Consistency]
+        O --> P{Consistency Check?}
+        P -->|Issues| Q[Fix Consistency Problems]
+        Q --> O
+        P -->|Approved| R[book-analyst: Validate Cross-References]
+        R --> S[tutorial-architect: Finalize Chapter]
+        S --> T[New Chapter Complete]
+        T --> U[Integrate into Book]
+        U --> V[Update Table of Contents]
+
+        B -.-> B1[Structure Analysis]
+        C -.-> C1[Style Guide Generated]
+        D -.-> D1[Chapter Outline]
+        G -.-> G1[Initial Draft]
+        L -.-> L1[Technical Review Notes]
+        O -.-> O1[Editorial Review Notes]
+        R -.-> R1[Cross-Reference Updates]
+
+        style V fill:#90EE90
+        style B fill:#FFE4B5
+        style C fill:#FFE4B5
+        style D fill:#DDA0DD
+        style G fill:#FFD700
+        style H fill:#ADD8E6
+        style L fill:#F0E68C
+        style O fill:#F0E68C
+        style R fill:#FFE4B5
+    ```
+
+  decision_guidance:
+    when_to_use:
+      - Adding new chapter to existing book
+      - Expanding book coverage with additional content
+      - Publisher requested additional chapter
+      - Responding to reader requests for missing topics
+      - Extending book without full edition update
+
+    when_not_to_use:
+      - Writing entire new book (use book-planning-workflow)
+      - Updating existing chapters (use book-edition-update-workflow)
+      - Addressing feedback only (use incorporate-review-feedback-workflow)
+      - Replacing existing chapter (use chapter revision workflows)
+
+  quality_gates:
+    structure_analyzed:
+      - Chapter organization understood
+      - Learning progression mapped
+      - Insertion point identified
+      - Prerequisites determined
+      - Chapter numbering impact assessed
+
+    patterns_extracted:
+      - Voice/tone patterns documented
+      - Heading styles extracted
+      - Chapter structure pattern identified
+      - Code patterns documented
+      - Terminology conventions noted
+      - Style guide generated
+
+    integration_planned:
+      - Learning objectives defined
+      - Prerequisites explicitly stated
+      - Learning progression validated
+      - Chapter structure planned
+      - Code examples planned
+      - Exercises designed
+      - Checklist: prerequisite-clarity-checklist.md
+
+    chapter_drafted:
+      - Follows chapter outline
+      - Matches voice/tone
+      - Uses extracted heading styles
+      - Follows structural patterns
+      - Includes planned code and exercises
+      - Uses consistent terminology
+
+    code_examples_created:
+      - Follow extracted code patterns
+      - Import organization matches
+      - Naming conventions consistent
+      - Comment styles match
+      - Formatting consistent
+      - All code tested and working
+      - Checklist: code-quality-checklist.md
+
+    technical_review_passed:
+      - Technical accuracy verified
+      - Code correctness confirmed
+      - Prerequisites appropriate
+      - Learning objectives achievable
+      - Difficulty level appropriate
+      - Checklist: technical-accuracy-checklist.md
+
+    consistency_reviewed:
+      - Voice/tone matches existing chapters
+      - Terminology consistent
+      - Heading hierarchy matches
+      - Callouts consistent
+      - Cross-references use book's style
+      - Checklist: existing-book-integration-checklist.md
+
+    cross_references_validated:
+      - New chapter prerequisites correct
+      - Relevant existing chapters updated
+      - Table of contents updated
+      - Chapter numbers adjusted if shifted
+      - Index entries added
+
+  handoff_prompts:
+    start_to_analysis: "Adding new chapter on {{topic}} to {{book_title}} at {{insertion_point}}. Analyzing existing structure."
+    analysis_to_patterns: "Structure analyzed. Book has {{chapter_count}} chapters. New chapter will be Chapter {{new_number}}. Extracting writing patterns."
+    patterns_to_planning: "Patterns extracted. Style guide created. Planning chapter integration to maintain learning flow."
+    planning_to_drafting: "Chapter integration planned. {{prereq_count}} prerequisite chapters identified. Drafting new chapter following existing patterns."
+    drafting_to_code: "Chapter draft complete ({{page_count}} pages estimated). Creating {{example_count}} code examples following extracted patterns."
+    code_to_technical: "Code examples created and tested. {{example_count}}/{{example_count}} passing. Ready for technical review."
+    technical_to_editorial: "Technical review complete and approved. Ready for editorial consistency review."
+    editorial_to_references: "Editorial review approved. Validating all cross-references and chapter number impacts."
+    references_to_final: "Cross-references validated. {{update_count}} references to update. Finalizing chapter."
+    final_to_complete: "New chapter finalized. Ready to integrate into {{book_title}} as Chapter {{new_number}}."
+
+  time_estimates:
+    analyze_structure: "2-4 hours (understand existing book)"
+    extract_patterns: "3-5 hours (comprehensive pattern analysis)"
+    plan_integration: "4-6 hours (learning flow planning)"
+    draft_chapter: "20-40 hours (typical chapter, varies by length)"
+    create_code_examples: "8-16 hours (depends on complexity)"
+    test_code: "2-4 hours (comprehensive testing)"
+    technical_review: "4-6 hours (thorough review)"
+    editorial_review: "2-4 hours (consistency check)"
+    validate_references: "2-3 hours (cross-reference validation)"
+    finalize_chapter: "4-6 hours (incorporate feedback)"
+    total_time: "50-95 hours for typical chapter addition"
+
+  best_practices:
+    - Analyze first - understand existing book before adding
+    - Extract patterns thoroughly - consistency is critical
+    - Plan integration carefully - ensure chapter fits learning flow
+    - Match existing style religiously - new content should be invisible
+    - Test all code comprehensively - no exceptions
+    - Get technical review - new content needs validation
+    - Check consistency obsessively - use existing-book-integration-checklist.md
+    - Validate cross-references - broken references frustrate readers
+    - Update table of contents - don't forget administrative updates
+    - Consider chapter numbering - new chapter may shift existing numbers
+    - Document insertion rationale - why this chapter? why here?
+    - Communicate with publisher - new chapter may affect page count/price

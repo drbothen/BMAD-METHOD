@@ -1,0 +1,149 @@
+workflow:
+  id: code-example-workflow
+  name: Create Tested Code Example
+  description: Complete code example development workflow from initial code to tested, secure, documented example. Guides code curators through development, testing, quality verification, security review, and documentation. Ensures all code examples are production-quality, secure, and well-documented before inclusion in technical content.
+  type: code-development
+  project_types:
+    - technical-book
+    - tutorial-series
+    - training-materials
+    - technical-documentation
+  sequence:
+    - agent: code-curator
+      creates: code-example/
+      requires:
+        - example_purpose
+        - target_version
+      notes: "Develop code example using *create-example command. Write clean, idiomatic code that demonstrates the concept clearly. Include proper error handling, follow language conventions, add inline comments for complex logic. Use templates/code-example-tmpl.yaml. SAVE OUTPUT: Commit code to repository in examples/{{example_name}}/ folder"
+
+    - agent: code-curator
+      tests: code-example/
+      requires: code draft
+      notes: "Test code on all target platforms and versions using *test-code command. Verify code runs correctly on target version {{target_version}}, test edge cases and error conditions, verify dependencies install correctly, check compatibility across platforms. Use code-testing-checklist.md. SAVE OUTPUT: Add test results to examples/{{example_name}}/test-results.md"
+
+    - agent: code-curator
+      validates: code-example/
+      requires: tested code
+      notes: "Verify code quality and best practices using *verify-quality command. Check code follows language style guide, variable names are descriptive, functions are appropriately sized, code is DRY (no duplication), complexity is reasonable. Use code-quality-checklist.md. SAVE OUTPUT: Add quality report to examples/{{example_name}}/quality-report.md"
+
+    - agent: code-curator
+      secures: code-example/
+      requires: quality-verified code
+      notes: "Perform security review using *security-check command. Check no hardcoded secrets or credentials, input validation is present, no SQL injection vulnerabilities, dependencies have no known CVEs, secure coding practices followed. Use security-best-practices-checklist.md. SAVE OUTPUT: Add security report to examples/{{example_name}}/security-report.md"
+
+    - agent: code-curator
+      documents: code-example/
+      requires: secure code
+      notes: "Add comprehensive documentation and comments using *document-example command. Include purpose and what the example demonstrates, prerequisites and dependencies, step-by-step explanation of key code sections, expected output or behavior, common issues and troubleshooting. SAVE OUTPUT: Create README.md in examples/{{example_name}}/ with full documentation and set example status to 'Ready for Publication'"
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: Example Purpose] --> B[code-curator: Write Code]
+        B --> C[code-curator: Test on Target Platforms]
+        C --> D{Tests Pass?}
+        D -->|Failures| E[Fix Issues]
+        E --> C
+        D -->|All Pass| F[code-curator: Quality Check]
+        F --> G{Meets Standards?}
+        G -->|Issues| H[Refactor Code]
+        H --> F
+        G -->|Pass| I[code-curator: Security Review]
+        I --> J{Security Issues?}
+        J -->|Found| K[Fix Security Issues]
+        K --> I
+        J -->|Clean| L[code-curator: Add Documentation]
+        L --> M[Example Complete]
+        M --> N[Ready for Publication]
+
+        C -.-> C1[Optional: Cross-platform Testing]
+        F -.-> F1[Optional: Performance Profiling]
+        I -.-> I1[Optional: Dependency Audit]
+
+        style N fill:#90EE90
+        style B fill:#FFE4B5
+        style C fill:#FFE4B5
+        style F fill:#ADD8E6
+        style I fill:#F08080
+        style L fill:#F0E68C
+    ```
+
+  decision_guidance:
+    when_to_use:
+      - Creating code examples for technical books or tutorials
+      - Developing sample applications for documentation
+      - Building demo code for training materials
+      - Need production-quality, tested code examples
+      - Security and quality standards must be met
+
+    when_not_to_use:
+      - Quick code snippets for blog posts (simplified workflow)
+      - Internal-only code examples (less rigor needed)
+      - Pseudocode or conceptual examples (no execution)
+
+  quality_gates:
+    code_written:
+      - Code demonstrates intended concept clearly
+      - Follows language conventions and idioms
+      - Includes proper error handling
+      - Inline comments explain complex logic
+      - No obvious bugs or issues
+
+    testing_complete:
+      - Runs correctly on target version
+      - Edge cases tested
+      - Error conditions handled
+      - Dependencies install cleanly
+      - Cross-platform compatibility verified (if applicable)
+      - Checklist: code-testing-checklist.md
+
+    quality_verified:
+      - Follows language style guide
+      - Variable and function names are descriptive
+      - Functions are appropriately sized
+      - No code duplication (DRY)
+      - Complexity is reasonable for learning example
+      - Checklist: code-quality-checklist.md
+
+    security_passed:
+      - No hardcoded secrets or credentials
+      - Input validation present where needed
+      - No injection vulnerabilities
+      - Dependencies have no known CVEs
+      - Secure coding practices followed
+      - Checklist: security-best-practices-checklist.md
+
+    documentation_complete:
+      - Purpose clearly stated
+      - Prerequisites listed
+      - Key code sections explained
+      - Expected output described
+      - Troubleshooting guidance included
+
+  handoff_prompts:
+    start_to_write: "Creating code example for {{example_purpose}} targeting version {{target_version}}. Writing clean, idiomatic code."
+    write_to_test: "Code draft complete at examples/{{example_name}}/. Running tests on target platforms and versions."
+    test_to_quality: "All tests passing. Performing code quality review against best practices and style guidelines."
+    quality_to_security: "Code quality verified. Running security review to check for vulnerabilities and secure coding practices."
+    security_to_document: "Security review passed. Adding comprehensive documentation and usage instructions."
+    document_to_complete: "Documentation complete. Example ready for inclusion in technical content at examples/{{example_name}}/."
+
+  time_estimates:
+    write_code: "1-4 hours (depending on complexity)"
+    test_code: "1-2 hours"
+    verify_quality: "30 minutes - 1 hour"
+    security_check: "30 minutes - 1 hour"
+    document_example: "1-2 hours"
+    total_time: "4-10 hours per code example"
+
+  best_practices:
+    - Write code as if teaching a junior developer
+    - Test on exact version readers will use
+    - Prefer clarity over cleverness in example code
+    - Show best practices, not shortcuts
+    - Include error handling even in simple examples
+    - Comment the "why" not just the "what"
+    - Test installation from scratch (fresh environment)
+    - Document common pitfalls proactively
+    - Keep examples focused (one concept per example)
+    - Make examples copy-paste ready but encourage understanding

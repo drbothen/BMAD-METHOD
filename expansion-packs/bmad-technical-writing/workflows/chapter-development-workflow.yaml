@@ -1,0 +1,195 @@
+workflow:
+  id: chapter-development-workflow
+  name: Write and Refine Chapter
+  description: Complete chapter creation workflow from outline to publisher-ready manuscript. v2.0 - Orchestrates section-driven development (section-planning → section-development → chapter-assembly). Can also be used for traditional full-chapter writing. Emphasizes learning objectives, hands-on tutorials, tested code examples, and professional quality standards.
+  type: chapter-writing
+  version: 2.0
+  project_types:
+    - technical-book
+    - tutorial-series
+    - training-materials
+    - technical-documentation
+  sequence:
+    - agent: tutorial-architect
+      creates: chapter-outline.md
+      requires: book-outline.md
+      notes: "Create detailed chapter outline using *create-chapter-outline command. Define learning objectives, prerequisites, main sections, exercises, and code examples needed. SAVE OUTPUT: Copy final chapter-outline.md to docs/outlines/chapter-{{chapter_number}}-outline.md"
+
+    - agent: tutorial-architect
+      creates: section-list.md
+      orchestrates: section-planning-workflow
+      requires: chapter-outline.md
+      notes: "SECTION-DRIVEN APPROACH: Break chapter into 5-8 deliverable sections using section-planning-workflow. Each section 2-5 pages with clear acceptance criteria. Tutorial Architect and Instructional Designer identify section boundaries, create section plans, and validate learning flow. SAVE OUTPUT: docs/sections/chapter-{{chapter_number}}-section-list.md with all section plans. ALTERNATIVE: Skip this step for traditional full-chapter writing approach."
+
+    - agent: tutorial-architect
+      creates: completed-sections[]
+      orchestrates: section-development-workflow
+      requires: section-list.md
+      notes: "SECTION-DRIVEN APPROACH: For each section in section-list, execute section-development-workflow (Code Curator develops code → Tutorial Architect writes section → Technical Reviewer reviews → Tutorial Architect finalizes). Sections can be developed in parallel if dependencies allow. Mark each section DONE when acceptance criteria met. SAVE OUTPUT: docs/sections/chapter-{{chapter_number}}/section-{{n}}-final.md for each section. ALTERNATIVE: Skip and use traditional drafting if not using section approach."
+
+    - agent: tutorial-architect
+      creates: chapter-integrated.md
+      orchestrates: chapter-assembly-workflow
+      requires: completed-sections[]
+      notes: "SECTION-DRIVEN APPROACH: Execute chapter-assembly-workflow to merge all completed sections. Tutorial Architect merges and improves transitions → Instructional Designer validates learning flow → Technical Reviewer performs full chapter review → Tutorial Architect revises → Technical Editor copy edits → Tutorial Architect finalizes. SAVE OUTPUT: docs/chapters/chapter-{{chapter_number}}-final.md. ALTERNATIVE: For traditional approach, use original sequence (code-curator develops all code → tutorial-architect writes full draft → technical-reviewer reviews → revise → copy-edit → finalize)."
+
+    - agent: tutorial-architect
+      validates: chapter-final.md
+      requires: chapter-integrated.md
+      notes: "FINAL VALIDATION (both approaches): Run chapter-completeness-checklist. Verify all learning objectives addressed, code tested, quality gates passed. Mark chapter status as 'Ready for Publication'. This step ensures quality regardless of section-driven or traditional approach used."
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: New Chapter] --> B[tutorial-architect: Create Outline]
+        B --> C{Section-Driven or Traditional?}
+
+        C -->|Section-Driven v2.0| D[Plan Sections: section-planning-workflow]
+        D --> E[Develop Sections: section-development-workflow]
+        E --> F{All Sections DONE?}
+        F -->|No| E
+        F -->|Yes| G[Assemble Chapter: chapter-assembly-workflow]
+        G --> H[Final Validation]
+        H --> I[Chapter Ready for Publication]
+
+        C -->|Traditional| J[code-curator: Develop All Code]
+        J --> K[tutorial-architect: Write Full Draft]
+        K --> L[technical-reviewer: Review Chapter]
+        L --> M{Issues?}
+        M -->|Yes| N[Revise]
+        N --> L
+        M -->|No| O[technical-editor: Copy Edit]
+        O --> H
+
+        D -.-> D1[Break into 5-8 sections]
+        E -.-> E1[Parallel development possible]
+        G -.-> G1[Merge + Transitions + Review]
+
+        style I fill:#90EE90
+        style B fill:#FFE4B5
+        style D fill:#FFE4B5
+        style E fill:#FFE4B5
+        style G fill:#ADD8E6
+        style H fill:#F0E68C
+        style J fill:#FFE4B5
+        style K fill:#FFE4B5
+    ```
+
+  decision_guidance:
+    when_to_use_section_driven:
+      - Chapters 15+ pages (too large for single sitting)
+      - Want incremental progress tracking ("5 of 8 sections complete")
+      - Need parallel development (multiple sections in progress)
+      - Want to review work-in-progress before full chapter done
+      - Prefer story-driven iterative approach (BMad analog)
+
+    when_to_use_traditional:
+      - Short chapters (<10-12 pages)
+      - Simple reference sections
+      - Author prefers writing full chapter at once
+      - Chapter already partially written
+
+    general_when_to_use:
+      - Writing technical book chapters with code examples
+      - Creating tutorial-based training materials
+      - Developing programming books or guides
+      - Need for technical accuracy and professional polish
+      - Multiple review stages required
+      - Publisher quality standards must be met
+
+    when_not_to_use:
+      - Simple blog posts or articles (use simplified workflow)
+      - Reference documentation only (no tutorials)
+      - Quick drafts without review requirements
+
+  quality_gates:
+    outline_complete:
+      - Learning objectives defined (3-5)
+      - Prerequisites clearly stated
+      - All code examples identified
+      - Exercise plan created
+      - Checklist: prerequisite-clarity-checklist.md
+
+    draft_complete:
+      - All sections from outline present
+      - Code examples inline and explained
+      - Exercises included with hints
+      - Learning objectives addressed
+      - Checklist: chapter-completeness-checklist.md
+
+    technical_review_passed:
+      - No critical technical errors
+      - All code tested and working
+      - Security best practices followed
+      - No outdated information
+      - Checklists: technical-accuracy, security-best-practices, performance-considerations
+
+    editorial_complete:
+      - Grammar and spelling clean
+      - Terminology consistent
+      - Publisher style followed
+      - Accessibility requirements met
+      - Checklists: accessibility-checklist, publisher-specific checklist
+
+  handoff_prompts:
+    section_driven_flow:
+      outline_to_planning: "Chapter outline complete with {{objective_count}} learning objectives and {{code_count}} code examples. Breaking into sections using section-planning-workflow."
+      planning_to_development: "Section planning complete. {{section_count}} sections defined. Each section 2-5 pages with clear acceptance criteria. Begin section-development-workflow for each section."
+      development_to_assembly: "All {{section_count}} sections DONE. Total ~{{page_count}} pages of content complete. Ready for chapter-assembly-workflow to merge and polish."
+      assembly_to_final: "Chapter assembly complete. All sections integrated with improved transitions. Full technical review and copy editing done. Final validation in progress."
+
+    traditional_flow:
+      architect_to_curator: "Chapter outline complete with {{code_count}} code examples identified. Save outline to docs/outlines/, then develop and test all code examples."
+      curator_to_architect: "All code examples developed and tested in chapter-{{chapter_number}}/ folder. Tests passing. Ready for chapter draft writing."
+      architect_to_reviewer: "Chapter draft complete at docs/chapters/chapter-{{chapter_number}}-draft.md. All {{objective_count}} learning objectives addressed. Ready for technical review."
+      reviewer_to_architect: "Technical review complete. Found {{critical_count}} critical, {{major_count}} major, and {{minor_count}} minor issues. Review report at reviews/technical-review-chapter-{{chapter_number}}.md. Please address and revise."
+      revised_to_editor: "Technical review issues addressed. Revised chapter ready for copy editing."
+
+    both_approaches:
+      editor_to_architect: "Copy editing complete. Made improvements to clarity, consistency, and style. Change summary attached. Please review and approve."
+      architect_final: "Editorial changes approved. Chapter finalized at docs/chapters/chapter-{{chapter_number}}-final.md. Status: Ready for Publication."
+
+  time_estimates:
+    section_driven_approach:
+      create_outline: "2-4 hours"
+      plan_sections: "6-11 hours (section-planning-workflow)"
+      develop_sections: "33-84 hours (5.5-10.5 hrs per section × 6-8 sections, can be parallel)"
+      assemble_chapter: "13-24 hours (chapter-assembly-workflow)"
+      total_time: "54-123 hours per chapter (significant parallel development possible)"
+
+    traditional_approach:
+      create_outline: "2-4 hours"
+      develop_code: "4-8 hours (depending on complexity)"
+      write_draft: "12-20 hours (15-30 page chapter)"
+      technical_review: "3-5 hours"
+      revision: "4-8 hours"
+      copy_edit: "2-4 hours"
+      finalization: "1-2 hours"
+      total_time: "28-51 hours per chapter (sequential, no parallelization)"
+
+    comparison_notes: "Section-driven has higher total time but allows parallel work and incremental progress. Traditional is faster for solo authors on short chapters."
+
+  best_practices:
+    general:
+      - Start with strong learning objectives - they guide everything
+      - Test ALL code before including in chapter
+      - Get technical review before editorial polish
+      - Address critical issues before moving forward
+      - Maintain author voice during editing
+      - Keep reader learning experience as top priority
+
+    section_driven_specific:
+      - Choose section-driven for chapters 15+ pages
+      - Plan all sections before developing any (see dependencies)
+      - Develop sections that have no dependencies in parallel
+      - Mark sections DONE only when acceptance criteria met
+      - Track progress: "Chapter 3: 5 of 8 sections complete"
+      - Review sections incrementally (catch issues early)
+      - Use section-driven for story-like iterative workflow
+
+    traditional_specific:
+      - Choose traditional for short chapters (<12 pages)
+      - Good for solo authors who prefer full chapter flow
+      - Faster for simple reference chapters
+      - Use tutorial-section-tmpl for hands-on sections
+      - Progressive difficulty in exercises (basic to advanced)

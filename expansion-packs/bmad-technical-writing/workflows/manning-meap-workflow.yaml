@@ -1,0 +1,199 @@
+workflow:
+  id: manning-meap-workflow
+  name: Prepare Manning MEAP Chapter
+  description: Package individual chapter for Manning Early Access Program (MEAP). Ensures chapters work standalone, maintain consistent voice, link to code repository, and meet Manning's iterative publication requirements.
+  type: publisher-submission
+  version: 1.0
+  project_types:
+    - technical-book
+  publisher: Manning
+  sequence:
+    - agent: technical-editor
+      validates: chapter-standalone.md
+      requires: meap-chapter.md
+      notes: "MEAP chapters release individually, so each must work standalone. Verify: chapter introduces necessary context, doesn't assume previous chapters read, defines terms on first use, includes self-contained examples. Check manning-meap-checklist for standalone requirements. SAVE OUTPUT: standalone-validation-report.md"
+
+    - agent: technical-editor
+      validates: voice-consistency.md
+      requires: meap-chapter.md, previous-meap-chapters[]
+      notes: "Manning emphasizes consistent authorial voice across chapters. Verify: tone matches previous MEAP releases, terminology consistent, code style unchanged, explanation approach similar, reader engagement style consistent. Compare to published MEAP chapters. SAVE OUTPUT: voice-consistency-report.md"
+
+    - agent: book-publisher
+      creates: code-repository-links.md
+      requires: chapter-code/
+      notes: "Link chapter to GitHub code repository. Ensure: chapter code in dedicated folder, README.md explains setup, dependencies listed, running instructions clear, tests included. Add repository link to chapter introduction. Verify code works independently. SAVE OUTPUT: repository-integration-checklist.md"
+
+    - agent: book-publisher
+      validates: meap-format.md
+      requires: chapter-standalone-validated, voice-validated
+      notes: "Apply Manning MEAP format requirements. Check: chapter length (10-30 pages typical), code examples formatted, sidebars and margin notes used appropriately, figures captioned, exercises included. Run manning-meap-checklist. SAVE OUTPUT: meap-format-validation.md"
+
+    - agent: book-publisher
+      creates: meap-chapter-package/
+      requires: format-validated
+      notes: "Finalize MEAP chapter package for Manning. Structure: chapter-XX.md (or .docx), images/ (high-res), code-link.md, author-notes.md (changes from reader feedback if applicable). Prepare for incremental publication. SAVE OUTPUT: meap-package/chapter-{{chapter_number}}/"
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: Chapter Draft Ready] --> B[technical-editor: Verify Standalone]
+        B --> C{Works Standalone?}
+        C -->|No| D[Add Context/Definitions]
+        D --> B
+        C -->|Yes| E[technical-editor: Check Voice Consistency]
+        E --> F{Voice Consistent?}
+        F -->|No| G[Adjust Tone/Style]
+        G --> E
+        F -->|Yes| H[book-publisher: Link Code Repository]
+        H --> I[book-publisher: Validate MEAP Format]
+        I --> J{Format Valid?}
+        J -->|No| K[Fix Format Issues]
+        K --> I
+        J -->|Yes| L[book-publisher: Finalize MEAP Package]
+        L --> M[Submit to Manning MEAP]
+        M --> N[Collect Reader Feedback]
+        N --> O{Revisions Needed?}
+        O -->|Yes| P[Revise Chapter]
+        P --> B
+        O -->|No| Q[Chapter Final for Print]
+
+        style Q fill:#90EE90
+        style B fill:#FFE4B5
+        style E fill:#FFE4B5
+        style I fill:#F0E68C
+        style L fill:#ADD8E6
+        style N fill:#FFD700
+    ```
+
+  quality_gates:
+    standalone_requirements:
+      - Chapter introduces necessary background
+      - Doesn't assume previous chapters read
+      - Terms defined on first use (even if defined earlier)
+      - Examples self-contained
+      - Prerequisites explicitly stated
+      - Can be read out of sequence
+      - Checklist: manning-meap-checklist.md
+
+    voice_consistency:
+      - Tone matches previous MEAP chapters
+      - Terminology consistent across chapters
+      - Code style unchanged
+      - Explanation approach similar
+      - Reader engagement style consistent
+      - Formality level matches
+
+    code_integration:
+      - Code repository linked in chapter
+      - Chapter code in dedicated GitHub folder
+      - README.md with setup instructions
+      - Dependencies clearly listed
+      - Running instructions provided
+      - Tests included and passing
+      - Code works independently
+
+    meap_format:
+      - Chapter length appropriate (10-30 pages)
+      - Code examples properly formatted
+      - Sidebars for advanced topics
+      - Margin notes for additional context
+      - Figures with descriptive captions
+      - Exercises or practice problems included
+      - Summary section at end
+
+  handoff_prompts:
+    editor_standalone_check: "Standalone validation complete for Chapter {{chapter_number}}. {{issue_count}} context gaps identified. Chapter now includes necessary background, term definitions, and self-contained examples. Ready for voice consistency check."
+    editor_voice_check: "Voice consistency validated for Chapter {{chapter_number}}. Compared against {{previous_chapter_count}} previous MEAP chapters. Tone, terminology, and code style consistent. {{adjustment_count}} minor adjustments made. Ready for code integration."
+    publisher_code_link: "Code repository integration complete. Chapter {{chapter_number}} code available at {{repo_url}}/chapter-{{chapter_number}}. README.md includes setup and running instructions. {{test_count}} tests passing. Ready for MEAP format validation."
+    publisher_format_check: "MEAP format validation complete. Chapter {{chapter_number}} is {{page_count}} pages. {{code_example_count}} code examples, {{figure_count}} figures, {{exercise_count}} exercises included. All formatting requirements met. Ready for package finalization."
+    publisher_package: "MEAP chapter package finalized. Location: meap-package/chapter-{{chapter_number}}/. Includes: chapter file, {{image_count}} images, code repository link, author notes. Ready for Manning MEAP submission."
+    meap_published: "Chapter {{chapter_number}} published to Manning MEAP. Available to early access readers. Monitoring feedback at forum/discussion-{{chapter_number}}. Will incorporate feedback in final revision."
+
+  manning_meap_specific:
+    program_overview:
+      - MEAP = Manning Early Access Program
+      - Chapters released incrementally as written
+      - Readers purchase early access, get updates
+      - Reader feedback incorporated before print
+      - Iterative publication model
+
+    chapter_requirements:
+      - Must work standalone (readers may skip chapters)
+      - Consistent voice across all MEAP releases
+      - Code repository always up-to-date
+      - Length: 10-30 pages typical
+      - Quality: publishable, not draft quality
+
+    reader_feedback:
+      - Manning forum for reader discussions
+      - Authors expected to respond to feedback
+      - Incorporate substantive feedback in revisions
+      - Track feedback for each chapter
+      - Address technical errors immediately
+
+    iterative_improvements:
+      - MEAP chapters can be revised before print
+      - Reader feedback identifies confusing sections
+      - Errors caught early by engaged readers
+      - Opportunity to improve clarity
+      - Print version benefits from MEAP feedback
+
+    code_repository:
+      - GitHub repository required
+      - Public or private (Manning preference: public)
+      - Organized by chapter
+      - Keep synchronized with MEAP releases
+      - Update if reader feedback identifies bugs
+
+  time_estimates:
+    standalone_validation: "2-4 hours (add context as needed)"
+    voice_consistency_check: "1-2 hours"
+    code_repository_integration: "1-2 hours"
+    meap_format_validation: "1-2 hours"
+    package_preparation: "1 hour"
+    reader_feedback_review: "2-4 hours (ongoing after publication)"
+    revision_incorporation: "4-8 hours (if substantive feedback)"
+    total_initial_submission: "6-11 hours per chapter"
+    total_with_revisions: "10-19 hours per chapter"
+
+  best_practices:
+    - Make chapters standalone even if book has sequence
+    - Establish voice in first MEAP chapter, maintain it
+    - Link code repository early, keep it updated
+    - Respond to reader feedback promptly
+    - Use MEAP feedback to improve later chapters
+    - Sidebars for advanced topics (keeps main flow clean)
+    - "Manning's conversational style: you'll build, not we will"
+    - Margin notes add depth without interrupting flow
+    - Exercises reinforce learning
+    - Summary section helps retention
+
+  common_pitfalls:
+    - Assuming readers read previous MEAP chapters (they may not)
+    - Inconsistent voice between chapters (jarring for readers)
+    - Outdated code repository (frustrates readers)
+    - Ignoring reader feedback (missing improvement opportunities)
+    - Chapters too short (<10 pages, feels incomplete)
+    - Chapters too long (>40 pages, overwhelming for MEAP)
+    - Missing exercises (readers want practice)
+    - No summary section (no reinforcement)
+    - Undefined terms (assuming knowledge from earlier chapters)
+    - Broken code repository links (immediate reader complaint)
+
+  meap_feedback_workflow:
+    - Chapter published to MEAP
+    - Readers discuss in Manning forum
+    - Author monitors discussion weekly
+    - Categorize feedback: errors, unclear sections, requests
+    - Fix technical errors immediately (issue update)
+    - Plan clarity improvements for next revision
+    - Incorporate feedback before print deadline
+    - Thank engaged readers in acknowledgments
+
+  coordination_with_full_book:
+    - MEAP chapters become book chapters (with revisions)
+    - Maintain chapter numbering
+    - Standalone chapters fine; final book has continuity
+    - Cross-references added in final edit (after MEAP complete)
+    - Index added in final production (not in MEAP)
+    - MEAP readers get final book updates automatically

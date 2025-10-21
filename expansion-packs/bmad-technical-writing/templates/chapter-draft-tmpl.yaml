@@ -1,0 +1,161 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: chapter-draft
+  name: Chapter Draft
+  version: 1.0
+  description: Complete chapter manuscript with introduction, main content, code examples, exercises, and summary
+  output:
+    format: markdown
+    filename: "chapter-{{chapter_number}}-draft.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: header
+    title: Chapter Header
+    instruction: |
+      Chapter identification:
+      - Chapter number and title
+      - Learning objectives (3-5 measurable outcomes)
+      - Prerequisites (what readers need to know)
+      - Estimated reading time (e.g., "45-60 minutes")
+      - Tools/software required with version numbers
+    elicit: true
+  - id: introduction
+    title: Chapter Introduction
+    instruction: |
+      Opening section (2-4 paragraphs):
+      - Hook: Compelling real-world scenario or problem
+      - Context: Why this topic matters
+      - Overview: What will be covered in this chapter
+      - Preview: What readers will build or accomplish
+      - Motivation: Real-world applications and relevance
+
+      The introduction should excite readers and set clear expectations.
+    elicit: true
+  - id: main_sections
+    title: Main Content Sections
+    instruction: |
+      For each major section (typically 3-5 sections per chapter):
+
+      **Section Structure:**
+      1. Concept Introduction
+         - Explain the concept clearly with analogies where helpful
+         - Define key terms and technical vocabulary
+         - Provide context and background
+
+      2. Tutorial/Walkthrough
+         - Step-by-step implementation
+         - Clear, numbered instructions
+         - Expected outputs at each step
+         - Screenshots or diagrams where helpful
+
+      3. Code Examples
+         - Complete, tested code examples
+         - Inline explanations with comments
+         - Best practices highlighted
+         - Common mistakes to avoid
+
+      4. Exercises
+         - Practice problems aligned with section objectives
+         - Progressive difficulty (basic to challenging)
+         - Hints and guidance provided
+
+      Progress from foundational concepts to advanced topics within the chapter.
+    elicit: true
+  - id: code_examples
+    title: Code Examples
+    instruction: |
+      Integrated code examples throughout the chapter:
+      - Complete, runnable code (not fragments)
+      - Proper syntax highlighting language tags
+      - Comments explaining key lines
+      - Input/output examples showing expected results
+      - Error handling demonstrated
+      - Best practices followed
+      - Version compatibility noted (e.g., "Python 3.11+")
+
+      Ensure all code has been tested and runs correctly.
+    elicit: true
+  - id: exercises_practice
+    title: Practice Exercises
+    instruction: |
+      End-of-chapter exercises (4-6 exercises):
+
+      **Basic Exercises (2-3):**
+      - Reinforce fundamental concepts from chapter
+      - Provide step-by-step guidance
+      - Solutions or detailed hints included
+
+      **Intermediate Exercises (1-2):**
+      - Require combining multiple concepts
+      - Less guidance, more independent problem-solving
+      - Hints provided, full solutions optional
+
+      **Challenge Exercise (1):**
+      - Advanced application of chapter concepts
+      - Minimal guidance
+      - Extension of topics for deeper learning
+
+      Each exercise should include:
+      - Clear instructions
+      - Estimated completion time
+      - Difficulty level indicator
+      - Learning objective addressed
+    elicit: true
+  - id: summary
+    title: Chapter Summary
+    instruction: |
+      Concluding section (1-2 pages):
+
+      **Key Takeaways:**
+      - Bullet list of main concepts covered
+      - Skills acquired checklist
+      - Important terms and definitions
+
+      **What You Accomplished:**
+      - Concrete deliverables or knowledge gained
+      - How this builds on previous chapters
+
+      **Looking Ahead:**
+      - Preview of next chapter topics
+      - How upcoming content builds on this foundation
+
+      **Further Reading (optional):**
+      - Official documentation links
+      - Recommended articles or resources
+      - Community resources or tools
+  - id: code_repository
+    title: Code Repository References
+    instruction: |
+      Code file organization:
+      - List all code files for this chapter
+      - Repository structure and location
+      - How to run/test the code
+      - Dependencies and installation instructions
+      - Expected directory structure
+
+      Example:
+      ```
+      chapter-03/
+        ├── examples/
+        │   ├── basic-auth.py
+        │   └── jwt-implementation.py
+        ├── exercises/
+        │   ├── exercise-01-solution.py
+        │   └── exercise-02-starter.py
+        └── tests/
+            └── test_auth.py
+      ```
+  - id: cross_references
+    title: Cross-References
+    instruction: |
+      Internal and external references:
+      - Links to related chapters (e.g., "See Chapter 2, Section 2.3")
+      - External documentation references
+      - Related topics for further exploration
+      - Prerequisites review links
+
+      Ensure cross-references are specific (chapter, section, page number where possible).

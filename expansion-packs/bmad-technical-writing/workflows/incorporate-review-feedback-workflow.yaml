@@ -1,0 +1,199 @@
+workflow:
+  id: incorporate-review-feedback-workflow
+  name: Process Technical Review Comments
+  description: Systematic workflow for addressing reviewer feedback from technical reviewers, publishers, and beta readers. Triages feedback by severity, addresses critical/important/optional items systematically, tests changes, and tracks completion.
+  type: feedback-incorporation
+  project_types:
+    - reviewer-feedback
+    - publisher-revisions
+    - beta-reader-feedback
+    - brownfield-improvements
+  sequence:
+    - agent: book-analyst
+      creates: feedback-tracking-log.md
+      requires: reviewer_feedback
+      notes: "Collect and categorize all feedback using incorporate-reviewer-feedback.md task. Gather feedback from technical reviewers, publishers, and beta readers. Triage into Critical (technical errors, broken code, security, blocking issues), Important (clarity, missing examples, structure), and Nice-to-have (enhancements, style preferences). Create structured tracking log with ID, chapter, severity, issue, requester, status, resolution. SAVE OUTPUT: Copy to docs/feedback/feedback-tracking-log.md"
+
+    - agent: code-curator
+      fixes: critical_code_issues
+      requires: feedback-tracking-log.md (critical items)
+      notes: "Address all critical code issues first using *fix-code command. Fix broken code examples, resolve technical errors, patch security vulnerabilities, update deprecated methods. Test every fix on target version(s). Do not proceed to next step until ALL critical code issues are resolved and tested. Update tracking log status to 'Done' for each. SAVE OUTPUT: Document code fixes in critical-fixes-log.md"
+
+    - agent: tutorial-architect
+      fixes: critical_text_issues
+      requires: feedback-tracking-log.md (critical items)
+      notes: "Address all critical text issues using *revise-section command. Fix major clarity problems, correct technical inaccuracies in explanations, add missing prerequisites, resolve misleading statements. Ensure changes maintain voice/tone consistency. Do not proceed until ALL critical text issues resolved. Update tracking log. SAVE OUTPUT: Document text changes in critical-fixes-log.md"
+
+    - agent: code-curator
+      tests: critical_fixes
+      requires: critical fixes complete
+      notes: "Test all critical code fixes comprehensively using *test-code command (test-code-examples.md task). Verify fixed examples now run correctly, check outputs match updated text, run regression tests to ensure other examples unaffected. All tests must pass before proceeding. SAVE OUTPUT: Append test results to critical-fixes-log.md"
+
+    - agent: technical-reviewer
+      validates: critical_fixes
+      requires: tested critical fixes
+      notes: "Verify all critical issues are properly resolved using *verify-fixes command. Review each critical fix, confirm technical accuracy, validate code follows best practices, ensure security issues are fully addressed. Approve before proceeding to important issues. SAVE OUTPUT: Create critical-review-approval.md"
+
+    - agent: tutorial-architect
+      fixes: important_issues
+      requires: critical issues resolved
+      notes: "Address important issues systematically. Improve clarity in identified sections, add missing examples where requested, reorganize content if structure issues identified, expand incomplete coverage areas. Use update-chapter-for-version.md or relevant task. Follow extracted code patterns. Update tracking log as items complete. SAVE OUTPUT: Document changes in important-fixes-log.md"
+
+    - agent: code-curator
+      tests: important_fixes
+      requires: important fixes complete
+      notes: "Test all code changes from important fixes. Verify new examples work correctly, test updated code, run full regression suite. SAVE OUTPUT: Append test results to important-fixes-log.md"
+
+    - agent: book-analyst
+      evaluates: optional_suggestions
+      requires: important issues complete
+      notes: "Evaluate each optional suggestion using *triage-feedback command. Decide: Implement (valuable and feasible), Defer (good but not this edition), or Decline (not aligned with goals). Document decision rationale for each. Update tracking log with decision and rationale. SAVE OUTPUT: Create optional-suggestions-decisions.md"
+
+    - agent: book-analyst
+      creates: feedback-resolution-log.md
+      requires: all feedback processed
+      notes: "Generate comprehensive feedback resolution log using incorporate-reviewer-feedback.md task output section. Summarize: total items (47), critical resolved (8/8), important resolved (23/25), optional resolved/deferred/declined (7/14). List all critical fixes, important fixes, deferred items with rationale, declined items with rationale, code changes, text changes. Acknowledge reviewers. SAVE OUTPUT: Copy to docs/feedback/{{book_title}}-feedback-resolution-log.md"
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: Reviewer Feedback Received] --> B[book-analyst: Collect & Categorize Feedback]
+        B --> C[book-analyst: Create Tracking Log]
+        C --> D{Critical Issues Exist?}
+        D -->|Yes| E[code-curator: Fix Critical Code Issues]
+        E --> F[tutorial-architect: Fix Critical Text Issues]
+        F --> G[code-curator: Test Critical Fixes]
+        G --> H{Tests Pass?}
+        H -->|Failures| I[Re-fix Failed Items]
+        I --> G
+        H -->|Pass| J[technical-reviewer: Validate Critical Fixes]
+        J --> K{Critical Approved?}
+        K -->|Issues| L[Address Review Comments]
+        L --> G
+        K -->|Approved| M[tutorial-architect: Address Important Issues]
+        D -->|No Critical| M
+        M --> N[code-curator: Test Important Fixes]
+        N --> O{Important Tests Pass?}
+        O -->|Failures| P[Fix Failed Items]
+        P --> N
+        O -->|Pass| Q[book-analyst: Evaluate Optional Suggestions]
+        Q --> R{Implement, Defer, or Decline?}
+        R -->|Implement| S[Implement Optional Items]
+        S --> T[Test Optional Changes]
+        T --> U[book-analyst: Generate Resolution Log]
+        R -->|Defer/Decline| U
+        U --> V[Feedback Processing Complete]
+        V --> W[Send Resolution Log to Reviewers]
+
+        B -.-> B1[Feedback Categorized by Severity]
+        C -.-> C1[Tracking Log Created]
+        J -.-> J1[Critical Validation Approval]
+        U -.-> U1[Complete Resolution Documentation]
+
+        style W fill:#90EE90
+        style B fill:#FFE4B5
+        style E fill:#FF6B6B
+        style F fill:#FF6B6B
+        style G fill:#FF6B6B
+        style J fill:#FF6B6B
+        style M fill:#FFD700
+        style N fill:#FFD700
+        style Q fill:#ADD8E6
+        style U fill:#DDA0DD
+    ```
+
+  decision_guidance:
+    when_to_use:
+      - Received technical reviewer feedback on draft chapters
+      - Publisher requested specific changes
+      - Beta reader feedback needs systematic processing
+      - Multiple reviewers provided conflicting feedback (need triage)
+      - Addressing accumulated feedback from multiple rounds
+
+    when_not_to_use:
+      - Single minor typo fix (no workflow needed)
+      - Full edition update (use book-edition-update-workflow instead)
+      - New chapter creation (use chapter development workflows)
+      - Self-identified improvements without reviewer feedback
+
+  quality_gates:
+    feedback_collected:
+      - All reviewer sources consulted (technical, publisher, beta)
+      - Feedback consolidated into single list
+      - Each item has clear description and source
+      - Affected chapters identified
+
+    feedback_categorized:
+      - Every item assigned severity (Critical/Important/Optional)
+      - Tracking log created with all items
+      - Severity assignments justified
+      - Critical items clearly identified
+
+    critical_issues_resolved:
+      - All technical errors fixed
+      - All broken code working
+      - Security issues patched
+      - Publisher blocking issues addressed
+      - All critical fixes tested
+      - Technical reviewer approval obtained
+      - No critical items remain unresolved
+
+    important_issues_addressed:
+      - Clarity improvements made
+      - Missing examples added
+      - Structural issues resolved
+      - Incomplete coverage expanded
+      - All important fixes tested
+      - Tracking log updated
+
+    optional_items_evaluated:
+      - Each optional item has decision (implement/defer/decline)
+      - Decision rationale documented
+      - Implemented items tested
+      - Deferred items logged for next edition
+      - Declined items have clear reasoning
+
+    resolution_documented:
+      - Resolution log complete
+      - All changes documented
+      - Deferred items tracked
+      - Reviewers acknowledged
+      - Tracking log shows 100% processed
+
+  handoff_prompts:
+    feedback_to_categorization: "Received feedback from {{reviewer_count}} reviewers. Categorizing {{total_items}} items by severity."
+    categorization_to_critical: "Categorization complete: {{critical_count}} critical, {{important_count}} important, {{optional_count}} optional. Addressing critical issues first."
+    critical_code_to_text: "Critical code issues resolved ({{critical_code_count}} fixes). Now addressing critical text issues."
+    critical_to_testing: "All critical fixes complete ({{critical_total}} items). Testing comprehensively before proceeding."
+    testing_to_validation: "Critical fix testing complete. {{pass_count}}/{{total_count}} passing. Ready for technical reviewer validation."
+    validation_to_important: "Critical fixes approved by reviewer. Proceeding to {{important_count}} important issues."
+    important_to_optional: "Important issues addressed ({{important_resolved}}/{{important_total}}). Evaluating {{optional_count}} optional suggestions."
+    optional_to_resolution: "Optional items evaluated: {{implement_count}} implemented, {{defer_count}} deferred, {{decline_count}} declined. Generating resolution log."
+    resolution_to_complete: "Feedback processing complete. {{total_resolved}}/{{total_items}} items resolved. Sending resolution log to reviewers."
+
+  time_estimates:
+    collect_categorize: "2-4 hours (depends on feedback volume)"
+    critical_code_fixes: "1-2 hours per issue"
+    critical_text_fixes: "1-2 hours per issue"
+    critical_testing: "1-2 hours (comprehensive)"
+    technical_validation: "2-3 hours (reviewer time)"
+    important_fixes: "30min-2 hours per issue"
+    important_testing: "1-2 hours"
+    optional_evaluation: "30min-1 hour (decision making)"
+    resolution_log: "2-3 hours (documentation)"
+    total_time_light: "20-40 hours (10-20 feedback items, mostly important/optional)"
+    total_time_heavy: "60-100 hours (40+ items, many critical, extensive fixes)"
+
+  best_practices:
+    - Categorize ruthlessly - not everything is critical
+    - Critical first always - no exceptions
+    - Test every code change - no untested fixes
+    - Track everything - use tracking log religiously
+    - Document decisions - especially for declined items
+    - Communicate with reviewers - send resolution log
+    - Don't scope creep - optional items can expand significantly
+    - Defer strategically - good ideas for next edition are valuable
+    - Maintain consistency - follow extracted patterns
+    - Get validation - have reviewer approve critical fixes
+    - Be grateful - thank reviewers in resolution log
+    - Archive feedback - helps with next edition planning

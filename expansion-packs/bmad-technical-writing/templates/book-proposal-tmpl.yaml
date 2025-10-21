@@ -1,0 +1,222 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: book-proposal
+  name: Book Proposal
+  version: 1.0
+  description: Complete publisher book proposal with market analysis, author credentials, and sample content
+  output:
+    format: markdown
+    filename: "book-proposal-{{book-title-slug}}.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: overview
+    title: Book Overview
+    instruction: |
+      Book concept summary:
+      - Working title and subtitle
+      - One-sentence pitch (elevator pitch)
+      - Book type (tutorial, reference, cookbook, comprehensive guide)
+      - Estimated page count
+      - Estimated delivery timeline
+      - Unique selling proposition (what makes this book different)
+    elicit: true
+  - id: target_audience
+    title: Target Audience
+    instruction: |
+      Who will buy this book:
+      - Primary audience (job title, skill level, experience)
+      - Secondary audiences
+      - Reader demographics (students, professionals, hobbyists)
+      - Current skill level assumed (beginner, intermediate, advanced)
+      - Related roles or interests
+
+      **Be specific:** "Mid-level Python developers (2-5 years experience) looking to transition into data science" is better than "Python developers"
+
+      **Market size estimate:**
+      - Number of potential readers
+      - Growing or stable market
+      - Evidence of demand (forum activity, job postings, etc.)
+    elicit: true
+  - id: competitive_analysis
+    title: Competitive Analysis
+    instruction: |
+      Comparison with existing books:
+
+      **For each major competitor (3-5 books):**
+      - Book title and author
+      - Publisher and year
+      - Amazon rank or sales estimate
+      - Strengths (what it does well)
+      - Weaknesses or gaps
+      - How your book differs/improves
+
+      **Market gaps your book fills:**
+      - Topics not well covered by existing books
+      - Outdated approaches updated in your book
+      - Teaching style differences
+      - Technology versions (newer frameworks, languages)
+
+      Publishers want to know: Why would someone buy YOUR book instead of competitors?
+    elicit: true
+  - id: author_bio
+    title: Author Bio and Credentials
+    instruction: |
+      Why you're qualified to write this book:
+
+      **Professional Background:**
+      - Current role and company
+      - Years of experience with book topic
+      - Relevant projects or products built
+      - Speaking engagements or teaching experience
+
+      **Writing Credentials:**
+      - Previous books or publications
+      - Blog, articles, or technical writing samples
+      - Social media following or platform
+      - Industry recognition or awards
+
+      **Subject Matter Expertise:**
+      - Certifications relevant to topic
+      - Open source contributions
+      - Community involvement
+      - Unique perspective or experience
+
+      Publishers care about your ability to write AND your credibility in the field.
+  - id: chapter_outline
+    title: Complete Chapter Outline
+    instruction: |
+      Full table of contents:
+
+      **For each chapter (typically 10-15 chapters):**
+      - Chapter number and title
+      - 2-3 sentence chapter summary
+      - Key learning objectives (3-5 per chapter)
+      - Main topics covered (bullet list)
+      - Estimated page count
+      - Code examples or projects included
+
+      **Group into parts/sections if applicable:**
+      - Part I: Foundations (Chapters 1-4)
+      - Part II: Intermediate Topics (Chapters 5-9)
+      - Part III: Advanced Applications (Chapters 10-12)
+
+      **Appendices:**
+      - Appendix A: Installation Guide
+      - Appendix B: Reference Material
+      - etc.
+
+      Show clear learning progression from chapter to chapter.
+    elicit: true
+  - id: sample_chapter
+    title: Sample Chapter
+    instruction: |
+      Reference to complete sample chapter:
+      - Which chapter you're providing (typically Chapter 1 or a middle chapter)
+      - Why this chapter represents the book well
+      - Attachment filename or location
+
+      Example:
+      "Sample Chapter 3: 'Building Your First REST API' (included as separate file: chapter-03-sample.md). This chapter demonstrates the tutorial-driven approach used throughout the book, combining theory, hands-on coding, and real-world best practices."
+
+      Note: Actual sample chapter content is usually a separate file referenced here.
+  - id: special_features
+    title: Special Features
+    instruction: |
+      What makes your book unique:
+
+      **Pedagogical Approach:**
+      - Teaching methodology (project-based, tutorial-driven, etc.)
+      - Learning aids (exercises, quizzes, checkpoints)
+      - Code repository structure
+
+      **Technical Features:**
+      - Live code examples
+      - Video tutorials or screencasts (if applicable)
+      - Companion website or resources
+      - Community forum or support
+
+      **Production Elements:**
+      - Diagrams and illustrations plan
+      - Screenshots or UI examples
+      - Code highlighting requirements
+      - Color printing needs (if any)
+  - id: timeline
+    title: Timeline and Deliverables
+    instruction: |
+      Project schedule:
+
+      **Milestones:**
+      - Outline finalization: [date]
+      - Sample chapters completion: [date]
+      - First draft complete: [date]
+      - Technical review completion: [date]
+      - Final manuscript delivery: [date]
+
+      **Delivery Format:**
+      - File format (Markdown, Word, AsciiDoc, etc.)
+      - Code repository structure
+      - Image/diagram format
+      - Supplementary materials
+
+      **Your Availability:**
+      - Hours per week dedicated to writing
+      - Any blackout periods (vacations, work commitments)
+      - Flexibility for revisions
+
+      Be realistic - publishers prefer accurate timelines to optimistic ones.
+  - id: marketing
+    title: Marketing and Promotion
+    instruction: |
+      How you'll help promote the book:
+
+      **Existing Platform:**
+      - Blog readers or newsletter subscribers (numbers)
+      - Social media following (Twitter, LinkedIn, YouTube)
+      - Conference speaking schedule
+      - Podcast appearances or media contacts
+
+      **Promotional Plans:**
+      - Blog post series
+      - Webinars or online workshops
+      - Conference talks mentioning the book
+      - Community engagement (Reddit, Stack Overflow, forums)
+      - Corporate training opportunities
+
+      **Professional Network:**
+      - Companies who might bulk purchase
+      - User groups or meetups you're involved with
+      - Influencers who might review or recommend
+
+      Publishers value authors who actively promote their books.
+  - id: technical_requirements
+    title: Technical Requirements
+    instruction: |
+      Production considerations:
+
+      **Software/Versions Covered:**
+      - Primary languages and versions (e.g., "Python 3.11+")
+      - Frameworks and libraries (e.g., "Django 4.2")
+      - Tools required (IDEs, databases, cloud services)
+      - Operating systems supported
+
+      **Code Repository:**
+      - GitHub/GitLab organization
+      - Repo structure approach
+      - Code testing and CI plan
+      - License for code examples
+
+      **Graphics/Visuals:**
+      - Estimated number of diagrams
+      - Screenshot requirements
+      - Technical illustration needs
+      - Color vs black and white
+
+      **Special Needs:**
+      - Interactive elements
+      - Video content
+      - Downloadable datasets
+      - API keys or cloud resources needed for readers

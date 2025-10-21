@@ -1,0 +1,87 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: book-outline
+  name: Complete Book Outline
+  version: 1.0
+  description: Full book structure with learning path and chapter breakdown
+  output:
+    format: markdown
+    filename: "{{book_title}}-outline.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: metadata
+    title: Book Metadata
+    instruction: |
+      Core information:
+      - Title and subtitle
+      - Target audience (skill level, role)
+      - Prerequisites (what readers need to know)
+      - Learning outcomes (what readers will accomplish)
+      - Estimated length (page count)
+      - Publisher target (PacktPub, O'Reilly, Manning, Self-publish)
+      - Technology stack and versions
+    elicit: true
+  - id: front_matter
+    title: Front Matter Plan
+    instruction: |
+      Plan front matter sections:
+      - Preface/Introduction topics to cover
+      - About the author section
+      - How to use this book
+      - Conventions used (code formatting, callouts)
+      - Prerequisites and setup instructions
+      - Companion code repository location
+  - id: part_structure
+    title: Part/Section Organization
+    instruction: |
+      Organize book into parts (if applicable):
+      - Part 1: [Title] - Chapters X-Y (focus area)
+      - Part 2: [Title] - Chapters X-Y (focus area)
+      - Part 3: [Title] - Chapters X-Y (focus area)
+
+      For each part, describe the learning arc and why chapters are grouped this way.
+  - id: chapter_outlines
+    title: Chapter-by-Chapter Outline
+    instruction: |
+      For each chapter, define:
+      - Chapter number and title
+      - Learning objectives (3-5 measurable outcomes using action verbs)
+      - Topics covered (main concepts and techniques)
+      - Tutorials/exercises planned (hands-on activities)
+      - Code examples needed (list major examples)
+      - Estimated page count
+      - Prerequisites (which previous chapters must be completed)
+      - Difficulty level (beginner, intermediate, advanced)
+    elicit: true
+  - id: learning_path
+    title: Learning Path Progression
+    instruction: |
+      Document the overall learning progression:
+      - How does difficulty increase across chapters?
+      - What is the scaffolding strategy?
+      - How do chapters build on each other?
+      - Where are the major skill milestones?
+      - Map to Bloom's Taxonomy levels (Remember→Understand→Apply→Analyze→Evaluate→Create)
+  - id: back_matter
+    title: Back Matter Plan
+    instruction: |
+      Plan appendices and references:
+      - Appendix topics (reference material, additional tutorials)
+      - Glossary scope (key terms to define)
+      - Index strategy (important topics to index)
+      - Additional resources (books, websites, tools)
+      - Answer key (if exercises have solutions)
+  - id: code_repo
+    title: Code Repository Plan
+    instruction: |
+      Companion code structure:
+      - Repository organization (folder structure)
+      - Chapter folders naming convention
+      - Testing strategy (unit tests, integration tests)
+      - Version/platform support (Python 3.11+, Node 18+, etc.)
+      - CI/CD pipeline for code validation
+      - README structure for each chapter

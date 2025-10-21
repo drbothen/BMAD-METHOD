@@ -1,0 +1,149 @@
+workflow:
+  id: section-development-workflow
+  name: Write and Review Section
+  description: Complete development of one section (2-5 pages) - the "story" unit of book writing. Develops code examples, writes section content, and reviews for technical accuracy. Section is DONE when it meets acceptance criteria from section plan.
+  type: section-writing
+  project_types:
+    - technical-book
+    - tutorial-series
+    - training-materials
+    - technical-documentation
+  sequence:
+    - agent: code-curator
+      creates: section-code-examples/
+      requires: section-plan.md
+      notes: "Develop all code examples identified in section plan. Use *create-example for each code example. Test code thoroughly - all examples must run correctly. Follow coding best practices, include error handling, and add inline comments. SAVE OUTPUT: Create code examples in chapter-{{chapter_number}}/section-{{section_number}}/ with tests."
+
+    - agent: code-curator
+      tests: section-code-examples/
+      requires: section-code-examples/
+      notes: "Test all code examples. Verify correct output, edge cases handled, error messages clear. Run linting and security checks. Document test results. Ensure examples demonstrate concepts clearly. SAVE OUTPUT: Test results and any bug fixes committed to repository."
+
+    - agent: tutorial-architect
+      creates: section-draft.md
+      requires:
+        - section-plan.md
+        - section-code-examples/
+        - chapter-outline.md
+      notes: "Write section content (2-5 pages). Follow section plan learning objectives and content plan. Include concept explanation, tutorial walkthrough with code examples inline, and practical applications. Address prerequisites and connect to previous sections. SAVE OUTPUT: Create docs/sections/chapter-{{chapter_number}}/section-{{section_number}}-draft.md"
+
+    - agent: technical-reviewer
+      reviews: section-draft.md
+      requires: section-draft.md
+      notes: "Quick technical review of section (focused review, not full chapter review). Verify technical accuracy, code correctness, and completeness of explanations. Check for security issues or bad practices. Use technical-accuracy-checklist for focused review. SAVE OUTPUT: Create section-review-notes.md with findings (critical/major/minor issues)."
+
+    - agent: tutorial-architect
+      revises: section-draft.md
+      requires: section-review-notes.md
+      notes: "Incorporate technical review feedback. Address all critical and major issues. Update code examples if needed (coordinate with code-curator). Re-test revised code. SAVE OUTPUT: Update section-draft.md with revisions."
+
+    - agent: tutorial-architect
+      finalizes: section-final.md
+      requires: revised-section-draft.md
+      notes: "Verify section meets all success criteria from section plan. Check learning objectives addressed, code tested, length appropriate (2-5 pages), transitions clear. Mark section status as DONE. SAVE OUTPUT: Create docs/sections/chapter-{{chapter_number}}/section-{{section_number}}-final.md and mark in section list as complete."
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: Section Plan Ready] --> B[code-curator: Develop Code Examples]
+        B --> C[code-curator: Test Code Examples]
+        C --> D{All Tests Pass?}
+        D -->|No| E[code-curator: Fix Code]
+        E --> C
+        D -->|Yes| F[tutorial-architect: Write Section]
+        F --> G[technical-reviewer: Quick Review]
+        G --> H{Critical Issues?}
+        H -->|Yes| I[tutorial-architect: Revise Section]
+        I --> J[Update Code if Needed?]
+        J -->|Yes| K[code-curator: Update Code]
+        K --> C
+        J -->|No| G
+        H -->|No| L[tutorial-architect: Verify Acceptance Criteria]
+        L --> M{Criteria Met?}
+        M -->|No| N[Address Missing Items]
+        N --> L
+        M -->|Yes| O[Section DONE]
+
+        B -.-> B1[Use section plan code list]
+        F -.-> F1[Reference section-plan objectives]
+        G -.-> G1[Use technical-accuracy-checklist]
+        L -.-> L1[Check section plan success criteria]
+
+        style O fill:#90EE90
+        style B fill:#FFE4B5
+        style C fill:#FFE4B5
+        style F fill:#FFE4B5
+        style G fill:#ADD8E6
+        style L fill:#F0E68C
+    ```
+
+  decision_guidance:
+    when_to_use:
+      - Developing one section (2-5 pages) from section plan
+      - Incremental chapter development approach
+      - Want focused work units with clear done criteria
+      - Tracking progress section by section
+      - Parallel section development needed
+
+    when_not_to_use:
+      - Writing entire chapter at once (use chapter-development-workflow)
+      - Simple reference sections without code
+      - Section already written (use for new sections only)
+
+  quality_gates:
+    code_complete:
+      - All section code examples developed
+      - All code tested and passing
+      - Code follows best practices
+      - Examples demonstrate concepts clearly
+      - Error handling included
+      - Inline comments present
+
+    draft_complete:
+      - Section length 2-5 pages (appropriate granularity)
+      - Learning objective(s) addressed
+      - Code examples integrated and explained
+      - Tutorial walkthrough clear and step-by-step
+      - Prerequisites referenced
+      - Transitions to next section present
+
+    technical_review_passed:
+      - No critical technical errors
+      - Code accurate and tested
+      - Explanations technically correct
+      - No security issues or bad practices
+      - Checklist: technical-accuracy-checklist.md
+
+    section_done:
+      - All success criteria from section plan met
+      - Technical review approved
+      - Code tested and working
+      - Length appropriate (2-5 pages)
+      - Ready to integrate into chapter
+
+  handoff_prompts:
+    plan_to_curator: "Section plan complete: {{section_title}}. Learning objective: {{objective}}. {{code_count}} code examples needed. Develop and test all code."
+    curator_to_architect: "Code examples complete for {{section_title}}. All {{example_count}} examples tested and passing. Code in chapter-{{chapter_number}}/section-{{section_number}}/. Ready for section writing."
+    architect_to_reviewer: "Section draft complete: {{section_title}} ({{page_count}} pages). Learning objective addressed with {{example_count}} code examples. Quick technical review needed."
+    reviewer_to_architect: "Technical review complete. Found {{critical_count}} critical and {{major_count}} major issues. Review notes available. Please revise and address."
+    architect_final: "Section {{section_id}} DONE. All acceptance criteria met. {{page_count}} pages with {{example_count}} tested code examples. Section marked complete in section list."
+
+  time_estimates:
+    develop_code: "1-2 hours (per section, 1-3 examples)"
+    test_code: "30 minutes - 1 hour"
+    write_section: "2-4 hours (2-5 pages)"
+    technical_review: "30 minutes - 1 hour (focused section review)"
+    revise_section: "1-2 hours"
+    verify_criteria: "30 minutes"
+    total_time: "5.5-10.5 hours per section"
+
+  best_practices:
+    - Start with code - test it before writing explanations
+    - Follow section plan learning objectives closely
+    - Keep section focused (1-2 objectives max)
+    - Section should be independently reviewable
+    - Mark section DONE only when ALL criteria met
+    - Good sections are 2-5 pages (not too small, not too large)
+    - Each section is a natural stopping point
+    - Connect to previous section, preview next section
+    - Technical review is focused (not full chapter review)

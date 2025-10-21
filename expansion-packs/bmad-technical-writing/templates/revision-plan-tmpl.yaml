@@ -1,0 +1,135 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: revision-plan
+  name: Book Revision Plan
+  version: 1.0
+  description: Strategic plan for updating existing technical book (2nd/3rd edition, version updates, chapter additions)
+  output:
+    format: markdown
+    filename: "{{book_title}}-revision-plan.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: revision_scope
+    title: Revision Scope
+    instruction: |
+      Define the type and extent of revision:
+      - Revision type: New edition (2nd/3rd)? Technology version update? Chapter additions? Reviewer feedback incorporation? Publisher-requested changes?
+      - Scope level: Full book revision? Specific chapters only? Code-only updates? Text-only updates?
+      - Triggers: Why now? (new tech version, publisher request, market demand, technical debt)
+      - Goals: What does success look like?
+      - Constraints: Timeline? Budget? Publisher deadlines?
+    elicit: true
+  - id: technology_version_changes
+    title: Technology Version Changes
+    instruction: |
+      Document all technology updates:
+      For each technology/framework/library:
+      - Current version in book (e.g., Python 3.9)
+      - Target version for revision (e.g., Python 3.12)
+      - Breaking changes between versions
+      - New features to incorporate
+      - Deprecated features to replace
+      - Migration effort estimate (low/medium/high)
+    elicit: true
+  - id: chapter_revision_matrix
+    title: Chapter Revision Matrix
+    instruction: |
+      For each chapter, define revision needs:
+
+      | Chapter | Title | Complexity | Effort | Priority | Changes Needed |
+      |---------|-------|------------|--------|----------|----------------|
+      | 1 | Introduction | Low | 2h | Important | Update Python version references |
+      | 2 | Basic Syntax | High | 8h | Critical | Add match/case syntax (Python 3.10+) |
+      | ... | ... | ... | ... | ... | ... |
+
+      Complexity levels:
+      - Low: Minor text updates, version number changes
+      - Medium: Code updates, new examples, moderate text revisions
+      - High: Significant rewrites, new sections, major code changes
+
+      Effort estimates: hours per chapter
+
+      Priority levels:
+      - Critical: Must fix (broken code, security issues, major inaccuracies)
+      - Important: Should fix (outdated best practices, missing features)
+      - Nice-to-have: Optional improvements (polish, minor enhancements)
+  - id: code_testing_strategy
+    title: Code Testing Strategy
+    instruction: |
+      Plan for validating all code updates:
+      - Testing approach (manual? automated? CI/CD?)
+      - Version matrix (which Python/Node/etc versions to test)
+      - Platform testing (Windows, macOS, Linux)
+      - Tool requirements (testing frameworks, linters)
+      - Code repository updates needed
+      - Regression testing plan (ensure old examples still work if not updated)
+      - Performance testing (if applicable)
+  - id: timeline
+    title: Timeline and Milestones
+    instruction: |
+      Break revision into phases with milestones:
+
+      **Phase 1: Analysis and Planning (Week 1-2)**
+      - Complete book analysis
+      - Finalize revision plan
+      - Set up testing environment
+
+      **Phase 2: Chapter Revisions (Week 3-10)**
+      - Week 3-4: Chapters 1-5
+      - Week 5-6: Chapters 6-10
+      - Week 7-8: Chapters 11-15
+      - Week 9-10: Review and polish
+
+      **Phase 3: Testing and QA (Week 11-12)**
+      - Code testing across versions
+      - Technical review
+      - Editorial review
+
+      **Phase 4: Finalization (Week 13-14)**
+      - Incorporate feedback
+      - Final formatting
+      - Publisher submission
+
+      Critical path: Which tasks block others?
+      Dependencies: What must complete before next phase?
+  - id: success_criteria
+    title: Success Criteria
+    instruction: |
+      Define what "done" means:
+      - All code examples tested on target versions
+      - All deprecated APIs replaced
+      - Technical review approved
+      - Editorial review approved
+      - All checklists passed (version-update, revision-completeness)
+      - Publisher requirements met
+      - Learning progression validated
+      - Cross-references updated
+      - No broken examples
+  - id: risk_assessment
+    title: Risk Assessment and Mitigation
+    instruction: |
+      Identify potential problems and solutions:
+
+      **Technical Risks:**
+      - Risk: Breaking changes too extensive
+        Mitigation: Incremental testing, fallback examples
+      - Risk: New version not stable yet
+        Mitigation: Target LTS/stable releases only
+
+      **Scope Risks:**
+      - Risk: Revision scope creeps beyond plan
+        Mitigation: Strict scope control, defer enhancements to next edition
+
+      **Schedule Risks:**
+      - Risk: Testing takes longer than expected
+        Mitigation: Start testing early, parallel testing
+      - Risk: Publisher deadline pressure
+        Mitigation: Build buffer time, prioritize critical updates
+
+      **Quality Risks:**
+      - Risk: Inconsistency between old and new content
+        Mitigation: Style guide extraction, editorial review
