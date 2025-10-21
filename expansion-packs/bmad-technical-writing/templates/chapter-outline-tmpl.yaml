@@ -1,0 +1,95 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: chapter-outline
+  name: Chapter Outline
+  version: 1.0
+  description: Detailed single chapter structure with learning objectives and content breakdown
+  output:
+    format: markdown
+    filename: "chapter-{{chapter_number}}-outline.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: metadata
+    title: Chapter Metadata
+    instruction: |
+      Basic information:
+      - Chapter number and title
+      - Estimated page count
+      - Time to complete (for reader, e.g., "2-3 hours")
+      - Difficulty level (beginner, intermediate, advanced)
+      - Part/section this belongs to (if applicable)
+    elicit: true
+  - id: objectives
+    title: Learning Objectives
+    instruction: |
+      What readers will learn (3-5 objectives):
+      - Use action verbs from Bloom's Taxonomy (create, analyze, implement, evaluate, design)
+      - Be specific and measurable
+      - Align with book-level learning path
+      - Examples:
+        * "Implement JWT authentication in a REST API"
+        * "Analyze performance bottlenecks using profiling tools"
+        * "Create reusable React components with TypeScript"
+    elicit: true
+  - id: prerequisites
+    title: Prerequisites
+    instruction: |
+      What readers need before starting:
+      - Previous chapters that must be completed
+      - External knowledge/skills assumed
+      - Software/tools required (with version numbers)
+      - Setup or configuration needed
+      - Estimated time for setup
+  - id: introduction
+    title: Introduction Section
+    instruction: |
+      Chapter opening (1-2 pages):
+      - Hook/motivating example (real-world problem this solves)
+      - Overview of topics to be covered
+      - Real-world relevance and use cases
+      - Why this matters in the broader context
+    elicit: true
+  - id: sections
+    title: Main Content Sections
+    instruction: |
+      For each major section of the chapter:
+      - Section title and subtitle
+      - Concept explanation (theory/background)
+      - Tutorial/walkthrough (hands-on implementation)
+      - Code examples needed (list filenames and purpose)
+      - Diagrams/screenshots needed (describe visual aids)
+      - Common mistakes to highlight
+      - Troubleshooting tips
+
+      List sections in order, with estimated page count for each.
+    elicit: true
+  - id: exercises
+    title: Exercises & Challenges
+    instruction: |
+      Practice opportunities:
+      - Guided practice exercises (3-4 exercises that walk through steps)
+      - Challenge problems (1-2 harder problems requiring independent work)
+      - Difficulty progression (easy to challenging)
+      - Solutions provided? (yes/no, or "hints only")
+      - Estimated time for each exercise
+  - id: summary
+    title: Summary & Next Steps
+    instruction: |
+      Chapter conclusion (1 page):
+      - Key concepts recap (bullet list)
+      - What was accomplished (skill checklist)
+      - Preview of next chapter (how it builds on this)
+      - Additional resources (optional reading, tools, documentation)
+  - id: code_files
+    title: Code Files List
+    instruction: |
+      Code examples for this chapter:
+      - Filename (e.g., "auth-middleware.js")
+      - Purpose (brief description)
+      - Language and version (e.g., "Python 3.11+")
+      - Testing requirements (unit tests, integration tests)
+      - Dependencies (external packages needed)

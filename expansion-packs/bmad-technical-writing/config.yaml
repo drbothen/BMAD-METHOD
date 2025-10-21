@@ -1,0 +1,13 @@
+# <!-- Powered by BMAD™ Core -->
+name: bmad-technical-writing
+version: 0.1.0
+short-title: Technical Book Writing Studio
+description: >-
+  Comprehensive AI-powered technical writing framework for technical book
+  authors, technical trainers, and documentation specialists. Provides
+  specialized agents, workflows, and tools for planning, writing, and
+  maintaining technical books with code examples, tutorials, and learning
+  objectives. Supports publishers like PacktPub, O'Reilly, Manning, and
+  self-publishing platforms.
+author: Wes
+slashPrefix: bmad-tw
