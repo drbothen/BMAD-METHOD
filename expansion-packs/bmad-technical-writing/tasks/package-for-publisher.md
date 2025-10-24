@@ -38,18 +38,21 @@ Prepare a complete, properly formatted manuscript package that meets publisher s
 ### 1. Publisher-Specific Requirements
 
 **Manning:**
+
 - Chapters in Microsoft Word (.docx)
 - Separate folder for images (PNG, 300 DPI)
 - Code samples in ZIP file
 - Metadata in Author Questionnaire form
 
 **O'Reilly:**
+
 - AsciiDoc or Markdown preferred
 - Images in separate folders
 - Atlas platform submission
 - Follows O'Reilly style guide
 
 **Packt:**
+
 - Microsoft Word (.docx)
 - Images embedded or separate
 - Code in GitHub repository

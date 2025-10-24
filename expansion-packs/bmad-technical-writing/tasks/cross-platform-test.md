@@ -615,8 +615,8 @@ pip3 install -r requirements.txt
 - [ ] Platform-specific documentation complete
 - [ ] Cross-platform testing complete
 
-**Tester Signature:** ******\_******
-**Date:** ******\_******
+**Tester Signature:** **\*\***\_**\*\***
+**Date:** **\*\***\_**\*\***
 
 ```
 

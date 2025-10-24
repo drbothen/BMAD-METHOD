@@ -30,6 +30,7 @@ Before starting this tutorial, ensure you have:
 - **Technical subject matter** - Know what you want to teach (we'll use Python as example)
 
 **Installation Check**:
+
 ```bash
 # Verify BMad is installed
 npx bmad-method --version
@@ -39,6 +40,7 @@ ls ~/.bmad-method/expansion-packs/bmad-technical-writing
 ```
 
 If not installed, run:
+
 ```bash
 npx bmad-method install
 # Select "Technical Book Writing Studio" from expansion packs
@@ -55,6 +57,7 @@ We'll create **Chapter 1** of "Python Data Structures Handbook" - an introductor
 **Chapter Title**: "Introduction to Python Data Structures"
 
 **Chapter Content**:
+
 - What are data structures and why they matter
 - Introduction to lists with practical examples
 - Introduction to tuples with practical examples
@@ -62,6 +65,7 @@ We'll create **Chapter 1** of "Python Data Structures Handbook" - an introductor
 - Hands-on exercises with solutions
 
 **Deliverables**:
+
 - Complete chapter outline (6 sections)
 - One fully written section (~3 pages)
 - Working code examples
@@ -79,6 +83,7 @@ We'll create **Chapter 1** of "Python Data Structures Handbook" - an introductor
 ### What You'll Learn
 
 By completing this tutorial, you'll understand:
+
 - How to activate and use BMad agents
 - How to execute workflows for book planning
 - How to create sections using section-driven development
@@ -92,16 +97,19 @@ Let's begin!
 ## Step 1: Plan Your Book
 
 ### Goal
+
 Create a high-level book structure with learning objectives and chapter progression.
 
 ### Activate the Instructional Designer
 
 **In Web UI (Gemini/ChatGPT/Claude)**:
+
 1. Navigate to `dist/agents/`
 2. Upload `instructional-designer.txt` to your chat interface
 3. The agent will activate and greet you
 
 **In IDE (Cursor/VS Code/Claude Code)**:
+
 ```
 /bmad-tw:instructional-designer
 ```
@@ -111,6 +119,7 @@ The Instructional Designer will greet you and present available commands.
 ### Create Book Outline
 
 **Command**:
+
 ```
 *create-book-outline
 ```
@@ -118,6 +127,7 @@ The Instructional Designer will greet you and present available commands.
 The agent will execute the `design-book-outline` task using the `book-outline-tmpl` template.
 
 **You'll be asked**:
+
 - Book title
 - Target audience
 - Prerequisites
@@ -131,17 +141,20 @@ The agent will execute the `design-book-outline` task using the `book-outline-tm
 > **Target Audience**: Beginner to intermediate Python developers who understand basic Python syntax
 >
 > **Prerequisites**:
+>
 > - Basic Python syntax (variables, functions, loops)
 > - Understanding of types (int, str, bool)
 > - Python 3.10+ installed
 >
 > **Learning Outcomes**:
+>
 > - Master Python's core data structures (lists, tuples, sets, dicts)
 > - Choose appropriate data structures for different scenarios
 > - Implement efficient data manipulation algorithms
 > - Understand time/space complexity trade-offs
 >
 > **Chapters** (10 chapters):
+>
 > 1. Introduction to Python Data Structures
 > 2. Lists and List Operations
 > 3. Tuples and Immutability
@@ -156,6 +169,7 @@ The agent will execute the `design-book-outline` task using the `book-outline-tm
 **Output**: `book-outline.md`
 
 The agent generates a complete book outline with:
+
 - Chapter descriptions
 - Learning objectives per chapter
 - Prerequisite mapping
@@ -163,10 +177,12 @@ The agent generates a complete book outline with:
 - Difficulty progression
 
 **Sample Output Section**:
+
 ```markdown
 ## Chapter 1: Introduction to Python Data Structures
 
 **Learning Objectives**:
+
 - Understand what data structures are and why they matter
 - Recognize different data structure categories
 - Implement basic list and tuple operations
@@ -177,6 +193,7 @@ The agent generates a complete book outline with:
 **Estimated Length**: 18-22 pages
 
 **Topics**:
+
 - Data structures overview
 - Introduction to sequences (lists, tuples)
 - List creation and basic operations
@@ -187,11 +204,13 @@ The agent generates a complete book outline with:
 ### Validate Learning Progression
 
 **Command**:
+
 ```
 *execute-checklist learning-objectives-checklist
 ```
 
 The agent reviews your book outline against pedagogical best practices:
+
 - ✅ Learning objectives are measurable
 - ✅ Progression follows Bloom's taxonomy
 - ✅ Prerequisites are clearly stated
@@ -204,16 +223,19 @@ The agent reviews your book outline against pedagogical best practices:
 ## Step 2: Plan Your First Chapter
 
 ### Goal
+
 Break Chapter 1 into manageable sections with detailed structure.
 
 ### Create Chapter Outline
 
 **Still with Instructional Designer, command**:
+
 ```
 *create-chapter-outline
 ```
 
 **You'll specify**:
+
 - Chapter number (1)
 - Chapter title
 - Section breakdown
@@ -222,35 +244,41 @@ Break Chapter 1 into manageable sections with detailed structure.
 **Example Section Breakdown** (6 sections):
 
 **Section 1.1: Why Data Structures Matter** (3 pages)
+
 - Real-world analogy (organizing a library)
 - Performance implications
 - Common pitfalls of wrong choices
 
 **Section 1.2: Introduction to Lists** (4 pages)
+
 - List creation syntax
 - Basic list operations (append, insert, remove)
 - List indexing and slicing
 - Hands-on example: Building a task list
 
 **Section 1.3: List Methods and Iteration** (3 pages)
+
 - Common list methods (sort, reverse, count)
 - Iterating with for loops
 - List comprehensions preview
 - Hands-on example: Processing student grades
 
 **Section 1.4: Introduction to Tuples** (3 pages)
+
 - Tuple creation and syntax
 - Immutability explained
 - Tuple unpacking
 - Hands-on example: Coordinate systems
 
 **Section 1.5: Lists vs Tuples Decision Guide** (3 pages)
+
 - When to use lists (mutable collections)
 - When to use tuples (immutable records)
 - Performance considerations
 - Best practices
 
 **Section 1.6: Practice Exercises** (3 pages)
+
 - 5 progressive exercises
 - Solutions with explanations
 
@@ -261,6 +289,7 @@ Break Chapter 1 into manageable sections with detailed structure.
 Now activate the Tutorial Architect for hands-on section writing:
 
 **In IDE**:
+
 ```
 /bmad-tw:tutorial-architect
 ```
@@ -270,6 +299,7 @@ Now activate the Tutorial Architect for hands-on section writing:
 ## Step 3: Write Your First Section
 
 ### Goal
+
 Write one complete section (Section 1.2: Introduction to Lists) with code examples and tutorial content.
 
 ### Activate Code Curator
@@ -277,6 +307,7 @@ Write one complete section (Section 1.2: Introduction to Lists) with code exampl
 First, we need working code examples. Activate Code Curator:
 
 **In IDE**:
+
 ```
 /bmad-tw:code-curator
 ```
@@ -284,11 +315,13 @@ First, we need working code examples. Activate Code Curator:
 ### Create Code Examples
 
 **Command**:
+
 ```
 *create-code-example
 ```
 
 **Specify**:
+
 - Section: 1.2 - Introduction to Lists
 - Example title: "Building a Task List Application"
 - Concepts to demonstrate: List creation, append, remove, indexing
@@ -296,6 +329,7 @@ First, we need working code examples. Activate Code Curator:
 **Code Curator Creates**:
 
 `examples/chapter-01/task_list.py`:
+
 ```python
 # Task List Application - Introduction to Lists
 
@@ -337,6 +371,7 @@ if __name__ == "__main__":
 ```
 
 `examples/chapter-01/test_task_list.py`:
+
 ```python
 import pytest
 from task_list import main
@@ -361,11 +396,13 @@ def test_list_operations():
 ```
 
 **Command**:
+
 ```
 *test-code-examples
 ```
 
 Code Curator runs tests:
+
 ```
 pytest examples/chapter-01/test_task_list.py -v
 ================================ test session starts ================================
@@ -378,11 +415,13 @@ examples/chapter-01/test_task_list.py::test_list_operations PASSED              
 ### Write Section Content
 
 **Reactivate Tutorial Architect**, command:
+
 ```
 *create-tutorial
 ```
 
 **Specify**:
+
 - Section: 1.2 - Introduction to Lists
 - Use code example: `task_list.py`
 - Include: explanation, tutorial, troubleshooting
@@ -391,12 +430,13 @@ examples/chapter-01/test_task_list.py::test_list_operations PASSED              
 
 `sections/section-1.2-introduction-to-lists.md`:
 
-```markdown
+````markdown
 # Section 1.2: Introduction to Lists
 
 ## What You'll Learn
 
 By the end of this section, you'll be able to:
+
 - Create lists in Python
 - Add items to lists using `append()` and `insert()`
 - Remove items from lists
@@ -414,6 +454,7 @@ By the end of this section, you'll be able to:
 Lists are Python's most versatile data structure. Think of a list as a container that holds multiple items in a specific order, like a to-do list or a shopping list.
 
 **Key characteristics**:
+
 - **Ordered** - Items maintain their position
 - **Mutable** - You can add, remove, or change items
 - **Allow duplicates** - The same item can appear multiple times
@@ -434,6 +475,7 @@ numbers = [1, 2, 3, 4, 5]
 names = ["Alice", "Bob", "Charlie"]
 mixed = [1, "hello", 3.14, True]  # Lists can hold different types
 ```
+````
 
 ---
 
@@ -547,6 +589,7 @@ print(tasks[5])  # Error! Only indices 0 and 1 exist
 ```
 
 **Solution**: Check list length before accessing:
+
 ```python
 if len(tasks) > 5:
     print(tasks[5])
@@ -559,6 +602,7 @@ else:
 **Cause**: Trying to remove an item that doesn't exist
 
 **Solution**: Check if item exists first:
+
 ```python
 if "task" in tasks:
     tasks.remove("task")
@@ -580,6 +624,7 @@ if "task" in tasks:
 ## Practice Exercise
 
 Create a shopping list application that:
+
 1. Creates an empty list
 2. Adds 5 items
 3. Removes 1 item
@@ -588,6 +633,7 @@ Create a shopping list application that:
 Try it yourself before checking the solution!
 
 **Solution**:
+
 ```python
 shopping = []
 shopping.append("apples")
@@ -602,6 +648,7 @@ print(f"Shopping list: {shopping}")
 ---
 
 **Next**: Section 1.3 - List Methods and Iteration
+
 ```
 
 **Output**: Complete section (~3 pages) with tutorial, code, and exercises.
@@ -617,15 +664,19 @@ Ensure technical accuracy and quality before moving forward.
 
 **In IDE**:
 ```
+
 /bmad-tw:technical-reviewer
+
 ```
 
 ### Run Technical Review
 
 **Command**:
 ```
-*review-section sections/section-1.2-introduction-to-lists.md
-```
+
+\*review-section sections/section-1.2-introduction-to-lists.md
+
+````
 
 **Technical Reviewer checks**:
 - ✅ Code examples are correct
@@ -660,7 +711,7 @@ Ensure technical accuracy and quality before moving forward.
 2. Could mention list() constructor as alternative
 
 ## Recommendation: READY FOR PUBLICATION
-```
+````
 
 ### Apply Review Feedback (Optional)
 
@@ -692,6 +743,7 @@ You've now completed Section 1.2. Repeat Steps 3-4 for remaining sections:
 ### Track Progress
 
 As you complete sections, you'll have:
+
 ```
 sections/
 ├── section-1.1-why-data-structures-matter.md ⏳
@@ -705,6 +757,7 @@ sections/
 ### Parallel Development (Optional)
 
 You can work on multiple sections simultaneously by:
+
 - Writing Section 1.3 while Section 1.2 is in review
 - Having Code Curator create all code examples first
 - Batch reviewing multiple sections
@@ -714,11 +767,13 @@ You can work on multiple sections simultaneously by:
 ## Step 6: Assemble Your Chapter
 
 ### Goal
+
 Merge all sections into a cohesive chapter with smooth transitions.
 
 ### Activate Technical Editor
 
 **In IDE**:
+
 ```
 /bmad-tw:technical-editor
 ```
@@ -726,16 +781,19 @@ Merge all sections into a cohesive chapter with smooth transitions.
 ### Run Chapter Assembly Workflow
 
 **Command**:
+
 ```
 *assemble-chapter
 ```
 
 **Specify**:
+
 - Chapter number: 1
 - Sections to merge: All 6 sections
 - Output file: `chapters/chapter-01-introduction.md`
 
 **Technical Editor**:
+
 1. Merges all sections in order
 2. Adds smooth transitions between sections
 3. Creates chapter introduction
@@ -749,11 +807,13 @@ Merge all sections into a cohesive chapter with smooth transitions.
 ### Validate Chapter
 
 **Command**:
+
 ```
 *execute-checklist chapter-completeness-checklist
 ```
 
 **Checks**:
+
 - ✅ All sections present
 - ✅ Introduction sets expectations
 - ✅ Summary recaps key points
@@ -769,11 +829,13 @@ Merge all sections into a cohesive chapter with smooth transitions.
 ## Step 7: Prepare for Publishing
 
 ### Goal
+
 Package chapter for publisher submission (e.g., PacktPub).
 
 ### Activate Book Publisher
 
 **In IDE**:
+
 ```
 /bmad-tw:book-publisher
 ```
@@ -781,11 +843,13 @@ Package chapter for publisher submission (e.g., PacktPub).
 ### Choose Publisher Workflow
 
 **Command** (for PacktPub):
+
 ```
 *run-workflow packtpub-submission
 ```
 
 **Book Publisher**:
+
 1. Formats chapter to PacktPub standards
 2. Generates submission checklist
 3. Packages code examples
@@ -793,6 +857,7 @@ Package chapter for publisher submission (e.g., PacktPub).
 5. Prepares submission folder
 
 **Output**:
+
 ```
 submission/
 ├── chapter-01-introduction.docx
@@ -807,11 +872,13 @@ submission/
 ### Final Validation
 
 **Command**:
+
 ```
 *execute-checklist packtpub-submission-checklist
 ```
 
 **Validates**:
+
 - ✅ Chapter formatted correctly
 - ✅ Code examples packaged
 - ✅ Tests pass
@@ -831,12 +898,14 @@ Congratulations! You've completed your first technical book chapter using BMad.
 ### Continue Your Book
 
 **Option 1: Write Chapter 2**
+
 ```
 *create-chapter-outline
 # Chapter 2: Lists and List Operations
 ```
 
 **Option 2: Add More Sections to Chapter 1**
+
 ```
 *create-section
 # Add advanced list topics
@@ -845,11 +914,13 @@ Congratulations! You've completed your first technical book chapter using BMad.
 ### Explore More Features
 
 **Try Different Workflows**:
+
 - `tutorial-creation-workflow` - Create hands-on tutorials
 - `code-example-workflow` - Focus on code-heavy chapters
 - `technical-review-workflow` - Deep technical review
 
 **Use Specialist Agents**:
+
 - `api-documenter` - Create API reference chapters
 - `screenshot-specialist` - Add visual documentation
 - `exercise-creator` - Design comprehensive exercise sets
@@ -857,6 +928,7 @@ Congratulations! You've completed your first technical book chapter using BMad.
 ### Learn Advanced Topics
 
 **Read More Documentation**:
+
 - [Process Flows](process-flows.md) - Visualize all workflows
 - [Agent Reference](agent-reference.md) - Master all 13 agents
 - [Workflow Guide](workflow-guide.md) - Choose optimal workflows
@@ -900,4 +972,4 @@ You learned how to:
 
 ---
 
-*Getting Started Tutorial - Technical Writing Expansion Pack v1.1.0*
+_Getting Started Tutorial - Technical Writing Expansion Pack v1.1.0_

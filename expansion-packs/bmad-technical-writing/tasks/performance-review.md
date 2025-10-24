@@ -933,8 +933,8 @@ This is educational code where clarity often trumps extreme optimization:
 - [ ] Educational value maintained
 - [ ] Performance review complete
 
-**Reviewer Signature:** ******\_******
-**Date:** ******\_******
+**Reviewer Signature:** **\*\***\_**\*\***
+**Date:** **\*\***\_**\*\***
 
 ```
 

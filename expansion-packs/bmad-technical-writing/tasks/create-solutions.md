@@ -160,17 +160,20 @@ Explain why this approach:
 ### Chosen Approach: Iterative Implementation
 
 **Why this approach?**
+
 - Time complexity: O(n) - efficient for large inputs
 - Space complexity: O(n) - stores full sequence
 - Avoids recursion depth limits
 - Easy to understand and debug
 
 **Alternative approaches considered:**
+
 - Recursive: Simpler code but O(2^n) time complexity
 - Generator: More memory-efficient but doesn't return list
 - Matrix multiplication: Mathematically elegant but overkill
 
 **When to use each:**
+
 - Use iterative for most cases (good balance)
 - Use generator when working with very large n
 - Use recursive for teaching purposes only
@@ -237,7 +240,7 @@ def calculate_average(numbers):
 
 Show what to avoid:
 
-```markdown
+````markdown
 ## Common Mistakes
 
 ### ❌ Mistake 1: Not handling empty input
@@ -246,6 +249,7 @@ Show what to avoid:
 def calculate_average(numbers):
     return sum(numbers) / len(numbers)  # ZeroDivisionError if empty!
 ```
+````
 
 **Problem:** Crashes on empty list.
 
@@ -264,7 +268,8 @@ def remove_negatives(numbers):
 **Problem:** Modifying list while iterating causes skipped elements.
 
 **Fix:** Create new list or iterate backwards.
-```
+
+````
 
 ### 9. Estimate Completion Time
 
@@ -279,7 +284,7 @@ Help readers pace themselves:
 | 3.2 | Intermediate | 20-30 minutes |
 | 3.3 | Advanced | 45-60 minutes |
 | 3.4 | Challenge | 1-2 hours |
-```
+````
 
 ### 10. Format for Appendix
 
@@ -287,7 +292,7 @@ Structure solutions document:
 
 **Template:**
 
-```markdown
+````markdown
 # Chapter 3 Solutions
 
 ## Exercise 3.1: [Exercise Title]
@@ -300,6 +305,7 @@ Structure solutions document:
 ```python
 [solution code]
 ```
+````
 
 ### Explanation
 
@@ -318,6 +324,7 @@ Structure solutions document:
 ## Exercise 3.2: [Next Exercise]
 
 [Same structure]
+
 ```
 
 ## Success Criteria
@@ -339,3 +346,4 @@ Structure solutions document:
 2. Consider providing partial solutions for harder exercises
 3. Create solution videos for complex exercises (optional)
 4. Test solutions with beta readers
+```

@@ -5,28 +5,13 @@
 ---
 
 task:
-  id: update-chapter-for-version
-  name: Update Chapter for New Technology Version
-  description: Update a specific chapter for new technology version (e.g., Python 3.9 → 3.12)
-  persona_default: book-analyst
-  inputs:
-    - chapter_path
-    - current_version (e.g., Python 3.9)
-    - target_version (e.g., Python 3.12)
-    - breaking_changes_list
-  steps:
-    - Review chapter current state and code examples
-    - Identify target version (Python 3.12, Node 20, etc.)
-    - Update import statements for new version conventions
-    - Replace deprecated methods/APIs with current equivalents
-    - Adopt new syntax features where applicable (e.g., match/case in Python 3.10+)
-    - Update all code examples and test on exact target version
-    - Revise explanatory text for new best practices
-    - Add migration notes if changes are significant
-    - Update cross-references if chapter numbers or sections changed
-    - Run execute-checklist.md with version-update-checklist.md
-    - Document changes in chapter change log
-  output: Updated chapter file with version-specific changes documented
+id: update-chapter-for-version
+name: Update Chapter for New Technology Version
+description: Update a specific chapter for new technology version (e.g., Python 3.9 → 3.12)
+persona_default: book-analyst
+inputs: - chapter_path - current_version (e.g., Python 3.9) - target_version (e.g., Python 3.12) - breaking_changes_list
+steps: - Review chapter current state and code examples - Identify target version (Python 3.12, Node 20, etc.) - Update import statements for new version conventions - Replace deprecated methods/APIs with current equivalents - Adopt new syntax features where applicable (e.g., match/case in Python 3.10+) - Update all code examples and test on exact target version - Revise explanatory text for new best practices - Add migration notes if changes are significant - Update cross-references if chapter numbers or sections changed - Run execute-checklist.md with version-update-checklist.md - Document changes in chapter change log
+output: Updated chapter file with version-specific changes documented
 
 ---
 
@@ -73,6 +58,7 @@ Confirm the specific target version:
 Modernize imports for new version:
 
 **Python Example:**
+
 ```python
 # Old (Python 3.9)
 from typing import List, Dict, Optional
@@ -83,6 +69,7 @@ from collections.abc import Sequence
 ```
 
 **JavaScript Example:**
+
 ```javascript
 // Old (Node 16)
 const fs = require('fs').promises;
@@ -98,6 +85,7 @@ Verify imports work with target version.
 Find and replace deprecated functionality:
 
 **Python Example:**
+
 ```python
 # Old (deprecated in 3.10)
 collections.Iterable
@@ -107,6 +95,7 @@ collections.abc.Iterable
 ```
 
 **Django Example:**
+
 ```python
 # Old (Django 3.x)
 from django.conf.urls import url
@@ -122,6 +111,7 @@ Consult official deprecation notices and migration guides.
 Introduce new language features where pedagogically appropriate:
 
 **Python 3.10+ Match/Case:**
+
 ```python
 # Consider updating if/elif chains to match/case
 # Old
@@ -143,6 +133,7 @@ match status:
 ```
 
 **Python 3.9+ Type Hints:**
+
 ```python
 # Old
 from typing import List
@@ -155,6 +146,7 @@ def process_items(items: list[str]) -> None:
 ```
 
 Only add new syntax if:
+
 - It improves clarity
 - It's appropriate for the chapter's teaching level
 - It doesn't confuse the main concept being taught
@@ -171,6 +163,7 @@ For each code example in the chapter:
 - Test edge cases
 
 **Testing Checklist:**
+
 - [ ] Code runs without errors
 - [ ] Code runs without warnings (or warnings are explained)
 - [ ] Output matches what's shown in book
@@ -189,6 +182,7 @@ Update prose to reflect version changes:
 - Update security guidance if recommendations changed
 
 **Example:**
+
 ```markdown
 Old: "In Python 3.9, you can use type hints with List from the typing module."
 New: "In Python 3.12, you can use built-in list directly in type hints without importing from typing."
@@ -204,6 +198,7 @@ If changes are substantial, add migration guidance:
 - Link to official migration guides if helpful
 
 **Example Callout:**
+
 ```markdown
 > **Migration Note**: If you're updating code from Python 3.9, you can safely replace
 > `List[str]` with `list[str]` and `Dict[str, int]` with `dict[str, int]` throughout

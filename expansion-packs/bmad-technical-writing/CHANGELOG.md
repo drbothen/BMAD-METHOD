@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Migration Required**: Existing v1.x projects must rename their `docs/` directory to `manuscript/`.
 
 **Affected Paths**:
+
 - `docs/planning/` → `manuscript/planning/`
 - `docs/sections/` → `manuscript/sections/`
 - `docs/chapters/` → `manuscript/chapters/`
@@ -23,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/reviews/` → `manuscript/reviews/`
 
 **Rationale**:
+
 - ✅ Aligns with publishing industry terminology ("manuscript submission")
 - ✅ Provides semantic clarity (manuscript content vs project documentation)
 - ✅ Enables clear separation: `manuscript/` for book content, `docs/` for project meta-docs
@@ -79,6 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Upgrade Path
 
 **Simple Migration** (most users):
+
 ```bash
 cd your-book-project
 mv docs manuscript

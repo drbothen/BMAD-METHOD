@@ -5,26 +5,13 @@
 ---
 
 task:
-  id: incorporate-reviewer-feedback
-  name: Systematically Incorporate Reviewer Feedback
-  description: Process and address technical reviewer, publisher, and beta reader feedback systematically
-  persona_default: book-analyst
-  inputs:
-    - reviewer_feedback (technical review comments, publisher requests, beta reader notes)
-    - affected_chapters
-  steps:
-    - Collect all reviewer feedback from all sources (technical, publisher, beta readers)
-    - Categorize feedback by severity (critical/must-fix, important/should-fix, optional/nice-to-have)
-    - Create feedback tracking log with status for each item
-    - Address critical issues first (technical errors, broken code, security issues)
-    - Fix important issues (clarity problems, missing examples, structural issues)
-    - Consider optional suggestions (enhancements, additional topics, style preferences)
-    - Test all code changes from feedback
-    - Update text for clarity improvements requested
-    - Track completion status in feedback log
-    - Generate feedback-resolution-log documenting all changes
-    - Run execute-checklist.md with existing-book-integration-checklist.md
-  output: docs/feedback/{{book_title}}-feedback-resolution-log.md
+id: incorporate-reviewer-feedback
+name: Systematically Incorporate Reviewer Feedback
+description: Process and address technical reviewer, publisher, and beta reader feedback systematically
+persona_default: book-analyst
+inputs: - reviewer_feedback (technical review comments, publisher requests, beta reader notes) - affected_chapters
+steps: - Collect all reviewer feedback from all sources (technical, publisher, beta readers) - Categorize feedback by severity (critical/must-fix, important/should-fix, optional/nice-to-have) - Create feedback tracking log with status for each item - Address critical issues first (technical errors, broken code, security issues) - Fix important issues (clarity problems, missing examples, structural issues) - Consider optional suggestions (enhancements, additional topics, style preferences) - Test all code changes from feedback - Update text for clarity improvements requested - Track completion status in feedback log - Generate feedback-resolution-log documenting all changes - Run execute-checklist.md with existing-book-integration-checklist.md
+output: docs/feedback/{{book_title}}-feedback-resolution-log.md
 
 ---
 
@@ -48,6 +35,7 @@ Before starting this task:
 Gather feedback from all sources:
 
 **Technical Reviewer Feedback:**
+
 - Technical accuracy issues
 - Code errors or improvements
 - Misleading explanations
@@ -55,6 +43,7 @@ Gather feedback from all sources:
 - Incorrect terminology
 
 **Publisher Feedback:**
+
 - Format compliance issues
 - Style guide violations
 - Length adjustments needed
@@ -62,6 +51,7 @@ Gather feedback from all sources:
 - Legal/licensing concerns
 
 **Beta Reader Feedback:**
+
 - Clarity problems
 - Confusing sections
 - Missing examples
@@ -75,6 +65,7 @@ Consolidate into a single master feedback list.
 Triage each feedback item into priority categories:
 
 **Critical (Must-Fix):**
+
 - Technical errors (incorrect information)
 - Broken code examples (won't run)
 - Security vulnerabilities
@@ -83,6 +74,7 @@ Triage each feedback item into priority categories:
 - Major clarity problems (readers can't follow)
 
 **Important (Should-Fix):**
+
 - Unclear explanations (could be clearer)
 - Missing examples (would help understanding)
 - Structural issues (better organization possible)
@@ -91,6 +83,7 @@ Triage each feedback item into priority categories:
 - Minor technical inaccuracies
 
 **Nice-to-Have (Optional):**
+
 - Style preferences (subjective improvements)
 - Additional topics (scope expansion)
 - Enhancement suggestions
@@ -101,11 +94,11 @@ Triage each feedback item into priority categories:
 
 Build a structured tracking system:
 
-| ID | Chapter | Severity | Issue | Requested By | Status | Resolution | Date |
-|----|---------|----------|-------|--------------|--------|------------|------|
-| F001 | Ch 3 | Critical | Code won't run Python 3.12 | Tech Review | Done | Fixed import | 2024-01-15 |
-| F002 | Ch 5 | Important | Unclear JWT explanation | Beta Reader | Done | Added example | 2024-01-16 |
-| F003 | Ch 7 | Optional | Add async/await example | Tech Review | Deferred | Future edition | 2024-01-16 |
+| ID   | Chapter | Severity  | Issue                      | Requested By | Status   | Resolution     | Date       |
+| ---- | ------- | --------- | -------------------------- | ------------ | -------- | -------------- | ---------- |
+| F001 | Ch 3    | Critical  | Code won't run Python 3.12 | Tech Review  | Done     | Fixed import   | 2024-01-15 |
+| F002 | Ch 5    | Important | Unclear JWT explanation    | Beta Reader  | Done     | Added example  | 2024-01-16 |
+| F003 | Ch 7    | Optional  | Add async/await example    | Tech Review  | Deferred | Future edition | 2024-01-16 |
 
 This provides visibility into progress and ensures nothing is missed.
 
@@ -114,6 +107,7 @@ This provides visibility into progress and ensures nothing is missed.
 Start with must-fix items:
 
 **For Technical Errors:**
+
 - Verify the error (confirm it's incorrect)
 - Research the correct information
 - Update text and code
@@ -121,6 +115,7 @@ Start with must-fix items:
 - Add verification note to tracking log
 
 **For Broken Code:**
+
 - Reproduce the issue
 - Fix the code
 - Test on target version(s)
@@ -128,6 +123,7 @@ Start with must-fix items:
 - Update text if output changed
 
 **For Security Issues:**
+
 - Assess severity (CVSS score if applicable)
 - Fix immediately
 - Add security note if appropriate
@@ -135,6 +131,7 @@ Start with must-fix items:
 - Document in change log
 
 **For Publisher Blocking Issues:**
+
 - Understand exact requirement
 - Implement change
 - Verify compliance
@@ -148,6 +145,7 @@ Do not proceed to lower-priority items until all critical issues are resolved.
 Address should-fix items systematically:
 
 **For Clarity Problems:**
+
 - Identify specific unclear section
 - Rewrite for clarity
 - Add examples if needed
@@ -155,6 +153,7 @@ Address should-fix items systematically:
 - Update tracking log
 
 **For Missing Examples:**
+
 - Understand what example is needed
 - Design example that teaches the concept
 - Write and test code
@@ -162,6 +161,7 @@ Address should-fix items systematically:
 - Verify it improves understanding
 
 **For Structural Issues:**
+
 - Assess reorganization impact
 - Plan structural change
 - Reorganize content
@@ -169,6 +169,7 @@ Address should-fix items systematically:
 - Verify learning flow still works
 
 **For Incomplete Coverage:**
+
 - Determine scope of addition
 - Write additional content
 - Test any new code
@@ -180,12 +181,14 @@ Address should-fix items systematically:
 Evaluate nice-to-have items carefully:
 
 **Decision Criteria:**
+
 - Does it improve reader experience?
 - Is it within scope of current edition?
 - Do I have time/space for this?
 - Does it align with book goals?
 
 **Actions:**
+
 - **Implement**: If valuable and feasible
 - **Defer**: If good idea but not for this edition (document for next edition)
 - **Decline**: If not aligned with book goals (document reason)
@@ -239,30 +242,38 @@ Create comprehensive document summarizing all feedback processing:
 # Feedback Resolution Log - [Book Title]
 
 ## Summary
+
 - Total feedback items: 47
 - Critical (resolved): 8/8
 - Important (resolved): 23/25 (2 deferred)
 - Optional (resolved): 7/14 (4 deferred, 3 declined)
 
 ## Critical Issues Resolved
+
 [List with details]
 
 ## Important Issues Resolved
+
 [List with details]
 
 ## Deferred Items
+
 [List with rationale and target edition]
 
 ## Declined Items
+
 [List with rationale]
 
 ## Code Changes
+
 [List all code changes made]
 
 ## Text Changes
+
 [List major text revisions]
 
 ## Reviewer Acknowledgments
+
 [Thank reviewers]
 ```
 

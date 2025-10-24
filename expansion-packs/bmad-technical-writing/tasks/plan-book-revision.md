@@ -5,29 +5,13 @@
 ---
 
 task:
-  id: plan-book-revision
-  name: Plan Book Revision Strategy
-  description: Create strategic plan for updating existing technical book (2nd/3rd edition, version updates, chapter additions)
-  persona_default: book-analyst
-  inputs:
-    - book_analysis_report (from analyze-existing-book.md)
-    - revision_type (new edition, version update, chapter addition, feedback incorporation)
-    - target_versions (if applicable)
-  steps:
-    - Review book analysis report to understand current state
-    - Define revision scope (full edition? specific chapters? code-only? text-only?)
-    - Identify all technology version changes needed
-    - Create chapter revision matrix (complexity, effort, priority for each chapter)
-    - Assess impact on learning progression and flow
-    - Plan code testing strategy across target versions
-    - Define timeline with phases and milestones
-    - Identify chapter dependencies and critical path
-    - Set success criteria and quality gates
-    - Assess risks and create mitigation plans
-    - Use template revision-plan-tmpl.yaml with create-doc.md task
-    - Run execute-checklist.md with revision-completeness-checklist.md
-    - Generate comprehensive revision plan
-  output: manuscript/planning/{{book_title}}-revision-plan.md
+id: plan-book-revision
+name: Plan Book Revision Strategy
+description: Create strategic plan for updating existing technical book (2nd/3rd edition, version updates, chapter additions)
+persona_default: book-analyst
+inputs: - book_analysis_report (from analyze-existing-book.md) - revision_type (new edition, version update, chapter addition, feedback incorporation) - target_versions (if applicable)
+steps: - Review book analysis report to understand current state - Define revision scope (full edition? specific chapters? code-only? text-only?) - Identify all technology version changes needed - Create chapter revision matrix (complexity, effort, priority for each chapter) - Assess impact on learning progression and flow - Plan code testing strategy across target versions - Define timeline with phases and milestones - Identify chapter dependencies and critical path - Set success criteria and quality gates - Assess risks and create mitigation plans - Use template revision-plan-tmpl.yaml with create-doc.md task - Run execute-checklist.md with revision-completeness-checklist.md - Generate comprehensive revision plan
+output: manuscript/planning/{{book_title}}-revision-plan.md
 
 ---
 
@@ -64,6 +48,7 @@ This analysis is your foundation for planning.
 Determine the type and extent of revision:
 
 **Revision Type:**
+
 - New edition (2nd, 3rd)? - Full book revision
 - Technology version update? - Update code and related text
 - Chapter additions? - New content integration
@@ -71,6 +56,7 @@ Determine the type and extent of revision:
 - Publisher-requested changes? - Specific modifications
 
 **Scope Level:**
+
 - Full book revision (all chapters)
 - Specific chapters only (which ones?)
 - Code examples only (no text changes)
@@ -78,6 +64,7 @@ Determine the type and extent of revision:
 - Mixed (some chapters full revision, others minor updates)
 
 **Triggers:** Why now?
+
 - New technology version released
 - Publisher request for new edition
 - Market demand or competition
@@ -85,6 +72,7 @@ Determine the type and extent of revision:
 - Reviewer or reader feedback
 
 **Goals:** What does success look like?
+
 - Updated to latest technology versions
 - All broken examples fixed
 - New features demonstrated
@@ -92,6 +80,7 @@ Determine the type and extent of revision:
 - Publisher approval secured
 
 **Constraints:**
+
 - Timeline (publisher deadline, market window)
 - Budget (author time, technical review costs)
 - Resources (access to testers, reviewers)
@@ -108,6 +97,7 @@ For each technology in the book, document:
 - Migration effort estimate (low/medium/high)
 
 Example:
+
 - Python: 3.9 → 3.12 (Medium - add match/case, update deprecated methods)
 - Django: 3.2 → 4.2 (High - significant async changes, new admin features)
 - PostgreSQL: 13 → 15 (Low - mostly backward compatible, add new JSON features)
@@ -116,14 +106,15 @@ Example:
 
 For each chapter, define revision needs:
 
-| Chapter | Title | Complexity | Effort | Priority | Changes Needed |
-|---------|-------|------------|--------|----------|----------------|
-| 1 | Introduction | Low | 2h | Important | Update version refs |
-| 2 | Basic Syntax | High | 8h | Critical | Add match/case (Python 3.10+) |
-| 3 | Functions | Medium | 5h | Important | Update type hints syntax |
-| ... | ... | ... | ... | ... | ... |
+| Chapter | Title        | Complexity | Effort | Priority  | Changes Needed                |
+| ------- | ------------ | ---------- | ------ | --------- | ----------------------------- |
+| 1       | Introduction | Low        | 2h     | Important | Update version refs           |
+| 2       | Basic Syntax | High       | 8h     | Critical  | Add match/case (Python 3.10+) |
+| 3       | Functions    | Medium     | 5h     | Important | Update type hints syntax      |
+| ...     | ...          | ...        | ...    | ...       | ...                           |
 
 **Complexity Levels:**
+
 - **Low**: Minor text updates, version number changes, small corrections
 - **Medium**: Code updates, new examples, moderate text revisions
 - **High**: Significant rewrites, new sections, major code changes
@@ -131,6 +122,7 @@ For each chapter, define revision needs:
 **Effort Estimates:** Hours per chapter (be realistic)
 
 **Priority Levels:**
+
 - **Critical**: Must fix (broken code, security issues, major inaccuracies)
 - **Important**: Should fix (outdated best practices, missing features)
 - **Nice-to-have**: Optional improvements (polish, minor enhancements)
@@ -152,26 +144,31 @@ Consult learning-frameworks.md for pedagogical best practices.
 Define how you'll validate all code updates:
 
 **Testing Approach:**
+
 - Manual testing (run each example)
 - Automated testing (unit tests, integration tests)
 - CI/CD pipeline (automated validation on commits)
 
 **Version Matrix:**
+
 - Which versions to test? (Python 3.10, 3.11, 3.12? or just 3.12?)
 - Multiple platforms? (Windows, macOS, Linux)
 - Multiple environments? (development, production)
 
 **Tool Requirements:**
+
 - Testing frameworks (pytest, Jest, etc.)
 - Linters (pylint, ESLint, etc.)
 - Code formatters (black, prettier, etc.)
 
 **Repository Updates:**
+
 - Update code repository structure
 - Add/update tests
 - Update documentation (README, setup instructions)
 
 **Regression Testing:**
+
 - Test unchanged examples still work
 - Verify backward compatibility where needed
 
@@ -182,29 +179,35 @@ Break revision into phases with realistic estimates:
 **Example Timeline (14-week revision):**
 
 **Phase 1: Analysis and Planning (Weeks 1-2)**
+
 - Week 1: Complete book analysis
 - Week 2: Finalize revision plan, set up testing environment
 
 **Phase 2: Chapter Revisions (Weeks 3-10)**
+
 - Weeks 3-4: Chapters 1-5 (Critical priority)
 - Weeks 5-6: Chapters 6-10 (Critical priority)
 - Weeks 7-8: Chapters 11-15 (Important priority)
 - Weeks 9-10: Review, polish, and nice-to-haves
 
 **Phase 3: Testing and QA (Weeks 11-12)**
+
 - Week 11: Code testing across all target versions
 - Week 12: Technical review and editorial review
 
 **Phase 4: Finalization (Weeks 13-14)**
+
 - Week 13: Incorporate feedback, final revisions
 - Week 14: Final formatting, publisher submission
 
 **Critical Path:** Which tasks block others?
+
 - Must complete Python version update before testing
 - Must finish technical review before editorial review
 - Must have all chapters revised before final formatting
 
 **Dependencies:** What must complete before next phase?
+
 - Analysis must complete before revision starts
 - Critical chapters must finish before important chapters
 - All revisions must complete before QA phase
@@ -230,6 +233,7 @@ Define what "done" means:
 Identify potential problems and solutions:
 
 **Technical Risks:**
+
 - Risk: Breaking changes too extensive, examples can't be easily migrated
   - Mitigation: Incremental testing, provide migration examples, consider backward-compatible alternatives
 - Risk: New version not stable yet
@@ -238,18 +242,21 @@ Identify potential problems and solutions:
   - Mitigation: Research compatibility early, plan alternative examples
 
 **Scope Risks:**
+
 - Risk: Revision scope creeps beyond original plan
   - Mitigation: Strict scope control, defer enhancements to future edition, track scope changes
 - Risk: Underestimating effort for "simple" chapters
   - Mitigation: Add 20% buffer to estimates, track actual time
 
 **Schedule Risks:**
+
 - Risk: Testing takes longer than expected
   - Mitigation: Start testing early, test incrementally, run tests in parallel
 - Risk: Publisher deadline pressure
   - Mitigation: Build buffer time into schedule, prioritize critical updates, communicate early if slipping
 
 **Quality Risks:**
+
 - Risk: Inconsistency between old and new content
   - Mitigation: Extract style guide early, editorial review, use existing-book-integration-checklist.md
 - Risk: Breaking learning flow with changes

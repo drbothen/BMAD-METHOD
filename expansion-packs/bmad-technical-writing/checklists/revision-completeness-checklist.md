@@ -174,6 +174,7 @@ Use this checklist to verify that a book revision (2nd/3rd edition, major update
 ## Examples of Complete vs. Incomplete
 
 **✅ Complete Revision:**
+
 - All planned chapters revised
 - All code tested on Python 3.12
 - Technical review approved
@@ -182,6 +183,7 @@ Use this checklist to verify that a book revision (2nd/3rd edition, major update
 - Ready for publication
 
 **❌ Incomplete Revision:**
+
 - Chapter 7 still has Python 3.9 code
 - Technical reviewer found 3 unresolved errors
 - Table of contents not updated

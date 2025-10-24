@@ -41,6 +41,7 @@ Prepare a chapter for early release through Manning's MEAP program, ensuring it 
 Provide necessary context:
 
 **Add Chapter Introduction:**
+
 ```
 This chapter covers [topic]. In the previous chapter, you learned [previous topic brief summary].
 In this chapter, you'll discover [current topic]. By the end, you'll be able to [learning outcomes].

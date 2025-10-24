@@ -150,7 +150,8 @@ Use this checklist when adding new content to an existing book (new chapters, re
 ## Examples of Good vs. Bad Integration
 
 **✅ Good Integration:**
-```markdown
+
+````markdown
 ## Setting Up Authentication
 
 As we saw in Chapter 3, user authentication is critical for secure applications.
@@ -175,12 +176,15 @@ def create_token(user_id):
     """
     # Implementation follows
 ```
+````
+
 - Matches voice/tone
 - Follows cross-reference style
 - Uses consistent callout format
 - Follows code patterns (imports, docstring style)
 
 **❌ Bad Integration:**
+
 ```markdown
 # Auth Setup
 
@@ -188,14 +192,14 @@ Let's do authentication now!
 
 **IMPORTANT!!!** Don't forget expiration!
 
-from flask import *
-def make_token(uid):
-    # make the token
+from flask import \*
+def make_token(uid): # make the token
 ```
+
 - Heading style different (# vs ##)
 - Voice too casual/inconsistent
 - Callout style different (bold vs. callout box)
-- Code style inconsistent (import *, no docstring, different naming)
+- Code style inconsistent (import \*, no docstring, different naming)
 
 ## Red Flags
 

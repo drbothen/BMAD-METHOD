@@ -8,18 +8,18 @@ Welcome to the complete documentation suite for the BMad Technical Writing Expan
 
 Start here if you're new to the Technical Writing Expansion Pack:
 
-- **[Quick Reference Card](quick-reference.md)** ⚡ *5 minutes*
+- **[Quick Reference Card](quick-reference.md)** ⚡ _5 minutes_
   - One-page cheat sheet with most common workflows, agents, and commands
   - Perfect for quick lookups while writing
   - Print-friendly format
 
-- **[Getting Started Tutorial](getting-started.md)** 🎓 *1-2 hours*
+- **[Getting Started Tutorial](getting-started.md)** 🎓 _1-2 hours_
   - Hands-on walkthrough: Write your first chapter
   - Uses real example: "Python Data Structures Handbook"
   - Complete workflow from planning to publishing
   - **START HERE for hands-on learning**
 
-- **[User Guide](user-guide.md)** 📖 *60-90 minutes*
+- **[User Guide](user-guide.md)** 📖 _60-90 minutes_
   - Conceptual overview of the entire system
   - Understanding agents, workflows, and templates
   - Architecture and design principles
@@ -31,14 +31,14 @@ Start here if you're new to the Technical Writing Expansion Pack:
 
 Deep-dive documentation for understanding how everything works:
 
-- **[Process Flows](process-flows.md)** 📊 *30-45 minutes*
+- **[Process Flows](process-flows.md)** 📊 _30-45 minutes_
   - Visual Mermaid diagrams for all 15 workflows
   - Book authoring lifecycle diagram
   - Agent collaboration maps
   - Publishing decision trees
   - **Great for visual learners**
 
-- **[Integration Guide](integration-guide.md)** 🔗 *15-20 minutes*
+- **[Integration Guide](integration-guide.md)** 🔗 _15-20 minutes_
   - Using Technical Writing pack with BMad core
   - Multi-expansion usage patterns
   - Git integration best practices
@@ -50,30 +50,30 @@ Deep-dive documentation for understanding how everything works:
 
 Comprehensive reference for all system components:
 
-- **[Agent Reference](agent-reference.md)** 🤖 *45-60 minutes*
+- **[Agent Reference](agent-reference.md)** 🤖 _45-60 minutes_
   - All 13 agents documented in detail
   - Purpose, commands, dependencies, examples
   - Agent categories and selection guide
   - Integration patterns
 
-- **[Workflow Guide](workflow-guide.md)** 🔀 *30-45 minutes*
+- **[Workflow Guide](workflow-guide.md)** 🔀 _30-45 minutes_
   - All 15 workflows explained
   - When to use each workflow
   - Inputs, outputs, time estimates
   - Workflow decision tree
 
-- **[Template Gallery](template-gallery.md)** 📝 *40-50 minutes*
+- **[Template Gallery](template-gallery.md)** 📝 _40-50 minutes_
   - All 18 templates with examples
   - Sample filled outputs
   - Usage guidance
   - Customization tips
 
-- **[Task Reference](task-reference.md)** ✅ *25-35 minutes*
+- **[Task Reference](task-reference.md)** ✅ _25-35 minutes_
   - All 33 tasks organized by phase
   - Purpose, prerequisites, time estimates
   - Quick reference table
 
-- **[Checklist Reference](checklist-reference.md)** ☑️ *25-30 minutes*
+- **[Checklist Reference](checklist-reference.md)** ☑️ _25-30 minutes_
   - All 31 checklists organized by phase
   - Quality gate recommendations
   - Checklist roadmap
@@ -84,13 +84,13 @@ Comprehensive reference for all system components:
 
 Get help when you need it:
 
-- **[Troubleshooting Guide](troubleshooting.md)** 🔧 *As needed*
+- **[Troubleshooting Guide](troubleshooting.md)** 🔧 _As needed_
   - Common installation issues
   - Agent activation problems
   - Workflow execution errors
   - Build/validation fixes
 
-- **[FAQ](faq.md)** ❓ *As needed*
+- **[FAQ](faq.md)** ❓ _As needed_
   - 25-30 frequently asked questions
   - Quick answers to common questions
   - Organized by category
@@ -125,16 +125,16 @@ Real-world examples showing complete outputs:
 
 **Time Investment**: 2-3 hours to productivity
 
-1. **[Quick Reference Card](quick-reference.md)** ⚡ *5 min*
+1. **[Quick Reference Card](quick-reference.md)** ⚡ _5 min_
    - Get oriented with one-page overview
    - Understand core commands
 
-2. **[Getting Started Tutorial](getting-started.md)** 🎓 *1-2 hrs*
+2. **[Getting Started Tutorial](getting-started.md)** 🎓 _1-2 hrs_
    - Hands-on: Write your first section
    - Learn by doing with real example
    - **Most important for beginners!**
 
-3. **[User Guide](user-guide.md)** 📖 *60-90 min*
+3. **[User Guide](user-guide.md)** 📖 _60-90 min_
    - Understand conceptual foundations
    - Learn system architecture
    - Grasp key concepts
@@ -150,22 +150,22 @@ Real-world examples showing complete outputs:
 
 **Goal**: Master all workflows and optimize your process
 
-1. **[Workflow Guide](workflow-guide.md)** 🔀 *30-45 min*
+1. **[Workflow Guide](workflow-guide.md)** 🔀 _30-45 min_
    - Understand all 15 workflows in depth
    - Choose optimal workflows for your use case
    - Learn workflow decision criteria
 
-2. **[Agent Reference](agent-reference.md)** 🤖 *45-60 min*
+2. **[Agent Reference](agent-reference.md)** 🤖 _45-60 min_
    - Master all 13 agents
    - Understand agent collaboration
    - Learn advanced agent usage
 
-3. **[Process Flows](process-flows.md)** 📊 *30-45 min*
+3. **[Process Flows](process-flows.md)** 📊 _30-45 min_
    - Visualize workflow orchestration
    - Understand agent handoffs
    - Optimize your workflow
 
-4. **[Template Gallery](template-gallery.md)** 📝 *40-50 min*
+4. **[Template Gallery](template-gallery.md)** 📝 _40-50 min_
    - See all template outputs
    - Learn template customization
    - Understand template usage patterns
@@ -176,17 +176,17 @@ Real-world examples showing complete outputs:
 
 **Goal**: Customize, optimize, and scale your book production
 
-1. **[Integration Guide](integration-guide.md)** 🔗 *15-20 min*
+1. **[Integration Guide](integration-guide.md)** 🔗 _15-20 min_
    - Multi-expansion usage
    - CI/CD integration
    - Git workflow optimization
 
-2. **[Task Reference](task-reference.md)** ✅ *25-35 min*
+2. **[Task Reference](task-reference.md)** ✅ _25-35 min_
    - Understand all 33 tasks
    - Customize task workflows
    - Build your own processes
 
-3. **[Checklist Reference](checklist-reference.md)** ☑️ *25-30 min*
+3. **[Checklist Reference](checklist-reference.md)** ☑️ _25-30 min_
    - Master all quality gates
    - Customize checklists
    - Define your own standards
@@ -205,12 +205,14 @@ Choose the path that matches your goal:
 ### Path 1: Greenfield Book (New Book from Scratch)
 
 **Recommended Documentation**:
+
 1. [Getting Started Tutorial](getting-started.md) - Learn the basics
 2. [Workflow Guide](workflow-guide.md) - Focus on greenfield workflows
 3. [Process Flows](process-flows.md) - See book-planning and section-development flows
 4. [Agent Reference](agent-reference.md) - Master core agents (skip Book Analyst)
 
 **Workflows You'll Use**:
+
 - book-planning-workflow
 - section-planning-workflow
 - section-development-workflow
@@ -222,12 +224,14 @@ Choose the path that matches your goal:
 ### Path 2: Brownfield Book (Existing Book Updates)
 
 **Recommended Documentation**:
+
 1. [User Guide](user-guide.md) - Understand brownfield approach
 2. [Agent Reference](agent-reference.md) - Focus on Book Analyst agent
 3. [Workflow Guide](workflow-guide.md) - Focus on brownfield workflows
 4. [Process Flows](process-flows.md) - See edition-update and add-chapter flows
 
 **Workflows You'll Use**:
+
 - book-edition-update-workflow
 - add-chapter-to-existing-book-workflow
 - incorporate-review-feedback-workflow
@@ -238,12 +242,14 @@ Choose the path that matches your goal:
 ### Path 3: Self-Publishing (Leanpub/KDP/Gumroad)
 
 **Recommended Documentation**:
+
 1. [Getting Started Tutorial](getting-started.md) - Learn core process
 2. [Workflow Guide](workflow-guide.md) - Focus on self-publishing-workflow
 3. [FAQ](faq.md) - Self-publishing specific questions
 4. [Process Flows](process-flows.md) - See self-publishing flow diagram
 
 **Workflows You'll Use**:
+
 - book-planning-workflow
 - section-development-workflow
 - chapter-assembly-workflow
@@ -254,12 +260,14 @@ Choose the path that matches your goal:
 ### Path 4: Traditional Publishing (PacktPub/O'Reilly/Manning)
 
 **Recommended Documentation**:
+
 1. [Getting Started Tutorial](getting-started.md) - Learn core process
 2. [Workflow Guide](workflow-guide.md) - Focus on publisher-specific workflows
 3. [Checklist Reference](checklist-reference.md) - Publisher-specific checklists
 4. [Process Flows](process-flows.md) - See publisher submission flows
 
 **Workflows You'll Use**:
+
 - book-planning-workflow
 - section-development-workflow
 - chapter-assembly-workflow
@@ -270,14 +278,17 @@ Choose the path that matches your goal:
 ## 🆘 Getting Help
 
 ### Quick Answers
+
 - **[FAQ](faq.md)** - 25-30 common questions with quick answers
 - **[Quick Reference](quick-reference.md)** - Command cheat sheet
 
 ### Problem Solving
+
 - **[Troubleshooting Guide](troubleshooting.md)** - Common issues and solutions
 - Organized by category (installation, agents, workflows, templates, build)
 
 ### Community Support
+
 - **[Discord Community](https://discord.gg/gk8jAdXWmj)** - Ask questions, share experiences
 - **[GitHub Discussions](https://github.com/bmadcode/bmad-method/discussions)** - Technical discussions
 - **[GitHub Issues](https://github.com/bmadcode/bmad-method/issues)** - Report bugs, request features
@@ -289,6 +300,7 @@ Choose the path that matches your goal:
 **Total Documentation**: 13 guides + 4 examples = **17 documents**
 
 **Coverage**:
+
 - ✅ 13 agents documented
 - ✅ 15 workflows explained
 - ✅ 18 templates showcased
@@ -313,6 +325,7 @@ This documentation is kept up-to-date with each expansion pack release.
 **Community Contributions**: Welcome! Submit PRs for improvements
 
 **Version History**:
+
 - v1.1.0 - Complete documentation suite (Sprint 5+)
 - v1.0.0 - Initial release with basic README
 
@@ -327,24 +340,28 @@ Save this documentation index for easy access to all guides. You'll reference it
 ## ✨ Ready to Start?
 
 ### Absolute Beginners
+
 → **[Quick Reference](quick-reference.md)** then **[Getting Started Tutorial](getting-started.md)**
 
 ### Want Deep Understanding
+
 → **[User Guide](user-guide.md)** then **[Process Flows](process-flows.md)**
 
 ### Need Specific Info
+
 → Use search (Ctrl+F) on this page to find relevant guide
 
 ### Have Questions
+
 → **[FAQ](faq.md)** or **[Discord Community](https://discord.gg/gk8jAdXWmj)**
 
 ---
 
 **Happy Writing! 📚✨**
 
-*Your journey to published technical book starts here.*
+_Your journey to published technical book starts here._
 
 ---
 
-*Documentation Index - Technical Writing Expansion Pack v1.1.0*
-*Part of BMad-Method™ - The Universal AI Agent Framework*
+_Documentation Index - Technical Writing Expansion Pack v1.1.0_
+_Part of BMad-Method™ - The Universal AI Agent Framework_

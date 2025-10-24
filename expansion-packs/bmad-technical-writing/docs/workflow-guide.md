@@ -121,6 +121,7 @@ Complete book planning from concept to approved outline. Guides technical author
 #### Quality Gates
 
 **Proposal Complete:**
+
 - Market analysis included
 - Target audience clearly defined
 - Competitive titles identified
@@ -130,6 +131,7 @@ Complete book planning from concept to approved outline. Guides technical author
 - Realistic timeline included
 
 **Outline Complete:**
+
 - All chapters have clear titles
 - Learning objectives defined for each chapter
 - Prerequisites stated for each chapter
@@ -138,6 +140,7 @@ Complete book planning from concept to approved outline. Guides technical author
 - Estimated page counts provided
 
 **Learning Path Validated:**
+
 - No knowledge gaps between chapters
 - Difficulty curve is smooth
 - Prerequisites are achievable
@@ -145,12 +148,14 @@ Complete book planning from concept to approved outline. Guides technical author
 - Reader can succeed with stated background
 
 **Editorial Complete:**
+
 - Chapter titles are compelling
 - No topic duplication
 - Terminology consistent throughout
 - Structure follows best practices
 
 **Publisher Approved:**
+
 - Chapter count matches guidelines
 - Technical depth appropriate
 - Format matches publisher template
@@ -208,6 +213,7 @@ Complete chapter creation from outline to publisher-ready manuscript. v2.0 orche
 #### Estimated Time
 
 **Section-Driven Approach:**
+
 - Create outline: 2-4 hours
 - Plan sections: 6-11 hours
 - Develop sections: 33-84 hours (can be parallel)
@@ -215,6 +221,7 @@ Complete chapter creation from outline to publisher-ready manuscript. v2.0 orche
 - **Total**: 54-123 hours per chapter (parallel development possible)
 
 **Traditional Approach:**
+
 - Create outline: 2-4 hours
 - Develop code: 4-8 hours
 - Write draft: 12-20 hours
@@ -261,18 +268,21 @@ Complete chapter creation from outline to publisher-ready manuscript. v2.0 orche
 #### Quality Gates
 
 **Outline Complete:**
+
 - Learning objectives defined (3-5)
 - Prerequisites clearly stated
 - All code examples identified
 - Exercise plan created
 
 **Sections Complete (each):**
+
 - Section meets acceptance criteria
 - Code tested and working
 - Learning objectives addressed
 - 2-5 pages length
 
 **Chapter Integrated:**
+
 - All sections merged
 - Transitions smooth
 - Learning flow validated
@@ -681,24 +691,24 @@ Adds new chapter to existing published book. Ensures new chapter matches existin
 
 ## Workflow Comparison Table
 
-| Workflow | Category | Time Estimate | Primary Agents | When to Use |
-|----------|----------|---------------|----------------|-------------|
-| Book Planning | Planning | 20-33 hrs | book-publisher, instructional-designer, technical-editor | New book concept to approved outline |
-| Chapter Development (Section) | Development | 54-123 hrs | tutorial-architect, code-curator, technical-reviewer, technical-editor | Large chapters (15+ pages), incremental development |
-| Chapter Development (Traditional) | Development | 28-51 hrs | tutorial-architect, code-curator, technical-reviewer, technical-editor | Short chapters (<12 pages), full-chapter writing |
-| Section Planning | Development | 6-11 hrs | tutorial-architect, instructional-designer | Breaking chapter into sections |
-| Section Development | Development | 5.5-10.5 hrs | code-curator, tutorial-architect, technical-reviewer | Developing one section |
-| Chapter Assembly | Development | 13-24 hrs | tutorial-architect, instructional-designer, technical-reviewer, technical-editor | Merging sections into chapter |
-| Tutorial Creation | Development | 14-28 hrs | instructional-designer, tutorial-architect, code-curator | Standalone tutorials |
-| Code Example | Development | 4-10 hrs | code-curator | Individual code examples |
-| Technical Review | Review | 3-5 hrs | technical-reviewer | Validating technical accuracy |
-| Incorporate Feedback | Review | 4-12 hrs | tutorial-architect, technical-reviewer | Addressing review comments |
-| PacktPub Submission | Publishing | Varies | book-publisher, technical-editor | PacktPub formatting |
-| O'Reilly Submission | Publishing | Varies | book-publisher, technical-editor | O'Reilly/AsciiDoc formatting |
-| Manning MEAP | Publishing | Varies | book-publisher, technical-editor | Manning early access |
-| Self-Publishing | Publishing | Varies | book-publisher, technical-editor | Self-pub platforms |
-| Edition Update | Brownfield | Varies | book-analyst, version-manager | 2nd/3rd editions |
-| Add Chapter | Brownfield | Varies | book-analyst, standard agents | Adding to existing book |
+| Workflow                          | Category    | Time Estimate | Primary Agents                                                                   | When to Use                                         |
+| --------------------------------- | ----------- | ------------- | -------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Book Planning                     | Planning    | 20-33 hrs     | book-publisher, instructional-designer, technical-editor                         | New book concept to approved outline                |
+| Chapter Development (Section)     | Development | 54-123 hrs    | tutorial-architect, code-curator, technical-reviewer, technical-editor           | Large chapters (15+ pages), incremental development |
+| Chapter Development (Traditional) | Development | 28-51 hrs     | tutorial-architect, code-curator, technical-reviewer, technical-editor           | Short chapters (<12 pages), full-chapter writing    |
+| Section Planning                  | Development | 6-11 hrs      | tutorial-architect, instructional-designer                                       | Breaking chapter into sections                      |
+| Section Development               | Development | 5.5-10.5 hrs  | code-curator, tutorial-architect, technical-reviewer                             | Developing one section                              |
+| Chapter Assembly                  | Development | 13-24 hrs     | tutorial-architect, instructional-designer, technical-reviewer, technical-editor | Merging sections into chapter                       |
+| Tutorial Creation                 | Development | 14-28 hrs     | instructional-designer, tutorial-architect, code-curator                         | Standalone tutorials                                |
+| Code Example                      | Development | 4-10 hrs      | code-curator                                                                     | Individual code examples                            |
+| Technical Review                  | Review      | 3-5 hrs       | technical-reviewer                                                               | Validating technical accuracy                       |
+| Incorporate Feedback              | Review      | 4-12 hrs      | tutorial-architect, technical-reviewer                                           | Addressing review comments                          |
+| PacktPub Submission               | Publishing  | Varies        | book-publisher, technical-editor                                                 | PacktPub formatting                                 |
+| O'Reilly Submission               | Publishing  | Varies        | book-publisher, technical-editor                                                 | O'Reilly/AsciiDoc formatting                        |
+| Manning MEAP                      | Publishing  | Varies        | book-publisher, technical-editor                                                 | Manning early access                                |
+| Self-Publishing                   | Publishing  | Varies        | book-publisher, technical-editor                                                 | Self-pub platforms                                  |
+| Edition Update                    | Brownfield  | Varies        | book-analyst, version-manager                                                    | 2nd/3rd editions                                    |
+| Add Chapter                       | Brownfield  | Varies        | book-analyst, standard agents                                                    | Adding to existing book                             |
 
 ---
 
@@ -707,32 +717,39 @@ Adds new chapter to existing published book. Ensures new chapter matches existin
 **I want to...**
 
 ### Start a new book
+
 → Use **Book Planning Workflow** (20-33 hrs) to create approved outline
 → Then proceed to chapter development
 
 ### Write a chapter
+
 → **Is it 15+ pages?** → Use **Chapter Development (Section-Driven)** for incremental progress
 → **Is it <12 pages?** → Use **Chapter Development (Traditional)** for faster completion
 → **Section-driven flow**: Section Planning → Section Development (×N) → Chapter Assembly
 
 ### Create a tutorial
+
 → Use **Tutorial Creation Workflow** (14-28 hrs) for standalone tutorial
 → OR embed tutorial in chapter using Tutorial Architect
 
 ### Develop code examples
+
 → Use **Code Example Workflow** (4-10 hrs per example) for tested, secure code
 
 ### Review content
+
 → Use **Technical Review Workflow** for accuracy validation
 → Use **Incorporate Feedback Workflow** to systematically address comments
 
 ### Prepare for publication
+
 → **PacktPub?** → Use **PacktPub Submission Workflow**
 → **O'Reilly?** → Use **O'Reilly Submission Workflow**
 → **Manning MEAP?** → Use **Manning MEAP Workflow**
 → **Self-publishing?** → Use **Self-Publishing Workflow**
 
 ### Update existing book
+
 → **2nd/3rd edition?** → Use **Book Edition Update Workflow**
 → **Add new chapter?** → Use **Add Chapter to Existing Book Workflow**
 
@@ -840,6 +857,7 @@ The BMad Technical Writing Expansion Pack's **15 specialized workflows** orchest
 ---
 
 **Related Documentation**:
+
 - [Agent Reference Guide](agent-reference.md) - Detailed agent capabilities
 - [Template Gallery](template-gallery.md) - Templates used in workflows
 - [Task Reference](task-reference.md) - Tasks executed by workflows

@@ -21,6 +21,7 @@ However, user feedback and semantic analysis revealed that `docs/` creates confu
 **We will rename `docs/` to `manuscript/` for all book content storage in v2.0.**
 
 This applies to:
+
 - `docs/planning/` → `manuscript/planning/`
 - `docs/sections/` → `manuscript/sections/`
 - `docs/chapters/` → `manuscript/chapters/`
@@ -57,12 +58,12 @@ The expansion pack's own documentation (in `expansion-packs/bmad-technical-writi
 
 **Different Domains, Different Conventions**:
 
-| Domain | BMad Component | Appropriate Directory | Rationale |
-|--------|---------------|---------------------|-----------|
-| Software Development | BMad Core | `docs/` | Software artifacts (PRD, architecture) ARE documentation |
-| Technical Writing | Technical Writing Pack | `manuscript/` | Book content is a manuscript, not documentation |
-| Game Development | Game Dev Pack | `game/` or `project/` | Game assets are projects, not documentation |
-| Infrastructure | DevOps Pack | `docs/` or `infrastructure/` | Config/diagrams can be docs |
+| Domain               | BMad Component         | Appropriate Directory        | Rationale                                                |
+| -------------------- | ---------------------- | ---------------------------- | -------------------------------------------------------- |
+| Software Development | BMad Core              | `docs/`                      | Software artifacts (PRD, architecture) ARE documentation |
+| Technical Writing    | Technical Writing Pack | `manuscript/`                | Book content is a manuscript, not documentation          |
+| Game Development     | Game Dev Pack          | `game/` or `project/`        | Game assets are projects, not documentation              |
+| Infrastructure       | DevOps Pack            | `docs/` or `infrastructure/` | Config/diagrams can be docs                              |
 
 **Design Principle**: Expansion packs should use domain-appropriate terminology, not blindly copy BMad core conventions.
 
@@ -101,11 +102,13 @@ The expansion pack's own documentation (in `expansion-packs/bmad-technical-writi
 ### Alternative 1: Keep `docs/`
 
 **Pros**:
+
 - No breaking change
 - Consistent with BMad core
 - No migration needed
 
 **Cons**:
+
 - Perpetuates semantic confusion
 - Misaligned with publishing industry
 - Can't clearly separate book content from project docs
@@ -116,10 +119,12 @@ The expansion pack's own documentation (in `expansion-packs/bmad-technical-writi
 ### Alternative 2: Use `content/`
 
 **Pros**:
+
 - Generic and neutral
 - No domain-specific terminology
 
 **Cons**:
+
 - Not publishing industry standard
 - Too generic - could mean anything
 - Doesn't convey "this is a manuscript"
@@ -129,10 +134,12 @@ The expansion pack's own documentation (in `expansion-packs/bmad-technical-writi
 ### Alternative 3: Use `book/`
 
 **Pros**:
+
 - Clear and simple
 - Distinguishes from `docs/`
 
 **Cons**:
+
 - Less professional than "manuscript"
 - Not standard publisher terminology
 - "Book" is the final product, "manuscript" is what you work on

@@ -39,18 +39,21 @@ Prepare a complete, professional book package for self-publishing platforms, ens
 ### 1. Choose Platform
 
 **Leanpub:**
+
 - Markdown-based
 - Good for technical books
 - Built-in email marketing
 - Flexible pricing (minimum/suggested/maximum)
 
 **Amazon KDP:**
+
 - Largest audience
 - Print-on-demand available
 - Kindle format required
 - Free ISBN provided
 
 **Gumroad:**
+
 - Simple, flexible
 - PDF/ePub distribution
 - Direct customer relationships
@@ -60,7 +63,7 @@ Prepare a complete, professional book package for self-publishing platforms, ens
 
 **Leanpub (Markdown):**
 
-```markdown
+````markdown
 # Chapter 1: Introduction
 
 {book: true, sample: true}
@@ -72,11 +75,14 @@ This chapter introduces...
 Content here...
 
 {class: code}
+
 ```python
 # Code example
 ```
+````
 
 **KDP (Word/ePub):**
+
 - Use heading styles
 - Insert page breaks
 - Format code blocks
@@ -129,6 +135,7 @@ Requirements:
 Pricing strategy:
 
 **Leanpub Pricing Model:**
+
 ```
 Minimum: $9.99 (reader can pay more)
 Suggested: $29.99
@@ -136,6 +143,7 @@ Maximum: $99
 ```
 
 **KDP Pricing:**
+
 ```
 eBook: $9.99 - $29.99 (70% royalty tier)
 Print: $39.99 (based on page count + margin)
@@ -150,27 +158,32 @@ Print: $39.99 (based on page count + margin)
 ### 7. Format for Distribution
 
 **ePub (KDP, Gumroad):**
+
 - Use Calibre or Pandoc for conversion
 - Test on multiple e-readers
 - Validate with ePub validator
 
 **PDF (Leanpub, Gumroad):**
+
 - High-quality PDF export
 - Embedded fonts
 - Optimized images
 
 **Kindle (KDP):**
+
 - Upload DOCX or use Kindle Create tool
 - KDP converts to .mobi/.azw
 
 ### 8. Platform-Specific Requirements
 
 **KDP:**
+
 - Copyright page required
 - Table of contents with links
 - "Look Inside" preview (first 10%)
 
 **Leanpub:**
+
 - Subset.txt for sample chapters
 - Book.txt for chapter ordering
 - Metadata in Book.txt

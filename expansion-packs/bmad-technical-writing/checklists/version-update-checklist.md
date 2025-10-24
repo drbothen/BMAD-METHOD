@@ -89,23 +89,27 @@ Use this checklist when updating a chapter for a new technology version (e.g., P
 ## Examples of Good Version Updates
 
 **✅ Good Update:**
+
 ```python
 # Python 3.12 - Modern Type Hints
 def process_items(items: list[str]) -> dict[str, int]:
     """Process items and return counts (Python 3.9+)."""
     return {item: items.count(item) for item in set(items)}
 ```
+
 - Uses modern syntax
 - Documents minimum version
 - Clear and concise
 
 **❌ Bad Update:**
+
 ```python
 # Just changed version number but code uses old syntax
 def process_items(items: List[str]) -> Dict[str, int]:
     # Still importing from typing (old way)
     return {item: items.count(item) for item in set(items)}
 ```
+
 - Inconsistent (claims new version but uses old syntax)
 - Missed opportunity to demonstrate new features
 

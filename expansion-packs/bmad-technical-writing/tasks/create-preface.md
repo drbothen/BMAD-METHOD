@@ -50,6 +50,7 @@ This book is designed for:
 ✅ **Full-stack developers** looking to strengthen their API design skills
 
 You'll get the most from this book if you have:
+
 - Working knowledge of Python or JavaScript
 - Basic understanding of HTTP and web concepts
 - Familiarity with command line tools
@@ -77,6 +78,7 @@ By the end of this book, you'll be able to:
 7. **Document APIs** using OpenAPI/Swagger
 
 You'll build real-world projects including:
+
 - Task management API (REST)
 - E-commerce backend (GraphQL)
 - Real-time chat API (WebSockets)
@@ -90,12 +92,14 @@ Be honest about assumptions:
 ## Prerequisites
 
 **Required:**
+
 - Python 3.10+ or Node.js 18+ installed
 - Basic HTTP knowledge (GET, POST, status codes)
 - Comfortable with command line
 - Text editor or IDE
 
 **Helpful but not required:**
+
 - SQL database experience
 - Git version control
 - Basic Docker knowledge
@@ -120,6 +124,7 @@ Authentication, error handling, testing, and documentation. Mostly independent c
 Performance, security, deployment, and monitoring. Builds on earlier chapters.
 
 **Appendices:**
+
 - A: API design checklist
 - B: HTTP status codes reference
 - C: Exercise solutions
@@ -144,15 +149,19 @@ Make code accessible:
 ## Code and Resources
 
 ### Code Repository
+
 All code examples: https://github.com/author/book-code
 
 ### Book Website
+
 https://masteringwebapis.com
+
 - Errata and updates
 - Additional resources
 - Community forum
 
 ### Author Contact
+
 - Twitter: @authorhandle
 - Email: author@example.com
 - Newsletter: [signup link]
@@ -162,7 +171,7 @@ https://masteringwebapis.com
 
 Set expectations:
 
-```markdown
+````markdown
 ## Conventions Used in This Book
 
 ### Code Examples
@@ -172,6 +181,7 @@ Set expectations:
 def hello_world():
     return "Hello, World!"
 ```
+````
 
 ### Callouts
 
@@ -184,11 +194,13 @@ def hello_world():
 ### Chapter Structure
 
 Each chapter includes:
+
 - Learning objectives
 - Code examples with explanations
 - Exercises (solutions in Appendix C)
 - Summary and key takeaways
-```
+
+````
 
 ### 7. Write Acknowledgments
 
@@ -206,7 +218,7 @@ This book wouldn't exist without:
 - **Open source community**: For the amazing tools and libraries
 
 Special thanks to [specific acknowledgments].
-```
+````
 
 ### 8. Add Personal Note
 

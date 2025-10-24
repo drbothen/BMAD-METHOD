@@ -33,6 +33,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: After defining learning objectives for chapter or book
 
 **Key Criteria**:
+
 - Learning objectives use action verbs (implement, analyze, create, evaluate)
 - Objectives are specific and measurable
 - Aligned with book-level learning path
@@ -54,6 +55,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: After defining chapter prerequisites or book prerequisites
 
 **Key Criteria**:
+
 - Prerequisites explicitly listed (no assumptions)
 - Software/tool versions specified (e.g., "Python 3.11+")
 - Prior chapters required are identified
@@ -77,6 +79,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Final validation before marking chapter "Ready for Publication"
 
 **Key Criteria**:
+
 - All learning objectives addressed
 - Introduction hooks reader and previews content
 - All sections from outline present
@@ -102,6 +105,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Before submitting proposal to publisher
 
 **Key Criteria**:
+
 - Market analysis included (target audience, market size)
 - Competitive titles identified (3-5 books)
 - Unique value proposition clearly stated
@@ -125,6 +129,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: After writing tutorial, before integration into chapter
 
 **Key Criteria**:
+
 - ONE clear learning objective stated
 - Prerequisites explicitly listed
 - 8-15 step-by-step instructions
@@ -149,6 +154,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: During copy editing phase
 
 **Key Criteria**:
+
 - Sentences are concise (20-25 words average)
 - Paragraphs are scannable (3-5 sentences)
 - Active voice used primarily
@@ -171,6 +177,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: After creating exercise sets
 
 **Key Criteria**:
+
 - Exercises aligned with learning objectives
 - Difficulty progression (easy → medium → challenging)
 - Mix of exercise types (guided, independent, challenges)
@@ -194,6 +201,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: After developing code examples, before integration
 
 **Key Criteria**:
+
 - Code follows language style guide (PEP 8, Airbnb JS, etc.)
 - Variable and function names are descriptive
 - Functions are appropriately sized (<50 lines typical)
@@ -217,6 +225,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: After writing code, before marking example complete
 
 **Key Criteria**:
+
 - Code runs on target version (e.g., Python 3.11+)
 - Edge cases tested
 - Error conditions handled and tested
@@ -240,6 +249,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Security review during code development
 
 **Key Criteria**:
+
 - No hardcoded secrets or credentials
 - Input validation present where needed
 - No SQL injection vulnerabilities
@@ -263,6 +273,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Multi-version testing (e.g., Python 3.10, 3.11, 3.12)
 
 **Key Criteria**:
+
 - Code tested on all specified versions
 - Breaking changes documented
 - Version-specific workarounds provided if needed
@@ -285,6 +296,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Technical review phase, especially for performance-critical examples
 
 **Key Criteria**:
+
 - Time complexity stated (Big-O notation)
 - Space complexity stated where relevant
 - Performance characteristics explained
@@ -309,6 +321,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Technical review phase (primary quality gate)
 
 **Key Criteria**:
+
 - All technical claims verified against official documentation
 - Code examples execute correctly
 - No technical errors or misconceptions
@@ -332,6 +345,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Editorial review and final manuscript review
 
 **Key Criteria**:
+
 - All images have descriptive alt text
 - Color is not sole means of conveying information
 - Code snippets have sufficient contrast
@@ -355,6 +369,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Editorial review phase
 
 **Key Criteria**:
+
 - Gender-neutral language used (they/them instead of he/she)
 - Diverse examples and scenarios
 - Avoids ableist language
@@ -376,6 +391,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Final review before publication
 
 **Key Criteria**:
+
 - All external sources properly cited
 - Code adapted from others has attribution
 - Quotes have sources
@@ -399,6 +415,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Before submitting to PacktPub
 
 **Key Criteria**:
+
 - Word format (.docx) or requested format
 - Chapter count matches proposal
 - PacktPub style guide followed
@@ -422,6 +439,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Before submitting to O'Reilly
 
 **Key Criteria**:
+
 - AsciiDoc format (or Markdown if permitted)
 - Chicago Manual of Style followed
 - Atlas repository structure correct
@@ -445,6 +463,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Before each MEAP chapter release
 
 **Key Criteria**:
+
 - Manning style guide followed
 - Chapter technically complete
 - Code tested and working
@@ -467,6 +486,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Before releasing chapters incrementally
 
 **Key Criteria**:
+
 - Chapter is self-contained
 - Code repository accessible
 - Known issues documented
@@ -487,6 +507,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Before self-publishing release
 
 **Key Criteria**:
+
 - Professional cover design
 - ISBN obtained (if applicable)
 - Copyright page complete
@@ -511,6 +532,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Final quality gate before publisher submission or self-publishing
 
 **Key Criteria**:
+
 - All chapters complete and reviewed
 - Front matter complete (preface, introduction, TOC)
 - Back matter complete (appendices, glossary, index)
@@ -535,6 +557,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: After creating book index
 
 **Key Criteria**:
+
 - Key concepts indexed
 - API/function names indexed
 - Important code examples indexed
@@ -559,6 +582,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: After creating diagrams
 
 **Key Criteria**:
+
 - Diagram supports text explanation
 - Labels are legible
 - Annotations clear
@@ -581,6 +605,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: After taking screenshots
 
 **Key Criteria**:
+
 - Screenshot shows relevant information clearly
 - Text is legible
 - Annotations guide reader's eye
@@ -603,6 +628,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: After compiling glossary
 
 **Key Criteria**:
+
 - All technical terms defined
 - Definitions accurate and clear
 - Alphabetically organized
@@ -624,6 +650,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Before publishing code repository
 
 **Key Criteria**:
+
 - README.md clear and comprehensive
 - Installation instructions tested
 - Folder structure logical
@@ -648,6 +675,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Cross-platform testing phase
 
 **Key Criteria**:
+
 - Tested on Windows, macOS, Linux
 - File paths use OS-agnostic methods
 - Line endings handled correctly
@@ -668,6 +696,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Completing 2nd/3rd edition updates
 
 **Key Criteria**:
+
 - All outdated content updated
 - Version migrations complete
 - Deprecated code replaced
@@ -690,6 +719,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **When to Use**: Adding chapters to existing book
 
 **Key Criteria**:
+
 - Voice and tone consistent
 - Terminology matches existing chapters
 - Code style follows existing patterns
@@ -707,60 +737,64 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 
 ## Checklist Comparison Table
 
-| Checklist | Phase | Mandatory? | Primary Agent | Focus Area |
-|-----------|-------|------------|---------------|------------|
-| learning-objectives-checklist | Planning | Yes | instructional-designer | Pedagogy |
-| prerequisite-clarity-checklist | Planning | Yes | instructional-designer | Pedagogy |
-| chapter-completeness-checklist | Drafting | Yes | tutorial-architect | Completeness |
-| book-proposal-checklist | Drafting | Yes (if pitching) | book-publisher | Proposal |
-| tutorial-effectiveness-checklist | Drafting | Yes (if tutorials) | tutorial-architect | Usability |
-| readability-checklist | Drafting | Yes | technical-editor | Clarity |
-| exercise-difficulty-checklist | Drafting | Yes (if exercises) | exercise-creator | Pedagogy |
-| code-quality-checklist | Code Quality | Yes | code-curator | Best practices |
-| code-testing-checklist | Code Quality | Yes | code-curator | Testing |
-| security-best-practices-checklist | Code Quality | Yes | code-curator | Security |
-| version-compatibility-checklist | Code Quality | Conditional | version-manager | Compatibility |
-| performance-considerations-checklist | Code Quality | Recommended | technical-reviewer | Performance |
-| technical-accuracy-checklist | Review | Yes | technical-reviewer | Accuracy |
-| accessibility-checklist | Review | Yes | technical-editor | Accessibility |
-| inclusive-language-checklist | Review | Yes | technical-editor | Inclusivity |
-| citation-accuracy-checklist | Review | Yes | technical-editor | Attribution |
-| packtpub-submission-checklist | Publishing | Conditional | book-publisher | Format |
-| oreilly-format-checklist | Publishing | Conditional | book-publisher | Format |
-| manning-meap-checklist | Publishing | Conditional | book-publisher | Format |
-| meap-readiness-checklist | Publishing | Conditional | book-publisher | Early Access |
-| self-publishing-standards-checklist | Publishing | Conditional | book-publisher | Quality |
-| final-manuscript-checklist | Publishing | Yes | book-publisher | Completeness |
-| index-completeness-checklist | Publishing | Conditional | book-publisher | Index |
-| diagram-clarity-checklist | Final QA | Recommended | screenshot-specialist | Visuals |
-| screenshot-quality-checklist | Final QA | Recommended | screenshot-specialist | Visuals |
-| glossary-accuracy-checklist | Final QA | Recommended | api-documenter | Reference |
-| repository-quality-checklist | Final QA | Yes | sample-code-maintainer | Code |
-| cross-platform-checklist | Final QA | Conditional | version-manager | Compatibility |
-| revision-completeness-checklist | Final QA | Conditional | book-analyst | Updates |
-| existing-book-integration-checklist | Final QA | Conditional | book-analyst | Consistency |
+| Checklist                            | Phase        | Mandatory?         | Primary Agent          | Focus Area     |
+| ------------------------------------ | ------------ | ------------------ | ---------------------- | -------------- |
+| learning-objectives-checklist        | Planning     | Yes                | instructional-designer | Pedagogy       |
+| prerequisite-clarity-checklist       | Planning     | Yes                | instructional-designer | Pedagogy       |
+| chapter-completeness-checklist       | Drafting     | Yes                | tutorial-architect     | Completeness   |
+| book-proposal-checklist              | Drafting     | Yes (if pitching)  | book-publisher         | Proposal       |
+| tutorial-effectiveness-checklist     | Drafting     | Yes (if tutorials) | tutorial-architect     | Usability      |
+| readability-checklist                | Drafting     | Yes                | technical-editor       | Clarity        |
+| exercise-difficulty-checklist        | Drafting     | Yes (if exercises) | exercise-creator       | Pedagogy       |
+| code-quality-checklist               | Code Quality | Yes                | code-curator           | Best practices |
+| code-testing-checklist               | Code Quality | Yes                | code-curator           | Testing        |
+| security-best-practices-checklist    | Code Quality | Yes                | code-curator           | Security       |
+| version-compatibility-checklist      | Code Quality | Conditional        | version-manager        | Compatibility  |
+| performance-considerations-checklist | Code Quality | Recommended        | technical-reviewer     | Performance    |
+| technical-accuracy-checklist         | Review       | Yes                | technical-reviewer     | Accuracy       |
+| accessibility-checklist              | Review       | Yes                | technical-editor       | Accessibility  |
+| inclusive-language-checklist         | Review       | Yes                | technical-editor       | Inclusivity    |
+| citation-accuracy-checklist          | Review       | Yes                | technical-editor       | Attribution    |
+| packtpub-submission-checklist        | Publishing   | Conditional        | book-publisher         | Format         |
+| oreilly-format-checklist             | Publishing   | Conditional        | book-publisher         | Format         |
+| manning-meap-checklist               | Publishing   | Conditional        | book-publisher         | Format         |
+| meap-readiness-checklist             | Publishing   | Conditional        | book-publisher         | Early Access   |
+| self-publishing-standards-checklist  | Publishing   | Conditional        | book-publisher         | Quality        |
+| final-manuscript-checklist           | Publishing   | Yes                | book-publisher         | Completeness   |
+| index-completeness-checklist         | Publishing   | Conditional        | book-publisher         | Index          |
+| diagram-clarity-checklist            | Final QA     | Recommended        | screenshot-specialist  | Visuals        |
+| screenshot-quality-checklist         | Final QA     | Recommended        | screenshot-specialist  | Visuals        |
+| glossary-accuracy-checklist          | Final QA     | Recommended        | api-documenter         | Reference      |
+| repository-quality-checklist         | Final QA     | Yes                | sample-code-maintainer | Code           |
+| cross-platform-checklist             | Final QA     | Conditional        | version-manager        | Compatibility  |
+| revision-completeness-checklist      | Final QA     | Conditional        | book-analyst           | Updates        |
+| existing-book-integration-checklist  | Final QA     | Conditional        | book-analyst           | Consistency    |
 
 ---
 
 ## Checklist Roadmap (Quality Gates by Phase)
 
 ### Phase 1: Planning
+
 → learning-objectives-checklist
 → prerequisite-clarity-checklist
 
 ### Phase 2: Drafting
+
 → chapter-completeness-checklist
 → tutorial-effectiveness-checklist (if tutorials)
 → exercise-difficulty-checklist (if exercises)
 → readability-checklist
 
 ### Phase 3: Code Development
+
 → code-quality-checklist
 → code-testing-checklist
 → security-best-practices-checklist
 → version-compatibility-checklist (if multi-version)
 
 ### Phase 4: Review
+
 → technical-accuracy-checklist (CRITICAL GATE)
 → performance-considerations-checklist
 → accessibility-checklist
@@ -768,6 +802,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 → citation-accuracy-checklist
 
 ### Phase 5: Pre-Publication
+
 → diagram-clarity-checklist (if diagrams)
 → screenshot-quality-checklist (if screenshots)
 → glossary-accuracy-checklist (if glossary)
@@ -775,6 +810,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 → cross-platform-checklist (if multi-platform)
 
 ### Phase 6: Publication Prep
+
 → Publisher-specific checklist (PacktPub, O'Reilly, or Manning)
 → final-manuscript-checklist (FINAL GATE)
 → index-completeness-checklist (if print book)
@@ -784,6 +820,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 ## Quality Gate Recommendations
 
 ### Mandatory (Must Pass)
+
 - learning-objectives-checklist
 - prerequisite-clarity-checklist
 - chapter-completeness-checklist
@@ -795,12 +832,14 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 - final-manuscript-checklist
 
 ### Highly Recommended
+
 - readability-checklist
 - inclusive-language-checklist
 - repository-quality-checklist
 - Publisher-specific checklist
 
 ### Conditional (Use When Applicable)
+
 - book-proposal-checklist (if pitching)
 - tutorial-effectiveness-checklist (if tutorials)
 - exercise-difficulty-checklist (if exercises)
@@ -826,6 +865,7 @@ The BMad Technical Writing Expansion Pack's **31 quality checklists** provide co
 - **Track quality** throughout the process
 
 **Critical Checklists**:
+
 - technical-accuracy-checklist - Non-negotiable quality gate
 - code-testing-checklist - Ensures code reliability
 - final-manuscript-checklist - Publication readiness
@@ -837,6 +877,7 @@ The BMad Technical Writing Expansion Pack's **31 quality checklists** provide co
 ---
 
 **Related Documentation**:
+
 - [Agent Reference Guide](agent-reference.md) - Agents that execute checklists
 - [Workflow Guide](workflow-guide.md) - Workflows that use checklists
 - [Task Reference](task-reference.md) - Tasks that run checklists

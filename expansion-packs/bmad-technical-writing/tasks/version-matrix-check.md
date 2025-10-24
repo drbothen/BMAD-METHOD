@@ -176,12 +176,13 @@ Note differences between versions:
 
 **Example Documentation:**
 
-```markdown
+````markdown
 ## Version-Specific Behaviors
 
 ### Python 3.10 vs 3.11
 
 **Pattern Matching (3.10+):**
+
 ```python
 # Works in 3.10+, syntax error in 3.9
 match status:
@@ -190,6 +191,7 @@ match status:
     case 404:
         return "Not Found"
 ```
+````
 
 **Improved Error Messages (3.11+):**
 Python 3.11 provides more detailed traceback information.
@@ -201,7 +203,8 @@ New exception handling for multiple exceptions.
 
 **Type Hinting Improvements (3.12+):**
 Support for generic type aliases using `type` keyword.
-```
+
+````
 
 ### 6. Note Breaking Changes
 
@@ -226,7 +229,7 @@ Identify incompatibilities:
 
 - ⚠️ **OpenSSL Update**: Updated to OpenSSL 3.0 (may affect crypto)
 - ✅ **New Features**: V8 11.3, improved fetch() support
-```
+````
 
 ### 7. Test Platform-Specific Code
 
@@ -268,22 +271,22 @@ Build comprehensive matrix:
 **Version Compatibility Matrix:**
 
 ```markdown
-| Feature / Example | Python 3.10 | Python 3.11 | Python 3.12 |
-|-------------------|-------------|-------------|-------------|
-| Chapter 1 Examples | ✅ | ✅ | ✅ |
-| Chapter 2 Examples | ✅ | ✅ | ✅ |
-| Chapter 3 (Pattern Matching) | ✅ | ✅ | ✅ |
-| Chapter 4 (ExceptionGroup) | ❌ | ✅ | ✅ |
-| Chapter 5 (Type Aliases) | ❌ | ❌ | ✅ |
+| Feature / Example            | Python 3.10 | Python 3.11 | Python 3.12 |
+| ---------------------------- | ----------- | ----------- | ----------- |
+| Chapter 1 Examples           | ✅          | ✅          | ✅          |
+| Chapter 2 Examples           | ✅          | ✅          | ✅          |
+| Chapter 3 (Pattern Matching) | ✅          | ✅          | ✅          |
+| Chapter 4 (ExceptionGroup)   | ❌          | ✅          | ✅          |
+| Chapter 5 (Type Aliases)     | ❌          | ❌          | ✅          |
 
 | Platform Tests | Windows | macOS | Linux |
-|----------------|---------|-------|-------|
-| All Examples | ✅ | ✅ | ✅ |
-| File I/O | ✅ | ✅ | ✅ |
-| Networking | ✅ | ✅ | ✅ |
-| Subprocess | ⚠️* | ✅ | ✅ |
+| -------------- | ------- | ----- | ----- |
+| All Examples   | ✅      | ✅    | ✅    |
+| File I/O       | ✅      | ✅    | ✅    |
+| Networking     | ✅      | ✅    | ✅    |
+| Subprocess     | ⚠️\*    | ✅    | ✅    |
 
-*Requires PowerShell-specific commands
+\*Requires PowerShell-specific commands
 ```
 
 ### 9. Update Documentation
@@ -296,9 +299,11 @@ Add version requirements:
 ## Version Requirements
 
 ### Minimum Requirements
+
 - Python 3.10 or higher
 
 ### Recommended
+
 - Python 3.11+ (better error messages, improved performance)
 
 ### Version-Specific Chapters
@@ -309,6 +314,7 @@ Add version requirements:
 ### Platform Support
 
 All examples tested on:
+
 - ✅ Windows 10/11
 - ✅ macOS 12+
 - ✅ Linux (Ubuntu 20.04+)
@@ -320,7 +326,7 @@ Provide version-specific solutions:
 
 **Workaround Documentation:**
 
-```markdown
+````markdown
 ## Version-Specific Workarounds
 
 ### Using Pattern Matching on Python 3.9
@@ -339,12 +345,14 @@ if status == 200:
 elif status == 404:
     return "Not Found"
 ```
+````
 
 ### ExceptionGroup Backport for Python 3.10
 
 ```bash
 pip install exceptiongroup  # Backport package
 ```
+
 ```
 
 ### 11. Run Quality Checklists
@@ -388,3 +396,4 @@ After completing version matrix check:
 3. Set up CI/CD to test all versions automatically
 4. Note version requirements in chapter introductions where relevant
 5. Provide version-specific code variations where necessary
+```

@@ -20,11 +20,13 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 **New to Technical Writing Pack? Start here!**
 
 ### 🚀 Quick Start
+
 - **[Quick Reference Card](docs/quick-reference.md)** - One-page cheat sheet (5 min read)
 - **[Getting Started Tutorial](docs/getting-started.md)** - Write your first chapter hands-on (1-2 hours)
 - **[User Guide](docs/user-guide.md)** - Complete system overview (60-90 min read)
 
 ### 📚 Complete Documentation
+
 - **[Documentation Index](docs/README.md)** - Navigation hub for all documentation
 - **[Process Flows](docs/process-flows.md)** - Visual workflow diagrams
 - **[Agent Reference Guide](docs/agent-reference.md)** - All 13 agents in detail
@@ -126,6 +128,7 @@ your-book-project/
 **Semantic Clarity**: In software projects, `docs/` typically means "technical documentation about the codebase" (API docs, setup guides). For book authoring, `manuscript/` clearly indicates "the book you're writing" using standard publishing industry terminology.
 
 **Benefits**:
+
 - ✅ **Industry standard**: Publishers use "manuscript submission" terminology
 - ✅ **Clear separation**: Book content (`manuscript/`) vs project docs (`docs/`)
 - ✅ **Professional**: Authors think in terms of "working on my manuscript"

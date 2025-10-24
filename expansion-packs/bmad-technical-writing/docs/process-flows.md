@@ -36,6 +36,7 @@ Visual representations of all workflows, agent collaboration patterns, and the c
 ### Diagram Notation
 
 **Node Colors**:
+
 - 🟡 **Yellow (Planning)** - Initial planning and design activities
 - 🟠 **Orange (Development)** - Content creation and code development
 - 🔵 **Blue (Review)** - Quality assurance and validation activities
@@ -43,11 +44,13 @@ Visual representations of all workflows, agent collaboration patterns, and the c
 - ⚪ **White (Decision)** - Decision points requiring evaluation
 
 **Arrow Types**:
+
 - **Solid arrows** → Required sequence (must follow this path)
 - **Dotted arrows** -.-> Optional steps (can be included if needed)
 
 **Agent Indicators**:
 Each process step shows which agent performs the work:
+
 - `agent-name: Action Description`
 
 ### Reading Flow
@@ -201,6 +204,7 @@ graph LR
 **Caption**: Agent collaboration patterns showing primary workflows (solid) and optional integrations (dotted).
 
 **Key Collaborations**:
+
 - **Instructional Designer → Tutorial Architect**: Passes learning objectives and chapter structure
 - **Tutorial Architect → Code Curator**: Requests code examples for tutorials
 - **Code Curator → Technical Reviewer**: Submits code for technical accuracy review
@@ -250,6 +254,7 @@ graph TD
 **Agents Involved**: Book Publisher, Instructional Designer, Technical Editor
 
 **Key Steps**:
+
 1. **Draft Proposal** - Book Publisher creates comprehensive proposal with market analysis
 2. **Design Outline** - Instructional Designer creates detailed chapter structure with learning objectives
 3. **Validate Learning Path** - Instructional Designer checks prerequisite flow and difficulty progression
@@ -258,6 +263,7 @@ graph TD
 6. **Approval** - Final outline approved for development
 
 **Quality Gates**:
+
 - Proposal includes market analysis, target audience, competitive titles
 - Outline has clear learning objectives and prerequisites for each chapter
 - Learning path validated (no knowledge gaps)
@@ -303,12 +309,14 @@ graph TD
 **Caption**: Section-driven development breaks chapters into 2-5 page sections that can be developed independently and in parallel.
 
 **Why Section-Driven?**
+
 - **Manageable scope**: Small sections easier to write
 - **Parallel development**: Multiple sections can progress simultaneously
 - **Incremental progress**: Each section completion is a milestone
 - **Quality focus**: Easier to maintain quality in small chunks
 
 **Typical Chapter**:
+
 - 6-8 sections
 - Each section: 2-5 pages
 - Total chapter: 18-24 pages
@@ -359,6 +367,7 @@ graph TD
 **Agents Involved**: Code Curator, Tutorial Architect, Technical Reviewer
 
 **Key Steps**:
+
 1. **Develop Code** - Code Curator creates all code examples from section plan
 2. **Test Code** - Code Curator runs tests, verifies output, handles edge cases
 3. **Write Section** - Tutorial Architect writes 2-5 page section with code integrated
@@ -408,6 +417,7 @@ graph TD
 **Agents Involved**: Technical Editor
 
 **Key Activities**:
+
 - Merge all sections in logical order
 - Add smooth transitions between sections
 - Write compelling chapter introduction
@@ -544,6 +554,7 @@ graph TD
 **Agents Involved**: Technical Reviewer
 
 **Review Criteria**:
+
 - Technical accuracy of all explanations
 - Code correctness and testing
 - Security vulnerabilities
@@ -883,13 +894,16 @@ graph TD
 These process flows visualize the complete technical book authoring system:
 
 **High-Level Flows**:
+
 - Book Authoring Lifecycle - Complete journey from concept to published book
 - Agent Collaboration Map - How agents work together
 
 **Planning**:
+
 - Book Planning Workflow - Create pedagogically sound outline
 
 **Development**:
+
 - Section-Driven Development - Incremental chapter creation
 - Section Development - Core content creation unit
 - Chapter Assembly - Merge sections into chapters
@@ -897,18 +911,22 @@ These process flows visualize the complete technical book authoring system:
 - Code Example Workflow - Quality code development
 
 **Review**:
+
 - Technical Review - Comprehensive accuracy validation
 - Incorporate Feedback - Systematic issue resolution
 
 **Publishing**:
+
 - Publishing Decision Tree - Choose right workflow
 - Publisher-Specific Workflows - PacktPub, O'Reilly, Manning, Self-Publishing
 
 **Brownfield**:
+
 - Edition Updates - Systematic revision process
 - Add Chapters - Integrate new content
 
 **Next Steps**:
+
 - **Start writing**: Follow [Getting Started Tutorial](getting-started.md)
 - **Deep dive on agents**: Read [Agent Reference](agent-reference.md)
 - **Choose workflows**: See [Workflow Guide](workflow-guide.md)
@@ -916,4 +934,4 @@ These process flows visualize the complete technical book authoring system:
 
 ---
 
-*Process Flows - Technical Writing Expansion Pack v1.1.0*
+_Process Flows - Technical Writing Expansion Pack v1.1.0_

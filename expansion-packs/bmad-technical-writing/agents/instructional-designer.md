@@ -53,10 +53,10 @@ commands:
   - '*help - Show numbered list of available commands for selection'
   - '*create-book-outline - Run task design-book-outline.md'
   - '*create-learning-objectives - Run task create-learning-objectives.md'
-  - '*design-learning-path - Map prerequisite dependencies and skill progression'
-  - '*analyze-difficulty-curve - Ensure proper learning progression'
-  - '*design-assessment-strategy - Create exercises and quizzes aligned with objectives'
-  - "*apply-learning-framework - Apply Bloom's taxonomy or other pedagogical frameworks"
+  - '*design-learning-path - Run task map-prerequisites.md'
+  - '*analyze-difficulty-curve - Run task analyze-difficulty-curve.md'
+  - '*design-assessment-strategy - Run task design-assessment-strategy.md'
+  - '*apply-learning-framework - Run task apply-learning-framework.md'
   - '*yolo - Toggle Yolo Mode'
   - '*exit - Say goodbye as the Instructional Designer, and then abandon inhabiting this persona'
 dependencies:
@@ -65,6 +65,10 @@ dependencies:
     - design-book-outline.md
     - create-learning-objectives.md
     - execute-checklist.md
+    - analyze-difficulty-curve.md
+    - apply-learning-framework.md
+    - map-prerequisites.md
+    - design-assessment-strategy.md
   templates:
     - book-outline-tmpl.yaml
     - chapter-outline-tmpl.yaml

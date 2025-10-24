@@ -7,17 +7,20 @@ How to integrate the Technical Writing Expansion Pack with BMad core, other expa
 ### When to Use Technical Writing vs Core Agents
 
 **Use Technical Writing Expansion**:
+
 - Writing technical books with code examples
 - Creating tutorial-based content
 - Need publisher-specific formatting
 - Require learning objectives and pedagogical structure
 
 **Use BMad Core**:
+
 - Software project planning (PRD, architecture)
 - Application development (coding, testing, deployment)
 - Non-book technical documentation
 
 **Use Both Together**:
+
 - Writing a book about your software product
 - Creating comprehensive documentation for your project
 
@@ -38,14 +41,17 @@ How to integrate the Technical Writing Expansion Pack with BMad core, other expa
 ### Agent Coordination
 
 **PM (Core) → Instructional Designer (TW)**:
+
 - PM's product requirements inform book learning objectives
 - User stories become tutorial sections
 
 **Architect (Core) → Tutorial Architect (TW)**:
+
 - Architecture diagrams become book visuals
 - System design informs chapter structure
 
 **Dev (Core) → Code Curator (TW)**:
+
 - Product code becomes book examples
 - Tests become tutorial verification
 
@@ -58,11 +64,13 @@ How to integrate the Technical Writing Expansion Pack with BMad core, other expa
 **Use Case**: Fiction with technical appendices, or technical books with narrative elements
 
 **Example**:
+
 - Creative Writing agents for engaging story-based introductions
 - Technical Writing agents for code examples and tutorials
 - Both expansions for mixed-format content
 
 **Workflow**:
+
 ```
 1. Creative Writing: Narrative Designer creates engaging scenarios
 2. Technical Writing: Tutorial Architect builds tutorials using scenarios
@@ -75,10 +83,12 @@ How to integrate the Technical Writing Expansion Pack with BMad core, other expa
 **Use Case**: DevOps and cloud infrastructure books
 
 **Example**:
+
 - Infrastructure agents for cloud architecture examples
 - Technical Writing agents for tutorial structure and publishing
 
 **Workflow**:
+
 ```
 1. Infrastructure: Platform Engineer creates deployment examples
 2. Technical Writing: Code Curator integrates infrastructure code
@@ -93,6 +103,7 @@ How to integrate the Technical Writing Expansion Pack with BMad core, other expa
 ### Managing Book Manuscripts in Git
 
 **Recommended Structure**:
+
 ```
 my-technical-book/
 ├── .git/
@@ -120,6 +131,7 @@ my-technical-book/
 ### Branch Strategies
 
 **Feature Branch per Chapter**:
+
 ```bash
 git checkout -b chapter-03-dictionaries
 # Develop chapter 3
@@ -130,6 +142,7 @@ git merge chapter-03-dictionaries
 ```
 
 **Section-Based Commits**:
+
 ```bash
 # Commit after each section completes
 git add manuscript/sections/chapter-01/section-1.1.md
@@ -142,6 +155,7 @@ git commit -m "feat(ch01): add code examples for section 1.1"
 ### Collaboration Workflows
 
 **Multiple Authors**:
+
 ```bash
 # Author 1: Chapters 1-5
 git checkout -b author1/chapters-1-5
@@ -162,6 +176,7 @@ git merge author2/chapters-6-10
 ### Automated Testing of Code Examples
 
 **GitHub Actions Example**:
+
 ```yaml
 name: Test Code Examples
 
@@ -192,6 +207,7 @@ jobs:
 ### Continuous Deployment to Leanpub
 
 **Auto-publish on merge**:
+
 ```yaml
 name: Publish to Leanpub
 
@@ -218,11 +234,13 @@ jobs:
 ### Markdown Editors
 
 **VS Code**:
+
 - Markdown All in One extension
 - Markdown Preview Enhanced
 - Code Spell Checker
 
 **Typora**:
+
 - WYSIWYG markdown editing
 - Export to multiple formats
 - Math equation support
@@ -230,12 +248,15 @@ jobs:
 ### Diagram Tools
 
 **Mermaid**:
-```markdown
+
+````markdown
 ```mermaid
 graph TD
     A[Start] --> B[Process]
     B --> C[End]
 ```
+````
+
 ```
 
 **PlantUML**:
@@ -353,3 +374,4 @@ graph TD
 ---
 
 *Integration Guide - Technical Writing Expansion Pack v1.1.0*
+```

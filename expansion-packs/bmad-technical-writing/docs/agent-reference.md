@@ -849,21 +849,21 @@ Expert in multi-version compatibility and cross-platform support. Ensures code e
 
 ## Agent Comparison Table
 
-| Agent | Category | Icon | Primary Focus | When to Use |
-|-------|----------|------|---------------|-------------|
-| Instructional Designer | Core Planning | 🎓 | Learning architecture, pedagogical structure | Book outlines, learning objectives, scaffolding |
-| Tutorial Architect | Core Planning | 📝 | Hands-on tutorials, step-by-step instruction | Tutorial design, chapter outlines, walkthroughs |
-| Code Curator | Core Planning | 💻 | Code quality, testing, best practices | Code examples, testing, version compatibility |
-| Technical Reviewer | Core Review | 🔍 | Technical accuracy, security, validation | Chapter reviews, accuracy checks, security audits |
-| Technical Editor | Core Review | ✍️ | Clarity, consistency, publisher compliance | Copy editing, style checks, publication prep |
-| Book Publisher | Core Publishing | 📦 | Manuscript packaging, submission prep | Publisher proposals, manuscript formatting |
-| API Documenter | Specialist | 📚 | API reference, glossaries, appendices | API docs, reference tables, glossaries |
-| Screenshot Specialist | Specialist | 📸 | Diagrams, screenshots, visual documentation | Technical diagrams, screenshot planning |
-| Exercise Creator | Specialist | 🏋️ | Practice problems, assessments, quizzes | Exercise sets, quizzes, solutions |
-| Book Analyst | Brownfield | 📖 | Existing book analysis, revision planning | 2nd editions, version migrations, updates |
-| Learning Path Designer | Optional | 🗺️ | Prerequisite mapping, skill progression | Complex skill trees, prerequisite validation |
-| Sample Code Maintainer | Optional | 🔧 | Repository management, CI/CD | Large codebases, automated testing |
-| Version Manager | Optional | 🔢 | Multi-version compatibility, platforms | Multi-version testing, platform differences |
+| Agent                  | Category        | Icon | Primary Focus                                | When to Use                                       |
+| ---------------------- | --------------- | ---- | -------------------------------------------- | ------------------------------------------------- |
+| Instructional Designer | Core Planning   | 🎓   | Learning architecture, pedagogical structure | Book outlines, learning objectives, scaffolding   |
+| Tutorial Architect     | Core Planning   | 📝   | Hands-on tutorials, step-by-step instruction | Tutorial design, chapter outlines, walkthroughs   |
+| Code Curator           | Core Planning   | 💻   | Code quality, testing, best practices        | Code examples, testing, version compatibility     |
+| Technical Reviewer     | Core Review     | 🔍   | Technical accuracy, security, validation     | Chapter reviews, accuracy checks, security audits |
+| Technical Editor       | Core Review     | ✍️   | Clarity, consistency, publisher compliance   | Copy editing, style checks, publication prep      |
+| Book Publisher         | Core Publishing | 📦   | Manuscript packaging, submission prep        | Publisher proposals, manuscript formatting        |
+| API Documenter         | Specialist      | 📚   | API reference, glossaries, appendices        | API docs, reference tables, glossaries            |
+| Screenshot Specialist  | Specialist      | 📸   | Diagrams, screenshots, visual documentation  | Technical diagrams, screenshot planning           |
+| Exercise Creator       | Specialist      | 🏋️   | Practice problems, assessments, quizzes      | Exercise sets, quizzes, solutions                 |
+| Book Analyst           | Brownfield      | 📖   | Existing book analysis, revision planning    | 2nd editions, version migrations, updates         |
+| Learning Path Designer | Optional        | 🗺️   | Prerequisite mapping, skill progression      | Complex skill trees, prerequisite validation      |
+| Sample Code Maintainer | Optional        | 🔧   | Repository management, CI/CD                 | Large codebases, automated testing                |
+| Version Manager        | Optional        | 🔢   | Multi-version compatibility, platforms       | Multi-version testing, platform differences       |
 
 ---
 
@@ -872,31 +872,37 @@ Expert in multi-version compatibility and cross-platform support. Ensures code e
 **I want to...**
 
 ### Plan a new book
+
 → Start with **Instructional Designer** (`*create-book-outline`)
 → Then **Tutorial Architect** for chapter-level structure
 → Consider **Learning Path Designer** for complex prerequisite mapping
 
 ### Create tutorial content
+
 → Use **Tutorial Architect** (`*create-tutorial`, `*write-walkthrough`)
 → Collaborate with **Code Curator** for tested code examples
 → Add **Exercise Creator** for practice problems
 
 ### Ensure code quality
+
 → Use **Code Curator** (`*create-code-example`, `*test-all-examples`)
 → Add **Sample Code Maintainer** for large repositories with CI/CD
 → Add **Version Manager** for multi-version compatibility
 
 ### Review and refine content
+
 → Use **Technical Reviewer** first (`*review-chapter` for accuracy)
 → Then **Technical Editor** (`*edit-chapter` for clarity and style)
 → Finish with **Book Publisher** for submission formatting
 
 ### Create specialized content
+
 → **API Documenter** for API reference sections
 → **Screenshot Specialist** for diagrams and visuals
 → **Exercise Creator** for practice problem sets
 
 ### Update existing book
+
 → Start with **Book Analyst** (`*analyze-book`, `*plan-revision`)
 → Then coordinate other agents based on revision needs
 → Use **Version Manager** for version migration
@@ -958,6 +964,7 @@ Expert in multi-version compatibility and cross-platform support. Ensures code e
 ### Dependency Sharing
 
 Multiple agents share common dependencies:
+
 - **All agents**: Use `create-doc.md`, `execute-checklist.md`, `bmad-kb.md`
 - **Planning agents**: Share `learning-frameworks.md`, `book-structures.md`
 - **Code agents**: Share `code-style-guides.md`
@@ -990,6 +997,7 @@ Choose agents based on your workflow needs, and combine them strategically to cr
 ---
 
 **Related Documentation**:
+
 - [Workflow Guide](workflow-guide.md) - Detailed workflows using these agents
 - [Template Gallery](template-gallery.md) - Templates used by agent dependencies
 - [Task Reference](task-reference.md) - Tasks executed by agent commands

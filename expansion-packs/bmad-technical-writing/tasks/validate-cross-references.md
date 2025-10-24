@@ -41,6 +41,7 @@ Ensure all references, links, and citations are accurate and functional, prevent
 Find all references:
 
 **Internal references:**
+
 - "See Chapter 5"
 - "As discussed in Section 3.2"
 - "Refer to Figure 7.4"
@@ -48,6 +49,7 @@ Find all references:
 - "Appendix B contains..."
 
 **External references:**
+
 - URLs to documentation
 - Code repository links
 - API documentation links
@@ -93,15 +95,19 @@ Validate page numbers:
 Test document links:
 
 **Markdown:**
+
 ```markdown
 [Link to Section 3.2](#section-32)
 
 # Check target exists:
+
 <a name="section-32"></a>
+
 ## 3.2 API Design Patterns
 ```
 
 **HTML/ePub:**
+
 ```html
 <a href="#chapter-03">Chapter 3</a>
 
@@ -134,6 +140,7 @@ for url, error in broken_links:
 ```
 
 **Common issues:**
+
 - 404 Not Found (page removed)
 - Moved permanently (update URL)
 - SSL certificate errors
@@ -195,6 +202,7 @@ Validator: [Name]
 Manuscript Version: Draft 3.2
 
 ## Summary
+
 - Total references checked: 247
 - Valid references: 239 (96.8%)
 - Broken references: 8 (3.2%)
@@ -202,6 +210,7 @@ Manuscript Version: Draft 3.2
 ## Issues Found
 
 ### High Priority (Broken Links)
+
 1. Chapter 5, Line 234: "See Chapter 9" → Chapter 9 doesn't exist (was split into Ch 9-10)
    - **Fix**: Update to "See Chapters 9 and 10"
 
@@ -209,25 +218,28 @@ Manuscript Version: Draft 3.2
    - **Fix**: Update to https://api.example.com/v2/docs
 
 ### Medium Priority (Outdated References)
+
 3. Chapter 3, Line 145: "Appendix A" → Content moved to Appendix B
    - **Fix**: Update reference
 
 ### Low Priority (Inconsistencies)
+
 4. Chapter 4: Uses "Section 3.2" and "section 3.2" inconsistently
    - **Fix**: Standardize capitalization
 
 ## Verification Status
 
-| Reference Type | Total | Valid | Broken |
-|----------------|-------|-------|--------|
-| Chapter refs | 87 | 85 | 2 |
-| Section refs | 64 | 64 | 0 |
-| Figure refs | 42 | 40 | 2 |
-| External URLs | 31 | 27 | 4 |
-| Code repo links | 18 | 18 | 0 |
-| Glossary refs | 5 | 5 | 0 |
+| Reference Type  | Total | Valid | Broken |
+| --------------- | ----- | ----- | ------ |
+| Chapter refs    | 87    | 85    | 2      |
+| Section refs    | 64    | 64    | 0      |
+| Figure refs     | 42    | 40    | 2      |
+| External URLs   | 31    | 27    | 4      |
+| Code repo links | 18    | 18    | 0      |
+| Glossary refs   | 5     | 5     | 0      |
 
 ## Next Steps
+
 1. Fix all high-priority broken references
 2. Update outdated references
 3. Standardize reference formatting

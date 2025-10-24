@@ -55,13 +55,17 @@ Structure clearly:
 # Appendix A: Exercise Solutions
 
 ## Chapter 1 Solutions
+
 ### Exercise 1.1
+
 [Solution]
 
 ### Exercise 1.2
+
 [Solution]
 
 ## Chapter 2 Solutions
+
 [...]
 ```
 
@@ -81,28 +85,33 @@ Installation instructions for all platforms are in Appendix C.
 
 Cover all platforms:
 
-```markdown
+````markdown
 # Appendix C: Installation Guide
 
 ## Installing Python
 
 ### Windows
+
 1. Download Python 3.11+ from python.org
 2. Run installer, check "Add Python to PATH"
 3. Verify: Open PowerShell and run `python --version`
 
 ### macOS
+
 1. Install Homebrew: `/bin/bash -c "$(curl -fsSL...)"`
 2. Install Python: `brew install python@3.11`
 3. Verify: `python3 --version`
 
 ### Linux (Ubuntu/Debian)
+
 ```bash
 sudo apt update
 sudo apt install python3.11
 python3.11 --version
 ```
-```
+````
+
+````
 
 ### 5. Troubleshooting FAQ
 
@@ -134,7 +143,7 @@ Common issues:
 - Refresh token
 - Add header: `Authorization: Bearer [token]`
 - Verify API key in environment variables
-```
+````
 
 ### 6. Additional Resources
 
@@ -144,20 +153,24 @@ Curated links:
 # Appendix E: Additional Resources
 
 ## Official Documentation
+
 - Python Requests Library: https://requests.readthedocs.io
 - Flask Documentation: https://flask.palletsprojects.com
 - FastAPI: https://fastapi.tiangolo.com
 
 ## Books
+
 - "RESTful Web APIs" by Leonard Richardson & Mike Amundsen
 - "Designing Data-Intensive Applications" by Martin Kleppmann
 
 ## Online Resources
+
 - REST API Tutorial: https://restfulapi.net
 - HTTP Cats (status codes): https://http.cat
 - JSON Placeholder (test API): https://jsonplaceholder.typicode.com
 
 ## Tools
+
 - Postman (API testing)
 - Insomnia (API client)
 - HTTPie (command-line HTTP client)
@@ -170,17 +183,17 @@ Quick lookup:
 ```markdown
 # Appendix B: HTTP Status Code Reference
 
-| Code | Name | Meaning |
-|------|------|---------|
-| 200 | OK | Request succeeded |
-| 201 | Created | Resource created successfully |
-| 204 | No Content | Success but no content to return |
-| 400 | Bad Request | Invalid request syntax |
-| 401 | Unauthorized | Authentication required |
-| 403 | Forbidden | Authenticated but not authorized |
-| 404 | Not Found | Resource doesn't exist |
-| 500 | Internal Server Error | Server-side error |
-| 503 | Service Unavailable | Server temporarily unavailable |
+| Code | Name                  | Meaning                          |
+| ---- | --------------------- | -------------------------------- |
+| 200  | OK                    | Request succeeded                |
+| 201  | Created               | Resource created successfully    |
+| 204  | No Content            | Success but no content to return |
+| 400  | Bad Request           | Invalid request syntax           |
+| 401  | Unauthorized          | Authentication required          |
+| 403  | Forbidden             | Authenticated but not authorized |
+| 404  | Not Found             | Resource doesn't exist           |
+| 500  | Internal Server Error | Server-side error                |
+| 503  | Service Unavailable   | Server temporarily unavailable   |
 ```
 
 ### 8. Index Appendix Content

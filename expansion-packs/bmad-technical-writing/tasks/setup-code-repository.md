@@ -123,7 +123,7 @@ Create comprehensive README:
 
 **README Template:**
 
-```markdown
+````markdown
 # [Book Title] - Code Examples
 
 Code examples and exercises from **[Book Title]** by [Author Name].
@@ -151,6 +151,7 @@ This repository contains all code examples from the book, organized by chapter. 
 git clone https://github.com/username/repo-name.git
 cd repo-name
 ```
+````
 
 ### Option 2: Download Specific Chapter
 
@@ -159,11 +160,13 @@ Navigate to the chapter folder and download individual examples.
 ## Setup
 
 1. Install dependencies:
+
    ```bash
    [package manager install command]
    ```
 
 2. Verify installation:
+
    ```bash
    [verification command]
    ```
@@ -234,6 +237,7 @@ Published by [Publisher]
 - [Book website](link)
 - [Author contact](link)
 - [Errata page](link)
+
 ```
 
 ### 4. Create Requirements/Package Files Per Chapter
@@ -245,15 +249,19 @@ Define dependencies:
 Create `requirements.txt` in root and per-chapter if dependencies differ:
 
 ```
+
 # requirements.txt (root)
+
 requests==2.31.0
 pytest==7.4.0
 black==23.7.0
 
 # chapter-03/requirements.txt (if different)
+
 requests==2.31.0
 flask==2.3.0
-```
+
+````
 
 **For Node.js:**
 
@@ -279,7 +287,7 @@ Create `package.json`:
     "node": ">=18.0.0"
   }
 }
-```
+````
 
 **For Java:**
 

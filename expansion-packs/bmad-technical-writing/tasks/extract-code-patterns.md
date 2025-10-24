@@ -5,26 +5,13 @@
 ---
 
 task:
-  id: extract-code-patterns
-  name: Extract Code Patterns from Existing Book
-  description: Analyze existing code examples to learn style patterns for maintaining consistency in updates
-  persona_default: book-analyst
-  inputs:
-    - existing_book_path
-    - code_repository_path (if exists)
-  steps:
-    - Scan all code examples across entire book
-    - Identify import organization patterns (standard library first? grouped? alphabetical?)
-    - Note naming conventions (snake_case, camelCase, variable prefixes, class names)
-    - Observe comment styles (docstrings? inline? comment density? formatting)
-    - Extract error handling patterns (try/except usage, error messages, logging)
-    - Identify common code structures (class-based? functional? procedural? OOP patterns)
-    - Note formatting choices (indentation, line length, spacing, blank lines)
-    - Document code file organization patterns (imports→constants→classes→main)
-    - Analyze code complexity patterns (simple examples vs. comprehensive demos)
-    - Generate style guide summary document
-    - Run execute-checklist.md with existing-book-integration-checklist.md
-  output: docs/style/{{book_title}}-code-patterns.md
+id: extract-code-patterns
+name: Extract Code Patterns from Existing Book
+description: Analyze existing code examples to learn style patterns for maintaining consistency in updates
+persona_default: book-analyst
+inputs: - existing_book_path - code_repository_path (if exists)
+steps: - Scan all code examples across entire book - Identify import organization patterns (standard library first? grouped? alphabetical?) - Note naming conventions (snake_case, camelCase, variable prefixes, class names) - Observe comment styles (docstrings? inline? comment density? formatting) - Extract error handling patterns (try/except usage, error messages, logging) - Identify common code structures (class-based? functional? procedural? OOP patterns) - Note formatting choices (indentation, line length, spacing, blank lines) - Document code file organization patterns (imports→constants→classes→main) - Analyze code complexity patterns (simple examples vs. comprehensive demos) - Generate style guide summary document - Run execute-checklist.md with existing-book-integration-checklist.md
+output: docs/style/{{book_title}}-code-patterns.md
 
 ---
 
@@ -57,12 +44,14 @@ Read through the entire book systematically to collect all code examples:
 Analyze how imports are organized:
 
 **Python Import Patterns:**
+
 - Order: Standard library → Third-party → Local imports?
 - Grouping: Alphabetical within groups?
 - Spacing: Blank lines between groups?
 - Format: `import os` vs `from os import path`?
 
 **Example Pattern Found:**
+
 ```python
 # Standard library imports (alphabetical)
 import json
@@ -80,6 +69,7 @@ from .utils import validate_email
 ```
 
 **JavaScript Import Patterns:**
+
 - CommonJS vs ESM?
 - Named imports vs default imports?
 - Import order conventions?
@@ -91,25 +81,30 @@ Document the pattern consistently used throughout the book.
 Extract naming patterns used:
 
 **Variables:**
+
 - snake_case, camelCase, or PascalCase?
 - Descriptive names or short names?
 - Any prefixes? (e.g., `str_name`, `is_valid`, `has_permission`)
 
 **Functions:**
+
 - Naming style? (snake_case for Python, camelCase for JavaScript?)
 - Verb-based names? (get_user, calculate_total, validate_input)
 - Prefix patterns? (is_valid, has_items, can_delete)
 
 **Classes:**
+
 - PascalCase? (UserAccount, DatabaseConnection)
 - Singular vs plural? (User vs Users)
 - Suffix patterns? (UserManager, DataProcessor, HTMLRenderer)
 
 **Constants:**
+
 - UPPER_SNAKE_CASE?
 - Placement? (top of file? separate config file?)
 
 **Example Pattern Found:**
+
 ```python
 # Constants: UPPER_SNAKE_CASE
 MAX_RETRIES = 3
@@ -135,21 +130,25 @@ class DatabaseConnection:
 Analyze commenting patterns:
 
 **Docstrings:**
+
 - Present? (always, sometimes, rarely?)
 - Format? (Google style, NumPy style, Sphinx style?)
 - What's documented? (all functions? only public APIs?)
 
 **Inline Comments:**
+
 - Frequency? (heavy, moderate, minimal?)
 - Style? (full sentences? fragments? end-of-line? above code?)
 - Purpose? (explain why? explain what? both?)
 
 **File Headers:**
+
 - Module docstrings?
 - Author, date, description?
 - License information?
 
 **Example Pattern Found:**
+
 ```python
 def calculate_discount(price, discount_percent):
     """
@@ -174,6 +173,7 @@ def calculate_discount(price, discount_percent):
 Identify error handling approaches:
 
 **Exception Handling:**
+
 - try/except usage frequency?
 - Specific exceptions caught or broad Exception?
 - Error message style?
@@ -181,11 +181,13 @@ Identify error handling approaches:
 - Re-raising exceptions?
 
 **Validation:**
+
 - Input validation at function start?
 - Assertions used?
 - Guard clauses?
 
 **Example Pattern Found:**
+
 ```python
 def process_user(user_id):
     """Process user with comprehensive error handling."""
@@ -209,21 +211,25 @@ def process_user(user_id):
 Analyze overall code organization:
 
 **Programming Paradigm:**
+
 - Object-oriented? (classes, inheritance, polymorphism)
 - Functional? (pure functions, immutability, higher-order functions)
 - Procedural? (step-by-step scripts)
 - Mixed? (where and why?)
 
 **Design Patterns:**
+
 - Any common patterns? (Factory, Singleton, Observer, etc.)
 - Consistent pattern usage across examples?
 
 **Code Organization:**
+
 - File structure patterns?
 - Class organization patterns (properties→init→public→private)?
 - Module organization patterns?
 
 **Example Pattern Found:**
+
 ```
 File organization:
 1. Module docstring
@@ -239,23 +245,28 @@ File organization:
 Document formatting standards:
 
 **Indentation:**
+
 - Spaces or tabs? (Python: 4 spaces is PEP 8)
 - Consistent indentation levels?
 
 **Line Length:**
+
 - Maximum line length? (79, 88, 100, 120 chars?)
 - Line breaking style?
 
 **Spacing:**
+
 - Blank lines between functions? (2 for top-level, 1 for methods?)
 - Spacing around operators? (a + b vs a+b)
 - Spacing in function calls? (func(a, b) vs func( a, b ))
 
 **Quotes:**
+
 - Single or double quotes?
 - Consistency?
 
 **Example Pattern Found:**
+
 ```
 - Indentation: 4 spaces (never tabs)
 - Line length: 88 characters maximum
@@ -269,22 +280,27 @@ Document formatting standards:
 Identify file structure patterns:
 
 **Import Section:**
+
 - Always at top?
 - Grouped and ordered how?
 
 **Constants Section:**
+
 - After imports?
 - Separate section?
 
 **Class Definitions:**
+
 - Order? (base classes first? main classes first?)
-- Internal organization? (properties→__init__→public→private?)
+- Internal organization? (properties→**init**→public→private?)
 
 **Main Execution:**
+
 - `if __name__ == '__main__'` block?
 - main() function pattern?
 
 **Example Pattern Found:**
+
 ```python
 # 1. Module docstring
 """
@@ -316,16 +332,19 @@ if __name__ == '__main__':
 Understand example complexity distribution:
 
 **Simple Snippets:**
+
 - How many? (percentage of total examples)
 - Purpose? (demonstrate single concept)
 - Typical length? (5-10 lines)
 
 **Medium Examples:**
+
 - How many?
 - Purpose? (demonstrate technique in context)
 - Typical length? (20-50 lines)
 
 **Complete Projects:**
+
 - How many?
 - Purpose? (demonstrate full application)
 - Typical length? (100+ lines, multiple files)
@@ -340,30 +359,39 @@ Create comprehensive code-patterns.md document with all findings:
 # Code Style Patterns for [Book Title]
 
 ## Import Organization
+
 [Document pattern]
 
 ## Naming Conventions
+
 [Document pattern]
 
 ## Comment Styles
+
 [Document pattern]
 
 ## Error Handling
+
 [Document pattern]
 
 ## Code Structure
+
 [Document pattern]
 
 ## Formatting
+
 [Document pattern]
 
 ## File Organization
+
 [Document pattern]
 
 ## Complexity Guidelines
+
 [Document pattern]
 
 ## Examples
+
 [Provide examples of well-styled code from the book]
 ```
 
@@ -396,7 +424,7 @@ A completed code pattern extraction should have:
 
 ## Common Pitfalls to Avoid
 
-- **Inconsistency analysis**: If book has inconsistent patterns, document the *most common* pattern and note variations
+- **Inconsistency analysis**: If book has inconsistent patterns, document the _most common_ pattern and note variations
 - **Over-specificity**: Extract patterns, not rigid rules that prevent good code
 - **Ignoring context**: Some chapters may intentionally use different patterns (e.g., teaching different styles)
 - **Missing examples**: Include code examples in style guide for clarity

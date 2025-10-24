@@ -41,6 +41,7 @@ Design a cohesive set of diagrams that enhance chapter understanding through con
 Identify what to diagram:
 
 **Good candidates for diagrams:**
+
 - System architecture
 - Data flow
 - Process workflows
@@ -50,6 +51,7 @@ Identify what to diagram:
 - Component interactions
 
 **Poor candidates:**
+
 - Simple lists (use bullets)
 - Linear sequences (use numbered steps)
 - Obvious concepts (text is clearer)
@@ -137,12 +139,14 @@ sending JSON response back to client]
 Use editable sources:
 
 **Recommended tools:**
+
 - draw.io (free, open format)
 - Lucidchart (professional)
 - PlantUML (code-based, version-controllable)
 - Mermaid (markdown-based)
 
 **Save source files:**
+
 ```
 diagrams/
 ├── sources/
@@ -163,6 +167,7 @@ diagrams/
 # Chapter 3 Diagram Plan
 
 ## Diagram 3.1: Simple Request-Response
+
 - **Type**: Sequence diagram
 - **Purpose**: Introduce HTTP basics
 - **Complexity**: Simple (2 actors)
@@ -170,6 +175,7 @@ diagrams/
 - **Alt text**: "HTTP request-response between client and server"
 
 ## Diagram 3.2: API Architecture
+
 - **Type**: Architecture diagram
 - **Purpose**: Show system components
 - **Complexity**: Intermediate (5 components)
@@ -177,6 +183,7 @@ diagrams/
 - **Alt text**: "Three-tier architecture with client, API server, and database"
 
 ## Diagram 3.3: Authentication Flow
+
 - **Type**: Flowchart
 - **Purpose**: Illustrate JWT authentication
 - **Complexity**: Advanced (decision points, multiple paths)
@@ -184,6 +191,7 @@ diagrams/
 - **Alt text**: "Flowchart showing login, token generation, and API access"
 
 ## Visual Consistency
+
 - All diagrams use same color scheme
 - Same font (Inter) for labels
 - Consistent icon style

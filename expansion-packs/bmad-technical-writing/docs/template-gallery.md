@@ -76,12 +76,14 @@ Creates complete book structure with learning path and chapter-by-chapter breakd
 **Subtitle**: A Practical Guide to Python's Built-in Data Structures
 **Target Audience**: Intermediate Python developers (1-2 years experience)
 **Prerequisites**:
+
 - Python 3.10+ installed
 - Basic Python syntax (variables, functions, control flow)
 - Object-oriented programming fundamentals
 
 **Learning Outcomes**:
 By the end of this book, readers will:
+
 - Master Python's built-in data structures (lists, tuples, dictionaries, sets)
 - Implement custom data structures (stacks, queues, trees, graphs)
 - Analyze time and space complexity of data structure operations
@@ -108,11 +110,13 @@ Practical applications and performance optimization. Readers apply knowledge to 
 ### Chapter 1: List Fundamentals
 
 **Learning Objectives**:
+
 - Implement common list operations (indexing, slicing, concatenation)
 - Analyze time complexity of list methods (append, insert, pop)
 - Apply list comprehensions for data transformation
 
 **Topics Covered**:
+
 - List creation and initialization
 - Indexing and slicing operations
 - Common methods (append, extend, insert, remove, pop)
@@ -120,11 +124,13 @@ Practical applications and performance optimization. Readers apply knowledge to 
 - Performance characteristics (O(1) append vs O(n) insert)
 
 **Tutorials/Exercises**:
+
 - Build a shopping cart system using lists
 - Implement a simple task manager
 - Performance comparison exercises
 
 **Code Examples**:
+
 - list-basics.py - Basic operations
 - list-comprehensions.py - Advanced filtering
 - list-performance.py - Benchmark different operations
@@ -136,11 +142,13 @@ Practical applications and performance optimization. Readers apply knowledge to 
 ### Chapter 2: Dictionary Mastery
 
 **Learning Objectives**:
+
 - Implement dictionary operations for key-value storage
 - Evaluate when to use dictionaries vs other structures
 - Create nested dictionaries for complex data
 
 **Topics Covered**:
+
 - Dictionary creation and access patterns
 - Common methods (get, keys, values, items)
 - Dictionary comprehensions
@@ -148,11 +156,13 @@ Practical applications and performance optimization. Readers apply knowledge to 
 - Nested dictionaries and JSON-like structures
 
 **Tutorials/Exercises**:
+
 - Build a contact management system
 - Parse and transform JSON data
 - Implement a caching system
 
 **Code Examples**:
+
 - dict-operations.py - Core operations
 - dict-advanced.py - Nested structures
 - dict-performance.py - Hash table performance
@@ -166,16 +176,19 @@ Practical applications and performance optimization. Readers apply knowledge to 
 ## Learning Path Progression
 
 **Beginner (Chapters 1-5)**: Built-in data structures with clear tutorials
+
 - Remember: Recall syntax and methods
 - Understand: Explain when to use each structure
 - Apply: Implement in practice exercises
 
 **Intermediate (Chapters 6-9)**: Custom implementations
+
 - Analyze: Compare time/space complexity
 - Evaluate: Choose optimal structures
 - Create: Build custom data structures
 
 **Advanced (Chapters 10-12)**: Real-world optimization
+
 - Optimize: Performance tuning
 - Design: System architecture decisions
 
@@ -189,22 +202,23 @@ Practical applications and performance optimization. Readers apply knowledge to 
 **Index**: Focus on data structures, methods, performance topics
 
 ## Code Repository Plan
-
 ```
+
 python-data-structures-handbook/
 ├── README.md (Installation, testing instructions)
 ├── chapter-01/ (List fundamentals)
-│   ├── list-basics.py
-│   ├── list-comprehensions.py
-│   ├── tests/
+│ ├── list-basics.py
+│ ├── list-comprehensions.py
+│ ├── tests/
 ├── chapter-02/ (Dictionaries)
-│   ├── dict-operations.py
-│   ├── dict-advanced.py
-│   ├── tests/
+│ ├── dict-operations.py
+│ ├── dict-advanced.py
+│ ├── tests/
 [... continues ...]
 ├── .github/workflows/test.yml (CI/CD)
 ├── requirements.txt (Python 3.11+, pytest)
 └── Makefile (test, lint commands)
+
 ```
 
 **Testing Strategy**: Unit tests for all code examples, pytest framework
@@ -266,6 +280,7 @@ Creates detailed single chapter structure with learning objectives, sections, ex
 **Overview**: This chapter explores Python sets—unordered collections optimized for membership testing and eliminating duplicates. We'll implement mathematical set operations, compare performance against lists, and build practical applications.
 
 **Real-World Use Cases**:
+
 - Deduplicating data streams
 - Access control (checking user permissions)
 - Finding common elements across datasets
@@ -274,6 +289,7 @@ Creates detailed single chapter structure with learning objectives, sections, ex
 ## Main Content Sections
 
 ### Section 1: Set Fundamentals (6-7 pages)
+
 - Set creation and initialization
 - Add, remove, discard methods
 - Membership testing with `in` operator
@@ -282,6 +298,7 @@ Creates detailed single chapter structure with learning objectives, sections, ex
 - **Diagram**: Hash table visualization
 
 ### Section 2: Set Operations (8-10 pages)
+
 - Union, intersection, difference, symmetric difference
 - Operator syntax (|, &, -, ^) vs method syntax
 - Subset and superset testing
@@ -289,6 +306,7 @@ Creates detailed single chapter structure with learning objectives, sections, ex
 - **Tutorial**: Building a permission system with sets
 
 ### Section 3: Practical Applications (8-10 pages)
+
 - Deduplication strategies
 - Fast membership testing
 - Set comprehensions
@@ -299,11 +317,13 @@ Creates detailed single chapter structure with learning objectives, sections, ex
 ## Exercises & Challenges
 
 **Guided Exercises**:
+
 1. Implement user access control (15 min)
 2. Deduplicate log entries (20 min)
 3. Find common items in shopping carts (15 min)
 
 **Challenge Problems**:
+
 1. Optimize a slow list-based search (30 min)
 2. Build a simple graph traversal using sets (45 min)
 
@@ -367,6 +387,7 @@ Defines one deliverable section (2-5 pages) with acceptance criteria. This is th
 **Main Concept**: Python sets support mathematical operations that mirror set theory. Readers will learn to combine, compare, and manipulate sets using intuitive operators.
 
 **Key Points**:
+
 - Union (|): Combines all elements from multiple sets
 - Intersection (&): Finds common elements
 - Difference (-): Elements in one set but not another
@@ -376,6 +397,7 @@ Defines one deliverable section (2-5 pages) with acceptance criteria. This is th
 **Tutorial Approach**: Example-driven with permission system case study
 
 **Estimated Breakdown**:
+
 - Concept explanation: 2-3 pages (introduce each operation)
 - Tutorial walkthrough: 4-5 pages (build permission system)
 - Practice exercises: 2 pages (guided problems)
@@ -383,12 +405,14 @@ Defines one deliverable section (2-5 pages) with acceptance criteria. This is th
 ## Code Examples Needed
 
 **Example 1**: `set-operations-basic.py` - Demonstrates all four operations
+
 - Purpose: Show syntax and output for each operation
 - Complexity: Simple
 - Input: Predefined sets of users/roles
 - Expected Output: Visual results of each operation
 
 **Example 2**: `permission-system.py` - Permission checking application
+
 - Purpose: Real-world use case for set operations
 - Complexity: Medium
 - Demonstrates: Union for combining permissions, intersection for shared access
@@ -397,6 +421,7 @@ Defines one deliverable section (2-5 pages) with acceptance criteria. This is th
 ## Success Criteria
 
 This section is **DONE** when:
+
 - [x] All four set operations explained clearly with examples
 - [x] Operator vs method syntax comparison provided
 - [x] Permission system tutorial complete and tested
@@ -410,29 +435,36 @@ This section is **DONE** when:
 ## Dependencies
 
 **Must complete before starting**:
+
 - section-3.1 (Set Fundamentals - need basic knowledge)
 
 **Can develop in parallel with**:
+
 - section-3.3 (Practical Applications - different focus)
 
 **Blocks**:
+
 - section-3.3 (builds on these operations for real-world examples)
 
 ## Development Notes
 
 **Key Resources**:
+
 - Python official docs: set methods
 - Real-world inspiration: Unix file permissions, RBAC systems
 
 **Complexity Areas**:
+
 - Symmetric difference is less intuitive - use Venn diagram
 - Method syntax has update variants (union vs update) - clarify in-place vs new set
 
 **Reader Perspective**:
+
 - Most readers familiar with union/intersection from SQL
 - Connect to real use cases early (don't stay abstract)
 
 **Special Attention**:
+
 - Permission example must demonstrate security best practices
 - Performance implications: when operations matter for large sets
 ```
@@ -529,6 +561,7 @@ By the end of this chapter, you will be able to:
 ## Measurability
 
 Each objective maps to specific exercises:
+
 - Objective 1 → Exercise 5.3: Build OrderedCache class
 - Objective 2 → Exercise 5.1: Implement word counter with defaultdict
 - Objective 3 → Exercise 5.4: Benchmark dictionary vs list performance
@@ -614,26 +647,26 @@ Each objective maps to specific exercises:
 
 ## Template Comparison Table
 
-| Template | Category | Elicit? | Primary Agent | Use Case |
-|----------|----------|---------|---------------|----------|
-| book-outline-tmpl | Planning | Yes | instructional-designer | Book planning |
-| book-proposal-tmpl | Planning | Yes | book-publisher | Publisher proposals |
-| chapter-outline-tmpl | Planning | Yes | tutorial-architect | Chapter planning |
-| section-plan-tmpl | Chapter Content | No | tutorial-architect | Section-driven development |
-| chapter-draft-tmpl | Chapter Content | Yes | tutorial-architect | Full chapter drafts |
-| introduction-tmpl | Chapter Content | Yes | book-publisher/tutorial-architect | Book introductions |
-| preface-tmpl | Chapter Content | Yes | book-publisher | Book prefaces |
-| appendix-tmpl | Chapter Content | No | api-documenter | Reference appendices |
-| code-example-tmpl | Code | No | code-curator | Tested code examples |
-| api-reference-tmpl | Code | No | api-documenter | API documentation |
-| learning-objectives-tmpl | Learning | Yes | instructional-designer | Learning outcomes |
-| exercise-set-tmpl | Learning | Yes | exercise-creator | Practice problems |
-| tutorial-section-tmpl | Tutorial | Yes | tutorial-architect | Hands-on tutorials |
-| technical-review-report-tmpl | Review | No | technical-reviewer | Technical reviews |
-| revision-plan-tmpl | Review | No | book-analyst | Update planning |
-| diagram-spec-tmpl | Visual | No | screenshot-specialist | Technical diagrams |
-| glossary-entry-tmpl | Documentation | No | api-documenter | Glossaries |
-| book-analysis-report-tmpl | Documentation | No | book-analyst | Book analysis |
+| Template                     | Category        | Elicit? | Primary Agent                     | Use Case                   |
+| ---------------------------- | --------------- | ------- | --------------------------------- | -------------------------- |
+| book-outline-tmpl            | Planning        | Yes     | instructional-designer            | Book planning              |
+| book-proposal-tmpl           | Planning        | Yes     | book-publisher                    | Publisher proposals        |
+| chapter-outline-tmpl         | Planning        | Yes     | tutorial-architect                | Chapter planning           |
+| section-plan-tmpl            | Chapter Content | No      | tutorial-architect                | Section-driven development |
+| chapter-draft-tmpl           | Chapter Content | Yes     | tutorial-architect                | Full chapter drafts        |
+| introduction-tmpl            | Chapter Content | Yes     | book-publisher/tutorial-architect | Book introductions         |
+| preface-tmpl                 | Chapter Content | Yes     | book-publisher                    | Book prefaces              |
+| appendix-tmpl                | Chapter Content | No      | api-documenter                    | Reference appendices       |
+| code-example-tmpl            | Code            | No      | code-curator                      | Tested code examples       |
+| api-reference-tmpl           | Code            | No      | api-documenter                    | API documentation          |
+| learning-objectives-tmpl     | Learning        | Yes     | instructional-designer            | Learning outcomes          |
+| exercise-set-tmpl            | Learning        | Yes     | exercise-creator                  | Practice problems          |
+| tutorial-section-tmpl        | Tutorial        | Yes     | tutorial-architect                | Hands-on tutorials         |
+| technical-review-report-tmpl | Review          | No      | technical-reviewer                | Technical reviews          |
+| revision-plan-tmpl           | Review          | No      | book-analyst                      | Update planning            |
+| diagram-spec-tmpl            | Visual          | No      | screenshot-specialist             | Technical diagrams         |
+| glossary-entry-tmpl          | Documentation   | No      | api-documenter                    | Glossaries                 |
+| book-analysis-report-tmpl    | Documentation   | No      | book-analyst                      | Book analysis              |
 
 ---
 
@@ -642,32 +675,39 @@ Each objective maps to specific exercises:
 **I want to...**
 
 ### Plan a book
+
 → `book-outline-tmpl` - Complete book structure
 → `book-proposal-tmpl` - Publisher submission
 
 ### Plan a chapter
+
 → `chapter-outline-tmpl` - Detailed chapter structure
 → `section-plan-tmpl` - Break into deliverable sections
 
 ### Write content
+
 → `chapter-draft-tmpl` - Full chapter (traditional approach)
 → `tutorial-section-tmpl` - Hands-on tutorials
 → `introduction-tmpl` or `preface-tmpl` - Front matter
 
 ### Create code/examples
+
 → `code-example-tmpl` - Tested code snippets
 → `api-reference-tmpl` - API documentation
 
 ### Define learning
+
 → `learning-objectives-tmpl` - Measurable outcomes
 → `exercise-set-tmpl` - Practice problems
 
 ### Review and revise
+
 → `technical-review-report-tmpl` - Review findings
 → `revision-plan-tmpl` - Update strategy
 → `book-analysis-report-tmpl` - Existing book analysis
 
 ### Add visuals/extras
+
 → `diagram-spec-tmpl` - Technical diagrams
 → `glossary-entry-tmpl` - Terminology
 → `appendix-tmpl` - Reference sections
@@ -695,6 +735,7 @@ All templates support variable substitution using `{{variable_name}}` syntax:
 ### Adapting Templates
 
 Templates are YAML files - you can:
+
 1. Add new sections to existing templates
 2. Modify section instructions
 3. Change variable names
@@ -704,6 +745,7 @@ Templates are YAML files - you can:
 ### Template Format
 
 All templates follow the BMad Doc Template specification:
+
 - `template` block: metadata (id, name, version, description, output format)
 - `workflow` block: elicitation settings
 - `sections` array: ordered sections with id, title, instruction, elicit flag
@@ -721,6 +763,7 @@ The BMad Technical Writing Expansion Pack's **18 templates** provide comprehensi
 - **Customize** templates for your specific needs
 
 **Key Templates to Master**:
+
 - **book-outline-tmpl** - Foundation of book planning
 - **chapter-outline-tmpl** - Essential for chapter development
 - **section-plan-tmpl** - Enables incremental progress
@@ -732,6 +775,7 @@ The BMad Technical Writing Expansion Pack's **18 templates** provide comprehensi
 ---
 
 **Related Documentation**:
+
 - [Agent Reference Guide](agent-reference.md) - Agents that use these templates
 - [Workflow Guide](workflow-guide.md) - Workflows that execute templates
 - [Task Reference](task-reference.md) - Tasks that invoke templates

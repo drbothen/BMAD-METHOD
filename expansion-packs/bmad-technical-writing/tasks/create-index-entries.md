@@ -115,6 +115,7 @@ Rest api, 91 (capitalization inconsistent)
 Follow publisher guidelines:
 
 **Manning/O'Reilly Style:**
+
 ```
 Term, page numbers
   subterm, page numbers
@@ -122,6 +123,7 @@ Term, page numbers
 ```
 
 **LaTeX Style:**
+
 ```
 \index{API}
 \index{API!authentication}

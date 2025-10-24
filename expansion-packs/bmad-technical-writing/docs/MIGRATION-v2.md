@@ -126,6 +126,7 @@ After migration, verify everything is working:
 **Cause**: Git didn't detect the rename automatically
 
 **Solution**:
+
 ```bash
 # Tell git explicitly about renames
 git add manuscript/
@@ -138,6 +139,7 @@ git status  # Should now show as renames
 **Cause**: You have both manuscript content AND project documentation in `docs/`
 
 **Solution**: Selectively move only manuscript-related subdirectories:
+
 ```bash
 # Move only manuscript content
 mv docs/planning manuscript/
@@ -155,6 +157,7 @@ mv docs/reviews manuscript/
 **Cause**: Old BMad expansion pack version still installed
 
 **Solution**: Update to v2.0:
+
 ```bash
 npx bmad-method install
 # Select "Technical Writing Pack v2.0" to update
@@ -164,13 +167,13 @@ npx bmad-method install
 
 ### File Path Changes
 
-| v1.x Path | v2.0 Path |
-|-----------|-----------|
+| v1.x Path        | v2.0 Path              |
+| ---------------- | ---------------------- |
 | `docs/planning/` | `manuscript/planning/` |
 | `docs/sections/` | `manuscript/sections/` |
 | `docs/chapters/` | `manuscript/chapters/` |
 | `docs/outlines/` | `manuscript/outlines/` |
-| `docs/reviews/` | `manuscript/reviews/` |
+| `docs/reviews/`  | `manuscript/reviews/`  |
 
 ### What DIDN'T Change
 
