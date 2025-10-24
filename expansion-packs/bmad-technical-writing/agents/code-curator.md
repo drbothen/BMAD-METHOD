@@ -64,6 +64,9 @@ dependencies:
     - create-code-example.md
     - test-code-examples.md
     - execute-checklist.md
+    - version-check.md
+    - optimize-code.md
+    - troubleshoot-example.md
   templates:
     - code-example-tmpl.yaml
   checklists:
