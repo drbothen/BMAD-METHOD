@@ -12,17 +12,17 @@ workflow:
     - agent: technical-reviewer
       reviews: chapter-draft.md
       requires: chapter_draft
-      notes: "Verify technical accuracy of all content using *verify-accuracy command. Check technical concepts are explained correctly, terminology is used accurately, no outdated or deprecated information, facts and claims are verifiable, technical depth is appropriate for audience. Use technical-accuracy-checklist.md. SAVE OUTPUT: Create accuracy notes at reviews/{{chapter_number}}/accuracy-notes.md with findings categorized by severity (Critical/Major/Minor)"
+      notes: "Verify technical accuracy of all content using verify-accuracy.md task. Check technical concepts are explained correctly, terminology is used accurately, no outdated or deprecated information, facts and claims are verifiable, technical depth is appropriate for audience. Use technical-accuracy-checklist.md. SAVE OUTPUT: Create accuracy notes at reviews/{{chapter_number}}/accuracy-notes.md with findings categorized by severity (Critical/Major/Minor)"
 
     - agent: code-curator
       reviews: chapter-draft.md
       requires: chapter_draft
-      notes: "Review all code examples in chapter using *review-code command. Check code runs correctly as shown, follows language best practices, error handling is appropriate, code is well-commented and explained, examples are production-quality. Use code-quality-checklist.md. Test each code example. SAVE OUTPUT: Create code review notes at reviews/{{chapter_number}}/code-notes.md with findings and test results"
+      notes: "Review all code examples in chapter using check-best-practices.md task. Check code runs correctly as shown, follows language best practices, error handling is appropriate, code is well-commented and explained, examples are production-quality. Use code-quality-checklist.md. Test each code example. SAVE OUTPUT: Create code review notes at reviews/{{chapter_number}}/code-notes.md with findings and test results"
 
     - agent: technical-reviewer
       validates: chapter-draft.md
       requires: chapter_draft
-      notes: "Validate best practices and security using *validate-practices command. Check security best practices followed in examples, no security vulnerabilities demonstrated, performance considerations addressed where relevant, deprecated APIs not used without warnings, industry standards and conventions followed. Use security-best-practices-checklist.md and performance-considerations-checklist.md. SAVE OUTPUT: Create practices notes at reviews/{{chapter_number}}/practices-notes.md"
+      notes: "Validate best practices and security using check-best-practices.md and verify-accuracy.md tasks. Check security best practices followed in examples, no security vulnerabilities demonstrated, performance considerations addressed where relevant, deprecated APIs not used without warnings, industry standards and conventions followed. Use security-best-practices-checklist.md and performance-considerations-checklist.md. SAVE OUTPUT: Create practices notes at reviews/{{chapter_number}}/practices-notes.md"
 
     - agent: technical-reviewer
       compiles: technical-review-report.md

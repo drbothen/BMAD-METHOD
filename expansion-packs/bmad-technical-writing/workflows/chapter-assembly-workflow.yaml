@@ -22,12 +22,12 @@ workflow:
     - agent: instructional-designer
       validates: chapter-integrated.md
       requires: chapter-integrated.md
-      notes: "Validate overall learning progression. Verify chapter builds concepts logically. Check that exercises progress from easy to challenging. Ensure no learning gaps or concept jumps. Confirm chapter learning objectives (from chapter outline) are achieved. SAVE OUTPUT: Create learning-flow-validation.md with findings."
+      notes: "Validate overall learning progression using validate-learning-flow.md task. Verify chapter builds concepts logically. Check that exercises progress from easy to challenging. Ensure no learning gaps or concept jumps. Confirm chapter learning objectives (from chapter outline) are achieved. SAVE OUTPUT: Create learning-flow-validation.md with findings."
 
     - agent: technical-reviewer
       reviews: chapter-integrated.md
       requires: chapter-integrated.md
-      notes: "Perform comprehensive technical review of full chapter using *review-chapter command. Verify technical accuracy across all sections, test all code examples in sequence, check security best practices, assess performance implications. Use technical-accuracy-checklist, security-best-practices-checklist, and performance-considerations-checklist. SAVE OUTPUT: Create reviews/technical-review-chapter-{{chapter_number}}.md using technical-review-report-tmpl."
+      notes: "Perform comprehensive technical review of full chapter using verify-accuracy.md and check-best-practices.md tasks. Verify technical accuracy across all sections, test all code examples in sequence, check security best practices, assess performance implications. Use technical-accuracy-checklist, security-best-practices-checklist, and performance-considerations-checklist. SAVE OUTPUT: Create reviews/technical-review-chapter-{{chapter_number}}.md using technical-review-report-tmpl."
 
     - agent: tutorial-architect
       revises: chapter-integrated.md
