@@ -2,9 +2,9 @@
 
 ## Introduction
 
-The BMad Technical Writing Expansion Pack provides **33 executable tasks** that guide agents through specific workflows. Tasks are procedural markdown files with step-by-step instructions that agents follow exactly.
+The BMad Technical Writing Expansion Pack provides **34 executable tasks** that guide agents through specific workflows. Tasks are procedural markdown files with step-by-step instructions that agents follow exactly.
 
-This comprehensive reference documents all 33 tasks organized by phase, with:
+This comprehensive reference documents all 34 tasks organized by phase, with:
 
 - **Task name and purpose** - What the task accomplishes
 - **When to use** - Specific scenarios
@@ -19,7 +19,7 @@ This comprehensive reference documents all 33 tasks organized by phase, with:
 - **Planning Phase (6 tasks)**: Book outlines, learning paths, proposals
 - **Chapter Development (8 tasks)**: Drafts, outlines, summaries, introductions
 - **Code Management (5 tasks)**: Examples, testing, repositories, version checks
-- **Review & Editing (4 tasks)**: Technical reviews, copy editing, feedback incorporation
+- **Review & Editing (5 tasks)**: Technical reviews, copy editing, feedback incorporation, checklist execution
 - **Publishing (7 tasks)**: Packaging, MEAP, self-publishing, indexes
 - **Documentation (3 tasks)**: Glossaries, API docs, diagrams
 
@@ -34,6 +34,7 @@ This comprehensive reference documents all 33 tasks organized by phase, with:
 **When to Use**: Planning new technical book, need structured chapter-by-chapter outline
 
 **Prerequisites**:
+
 - Book topic and target audience defined
 - Publisher target identified (optional)
 
@@ -389,6 +390,26 @@ This comprehensive reference documents all 33 tasks organized by phase, with:
 
 ---
 
+### execute-checklist.md
+
+**Purpose**: Systematically execute quality checklists with pass/fail/na status and evidence collection
+
+**When to Use**: Running quality gates in workflows, validating deliverables against standards, executing technical reviews, verifying publisher requirements
+
+**Prerequisites**:
+
+- Checklist file exists
+- Subject material available for review
+- Understanding of checklist criteria
+
+**Outputs**: `reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md` with results, summary statistics, and recommendations
+
+**Related Workflows**: Section Development Workflow, Chapter Assembly Workflow, Book Planning Workflow, Technical Review Workflow, Publishing Workflows
+**Related Agents**: technical-reviewer, code-curator, tutorial-architect, technical-editor, book-publisher (all 13 agents)
+**Estimated Time**: 30 min - 2 hours (varies by checklist size)
+
+---
+
 ## Publishing Tasks
 
 ### package-for-publisher.md
@@ -548,47 +569,49 @@ This comprehensive reference documents all 33 tasks organized by phase, with:
 
 ## Task Comparison Table
 
-| Task | Phase | Est. Time | Primary Agent | Complexity |
-|------|-------|-----------|---------------|------------|
-| design-book-outline | Planning | 8-12 hrs | instructional-designer | Medium |
-| create-learning-objectives | Planning | 1-2 hrs | instructional-designer | Low |
-| design-learning-path | Planning | 3-5 hrs | learning-path-designer | Medium |
-| plan-book-revision | Planning | 6-12 hrs | book-analyst | Medium |
-| analyze-existing-book | Planning | 8-16 hrs | book-analyst | High |
-| extract-code-patterns | Planning | 2-4 hrs | book-analyst | Medium |
-| create-chapter-outline | Chapter Dev | 2-4 hrs | tutorial-architect | Low |
-| write-chapter-draft | Chapter Dev | 12-20 hrs | tutorial-architect | High |
-| write-introduction | Chapter Dev | 1-2 hrs | tutorial-architect | Low |
-| write-summary | Chapter Dev | 1 hr | tutorial-architect | Low |
-| create-preface | Chapter Dev | 2-3 hrs | book-publisher | Low |
-| create-appendix | Chapter Dev | 2-4 hrs | api-documenter | Medium |
-| develop-tutorial | Chapter Dev | 4-8 hrs | tutorial-architect | Medium |
-| design-exercises | Chapter Dev | 2-4 hrs | exercise-creator | Medium |
-| create-code-example | Code Mgmt | 1-4 hrs | code-curator | Low-Med |
-| test-code-examples | Code Mgmt | 1-2 hrs | code-curator | Low |
-| setup-code-repository | Code Mgmt | 2-4 hrs | sample-code-maintainer | Medium |
-| version-matrix-check | Code Mgmt | 2-3 hrs | version-manager | Medium |
-| update-chapter-for-version | Code Mgmt | 2-6 hrs | version-manager | Medium |
-| technical-review-chapter | Review | 3-5 hrs | technical-reviewer | Medium |
-| copy-edit-chapter | Review | 2-4 hrs | technical-editor | Medium |
-| incorporate-reviewer-feedback | Review | 4-12 hrs | tutorial-architect | Varies |
-| validate-cross-references | Review | 1-2 hrs | technical-editor | Low |
-| package-for-publisher | Publishing | 3-6 hrs | book-publisher | Medium |
-| prepare-meap-chapter | Publishing | 1-2 hrs | book-publisher | Low |
-| self-publish-prep | Publishing | 4-8 hrs | book-publisher | Medium |
-| create-index-entries | Publishing | 3-5 hrs | book-publisher | Medium |
-| create-solutions | Publishing | 2-3 hrs | exercise-creator | Low |
-| take-screenshots | Publishing | 1-2 hrs | screenshot-specialist | Low |
-| design-diagram-set | Publishing | 2-3 hrs | screenshot-specialist | Medium |
-| generate-api-docs | Documentation | 4-8 hrs | api-documenter | Medium |
-| build-glossary | Documentation | 2-4 hrs | api-documenter | Low |
-| create-diagram-spec | Documentation | 30m-1hr | screenshot-specialist | Low |
+| Task                          | Phase         | Est. Time | Primary Agent          | Complexity |
+| ----------------------------- | ------------- | --------- | ---------------------- | ---------- |
+| design-book-outline           | Planning      | 8-12 hrs  | instructional-designer | Medium     |
+| create-learning-objectives    | Planning      | 1-2 hrs   | instructional-designer | Low        |
+| design-learning-path          | Planning      | 3-5 hrs   | learning-path-designer | Medium     |
+| plan-book-revision            | Planning      | 6-12 hrs  | book-analyst           | Medium     |
+| analyze-existing-book         | Planning      | 8-16 hrs  | book-analyst           | High       |
+| extract-code-patterns         | Planning      | 2-4 hrs   | book-analyst           | Medium     |
+| create-chapter-outline        | Chapter Dev   | 2-4 hrs   | tutorial-architect     | Low        |
+| write-chapter-draft           | Chapter Dev   | 12-20 hrs | tutorial-architect     | High       |
+| write-introduction            | Chapter Dev   | 1-2 hrs   | tutorial-architect     | Low        |
+| write-summary                 | Chapter Dev   | 1 hr      | tutorial-architect     | Low        |
+| create-preface                | Chapter Dev   | 2-3 hrs   | book-publisher         | Low        |
+| create-appendix               | Chapter Dev   | 2-4 hrs   | api-documenter         | Medium     |
+| develop-tutorial              | Chapter Dev   | 4-8 hrs   | tutorial-architect     | Medium     |
+| design-exercises              | Chapter Dev   | 2-4 hrs   | exercise-creator       | Medium     |
+| create-code-example           | Code Mgmt     | 1-4 hrs   | code-curator           | Low-Med    |
+| test-code-examples            | Code Mgmt     | 1-2 hrs   | code-curator           | Low        |
+| setup-code-repository         | Code Mgmt     | 2-4 hrs   | sample-code-maintainer | Medium     |
+| version-matrix-check          | Code Mgmt     | 2-3 hrs   | version-manager        | Medium     |
+| update-chapter-for-version    | Code Mgmt     | 2-6 hrs   | version-manager        | Medium     |
+| technical-review-chapter      | Review        | 3-5 hrs   | technical-reviewer     | Medium     |
+| copy-edit-chapter             | Review        | 2-4 hrs   | technical-editor       | Medium     |
+| incorporate-reviewer-feedback | Review        | 4-12 hrs  | tutorial-architect     | Varies     |
+| validate-cross-references     | Review        | 1-2 hrs   | technical-editor       | Low        |
+| execute-checklist             | Review        | 30m-2 hrs | technical-reviewer     | Low        |
+| package-for-publisher         | Publishing    | 3-6 hrs   | book-publisher         | Medium     |
+| prepare-meap-chapter          | Publishing    | 1-2 hrs   | book-publisher         | Low        |
+| self-publish-prep             | Publishing    | 4-8 hrs   | book-publisher         | Medium     |
+| create-index-entries          | Publishing    | 3-5 hrs   | book-publisher         | Medium     |
+| create-solutions              | Publishing    | 2-3 hrs   | exercise-creator       | Low        |
+| take-screenshots              | Publishing    | 1-2 hrs   | screenshot-specialist  | Low        |
+| design-diagram-set            | Publishing    | 2-3 hrs   | screenshot-specialist  | Medium     |
+| generate-api-docs             | Documentation | 4-8 hrs   | api-documenter         | Medium     |
+| build-glossary                | Documentation | 2-4 hrs   | api-documenter         | Low        |
+| create-diagram-spec           | Documentation | 30m-1hr   | screenshot-specialist  | Low        |
 
 ---
 
 ## Quick Reference: Most Common Tasks
 
 ### For New Books
+
 1. `design-book-outline.md` - Create book structure
 2. `create-chapter-outline.md` - Plan each chapter
 3. `create-code-example.md` - Develop code examples
@@ -598,6 +621,7 @@ This comprehensive reference documents all 33 tasks organized by phase, with:
 7. `package-for-publisher.md` - Submit to publisher
 
 ### For Existing Book Updates
+
 1. `analyze-existing-book.md` - Understand current state
 2. `plan-book-revision.md` - Strategic update plan
 3. `update-chapter-for-version.md` - Migrate code
@@ -605,6 +629,7 @@ This comprehensive reference documents all 33 tasks organized by phase, with:
 5. `package-for-publisher.md` - Resubmit
 
 ### For Tutorial-Focused Content
+
 1. `create-learning-objectives.md` - Define outcomes
 2. `develop-tutorial.md` - Build step-by-step tutorial
 3. `create-code-example.md` - Create tested code
@@ -616,28 +641,34 @@ This comprehensive reference documents all 33 tasks organized by phase, with:
 ## Task Selection by Phase
 
 **Planning Phase**: Start here for new books
+
 - design-book-outline, create-learning-objectives, design-learning-path
 
 **Chapter Development**: Main content creation
+
 - create-chapter-outline, write-chapter-draft, write-introduction, write-summary, develop-tutorial, design-exercises
 
 **Code Management**: Ensure code quality
+
 - create-code-example, test-code-examples, setup-code-repository
 
 **Review & Editing**: Quality assurance
-- technical-review-chapter, copy-edit-chapter, incorporate-reviewer-feedback
+
+- technical-review-chapter, copy-edit-chapter, incorporate-reviewer-feedback, execute-checklist
 
 **Publishing**: Prepare for release
+
 - package-for-publisher, prepare-meap-chapter, self-publish-prep, create-index-entries
 
 **Documentation**: Reference materials
+
 - generate-api-docs, build-glossary, create-diagram-spec
 
 ---
 
 ## Conclusion
 
-The BMad Technical Writing Expansion Pack's **33 executable tasks** provide step-by-step procedural guidance for every aspect of technical book authoring. By understanding each task's purpose, prerequisites, and outputs, you can:
+The BMad Technical Writing Expansion Pack's **34 executable tasks** provide step-by-step procedural guidance for every aspect of technical book authoring. By understanding each task's purpose, prerequisites, and outputs, you can:
 
 - **Execute workflows** efficiently with clear procedures
 - **Track progress** using task completion
@@ -646,17 +677,20 @@ The BMad Technical Writing Expansion Pack's **33 executable tasks** provide step
 - **Maintain quality** through structured procedures
 
 **Most Critical Tasks**:
+
 - `design-book-outline.md` - Foundation of book planning
 - `create-chapter-outline.md` - Essential for chapter development
 - `technical-review-chapter.md` - Ensures technical accuracy
+- `execute-checklist.md` - Quality gate execution
 - `copy-edit-chapter.md` - Professional polish
 
-**Total task count**: 33
+**Total task count**: 34
 **Word count**: ~2,500 words
 
 ---
 
 **Related Documentation**:
+
 - [Agent Reference Guide](agent-reference.md) - Agents that execute these tasks
 - [Workflow Guide](workflow-guide.md) - Workflows that orchestrate tasks
 - [Template Gallery](template-gallery.md) - Templates used by tasks
