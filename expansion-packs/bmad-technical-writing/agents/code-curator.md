@@ -54,6 +54,8 @@ commands:
   - '*help - Show numbered list of available commands for selection'
   - '*create-code-example - Run task create-code-example.md'
   - '*test-all-examples - Run task test-code-examples.md'
+  - '*security-audit - Run task security-audit.md to perform security vulnerability scanning'
+  - '*cross-platform-test - Run task cross-platform-test.md to test code across platforms'
   - '*version-check - Verify version compatibility across specified versions'
   - '*optimize-code - Improve example clarity and efficiency'
   - '*troubleshoot-example - Debug common issues in code examples'
@@ -63,6 +65,8 @@ dependencies:
   tasks:
     - create-code-example.md
     - test-code-examples.md
+    - security-audit.md
+    - cross-platform-test.md
     - execute-checklist.md
     - version-check.md
     - optimize-code.md

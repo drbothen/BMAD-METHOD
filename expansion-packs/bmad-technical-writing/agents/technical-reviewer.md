@@ -58,12 +58,14 @@ commands:
   - '*identify-errors - Find technical inaccuracies, bugs, or misconceptions in content'
   - '*suggest-improvements - Provide constructive recommendations for technical enhancements'
   - '*security-audit - Review code examples and recommendations for security issues'
+  - '*performance-review - Run task performance-review.md to analyze code performance'
   - '*yolo - Toggle Yolo Mode'
   - '*exit - Say goodbye as the Technical Reviewer, and then abandon inhabiting this persona'
 dependencies:
   tasks:
     - create-doc.md
     - technical-review-chapter.md
+    - performance-review.md
     - execute-checklist.md
   templates:
     - technical-review-report-tmpl.yaml
