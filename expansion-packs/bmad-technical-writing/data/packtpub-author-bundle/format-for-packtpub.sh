@@ -5,7 +5,7 @@
 # Complete PacktPub manuscript formatting workflow:
 # 1. Pre-conversion validation (validate-manuscript.py)
 # 2. Pandoc conversion (Markdown → Word with PACKT template)
-# 3. Python style application (apply-packt-styles-v5.py)
+# 3. Python style application (apply-packt-styles-v6.py)
 # 4. Post-conversion verification (verify-packt-document.py)
 #
 # Usage:
@@ -33,7 +33,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 AUTHOR_BUNDLE_DIR="$SCRIPT_DIR"
 SAMPLE_CHAPTER="$AUTHOR_BUNDLE_DIR/Sample Chapter.docx"
 VALIDATE_SCRIPT="$AUTHOR_BUNDLE_DIR/validate-manuscript.py"
-APPLY_STYLES_SCRIPT="$AUTHOR_BUNDLE_DIR/apply-packt-styles-v5.py"
+APPLY_STYLES_SCRIPT="$AUTHOR_BUNDLE_DIR/apply-packt-styles-v6.py"
 VERIFY_SCRIPT="$AUTHOR_BUNDLE_DIR/verify-packt-document.py"
 
 # Functions

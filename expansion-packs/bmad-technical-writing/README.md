@@ -88,6 +88,99 @@ npx bmad-method install
    ```
 3. Run the BMad installer to register the pack
 
+## 🔧 Dependencies
+
+### PacktPub Formatting Workflow
+
+The PacktPub formatting workflow (`format-for-packtpub.md`) requires the following dependencies:
+
+#### Required Tools
+
+**Pandoc** - Document converter (Markdown → Word)
+```bash
+# macOS
+brew install pandoc
+
+# Ubuntu/Debian
+sudo apt-get install pandoc
+
+# Windows (via Chocolatey)
+choco install pandoc
+```
+
+**Python 3.8+** - For validation and style application scripts
+```bash
+# Check version
+python3 --version
+
+# macOS/Linux usually has Python 3 pre-installed
+# Windows: Download from python.org
+```
+
+**Python Packages** - Document manipulation and image validation
+```bash
+pip3 install python-docx Pillow
+```
+
+#### Optional Tools
+
+**pdftotext** - For converting PacktPub Author Bundle PDFs to markdown
+```bash
+# macOS
+brew install poppler
+
+# Ubuntu/Debian
+sudo apt-get install poppler-utils
+
+# Windows (via Chocolatey)
+choco install poppler
+```
+
+#### Included Resources
+
+The expansion pack includes the complete PacktPub Author Bundle in `data/packtpub-author-bundle/`:
+
+- **Sample Chapter.docx** - Official template with all 77 [PACKT] styles
+- **Validation Scripts**:
+  - `validate-manuscript.py` - Pre-conversion validation (code ≤30 lines, images 300 DPI/2000px)
+  - `verify-packt-document.py` - Post-conversion validation ([PACKT] style checking)
+  - `format-for-packtpub.sh` - Complete workflow wrapper script
+- **Style Application**:
+  - `apply-packt-styles-v5.py` - Applies PacktPub [PACKT] styles to converted documents
+- **Documentation**:
+  - PacktPub official guidelines (Image, Code, Writing, AI Usage)
+  - Style catalogs and mappings (JSON)
+
+#### Usage
+
+**Complete Workflow** (Single command):
+```bash
+cd expansion-packs/bmad-technical-writing/data/packtpub-author-bundle
+./format-for-packtpub.sh path/to/manuscript.md output-directory
+```
+
+**Manual Step-by-Step**:
+```bash
+# 1. Pre-conversion validation
+python3 validate-manuscript.py manuscript.md images/
+
+# 2. Convert with Pandoc
+pandoc -f markdown -t docx \
+  --reference-doc="Sample Chapter.docx" \
+  -o temp-converted.docx \
+  manuscript.md
+
+# 3. Apply PacktPub styles
+python3 apply-packt-styles-v5.py \
+  temp-converted.docx \
+  formatted-manuscript.docx
+
+# 4. Post-conversion verification
+python3 verify-packt-document.py formatted-manuscript.docx
+```
+
+See `tasks/format-for-packtpub.md` for complete workflow documentation.
+
 ## 📁 Project Structure
 
 The Technical Writing Expansion Pack uses `manuscript/` as the primary directory for your book content, aligning with publishing industry terminology and avoiding semantic confusion.
