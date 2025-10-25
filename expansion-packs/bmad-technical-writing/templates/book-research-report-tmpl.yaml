@@ -1,0 +1,314 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: book-research-report
+  name: Book Research Report
+  version: 1.0
+  description: Document technical research findings for book chapter topics with structured sections for concepts, code examples, expert insights, and chapter integration
+  output:
+    format: markdown
+    filename: "{{topic-slug}}-research-report.md"
+    directory: "{{manuscriptResearchLocation}}"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+
+sections:
+  - id: frontmatter
+    title: Frontmatter Metadata
+    instruction: |
+      Generate YAML frontmatter with research metadata:
+      ```yaml
+      ---
+      topic: {{chapter-topic}}
+      date-created: {{current-date}}
+      research-method: {{research-method}}  # manual | import | automated
+      related-chapters: []  # To be filled during chapter development
+      research-tools:  # Only for automated research
+        - WebSearch
+        - Perplexity
+      ---
+      ```
+    elicit: false
+
+  - id: context
+    title: Research Context
+    instruction: |
+      Specify the context for this research:
+      - Chapter or section this research supports
+      - Main topic being researched
+      - Target audience skill level
+      - Research objectives (what you need to find out)
+      - Scope of research (depth and breadth)
+
+      Example:
+      **Chapter**: Chapter 5: Understanding React Hooks
+      **Topic**: React Hooks API, useState, useEffect, custom hooks
+      **Audience**: Intermediate React developers familiar with class components
+      **Objectives**: Understand hooks rationale, gather usage examples, identify common pitfalls
+      **Scope**: Focus on practical usage, not internal implementation details
+    elicit: true
+
+  - id: research_questions
+    title: Research Questions & Answers
+    instruction: |
+      Document the research questions you investigated and the answers you found.
+      Organize by category: Technical Concepts, Code Examples, Learning Progression, Expert Insights.
+
+      For each question:
+      - State the question clearly
+      - Provide the answer with supporting details
+      - Include source citations (URL, title, date if available)
+      - Note source credibility (official docs, blog, forum, etc.)
+
+      Example:
+      ### Technical Concepts
+
+      **Q: What is the React Hooks API and why was it introduced?**
+      A: React Hooks were introduced in React 16.8 to allow functional components to use state and other React features without writing class components. They solve the problems of component logic reuse, complex component hierarchies, and confusing lifecycle methods.
+
+      *Source: [React Hooks Documentation](https://react.dev/reference/react) (Official Docs) - Accessed 2025-10-25*
+
+      **Q: What are the rules of hooks and why do they exist?**
+      A: Hooks have two rules: (1) Only call hooks at the top level (not in loops, conditions, or nested functions), (2) Only call hooks from React function components or custom hooks. These rules ensure hooks are called in the same order on every render, which is how React tracks hook state between renders.
+
+      *Source: [Rules of Hooks](https://react.dev/warnings/invalid-hook-call-warning) (Official Docs) - Accessed 2025-10-25*
+    elicit: true
+
+  - id: technical_findings
+    title: Technical Findings
+    instruction: |
+      Synthesize key technical discoveries from your research:
+      - Main concepts and how they work
+      - Technical specifications or requirements
+      - Important terminology and definitions
+      - How different concepts relate to each other
+      - Performance characteristics or limitations
+
+      For each finding:
+      - State the finding clearly
+      - Provide supporting evidence from sources
+      - Assess source credibility
+      - Note any conflicting information found
+
+      Distinguish between:
+      - **Official/Authoritative**: Specs, official docs, core team statements
+      - **Community/Practical**: Blogs, tutorials, Stack Overflow, GitHub discussions
+      - **Academic/Research**: Papers, studies, formal analysis
+
+      Example:
+      ### Key Technical Findings
+
+      1. **Hooks eliminate "wrapper hell"**: Multiple sources confirm that hooks reduce deeply nested component hierarchies caused by HOCs and render props. This is a primary design goal.
+         - *Official: [Motivation for Hooks](https://react.dev/learn) - React Team*
+         - *Community: [Practical Benefits of Hooks](https://example.com/blog) - Dan Abramov*
+
+      2. **useState is synchronous within render, async for updates**: useState returns current state immediately, but state updates are batched and applied asynchronously. This is a common source of confusion.
+         - *Official: [useState Reference](https://react.dev/reference/react/useState) - React Docs*
+         - *Community: Multiple Stack Overflow discussions confirm this behavior*
+    elicit: true
+
+  - id: code_examples
+    title: Code Examples Discovered
+    instruction: |
+      Document useful code examples found during research:
+      - Paste or describe the code example
+      - Explain what the code demonstrates
+      - Note the source and credibility
+      - Assess applicability to your chapter (direct use, needs adaptation, reference only)
+      - Identify any issues or improvements needed
+
+      Example:
+      ### Code Examples
+
+      #### Example 1: Basic useState Hook
+      ```javascript
+      import { useState } from 'react';
+
+      function Counter() {
+        const [count, setCount] = useState(0);
+
+        return (
+          <div>
+            <p>Count: {count}</p>
+            <button onClick={() => setCount(count + 1)}>Increment</button>
+          </div>
+        );
+      }
+      ```
+
+      **Demonstrates**: Basic useState syntax, state initialization, state updates
+      **Source**: [React Docs - useState](https://react.dev/reference/react/useState) (Official)
+      **Applicability**: Direct use in introductory section
+      **Notes**: Clean example, perfect for beginners
+
+      #### Example 2: Custom Hook for Data Fetching
+      ```javascript
+      function useFetch(url) {
+        const [data, setData] = useState(null);
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState(null);
+
+        useEffect(() => {
+          fetch(url)
+            .then(res => res.json())
+            .then(data => {
+              setData(data);
+              setLoading(false);
+            })
+            .catch(err => {
+              setError(err);
+              setLoading(false);
+            });
+        }, [url]);
+
+        return { data, loading, error };
+      }
+      ```
+
+      **Demonstrates**: Custom hook pattern, useEffect with fetch, handling loading/error states
+      **Source**: [Custom Hooks Guide](https://example.com/blog/custom-hooks) (Community Blog)
+      **Applicability**: Good example but needs modernization (use async/await, AbortController for cleanup)
+      **Notes**: Will adapt this with improvements for chapter
+    elicit: true
+
+  - id: expert_insights
+    title: Expert Insights Captured
+    instruction: |
+      Document insights from expert sources:
+      - Best practices and recommendations
+      - Common pitfalls and how to avoid them
+      - Performance considerations
+      - Security implications
+      - Industry perspectives
+      - Quotes from recognized experts
+
+      For each insight:
+      - State the insight clearly
+      - Provide supporting quotes or evidence
+      - Cite the expert source
+      - Explain relevance to your chapter
+
+      Example:
+      ### Expert Insights
+
+      1. **Hooks simplify component logic organization**
+         - *"With Hooks, you can extract stateful logic from a component so it can be tested independently and reused. Hooks allow you to reuse stateful logic without changing your component hierarchy."* - React Team
+         - **Source**: [Motivation for Hooks](https://react.dev/learn) (Official Docs)
+         - **Relevance**: Key selling point to emphasize in introduction
+
+      2. **Common mistake: Missing dependencies in useEffect**
+         - *"If you forget to include dependencies in the dependency array, your effect will use stale values from previous renders. The React team recommends using the eslint-plugin-react-hooks to catch these bugs."* - Dan Abramov
+         - **Source**: [A Complete Guide to useEffect](https://example.com/blog) (Expert Blog)
+         - **Relevance**: Must include in "Common Pitfalls" section
+
+      3. **Performance optimization with useMemo and useCallback**
+         - *"Don't optimize prematurely. useMemo and useCallback should be used when you have measured performance problems, not preemptively for every function and calculation."* - Kent C. Dodds
+         - **Source**: [When to useMemo and useCallback](https://example.com/blog) (Expert Blog)
+         - **Relevance**: Include in advanced optimization section with this caveat
+    elicit: true
+
+  - id: chapter_integration
+    title: Integration into Chapter Outline
+    instruction: |
+      Map research findings to chapter structure:
+      - How do findings align with planned chapter sections?
+      - What new sections might be needed based on research?
+      - What order should concepts be presented?
+      - Which code examples fit where?
+      - What learning progression emerges from research?
+
+      Create a preliminary chapter outline informed by research:
+
+      Example:
+      ### Proposed Chapter Outline
+
+      1. **Introduction to Hooks** (2-3 pages)
+         - Motivation: Why hooks were created (Finding #1: eliminate wrapper hell)
+         - Key benefits over class components
+         - Overview of built-in hooks
+
+      2. **Understanding useState** (3-4 pages)
+         - Basic usage (Code Example #1)
+         - How state updates work (Finding #2: sync/async behavior)
+         - Common mistake: Stale state in closures (Expert Insight #2)
+         - Exercise: Build a counter component
+
+      3. **Working with useEffect** (4-5 pages)
+         - Side effects in functional components
+         - Dependency array and cleanup (Code Example: fetch with cleanup)
+         - Common pitfall: Missing dependencies (Expert Insight #2)
+         - Exercise: Data fetching component
+
+      4. **Creating Custom Hooks** (3-4 pages)
+         - When and why to create custom hooks
+         - useFetch example (Code Example #2, improved)
+         - Testing custom hooks
+         - Exercise: Create a custom form validation hook
+
+      5. **Advanced Hooks and Optimization** (2-3 pages)
+         - useMemo and useCallback (Expert Insight #3: don't over-optimize)
+         - useRef for persisting values
+         - When to reach for advanced hooks
+    elicit: true
+
+  - id: additional_resources
+    title: Additional Resources & Bibliography
+    instruction: |
+      List all sources consulted, organized by type and credibility:
+
+      ### Official Documentation
+      - [React Hooks Documentation](https://react.dev/reference/react) - Accessed 2025-10-25
+      - [Rules of Hooks](https://react.dev/warnings/invalid-hook-call-warning) - Accessed 2025-10-25
+
+      ### Expert Blogs & Articles
+      - [A Complete Guide to useEffect](https://example.com/blog) by Dan Abramov - 2024-08-15
+      - [When to useMemo and useCallback](https://example.com/blog) by Kent C. Dodds - 2024-09-10
+
+      ### Community Resources
+      - [Stack Overflow: useState async behavior](https://stackoverflow.com/questions/...) - 2025-01-10
+      - [GitHub: Custom Hooks Examples](https://github.com/...) - 2024-12-05
+
+      ### Further Reading (not directly cited but relevant)
+      - [React Hooks Patterns](https://example.com) - 2024-11-20
+      - [Testing React Hooks](https://example.com) - 2024-10-15
+
+      Note: Include access dates for web resources, publication dates for articles/blogs
+    elicit: true
+
+  - id: research_notes
+    title: Research Notes & Observations
+    instruction: |
+      Document additional observations from the research process:
+      - Gaps in available information
+      - Conflicting information between sources
+      - Areas requiring deeper investigation
+      - Surprising discoveries
+      - Questions that remain unanswered
+      - Ideas for examples or exercises
+      - Potential chapter enhancements
+
+      Example:
+      ### Research Notes
+
+      **Gaps Identified:**
+      - Limited examples of hooks with TypeScript (need to research separately)
+      - Few resources on testing custom hooks (found one good article, need more)
+
+      **Conflicting Information:**
+      - Some sources claim useEffect runs after every render, others say "after paint" - need to clarify timing precisely
+
+      **Unanswered Questions:**
+      - What is the performance impact of many useState calls vs one useState with object?
+      - How do hooks work with React Server Components?
+
+      **Ideas Generated:**
+      - Create comparison table: class lifecycle methods vs hooks equivalents
+      - Build a "hooks playground" interactive example for readers
+      - Include debugging section with React DevTools
+
+      **Surprising Discoveries:**
+      - The eslint-plugin-react-hooks is more important than I thought - should be mandatory
+      - Custom hooks don't have to start with "use" but convention is strong
+    elicit: true

@@ -29,3 +29,6 @@ description: >-
   and self-publishing platforms (Leanpub/KDP/Gumroad).
 author: Wes
 slashPrefix: bmad-tw
+manuscriptResearch:
+  researchLocation: manuscripts/research
+  reportFilenamePattern: "{{topic-slug}}-research-report.md"
