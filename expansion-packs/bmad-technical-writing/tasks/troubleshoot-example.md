@@ -10,7 +10,7 @@ name: Troubleshoot Example
 description: Debug code examples and create comprehensive troubleshooting guides for readers
 persona_default: code-curator
 inputs: - code_path (file or directory containing code to troubleshoot) - error_description (error message or problem description) - language (programming language)
-steps: - Parse and analyze error message or problem description - Identify error type (syntax, runtime, logic, environment) - Determine root cause category - Research common patterns for this error type - Develop step-by-step diagnostic workflow - Create detailed solution with code corrections - Add preventive guidance to avoid issue in future - Document platform-specific considerations - Build troubleshooting guide for readers - Link to relevant documentation and resources
+steps: - Parse and analyze error message or problem description - Identify error type (syntax, runtime, logic, environment) - Determine root cause category - Research common patterns for this error type - Develop step-by-step diagnostic workflow - Create detailed solution with code corrections - Add preventive guidance to avoid issue in future - Document platform-specific considerations - Build troubleshooting guide for readers - Link to relevant documentation and resources - Run execute-checklist.md with code-testing-checklist.md (focus on error handling and testing instructions sections)
 output: docs/troubleshooting/{{issue-name}}-troubleshooting-guide.md
 
 ---
@@ -770,6 +770,7 @@ Troubleshooting guide is complete when:
 - [ ] Links to documentation included
 - [ ] Guide tested with actual error scenario
 - [ ] Solutions verified to work
+- [ ] code-testing-checklist.md completed (especially error handling and testing instructions sections)
 
 ## Common Pitfalls to Avoid
 
