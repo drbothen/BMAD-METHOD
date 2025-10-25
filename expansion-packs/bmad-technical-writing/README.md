@@ -8,7 +8,7 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 
 ### Key Features
 
-- 🤖 **13 Specialized Agents** - Complete writing team with 10 required agents (greenfield planning/writing/review + brownfield book analysis) + 3 optional agents (Learning Path Designer, Sample Code Maintainer, Version Manager) for advanced scenarios
+- 🤖 **14 Specialized Agents** - Complete writing team with 11 required agents (greenfield planning/writing/review + research + brownfield book analysis) + 3 optional agents (Learning Path Designer, Sample Code Maintainer, Version Manager) for advanced scenarios
 - 📝 **33 Core Tasks** - Full chapter development, API documentation, diagram design, publishing workflows, PLUS learning path design, code repository setup, version matrix testing, solutions creation, index generation, screenshot management, publisher packaging, MEAP preparation, self-publishing prep, preface/appendix creation, diagram set design, cross-reference validation, and brownfield tasks
 - 📋 **31 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility, visual quality, PLUS cross-platform compatibility, inclusive language, readability, index completeness, citation accuracy, final manuscript review, book proposals, self-publishing standards, repository quality, MEAP readiness, and brownfield checklists
 - 🎯 **18 Professional Templates** - Book planning, chapter development, API reference, diagrams, preface, appendix, publishing, brownfield templates, PLUS glossary entry template
@@ -58,16 +58,17 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 7. **API Documenter** 📚 - API reference documentation, technical specifications, glossaries, and appendices
 8. **Screenshot Specialist** 📸 - Visual documentation, technical diagrams, screenshot planning, and annotations
 9. **Exercise Creator** 🏋️ - Practice problems, assessments, exercises aligned with learning objectives
+10. **Technical Researcher** 🔬 - Chapter topic research, research query generation, automated research execution, research findings documentation with multi-modal workflow support (manual/import/automated)
 
 ### Brownfield Team (Sprint 4)
 
-10. **Book Analyst** 📖 - Existing book analysis, revision planning, 2nd/3rd edition updates, version migrations, pattern extraction, and reviewer feedback incorporation
+11. **Book Analyst** 📖 - Existing book analysis, revision planning, 2nd/3rd edition updates, version migrations, pattern extraction, and reviewer feedback incorporation
 
 ### Optional Specialist Team (Sprint 5)
 
-11. **Learning Path Designer** 🗺️ - Prerequisite mapping, skill progression design, knowledge scaffolding, learning flow validation (can merge with Instructional Designer for simpler deployments)
-12. **Sample Code Maintainer** 🔧 - Code repository management, CI/CD pipelines, dependency management, automated testing (can merge with Code Curator for simpler deployments)
-13. **Version Manager** 🔢 - Multi-version compatibility testing, platform-specific code handling, version matrix management (can merge with Code Curator for simpler deployments)
+12. **Learning Path Designer** 🗺️ - Prerequisite mapping, skill progression design, knowledge scaffolding, learning flow validation (can merge with Instructional Designer for simpler deployments)
+13. **Sample Code Maintainer** 🔧 - Code repository management, CI/CD pipelines, dependency management, automated testing (can merge with Code Curator for simpler deployments)
+14. **Version Manager** 🔢 - Multi-version compatibility testing, platform-specific code handling, version matrix management (can merge with Code Curator for simpler deployments)
 
 ## 🚀 Installation
 
@@ -232,6 +233,33 @@ _Traditional Approach (Original, still supported):_
 3. Code Curator verifies code quality
 4. Code Curator performs security review
 5. Code Curator adds comprehensive documentation
+
+**Research Workflow** _(Sprint 3)_ - Multi-modal technical chapter research with three flexible approaches:
+
+_Mode 1: Manual Query Generation (Copy/Paste)_
+
+1. Technical Researcher generates focused research queries
+2. Queries formatted for external tools (web search, Perplexity, etc.)
+3. Author conducts manual research using preferred tools
+4. Technical Researcher imports findings via `*import-research`
+5. Structured research report created
+
+_Mode 2: Research Import (Existing Findings)_
+
+1. Author provides research notes, conference notes, or expert interviews
+2. Technical Researcher guides interactive elicitation workflow
+3. Findings structured using book-research-report template
+4. Source citations extracted and formatted
+5. Research report saved to manuscripts/research/
+
+_Mode 3: Automated Research Execution (AI-Powered)_
+
+1. Technical Researcher detects available tools (WebSearch, Perplexity, MCP)
+2. Research queries generated and optimized for detected tools
+3. Queries executed autonomously with automatic citation tracking
+4. Findings synthesized across multiple sources
+5. Source credibility assessed and documented
+6. Research report auto-populated for author review
 
 **Technical Review Workflow** _(Sprint 2.5)_ - Comprehensive expert review of chapter:
 

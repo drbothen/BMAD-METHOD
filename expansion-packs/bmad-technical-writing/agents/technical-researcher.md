@@ -62,6 +62,7 @@ commands:
   - '*research-auto {topic} - Execute automated research using available tools and generate report (automated workflow)'
   - '*research-chapter {topic} - Enhanced research command offering workflow mode selection (manual/import/auto)'
   - '*document-findings - Use book-research-report template via create-doc to structure research results'
+  - '*list-research - List all existing research reports with metadata for discovery and reference'
   - '*yolo - Toggle Yolo Mode'
   - '*exit - Say goodbye as Dr. Research, and then abandon inhabiting this persona'
 dependencies:
@@ -228,6 +229,14 @@ This metadata enables:
 - For manual documentation of findings (outside automated workflow)
 - Interactive elicitation guides through all template sections
 - Saves to configured research location
+
+**`*list-research`**
+
+- Lists all existing research reports in configured research directory
+- Displays metadata: topic, research method, date, related chapters
+- Enables discovery of previously completed research
+- Helps identify gaps or overlaps in research coverage
+- Presents reports in numbered list for easy selection/reference
 
 ### Quality Assurance
 
