@@ -8,10 +8,15 @@ workflow:
     - technical-book
   publisher: PacktPub
   sequence:
+    - agent: manuscript-formatter
+      executes: format-for-packtpub.md
+      requires: manuscript-chapters[] (Markdown format)
+      notes: "Convert Markdown manuscripts to PacktPub Word format with [PACKT] styles. Workflow: validate-manuscript.py (pre-check) → Pandoc conversion → apply-packt-styles-v5.py → verify-packt-document.py (post-check). Generates formatted .docx with all 77 [PACKT] styles correctly applied. SAVE OUTPUT: formatted-chapters/ and validation reports"
+
     - agent: technical-editor
       validates: manuscript-format.md
-      requires: manuscript-chapters[]
-      notes: "Verify manuscript meets PacktPub SharePoint format requirements using packtpub-submission-checklist. Check chapter structure (What You'll Learn, Prerequisites, sections, Summary, Q&A), markdown formatting, code block style, callout boxes, screenshot captions. SAVE OUTPUT: format-validation-report.md"
+      requires: formatted-chapters[] OR manuscript-chapters[]
+      notes: "Verify manuscript meets PacktPub SharePoint format requirements using packtpub-submission-checklist. Check chapter structure (What You'll Learn, Prerequisites, sections, Summary, Q&A), [PACKT] style application, code block formatting, callout boxes, screenshot captions. SAVE OUTPUT: format-validation-report.md"
 
     - agent: code-curator
       validates: code-repository
@@ -36,7 +41,11 @@ workflow:
   flow_diagram: |
     ```mermaid
     graph TD
-        A[Start: Manuscript Ready] --> B[technical-editor: Verify Format]
+        A[Start: Manuscript Ready] --> A1[manuscript-formatter: Format for PacktPub]
+        A1 --> A2{Validation Pass?}
+        A2 -->|No| A3[Fix Validation Issues]
+        A3 --> A1
+        A2 -->|Yes| B[technical-editor: Verify Format]
         B --> C{Format Valid?}
         C -->|No| D[Fix Format Issues]
         D --> B
@@ -53,6 +62,7 @@ workflow:
         K -->|Yes| M[Submit to PacktPub]
 
         style M fill:#90EE90
+        style A1 fill:#E6E6FA
         style B fill:#FFE4B5
         style E fill:#FFE4B5
         style I fill:#ADD8E6
@@ -60,8 +70,18 @@ workflow:
     ```
 
   quality_gates:
+    conversion_requirements:
+      - Markdown → Word conversion with PacktPub template
+      - All 77 [PACKT] styles correctly applied
+      - Code blocks split: Code [PACKT] + Code End [PACKT] on last line
+      - Lists properly styled: Bullet [PACKT] / Numbered Bullet [PACKT]
+      - Headings use standard "Heading 1-6" (no [PACKT] suffix)
+      - Pre-conversion validation passed (code ≤30 lines, images 300 DPI)
+      - Post-conversion verification passed (style compliance)
+      - Scripts: validate-manuscript.py, apply-packt-styles-v5.py, verify-packt-document.py
+
     format_requirements:
-      - SharePoint-compatible format (Word .docx or markdown)
+      - SharePoint-compatible format (Word .docx with [PACKT] styles)
       - Chapter structure includes What You'll Learn section
       - Prerequisites clearly stated in each chapter
       - Summary and Q&A sections present

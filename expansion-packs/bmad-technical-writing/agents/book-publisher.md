@@ -65,10 +65,12 @@ dependencies:
   tasks:
     - create-doc.md
     - execute-checklist.md
+    - format-for-packtpub.md
   templates:
     - book-proposal-tmpl.yaml
     - introduction-tmpl.yaml
   checklists:
+    - generative-ai-compliance-checklist.md
     - packtpub-submission-checklist.md
     - oreilly-format-checklist.md
     - manning-meap-checklist.md
