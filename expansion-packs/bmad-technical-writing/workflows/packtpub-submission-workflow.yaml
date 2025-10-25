@@ -11,7 +11,7 @@ workflow:
     - agent: manuscript-formatter
       executes: format-for-packtpub.md
       requires: manuscript-chapters[] (Markdown format)
-      notes: "Convert Markdown manuscripts to PacktPub Word format with [PACKT] styles. Workflow: validate-manuscript.py (pre-check) → Pandoc conversion → apply-packt-styles-v5.py → verify-packt-document.py (post-check). Generates formatted .docx with all 77 [PACKT] styles correctly applied. SAVE OUTPUT: formatted-chapters/ and validation reports"
+      notes: "Convert Markdown manuscripts to PacktPub Word format with [PACKT] styles. Workflow: validate-manuscript.py (pre-check) → Pandoc conversion → apply-packt-styles-v6.py (with table caption and cell styling) → verify-packt-document.py (post-check). Generates formatted .docx with all 77 [PACKT] styles correctly applied. IMPORTANT: Table captions must appear BEFORE tables, figure captions AFTER images (see CAPTION-PLACEMENT-GUIDE.md). SAVE OUTPUT: formatted-chapters/ and validation reports"
 
     - agent: technical-editor
       validates: manuscript-format.md
@@ -78,7 +78,9 @@ workflow:
       - Headings use standard "Heading 1-6" (no [PACKT] suffix)
       - Pre-conversion validation passed (code ≤30 lines, images 300 DPI)
       - Post-conversion verification passed (style compliance)
-      - Scripts: validate-manuscript.py, apply-packt-styles-v5.py, verify-packt-document.py
+      - Table captions BEFORE tables, figure captions AFTER images (CAPTION-PLACEMENT-GUIDE.md)
+      - Table cells styled: Table Column Heading [PACKT] / Table Column Content [PACKT]
+      - Scripts: validate-manuscript.py, apply-packt-styles-v6.py, verify-packt-document.py
 
     format_requirements:
       - SharePoint-compatible format (Word .docx with [PACKT] styles)
@@ -87,7 +89,8 @@ workflow:
       - Summary and Q&A sections present
       - Code blocks properly formatted with language tags
       - Callout boxes for notes, warnings, tips
-      - Screenshot captions descriptive
+      - Screenshot captions descriptive (format: "Figure X.Y: Description" AFTER image)
+      - Table captions descriptive (format: "Table X.Y: Description" BEFORE table)
       - Checklist: packtpub-submission-checklist.md
 
     code_requirements:
@@ -127,7 +130,8 @@ workflow:
       - SharePoint-compatible format preferred
       - Code blocks with language identifiers
       - Callout boxes: Note, Tip, Warning, Important
-      - Screenshot captions: "Figure X.Y: Description"
+      - Figure captions: "Figure X.Y: Description" (AFTER image)
+      - Table captions: "Table X.Y: Description" (BEFORE table)
       - Numbered lists for procedures
       - Bold for UI elements, italic for emphasis
 
@@ -177,3 +181,5 @@ workflow:
     - Vague learning objectives (not measurable)
     - Missing prerequisites in chapters
     - Incomplete author questionnaire
+    - Table captions placed AFTER tables instead of BEFORE (CRITICAL - see CAPTION-PLACEMENT-GUIDE.md)
+    - Figure captions placed BEFORE images instead of AFTER

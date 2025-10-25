@@ -201,7 +201,60 @@ def validate_images(markdown_content, base_path):
     return issues
 ```
 
-#### 2.3 Structure Validation
+#### 2.3 Caption Placement Validation
+
+**CRITICAL RULE**: Caption placement differs between tables and figures
+
+**Tables**: Caption comes BEFORE the table
+```markdown
+Table 2.1: React Hooks comparison and use cases
+
+| Hook | Purpose | When to Use | Returns |
+|------|---------|-------------|---------|
+| useState | State management | Simple state values | [state, setState] |
+```
+
+**Figures**: Caption comes AFTER the image
+```markdown
+![React component lifecycle diagram](images/lifecycle.png)
+
+Figure 2.1: Component lifecycle phases
+```
+
+**Why This Matters**:
+- Tables: Readers need context BEFORE scanning data
+- Figures: Images are self-contained and viewed first, caption explains AFTER
+
+**Common Mistake**:
+```markdown
+❌ WRONG - Table caption AFTER table:
+| Hook | Purpose |
+|------|---------|
+
+Table 2.1: React Hooks comparison  ← INCORRECT PLACEMENT
+```
+
+**Caption Numbering Format**:
+- Format: `Table X.Y: Description` or `Figure X.Y: Description`
+- X = Chapter number
+- Y = Table/Figure number within chapter
+- Examples:
+  - `Table 1.1: User authentication methods`
+  - `Figure 2.3: Authentication workflow diagram`
+
+**Alt Text vs Caption**:
+- **Alt text** (for accessibility): Describes WHAT is IN the image
+  ```markdown
+  ![Component lifecycle flow showing mount, update, and unmount phases](images/lifecycle.png)
+  ```
+- **Caption** (for document reference): Label and brief description
+  ```markdown
+  Figure 1.1: React component lifecycle diagram
+  ```
+
+See `CAPTION-PLACEMENT-GUIDE.md` for comprehensive examples and validation rules.
+
+#### 2.4 Structure Validation
 
 **PacktPub Requirements**:
 - Chapter opens with introduction + learning goals
@@ -304,12 +357,12 @@ Emphasis (character)   →  Italics [PACKT]
 **Execute style application:**
 
 ```bash
-python3 apply-packt-styles-v5.py \
+python3 apply-packt-styles-v6.py \
   temp-converted.docx \
   "${output_path}/formatted-manuscript.docx"
 ```
 
-**Python Script Logic** (see `apply-packt-styles-v5.py`):
+**Python Script Logic** (see `apply-packt-styles-v6.py`):
 1. Load converted document
 2. Verify [PACKT] styles exist in document (from template)
 3. **Split multi-line code blocks** into separate paragraphs:
@@ -322,9 +375,16 @@ python3 apply-packt-styles-v5.py \
 6. Distinguish bullet lists from numbered lists by examining numFmt attribute:
    - `numFmt="bullet"` → "Bullet [PACKT]"
    - `numFmt="decimal"/"lowerLetter"/etc.` → "Numbered Bullet [PACKT]"
-7. Map other styles according to STYLE_MAPPINGS dictionary
-8. Apply character styles to runs (Strong → Key Word [PACKT], Emphasis → Italics [PACKT])
-9. Save modified document with validation report
+7. **Detect and style captions**:
+   - Table captions (format: `Table X.Y: Description`) → "Figure Caption [PACKT]"
+   - Figure captions (paragraphs with embedded images or caption keywords) → "Figure Caption [PACKT]"
+   - PacktPub uses single "Figure Caption [PACKT]" style for both tables and figures
+8. **Style table cells**:
+   - First row of each table → "Table Column Heading [PACKT]"
+   - All other rows → "Table Column Content [PACKT]"
+9. Map other styles according to STYLE_MAPPINGS dictionary
+10. Apply character styles to runs (Strong → Key Word [PACKT], Emphasis → Italics [PACKT])
+11. Save modified document with validation report
 
 ### Step 5: Post-Convert Validation
 
@@ -696,10 +756,10 @@ This task integrates with:
 ## Related Files
 
 **Scripts**:
-- `apply-packt-styles-v4.py` - Style application (in `data/packtpub-author-bundle/`)
-- `validate-manuscript.py` - Pre-convert validation (to be created)
-- `verify-packt-document.py` - Post-convert validation (to be created)
-- `format-for-packtpub.sh` - Wrapper script for complete workflow (to be created)
+- `apply-packt-styles-v6.py` - Style application with caption and table support (in `data/packtpub-author-bundle/`)
+- `validate-manuscript.py` - Pre-convert validation
+- `verify-packtpub-doc.py` - Post-convert validation
+- `format-for-packtpub.sh` - Wrapper script for complete workflow
 
 **Checklists**:
 - `generative-ai-compliance-checklist.md` - AI content compliance validation
@@ -712,6 +772,7 @@ This task integrates with:
 - `Generative_AI_Author_Guidelines.md` - Official PacktPub AI usage guidelines
 - `packtpub-author-bundle-analysis.md` - Research findings
 - `PANDOC-CONVERSION-FINDINGS.md` - Conversion workflow documentation
+- `CAPTION-PLACEMENT-GUIDE.md` - Comprehensive caption placement rules and examples
 
 ## Notes
 

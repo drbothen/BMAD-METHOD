@@ -146,10 +146,11 @@ The expansion pack includes the complete PacktPub Author Bundle in `data/packtpu
   - `verify-packt-document.py` - Post-conversion validation ([PACKT] style checking)
   - `format-for-packtpub.sh` - Complete workflow wrapper script
 - **Style Application**:
-  - `apply-packt-styles-v5.py` - Applies PacktPub [PACKT] styles to converted documents
+  - `apply-packt-styles-v6.py` - Applies PacktPub [PACKT] styles with table caption and cell styling support
 - **Documentation**:
   - PacktPub official guidelines (Image, Code, Writing, AI Usage)
   - Style catalogs and mappings (JSON)
+  - `CAPTION-PLACEMENT-GUIDE.md` - Critical caption placement rules (tables BEFORE, figures AFTER)
 
 #### Usage
 
@@ -171,7 +172,7 @@ pandoc -f markdown -t docx \
   manuscript.md
 
 # 3. Apply PacktPub styles
-python3 apply-packt-styles-v5.py \
+python3 apply-packt-styles-v6.py \
   temp-converted.docx \
   formatted-manuscript.docx
 

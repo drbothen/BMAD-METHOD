@@ -98,15 +98,20 @@ def has_image(paragraph):
 
 def is_figure_caption(paragraph):
     """
-    Detect if paragraph is a figure caption.
+    Detect if paragraph is a figure or table caption.
+
+    PacktPub uses "Figure Caption [PACKT]" for both figures AND tables.
 
     Pandoc converts markdown image alt text ![Caption](path) to a paragraph with "Normal" style.
     The paragraph contains just the caption text (no image inline in same paragraph in Pandoc's output).
 
+    Table captions typically follow format: "Table X.Y: Description"
+
     Heuristics:
     - Contains an image (though Pandoc usually puts caption text in separate para)
     - Text is standalone descriptive phrase
-    - Starts with common caption patterns or contains specific keywords
+    - Starts with "Table X.Y:" pattern
+    - Contains common caption keywords (Diagram, Flow, Architecture, etc.)
     - NOT part of a full sentence (no verbs like "is", "shows", "the following")
     """
     text = paragraph.text.strip()
@@ -115,15 +120,22 @@ def is_figure_caption(paragraph):
     if has_image(paragraph):
         return True
 
-    # Caption text should be short and NOT empty
-    if len(text) == 0 or len(text) > 80:
+    # Caption text should be short-ish and NOT empty
+    if len(text) == 0 or len(text) > 120:  # Increased for table captions
         return False
 
+    # Check for table caption pattern: "Table X.Y: Description"
+    import re
+    table_pattern = re.compile(r'^Table\s+\d+\.\d+:', re.IGNORECASE)
+    if table_pattern.match(text):
+        return True
+
     # Exclude common false positives (full sentences with verbs)
+    # But allow colons for "Table X.Y:" format
     false_positive_patterns = [
         "here's", "here is", "this is", "the following", "as shown",
         "you can", "we can", "let's", "will", "shows", "demonstrates",
-        "example:", "note:", "tip:", "warning:", ":"
+        "example:", "note:", "tip:", "warning:"
     ]
 
     text_lower = text.lower()
@@ -144,7 +156,7 @@ def is_figure_caption(paragraph):
             # Must be a standalone phrase, not embedded in a sentence
             # Check that it's primarily a noun phrase (no sentence structure)
             word_count = len(text.split())
-            if word_count >= 2 and word_count <= 10:  # Typical caption length
+            if word_count >= 2 and word_count <= 15:  # Typical caption length
                 return True
 
     return False
@@ -375,6 +387,32 @@ def apply_packt_styles(input_file, output_file):
     if captions_mapped > 0:
         print(f"✓ Mapped {captions_mapped} figure captions to Figure Caption [PACKT]")
     print(f"✓ Kept {para_skipped_headings} headings as standard \"Heading X\" (correct for PacktPub)")
+
+    # Apply table cell styles
+    table_cells_mapped = 0
+    table_headers_mapped = 0
+    table_content_mapped = 0
+
+    for table in doc.tables:
+        for row_idx, row in enumerate(table.rows):
+            is_header_row = (row_idx == 0)  # First row is header
+
+            for cell in row.cells:
+                for para in cell.paragraphs:
+                    if is_header_row:
+                        target_style = 'Table Column Heading [PACKT]'
+                        if target_style in available_styles:
+                            para.style = target_style
+                            table_headers_mapped += 1
+                    else:
+                        target_style = 'Table Column Content [PACKT]'
+                        if target_style in available_styles:
+                            para.style = target_style
+                            table_content_mapped += 1
+                    table_cells_mapped += 1
+
+    if table_cells_mapped > 0:
+        print(f"✓ Mapped {table_cells_mapped} table cells: {table_headers_mapped} headers, {table_content_mapped} content")
 
     # Apply character style mappings (runs within paragraphs)
     run_count = 0

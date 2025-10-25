@@ -5,6 +5,66 @@ All notable changes to the BMad Technical Writing Expansion Pack will be documen
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+**PacktPub Formatting Workflow - v6 Script Update**
+
+- Updated all references from `apply-packt-styles-v5.py` to `apply-packt-styles-v6.py`
+- Enhanced script now includes:
+  - Table caption detection and styling (format: `Table X.Y: Description`)
+  - Figure caption detection and styling (embedded images + keywords)
+  - Automatic table cell styling: "Table Column Heading [PACKT]" / "Table Column Content [PACKT]"
+  - Both table and figure captions styled as "Figure Caption [PACKT]" (PacktPub standard)
+
+**Updated Files**:
+- `tasks/format-for-packtpub.md` - Script reference updated to v6, added caption placement section (2.3)
+- `README.md` - Script reference and usage examples updated to v6
+- `workflows/packtpub-submission-workflow.yaml` - Added caption placement requirements and common pitfalls
+
+### Added
+
+**Caption Placement Documentation**
+
+- `data/packtpub-author-bundle/CAPTION-PLACEMENT-GUIDE.md` - Comprehensive 200+ line guide covering:
+  - **CRITICAL RULE**: Table captions BEFORE tables, figure captions AFTER images
+  - Common mistakes with examples
+  - Numbering conventions (`Table X.Y:` / `Figure X.Y:`)
+  - Alt text vs caption distinction
+  - Why placement matters for reader comprehension
+  - Integration with validation scripts
+
+**Enhanced Task Documentation**
+
+- Added section 2.3 "Caption Placement Validation" to `tasks/format-for-packtpub.md`
+- Updated Python script logic documentation (steps 7-8) for caption and table styling
+- Added CAPTION-PLACEMENT-GUIDE.md to related files documentation
+
+**Workflow Enhancements**
+
+- Updated `packtpub-submission-workflow.yaml`:
+  - Quality gates now include caption placement validation
+  - Format requirements specify table/figure caption formats
+  - Common pitfalls warn about incorrect caption placement
+
+### Technical Details
+
+**Script Changes (v5 → v6)**:
+- New function: `is_figure_caption()` - Detects both table and figure captions
+- New function: `has_image()` - Checks for embedded images in paragraphs
+- Table caption regex: `r'^Table\s+\d+\.\d+:'`
+- Automatic table cell styling based on row position (first row = headers)
+
+**Testing**:
+- ✅ 4 tables tested with captions (92 cells: 14 headers + 78 content)
+- ✅ 3 figures tested with embedded images
+- ✅ All captions correctly positioned and styled
+- ✅ Pre-conversion validation: PASS (0 errors, 0 warnings)
+- ✅ Post-conversion verification: PASS (0 errors, 0 warnings)
+
+---
+
 ## [2.0.0] - 2025-10-21
 
 ### 🚨 BREAKING CHANGES
