@@ -2,9 +2,9 @@
 
 ## Introduction
 
-The BMad Technical Writing Expansion Pack provides **34 executable tasks** that guide agents through specific workflows. Tasks are procedural markdown files with step-by-step instructions that agents follow exactly.
+The BMad Technical Writing Expansion Pack provides **67 executable tasks** that guide agents through specific workflows. Tasks are procedural markdown files with step-by-step instructions that agents follow exactly.
 
-This comprehensive reference documents all 34 tasks organized by phase, with:
+This comprehensive reference documents all 67 tasks organized by phase, with:
 
 - **Task name and purpose** - What the task accomplishes
 - **When to use** - Specific scenarios
@@ -16,12 +16,14 @@ This comprehensive reference documents all 34 tasks organized by phase, with:
 
 ### Task Categories
 
-- **Planning Phase (6 tasks)**: Book outlines, learning paths, proposals
-- **Chapter Development (8 tasks)**: Drafts, outlines, summaries, introductions
-- **Code Management (5 tasks)**: Examples, testing, repositories, version checks
-- **Review & Editing (5 tasks)**: Technical reviews, copy editing, feedback incorporation, checklist execution
-- **Publishing (7 tasks)**: Packaging, MEAP, self-publishing, indexes
-- **Documentation (3 tasks)**: Glossaries, API docs, diagrams
+- **Planning Phase (7 tasks)**: Book outlines, learning paths, proposals, research
+- **Instructional Design (5 tasks)** **(v2.1+)**: Learning frameworks, difficulty curves, assessment strategies, prerequisite mapping
+- **Chapter Development (12 tasks)**: Drafts, outlines, summaries, sections, walkthroughs, transitions
+- **Code Management (14 tasks)** **(v2.1+ expanded)**: Examples, testing, repositories, security audits, version checks, optimization
+- **Review & Editing (9 tasks)** **(v2.1+ expanded)**: Technical reviews, copy editing, checklist execution, validation, verification
+- **Publishing (10 tasks)** **(v2.1+ expanded)**: Packaging, MEAP, self-publishing, format conversions, indexes
+- **Documentation & API (7 tasks)** **(v2.1+ expanded)**: Glossaries, API docs, diagrams, function documentation, usage examples
+- **Specialized Tasks (3 tasks)** **(v2.1+)**: Screenshots, visual optimization, research tools
 
 ---
 
@@ -123,6 +125,124 @@ This comprehensive reference documents all 34 tasks organized by phase, with:
 
 ---
 
+### create-book-research-queries.md **(v2.1+)**
+
+**Purpose**: Creates comprehensive research query strategy for technical book topics
+
+**When to Use**: Planning research phase, gathering technical information, validating approach
+
+**Prerequisites**: Book topic defined, research goals identified
+
+**Outputs**: Research query list with search strategies
+
+**Related Workflows**: Book Planning Workflow, Research Workflow
+**Related Agents**: technical-researcher
+**Estimated Time**: 1-2 hours
+
+---
+
+### execute-research-with-tools.md **(v2.1+)**
+
+**Purpose**: Executes research using web search, documentation, and research tools
+
+**When to Use**: Gathering technical information, validating concepts, researching best practices
+
+**Prerequisites**: Research queries defined
+
+**Outputs**: Research findings document with sources and key insights
+
+**Related Workflows**: Book Planning Workflow, Research Workflow
+**Related Agents**: technical-researcher
+**Estimated Time**: 3-8 hours (varies by scope)
+
+---
+
+## Instructional Design Tasks **(v2.1+)**
+
+### analyze-difficulty-curve.md **(v2.1+)**
+
+**Purpose**: Analyzes learning difficulty progression to ensure appropriate cognitive load and scaffolding
+
+**When to Use**: Validating chapter sequence, checking learning flow, ensuring proper difficulty progression
+
+**Prerequisites**:
+- Book outline or chapter content
+- Learning objectives defined
+
+**Outputs**: Difficulty analysis report with recommendations for reordering or adjusting content
+
+**Related Workflows**: Book Planning Workflow, Learning Path Design
+**Related Agents**: instructional-designer
+**Estimated Time**: 2-4 hours
+
+---
+
+### apply-learning-framework.md **(v2.1+)**
+
+**Purpose**: Applies pedagogical frameworks (Bloom's Taxonomy, cognitive load theory) to content design
+
+**When to Use**: Designing learning objectives, structuring educational content, validating pedagogical soundness
+
+**Prerequisites**: Content outline or draft
+
+**Outputs**: Framework-aligned content structure with learning level indicators
+
+**Related Workflows**: Book Planning Workflow, Chapter Development
+**Related Agents**: instructional-designer
+**Estimated Time**: 2-3 hours
+
+---
+
+### map-prerequisites.md **(v2.1+)**
+
+**Purpose**: Maps prerequisite dependencies across chapters and sections to prevent knowledge gaps
+
+**When to Use**: Book planning phase, validating learning flow, identifying circular dependencies
+
+**Prerequisites**: Book outline with chapter topics
+
+**Outputs**: Prerequisite dependency map (Mermaid diagram) with validation results
+
+**Related Workflows**: Book Planning Workflow, Learning Path Design
+**Related Agents**: instructional-designer, learning-path-designer
+**Estimated Time**: 3-5 hours
+
+---
+
+### design-assessment-strategy.md **(v2.1+)**
+
+**Purpose**: Creates comprehensive assessment strategy aligned with learning objectives
+
+**When to Use**: Planning exercises, quizzes, and practical assessments for chapters
+
+**Prerequisites**: Learning objectives defined
+
+**Outputs**: Assessment strategy document with exercise specifications
+
+**Related Workflows**: Chapter Development Workflow
+**Related Agents**: instructional-designer, exercise-creator
+**Estimated Time**: 2-4 hours
+
+---
+
+### validate-learning-flow.md **(v2.1+)**
+
+**Purpose**: Validates pedagogical progression, prerequisite dependencies, and difficulty curve in learning content
+
+**When to Use**: Quality gate in workflows, validating chapter sequences, ensuring no knowledge gaps
+
+**Prerequisites**:
+- Outline or chapter content
+- Prerequisites defined
+
+**Outputs**: Validation report with identified gaps, circular dependencies, and progression issues
+
+**Related Workflows**: Section Development Workflow, Chapter Assembly Workflow, Book Planning Workflow
+**Related Agents**: instructional-designer
+**Estimated Time**: 1-3 hours
+
+---
+
 ## Chapter Development Tasks
 
 ### create-chapter-outline.md
@@ -168,6 +288,75 @@ This comprehensive reference documents all 34 tasks organized by phase, with:
 
 **Related Agents**: tutorial-architect
 **Estimated Time**: 1-2 hours
+
+---
+
+### write-section-draft.md **(v2.1+)**
+
+**Purpose**: Transform section plan and code examples into complete 2-5 page pedagogically sound section content
+
+**When to Use**: Section-driven development workflow (step 3), writing individual sections incrementally
+
+**Prerequisites**:
+- Section plan (section-plan.md) with learning objectives
+- Code examples from code-curator (tested and documented)
+- Chapter outline (chapter context)
+
+**Outputs**: `section-{n}-draft.md` (2-5 pages) ready for technical review
+
+**Related Workflows**: Section Development Workflow **(KEY TASK FOR THIS WORKFLOW)**
+**Related Agents**: tutorial-architect
+**Estimated Time**: 3-6 hours per section
+
+**Key Features**: Structured workflow (concept → tutorial → applications), code integration guidance, quality checks
+
+---
+
+### write-walkthrough.md **(v2.1+)**
+
+**Purpose**: Creates detailed step-by-step walkthrough guides for complex procedures or tutorials
+
+**When to Use**: Building hands-on tutorials, creating installation guides, documenting multi-step processes
+
+**Prerequisites**: Procedure or tutorial plan
+
+**Outputs**: Step-by-step walkthrough document with screenshots and troubleshooting
+
+**Related Workflows**: Tutorial Creation Workflow
+**Related Agents**: tutorial-architect
+**Estimated Time**: 4-8 hours
+
+---
+
+### merge-sections.md **(v2.1+)**
+
+**Purpose**: Combines multiple section drafts into cohesive chapter with proper flow and transitions
+
+**When to Use**: Section-driven workflow after all sections complete, assembling chapter from parts
+
+**Prerequisites**: All section drafts complete and reviewed
+
+**Outputs**: Merged chapter document with integrated transitions
+
+**Related Workflows**: Section Development Workflow (step 6), Chapter Assembly Workflow
+**Related Agents**: tutorial-architect
+**Estimated Time**: 2-4 hours
+
+---
+
+### enhance-transitions.md **(v2.1+)**
+
+**Purpose**: Improves narrative flow and transitions between sections within a chapter
+
+**When to Use**: After merging sections, polishing chapter flow, improving readability
+
+**Prerequisites**: Merged chapter document
+
+**Outputs**: Chapter with enhanced transitions and improved narrative flow
+
+**Related Workflows**: Section Development Workflow, Chapter Assembly Workflow
+**Related Agents**: tutorial-architect, technical-editor
+**Estimated Time**: 1-3 hours
 
 ---
 
@@ -280,7 +469,217 @@ This comprehensive reference documents all 34 tasks organized by phase, with:
 
 ---
 
-### setup-code-repository.md
+### security-audit.md **(v2.1+)**
+
+**Purpose**: Performs comprehensive security audit on code examples to identify vulnerabilities and security issues
+
+**When to Use**: Quality gate for code examples, validating security best practices, before publication
+
+**Prerequisites**:
+- Code examples complete
+- Language and security standards defined
+
+**Outputs**: Security audit report with vulnerability findings and remediation recommendations
+
+**Related Workflows**: Code Example Workflow, Quality Assurance Workflow
+**Related Agents**: code-curator
+**Estimated Time**: 2-4 hours
+
+---
+
+### cross-platform-test.md **(v2.1+)**
+
+**Purpose**: Tests code examples across different platforms (Windows, macOS, Linux) and environments
+
+**When to Use**: Validating cross-platform compatibility, before publication
+
+**Prerequisites**: Code examples complete and tested
+
+**Outputs**: Cross-platform test report with platform-specific issues identified
+
+**Related Workflows**: Code Example Workflow, Quality Assurance Workflow
+**Related Agents**: code-curator, sample-code-maintainer
+**Estimated Time**: 2-3 hours per chapter
+
+---
+
+### performance-review.md **(v2.1+)**
+
+**Purpose**: Reviews code examples for performance issues, inefficiencies, and optimization opportunities
+
+**When to Use**: Quality gate for code, ensuring examples demonstrate best practices
+
+**Prerequisites**: Code examples complete and tested
+
+**Outputs**: Performance review report with optimization recommendations
+
+**Related Workflows**: Code Example Workflow, Quality Assurance Workflow
+**Related Agents**: code-curator
+**Estimated Time**: 1-3 hours
+
+---
+
+### version-check.md **(v2.1+)**
+
+**Purpose**: Validates code examples against target version compatibility requirements
+
+**When to Use**: Multi-version books, version migration, compatibility validation
+
+**Prerequisites**: Target versions defined, code examples complete
+
+**Outputs**: Version compatibility report
+
+**Related Workflows**: Code Example Workflow, Version Management
+**Related Agents**: version-manager, code-curator
+**Estimated Time**: 1-2 hours
+
+---
+
+### optimize-code.md **(v2.1+)**
+
+**Purpose**: Optimizes code examples for performance, readability, and best practices
+
+**When to Use**: Polishing code examples, improving code quality, demonstrating best practices
+
+**Prerequisites**: Working code examples
+
+**Outputs**: Optimized code with explanation of improvements
+
+**Related Workflows**: Code Example Workflow
+**Related Agents**: code-curator
+**Estimated Time**: 1-2 hours per example
+
+---
+
+### troubleshoot-example.md **(v2.1+)**
+
+**Purpose**: Debugs and fixes broken code examples with systematic troubleshooting approach
+
+**When to Use**: Code examples failing tests, debugging issues, fixing broken examples
+
+**Prerequisites**: Failing code example, error messages
+
+**Outputs**: Fixed code with troubleshooting documentation
+
+**Related Workflows**: Code Example Workflow
+**Related Agents**: code-curator
+**Estimated Time**: 1-4 hours (varies by complexity)
+
+---
+
+### organize-code-repo.md **(v2.1+)**
+
+**Purpose**: Organizes code repository structure following best practices for technical books
+
+**When to Use**: Starting book project, restructuring existing repository
+
+**Prerequisites**: Book outline defining chapter structure
+
+**Outputs**: Organized repository with folders, README, .gitignore, LICENSE
+
+**Related Workflows**: Code Repository Setup Workflow
+**Related Agents**: sample-code-maintainer
+**Estimated Time**: 2-3 hours
+
+---
+
+### create-ci-pipeline.md **(v2.1+)**
+
+**Purpose**: Creates CI/CD pipeline for automated testing of code examples
+
+**When to Use**: Setting up code repository, automating quality gates
+
+**Prerequisites**: Code repository organized, tests written
+
+**Outputs**: CI/CD configuration (GitHub Actions, etc.) with automated testing
+
+**Related Workflows**: Code Repository Setup Workflow
+**Related Agents**: sample-code-maintainer
+**Estimated Time**: 3-5 hours
+
+---
+
+### publish-repo.md **(v2.1+)**
+
+**Purpose**: Prepares and publishes code repository for public release
+
+**When to Use**: Book near completion, making code examples publicly available
+
+**Prerequisites**: Code repository complete, all tests passing
+
+**Outputs**: Published repository on GitHub/GitLab with documentation
+
+**Related Workflows**: Publication Workflow
+**Related Agents**: sample-code-maintainer
+**Estimated Time**: 2-3 hours
+
+---
+
+### run-tests.md **(v2.1+)**
+
+**Purpose**: Executes test suite for code examples with comprehensive reporting
+
+**When to Use**: Continuous validation, before commits, quality gates
+
+**Prerequisites**: Tests written, code examples complete
+
+**Outputs**: Test execution report with pass/fail results
+
+**Related Workflows**: Code Example Workflow, Quality Assurance
+**Related Agents**: sample-code-maintainer, code-curator
+**Estimated Time**: 30 min - 1 hour
+
+---
+
+### create-version-matrix.md **(v2.1+)**
+
+**Purpose**: Creates version compatibility matrix for multi-version technical books
+
+**When to Use**: Planning version support, documenting compatibility
+
+**Prerequisites**: Target versions identified
+
+**Outputs**: Version matrix documenting which features work with which versions
+
+**Related Workflows**: Version Management Workflow
+**Related Agents**: version-manager
+**Estimated Time**: 2-3 hours
+
+---
+
+### assess-version-impact.md **(v2.1+)**
+
+**Purpose**: Analyzes impact of version changes on existing code and content
+
+**When to Use**: Planning version migrations, assessing update scope
+
+**Prerequisites**: Current version and target version defined
+
+**Outputs**: Version impact analysis report with migration recommendations
+
+**Related Workflows**: Book Edition Update Workflow
+**Related Agents**: version-manager
+**Estimated Time**: 3-5 hours
+
+---
+
+### update-dependencies.md **(v2.1+)**
+
+**Purpose**: Updates code dependencies to newer versions with testing and validation
+
+**When to Use**: Version migrations, dependency updates, security patches
+
+**Prerequisites**: Current code with dependency manifest
+
+**Outputs**: Updated dependencies with test validation results
+
+**Related Workflows**: Version Management Workflow
+**Related Agents**: version-manager, code-curator
+**Estimated Time**: 2-4 hours
+
+---
+
+### setup-code-repository.md **(DEPRECATED - use organize-code-repo.md)**
 
 **Purpose**: Organizes code repository structure with testing and CI/CD
 
@@ -390,6 +789,38 @@ This comprehensive reference documents all 34 tasks organized by phase, with:
 
 ---
 
+### verify-accuracy.md **(v2.1+)**
+
+**Purpose**: Verifies technical accuracy of code, concepts, and explanations through systematic review
+
+**When to Use**: Technical review quality gate, validating accuracy before publication
+
+**Prerequisites**: Chapter or section draft complete
+
+**Outputs**: Accuracy verification report with findings and corrections
+
+**Related Workflows**: Technical Review Workflow, Quality Assurance
+**Related Agents**: technical-reviewer
+**Estimated Time**: 2-4 hours per chapter
+
+---
+
+### check-best-practices.md **(v2.1+)**
+
+**Purpose**: Reviews content for adherence to industry best practices and current standards
+
+**When to Use**: Quality gate for technical content, validating best practices demonstrated
+
+**Prerequisites**: Content draft complete
+
+**Outputs**: Best practices review report with recommendations
+
+**Related Workflows**: Technical Review Workflow, Code Example Workflow
+**Related Agents**: technical-reviewer, code-curator
+**Estimated Time**: 1-3 hours
+
+---
+
 ### execute-checklist.md
 
 **Purpose**: Systematically execute quality checklists with pass/fail/na status and evidence collection
@@ -425,6 +856,60 @@ This comprehensive reference documents all 34 tasks organized by phase, with:
 **Related Workflows**: PacktPub/O'Reilly/Manning Submission Workflows
 **Related Agents**: book-publisher
 **Estimated Time**: 3-6 hours
+
+---
+
+### format-for-packtpub.md **(v2.1+)**
+
+**Purpose**: Formats manuscript according to PacktPub submission requirements and style guide
+
+**When to Use**: Submitting to PacktPub, preparing PacktPub-specific deliverables
+
+**Prerequisites**:
+- Manuscript complete and reviewed
+- PacktPub style guide reviewed
+
+**Outputs**: PacktPub-formatted manuscript with required structure and metadata
+
+**Related Workflows**: PacktPub Submission Workflow
+**Related Agents**: book-publisher
+**Estimated Time**: 4-6 hours
+
+---
+
+### format-for-oreilly.md **(v2.1+)**
+
+**Purpose**: Formats manuscript according to O'Reilly submission requirements (Atlas format, AsciiDoc)
+
+**When to Use**: Submitting to O'Reilly Media, preparing O'Reilly-specific deliverables
+
+**Prerequisites**:
+- Manuscript complete and reviewed
+- O'Reilly Atlas guidelines reviewed
+
+**Outputs**: O'Reilly-formatted manuscript (AsciiDoc) with required metadata
+
+**Related Workflows**: O'Reilly Submission Workflow
+**Related Agents**: book-publisher
+**Estimated Time**: 5-8 hours
+
+---
+
+### format-for-manning.md **(v2.1+)**
+
+**Purpose**: Formats manuscript according to Manning submission requirements and Docbook format
+
+**When to Use**: Submitting to Manning Publications, preparing Manning MEAP deliverables
+
+**Prerequisites**:
+- Manuscript complete and reviewed
+- Manning author guide reviewed
+
+**Outputs**: Manning-formatted manuscript with required structure and repository integration
+
+**Related Workflows**: Manning MEAP Workflow, Manning Submission Workflow
+**Related Agents**: book-publisher
+**Estimated Time**: 4-7 hours
 
 ---
 
@@ -520,7 +1005,55 @@ This comprehensive reference documents all 34 tasks organized by phase, with:
 
 ---
 
-## Documentation Tasks
+### plan-screenshots.md **(v2.1+)**
+
+**Purpose**: Plans comprehensive screenshot strategy for chapter or book
+
+**When to Use**: Beginning visual documentation, planning screenshot needs
+
+**Prerequisites**: Content outline or draft
+
+**Outputs**: Screenshot plan with specifications for each image
+
+**Related Workflows**: Visual Documentation Workflow
+**Related Agents**: screenshot-specialist
+**Estimated Time**: 1-2 hours
+
+---
+
+### annotate-images.md **(v2.1+)**
+
+**Purpose**: Adds annotations, callouts, and highlighting to screenshots and diagrams
+
+**When to Use**: Enhancing visual clarity, directing reader attention
+
+**Prerequisites**: Raw screenshots or diagrams captured
+
+**Outputs**: Annotated images ready for publication
+
+**Related Workflows**: Visual Documentation Workflow
+**Related Agents**: screenshot-specialist
+**Estimated Time**: 30 min - 1 hour per image
+
+---
+
+### optimize-visuals.md **(v2.1+)**
+
+**Purpose**: Optimizes images for file size, quality, and publishing requirements
+
+**When to Use**: Finalizing visuals, meeting publisher file size requirements
+
+**Prerequisites**: Images created and annotated
+
+**Outputs**: Optimized images with appropriate resolution and compression
+
+**Related Workflows**: Visual Documentation Workflow, Publishing Workflow
+**Related Agents**: screenshot-specialist
+**Estimated Time**: 1-2 hours
+
+---
+
+## Documentation & API Tasks
 
 ### generate-api-docs.md
 
@@ -534,6 +1067,38 @@ This comprehensive reference documents all 34 tasks organized by phase, with:
 
 **Related Agents**: api-documenter
 **Estimated Time**: 4-8 hours (varies by API size)
+
+---
+
+### document-function.md **(v2.1+)**
+
+**Purpose**: Creates comprehensive documentation for individual functions or methods
+
+**When to Use**: Documenting APIs, creating function references, building documentation sets
+
+**Prerequisites**: Function code available, understanding of parameters and behavior
+
+**Outputs**: Function documentation with signature, parameters, returns, examples
+
+**Related Workflows**: API Documentation Workflow
+**Related Agents**: api-documenter
+**Estimated Time**: 30 min - 1 hour per function
+
+---
+
+### write-usage-examples.md **(v2.1+)**
+
+**Purpose**: Creates practical usage examples for APIs, libraries, or frameworks
+
+**When to Use**: Demonstrating API usage, creating getting-started guides
+
+**Prerequisites**: API understanding, common use cases identified
+
+**Outputs**: Usage example code with explanations and expected outputs
+
+**Related Workflows**: API Documentation Workflow
+**Related Agents**: api-documenter, code-curator
+**Estimated Time**: 1-2 hours per example
 
 ---
 
@@ -668,7 +1233,7 @@ This comprehensive reference documents all 34 tasks organized by phase, with:
 
 ## Conclusion
 
-The BMad Technical Writing Expansion Pack's **34 executable tasks** provide step-by-step procedural guidance for every aspect of technical book authoring. By understanding each task's purpose, prerequisites, and outputs, you can:
+The BMad Technical Writing Expansion Pack's **67 executable tasks** provide step-by-step procedural guidance for every aspect of technical book authoring. By understanding each task's purpose, prerequisites, and outputs, you can:
 
 - **Execute workflows** efficiently with clear procedures
 - **Track progress** using task completion
@@ -680,12 +1245,24 @@ The BMad Technical Writing Expansion Pack's **34 executable tasks** provide step
 
 - `design-book-outline.md` - Foundation of book planning
 - `create-chapter-outline.md` - Essential for chapter development
+- `write-section-draft.md` **(v2.1+)** - Core section-driven workflow task
 - `technical-review-chapter.md` - Ensures technical accuracy
-- `execute-checklist.md` - Quality gate execution
+- `execute-checklist.md` **(v2.1+)** - Universal quality gate execution
+- `validate-learning-flow.md` **(v2.1+)** - Pedagogical validation
+- `security-audit.md` **(v2.1+)** - Code security validation
 - `copy-edit-chapter.md` - Professional polish
 
-**Total task count**: 34
-**Word count**: ~2,500 words
+**Sprint 7 (v2.1) Additions**: 33 new tasks
+- Instructional Design: 5 tasks
+- Section Development: 4 tasks
+- Code Security & Quality: 10 tasks
+- Publisher Formatting: 3 tasks
+- Specialized Documentation: 8 tasks
+- Research: 2 tasks
+- Universal: 1 task (execute-checklist)
+
+**Total task count**: 67 (34 v2.0 + 33 v2.1)
+**Word count**: ~5,000 words
 
 ---
 

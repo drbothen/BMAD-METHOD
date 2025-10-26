@@ -2,9 +2,9 @@
 
 ## Introduction
 
-The BMad Technical Writing Expansion Pack provides **31 quality assurance checklists** that serve as validation gates throughout the book authoring lifecycle. Each checklist defines specific criteria that must be met before proceeding to the next phase.
+The BMad Technical Writing Expansion Pack provides **34 quality assurance checklists** that serve as validation gates throughout the book authoring lifecycle. Each checklist defines specific criteria that must be met before proceeding to the next phase.
 
-This comprehensive reference documents all 31 checklists organized by phase, with:
+This comprehensive reference documents all 34 checklists organized by phase, with:
 
 - **Checklist name and purpose** - What it validates
 - **When to use** - Quality gate timing
@@ -15,11 +15,11 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 
 ### Checklist Categories
 
-- **Planning Phase (2 checklists)**: Learning objectives, prerequisites
-- **Drafting Phase (5 checklists)**: Chapter completeness, book proposals, tutorials
+- **Planning Phase (3 checklists)** **(v2.1+ expanded)**: Learning objectives, prerequisites, research quality
+- **Drafting Phase (6 checklists)** **(v2.1+ expanded)**: Chapter completeness, book proposals, tutorials, AI compliance
 - **Code Quality (5 checklists)**: Code quality, testing, security, version compatibility, performance
 - **Review Phase (4 checklists)**: Technical accuracy, readability, accessibility, inclusive language
-- **Publishing Phase (7 checklists)**: Publisher-specific formats, final manuscript, MEAP, self-publishing
+- **Publishing Phase (8 checklists)** **(v2.1+ expanded)**: Publisher-specific formats, final manuscript, MEAP, self-publishing, repository integration
 - **Final QA (8 checklists)**: Diagrams, screenshots, glossaries, indexes, citations, revisions, repositories, cross-platform
 
 ---
@@ -67,6 +67,31 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 
 **Related Workflows**: Book Planning, Chapter Development
 **Related Agents**: instructional-designer, tutorial-architect
+
+---
+
+### research-quality-checklist.md **(v2.1+)**
+
+**Purpose**: Validates research findings are comprehensive, well-sourced, credible, and actionable
+
+**When to Use**: After completing technical research for book or chapter planning
+
+**Key Criteria**:
+
+- All sources assessed for credibility (official documentation prioritized)
+- Every technical claim has cited source
+- All URLs accessible and valid
+- Research questions answered or gaps documented
+- Findings synthesized across multiple sources
+- Conflicting information identified and resolved
+- Research findings directly inform chapter content
+- Code examples applicable to target audience
+- Technical accuracy verified through source triangulation
+
+**Pass Criteria**: Research findings are credible, comprehensive, and actionable for chapter development
+
+**Related Workflows**: Book Planning Workflow, Research Workflow
+**Related Agents**: technical-researcher
 
 ---
 
@@ -189,6 +214,32 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 **Pass Criteria**: Exercises build confidence and validate learning
 
 **Related Agents**: exercise-creator
+
+---
+
+### generative-ai-compliance-checklist.md **(v2.1+)**
+
+**Purpose**: Validates manuscript content does not trigger AI detection patterns and maintains human authenticity
+
+**When to Use**: Before publisher submission (especially PacktPub), final manuscript review, self-review during writing
+
+**Key Criteria**:
+
+- All technical information verified for accuracy (no hallucinations)
+- All code examples tested and working (not hypothetical)
+- No generic vague examples ("company X", "financial institution")
+- Real-world examples with specific details
+- Authentic human voice and personal insights
+- No repetitive phrasing or formulaic structure
+- Author expertise and unique perspective evident
+- Content demonstrates deep understanding beyond surface-level
+- Writing style natural and conversational (not overly formal)
+- Reader value clear throughout
+
+**Pass Criteria**: Content reads as authentically human with unique expertise and insights
+
+**Related Workflows**: Publisher Submission Workflows (PacktPub, O'Reilly, Manning), Final Manuscript Review
+**Related Agents**: technical-editor, book-publisher
 
 ---
 
@@ -550,6 +601,35 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 
 ---
 
+### repository-integration-checklist.md **(v2.1+)**
+
+**Purpose**: Validates code repository integration for Manning MEAP or publisher-required repositories
+
+**When to Use**: Before Manning MEAP chapter releases, when publisher requires integrated code repository
+
+**Key Criteria**:
+
+- Git repository properly initialized and configured
+- Repository structure follows publisher guidelines (Manning, O'Reilly, etc.)
+- Chapter code organized in logical folder structure
+- README.md provides clear setup instructions
+- .gitignore configured appropriately
+- LICENSE file included (if required)
+- CI/CD pipeline configured and passing
+- All code examples tested via CI
+- Dependencies documented (requirements.txt, package.json, etc.)
+- Code examples match manuscript exactly
+- Git history clean (no sensitive data, large binaries)
+- Repository publicly accessible (if required)
+- Collaboration guidelines clear (CONTRIBUTING.md if accepting PRs)
+
+**Pass Criteria**: Repository meets publisher integration requirements and all CI checks pass
+
+**Related Workflows**: Manning MEAP Publishing Workflow, Publisher Submission Workflows
+**Related Agents**: book-publisher, sample-code-maintainer
+
+---
+
 ### index-completeness-checklist.md
 
 **Purpose**: Validates book index is comprehensive
@@ -855,7 +935,7 @@ This comprehensive reference documents all 31 checklists organized by phase, wit
 
 ## Conclusion
 
-The BMad Technical Writing Expansion Pack's **31 quality checklists** provide comprehensive validation at every stage of book authoring. By using checklists as quality gates, you can:
+The BMad Technical Writing Expansion Pack's **34 quality checklists** provide comprehensive validation at every stage of book authoring. By using checklists as quality gates, you can:
 
 - **Prevent defects early** through systematic validation
 - **Maintain consistency** across chapters and versions
@@ -870,9 +950,17 @@ The BMad Technical Writing Expansion Pack's **31 quality checklists** provide co
 - code-testing-checklist - Ensures code reliability
 - final-manuscript-checklist - Publication readiness
 - accessibility-checklist - Universal access
+- repository-integration-checklist **(v2.1+)** - Publisher code repository requirements
+- generative-ai-compliance-checklist **(v2.1+)** - Human authenticity validation
+- research-quality-checklist **(v2.1+)** - Research credibility validation
 
-**Total checklist count**: 31
-**Word count**: ~2,300 words
+**Sprint 7 (v2.1) Additions**: 3 new checklists
+- Repository Integration (Manning MEAP, publisher requirements)
+- Generative AI Compliance (authenticity, reader satisfaction)
+- Research Quality (credibility, actionability)
+
+**Total checklist count**: 34 (31 v2.0 + 3 v2.1)
+**Word count**: ~2,600 words
 
 ---
 
