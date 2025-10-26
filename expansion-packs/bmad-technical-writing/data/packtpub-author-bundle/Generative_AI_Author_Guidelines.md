@@ -120,10 +120,12 @@ Generative AI can tend towards over-writing and poor metaphors.
 AI has provided an overblown description of the chapter's topic and the benefits to the reader.
 
 **Common AI overused words/phrases**:
+
 - "sophisticated" (appeared 36 times in one example chapter)
 - Polysyllabic words when simple ones would be better
 
 **Example from data science book**:
+
 > "The profound efficacy of strategic planning in the domain of data analytics is most compellingly exemplified through narratives drawn from the empirical realm."
 
 **Problem**: Use of fancy, polysyllabic words when simple ones would be better.
@@ -143,6 +145,7 @@ Generative AI tends to have two problems with metaphors: **overusing them** and 
 All of this demonstrates how using generative AI to generate content is not being an author. As an author, the reader wants your authentic, unique voice. Your editor can help you with this; we have many options to work on your writing to make it the best it can be.
 
 **Key Takeaways**:
+
 1. AI is a tool for improvement, not replacement
 2. Your unique insights, expertise, and experience are what readers want
 3. Always declare AI use to PacktPub

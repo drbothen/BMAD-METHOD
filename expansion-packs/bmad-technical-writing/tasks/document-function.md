@@ -5,24 +5,13 @@
 ---
 
 task:
-  id: document-function
-  name: Document Function
-  description: Generate comprehensive documentation for a function or method in various documentation formats
-  persona_default: api-documenter
-  inputs:
-    - function-signature (the function signature to document)
-    - language (programming language: javascript, python, ruby, go, etc.)
-    - doc-format (optional: jsdoc, sphinx, rdoc, godoc, javadoc - auto-detected if not specified)
-  steps:
-    - Parse function signature to extract name, parameters, and return type
-    - Generate documentation template based on language and format
-    - Add comprehensive parameter descriptions with types and constraints
-    - Add detailed return value description
-    - Document possible exceptions or error conditions
-    - Create basic usage example
-    - Add notes about side effects, performance, or important behaviors
-    - Format according to documentation standard
-  output: Formatted function documentation ready for insertion into codebase
+id: document-function
+name: Document Function
+description: Generate comprehensive documentation for a function or method in various documentation formats
+persona_default: api-documenter
+inputs: - function-signature (the function signature to document) - language (programming language: javascript, python, ruby, go, etc.) - doc-format (optional: jsdoc, sphinx, rdoc, godoc, javadoc - auto-detected if not specified)
+steps: - Parse function signature to extract name, parameters, and return type - Generate documentation template based on language and format - Add comprehensive parameter descriptions with types and constraints - Add detailed return value description - Document possible exceptions or error conditions - Create basic usage example - Add notes about side effects, performance, or important behaviors - Format according to documentation standard
+output: Formatted function documentation ready for insertion into codebase
 
 ---
 
@@ -156,6 +145,7 @@ async function fetchUser(userId, options = {})
 ```
 
 **Extracted:**
+
 - **Name:** fetchUser
 - **Parameters:** userId (required), options (optional, default: {})
 - **Return type:** Promise (async)
@@ -168,6 +158,7 @@ def calculate_average(numbers: List[float], precision: int = 2) -> float:
 ```
 
 **Extracted:**
+
 - **Name:** calculate_average
 - **Parameters:** numbers (List[float]), precision (int, default: 2)
 - **Return type:** float
@@ -327,11 +318,13 @@ Document critical behaviors:
 Apply language-specific formatting rules:
 
 **JSDoc standards:**
+
 - Use `@param` not `@parameter`
 - Use `{Type}` not `{type}`
 - Use hyphens between param name and description
 
 **Sphinx standards:**
+
 - Use underlines for section headers
 - Use proper indentation (4 spaces)
 - Follow NumPy style for scientific code
@@ -457,52 +450,67 @@ std_dev : Calculate standard deviation
 ## Common Pitfalls to Avoid
 
 **❌ Vague parameter descriptions:**
+
 ```javascript
 @param {string} userId - The user ID
 ```
+
 ✅ **Better:**
+
 ```javascript
 @param {string} userId - The unique identifier for the user.
                          Must be a valid MongoDB ObjectId (24 hex characters).
 ```
 
 **❌ Missing type information:**
+
 ```javascript
 @param options - Configuration options
 ```
+
 ✅ **Better:**
+
 ```javascript
 @param {Object} [options] - Optional configuration object
 @param {boolean} [options.includeDeleted=false] - Include soft-deleted users
 ```
 
 **❌ No usage examples:**
+
 ```javascript
 // Only parameter and return documentation, no examples
 ```
+
 ✅ **Better:**
+
 ```javascript
 @example
 const user = await fetchUser('507f1f77bcf86cd799439011');
 ```
 
 **❌ Not documenting error conditions:**
+
 ```javascript
 // Missing @throws annotations
 ```
+
 ✅ **Better:**
+
 ```javascript
 @throws {ValidationError} If userId is not a valid ObjectId
 @throws {DatabaseError} If database connection fails
 ```
 
 **❌ Copying description to every parameter:**
+
 ```javascript
 @param {string} firstName - The first name
 @param {string} lastName - The last name
 @param {string} email - The email
 ```
+
 ✅ **Better:**
+
 ```javascript
 @param {string} firstName - User's first name (required for profile creation)
 @param {string} lastName - User's last name (used for display purposes)
@@ -514,6 +522,7 @@ const user = await fetchUser('507f1f77bcf86cd799439011');
 ### Example 1: JavaScript Async Function
 
 **Input:**
+
 ```javascript
 async function createOrder(userId, items, paymentMethod) {
   // ... implementation
@@ -521,6 +530,7 @@ async function createOrder(userId, items, paymentMethod) {
 ```
 
 **Generated Documentation:**
+
 ```javascript
 /**
  * Creates a new order for a user with specified items and payment method.
@@ -569,11 +579,13 @@ async function createOrder(userId, items, paymentMethod) {
 ### Example 2: Python Class Method
 
 **Input:**
+
 ```python
 def parse_csv(self, file_path: str, delimiter: str = ',', skip_header: bool = True) -> pd.DataFrame:
 ```
 
 **Generated Documentation:**
+
 ```python
 """
 Parse a CSV file and return a pandas DataFrame.

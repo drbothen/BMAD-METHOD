@@ -30,7 +30,7 @@ stand out.
 
 For numbered and bulleted lists you can either use the Packt styles or
 the built-in list feature, whichever is easier for you. In the first
-draft it's fine to use the built-in **bold** and *italic* formats, but
+draft it's fine to use the built-in **bold** and _italic_ formats, but
 in the final book we will replace these with the appropriate Packt
 style.
 
@@ -47,7 +47,7 @@ In case you've not used styles much before, here's some background:
 
 > Paragraph styles apply to the entire paragraph -- Character styles
 > apply to individual words within a paragraph. To remove a Character
-> style from your text, select the word and press *Ctrl+Space* and the
+> style from your text, select the word and press _Ctrl+Space_ and the
 > word will revert to the underlying paragraph style.
 >
 > Do not use blank lines as spacing between paragraphs. Spacing between

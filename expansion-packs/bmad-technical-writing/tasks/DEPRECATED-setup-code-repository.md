@@ -5,6 +5,7 @@
 > **⚠️ DEPRECATED**: This task has been superseded by more comprehensive specialized tasks.
 >
 > **Use instead:**
+>
 > - `organize-code-repo.md` - Create well-structured repository with professional presentation
 > - `create-ci-pipeline.md` - Set up CI/CD automation
 > - `publish-repo.md` - Prepare and publish repository

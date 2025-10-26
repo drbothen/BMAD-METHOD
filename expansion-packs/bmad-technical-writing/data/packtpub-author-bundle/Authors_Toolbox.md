@@ -65,14 +65,12 @@ a Packt book:
 
 # Structuring information with headings
 
-Headings are maybe *the* most important device in your author\'s
+Headings are maybe _the_ most important device in your author\'s
 toolbox. They help you, and they help your reader. Generally you want to
 follow this scheme:
 
 - Topics
-
   - Tasks.
-
     - Sub-tasks.
 
 You never want to jump from a 1 to a 3. You can go from 1, to 2, to 3,
@@ -103,15 +101,15 @@ a roughly complete article. The best chapters use headings to tell the
 story of the chapter at-a-glance. Your reader should be able to use your
 level 1 and 2 headings to understand the topic coverage, and maybe even
 learn some useful information from the topics alone. They should also
-know what they will be *doing* with that information. There are a number
+know what they will be _doing_ with that information. There are a number
 of devices you can use for this.
 
 ## Organizing hierarchically
 
 Now you\'ve got your main topics, you think about the core steps needed
 to undertake that activity. This is where your level 2 headings come in.
-Level 2 headings are where you outline the *specific tasks* the reader
-will need to perform. They should be things the reader *does*.
+Level 2 headings are where you outline the _specific tasks_ the reader
+will need to perform. They should be things the reader _does_.
 
 Level 3 headings should be used when you\'ve got lots of small tasks
 which will only take a paragraph or two to explain. Additionally, level
@@ -122,7 +120,7 @@ to list, but feel you need greater nesting.
 
 Each heading should guide the reader through what they will be doing
 with the chapter. Ideally, each chapter won\'t just be the topic name.
-You\'ll be telling the reader exactly what they will *do* with that
+You\'ll be telling the reader exactly what they will _do_ with that
 section or sub-section. Let\'s say for the sake of argument, we\'re
 going to do a chapter on creating a complete website with HTML, CSS, and
 JavaScript.
@@ -151,7 +149,7 @@ JavaScript.
 
 It\'s telling a story, and showing the reader the progression. When
 using technical terms, no matter how basic, it\'s telling the reader in
-simple language what they *do* with those terms. Here are a few basic
+simple language what they _do_ with those terms. Here are a few basic
 principles:
 
 - Tell the reader what they will have at the end of the section
@@ -161,7 +159,7 @@ principles:
 
 - Use gerund form (\"-ing\" words)
 
-- Use technical terms only if saying what you *do* with them
+- Use technical terms only if saying what you _do_ with them
 
 Sometimes it\'s not always easy to apply all these (especially using
 gerund: editors furrow many brows trying to get it to fit. Sometime it
@@ -191,7 +189,7 @@ In summary, you should generally use this format:
 
 - **Point** - What are they learning?
 
-- **Instruct** - Tell the reader how to *do* something.
+- **Instruct** - Tell the reader how to _do_ something.
 
 - **Explain** - Give details of how it functions.
 
@@ -220,7 +218,7 @@ generally don\'t read things line by line, or word by word, but quickly
 take in the general meaning of a paragraph. By ensuring each paragraph
 covers one key point they\'re more likely to understand it.
 
-*A note about URLs:* URLs are ugly and visually disturbing. They
+_A note about URLs:_ URLs are ugly and visually disturbing. They
 regularly disrupt how the reader processes a paragraph with a good deal
 of computer-output that the reader does not need to comprehend - just
 type in or click on. Put them following a paragraph, or in a box-out

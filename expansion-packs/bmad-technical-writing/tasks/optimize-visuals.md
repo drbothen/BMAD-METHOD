@@ -5,25 +5,13 @@
 ---
 
 task:
-  id: optimize-visuals
-  name: Optimize Visuals
-  description: Optimize images for web and print by resizing, compressing, and converting to optimal formats
-  persona_default: screenshot-specialist
-  inputs:
-    - image-path (path to image file to optimize)
-    - optimization-target (web, print, or both)
-    - quality-threshold (optional: acceptable quality loss percentage)
-  steps:
-    - Analyze current image properties (dimensions, format, file size)
-    - Determine target dimensions based on usage
-    - Resize to appropriate dimensions
-    - Compress without significant quality loss
-    - Convert to optimal format if needed (PNG/JPEG/SVG/WebP)
-    - Generate multiple resolutions if needed (1×, 2× for Retina)
-    - Optimize for print (300 DPI) if required
-    - Verify quality meets standards
-    - Generate optimized file(s)
-  output: Optimized image file(s) with metadata report
+id: optimize-visuals
+name: Optimize Visuals
+description: Optimize images for web and print by resizing, compressing, and converting to optimal formats
+persona_default: screenshot-specialist
+inputs: - image-path (path to image file to optimize) - optimization-target (web, print, or both) - quality-threshold (optional: acceptable quality loss percentage)
+steps: - Analyze current image properties (dimensions, format, file size) - Determine target dimensions based on usage - Resize to appropriate dimensions - Compress without significant quality loss - Convert to optimal format if needed (PNG/JPEG/SVG/WebP) - Generate multiple resolutions if needed (1×, 2× for Retina) - Optimize for print (300 DPI) if required - Verify quality meets standards - Generate optimized file(s)
+output: Optimized image file(s) with metadata report
 
 ---
 
@@ -45,6 +33,7 @@ Before starting this task:
 ### Command-Line Tools
 
 **ImageMagick (Cross-platform, Free):**
+
 ```bash
 # Install
 brew install imagemagick          # macOS
@@ -56,6 +45,7 @@ convert input.png -resize 1600x -quality 85 output.jpg
 ```
 
 **pngquant (PNG optimization, Free):**
+
 ```bash
 # Install
 brew install pngquant             # macOS
@@ -66,6 +56,7 @@ pngquant --quality=65-80 input.png --output output.png
 ```
 
 **jpegoptim (JPEG optimization, Free):**
+
 ```bash
 # Install
 brew install jpegoptim            # macOS
@@ -76,6 +67,7 @@ jpegoptim --max=85 --strip-all input.jpg
 ```
 
 **oxipng (Advanced PNG optimization, Free):**
+
 ```bash
 # Install
 brew install oxipng               # macOS
@@ -86,6 +78,7 @@ oxipng -o 4 --strip safe input.png
 ```
 
 **cwebp (WebP conversion, Free):**
+
 ```bash
 # Install
 brew install webp                 # macOS
@@ -98,20 +91,24 @@ cwebp -q 80 input.png -o output.webp
 ### GUI Tools
 
 **Squoosh (Web-based, Free):**
+
 - URL: https://squoosh.app
 - Pros: Visual comparison, multiple formats
 - Best for: Individual image optimization
 
 **ImageOptim (macOS, Free):**
+
 - Pros: Drag-and-drop, batch processing
 - Best for: Batch PNG/JPEG optimization
 
 **TinyPNG (Web-based, Free tier):**
+
 - URL: https://tinypng.com
 - Pros: Excellent compression, simple
 - Cons: 5MB limit, 20 images/day on free tier
 
 **XnConvert (Cross-platform, Free):**
+
 - Pros: Batch processing, many formats
 - Best for: Complex batch operations
 
@@ -120,6 +117,7 @@ cwebp -q 80 input.png -o output.webp
 ### Web Optimization
 
 **Goals:**
+
 - Fast page load (target: < 200KB per image)
 - Retina display support (2× resolution)
 - Modern format support (WebP, AVIF)
@@ -138,6 +136,7 @@ Format: WebP (primary), JPEG (fallback), PNG (if transparency needed)
 ### Print Optimization
 
 **Goals:**
+
 - High resolution (300 DPI)
 - Color accuracy (CMYK for professional printing)
 - Appropriate file format (TIFF, high-quality PDF, or PNG)
@@ -156,6 +155,7 @@ Color space: CMYK (for offset printing) or RGB (for digital printing)
 ### Both Web and Print
 
 **Workflow:**
+
 1. Keep original high-resolution image (print quality)
 2. Create web-optimized versions from original
 3. Organize into folders: `original/`, `web/`, `print/`
@@ -180,6 +180,7 @@ identify -verbose image.png
 ```
 
 **Example output:**
+
 ```
 Filename: screenshot.png
 Dimensions: 3200x2000 pixels
@@ -191,6 +192,7 @@ Resolution: 144×144 DPI
 ```
 
 **Analysis:**
+
 - **Issue 1:** 3200×2000 is too large for web (target: 1600px width)
 - **Issue 2:** 2.4MB is too large for web (target: < 200KB)
 - **Issue 3:** 144 DPI is insufficient for print (target: 300 DPI)
@@ -200,6 +202,7 @@ Resolution: 144×144 DPI
 **Based on usage:**
 
 **Web content area:**
+
 ```
 Max content width: 800px
 Retina multiplier: 2×
@@ -208,6 +211,7 @@ Maintain aspect ratio
 ```
 
 **Print book (example):**
+
 ```
 Book trim size: 6" × 9"
 Image width on page: 5"
@@ -216,6 +220,7 @@ Target width: 5 × 300 = 1500px
 ```
 
 **Both:**
+
 ```
 Web: 1600px width
 Print: 1500px width (minimum)
@@ -253,6 +258,7 @@ sips -Z 1600 *.png
 ```
 
 **Quality considerations:**
+
 - **Downscaling:** Safe, improves file size
 - **Upscaling:** Avoid when possible (reduces quality)
 - **Aspect ratio:** Always maintain unless specific design requirement
@@ -307,14 +313,14 @@ ls -lh output-q*.jpg
 
 **Format selection guide:**
 
-| Content Type | Web | Print |
-|-------------|-----|-------|
-| Screenshots (UI) | PNG or WebP | PNG |
-| Code editor | PNG | PNG |
-| Photos | JPEG or WebP | JPEG or TIFF |
-| Diagrams | SVG or PNG | SVG or PDF |
-| Icons | SVG | SVG or PDF |
-| Logos | SVG or PNG | SVG or PDF |
+| Content Type     | Web          | Print        |
+| ---------------- | ------------ | ------------ |
+| Screenshots (UI) | PNG or WebP  | PNG          |
+| Code editor      | PNG          | PNG          |
+| Photos           | JPEG or WebP | JPEG or TIFF |
+| Diagrams         | SVG or PNG   | SVG or PDF   |
+| Icons            | SVG          | SVG or PDF   |
+| Logos            | SVG or PNG   | SVG or PDF   |
 
 **PNG → JPEG (when transparency not needed):**
 
@@ -385,9 +391,7 @@ pngquant --quality=65-80 output-*.png
 ```html
 <img
   src="image-1x.png"
-  srcset="image-1x.png 1x,
-          image-2x.png 2x,
-          image-3x.png 3x"
+  srcset="image-1x.png 1x, image-2x.png 2x, image-3x.png 3x"
   alt="Description"
   width="800"
   height="500"
@@ -408,10 +412,7 @@ convert input.png -resize 1600x output-1600.png
 
 ```html
 <img
-  srcset="image-400.png 400w,
-          image-800.png 800w,
-          image-1200.png 1200w,
-          image-1600.png 1600w"
+  srcset="image-400.png 400w, image-800.png 800w, image-1200.png 1200w, image-1600.png 1600w"
   sizes="(max-width: 600px) 400px,
          (max-width: 900px) 800px,
          (max-width: 1200px) 1200px,
@@ -601,6 +602,7 @@ ls -lh "${OUTPUT_DIR}"
 ```
 
 **Usage:**
+
 ```bash
 chmod +x optimize-web.sh
 ./optimize-web.sh screenshot.png
@@ -702,6 +704,7 @@ echo "Print folder: $(du -sh ${OUTPUT_DIR}/print | cut -f1)"
 ```
 
 **Usage:**
+
 ```bash
 chmod +x batch-optimize.sh
 ./batch-optimize.sh ./screenshots
@@ -710,30 +713,39 @@ chmod +x batch-optimize.sh
 ## Common Pitfalls to Avoid
 
 **❌ Over-compression:**
+
 ```bash
 convert input.png -quality 50 output.jpg  # Too aggressive
 ```
+
 ✅ **Balanced compression:**
+
 ```bash
 convert input.png -quality 85 output.jpg  # Good quality/size ratio
 ```
 
 **❌ Upscaling low-resolution images:**
+
 ```bash
 # 800px image upscaled to 1600px - looks bad
 convert small.png -resize 1600x output.png
 ```
+
 ✅ **Recapture at higher resolution:**
+
 ```bash
 # Recapture original screenshot at 1600px+
 ```
 
 **❌ Wrong format for content:**
+
 ```bash
 # PNG for photo (huge file size)
 # JPEG for UI screenshot (compression artifacts)
 ```
+
 ✅ **Appropriate format:**
+
 ```bash
 # PNG for UI/text
 # JPEG for photos
@@ -741,24 +753,30 @@ convert small.png -resize 1600x output.png
 ```
 
 **❌ Not preserving originals:**
+
 ```bash
 # Overwriting original
 convert input.png -resize 800x input.png
 ```
+
 ✅ **Keep originals:**
+
 ```bash
 # Output to different file
 convert input.png -resize 800x output.png
 ```
 
 **❌ Inconsistent dimensions:**
+
 ```bash
 # Different sizes for similar images
 image1.png: 1400px
 image2.png: 1800px
 image3.png: 1600px
 ```
+
 ✅ **Standardized dimensions:**
+
 ```bash
 # All screenshots at 1600px
 ```

@@ -5,24 +5,13 @@
 ---
 
 task:
-  id: write-usage-examples
-  name: Write Usage Examples
-  description: Create comprehensive usage examples for API functions including basic, advanced, and edge case scenarios
-  persona_default: api-documenter
-  inputs:
-    - api-function (function name or API endpoint to demonstrate)
-    - context (optional: book chapter, API section, tutorial level)
-    - language (programming language for examples)
-  steps:
-    - Identify function purpose and common use cases
-    - Create basic usage example (simplest valid usage)
-    - Create intermediate example (real-world scenario)
-    - Create advanced example (complex configuration or chaining)
-    - Add edge case examples (error handling, boundary conditions)
-    - Include expected output for each example
-    - Add explanatory comments to clarify non-obvious code
-    - Ensure all examples are runnable and tested
-  output: Complete set of usage examples ready for documentation or book content
+id: write-usage-examples
+name: Write Usage Examples
+description: Create comprehensive usage examples for API functions including basic, advanced, and edge case scenarios
+persona_default: api-documenter
+inputs: - api-function (function name or API endpoint to demonstrate) - context (optional: book chapter, API section, tutorial level) - language (programming language for examples)
+steps: - Identify function purpose and common use cases - Create basic usage example (simplest valid usage) - Create intermediate example (real-world scenario) - Create advanced example (complex configuration or chaining) - Add edge case examples (error handling, boundary conditions) - Include expected output for each example - Add explanatory comments to clarify non-obvious code - Ensure all examples are runnable and tested
+output: Complete set of usage examples ready for documentation or book content
 
 ---
 
@@ -46,6 +35,7 @@ Before starting this task:
 **Purpose:** Show simplest possible valid usage
 
 **Characteristics:**
+
 - Minimal parameters
 - Default options
 - Clear, obvious use case
@@ -53,6 +43,7 @@ Before starting this task:
 - 3-10 lines of code
 
 **Template:**
+
 ```javascript
 // Basic usage: [what this demonstrates]
 const result = functionName(simpleArg);
@@ -64,6 +55,7 @@ console.log(result); // Expected output
 **Purpose:** Show practical, production-like usage
 
 **Characteristics:**
+
 - Realistic scenario
 - Some configuration options
 - Common patterns
@@ -71,12 +63,13 @@ console.log(result); // Expected output
 - 10-25 lines of code
 
 **Template:**
+
 ```javascript
 // Real-world usage: [scenario description]
 try {
   const result = functionName(arg1, {
     option1: value1,
-    option2: value2
+    option2: value2,
   });
 
   // Do something with result
@@ -91,6 +84,7 @@ try {
 **Purpose:** Show complex or powerful usage patterns
 
 **Characteristics:**
+
 - Multiple features combined
 - Advanced configuration
 - Chaining or composition
@@ -98,6 +92,7 @@ try {
 - 25-50 lines of code
 
 **Template:**
+
 ```javascript
 // Advanced usage: [complex scenario]
 const config = {
@@ -105,14 +100,11 @@ const config = {
   advanced_option_2: value,
   callbacks: {
     onProgress: (progress) => console.log(`${progress}%`),
-    onComplete: (result) => handleCompletion(result)
-  }
+    onComplete: (result) => handleCompletion(result),
+  },
 };
 
-const pipeline = functionName(data, config)
-  .then(transform)
-  .then(validate)
-  .catch(handleError);
+const pipeline = functionName(data, config).then(transform).then(validate).catch(handleError);
 ```
 
 ### 4. Edge Case Examples
@@ -120,6 +112,7 @@ const pipeline = functionName(data, config)
 **Purpose:** Show error handling and boundary conditions
 
 **Characteristics:**
+
 - Error scenarios
 - Empty/null inputs
 - Maximum/minimum values
@@ -127,6 +120,7 @@ const pipeline = functionName(data, config)
 - Concurrent usage
 
 **Template:**
+
 ```javascript
 // Edge case: [specific scenario]
 try {
@@ -147,6 +141,7 @@ Brainstorm common scenarios where function is used:
 **Example: `fetchUser(userId, options)` function**
 
 **Common use cases:**
+
 - Fetch user by ID (basic)
 - Fetch user with specific fields (optimization)
 - Fetch deleted user (admin feature)
@@ -167,6 +162,7 @@ console.log(user.email);
 ```
 
 **Guidelines:**
+
 - One clear purpose stated in comment
 - Minimal code
 - Show expected output
@@ -184,7 +180,7 @@ async function displayUserProfile(userId) {
   try {
     // Fetch only needed fields for performance
     const user = await fetchUser(userId, {
-      fields: ['email', 'profile.name', 'profile.avatar']
+      fields: ['email', 'profile.name', 'profile.avatar'],
     });
 
     if (user) {
@@ -207,6 +203,7 @@ displayUserProfile('507f1f77bcf86cd799439011');
 ```
 
 **Guidelines:**
+
 - Wrapped in function showing context
 - Error handling included
 - Comments explain key decisions
@@ -226,11 +223,7 @@ class UserService {
   }
 
   async fetchUsers(userIds, options = {}) {
-    const {
-      useCache = true,
-      maxRetries = 3,
-      onProgress = null
-    } = options;
+    const { useCache = true, maxRetries = 3, onProgress = null } = options;
 
     const results = [];
     const uncachedIds = [];
@@ -254,7 +247,7 @@ class UserService {
         try {
           user = await fetchUser(userId, {
             fields: options.fields,
-            includeDeleted: options.includeDeleted
+            includeDeleted: options.includeDeleted,
           });
 
           if (useCache && user) {
@@ -266,7 +259,7 @@ class UserService {
           if (retries === maxRetries) {
             console.error(`Failed to fetch user ${userId} after ${maxRetries} retries`);
           } else {
-            await new Promise(resolve => setTimeout(resolve, 1000 * retries));
+            await new Promise((resolve) => setTimeout(resolve, 1000 * retries));
           }
         }
       }
@@ -277,7 +270,7 @@ class UserService {
         onProgress({
           current: i + 1,
           total: uncachedIds.length,
-          percentage: Math.round(((i + 1) / uncachedIds.length) * 100)
+          percentage: Math.round(((i + 1) / uncachedIds.length) * 100),
         });
       }
     }
@@ -288,17 +281,14 @@ class UserService {
 
 // Usage
 const service = new UserService();
-const users = await service.fetchUsers(
-  ['id1', 'id2', 'id3', 'id4', 'id5'],
-  {
-    useCache: true,
-    maxRetries: 3,
-    fields: ['email', 'profile.name'],
-    onProgress: (progress) => {
-      console.log(`Fetching users: ${progress.percentage}% complete`);
-    }
-  }
-);
+const users = await service.fetchUsers(['id1', 'id2', 'id3', 'id4', 'id5'], {
+  useCache: true,
+  maxRetries: 3,
+  fields: ['email', 'profile.name'],
+  onProgress: (progress) => {
+    console.log(`Fetching users: ${progress.percentage}% complete`);
+  },
+});
 
 console.log(`Fetched ${users.length} users`);
 // Output:
@@ -311,6 +301,7 @@ console.log(`Fetched ${users.length} users`);
 ```
 
 **Guidelines:**
+
 - Shows architectural pattern
 - Combines multiple features
 - Demonstrates best practices
@@ -364,7 +355,7 @@ const timeoutId = setTimeout(() => controller.abort(), 5000);
 
 try {
   const user = await fetchUser('507f1f77bcf86cd799439011', {
-    signal: controller.signal
+    signal: controller.signal,
   });
   clearTimeout(timeoutId);
   console.log('User fetched:', user.email);
@@ -380,6 +371,7 @@ try {
 Show what each example produces:
 
 **Good - Shows actual output:**
+
 ```javascript
 const user = await fetchUser('507f...');
 console.log(user.email);
@@ -387,6 +379,7 @@ console.log(user.email);
 ```
 
 **Better - Shows output structure:**
+
 ```javascript
 const user = await fetchUser('507f...');
 console.log(JSON.stringify(user, null, 2));
@@ -410,7 +403,7 @@ Clarify non-obvious code:
 ```javascript
 // Fetch user with field selection to minimize data transfer
 const user = await fetchUser(userId, {
-  fields: ['email', 'profile.name']  // Only fetch needed fields
+  fields: ['email', 'profile.name'], // Only fetch needed fields
 });
 
 // Cache result for 5 minutes to reduce database load
@@ -421,7 +414,8 @@ const userName = user?.profile?.name ?? 'Unknown User';
 ```
 
 **Guidelines:**
-- Explain *why*, not *what* (code shows what)
+
+- Explain _why_, not _what_ (code shows what)
 - Clarify performance implications
 - Note security considerations
 - Explain non-standard patterns
@@ -431,6 +425,7 @@ const userName = user?.profile?.name ?? 'Unknown User';
 Test all examples:
 
 **Checklist:**
+
 - [ ] Example can run without modification
 - [ ] All required imports/dependencies included
 - [ ] No undefined variables
@@ -451,10 +446,9 @@ async function example() {
 
     // With options
     const userWithFields = await fetchUser('507f1f77bcf86cd799439011', {
-      fields: ['email', 'profile.name']
+      fields: ['email', 'profile.name'],
     });
     console.log('User name:', userWithFields.profile.name);
-
   } catch (error) {
     console.error('Error:', error.message);
   }
@@ -528,6 +522,7 @@ Organize examples with clear headers and context:
 ### JavaScript/TypeScript
 
 **Include:**
+
 - Async/await usage
 - Promise chaining alternative
 - Error handling (try/catch)
@@ -546,6 +541,7 @@ fetchUser('507f...')
 ### Python
 
 **Include:**
+
 - Type hints
 - Context managers where relevant
 - Exception handling
@@ -564,6 +560,7 @@ if user:
 ### Ruby
 
 **Include:**
+
 - Block syntax
 - Symbol vs string keys
 - Idiomatic Ruby patterns
@@ -582,6 +579,7 @@ puts user.email if user
 ### Go
 
 **Include:**
+
 - Error handling pattern
 - Struct initialization
 - Defer statements
@@ -602,36 +600,42 @@ fmt.Printf("Email: %s\n", user.Email)
 ## Common Pitfalls to Avoid
 
 **❌ Examples that can't run:**
+
 ```javascript
-const user = fetchUser(userId);  // Where is userId defined?
+const user = fetchUser(userId); // Where is userId defined?
 ```
 
 ✅ **Better:**
+
 ```javascript
 const user = await fetchUser('507f1f77bcf86cd799439011');
 ```
 
 **❌ No context or explanation:**
+
 ```javascript
 const user = await fetchUser(id, { fields: ['a', 'b'], cache: true });
 ```
 
 ✅ **Better:**
+
 ```javascript
 // Fetch only email and name fields to reduce data transfer
 const user = await fetchUser('507f1f77bcf86cd799439011', {
   fields: ['email', 'profile.name'],
-  cache: true  // Cache for 5 minutes
+  cache: true, // Cache for 5 minutes
 });
 ```
 
 **❌ No expected output:**
+
 ```javascript
 const user = await fetchUser('507f...');
 console.log(user);
 ```
 
 ✅ **Better:**
+
 ```javascript
 const user = await fetchUser('507f...');
 console.log(user.email);
@@ -639,11 +643,13 @@ console.log(user.email);
 ```
 
 **❌ Mixing multiple concepts:**
+
 ```javascript
 // Confusing example mixing validation, caching, and batch operations
 ```
 
 ✅ **Better:**
+
 ```javascript
 // Example 1: Validation
 // Example 2: Caching
@@ -657,6 +663,7 @@ console.log(user.email);
 **Function:** `apiClient.get(endpoint, options)`
 
 **Basic:**
+
 ```javascript
 // Basic usage: Fetch users list
 const response = await apiClient.get('/users');
@@ -665,17 +672,18 @@ console.log(response.data);
 ```
 
 **Intermediate:**
+
 ```javascript
 // Real-world usage: Fetch with query parameters and headers
 const response = await apiClient.get('/users', {
   params: {
     page: 1,
     limit: 10,
-    role: 'admin'
+    role: 'admin',
   },
   headers: {
-    'Authorization': `Bearer ${token}`
-  }
+    Authorization: `Bearer ${token}`,
+  },
 });
 
 console.log(`Fetched ${response.data.length} admin users`);
@@ -683,6 +691,7 @@ console.log(`Fetched ${response.data.length} admin users`);
 ```
 
 **Advanced:**
+
 ```javascript
 // Advanced usage: Pagination with automatic retry and caching
 class UserFetcher {
@@ -692,15 +701,15 @@ class UserFetcher {
     let hasMore = true;
 
     const fetchOptions = {
-      headers: { 'Authorization': `Bearer ${options.token}` },
+      headers: { Authorization: `Bearer ${options.token}` },
       retry: {
         attempts: 3,
-        delay: 1000
+        delay: 1000,
       },
       cache: {
         enabled: true,
-        ttl: 300
-      }
+        ttl: 300,
+      },
     };
 
     while (hasMore) {
@@ -710,8 +719,8 @@ class UserFetcher {
           params: {
             page,
             limit: options.pageSize || 50,
-            ...options.filters
-          }
+            ...options.filters,
+          },
         });
 
         users.push(...response.data);
@@ -723,7 +732,6 @@ class UserFetcher {
         if (options.onProgress) {
           options.onProgress({ page, total: users.length });
         }
-
       } catch (error) {
         console.error(`Failed on page ${page}:`, error.message);
 
@@ -749,13 +757,14 @@ const allUsers = await fetcher.fetchAllUsers({
   continueOnError: true,
   onProgress: ({ page, total }) => {
     console.log(`Fetched page ${page}, total users: ${total}`);
-  }
+  },
 });
 
 console.log(`Total users fetched: ${allUsers.length}`);
 ```
 
 **Edge Cases:**
+
 ```javascript
 // Edge case: Handle 404 Not Found
 try {
@@ -778,7 +787,7 @@ try {
 
 // Edge case: Timeout
 const response = await apiClient.get('/users', {
-  timeout: 5000  // 5 second timeout
+  timeout: 5000, // 5 second timeout
 });
 ```
 

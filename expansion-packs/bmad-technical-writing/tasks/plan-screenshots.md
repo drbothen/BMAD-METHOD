@@ -5,24 +5,13 @@
 ---
 
 task:
-  id: plan-screenshots
-  name: Plan Screenshots
-  description: Create a comprehensive plan for screenshots including what to capture, when, and how to annotate
-  persona_default: screenshot-specialist
-  inputs:
-    - chapter-outline (outline or content of chapter/section needing screenshots)
-    - ui-components (optional: list of UI elements to demonstrate)
-    - target-format (optional: book, documentation, tutorial - affects screenshot style)
-  steps:
-    - Review chapter content and learning objectives
-    - Identify UI states and workflows to capture
-    - Define screenshot sequence and narrative flow
-    - Specify annotation requirements for each screenshot
-    - Plan before/after comparisons where applicable
-    - Determine optimal resolution and format
-    - Create screenshot checklist with specifications
-    - Document capture instructions
-  output: Screenshot plan with detailed specifications and capture checklist
+id: plan-screenshots
+name: Plan Screenshots
+description: Create a comprehensive plan for screenshots including what to capture, when, and how to annotate
+persona_default: screenshot-specialist
+inputs: - chapter-outline (outline or content of chapter/section needing screenshots) - ui-components (optional: list of UI elements to demonstrate) - target-format (optional: book, documentation, tutorial - affects screenshot style)
+steps: - Review chapter content and learning objectives - Identify UI states and workflows to capture - Define screenshot sequence and narrative flow - Specify annotation requirements for each screenshot - Plan before/after comparisons where applicable - Determine optimal resolution and format - Create screenshot checklist with specifications - Document capture instructions
+output: Screenshot plan with detailed specifications and capture checklist
 
 ---
 
@@ -44,24 +33,28 @@ Before starting this task:
 ### 1. Screenshot Purpose Categories
 
 **Instructional Screenshots:**
+
 - Show step-by-step procedures
 - Highlight specific UI elements
 - Demonstrate workflows
 - One screenshot per major step
 
 **Reference Screenshots:**
+
 - Show complete interfaces
 - Provide visual overview
 - Document all available options
 - Wider, overview captures
 
 **Comparison Screenshots:**
+
 - Before/after states
 - Different configuration options
 - Version differences
 - Side-by-side or sequential
 
 **Error/Warning Screenshots:**
+
 - Show error messages
 - Document edge cases
 - Demonstrate problem scenarios
@@ -78,16 +71,19 @@ Before starting this task:
 ### 3. Quality Standards
 
 **Resolution:**
+
 - Web: 1200-1600px width (Retina-ready)
 - Print: 300 DPI at final size
 - UI mockups: Native resolution
 
 **Format:**
+
 - PNG: UI screenshots, diagrams
 - JPEG: Photos, complex images (smaller file size)
 - SVG: Diagrams, illustrations (scalable)
 
 **Consistency:**
+
 - Same window size throughout chapter
 - Consistent UI theme (light/dark)
 - Same zoom level for similar captures
@@ -100,10 +96,12 @@ Before starting this task:
 Read through chapter and extract:
 
 **Key learning objectives:**
+
 ```markdown
 ## Chapter 3: Building React Components
 
 Learning Objectives:
+
 - Understand functional vs class components
 - Create reusable button component
 - Implement component props
@@ -112,6 +110,7 @@ Learning Objectives:
 ```
 
 **Concepts requiring visual demonstration:**
+
 - Component file structure ✓
 - JSX syntax highlighting ✓
 - Browser rendering result ✓
@@ -125,6 +124,7 @@ List all UI states and workflows to capture:
 **Example: React Component Tutorial**
 
 **UI States to Capture:**
+
 1. Empty project structure (before)
 2. Component file created (code editor)
 3. Component imported in App.js (code editor)
@@ -135,6 +135,7 @@ List all UI states and workflows to capture:
 8. Button in different states (hover, active, disabled)
 
 **Workflows to Demonstrate:**
+
 - Creating new component file (3 screenshots)
 - Adding props to component (2 screenshots)
 - Styling component (3 screenshots)
@@ -152,6 +153,7 @@ Create ordered list matching chapter narrative:
 ### Section 3.1: Component Basics (4 screenshots)
 
 **Screenshot 3.1.1: Empty Component File**
+
 - Capture: VS Code with empty `Button.jsx` file
 - Highlight: File name in sidebar, empty editor
 - Annotation: "Create new Button.jsx file in src/components/"
@@ -159,6 +161,7 @@ Create ordered list matching chapter narrative:
 - Format: PNG
 
 **Screenshot 3.1.2: Basic Component Code**
+
 - Capture: VS Code with basic component code
 - Highlight: Function declaration, return statement, export
 - Annotation: Numbered callouts
@@ -169,6 +172,7 @@ Create ordered list matching chapter narrative:
 - Format: PNG
 
 **Screenshot 3.1.3: Component Import**
+
 - Capture: App.js showing import statement
 - Highlight: Import line, component usage in JSX
 - Annotation: Arrow showing import → usage connection
@@ -176,6 +180,7 @@ Create ordered list matching chapter narrative:
 - Format: PNG
 
 **Screenshot 3.1.4: Rendered Button**
+
 - Capture: Browser showing rendered button
 - Highlight: Button element in DOM inspector
 - Annotation: "Basic button rendered in browser"
@@ -185,6 +190,7 @@ Create ordered list matching chapter narrative:
 ### Section 3.2: Adding Props (3 screenshots)
 
 **Screenshot 3.2.1: Props Destructuring**
+
 - Capture: Button.jsx with props parameter
 - Highlight: Destructuring syntax
 - Annotation: "Props allow customization"
@@ -192,6 +198,7 @@ Create ordered list matching chapter narrative:
 - Format: PNG
 
 **Screenshot 3.2.2: Passing Props**
+
 - Capture: App.js passing props to Button
 - Highlight: text and variant props
 - Annotation: "Pass props from parent component"
@@ -199,6 +206,7 @@ Create ordered list matching chapter narrative:
 - Format: PNG
 
 **Screenshot 3.2.3: Dynamic Rendering**
+
 - Capture: Browser with multiple styled buttons
 - Highlight: Primary, secondary, danger variants
 - Annotation: "Props change button appearance"
@@ -215,21 +223,25 @@ Plan what annotations each screenshot needs:
 **Annotation Types:**
 
 **Numbered Callouts:**
+
 - Use when explaining multiple elements
 - Number in reading order (top-left to bottom-right)
 - Keep numbers large and clear
 
 **Arrows:**
+
 - Use to show relationships or flow
 - Point from label to target
 - Use contrasting colors
 
 **Highlights/Boxes:**
+
 - Use to draw attention to specific areas
 - Use colored rectangles or rounded boxes
 - Semi-transparent for overlays
 
 **Text Labels:**
+
 - Use for simple identification
 - Keep concise (3-5 words max)
 - Place near target without obscuring
@@ -240,15 +252,18 @@ Plan what annotations each screenshot needs:
 **Screenshot 3.1.2 Annotations:**
 
 Numbered callouts:
+
 1. Point to `function Button()` → "Function component declaration"
 2. Point to `return (...)` → "JSX return statement"
 3. Point to `export default Button` → "Export for use in other files"
 
 Highlight:
+
 - Yellow box around entire function body
 - Label: "Component definition"
 
 Text box:
+
 - Top-right corner
 - "File: src/components/Button.jsx"
 ```
@@ -263,11 +278,13 @@ Identify transformations to demonstrate:
 **Before/After: Button Styling**
 
 Screenshot 3.3A (BEFORE):
+
 - Unstyled button with default browser styles
 - Label: "Before: Default browser button"
 - Dimensions: 600px width
 
 Screenshot 3.3B (AFTER):
+
 - Styled button with custom CSS
 - Label: "After: Custom styled button"
 - Dimensions: 600px width
@@ -296,6 +313,7 @@ Specify technical requirements:
 **Resolution Calculation:**
 
 **Print books:**
+
 ```
 Final printed width: 5 inches
 Print DPI requirement: 300 DPI
@@ -304,6 +322,7 @@ Capture at: 1800px (120% for safety)
 ```
 
 **Web documentation:**
+
 ```
 Content area width: 800px
 Retina display (2×): 1600px
@@ -311,6 +330,7 @@ Capture at: 1600-2000px
 ```
 
 **Both print and web:**
+
 ```
 Capture at highest requirement: 1800-2000px
 Optimize for web: Resize to 1600px
@@ -320,13 +340,13 @@ Keep original for print
 **Format Selection:**
 
 ```markdown
-| Screenshot Type | Format | Reason |
-|-----------------|--------|--------|
-| Code editor | PNG | Text clarity, transparency |
-| Browser UI | PNG | Sharp text and icons |
-| Full webpage | JPEG | Smaller file size for large images |
-| Diagrams | SVG or PNG | Scalable or high-quality raster |
-| Photos | JPEG | Better compression |
+| Screenshot Type | Format     | Reason                             |
+| --------------- | ---------- | ---------------------------------- |
+| Code editor     | PNG        | Text clarity, transparency         |
+| Browser UI      | PNG        | Sharp text and icons               |
+| Full webpage    | JPEG       | Smaller file size for large images |
+| Diagrams        | SVG or PNG | Scalable or high-quality raster    |
+| Photos          | JPEG       | Better compression                 |
 ```
 
 ### 7. Create Screenshot Checklist
@@ -337,6 +357,7 @@ Generate comprehensive checklist:
 ## Screenshot Capture Checklist: Chapter 3
 
 ### Pre-Capture Setup
+
 - [ ] Set VS Code theme to "Light+" (consistency)
 - [ ] Set browser zoom to 100%
 - [ ] Clear browser cache/cookies (clean state)
@@ -347,6 +368,7 @@ Generate comprehensive checklist:
 - [ ] Use consistent user profile ("John Doe", "john@example.com")
 
 ### Section 3.1: Component Basics
+
 - [ ] Screenshot 3.1.1: Empty Button.jsx file
   - File visible in sidebar
   - Editor shows empty file with cursor
@@ -365,6 +387,7 @@ Generate comprehensive checklist:
   - No console errors
 
 ### Section 3.2: Adding Props
+
 - [ ] Screenshot 3.2.1: Props destructuring in code
   - Syntax highlighting clear
   - Type hints visible (TypeScript)
@@ -379,6 +402,7 @@ Generate comprehensive checklist:
 [Continue for all sections...]
 
 ### Post-Capture Quality Check
+
 - [ ] All screenshots captured at specified resolution
 - [ ] No personal/sensitive information visible
 - [ ] Consistent window size across screenshots
@@ -392,12 +416,13 @@ Generate comprehensive checklist:
 
 Provide step-by-step instructions for capturing:
 
-```markdown
+````markdown
 ## Capture Instructions: Chapter 3
 
 ### Setup Environment
 
 1. **Code Editor Setup:**
+
    ```bash
    # Clone sample project
    git clone https://github.com/example/react-tutorial.git
@@ -410,6 +435,7 @@ Provide step-by-step instructions for capturing:
    # Start development server
    npm start
    ```
+````
 
 2. **VS Code Configuration:**
    - Theme: "Light+ (default light)"
@@ -460,23 +486,27 @@ Provide step-by-step instructions for capturing:
 ### Special Captures
 
 **Hover States:**
+
 - Activate hover by positioning cursor
 - Use screenshot tool with timer (5 sec delay)
 - Keep cursor visible in screenshot
 - Filename: `*-hover.png`
 
 **Error States:**
+
 - Trigger error condition
 - Ensure error message fully visible
 - Capture console output if relevant
 - Filename: `*-error.png`
 
 **Responsive Layouts:**
+
 - Set browser to specific width (375px mobile, 768px tablet)
 - Use Chrome DevTools device emulation
 - Show device frame if helpful
 - Filename: `*-mobile.png` or `*-tablet.png`
-```
+
+````
 
 ## Success Criteria
 
@@ -547,46 +577,57 @@ Screenshot plan is complete when:
 Example: `ch3-2-1-props-destructuring.png`
 
 ### Folder Structure
-```
+````
+
 screenshots/
 ├── chapter-03/
-│   ├── raw/          # Original captures
-│   ├── annotated/    # With annotations
-│   └── optimized/    # Final web-optimized
+│ ├── raw/ # Original captures
+│ ├── annotated/ # With annotations
+│ └── optimized/ # Final web-optimized
+
 ```
+
 ```
 
 ## Common Pitfalls to Avoid
 
 **❌ Capturing screenshots after writing chapter:**
+
 - Results in missing shots, inconsistent style
 - Requires re-setting up environment
 
 ✅ **Plan before capturing:**
+
 - Complete plan ensures nothing missed
 - Maintains consistency
 
 **❌ Inconsistent window sizes:**
+
 - Screenshots look unprofessional
 - Difficult to format in book
 
 ✅ **Standardize capture dimensions:**
+
 - Same window size for all code editor shots
 - Same browser size for all UI shots
 
 **❌ No annotation planning:**
+
 - Inconsistent annotation styles
 - Missed important callouts
 
 ✅ **Specify annotations in plan:**
+
 - Consistent visual language
 - Clear communication
 
 **❌ Capturing with real user data:**
+
 - Privacy concerns
 - Unprofessional appearance
 
 ✅ **Use test data:**
+
 - "John Doe", "jane.smith@example.com"
 - Placeholder images
 
@@ -597,6 +638,7 @@ screenshots/
 **Chapter:** "Building a Todo App with React"
 
 **Screenshot Plan Summary:**
+
 - Total screenshots: 18
 - Breakdown: 12 code editor, 6 browser UI
 - Estimated time: 3 hours
@@ -616,6 +658,7 @@ screenshots/
 10. Chrome DevTools: React component tree
 
 **Before/After Comparisons:**
+
 - Unstyled vs styled todo list (2 screenshots)
 - Empty state vs populated state (2 screenshots)
 
@@ -624,6 +667,7 @@ screenshots/
 **Chapter:** "REST API Endpoints"
 
 **Screenshot Plan Summary:**
+
 - Total screenshots: 12
 - Breakdown: 8 API tool, 4 code samples
 - Tool: Postman
@@ -641,6 +685,7 @@ screenshots/
 8. Code: Middleware chain
 
 **Annotations:**
+
 - Request method highlighted in color
 - Response status code in large callout
 - Authentication token redacted

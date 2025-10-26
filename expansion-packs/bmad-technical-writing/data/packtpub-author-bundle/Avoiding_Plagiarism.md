@@ -123,11 +123,11 @@ original.
 technological measures that legally restrict others from doing anything
 the license permits.
 
-> *As a rule of thumb, we should always attribute the source where we
+> _As a rule of thumb, we should always attribute the source where we
 > found the image even when the license doesn't require us to: it's just
-> good practice.*
+> good practice._
 
-*As a rule of thumb, we should always attribute the source where we*
+_As a rule of thumb, we should always attribute the source where we_
 found
 
 the image even when the license doesn't require us to: it's just good
@@ -167,8 +167,8 @@ modify, even commercially" (it's imperative that you click the "even
 commercially" option as this will change the permissions of certain
 images).
 
-> *Hopefully, using all of the above methods, you will be able to find
-> plenty of useful free images that can add real value to your book.*
+> _Hopefully, using all of the above methods, you will be able to find
+> plenty of useful free images that can add real value to your book._
 
 Self-plagiarism
 

@@ -5,21 +5,13 @@
 ---
 
 checklist:
-  id: generative-ai-compliance
-  name: AI Detection Avoidance Checklist
-  description: Validates manuscript content to ensure it does not trigger AI detection patterns and maintains human authenticity
-  source: Generative AI Author Guidelines (PacktPub Author Bundle)
-  persona_default: technical-editor
-  applies_to:
-    - All PacktPub manuscripts
-    - Chapters that may contain AI-assisted content
-    - Final manuscript review
-  sections:
-    - Content Quality
-    - Authenticity and Voice
-    - Technical Accuracy
-    - Writing Style
-    - Reader Value
+id: generative-ai-compliance
+name: AI Detection Avoidance Checklist
+description: Validates manuscript content to ensure it does not trigger AI detection patterns and maintains human authenticity
+source: Generative AI Author Guidelines (PacktPub Author Bundle)
+persona_default: technical-editor
+applies_to: - All PacktPub manuscripts - Chapters that may contain AI-assisted content - Final manuscript review
+sections: - Content Quality - Authenticity and Voice - Technical Accuracy - Writing Style - Reader Value
 
 ---
 
@@ -47,6 +39,7 @@ This checklist validates manuscript content to ensure it does not trigger AI det
 Validation checks to ensure content meets quality standards regardless of how it was created.
 
 #### 1.1 Accuracy and Factual Integrity
+
 - [ ] **All technical information verified for accuracy**
   - No hallucinations or invented facts
   - No generic examples without citations
@@ -64,6 +57,7 @@ Validation checks to ensure content meets quality standards regardless of how it
   - Sources for all external information
 
 #### 1.2 Depth and Value
+
 - [ ] **Content provides genuine insight beyond surface level**
   - Not just definitions or basic explanations
   - Includes expert analysis and interpretation
@@ -87,6 +81,7 @@ Validation checks to ensure content meets quality standards regardless of how it
 Validation checks for authentic, human-written content with your unique voice.
 
 #### 2.1 Personal Voice and Experience
+
 - [ ] **Your unique expertise and insights are evident**
   - Real-life experiences shared
   - Personal anecdotes included
@@ -106,6 +101,7 @@ Validation checks for authentic, human-written content with your unique voice.
   - Personal insights and opinions
 
 #### 2.2 Consistency
+
 - [ ] **Style and approach consistent throughout manuscript**
   - No sudden shifts in tone
   - Consistent terminology usage
@@ -124,6 +120,7 @@ Validation checks for authentic, human-written content with your unique voice.
 Specific checks for technical content quality.
 
 #### 3.1 Up-to-Date Information
+
 - [ ] **All technology versions current and specified**
   - Framework versions documented
   - Tool versions specified
@@ -135,6 +132,7 @@ Specific checks for technical content quality.
   - Includes recent developments
 
 #### 3.2 Specificity
+
 - [ ] **Technical details are precise and specific**
   - Exact configuration steps
   - Specific parameter values
@@ -154,6 +152,7 @@ Specific checks for technical content quality.
 Detection of AI-like writing patterns that readers find objectionable.
 
 #### 4.1 Word Choice and Phrasing
+
 - [ ] **No overuse of "AI words"**
   - Check for excessive: sophisticated, delve, leverage, robust, seamless, groundbreaking, revolutionary, cutting-edge
   - Avoid: "profound efficacy", "empirical realm", "compellingly exemplified"
@@ -171,6 +170,7 @@ Detection of AI-like writing patterns that readers find objectionable.
   - Clear over clever
 
 #### 4.2 Metaphors and Analogies
+
 - [ ] **Metaphors used sparingly and appropriately**
   - Maximum 1-2 metaphors per section
   - Each metaphor adds clarity, not confusion
@@ -182,6 +182,7 @@ Detection of AI-like writing patterns that readers find objectionable.
   - Not forced or nonsensical
 
 #### 4.3 Sentence Structure
+
 - [ ] **Varied sentence length and structure**
   - Mix of short and long sentences
   - Not all sentences follow same pattern
@@ -199,6 +200,7 @@ Detection of AI-like writing patterns that readers find objectionable.
 Focus on delivering maximum value to the reader.
 
 #### 5.1 Engagement
+
 - [ ] **Content is engaging and interesting**
   - Not dry or artificial
   - Maintains reader interest
@@ -210,6 +212,7 @@ Focus on delivering maximum value to the reader.
   - Can implement immediately
 
 #### 5.2 Structure and Organization
+
 - [ ] **No overly rigid structure**
   - Not every chapter follows exact same pattern
   - Natural flow based on content
@@ -221,6 +224,7 @@ Focus on delivering maximum value to the reader.
   - Each section advances understanding
 
 #### 5.3 Reader Self-Check
+
 - [ ] **Ask yourself: "If I bought this book, would I be satisfied?"**
   - Does it provide real value?
   - Is it worth the price?
@@ -238,6 +242,7 @@ Focus on delivering maximum value to the reader.
 If you answer YES to multiple items below, content likely needs revision:
 
 ### Content Red Flags
+
 - [ ] Generic examples without specific details or citations
 - [ ] Repetitive content across different sections
 - [ ] Filler paragraphs that add no real knowledge
@@ -245,6 +250,7 @@ If you answer YES to multiple items below, content likely needs revision:
 - [ ] Information that feels dated or uncertain
 
 ### Style Red Flags
+
 - [ ] Overly formal or stilted language
 - [ ] Heavy use of "sophisticated", "delve", "leverage", "robust"
 - [ ] Multiple metaphors in single paragraph
@@ -254,6 +260,7 @@ If you answer YES to multiple items below, content likely needs revision:
 - [ ] Impersonal tone throughout
 
 ### Structure Red Flags
+
 - [ ] Rigid, repetitive chapter structure
 - [ ] Identical opening patterns for sections
 - [ ] No personal anecdotes or experiences
@@ -276,25 +283,31 @@ When this checklist is executed, generate a report:
 ## Content Quality Assessment
 
 ### Accuracy: [PASS/FAIL]
+
 - [Results]
 
 ### Depth and Value: [PASS/FAIL]
+
 - [Results]
 
 ## Authenticity Assessment
 
 ### Personal Voice: [PASS/FAIL]
+
 - [Results]
 
 ### Consistency: [PASS/FAIL]
+
 - [Results]
 
 ## Style Assessment
 
 ### Word Choice: [PASS/FAIL]
+
 - Issues found: [List]
 
 ### Writing Style: [PASS/FAIL]
+
 - Red flags: [List]
 
 ## Overall Assessment
@@ -317,6 +330,7 @@ When this checklist is executed, generate a report:
 ## Integration
 
 This checklist is used by:
+
 - **technical-editor** agent - Content quality review
 - **manuscript-formatter** - Pre-submission validation
 - **format-for-packtpub.md** task - Part of complete workflow
@@ -334,12 +348,14 @@ This checklist is used by:
 ### Why This Matters
 
 **From real reader reviews**:
+
 - Readers NOTICE AI-generated content
 - Readers COMPLAIN about AI-like writing
 - Reviews mention: repetitive, generic, boring, unhelpful
 - Negative reviews impact sales and author reputation
 
 **Key Insight**:
+
 - Readers expect authentic human expertise and unique insights
 - AI patterns trigger negative reactions even if unintentional
 - Quality and authenticity are critical to book success
@@ -347,6 +363,7 @@ This checklist is used by:
 ### Best Practice
 
 **Content Creation Guidelines**:
+
 1. Lead with your real expertise and experience
 2. Use specific, concrete examples from your work
 3. Write in your natural voice and style
@@ -354,6 +371,7 @@ This checklist is used by:
 5. Avoid overused AI vocabulary
 
 **Content Revision Process**:
+
 1. Verify every technical fact for accuracy
 2. Replace generic examples with specific ones
 3. Add personal insights and real-world context

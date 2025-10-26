@@ -5,26 +5,13 @@
 ---
 
 task:
-  id: publish-repo
-  name: Publish Repository
-  description: Publish code repository to GitHub/GitLab with proper configuration and documentation
-  persona_default: sample-code-maintainer
-  inputs:
-    - repo-path (local path to repository)
-    - platform (github, gitlab, bitbucket)
-    - visibility (public, private)
-  steps:
-    - Initialize Git repository if not already initialized
-    - Create .gitignore file
-    - Make initial commit
-    - Create remote repository on platform (GitHub/GitLab)
-    - Add remote origin
-    - Push to remote
-    - Configure repository settings (description, topics, etc.)
-    - Add CONTRIBUTING.md for collaboration guidelines
-    - Enable issue templates (optional)
-    - Enable discussions (optional)
-  output: Published repository URL with proper configuration
+id: publish-repo
+name: Publish Repository
+description: Publish code repository to GitHub/GitLab with proper configuration and documentation
+persona_default: sample-code-maintainer
+inputs: - repo-path (local path to repository) - platform (github, gitlab, bitbucket) - visibility (public, private)
+steps: - Initialize Git repository if not already initialized - Create .gitignore file - Make initial commit - Create remote repository on platform (GitHub/GitLab) - Add remote origin - Push to remote - Configure repository settings (description, topics, etc.) - Add CONTRIBUTING.md for collaboration guidelines - Enable issue templates (optional) - Enable discussions (optional)
+output: Published repository URL with proper configuration
 
 ---
 
@@ -35,12 +22,14 @@ Publish code repository to hosting platform making it accessible to readers and 
 ## Workflow Steps
 
 ### 1. Initialize Git Repository
+
 ```bash
 cd /path/to/your/code
 git init
 ```
 
 ### 2. Create .gitignore
+
 ```bash
 # For Node.js
 cat > .gitignore << 'IGNORE'
@@ -55,6 +44,7 @@ IGNORE
 ```
 
 ### 3. Make Initial Commit
+
 ```bash
 git add .
 git commit -m "Initial commit: book code samples"
@@ -63,6 +53,7 @@ git commit -m "Initial commit: book code samples"
 ### 4. Create Remote Repository
 
 **GitHub (via CLI):**
+
 ```bash
 # Install GitHub CLI if needed
 brew install gh
@@ -78,6 +69,7 @@ gh repo create my-book-code --private --source=. --remote=origin --push
 ```
 
 **GitHub (via web):**
+
 1. Go to https://github.com/new
 2. Enter repository name
 3. Choose public/private
@@ -85,6 +77,7 @@ gh repo create my-book-code --private --source=. --remote=origin --push
 5. Click "Create repository"
 
 ### 5. Add Remote and Push
+
 ```bash
 # Add remote (if not done via gh CLI)
 git remote add origin https://github.com/username/my-book-code.git
@@ -97,6 +90,7 @@ git push -u origin main
 ### 6. Configure Repository Settings
 
 **Description and Topics:**
+
 ```bash
 # Via GitHub CLI
 gh repo edit --description "Code samples for My Awesome Book" \
@@ -106,12 +100,14 @@ gh repo edit --description "Code samples for My Awesome Book" \
 ```
 
 **Via web:**
+
 - Go to repository settings
 - Add description: "Code samples for My Awesome Book"
 - Add topics: javascript, tutorial, book-code, react
 - Add website URL (book link if available)
 
 ### 7. Add CONTRIBUTING.md
+
 ```markdown
 # Contributing
 
@@ -148,6 +144,7 @@ Open an issue for questions or discussions.
 ### 8. Enable Issue Templates (Optional)
 
 Create `.github/ISSUE_TEMPLATE/bug_report.md`:
+
 ```markdown
 ---
 name: Bug Report
@@ -157,26 +154,32 @@ labels: bug
 ---
 
 ## Description
+
 A clear description of the bug.
 
 ## Steps to Reproduce
+
 1. Go to chapter X
 2. Run code sample Y
 3. See error
 
 ## Expected Behavior
+
 What you expected to happen.
 
 ## Actual Behavior
+
 What actually happened.
 
 ## Environment
+
 - OS: [e.g., macOS, Windows, Linux]
 - Node version: [e.g., 18.16.0]
 - npm version: [e.g., 9.5.1]
 ```
 
 ### 9. Add Repository Badges to README
+
 ```markdown
 # My Book Code Samples
 
@@ -189,6 +192,7 @@ Code samples for "My Awesome Book"...
 ```
 
 ### 10. Verify Publication
+
 ```bash
 # Check repository is accessible
 gh repo view username/my-book-code --web
@@ -198,6 +202,7 @@ open https://github.com/username/my-book-code
 ```
 
 ## Success Criteria
+
 - [ ] Repository initialized and committed
 - [ ] Remote repository created
 - [ ] Code pushed successfully
@@ -210,17 +215,21 @@ open https://github.com/username/my-book-code
 ## Post-Publication Tasks
 
 ### Link from Book
+
 Add repository URL to book:
+
 ```markdown
 **Code Samples:** https://github.com/username/my-book-code
 ```
 
 ### Announce to Readers
+
 - Tweet repository URL
 - Add to book website
 - Include in book introduction
 
 ### Monitor Repository
+
 - Watch for issues
 - Review pull requests
 - Keep examples updated
@@ -228,6 +237,7 @@ Add repository URL to book:
 ## Security Considerations
 
 **Before Publishing:**
+
 - [ ] No API keys or secrets committed
 - [ ] No passwords or tokens in code
 - [ ] .env files in .gitignore
@@ -235,6 +245,7 @@ Add repository URL to book:
 - [ ] Sample data only
 
 **If Secrets Leaked:**
+
 ```bash
 # Remove from history (use carefully)
 git filter-branch --force --index-filter \
@@ -246,4 +257,3 @@ git push origin --force --all
 
 # Better: Rotate leaked secrets immediately
 ```
-

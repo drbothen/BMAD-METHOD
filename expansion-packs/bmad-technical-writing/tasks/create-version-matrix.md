@@ -5,24 +5,13 @@
 ---
 
 task:
-  id: create-version-matrix
-  name: Create Version Matrix
-  description: Build a comprehensive version compatibility matrix showing which features work with which versions
-  persona_default: version-manager
-  inputs:
-    - technology (technology or library to analyze: node, python, react, etc.)
-    - version-range (versions to cover: e.g., "16-20" for Node 16 through 20)
-    - feature-list (optional: specific features to track)
-  steps:
-    - Research version release history and dates
-    - Identify all version-dependent features in book/code
-    - Map each feature to minimum required version
-    - Create compatibility matrix table
-    - Add migration notes between major versions
-    - Document deprecated features per version
-    - Generate testing requirements per version
-    - Create visual timeline (optional Mermaid diagram)
-  output: Version compatibility matrix document with feature mapping and testing guide
+id: create-version-matrix
+name: Create Version Matrix
+description: Build a comprehensive version compatibility matrix showing which features work with which versions
+persona_default: version-manager
+inputs: - technology (technology or library to analyze: node, python, react, etc.) - version-range (versions to cover: e.g., "16-20" for Node 16 through 20) - feature-list (optional: specific features to track)
+steps: - Research version release history and dates - Identify all version-dependent features in book/code - Map each feature to minimum required version - Create compatibility matrix table - Add migration notes between major versions - Document deprecated features per version - Generate testing requirements per version - Create visual timeline (optional Mermaid diagram)
+output: Version compatibility matrix document with feature mapping and testing guide
 
 ---
 
@@ -48,12 +37,12 @@ Shows when versions were released and their support status:
 ```markdown
 ## Version Timeline
 
-| Version | Release Date | Status | End of Life |
-|---------|--------------|--------|-------------|
-| Node 16 | 2021-04-20 | Maintenance | 2023-09-11 |
-| Node 18 | 2022-04-19 | Active LTS | 2025-04-30 |
-| Node 20 | 2023-04-18 | Active LTS | 2026-04-30 |
-| Node 21 | 2023-10-17 | Current | 2024-06-01 |
+| Version | Release Date | Status      | End of Life |
+| ------- | ------------ | ----------- | ----------- |
+| Node 16 | 2021-04-20   | Maintenance | 2023-09-11  |
+| Node 18 | 2022-04-19   | Active LTS  | 2025-04-30  |
+| Node 20 | 2023-04-18   | Active LTS  | 2026-04-30  |
+| Node 21 | 2023-10-17   | Current     | 2024-06-01  |
 ```
 
 ### 2. Feature Compatibility Matrix
@@ -63,16 +52,17 @@ Maps features to minimum versions:
 ```markdown
 ## Feature Compatibility
 
-| Feature | Node 16 | Node 18 | Node 20 | Node 21 |
-|---------|---------|---------|---------|---------|
-| fetch API | ❌ | ✅ (18.0+) | ✅ | ✅ |
-| Test Runner | ❌ | ✅ (18.0+) | ✅ | ✅ |
-| Watch Mode | ❌ | ✅ (18.11+) | ✅ | ✅ |
-| --env-file | ❌ | ❌ | ✅ (20.6+) | ✅ |
-| Import Attributes | ❌ | ❌ | ✅ (20.10+) | ✅ |
+| Feature           | Node 16 | Node 18     | Node 20     | Node 21 |
+| ----------------- | ------- | ----------- | ----------- | ------- |
+| fetch API         | ❌      | ✅ (18.0+)  | ✅          | ✅      |
+| Test Runner       | ❌      | ✅ (18.0+)  | ✅          | ✅      |
+| Watch Mode        | ❌      | ✅ (18.11+) | ✅          | ✅      |
+| --env-file        | ❌      | ❌          | ✅ (20.6+)  | ✅      |
+| Import Attributes | ❌      | ❌          | ✅ (20.10+) | ✅      |
 ```
 
 Legend:
+
 - ✅ Available
 - ❌ Not available
 - ⚠️ Experimental/unstable
@@ -86,11 +76,13 @@ Documents incompatibilities between versions:
 ## Breaking Changes
 
 ### Node 16 → Node 18
+
 - OpenSSL 3.0 (may affect crypto code)
 - V8 engine updated (some syntax changes)
 - Minimum ICU version increased
 
 ### Node 18 → Node 20
+
 - Default DNS resolution order changed
 - Import assertions deprecated (use import attributes)
 - Some deprecated APIs removed
@@ -115,16 +107,19 @@ Node 16 → Node 18 → Node 20
 **Gather official information:**
 
 **Node.js example:**
+
 - Releases: https://nodejs.org/en/about/previous-releases
 - Changelog: https://github.com/nodejs/node/blob/main/CHANGELOG.md
 - LTS schedule: https://github.com/nodejs/release#release-schedule
 
 **Python example:**
+
 - PEPs: https://peps.python.org/
 - Release schedule: https://www.python.org/downloads/
 - Changelog: https://docs.python.org/3/whatsnew/
 
 **React example:**
+
 - Changelog: https://github.com/facebook/react/blob/main/CHANGELOG.md
 - Blog: https://react.dev/blog
 - Upgrade guides: https://react.dev/learn/upgrade-guide
@@ -134,14 +129,14 @@ Node 16 → Node 18 → Node 20
 ```markdown
 ## Version Research: Node.js 16-20
 
-| Version | Release Date | EOL Date | Status | LTS Start |
-|---------|--------------|----------|--------|-----------|
-| 16.x | 2021-04-20 | 2023-09-11 | EOL | 2021-10-26 |
-| 17.x | 2021-10-19 | 2022-06-01 | EOL | N/A (not LTS) |
-| 18.x | 2022-04-19 | 2025-04-30 | Active LTS | 2022-10-25 |
-| 19.x | 2022-10-18 | 2023-06-01 | EOL | N/A (not LTS) |
-| 20.x | 2023-04-18 | 2026-04-30 | Active LTS | 2023-10-24 |
-| 21.x | 2023-10-17 | 2024-06-01 | Current | N/A (not LTS) |
+| Version | Release Date | EOL Date   | Status     | LTS Start     |
+| ------- | ------------ | ---------- | ---------- | ------------- |
+| 16.x    | 2021-04-20   | 2023-09-11 | EOL        | 2021-10-26    |
+| 17.x    | 2021-10-19   | 2022-06-01 | EOL        | N/A (not LTS) |
+| 18.x    | 2022-04-19   | 2025-04-30 | Active LTS | 2022-10-25    |
+| 19.x    | 2022-10-18   | 2023-06-01 | EOL        | N/A (not LTS) |
+| 20.x    | 2023-04-18   | 2026-04-30 | Active LTS | 2023-10-24    |
+| 21.x    | 2023-10-17   | 2024-06-01 | Current    | N/A (not LTS) |
 ```
 
 ### 2. Identify Version-Dependent Features
@@ -154,30 +149,35 @@ Node 16 → Node 18 → Node 20
 ## Features Used in Book
 
 ### Native Fetch API
+
 - Introduced: Node 18.0.0
 - Stabilized: Node 18.0.0 (unflagged)
 - Chapter: Chapter 5 (HTTP Requests)
 - Code samples: 12 examples
 
 ### Test Runner Module
+
 - Introduced: Node 18.0.0 (experimental)
 - Stabilized: Node 20.0.0
 - Chapter: Chapter 9 (Testing)
 - Code samples: 8 examples
 
 ### Watch Mode
+
 - Introduced: Node 18.11.0
 - Flag: --watch
 - Chapter: Chapter 10 (Development Workflow)
 - Code samples: 3 examples
 
 ### .env File Support
+
 - Introduced: Node 20.6.0
 - Flag: --env-file
 - Chapter: Chapter 4 (Configuration)
 - Code samples: 5 examples
 
 ### Import Attributes
+
 - Introduced: Node 20.10.0 (experimental)
 - Syntax: import json from './data.json' with { type: 'json' }
 - Chapter: Chapter 3 (Modules)
@@ -191,16 +191,16 @@ Node 16 → Node 18 → Node 20
 ```markdown
 ## Feature Minimum Versions
 
-| Feature | Min Version | Status | Notes |
-|---------|-------------|--------|-------|
-| fetch() API | 18.0.0 | Stable | Replaces node-fetch |
-| test() function | 18.0.0 | Stable | Built-in test runner |
-| --watch flag | 18.11.0 | Stable | Auto-restart on changes |
-| --env-file flag | 20.6.0 | Stable | Load .env files natively |
-| Import attributes | 20.10.0 | Experimental | Replaces import assertions |
-| Synchronous import.meta.resolve() | 20.6.0 | Stable | Module resolution |
-| Array.fromAsync() | 20.0.0 | Stable | Async iterable to array |
-| Default resolveDns | 20.0.0 | Changed | Now verbatim (not ipv4first) |
+| Feature                           | Min Version | Status       | Notes                        |
+| --------------------------------- | ----------- | ------------ | ---------------------------- |
+| fetch() API                       | 18.0.0      | Stable       | Replaces node-fetch          |
+| test() function                   | 18.0.0      | Stable       | Built-in test runner         |
+| --watch flag                      | 18.11.0     | Stable       | Auto-restart on changes      |
+| --env-file flag                   | 20.6.0      | Stable       | Load .env files natively     |
+| Import attributes                 | 20.10.0     | Experimental | Replaces import assertions   |
+| Synchronous import.meta.resolve() | 20.6.0      | Stable       | Module resolution            |
+| Array.fromAsync()                 | 20.0.0      | Stable       | Async iterable to array      |
+| Default resolveDns                | 20.0.0      | Changed      | Now verbatim (not ipv4first) |
 ```
 
 ### 4. Create Compatibility Matrix
@@ -210,29 +210,29 @@ Node 16 → Node 18 → Node 20
 ```markdown
 ## Compatibility Matrix: Node.js Features
 
-| Feature | 16.x | 17.x | 18.0-18.10 | 18.11+ | 19.x | 20.0-20.5 | 20.6+ | 20.10+ | 21.x |
-|---------|------|------|------------|--------|------|-----------|-------|--------|------|
-| **HTTP & Network** |
-| fetch() API | ❌ | ✅* | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| WebSocket | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
-| **Testing** |
-| test() runner | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Coverage report | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Mocking | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| **Development** |
-| --watch mode | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| --env-file | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| **Modules** |
-| Import attributes | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅* | ✅ |
-| Top-level await | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Feature                 | 16.x | 17.x | 18.0-18.10 | 18.11+ | 19.x | 20.0-20.5 | 20.6+ | 20.10+ | 21.x |
+| ----------------------- | ---- | ---- | ---------- | ------ | ---- | --------- | ----- | ------ | ---- |
+| **HTTP & Network**      |
+| fetch() API             | ❌   | ✅\* | ✅         | ✅     | ✅   | ✅        | ✅    | ✅     | ✅   |
+| WebSocket               | ❌   | ❌   | ❌         | ❌     | ❌   | ❌        | ❌    | ✅     | ✅   |
+| **Testing**             |
+| test() runner           | ❌   | ❌   | ✅         | ✅     | ✅   | ✅        | ✅    | ✅     | ✅   |
+| Coverage report         | ❌   | ❌   | ❌         | ❌     | ✅   | ✅        | ✅    | ✅     | ✅   |
+| Mocking                 | ❌   | ❌   | ❌         | ❌     | ❌   | ❌        | ✅    | ✅     | ✅   |
+| **Development**         |
+| --watch mode            | ❌   | ❌   | ❌         | ✅     | ✅   | ✅        | ✅    | ✅     | ✅   |
+| --env-file              | ❌   | ❌   | ❌         | ❌     | ❌   | ❌        | ✅    | ✅     | ✅   |
+| **Modules**             |
+| Import attributes       | ❌   | ❌   | ❌         | ❌     | ❌   | ❌        | ❌    | ✅\*   | ✅   |
+| Top-level await         | ✅   | ✅   | ✅         | ✅     | ✅   | ✅        | ✅    | ✅     | ✅   |
 | **JavaScript Features** |
-| Array.at() | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Array.fromAsync() | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
-| Object.hasOwn() | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Array.at()              | ✅   | ✅   | ✅         | ✅     | ✅   | ✅        | ✅    | ✅     | ✅   |
+| Array.fromAsync()       | ❌   | ❌   | ❌         | ❌     | ❌   | ✅        | ✅    | ✅     | ✅   |
+| Object.hasOwn()         | ✅   | ✅   | ✅         | ✅     | ✅   | ✅        | ✅    | ✅     | ✅   |
 
 Legend:
 ✅ Stable and available
-✅* Experimental (use with caution)
+✅\* Experimental (use with caution)
 ❌ Not available
 ⚠️ Available but buggy
 🏁 Deprecated (avoid)
@@ -242,7 +242,7 @@ Legend:
 
 **Document upgrade considerations:**
 
-```markdown
+````markdown
 ## Migration Notes
 
 ### Migrating from Node 16 to Node 18
@@ -250,6 +250,7 @@ Legend:
 **Required Code Changes:**
 
 1. **Replace node-fetch with native fetch:**
+
    ```javascript
    // Node 16 (with node-fetch package)
    const fetch = require('node-fetch');
@@ -257,8 +258,10 @@ Legend:
    // Node 18+ (built-in)
    // No import needed, fetch is global
    ```
+````
 
 2. **Update test framework:**
+
    ```javascript
    // Node 16 (using Jest or Mocha)
    const { test, expect } = require('jest');
@@ -274,11 +277,13 @@ Legend:
    - Check legacy crypto code
 
 **Breaking Changes:**
+
 - DNS resolution order changed (may affect network code)
 - V8 updated to 10.1 (some edge cases in regex, proxies)
 - Minimum OpenSSL version: 3.0
 
 **Recommended Steps:**
+
 1. Update package.json: `"engines": { "node": ">=18.0.0" }`
 2. Run test suite
 3. Update CI/CD to Node 18
@@ -290,6 +295,7 @@ Legend:
 **New Features to Adopt:**
 
 1. **Native .env file support:**
+
    ```bash
    # Node 18 (requires dotenv package)
    node -r dotenv/config app.js
@@ -304,6 +310,7 @@ Legend:
    - Better watch mode
 
 3. **Import attributes:**
+
    ```javascript
    // Node 18 (import assertions - deprecated)
    import data from './data.json' assert { type: 'json' };
@@ -313,17 +320,20 @@ Legend:
    ```
 
 **Breaking Changes:**
+
 - Default DNS resolution: changed from `ipv4first` to `verbatim`
 - Import assertions syntax deprecated (use import attributes)
 - Some experimental APIs removed
 
 **Recommended Steps:**
+
 1. Update package.json: `"engines": { "node": ">=20.6.0" }`
 2. Replace dotenv with --env-file flag
 3. Update import assertions to import attributes
 4. Test DNS-dependent code
 5. Update CI/CD to Node 20
-```
+
+````
 
 ### 6. Document Deprecated Features
 
@@ -353,18 +363,19 @@ Legend:
 **Removed in 20.x:**
 - runtime deprecation warnings for old stream methods
 - Some experimental V8 flags
-```
+````
 
 ### 7. Generate Testing Requirements
 
 **Define testing strategy for version support:**
 
-```markdown
+````markdown
 ## Testing Requirements
 
 ### Minimum Version Testing
 
 **Required:** Test on minimum supported version (Node 18.0.0)
+
 - Ensures all features work on oldest version
 - Catches version-specific bugs early
 - CI/CD: Run full test suite on Node 18.0.0
@@ -372,6 +383,7 @@ Legend:
 ### LTS Version Testing
 
 **Required:** Test on all active LTS versions
+
 - Node 18.x (Active LTS)
 - Node 20.x (Active LTS)
 - CI/CD: Run tests on both LTS versions
@@ -379,6 +391,7 @@ Legend:
 ### Current Version Testing
 
 **Optional:** Test on current release (Node 21.x)
+
 - Catch future compatibility issues
 - Preview upcoming features
 - CI/CD: Run tests on Node 21.x (allow failures)
@@ -392,14 +405,17 @@ strategy:
     node-version: [18.0.0, 18.x, 20.x, 21.x]
     os: [ubuntu-latest, windows-latest, macos-latest]
 ```
+````
 
 ### Feature Flag Testing
 
 For experimental features:
+
 - Test with and without feature flags
 - Document flag requirements
 - Warn users about stability
-```
+
+````
 
 ### 8. Create Visual Timeline
 
@@ -419,7 +435,7 @@ gantt
     Node 19 (Current)    :2022-10-18, 2023-06-01
     Node 20 (LTS)        :2023-04-18, 2026-04-30
     Node 21 (Current)    :2023-10-17, 2024-06-01
-```
+````
 
 **Feature introduction timeline:**
 
@@ -438,7 +454,8 @@ timeline
              : Array.fromAsync()
              : Import Attributes (20.10)
 ```
-```
+
+````
 
 ## Success Criteria
 
@@ -501,36 +518,44 @@ Version matrix is complete when:
 - Release Schedule: [URL]
 - Migration Guide: [URL]
 - Breaking Changes: [URL]
-```
+````
 
 ## Common Pitfalls to Avoid
 
 **❌ Incomplete feature research:**
+
 - Missing features that readers depend on
 - Incorrect minimum version numbers
 
 ✅ **Verify against official sources:**
+
 - Cross-reference changelog
 - Test features on actual versions
 
 **❌ Confusing experimental vs stable:**
+
 - Recommending experimental features without warning
 
 ✅ **Clear stability indicators:**
-- Use legend: ✅ (stable), ✅* (experimental)
+
+- Use legend: ✅ (stable), ✅\* (experimental)
 - Document flag requirements
 
 **❌ Ignoring odd-numbered releases:**
+
 - Including Node 17, 19, 21 as recommended
 
 ✅ **Focus on LTS versions:**
+
 - Recommend even-numbered (LTS) releases
 - Note odd-numbered are short-lived
 
 **❌ Not testing migration path:**
+
 - Providing untested upgrade instructions
 
 ✅ **Test migrations:**
+
 - Verify upgrade steps on real project
 - Document actual issues encountered
 
@@ -541,14 +566,14 @@ Version matrix is complete when:
 ```markdown
 # Python 3.9-3.12 Compatibility Matrix
 
-| Feature | 3.9 | 3.10 | 3.11 | 3.12 |
-|---------|-----|------|------|------|
-| Structural Pattern Matching | ❌ | ✅ | ✅ | ✅ |
-| Union type operator (\|) | ❌ | ✅ | ✅ | ✅ |
-| tomllib (TOML parsing) | ❌ | ❌ | ✅ | ✅ |
-| f-string debugging (=) | ✅ | ✅ | ✅ | ✅ |
-| Type hinting generics | ❌ | ❌ | ❌ | ✅ (PEP 695) |
-| asyncio.TaskGroup | ❌ | ❌ | ✅ | ✅ |
+| Feature                     | 3.9 | 3.10 | 3.11 | 3.12         |
+| --------------------------- | --- | ---- | ---- | ------------ |
+| Structural Pattern Matching | ❌  | ✅   | ✅   | ✅           |
+| Union type operator (\|)    | ❌  | ✅   | ✅   | ✅           |
+| tomllib (TOML parsing)      | ❌  | ❌   | ✅   | ✅           |
+| f-string debugging (=)      | ✅  | ✅   | ✅   | ✅           |
+| Type hinting generics       | ❌  | ❌   | ❌   | ✅ (PEP 695) |
+| asyncio.TaskGroup           | ❌  | ❌   | ✅   | ✅           |
 
 **Recommendation:** Python 3.11+ for best performance (10-60% faster than 3.10)
 ```
@@ -558,16 +583,16 @@ Version matrix is complete when:
 ```markdown
 # React 16-18 Compatibility Matrix
 
-| Feature | React 16 | React 17 | React 18 |
-|---------|----------|----------|----------|
-| Hooks | ✅ (16.8+) | ✅ | ✅ |
-| Concurrent Mode | ❌ | ❌ | ✅ |
-| Automatic Batching | ❌ | ❌ | ✅ |
-| Suspense (SSR) | ⚠️ (experimental) | ⚠️ | ✅ |
-| useTransition | ❌ | ❌ | ✅ |
-| useDeferredValue | ❌ | ❌ | ✅ |
-| useId | ❌ | ❌ | ✅ |
-| New JSX Transform | ❌ | ✅ | ✅ |
+| Feature            | React 16          | React 17 | React 18 |
+| ------------------ | ----------------- | -------- | -------- |
+| Hooks              | ✅ (16.8+)        | ✅       | ✅       |
+| Concurrent Mode    | ❌                | ❌       | ✅       |
+| Automatic Batching | ❌                | ❌       | ✅       |
+| Suspense (SSR)     | ⚠️ (experimental) | ⚠️       | ✅       |
+| useTransition      | ❌                | ❌       | ✅       |
+| useDeferredValue   | ❌                | ❌       | ✅       |
+| useId              | ❌                | ❌       | ✅       |
+| New JSX Transform  | ❌                | ✅       | ✅       |
 
 **Migration:** React 16 → 17 → 18 (test thoroughly at each step)
 ```

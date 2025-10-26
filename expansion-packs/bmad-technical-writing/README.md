@@ -97,6 +97,7 @@ The PacktPub formatting workflow (`format-for-packtpub.md`) requires the followi
 #### Required Tools
 
 **Pandoc** - Document converter (Markdown → Word)
+
 ```bash
 # macOS
 brew install pandoc
@@ -109,6 +110,7 @@ choco install pandoc
 ```
 
 **Python 3.8+** - For validation and style application scripts
+
 ```bash
 # Check version
 python3 --version
@@ -118,6 +120,7 @@ python3 --version
 ```
 
 **Python Packages** - Document manipulation and image validation
+
 ```bash
 pip3 install python-docx Pillow
 ```
@@ -125,6 +128,7 @@ pip3 install python-docx Pillow
 #### Optional Tools
 
 **pdftotext** - For converting PacktPub Author Bundle PDFs to markdown
+
 ```bash
 # macOS
 brew install poppler
@@ -155,12 +159,14 @@ The expansion pack includes the complete PacktPub Author Bundle in `data/packtpu
 #### Usage
 
 **Complete Workflow** (Single command):
+
 ```bash
 cd expansion-packs/bmad-technical-writing/data/packtpub-author-bundle
 ./format-for-packtpub.sh path/to/manuscript.md output-directory
 ```
 
 **Manual Step-by-Step**:
+
 ```bash
 # 1. Pre-conversion validation
 python3 validate-manuscript.py manuscript.md images/

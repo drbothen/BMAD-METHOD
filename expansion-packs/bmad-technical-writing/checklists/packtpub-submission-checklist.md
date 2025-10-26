@@ -5,24 +5,13 @@
 ---
 
 checklist:
-  id: packtpub-submission
-  name: PacktPub Chapter/Manuscript Submission Checklist
-  description: Official PacktPub quality checklist for technical book chapters and manuscripts
-  source: Your Writing Checklist.pdf (PacktPub Author Bundle)
-  persona_default: manuscript-reviewer
-  applies_to:
-    - Technical book chapters
-    - Full manuscript submissions
-    - Sample chapter submissions
-  sections:
-    - Outline Compliance
-    - Structure Requirements
-    - Readability Standards
-    - Value Proposition
-    - Technical Requirements
-    - Code Quality
-    - Image Quality
-    - Style and Formatting
+id: packtpub-submission
+name: PacktPub Chapter/Manuscript Submission Checklist
+description: Official PacktPub quality checklist for technical book chapters and manuscripts
+source: Your Writing Checklist.pdf (PacktPub Author Bundle)
+persona_default: manuscript-reviewer
+applies_to: - Technical book chapters - Full manuscript submissions - Sample chapter submissions
+sections: - Outline Compliance - Structure Requirements - Readability Standards - Value Proposition - Technical Requirements - Code Quality - Image Quality - Style and Formatting
 
 ---
 
@@ -46,12 +35,14 @@ This checklist validates technical book chapters and manuscripts against PacktPu
 These items verify your chapter matches the agreed-upon outline and objectives.
 
 #### 1.1 Topic Coverage
+
 - [ ] **All topics/skills mentioned in outline are covered**
   - Cross-reference outline document
   - Verify each topic has dedicated section
   - Check that no outline topics are missing
 
 #### 1.2 Page Count
+
 - [ ] **Chapter page count within acceptable range**
   - Outline specifies target page count
   - Too high: content may be too detailed or off-topic
@@ -59,6 +50,7 @@ These items verify your chapter matches the agreed-upon outline and objectives.
   - Acceptable variance: ±10% of target
 
 #### 1.3 Learning Objectives
+
 - [ ] **Chapter meets all stated learning objectives**
   - Each objective listed in outline is addressed
   - Reader can demonstrate each skill after reading
@@ -71,6 +63,7 @@ These items verify your chapter matches the agreed-upon outline and objectives.
 These items ensure your chapter follows PacktPub's required structure and formatting.
 
 #### 2.1 Introduction Section
+
 - [ ] **Chapter opens with brief introduction**
   - Located before first H2 heading
   - 1-3 paragraphs maximum
@@ -87,6 +80,7 @@ These items ensure your chapter follows PacktPub's required structure and format
   - Gives reader roadmap of chapter content
 
 #### 2.2 Heading Standards
+
 - [ ] **Appropriate heading styles used (Heading 1-6)**
   - Heading 1: Chapter title
   - Heading 2: Major sections
@@ -100,6 +94,7 @@ These items ensure your chapter follows PacktPub's required structure and format
   - ✗ "Development Environment"
 
 #### 2.3 Transitions and Flow
+
 - [ ] **Signposts/transitions between major sections**
   - Link previous section to next
   - "Now that we've covered X, let's explore Y..."
@@ -121,6 +116,7 @@ These items ensure your chapter follows PacktPub's required structure and format
   - Never: image immediately following another image
 
 #### 2.4 Summary and Conclusion
+
 - [ ] **Summary section present at end of chapter**
   - Recap main learnings
   - Reinforce value/application
@@ -145,6 +141,7 @@ These items ensure your chapter follows PacktPub's required structure and format
 These items ensure your content is accessible and engaging for the target audience.
 
 #### 3.1 Audience Consideration
+
 - [ ] **Content appropriate for target audience level**
   - Beginners: more detail, simpler explanations, more examples
   - Intermediate: moderate detail, some assumptions of knowledge
@@ -156,6 +153,7 @@ These items ensure your content is accessible and engaging for the target audien
   - Avoid assuming reader knows jargon
 
 #### 3.2 Writing Style
+
 - [ ] **Content kept concise and straightforward**
   - Short sentences (15-20 words average)
   - One concept per paragraph
@@ -168,6 +166,7 @@ These items ensure your content is accessible and engaging for the target audien
   - Avoid third-person: "The user configures..."
 
 #### 3.3 Visual Variety
+
 - [ ] **Create visual variety throughout chapter**
   - Mix of paragraphs, lists, code, images, tables
   - Avoid long stretches of plain text
@@ -184,6 +183,7 @@ These items ensure your content is accessible and engaging for the target audien
   - Enhance understanding
 
 #### 3.4 Code and Image Framing
+
 - [ ] **Text before all code blocks explaining context**
   - What the code does
   - Why it's relevant
@@ -211,6 +211,7 @@ These items ensure your content is accessible and engaging for the target audien
 These items ensure your content provides practical, real-world value to readers.
 
 #### 4.1 Practical Focus
+
 - [ ] **Content hands-on and practical with real-world examples**
   - Prefer working code over theory
   - Use realistic scenarios
@@ -228,6 +229,7 @@ These items ensure your content provides practical, real-world value to readers.
   - Makes procedures clear and followable
 
 #### 4.2 Visual Support
+
 - [ ] **Images support/simplify explanations, not just illustrate**
   - Diagrams explain complex concepts
   - Screenshots show specific UI elements
@@ -235,6 +237,7 @@ These items ensure your content provides practical, real-world value to readers.
   - Each image has clear purpose
 
 #### 4.3 Learning Reinforcement
+
 - [ ] **Value/real-world application stated at end of each section**
   - "This technique allows you to..."
   - "You'll use this when..."
@@ -257,6 +260,7 @@ These items ensure your content provides practical, real-world value to readers.
 These items ensure your technical content is accurate, current, and complete.
 
 #### 5.1 Version Currency
+
 - [ ] **Latest/updated versions for all tech and code**
   - Check for updates before starting chapter
   - Document version numbers in text
@@ -268,6 +272,7 @@ These items ensure your technical content is accurate, current, and complete.
   - Syntax may evolve
 
 #### 5.2 Code Explanation
+
 - [ ] **All code explained in paragraph or sentence**
   - No unexplained code blocks
   - Key lines highlighted and discussed
@@ -279,6 +284,7 @@ These items ensure your technical content is accurate, current, and complete.
   - Exception: Standard documentation comments (JSDoc, etc.)
 
 #### 5.3 Code Repository
+
 - [ ] **GitHub repository updated with each chapter**
   - Complete working examples
   - Organized by chapter
@@ -292,6 +298,7 @@ These items ensure your technical content is accurate, current, and complete.
 These items ensure code blocks meet PacktPub's formatting and quality standards.
 
 #### 6.1 Code Block Length (CRITICAL)
+
 - [ ] **No code blocks exceed 30 lines (HARD LIMIT)**
   - 30 lines = absolute maximum
   - Blocks over 30 lines MUST be split
@@ -308,6 +315,7 @@ These items ensure code blocks meet PacktPub's formatting and quality standards.
   - Explain each section individually
 
 #### 6.2 Code Style and Formatting
+
 - [ ] **Code uses proper syntax highlighting**
   - Language identifier on code fence: ```javascript
   - Enables proper formatting in conversion
@@ -330,6 +338,7 @@ These items ensure code blocks meet PacktPub's formatting and quality standards.
 These items ensure images meet PacktPub's print quality standards.
 
 #### 7.1 Resolution Requirements (CRITICAL)
+
 - [ ] **All images 300 DPI minimum**
   - Check DPI metadata
   - Use GIMP for screenshot capture (auto 300 DPI)
@@ -341,6 +350,7 @@ These items ensure images meet PacktPub's print quality standards.
   - Upscaling doesn't improve quality - capture at correct size
 
 #### 7.2 Format Requirements (CRITICAL)
+
 - [ ] **No JPG format images (PNG/TIFF only)**
   - JPG loses quality with each save
   - PNG: screenshots, UI captures
@@ -353,6 +363,7 @@ These items ensure images meet PacktPub's print quality standards.
   - Descriptive filenames with figure numbers
 
 #### 7.3 Screenshot Quality
+
 - [ ] **Screenshots focused on relevant content**
   - Crop empty space
   - Highlight UI elements being discussed
@@ -368,6 +379,7 @@ These items ensure images meet PacktPub's print quality standards.
   - Smaller files likely insufficient quality
 
 #### 7.4 Third-Party Images
+
 - [ ] **Copyright/license checked for third-party images**
   - Permission obtained if needed
   - Attribution included where required
@@ -385,6 +397,7 @@ These items ensure images meet PacktPub's print quality standards.
 These items ensure proper PacktPub style application.
 
 #### 8.1 PACKT Styles Applied
+
 - [ ] **All paragraphs use PacktPub styles**
   - Headings: "Heading 1-6" (standard, no [PACKT])
   - Content: "[PACKT]" suffix styles (Normal [PACKT], Code [PACKT], etc.)
@@ -406,6 +419,7 @@ These items ensure proper PacktPub style application.
   - Code In Text [PACKT]: inline code, commands, filenames
 
 #### 8.2 Document Template
+
 - [ ] **Document based on Sample Chapter.docx template**
   - Contains all 77 [PACKT] styles
   - Ensures style consistency
@@ -416,6 +430,7 @@ These items ensure proper PacktPub style application.
 ## Content Standards
 
 ### Writing Quality
+
 - [ ] **Avoid repeating information; cross-reference instead**
   - "As discussed in Chapter 3..."
   - "See the X section earlier in this chapter..."
@@ -453,17 +468,25 @@ When this checklist is executed, generate a report in this format:
 ## Section Results
 
 ### 1. Outline Compliance: 3/3 ✓
+
 ### 2. Structure Requirements: 10/11 ⚠️
+
 ### 3. Readability Standards: 8/8 ✓
+
 ### 4. Value Proposition: 6/7 ⚠️
+
 ### 5. Technical Requirements: 4/4 ✓
+
 ### 6. Code Quality: 2/4 ✗
+
 ### 7. Image Quality: 5/7 ⚠️
+
 ### 8. Style and Formatting: 8/8 ✓
 
 ## Failed Items (MUST FIX)
 
 ### 6.1 Code Block Length
+
 - ❌ Code block at line 245: 35 lines (MAX: 30)
 - ❌ Code block at line 389: 42 lines (MAX: 30)
 
@@ -472,13 +495,16 @@ When this checklist is executed, generate a report in this format:
 ## Warnings (SHOULD FIX)
 
 ### 2.3 Transitions and Flow
-- ⚠️  Section "Advanced Patterns" lacks transition from previous section
+
+- ⚠️ Section "Advanced Patterns" lacks transition from previous section
 
 ### 4.1 Practical Focus
-- ⚠️  Consider adding more numbered steps for configuration procedure
+
+- ⚠️ Consider adding more numbered steps for configuration procedure
 
 ### 7.1 Resolution Requirements
-- ⚠️  Image figure-3.png: 1800px shortest edge (target: 2000px)
+
+- ⚠️ Image figure-3.png: 1800px shortest edge (target: 2000px)
 
 ## All Items Checked
 
@@ -503,6 +529,7 @@ These items should be marked "Manual Review Required" in automated checks.
 ### Critical vs Warning vs Info
 
 **Critical (MUST FIX before submission)**:
+
 - Code blocks >30 lines
 - Images <2000px or <300 DPI
 - JPG format images
@@ -510,12 +537,14 @@ These items should be marked "Manual Review Required" in automated checks.
 - No [PACKT] styles applied
 
 **Warning (SHOULD FIX before submission)**:
+
 - Code blocks 21-30 lines (aim for ≤20)
 - Images missing frame text
 - Consecutive headers
 - Missing transitions
 
 **Info (NICE TO HAVE)**:
+
 - Consider adding more visual variety
 - Could add more real-world examples
 - Might benefit from diagram
@@ -525,6 +554,7 @@ These items should be marked "Manual Review Required" in automated checks.
 ## Integration
 
 This checklist is used by:
+
 - **format-for-packtpub.md** task - Automated execution during conversion
 - **manuscript-review.md** task - Manual content review process
 - **chapter-development-workflow.yaml** - Final validation step before submission

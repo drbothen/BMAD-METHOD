@@ -5,23 +5,13 @@
 ---
 
 task:
-  id: format-for-packtpub
-  name: Format Manuscript for PacktPub Submission
-  description: Convert technical book manuscripts from Markdown to PacktPub-formatted Word documents with complete style application and validation
-  persona_default: manuscript-formatter
-  inputs:
-    - manuscript_path (Markdown files or directory)
-    - submission_type (chapter | full-manuscript)
-    - author_bundle_path (PacktPub Author Bundle location)
-  steps:
-    - Validate prerequisite files and tools
-    - Pre-convert validation of Markdown content
-    - Execute Pandoc conversion with PacktPub template
-    - Apply PACKT styles with Python post-processing
-    - Validate converted document against PacktPub requirements
-    - Execute PacktPub submission checklist
-    - Generate validation report
-  output: PacktPub-formatted .docx manuscript + validation report + checklist results
+id: format-for-packtpub
+name: Format Manuscript for PacktPub Submission
+description: Convert technical book manuscripts from Markdown to PacktPub-formatted Word documents with complete style application and validation
+persona_default: manuscript-formatter
+inputs: - manuscript_path (Markdown files or directory) - submission_type (chapter | full-manuscript) - author_bundle_path (PacktPub Author Bundle location)
+steps: - Validate prerequisite files and tools - Pre-convert validation of Markdown content - Execute Pandoc conversion with PacktPub template - Apply PACKT styles with Python post-processing - Validate converted document against PacktPub requirements - Execute PacktPub submission checklist - Generate validation report
+output: PacktPub-formatted .docx manuscript + validation report + checklist results
 
 ---
 
@@ -54,6 +44,7 @@ This task automates the conversion of technical book manuscripts from Markdown f
 ### Required Tools
 
 1. **Pandoc** (v2.x or higher)
+
    ```bash
    # Check installation
    pandoc --version
@@ -65,6 +56,7 @@ This task automates the conversion of technical book manuscripts from Markdown f
    ```
 
 2. **Python 3** with `python-docx` library
+
    ```bash
    # Check installation
    python3 --version
@@ -80,22 +72,26 @@ This task automates the conversion of technical book manuscripts from Markdown f
 ## Input Parameters
 
 ### manuscript_path
+
 - **Type**: File path or directory path
 - **Format**: `.md` file(s)
 - **Example**: `manuscripts/chapters/chapter-05-react-hooks.md`
 - **Multiple files**: `manuscripts/chapters/` (processes all .md files)
 
 ### submission_type
+
 - **Options**: `chapter` | `full-manuscript`
 - **chapter**: Single chapter submission (most common)
 - **full-manuscript**: Complete book with multiple chapters
 
 ### author_bundle_path
+
 - **Type**: Directory path
 - **Default**: `manuscripts/research/AuthorBundle_updated/`
 - **Contains**: PacktPub Author Bundle files
 
 ### output_path (optional)
+
 - **Type**: Directory path
 - **Default**: `manuscripts/formatted-for-packtpub/`
 - **Contains**: Generated .docx file(s) and validation reports
@@ -119,6 +115,7 @@ python3 -c "import docx" 2>/dev/null || echo "ERROR: python-docx not installed"
 ```
 
 **Validation Checks**:
+
 - [ ] Sample Chapter.docx template exists
 - [ ] Manuscript file(s) exist and are readable
 - [ ] Pandoc installed and accessible
@@ -133,7 +130,7 @@ python3 -c "import docx" 2>/dev/null || echo "ERROR: python-docx not installed"
 
 **PacktPub Requirement**: 20 lines ideal, 30 lines absolute maximum
 
-```python
+````python
 import re
 
 def validate_code_blocks(markdown_content):
@@ -151,11 +148,12 @@ def validate_code_blocks(markdown_content):
             warnings.append(f"Code block #{i}: {lines} lines (IDEAL: ≤20)")
 
     return violations, warnings
-```
+````
 
 #### 2.2 Image Reference Validation
 
 **PacktPub Requirements**:
+
 - 300 DPI minimum
 - 2000 pixels minimum on shortest edge
 - PNG/TIFF format (NEVER JPG)
@@ -206,15 +204,17 @@ def validate_images(markdown_content, base_path):
 **CRITICAL RULE**: Caption placement differs between tables and figures
 
 **Tables**: Caption comes BEFORE the table
+
 ```markdown
 Table 2.1: React Hooks comparison and use cases
 
-| Hook | Purpose | When to Use | Returns |
-|------|---------|-------------|---------|
+| Hook     | Purpose          | When to Use         | Returns           |
+| -------- | ---------------- | ------------------- | ----------------- |
 | useState | State management | Simple state values | [state, setState] |
 ```
 
 **Figures**: Caption comes AFTER the image
+
 ```markdown
 ![React component lifecycle diagram](images/lifecycle.png)
 
@@ -222,19 +222,22 @@ Figure 2.1: Component lifecycle phases
 ```
 
 **Why This Matters**:
+
 - Tables: Readers need context BEFORE scanning data
 - Figures: Images are self-contained and viewed first, caption explains AFTER
 
 **Common Mistake**:
+
 ```markdown
 ❌ WRONG - Table caption AFTER table:
 | Hook | Purpose |
 |------|---------|
 
-Table 2.1: React Hooks comparison  ← INCORRECT PLACEMENT
+Table 2.1: React Hooks comparison ← INCORRECT PLACEMENT
 ```
 
 **Caption Numbering Format**:
+
 - Format: `Table X.Y: Description` or `Figure X.Y: Description`
 - X = Chapter number
 - Y = Table/Figure number within chapter
@@ -243,6 +246,7 @@ Table 2.1: React Hooks comparison  ← INCORRECT PLACEMENT
   - `Figure 2.3: Authentication workflow diagram`
 
 **Alt Text vs Caption**:
+
 - **Alt text** (for accessibility): Describes WHAT is IN the image
   ```markdown
   ![Component lifecycle flow showing mount, update, and unmount phases](images/lifecycle.png)
@@ -257,6 +261,7 @@ See `CAPTION-PLACEMENT-GUIDE.md` for comprehensive examples and validation rules
 #### 2.4 Structure Validation
 
 **PacktPub Requirements**:
+
 - Chapter opens with introduction + learning goals
 - Bullet list of main topics
 - Summary section at end
@@ -314,6 +319,7 @@ pandoc "${manuscript_path}" \
 ```
 
 **Pandoc Parameters Explained**:
+
 - `--reference-doc`: Use PacktPub Sample Chapter as style template
 - `--standalone`: Create complete document with metadata
 - `--toc`: Generate table of contents (optional, can remove later)
@@ -336,10 +342,12 @@ pandoc "${manuscript_path}" \
 **Convert Pandoc's built-in styles to PacktPub [PACKT] styles:**
 
 **Understanding PacktPub Style System**:
+
 - **Headings**: Use standard "Heading 1-6" (NO [PACKT] suffix)
 - **All other content**: Uses [PACKT] suffix
 
 **Style Mapping**:
+
 ```
 Pandoc Output          →  PacktPub Required
 ────────────────────────────────────────────
@@ -363,6 +371,7 @@ python3 apply-packt-styles-v6.py \
 ```
 
 **Python Script Logic** (see `apply-packt-styles-v6.py`):
+
 1. Load converted document
 2. Verify [PACKT] styles exist in document (from template)
 3. **Split multi-line code blocks** into separate paragraphs:
@@ -466,6 +475,7 @@ execute-checklist \
 ```
 
 **AI Detection Avoidance validates**:
+
 - Content quality (accuracy, depth, value)
 - Authenticity and personal voice
 - Technical accuracy and specificity
@@ -485,6 +495,7 @@ execute-checklist \
 ```
 
 **Submission Checklist validates**:
+
 - Outline compliance (topics covered, page count, objectives met)
 - Structure requirements (intro, bullet lists, headings, transitions, summary)
 - Readability standards (audience consideration, visual variety, framing)
@@ -507,15 +518,18 @@ See `packtpub-submission-checklist.md` for complete checklist.
 ## Pre-Convert Validation
 
 ### Code Blocks
+
 - ✓ 12 code blocks validated
 - ⚠️ 2 warnings: blocks exceed 20 lines (21, 23 lines)
 - ✗ 0 violations
 
 ### Images
+
 - ✓ 8 images validated
 - ✗ 1 issue: screenshot-01.jpg should be PNG format
 
 ### Structure
+
 - ✓ Chapter introduction present
 - ✓ Bullet list of topics present
 - ✓ Summary section present
@@ -523,6 +537,7 @@ See `packtpub-submission-checklist.md` for complete checklist.
 ## Post-Convert Validation
 
 ### Style Application
+
 - ✓ 100% PacktPub-compliant styles
   - Normal [PACKT]: 45 instances
   - Code [PACKT]: 12 instances
@@ -531,9 +546,11 @@ See `packtpub-submission-checklist.md` for complete checklist.
 - ✗ 0 unmapped styles
 
 ### Images
+
 - ✓ 8 images embedded successfully
 
 ### Code Blocks (Word document)
+
 - ✓ All code blocks within limits
 - ⚠️ 2 warnings: consider splitting blocks
 
@@ -542,9 +559,11 @@ See `packtpub-submission-checklist.md` for complete checklist.
 **Overall Score**: 38/40 items passed
 
 ### Failures
+
 - [ ] Update code files on GitHub with this chapter
 
 ### Warnings
+
 - ⚠️ Consider adding more visual variety (tables, diagrams)
 
 ## Recommendations
@@ -564,17 +583,20 @@ See `packtpub-submission-checklist.md` for complete checklist.
 The manuscript is ready for PacktPub submission when:
 
 **Formatting**:
+
 - [ ] All paragraphs use PacktPub styles (Heading 1-6 or [PACKT] styles)
 - [ ] No unmapped or built-in Word styles remain
 - [ ] Document uses Sample Chapter.docx template (styles preserved)
 
 **Images**:
+
 - [ ] All images embedded in document
 - [ ] All images meet 300 DPI / 2000px minimum (or documented exceptions)
 - [ ] No JPG format images (PNG/TIFF only)
 - [ ] Full-screen + snippet pairs provided for detail images
 
 **Code**:
+
 - [ ] No code blocks exceed 30 lines (hard limit)
 - [ ] Ideally all code blocks ≤20 lines
 - [ ] All code blocks have explanatory text before/after
@@ -582,6 +604,7 @@ The manuscript is ready for PacktPub submission when:
 - [ ] Code [PACKT] style applied to all code blocks
 
 **Structure**:
+
 - [ ] Chapter opens with introduction listing learning goals
 - [ ] Bullet list of main topics present
 - [ ] Summary section present at end
@@ -590,11 +613,13 @@ The manuscript is ready for PacktPub submission when:
 - [ ] No consecutive images (framing text around all images)
 
 **Checklist**:
+
 - [ ] PacktPub submission checklist passes (≥95% items)
 - [ ] All "required" items addressed
 - [ ] Warnings documented in validation report
 
 **Validation**:
+
 - [ ] Pre-convert validation passed (or issues documented)
 - [ ] Post-convert validation passed
 - [ ] Style verification passed
@@ -642,6 +667,7 @@ execute-task format-for-packtpub \
 ```
 
 **Output**:
+
 ```
 ✓ Pre-convert validation: 2 warnings
 ✓ Pandoc conversion complete
@@ -667,6 +693,7 @@ execute-task format-for-packtpub \
 ```
 
 **Processes**:
+
 - Converts all .md files in directory
 - Generates separate .docx for each chapter
 - Creates combined validation report
@@ -686,6 +713,7 @@ execute-task format-for-packtpub \
 ```
 
 **Additional processing**:
+
 - Converts JPG → PNG
 - Scales images to meet 2000px minimum
 - Sets DPI metadata to 300
@@ -698,6 +726,7 @@ execute-task format-for-packtpub \
 **Cause**: Pandoc didn't use Sample Chapter.docx as reference
 
 **Solution**:
+
 ```bash
 # Ensure correct template path
 pandoc manuscript.md -o output.docx \
@@ -709,6 +738,7 @@ pandoc manuscript.md -o output.docx \
 **Cause**: Code sample too long for PacktPub requirements
 
 **Solution**:
+
 1. Break code into logical sections (where you would normally comment)
 2. Show key sections, reference full code on GitHub
 3. Use "..." to indicate omitted code
@@ -719,6 +749,7 @@ pandoc manuscript.md -o output.docx \
 **Cause**: Screenshots saved as JPG lose quality
 
 **Solution**:
+
 ```bash
 # Convert to PNG
 magick screenshot.jpg screenshot.png
@@ -731,6 +762,7 @@ magick screenshot.jpg screenshot.png
 **Cause**: Screenshot taken at 72 DPI or low resolution
 
 **Solution**:
+
 1. Use GIMP screenshot tool: File > Create > Screenshot (auto 300 DPI)
 2. Use 4K monitor for higher resolution screenshots
 3. Use PrtScr in GIMP, paste to new document (auto-converts to 300 DPI)
@@ -740,6 +772,7 @@ magick screenshot.jpg screenshot.png
 **Cause**: Markdown contains non-standard elements
 
 **Solution**:
+
 1. Check for HTML tags in Markdown (convert to Markdown)
 2. Check for custom Markdown extensions
 3. Manually apply [PACKT] styles in Word for special elements
@@ -756,19 +789,23 @@ This task integrates with:
 ## Related Files
 
 **Scripts**:
+
 - `apply-packt-styles-v6.py` - Style application with caption and table support (in `data/packtpub-author-bundle/`)
 - `validate-manuscript.py` - Pre-convert validation
 - `verify-packtpub-doc.py` - Post-convert validation
 - `format-for-packtpub.sh` - Wrapper script for complete workflow
 
 **Checklists**:
+
 - `generative-ai-compliance-checklist.md` - AI content compliance validation
 - `packtpub-submission-checklist.md` - Official 40+ item checklist
 
 **Templates**:
+
 - `Sample Chapter.docx` (from Author Bundle) - PacktPub template
 
 **Documentation**:
+
 - `Generative_AI_Author_Guidelines.md` - Official PacktPub AI usage guidelines
 - `packtpub-author-bundle-analysis.md` - Research findings
 - `PANDOC-CONVERSION-FINDINGS.md` - Conversion workflow documentation
@@ -785,6 +822,7 @@ This task integrates with:
 ## Author's Checklist
 
 Before running this task:
+
 - [ ] All code in manuscript tested and working
 - [ ] All images created and referenced correctly
 - [ ] Chapter follows outline and meets learning objectives
@@ -792,6 +830,7 @@ Before running this task:
 - [ ] Code repository updated with examples
 
 After running this task:
+
 - [ ] Review validation report
 - [ ] Address all required issues
 - [ ] Review warnings and suggestions

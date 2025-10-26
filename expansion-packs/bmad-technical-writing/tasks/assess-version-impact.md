@@ -5,24 +5,13 @@
 ---
 
 task:
-  id: assess-version-impact
-  name: Assess Version Impact
-  description: Analyze the impact of upgrading from one version to another by identifying breaking changes and affected code
-  persona_default: version-manager
-  inputs:
-    - current-version (current version being used)
-    - target-version (version to upgrade to)
-    - codebase-path (path to code samples or project)
-  steps:
-    - Review official changelog for breaking changes
-    - Identify deprecated features in target version
-    - Scan codebase for patterns affected by changes
-    - Generate impact report listing affected files
-    - Estimate migration effort (hours/complexity)
-    - Create prioritized migration checklist
-    - Document required code changes
-    - Identify testing requirements
-  output: Version migration impact report with affected files, effort estimate, and migration checklist
+id: assess-version-impact
+name: Assess Version Impact
+description: Analyze the impact of upgrading from one version to another by identifying breaking changes and affected code
+persona_default: version-manager
+inputs: - current-version (current version being used) - target-version (version to upgrade to) - codebase-path (path to code samples or project)
+steps: - Review official changelog for breaking changes - Identify deprecated features in target version - Scan codebase for patterns affected by changes - Generate impact report listing affected files - Estimate migration effort (hours/complexity) - Create prioritized migration checklist - Document required code changes - Identify testing requirements
+output: Version migration impact report with affected files, effort estimate, and migration checklist
 
 ---
 
@@ -72,15 +61,18 @@ Scan results showing impacted code:
 ## Affected Files
 
 ### High Impact (Code will break)
+
 - `src/utils/network.js` - Uses removed DNS flag
 - `src/config/loader.js` - Uses deprecated import assertions (3 occurrences)
 - `tests/integration/api.test.js` - Uses removed API
 
 ### Medium Impact (Deprecated but still works)
+
 - `src/modules/parser.js` - Uses deprecated URL API
 - `lib/crypto.js` - Uses old crypto method (soft-deprecated)
 
 ### Low Impact (Warnings only)
+
 - `package.json` - Engine version needs update
 - `.nvmrc` - Node version needs update
 
@@ -95,12 +87,12 @@ Time and complexity assessment:
 ```markdown
 ## Migration Effort Estimate
 
-| Category | Files | Estimated Hours | Complexity |
-|----------|-------|----------------|------------|
-| Breaking Changes | 3 | 4-6 hours | Medium |
-| Deprecation Fixes | 2 | 2-3 hours | Low |
-| Testing & Validation | All | 4-6 hours | Medium |
-| Documentation Updates | N/A | 1-2 hours | Low |
+| Category              | Files | Estimated Hours | Complexity |
+| --------------------- | ----- | --------------- | ---------- |
+| Breaking Changes      | 3     | 4-6 hours       | Medium     |
+| Deprecation Fixes     | 2     | 2-3 hours       | Low        |
+| Testing & Validation  | All   | 4-6 hours       | Medium     |
+| Documentation Updates | N/A   | 1-2 hours       | Low        |
 
 **Total Estimated Effort:** 11-17 hours
 **Risk Level:** Medium
@@ -115,30 +107,35 @@ Actionable steps to complete migration:
 ## Migration Checklist
 
 ### Pre-Migration
+
 - [ ] Backup current codebase
 - [ ] Create migration branch
 - [ ] Review full changelog
 - [ ] Update local Node.js to 20.x
 
 ### Code Changes
+
 - [ ] Update import assertions to import attributes (3 files)
 - [ ] Fix DNS resolution code (1 file)
 - [ ] Replace removed APIs (1 file)
 - [ ] Update deprecated crypto calls (1 file)
 
 ### Configuration Updates
+
 - [ ] Update package.json engines field
 - [ ] Update .nvmrc file
 - [ ] Update CI/CD Node version
 - [ ] Update Dockerfile base image
 
 ### Testing
+
 - [ ] Run full test suite on Node 20
 - [ ] Test network-dependent features
 - [ ] Run integration tests
 - [ ] Performance testing
 
 ### Deployment
+
 - [ ] Update staging environment
 - [ ] Monitor for issues
 - [ ] Update production environment
@@ -152,10 +149,12 @@ Actionable steps to complete migration:
 **Find and read changelog:**
 
 **Node.js:**
+
 - Changelog: https://github.com/nodejs/node/blob/main/CHANGELOG.md
 - Breaking changes: https://github.com/nodejs/node/blob/main/doc/changelogs/CHANGELOG_V20.md
 
 **Python:**
+
 - What's New: https://docs.python.org/3/whatsnew/3.12.html
 - Porting guide: https://docs.python.org/3/whatsnew/3.12.html#porting-to-python-3-12
 
@@ -167,18 +166,21 @@ Actionable steps to complete migration:
 ### From Changelog
 
 **DNS Resolution:**
+
 - Commit: [reference]
 - Description: Changed default resolution from `ipv4first` to `verbatim`
 - Reason: Better compliance with DNS standards
 - Migration: Set `verbatim: false` if old behavior needed
 
 **Import Syntax:**
+
 - RFC: Import Attributes (replacing Import Assertions)
 - Old syntax: `assert { type: 'json' }`
 - New syntax: `with { type: 'json' }`
 - Timeline: Assertions deprecated in 20.10, will be removed in future
 
 **Removed APIs:**
+
 - `process.binding()` - Internal API removed
 - Some `--experimental` flags removed or stabilized
 - Legacy stream methods removed
@@ -194,15 +196,18 @@ Actionable steps to complete migration:
 ### Runtime Deprecations (DEP0XXX)
 
 **DEP0018:** Unhandled promise rejections
+
 - Status: Will become fatal errors in future
 - Action: Ensure all promises have `.catch()` or try/catch
 
 **DEP0147:** `fs.rmdir(path, { recursive: true })`
+
 - Status: Deprecated
 - Alternative: Use `fs.rm(path, { recursive: true })`
 - Timeline: Will be removed in Node 22
 
 **DEP0166:** Import assertions
+
 - Status: Deprecated in favor of import attributes
 - Timeline: Will be removed in future major version
 ```
@@ -256,7 +261,9 @@ grep "NODE_OPTIONS" .env
 ## Codebase Scan Results
 
 ### Import Assertions (Deprecated Syntax)
+
 Found 3 occurrences:
+
 1. `src/config/loader.js:12` - import data from './data.json' assert { type: 'json' };
 2. `src/utils/parser.js:5` - import schema from './schema.json' assert { type: 'json' };
 3. `tests/fixtures/loader.test.js:8` - import mock from './mock.json' assert { type: 'json' };
@@ -264,16 +271,21 @@ Found 3 occurrences:
 **Action Required:** Update to `with { type: 'json' }` syntax
 
 ### process.binding() Usage
+
 Found 0 occurrences ✓
 
 ### fs.rmdir() with recursive option
+
 Found 1 occurrence:
+
 1. `src/utils/cleanup.js:45` - fs.rmdirSync(dir, { recursive: true });
 
 **Action Required:** Replace with fs.rm()
 
 ### DNS Configuration
+
 Found 2 occurrences:
+
 1. `src/services/api-client.js:23` - dns.lookup() without options
 2. `src/utils/network.js:67` - Custom DNS resolver
 
@@ -288,6 +300,7 @@ Found 2 occurrences:
 ## Impact Report: Node 18 → Node 20 Migration
 
 ### Executive Summary
+
 - **Affected Files:** 6 out of 142 files (4%)
 - **Critical Issues:** 3 files will break
 - **Warnings:** 2 files use deprecated APIs
@@ -298,7 +311,9 @@ Found 2 occurrences:
 ### Critical Impact (Code Will Break)
 
 #### 1. Import Syntax Changes
+
 **Files Affected:** 3
+
 - src/config/loader.js
 - src/utils/parser.js
 - tests/fixtures/loader.test.js
@@ -309,7 +324,9 @@ Found 2 occurrences:
 **Risk:** Low (syntax change only)
 
 #### 2. DNS Resolution Behavior
+
 **Files Affected:** 2
+
 - src/services/api-client.js
 - src/utils/network.js
 
@@ -319,7 +336,9 @@ Found 2 occurrences:
 **Risk:** Medium (behavior change may affect production)
 
 #### 3. Deprecated fs API
+
 **Files Affected:** 1
+
 - src/utils/cleanup.js
 
 **Issue:** fs.rmdir() with recursive option deprecated
@@ -330,7 +349,9 @@ Found 2 occurrences:
 ### Medium Impact (Deprecation Warnings)
 
 #### 4. Legacy Crypto Usage
+
 **Files Affected:** 1
+
 - lib/crypto.js
 
 **Issue:** Uses soft-deprecated crypto method
@@ -341,7 +362,9 @@ Found 2 occurrences:
 ### Low Impact (Configuration Only)
 
 #### 5. Version Metadata
+
 **Files Affected:** 3
+
 - package.json (engines field)
 - .nvmrc
 - Dockerfile
@@ -354,6 +377,7 @@ Found 2 occurrences:
 ### Dependencies Impact
 
 **package.json analysis:**
+
 - **Total dependencies:** 42
 - **Potentially incompatible:** 2
   - `node-fetch` v2.x (no longer needed, fetch is built-in)
@@ -370,35 +394,35 @@ Found 2 occurrences:
 
 ### Development Tasks
 
-| Task | Description | Hours | Complexity | Risk |
-|------|-------------|-------|------------|------|
-| Code Analysis | Review all affected files | 2 | Low | Low |
-| Import Syntax | Update assert → with (3 files) | 1 | Low | Low |
-| DNS Testing | Test DNS behavior, add options if needed | 4 | Medium | Medium |
-| fs API Update | Replace rmdir with rm | 0.5 | Low | Low |
-| Crypto Update | Modernize crypto code | 2 | Low | Low |
-| Dependency Cleanup | Remove node-fetch, update deps | 1 | Low | Low |
+| Task               | Description                              | Hours | Complexity | Risk   |
+| ------------------ | ---------------------------------------- | ----- | ---------- | ------ |
+| Code Analysis      | Review all affected files                | 2     | Low        | Low    |
+| Import Syntax      | Update assert → with (3 files)           | 1     | Low        | Low    |
+| DNS Testing        | Test DNS behavior, add options if needed | 4     | Medium     | Medium |
+| fs API Update      | Replace rmdir with rm                    | 0.5   | Low        | Low    |
+| Crypto Update      | Modernize crypto code                    | 2     | Low        | Low    |
+| Dependency Cleanup | Remove node-fetch, update deps           | 1     | Low        | Low    |
 
 **Subtotal Development:** 10.5 hours
 
 ### Testing Tasks
 
-| Task | Description | Hours | Complexity | Risk |
-|------|-------------|-------|------------|------|
-| Unit Tests | Run existing test suite | 1 | Low | Low |
-| Integration Tests | Test API and network features | 2 | Medium | Medium |
-| Manual Testing | Test critical paths | 1 | Low | Low |
-| Performance Testing | Ensure no regressions | 1 | Low | Low |
+| Task                | Description                   | Hours | Complexity | Risk   |
+| ------------------- | ----------------------------- | ----- | ---------- | ------ |
+| Unit Tests          | Run existing test suite       | 1     | Low        | Low    |
+| Integration Tests   | Test API and network features | 2     | Medium     | Medium |
+| Manual Testing      | Test critical paths           | 1     | Low        | Low    |
+| Performance Testing | Ensure no regressions         | 1     | Low        | Low    |
 
 **Subtotal Testing:** 5 hours
 
 ### Documentation Tasks
 
-| Task | Description | Hours | Complexity | Risk |
-|------|-------------|-------|------------|------|
-| Update README | Node version requirements | 0.5 | Low | Low |
-| Update CHANGELOG | Document migration | 0.5 | Low | Low |
-| Update Deployment Docs | CI/CD changes | 1 | Low | Low |
+| Task                   | Description               | Hours | Complexity | Risk |
+| ---------------------- | ------------------------- | ----- | ---------- | ---- |
+| Update README          | Node version requirements | 0.5   | Low        | Low  |
+| Update CHANGELOG       | Document migration        | 0.5   | Low        | Low  |
+| Update Deployment Docs | CI/CD changes             | 1     | Low        | Low  |
 
 **Subtotal Documentation:** 2 hours
 
@@ -419,6 +443,7 @@ Found 2 occurrences:
 ## Migration Checklist (Prioritized)
 
 ### Phase 1: Preparation (Day 1 Morning)
+
 - [ ] **P0:** Create backup of current stable codebase
 - [ ] **P0:** Create migration branch: `feature/node-20-migration`
 - [ ] **P0:** Install Node 20.x locally
@@ -426,6 +451,7 @@ Found 2 occurrences:
 - [ ] **P1:** Communicate migration plan to team
 
 ### Phase 2: Configuration Updates (Day 1 Afternoon)
+
 - [ ] **P0:** Update package.json engines: `"node": ">=20.6.0"`
 - [ ] **P0:** Update .nvmrc: `20`
 - [ ] **P1:** Update Dockerfile: `FROM node:20-alpine`
@@ -433,6 +459,7 @@ Found 2 occurrences:
 - [ ] **P2:** Update README with new Node requirement
 
 ### Phase 3: Code Changes (Day 1-2)
+
 - [ ] **P0:** Fix import assertions → attributes (3 files)
   - [ ] src/config/loader.js
   - [ ] src/utils/parser.js
@@ -443,12 +470,14 @@ Found 2 occurrences:
 - [ ] **P2:** Remove node-fetch dependency (use built-in fetch)
 
 ### Phase 4: Dependency Updates (Day 2)
+
 - [ ] **P1:** Run `npm outdated` to check for updates
 - [ ] **P1:** Update compatible dependencies
 - [ ] **P1:** Test after each dependency update
 - [ ] **P2:** Consider removing dotenv (use --env-file)
 
 ### Phase 5: Testing (Day 2-3)
+
 - [ ] **P0:** Run unit test suite: `npm test`
 - [ ] **P0:** Fix any failing tests
 - [ ] **P0:** Run integration tests
@@ -458,6 +487,7 @@ Found 2 occurrences:
 - [ ] **P2:** Test on multiple platforms (Linux, macOS, Windows)
 
 ### Phase 6: Validation (Day 3)
+
 - [ ] **P0:** Code review with team
 - [ ] **P0:** Run full test suite on CI/CD
 - [ ] **P1:** Deploy to staging environment
@@ -465,6 +495,7 @@ Found 2 occurrences:
 - [ ] **P2:** Run execute-checklist.md with version-update-checklist.md
 
 ### Phase 7: Deployment (After validation)
+
 - [ ] **P0:** Merge to main branch
 - [ ] **P0:** Tag release
 - [ ] **P1:** Deploy to production (with rollback plan)
@@ -473,6 +504,7 @@ Found 2 occurrences:
 - [ ] **P2:** Announce completion
 
 Priority Legend:
+
 - P0: Critical (must complete before next phase)
 - P1: Important (should complete, minor flexibility)
 - P2: Nice-to-have (can defer if needed)
@@ -482,7 +514,7 @@ Priority Legend:
 
 **Provide exact fix examples:**
 
-```markdown
+````markdown
 ## Required Code Changes
 
 ### Change 1: Import Assertions → Import Attributes
@@ -490,18 +522,22 @@ Priority Legend:
 **Location:** 3 files (loader.js, parser.js, loader.test.js)
 
 **Before (Node 18):**
+
 ```javascript
 import data from './data.json' assert { type: 'json' };
 import config from './config.json' assert { type: 'json' };
 ```
+````
 
 **After (Node 20):**
+
 ```javascript
 import data from './data.json' with { type: 'json' };
 import config from './config.json' with { type: 'json' };
 ```
 
 **Find & Replace:**
+
 - Find: `assert { type: 'json' }`
 - Replace: `with { type: 'json' }`
 
@@ -510,6 +546,7 @@ import config from './config.json' with { type: 'json' };
 **Location:** src/utils/cleanup.js:45
 
 **Before:**
+
 ```javascript
 const fs = require('fs');
 
@@ -519,6 +556,7 @@ function cleanup(directory) {
 ```
 
 **After:**
+
 ```javascript
 const fs = require('fs');
 
@@ -528,6 +566,7 @@ function cleanup(directory) {
 ```
 
 **Notes:**
+
 - `fs.rm()` is the replacement for `fs.rmdir({ recursive: true })`
 - Added `force: true` to suppress errors if directory doesn't exist
 - Async version: `fs.rm()` instead of `fs.rmdir()`
@@ -537,6 +576,7 @@ function cleanup(directory) {
 **Location:** src/services/api-client.js:23
 
 **Before (Node 18 - implicit ipv4first):**
+
 ```javascript
 dns.lookup('example.com', (err, address) => {
   console.log(address); // IPv4 preferred
@@ -544,6 +584,7 @@ dns.lookup('example.com', (err, address) => {
 ```
 
 **After (Node 20 - explicit if old behavior needed):**
+
 ```javascript
 dns.lookup('example.com', { verbatim: false }, (err, address) => {
   console.log(address); // IPv4 preferred (same as Node 18)
@@ -551,6 +592,7 @@ dns.lookup('example.com', { verbatim: false }, (err, address) => {
 ```
 
 **Or accept new behavior:**
+
 ```javascript
 dns.lookup('example.com', (err, address) => {
   console.log(address); // Uses DNS order (new default)
@@ -564,6 +606,7 @@ dns.lookup('example.com', (err, address) => {
 **Location:** Multiple files using fetch
 
 **Before:**
+
 ```javascript
 const fetch = require('node-fetch');
 
@@ -574,6 +617,7 @@ async function getUser(id) {
 ```
 
 **After:**
+
 ```javascript
 // No import needed - fetch is global in Node 18+
 
@@ -584,13 +628,15 @@ async function getUser(id) {
 ```
 
 **Cleanup:**
+
 ```bash
 npm uninstall node-fetch
 ```
 
 **Update package.json:**
 Remove `"node-fetch": "^2.6.7"` from dependencies
-```
+
+````
 
 ### 8. Identify Testing Requirements
 
@@ -619,35 +665,41 @@ node --eval "require('dns').lookup('example.com', console.log)"
 
 # Test with old behavior (ipv4first)
 node --eval "require('dns').lookup('example.com', {verbatim:false}, console.log)"
-```
+````
 
 #### Import Attributes Testing
+
 - [ ] All JSON imports load correctly
 - [ ] No syntax errors in import statements
 - [ ] Module resolution works in all environments
 
 #### File System Testing
+
 - [ ] Directory cleanup works (fs.rm)
 - [ ] No errors when directory doesn't exist
 - [ ] Recursive deletion functions correctly
 
 ### Performance Testing
+
 - [ ] Application startup time
 - [ ] API response times
 - [ ] Memory usage comparison
 - [ ] Build time comparison
 
 ### Regression Testing
+
 - [ ] Test critical user paths
 - [ ] Test error handling
 - [ ] Test edge cases
 - [ ] Test on production-like data
 
 ### Platform Testing
+
 - [ ] Test on Linux (CI/CD)
 - [ ] Test on macOS (development)
 - [ ] Test on Windows (if supported)
-```
+
+````
 
 ## Success Criteria
 
@@ -728,35 +780,43 @@ Impact assessment is complete when:
 - Changelog: [URL]
 - Migration Guide: [URL]
 - Breaking Changes: [URL]
-```
+````
 
 ## Common Pitfalls to Avoid
 
 **❌ Skipping changelog review:**
+
 - Missing critical breaking changes
 - Incomplete migration
 
 ✅ **Read full changelog:**
+
 - Review all sections
 - Check "breaking changes" specifically
 
 **❌ Not testing DNS behavior:**
+
 - Assuming network code will work the same
 
 ✅ **Test network features explicitly:**
+
 - Verify DNS resolution
 - Test with different network conditions
 
 **❌ Underestimating effort:**
+
 - Allocating insufficient time for testing
 
 ✅ **Add buffer for testing:**
+
 - Plan for 30-50% of time on validation
 
 **❌ No rollback plan:**
+
 - Getting stuck if migration fails
 
 ✅ **Prepare rollback:**
+
 - Keep old version deployable
 - Document revert steps
 

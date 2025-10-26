@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Both table and figure captions styled as "Figure Caption [PACKT]" (PacktPub standard)
 
 **Updated Files**:
+
 - `tasks/format-for-packtpub.md` - Script reference updated to v6, added caption placement section (2.3)
 - `README.md` - Script reference and usage examples updated to v6
 - `workflows/packtpub-submission-workflow.yaml` - Added caption placement requirements and common pitfalls
@@ -51,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Technical Details
 
 **Script Changes (v5 → v6)**:
+
 - New function: `is_figure_caption()` - Detects both table and figure captions
 - New function: `has_image()` - Checks for embedded images in paragraphs
 - Table caption regex: `r'^Table\s+\d+\.\d+:'`
@@ -60,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **SIMPLIFIED**: After alt text removal, only need 1-paragraph lookback
 
 **Testing** (Comprehensive):
+
 - ✅ 5 tables tested with captions (139 cells: 25 headers + 114 content)
 - ✅ 4 figures tested with embedded images (all captions detected)
 - ✅ Alt text removal: 4 paragraphs removed (130 → 126 total)

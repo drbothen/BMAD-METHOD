@@ -89,9 +89,9 @@ workflow:
       - Summary and Q&A sections present
       - Code blocks properly formatted with language tags
       - Callout boxes for notes, warnings, tips
-      - Screenshot captions descriptive (format: "Figure X.Y: Description" AFTER image)
-      - Table captions descriptive (format: "Table X.Y: Description" BEFORE table)
-      - Checklist: packtpub-submission-checklist.md
+      - "Screenshot captions descriptive (format: Figure X.Y: Description AFTER image)"
+      - "Table captions descriptive (format: Table X.Y: Description BEFORE table)"
+      - "Checklist: packtpub-submission-checklist.md"
 
     code_requirements:
       - All code examples tested and working
@@ -129,9 +129,9 @@ workflow:
     formatting:
       - SharePoint-compatible format preferred
       - Code blocks with language identifiers
-      - Callout boxes: Note, Tip, Warning, Important
-      - Figure captions: "Figure X.Y: Description" (AFTER image)
-      - Table captions: "Table X.Y: Description" (BEFORE table)
+      - "Callout boxes: Note, Tip, Warning, Important"
+      - "Figure captions: Figure X.Y: Description (AFTER image)"
+      - "Table captions: Table X.Y: Description (BEFORE table)"
       - Numbered lists for procedures
       - Bold for UI elements, italic for emphasis
 

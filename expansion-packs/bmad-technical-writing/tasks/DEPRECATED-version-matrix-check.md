@@ -5,6 +5,7 @@
 > **⚠️ DEPRECATED**: This task has been superseded by more comprehensive specialized tasks.
 >
 > **Use instead:**
+>
 > - `create-version-matrix.md` - Build comprehensive version compatibility matrix
 > - `assess-version-impact.md` - Analyze migration impact between versions
 > - `update-dependencies.md` - Update package dependencies with testing

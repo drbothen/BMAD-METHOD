@@ -63,9 +63,17 @@ dependencies:
   tasks:
     - create-doc.md
     - create-chapter-outline.md
+    - write-chapter-draft.md
+    - develop-tutorial.md
+    - write-introduction.md
+    - write-summary.md
     - execute-checklist.md
   templates:
     - chapter-outline-tmpl.yaml
+    - chapter-draft-tmpl.yaml
+    - tutorial-section-tmpl.yaml
+    - introduction-tmpl.yaml
+    - exercise-set-tmpl.yaml
   checklists:
     - tutorial-effectiveness-checklist.md
     - chapter-completeness-checklist.md
