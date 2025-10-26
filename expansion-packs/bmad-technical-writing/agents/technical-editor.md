@@ -66,6 +66,8 @@ dependencies:
     - copy-edit-chapter.md
     - validate-cross-references.md
     - execute-checklist.md
+    - extract-reusable-content.md
+    - generate-cross-references.md
   checklists:
     - packtpub-submission-checklist.md
     - oreilly-format-checklist.md

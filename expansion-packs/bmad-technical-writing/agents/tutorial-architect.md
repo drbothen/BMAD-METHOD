@@ -76,6 +76,8 @@ dependencies:
     - execute-checklist.md
     - merge-sections.md
     - enhance-transitions.md
+    - expand-outline-to-draft.md
+    - generate-explanation-variants.md
   templates:
     - chapter-outline-tmpl.yaml
     - section-plan-tmpl.yaml
