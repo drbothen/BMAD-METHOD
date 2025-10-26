@@ -73,18 +73,21 @@ core_principles:
   - Numbered Options Protocol - Always use numbered lists for user selections
 commands:
   - '*help - Show numbered list of available commands for selection'
-  - '*organize-code-repo - Run task setup-code-repository.md to create repository structure'
-  - '*update-dependencies - Update package dependencies and test compatibility'
+  - '*organize-code-repo - Create well-structured repository with professional presentation'
   - '*create-ci-pipeline - Set up GitHub Actions or other CI/CD automation'
-  - '*run-tests - Execute task test-code-examples.md across all examples'
   - '*publish-repo - Prepare repository for public release'
+  - '*run-tests - Execute comprehensive test suite across all examples'
+  - '*update-dependencies - Update package dependencies and test compatibility'
   - '*yolo - Toggle Yolo Mode'
   - '*exit - Say goodbye as the Sample Code Maintainer, and then abandon inhabiting this persona'
 dependencies:
   tasks:
-    - setup-code-repository.md
     - test-code-examples.md
     - execute-checklist.md
+    - organize-code-repo.md
+    - create-ci-pipeline.md
+    - publish-repo.md
+    - run-tests.md
   checklists:
     - code-testing-checklist.md
     - repository-quality-checklist.md
@@ -122,574 +125,6 @@ Remember to present all options as numbered lists for easy selection.
 
 **Note**: This agent can work standalone or merge with the Code Curator for simpler deployments. Use this specialist when managing large code repositories with complex dependencies and CI/CD requirements.
 ==================== END: .bmad-technical-writing/agents/sample-code-maintainer.md ====================
-
-==================== START: .bmad-technical-writing/tasks/setup-code-repository.md ====================
-<!-- Powered by BMAD™ Core -->
-
-# Setup Code Repository
-
----
-
-task:
-id: setup-code-repository
-name: Setup Code Repository
-description: Initialize and structure GitHub repository for book code examples
-persona_default: sample-code-maintainer
-inputs:
-
-- book-name
-- programming-language
-- target-platforms
-  steps:
-- Initialize GitHub repository
-- Create chapter-based folder structure
-- Add README.md with repository overview
-- Create requirements or package files per chapter
-- Set up testing infrastructure
-- Create .gitignore for language-specific files
-- Add LICENSE file
-- Document version and platform requirements
-- Create CI/CD pipeline (optional)
-- Add contribution guidelines if open-source
-- Run execute-checklist.md with repository-quality-checklist.md
-  output: Code repository at https://github.com/{{org}}/{{repo-name}}
-
----
-
-## Purpose
-
-This task guides you through creating a well-organized, professional code repository that accompanies your technical book. Readers should be able to clone the repository and immediately start working with the code examples.
-
-## Prerequisites
-
-Before starting this task:
-
-- GitHub account created
-- Git installed locally
-- Book outline with chapter structure
-- Understanding of target programming language ecosystem
-- Knowledge of target platforms (Windows/Mac/Linux)
-
-## Workflow Steps
-
-### 1. Initialize GitHub Repository
-
-Create the repository:
-
-**Steps:**
-
-1. Go to GitHub.com and create new repository
-2. Choose repository name (e.g., `mastering-web-apis-code`)
-3. Add description: "Code examples for [Book Title]"
-4. Choose public or private (usually public for published books)
-5. Initialize with README (we'll replace it)
-6. Clone locally: `git clone https://github.com/yourusername/repo-name.git`
-
-**Naming Conventions:**
-
-- Use book title or abbreviation
-- Append `-code` or `-examples`
-- Use lowercase with hyphens
-- Examples: `python-data-science-code`, `react-book-examples`
-
-### 2. Create Chapter-Based Folder Structure
-
-Organize by chapters:
-
-**Standard Structure:**
-
-```
-repo-root/
-├── chapter-01/
-│   ├── example-01-hello-world/
-│   ├── example-02-variables/
-│   └── README.md
-├── chapter-02/
-│   ├── example-01-functions/
-│   ├── example-02-classes/
-│   └── README.md
-├── chapter-03/
-│   └── ...
-├── appendix-a/
-├── bonus-content/
-├── tests/
-├── .github/
-│   └── workflows/
-├── .gitignore
-├── LICENSE
-├── README.md
-└── requirements.txt (or package.json, etc.)
-```
-
-**Alternative Structure (for small books):**
-
-```
-repo-root/
-├── src/
-│   ├── ch01_example1.py
-│   ├── ch01_example2.py
-│   ├── ch02_example1.py
-│   └── ...
-├── tests/
-├── README.md
-└── requirements.txt
-```
-
-**Create Folders:**
-
-```bash
-mkdir -p chapter-{01..12}
-mkdir -p tests
-mkdir -p .github/workflows
-```
-
-### 3. Add README.md with Repository Overview
-
-Create comprehensive README:
-
-**README Template:**
-
-````markdown
-# [Book Title] - Code Examples
-
-Code examples and exercises from **[Book Title]** by [Author Name].
-
-## About This Repository
-
-This repository contains all code examples from the book, organized by chapter. Each example is self-contained and includes:
-
-- Working code with comments
-- Setup instructions
-- Expected output
-- Common troubleshooting tips
-
-## Prerequisites
-
-- [Language] version X.X or higher
-- [Tool/Framework] (optional)
-- Basic understanding of [concepts]
-
-## Installation
-
-### Option 1: Clone Entire Repository
-
-```bash
-git clone https://github.com/username/repo-name.git
-cd repo-name
-```
-````
-
-### Option 2: Download Specific Chapter
-
-Navigate to the chapter folder and download individual examples.
-
-## Setup
-
-1. Install dependencies:
-
-   ```bash
-   [package manager install command]
-   ```
-
-2. Verify installation:
-
-   ```bash
-   [verification command]
-   ```
-
-3. Run tests (optional):
-   ```bash
-   [test command]
-   ```
-
-## Repository Structure
-
-- `chapter-01/` - Introduction and basics
-- `chapter-02/` - [Chapter topic]
-- `chapter-03/` - [Chapter topic]
-- ...
-- `tests/` - Automated tests for code examples
-- `appendix-a/` - Additional resources
-
-## Usage
-
-Each chapter folder contains a README with:
-
-- Learning objectives for that chapter
-- Setup instructions specific to examples
-- How to run the code
-- Expected output
-
-Navigate to a chapter and follow its README.
-
-## Requirements
-
-- [Language]: [Version]
-- [Framework/Library]: [Version]
-- [Platform]: [Supported platforms]
-
-See `requirements.txt` (or `package.json`, `Gemfile`, etc.) for complete dependency list.
-
-## Running Examples
-
-```bash
-cd chapter-03/example-01-api-basics
-[command to run example]
-```
-
-## Testing
-
-```bash
-[command to run all tests]
-```
-
-## Contributing
-
-Found a bug or improvement? Please [open an issue](link) or submit a pull request.
-
-## License
-
-[License type - MIT, Apache 2.0, etc.]
-
-## About the Book
-
-**[Book Title]**
-By [Author Name]
-Published by [Publisher]
-[Purchase link]
-
-## Support
-
-- [Book website](link)
-- [Author contact](link)
-- [Errata page](link)
-
-```
-
-### 4. Create Requirements/Package Files Per Chapter
-
-Define dependencies:
-
-**For Python:**
-
-Create `requirements.txt` in root and per-chapter if dependencies differ:
-
-```
-
-# requirements.txt (root)
-
-requests==2.31.0
-pytest==7.4.0
-black==23.7.0
-
-# chapter-03/requirements.txt (if different)
-
-requests==2.31.0
-flask==2.3.0
-
-````
-
-**For Node.js:**
-
-Create `package.json`:
-
-```json
-{
-  "name": "book-code-examples",
-  "version": "1.0.0",
-  "description": "Code examples for [Book Title]",
-  "scripts": {
-    "test": "jest",
-    "lint": "eslint ."
-  },
-  "dependencies": {
-    "express": "^4.18.0"
-  },
-  "devDependencies": {
-    "jest": "^29.5.0",
-    "eslint": "^8.43.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  }
-}
-````
-
-**For Java:**
-
-Create `pom.xml` (Maven) or `build.gradle` (Gradle)
-
-**Version Pinning:**
-
-- Pin exact versions for reproducibility
-- Document why specific versions are required
-- Test with version ranges if supporting multiple versions
-
-### 5. Set Up Testing Infrastructure
-
-Add automated tests:
-
-**Python (pytest):**
-
-```python
-# tests/test_chapter01.py
-import pytest
-from chapter01.example01 import hello_world
-
-def test_hello_world():
-    result = hello_world()
-    assert result == "Hello, World!"
-```
-
-**Node.js (Jest):**
-
-```javascript
-// tests/chapter01.test.js
-const { helloWorld } = require('../chapter-01/example-01/index');
-
-test('returns hello world', () => {
-  expect(helloWorld()).toBe('Hello, World!');
-});
-```
-
-**Test Structure:**
-
-```
-tests/
-├── test_chapter01.py
-├── test_chapter02.py
-├── test_chapter03.py
-└── conftest.py (pytest configuration)
-```
-
-### 6. Create .gitignore
-
-Exclude unnecessary files:
-
-**Python .gitignore:**
-
-```
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-venv/
-env/
-ENV/
-.venv
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Testing
-.coverage
-htmlcov/
-.pytest_cache/
-```
-
-**Node.js .gitignore:**
-
-```
-# Node
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# IDE
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-
-# Testing
-coverage/
-.nyc_output/
-```
-
-### 7. Add LICENSE File
-
-Choose appropriate license:
-
-**MIT License (permissive):**
-
-```
-MIT License
-
-Copyright (c) [year] [fullname]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction...
-```
-
-**Apache 2.0 (permissive with patent grant):**
-
-Use for enterprise-friendly code.
-
-**Creative Commons (for content):**
-
-Consider for tutorials/documentation.
-
-**How to Choose:**
-
-- MIT: Simple, permissive, widely used
-- Apache 2.0: Patent protection, enterprise-friendly
-- GPL: Copyleft, requires derivative works to be open source
-- Proprietary: All rights reserved (unusual for book code)
-
-### 8. Document Version and Platform Requirements
-
-Specify compatibility:
-
-**Create REQUIREMENTS.md or include in README:**
-
-```markdown
-## System Requirements
-
-### Supported Platforms
-
-- ✅ macOS 11+ (Big Sur or later)
-- ✅ Windows 10/11
-- ✅ Linux (Ubuntu 20.04+, Fedora 35+, Debian 11+)
-
-### Software Requirements
-
-- Python 3.11 or higher (tested on 3.11, 3.12)
-- pip 23.0+
-- Git 2.30+
-
-### Optional Tools
-
-- Docker 20.10+ (for containerized examples)
-- VS Code 1.75+ (recommended IDE)
-```
-
-### 9. Create CI/CD Pipeline (Optional but Recommended)
-
-Automate testing:
-
-**GitHub Actions (.github/workflows/test.yml):**
-
-```yaml
-name: Test Code Examples
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ['3.11', '3.12']
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-      - name: Run tests
-        run: |
-          pytest tests/
-```
-
-**Benefits of CI/CD:**
-
-- Catch breaking changes immediately
-- Verify cross-platform compatibility
-- Test multiple language versions
-- Build confidence for readers
-
-### 10. Add Contribution Guidelines
-
-If open-source:
-
-**Create CONTRIBUTING.md:**
-
-```markdown
-# Contributing
-
-Thank you for your interest in improving these code examples!
-
-## Reporting Issues
-
-- Check existing issues first
-- Provide code example and error message
-- Specify your platform and version
-
-## Submitting Pull Requests
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Ensure all tests pass
-6. Submit pull request with clear description
-
-## Code Style
-
-- Follow [language-specific style guide]
-- Run linter before committing
-- Add comments for complex logic
-```
-
-### 11. Validate Repository Quality
-
-Run checklist:
-
-- Run execute-checklist.md with repository-quality-checklist.md
-
-## Success Criteria
-
-A completed code repository should have:
-
-- [ ] GitHub repository initialized and cloned
-- [ ] Logical folder structure (chapter-based or src-based)
-- [ ] Comprehensive README.md
-- [ ] Dependencies documented (requirements.txt, package.json, etc.)
-- [ ] Testing infrastructure set up
-- [ ] Proper .gitignore for language
-- [ ] LICENSE file included
-- [ ] Version and platform requirements documented
-- [ ] CI/CD pipeline configured (optional)
-- [ ] Contribution guidelines (if open-source)
-- [ ] Repository quality checklist passed
-
-## Common Pitfalls to Avoid
-
-- **No structure**: Dumping all code in root directory
-- **Missing dependencies**: Not documenting required packages
-- **No README**: Readers don't know how to use the repository
-- **Untested code**: Code works on author's machine only
-- **No license**: Legal uncertainty for readers
-- **Platform assumptions**: Code only works on one OS
-- **Outdated dependencies**: Using deprecated package versions
-
-## Next Steps
-
-After setting up the repository:
-
-1. Add code examples as you write chapters
-2. Test on all supported platforms
-3. Update README as repository grows
-4. Set up GitHub Pages for documentation (optional)
-5. Link repository prominently in book's front matter
-==================== END: .bmad-technical-writing/tasks/setup-code-repository.md ====================
 
 ==================== START: .bmad-technical-writing/tasks/test-code-examples.md ====================
 <!-- Powered by BMAD™ Core -->
@@ -993,9 +428,18 @@ id: execute-checklist
 name: Execute Checklist
 description: Systematically execute checklist items with pass/fail/na status and evidence collection for quality assurance
 persona_default: technical-reviewer
-inputs: - checklist_path - subject_name - context_notes
-steps: - Load and parse checklist file - Process each category and item sequentially - Evaluate and mark status (PASS/FAIL/NA) with evidence - Generate results report with summary statistics - Save results to standard location
-output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
+inputs:
+
+- checklist_path
+- subject_name
+- context_notes
+  steps:
+- Load and parse checklist file
+- Process each category and item sequentially
+- Evaluate and mark status (PASS/FAIL/NA) with evidence
+- Generate results report with summary statistics
+- Save results to standard location
+  output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
 
 ---
 
@@ -1334,6 +778,66 @@ Inputs:
 Output: reviews/checklist-results/packtpub-submission-checklist-2024-10-24-16-20.md
 ```
 
+### Example 4: Book Outline Validation
+
+```
+Agent: instructional-designer
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/book-outline-checklist.md
+  - subject_name: Machine Learning Fundamentals Book Outline
+  - context_notes: Initial outline review before chapter development
+Output: reviews/checklist-results/book-outline-checklist-2024-10-24-17-15.md
+```
+
+### Example 5: Chapter Outline Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/chapter-outline-checklist.md
+  - subject_name: Chapter 3: Neural Networks Outline
+  - context_notes: Validating structure before section planning
+Output: reviews/checklist-results/chapter-outline-checklist-2024-10-24-18-00.md
+```
+
+### Example 6: Section Plan Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-plan-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Section plan complete, ready for development
+Output: reviews/checklist-results/section-plan-checklist-2024-10-24-19-30.md
+```
+
+### Example 7: Section Completeness Check
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-completeness-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Before marking section DONE
+Output: reviews/checklist-results/section-completeness-checklist-2024-10-24-20-15.md
+```
+
+### Example 8: Code Example Quality Check
+
+```
+Agent: code-curator
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/code-example-checklist.md
+  - subject_name: neural_network_basic.py
+  - context_notes: After testing, before section integration
+Output: reviews/checklist-results/code-example-checklist-2024-10-24-21-00.md
+```
+
 ## Troubleshooting
 
 **Issue**: Checklist file not found
@@ -1394,6 +898,974 @@ The results file provides an auditable record for:
 - Team communication
 - Process improvement analysis
 ==================== END: .bmad-technical-writing/tasks/execute-checklist.md ====================
+
+==================== START: .bmad-technical-writing/tasks/organize-code-repo.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Organize Code Repository
+
+---
+
+task:
+id: organize-code-repo
+name: Organize Code Repository
+description: Create a well-structured code repository with clear organization, documentation, and professional presentation
+persona_default: sample-code-maintainer
+inputs:
+
+- code-files (list of code files to organize)
+- organization-strategy (by-chapter, by-topic, by-feature, monorepo)
+- repo-name (name for the repository)
+  steps:
+- Analyze code files and determine optimal structure
+- Create folder hierarchy based on strategy
+- Organize code files into appropriate folders
+- Create README.md for repository root
+- Create README.md files for each major folder
+- Add .gitignore for language-specific artifacts
+- Create LICENSE file
+- Add CONTRIBUTING.md guidelines
+- Create example .env.example if needed
+- Validate structure meets quality standards
+  output: Organized repository structure with documentation files
+
+---
+
+## Purpose
+
+Organize code samples into a professional, easy-to-navigate repository structure that helps readers find and understand code examples.
+
+## Organization Strategies
+
+### By Chapter (Book Code Samples)
+
+```
+book-code-samples/
+├── chapter-01-introduction/
+│   ├── README.md
+│   ├── hello-world.js
+│   └── setup-verification.js
+├── chapter-02-basics/
+│   ├── README.md
+│   ├── variables.js
+│   └── functions.js
+├── chapter-03-advanced/
+│   ├── README.md
+│   ├── async-patterns.js
+│   └── error-handling.js
+└── README.md
+```
+
+### By Topic (Tutorial Series)
+
+```
+react-tutorial/
+├── components/
+│   ├── README.md
+│   ├── Button.jsx
+│   └── Card.jsx
+├── hooks/
+│   ├── README.md
+│   ├── useState-example.jsx
+│   └── useEffect-example.jsx
+├── routing/
+│   ├── README.md
+│   └── Router.jsx
+└── README.md
+```
+
+### Monorepo (Multiple Projects)
+
+```
+fullstack-examples/
+├── frontend/
+│   ├── package.json
+│   ├── src/
+│   └── README.md
+├── backend/
+│   ├── package.json
+│   ├── src/
+│   └── README.md
+├── shared/
+│   └── types/
+└── README.md
+```
+
+## Workflow Steps
+
+### 1. Analyze and Plan Structure
+
+- Review all code files
+- Group by logical category (chapter, feature, topic)
+- Plan folder hierarchy (max 3 levels deep)
+
+### 2. Create Folder Structure
+
+```bash
+mkdir -p chapter-{01..10}
+mkdir -p {tests,docs,assets}
+```
+
+### 3. Move Files into Structure
+
+```bash
+mv hello-world.js chapter-01/
+mv api-client.js chapter-05/
+```
+
+### 4. Create Root README.md
+
+Include:
+
+- Project description
+- Prerequisites
+- Installation instructions
+- Folder structure overview
+- How to run examples
+- License info
+
+### 5. Create Folder READMEs
+
+For each major folder:
+
+- What this folder contains
+- How to run code in this folder
+- Key concepts demonstrated
+
+### 6. Add .gitignore
+
+```
+node_modules/
+.env
+dist/
+*.log
+.DS_Store
+```
+
+### 7. Add LICENSE
+
+Common choices:
+
+- MIT (permissive)
+- Apache 2.0 (patent protection)
+- GPL (copyleft)
+
+### 8. Run Quality Checklist
+
+- [ ] Logical folder names
+- [ ] Consistent naming convention
+- [ ] READMEs for all major folders
+- [ ] .gitignore present
+- [ ] LICENSE file included
+- [ ] No sensitive data committed
+
+## Success Criteria
+
+- [ ] Clear, logical folder structure
+- [ ] All code files organized
+- [ ] Root README with overview
+- [ ] Folder READMEs where needed
+- [ ] .gitignore appropriate for language
+- [ ] LICENSE file present
+- [ ] Easy to navigate and understand
+==================== END: .bmad-technical-writing/tasks/organize-code-repo.md ====================
+
+==================== START: .bmad-technical-writing/tasks/create-ci-pipeline.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Create CI Pipeline
+
+---
+
+task:
+id: create-ci-pipeline
+name: Create CI Pipeline  
+ description: Set up continuous integration pipeline to automatically test code on every commit
+persona_default: sample-code-maintainer
+inputs:
+
+- language (programming language: javascript, python, ruby, go)
+- test-framework (jest, pytest, rspec, go-test, etc.)
+- platform (github-actions, gitlab-ci, circleci, travis)
+  steps:
+- Choose CI platform based on repository host
+- Create CI configuration file (.github/workflows/\*.yml, .gitlab-ci.yml, etc.)
+- Define test job with language runtime setup
+- Configure dependency installation
+- Add test execution command
+- Add linting/formatting checks (optional)
+- Add code coverage reporting (optional)
+- Add status badge to README
+- Test CI pipeline with sample commit
+  output: CI configuration file(s) and status badge in README
+
+---
+
+## Purpose
+
+Automate testing of code samples to catch bugs early and maintain code quality across all examples.
+
+## Platform Selection
+
+### GitHub Actions (Recommended for GitHub repos)
+
+**File:** `.github/workflows/test.yml`
+**Pros:** Free for public repos, native GitHub integration
+**Cons:** None for most use cases
+
+### GitLab CI
+
+**File:** `.gitlab-ci.yml`
+**Pros:** Free, powerful features
+**Cons:** GitLab-only
+
+### CircleCI
+
+**File:** `.circleci/config.yml`
+**Pros:** Fast, good free tier
+**Cons:** Requires separate account
+
+## Workflow Steps
+
+### 1. Create Configuration File
+
+**GitHub Actions (Node.js example):**
+
+```yaml
+# .github/workflows/test.yml
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm test
+```
+
+**Python example:**
+
+```yaml
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -r requirements.txt
+      - run: pytest
+```
+
+### 2. Add Linting Job (Optional)
+
+```yaml
+lint:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+    - run: npm ci
+    - run: npm run lint
+```
+
+### 3. Add Coverage Reporting (Optional)
+
+```yaml
+coverage:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+    - run: npm ci
+    - run: npm test -- --coverage
+    - uses: codecov/codecov-action@v3
+```
+
+### 4. Add Status Badge to README
+
+```markdown
+# My Project
+
+![Test Status](https://github.com/username/repo/actions/workflows/test.yml/badge.svg)
+
+Code samples for my book...
+```
+
+### 5. Test Pipeline
+
+```bash
+git add .github/workflows/test.yml
+git commit -m "ci: add GitHub Actions test pipeline"
+git push
+
+# Check Actions tab in GitHub to see pipeline run
+```
+
+## Success Criteria
+
+- [ ] CI configuration file created
+- [ ] Tests run automatically on push
+- [ ] Tests pass on all target versions
+- [ ] Status badge added to README
+- [ ] Pipeline tested with sample commit
+- [ ] Team notified of CI setup
+
+## Common Configurations
+
+### Multi-OS Testing
+
+```yaml
+strategy:
+  matrix:
+    os: [ubuntu-latest, windows-latest, macos-latest]
+    node-version: [18.x, 20.x]
+runs-on: ${{ matrix.os }}
+```
+
+### Caching Dependencies
+
+```yaml
+- uses: actions/cache@v3
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+```
+==================== END: .bmad-technical-writing/tasks/create-ci-pipeline.md ====================
+
+==================== START: .bmad-technical-writing/tasks/publish-repo.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Publish Repository
+
+---
+
+task:
+id: publish-repo
+name: Publish Repository
+description: Publish code repository to GitHub/GitLab with proper configuration and documentation
+persona_default: sample-code-maintainer
+inputs:
+
+- repo-path (local path to repository)
+- platform (github, gitlab, bitbucket)
+- visibility (public, private)
+  steps:
+- Initialize Git repository if not already initialized
+- Create .gitignore file
+- Make initial commit
+- Create remote repository on platform (GitHub/GitLab)
+- Add remote origin
+- Push to remote
+- Configure repository settings (description, topics, etc.)
+- Add CONTRIBUTING.md for collaboration guidelines
+- Enable issue templates (optional)
+- Enable discussions (optional)
+  output: Published repository URL with proper configuration
+
+---
+
+## Purpose
+
+Publish code repository to hosting platform making it accessible to readers and contributors.
+
+## Workflow Steps
+
+### 1. Initialize Git Repository
+
+```bash
+cd /path/to/your/code
+git init
+```
+
+### 2. Create .gitignore
+
+```bash
+# For Node.js
+cat > .gitignore << 'IGNORE'
+node_modules/
+.env
+.env.local
+dist/
+build/
+*.log
+.DS_Store
+IGNORE
+```
+
+### 3. Make Initial Commit
+
+```bash
+git add .
+git commit -m "Initial commit: book code samples"
+```
+
+### 4. Create Remote Repository
+
+**GitHub (via CLI):**
+
+```bash
+# Install GitHub CLI if needed
+brew install gh
+
+# Authenticate
+gh auth login
+
+# Create repository
+gh repo create my-book-code --public --source=. --remote=origin --push
+
+# Or for private repo
+gh repo create my-book-code --private --source=. --remote=origin --push
+```
+
+**GitHub (via web):**
+
+1. Go to https://github.com/new
+2. Enter repository name
+3. Choose public/private
+4. Don't initialize with README (already have one)
+5. Click "Create repository"
+
+### 5. Add Remote and Push
+
+```bash
+# Add remote (if not done via gh CLI)
+git remote add origin https://github.com/username/my-book-code.git
+
+# Push to GitHub
+git branch -M main
+git push -u origin main
+```
+
+### 6. Configure Repository Settings
+
+**Description and Topics:**
+
+```bash
+# Via GitHub CLI
+gh repo edit --description "Code samples for My Awesome Book" \
+  --add-topic javascript \
+  --add-topic tutorial \
+  --add-topic book-code
+```
+
+**Via web:**
+
+- Go to repository settings
+- Add description: "Code samples for My Awesome Book"
+- Add topics: javascript, tutorial, book-code, react
+- Add website URL (book link if available)
+
+### 7. Add CONTRIBUTING.md
+
+```markdown
+# Contributing
+
+Thank you for your interest in contributing!
+
+## Reporting Issues
+
+- Check existing issues first
+- Provide clear description and steps to reproduce
+- Include relevant code samples
+
+## Code Contributions
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b fix/issue-123`)
+3. Make your changes
+4. Add tests if applicable
+5. Ensure all tests pass (`npm test`)
+6. Commit changes (`git commit -m "fix: resolve issue 123"`)
+7. Push to your fork (`git push origin fix/issue-123`)
+8. Open a Pull Request
+
+## Code Style
+
+- Follow existing code style
+- Run linter before committing (`npm run lint`)
+- Use meaningful commit messages
+
+## Questions?
+
+Open an issue for questions or discussions.
+```
+
+### 8. Enable Issue Templates (Optional)
+
+Create `.github/ISSUE_TEMPLATE/bug_report.md`:
+
+```markdown
+---
+name: Bug Report
+about: Report a bug in the code samples
+title: '[BUG] '
+labels: bug
+---
+
+## Description
+
+A clear description of the bug.
+
+## Steps to Reproduce
+
+1. Go to chapter X
+2. Run code sample Y
+3. See error
+
+## Expected Behavior
+
+What you expected to happen.
+
+## Actual Behavior
+
+What actually happened.
+
+## Environment
+
+- OS: [e.g., macOS, Windows, Linux]
+- Node version: [e.g., 18.16.0]
+- npm version: [e.g., 9.5.1]
+```
+
+### 9. Add Repository Badges to README
+
+```markdown
+# My Book Code Samples
+
+![GitHub stars](https://img.shields.io/github/stars/username/repo?style=social)
+![GitHub forks](https://img.shields.io/github/forks/username/repo?style=social)
+![License](https://img.shields.io/github/license/username/repo)
+![Test Status](https://github.com/username/repo/actions/workflows/test.yml/badge.svg)
+
+Code samples for "My Awesome Book"...
+```
+
+### 10. Verify Publication
+
+```bash
+# Check repository is accessible
+gh repo view username/my-book-code --web
+
+# Or visit URL
+open https://github.com/username/my-book-code
+```
+
+## Success Criteria
+
+- [ ] Repository initialized and committed
+- [ ] Remote repository created
+- [ ] Code pushed successfully
+- [ ] Description and topics configured
+- [ ] README displays correctly
+- [ ] CONTRIBUTING.md added
+- [ ] Repository is accessible at URL
+- [ ] All documentation files present
+
+## Post-Publication Tasks
+
+### Link from Book
+
+Add repository URL to book:
+
+```markdown
+**Code Samples:** https://github.com/username/my-book-code
+```
+
+### Announce to Readers
+
+- Tweet repository URL
+- Add to book website
+- Include in book introduction
+
+### Monitor Repository
+
+- Watch for issues
+- Review pull requests
+- Keep examples updated
+
+## Security Considerations
+
+**Before Publishing:**
+
+- [ ] No API keys or secrets committed
+- [ ] No passwords or tokens in code
+- [ ] .env files in .gitignore
+- [ ] No real user data
+- [ ] Sample data only
+
+**If Secrets Leaked:**
+
+```bash
+# Remove from history (use carefully)
+git filter-branch --force --index-filter \
+  "git rm --cached --ignore-unmatch path/to/secret.env" \
+  --prune-empty --tag-name-filter cat -- --all
+
+# Force push (destructive)
+git push origin --force --all
+
+# Better: Rotate leaked secrets immediately
+```
+==================== END: .bmad-technical-writing/tasks/publish-repo.md ====================
+
+==================== START: .bmad-technical-writing/tasks/run-tests.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Run Tests
+
+---
+
+task:
+id: run-tests
+name: Run Tests
+description: Execute test suite with coverage reporting and provide debugging guidance for failures
+persona_default: sample-code-maintainer
+inputs:
+
+- test-path (path to test files or directory)
+- language (javascript, python, ruby, go, etc.)
+- framework (jest, pytest, rspec, go-test, etc.)
+  steps:
+- Detect test framework from project configuration
+- Install test dependencies if needed
+- Run tests with coverage enabled
+- Generate test report (HTML, JSON, or terminal output)
+- Identify failing tests
+- Provide debugging guidance for failures
+- Generate coverage report
+- Check coverage thresholds
+  output: Test execution report with pass/fail status, coverage metrics, and failure diagnostics
+
+---
+
+## Purpose
+
+Validate code quality by running automated tests and ensuring all examples work as expected.
+
+## Framework Detection
+
+### JavaScript
+
+```bash
+# Check package.json for test framework
+if grep -q "jest" package.json; then
+  FRAMEWORK="jest"
+elif grep -q "mocha" package.json; then
+  FRAMEWORK="mocha"
+elif grep -q "vitest" package.json; then
+  FRAMEWORK="vitest"
+fi
+```
+
+### Python
+
+```bash
+# Check for pytest or unittest
+if [ -f "pytest.ini" ] || grep -q "pytest" requirements.txt; then
+  FRAMEWORK="pytest"
+else
+  FRAMEWORK="unittest"
+fi
+```
+
+## Workflow Steps
+
+### 1. Install Dependencies
+
+```bash
+# JavaScript
+npm install  # or npm ci for CI environments
+
+# Python
+pip install -r requirements.txt
+
+# Ruby
+bundle install
+```
+
+### 2. Run Tests
+
+**Jest (JavaScript):**
+
+```bash
+# Run all tests
+npm test
+
+# Run with coverage
+npm test -- --coverage
+
+# Run specific test file
+npm test -- path/to/test.js
+
+# Run in watch mode (development)
+npm test -- --watch
+```
+
+**pytest (Python):**
+
+```bash
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=src --cov-report=html
+
+# Run specific test
+pytest tests/test_api.py
+
+# Verbose output
+pytest -v
+```
+
+**RSpec (Ruby):**
+
+```bash
+# Run all tests
+bundle exec rspec
+
+# Run with coverage
+bundle exec rspec --format documentation
+
+# Run specific test
+bundle exec rspec spec/models/user_spec.rb
+```
+
+**Go:**
+
+```bash
+# Run all tests
+go test ./...
+
+# Run with coverage
+go test -cover ./...
+
+# Generate coverage report
+go test -coverprofile=coverage.out ./...
+go tool cover -html=coverage.out
+```
+
+### 3. Interpret Test Results
+
+**All tests passing:**
+
+```
+PASS  tests/utils/helpers.test.js
+PASS  tests/components/Button.test.js
+PASS  tests/api/users.test.js
+
+Test Suites: 3 passed, 3 total
+Tests:       24 passed, 24 total
+Time:        2.451 s
+```
+
+**Some tests failing:**
+
+```
+FAIL  tests/api/users.test.js
+  ● getUserById › returns user when found
+
+    expect(received).toEqual(expected)
+
+    Expected: {"id": "123", "name": "John"}
+    Received: {"id": "123", "name": "Jane"}
+
+      at Object.<anonymous> (tests/api/users.test.js:15:23)
+
+Test Suites: 1 failed, 2 passed, 3 total
+Tests:       1 failed, 23 passed, 24 total
+```
+
+### 4. Generate Coverage Report
+
+**Jest coverage output:**
+
+```
+----------|---------|----------|---------|---------|-------------------
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+----------|---------|----------|---------|---------|-------------------
+All files |   87.5  |   83.33  |   90.91 |   87.5  |
+ api.js   |   100   |   100    |   100   |   100   |
+ utils.js |   75    |   66.67  |   81.82 |   75    | 23-24,45-48
+----------|---------|----------|---------|---------|-------------------
+```
+
+### 5. Debug Failing Tests
+
+**Common failure patterns:**
+
+**Assertion mismatch:**
+
+```javascript
+// Test expects "John" but gets "Jane"
+// Check data fixtures or mock setup
+
+// Fix:
+const mockUser = { id: '123', name: 'John' }; // Was: 'Jane'
+```
+
+**Async timing issues:**
+
+```javascript
+// Test fails intermittently
+// Missing await or not waiting for async operations
+
+// Fix:
+await waitFor(() => {
+  expect(screen.getByText('Loaded')).toBeInTheDocument();
+});
+```
+
+**Missing dependencies:**
+
+```bash
+# Error: Cannot find module 'axios'
+npm install axios
+```
+
+**Environment setup:**
+
+```javascript
+// Test fails due to missing env variable
+// Add to .env.test file or mock
+
+process.env.API_URL = 'http://localhost:3000';
+```
+
+### 6. Check Coverage Thresholds
+
+**Configure thresholds (jest.config.js):**
+
+```javascript
+module.exports = {
+  coverageThresholds: {
+    global: {
+      statements: 80,
+      branches: 80,
+      functions: 80,
+      lines: 80,
+    },
+  },
+};
+```
+
+**If coverage below threshold:**
+
+```
+Jest: "global" coverage threshold for statements (80%) not met: 75%
+Jest: "global" coverage threshold for branches (80%) not met: 66.67%
+```
+
+**Action:** Add tests for uncovered code or adjust thresholds
+
+## Success Criteria
+
+- [ ] All tests execute successfully
+- [ ] Test failures (if any) identified and documented
+- [ ] Coverage report generated
+- [ ] Coverage meets thresholds (typically 80%+)
+- [ ] No console errors or warnings
+- [ ] Performance acceptable (tests complete in <30s for small projects)
+
+## Output Format
+
+```markdown
+# Test Execution Report
+
+**Date:** 2024-01-15
+**Project:** My Book Code Samples
+**Framework:** Jest 29.7.0
+**Node Version:** 20.10.0
+
+## Summary
+
+- ✅ Test Suites: 12 passed, 12 total
+- ✅ Tests: 87 passed, 87 total
+- ⏱️ Time: 8.234 s
+- 📊 Coverage: 87.5% (statements)
+
+## Coverage Breakdown
+
+| File        | Statements | Branches   | Functions  | Lines     |
+| ----------- | ---------- | ---------- | ---------- | --------- |
+| api.js      | 100%       | 100%       | 100%       | 100%      |
+| utils.js    | 75%        | 66.67%     | 81.82%     | 75%       |
+| **Overall** | **87.5%**  | **83.33%** | **90.91%** | **87.5%** |
+
+## Uncovered Lines
+
+- `src/utils.js:23-24` - Error handling path not tested
+- `src/utils.js:45-48` - Edge case not covered
+
+## Recommendations
+
+1. Add test for error handling in utils.js
+2. Add edge case test for validateInput function
+3. All other code paths well-covered
+```
+
+## Automation Script
+
+```bash
+#!/bin/bash
+# run-tests.sh - Comprehensive test execution script
+
+set -e
+
+echo "🧪 Running test suite..."
+echo ""
+
+# Run tests with coverage
+npm test -- --coverage --verbose
+
+# Check exit code
+if [ $? -eq 0 ]; then
+  echo ""
+  echo "✅ All tests passed!"
+
+  # Generate coverage badge (optional)
+  npx coverage-badge-creator
+
+  # Open coverage report (optional)
+  # open coverage/index.html
+
+  exit 0
+else
+  echo ""
+  echo "❌ Tests failed!"
+  echo ""
+  echo "Debug steps:"
+  echo "1. Check error messages above"
+  echo "2. Run specific failing test: npm test -- path/to/test.js"
+  echo "3. Run in watch mode: npm test -- --watch"
+
+  exit 1
+fi
+```
+==================== END: .bmad-technical-writing/tasks/run-tests.md ====================
 
 ==================== START: .bmad-technical-writing/checklists/code-testing-checklist.md ====================
 # Code Testing Checklist

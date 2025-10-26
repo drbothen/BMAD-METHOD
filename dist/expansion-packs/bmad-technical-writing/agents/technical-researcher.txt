@@ -75,6 +75,8 @@ core_principles:
 commands:
   - '*help - Show numbered list of available commands for selection'
   - '*generate-queries {topic} - Generate research queries formatted for copy/paste into external tools (manual workflow)'
+  - '*generate-deep-questions {topic} - Generate 20-30 Perplexity-style comprehensive research questions'
+  - '*research-topic {topic} - Execute systematic research with source tracking and comprehensive notes'
   - '*import-research - Accept user-provided research findings and create structured report (import workflow)'
   - '*research-auto {topic} - Execute automated research using available tools and generate report (automated workflow)'
   - '*research-chapter {topic} - Enhanced research command offering workflow mode selection (manual/import/auto)'
@@ -86,10 +88,14 @@ dependencies:
   tasks:
     - create-doc.md
     - create-book-research-queries.md
+    - generate-research-questions.md
+    - research-technical-topic.md
     - execute-research-with-tools.md
     - execute-checklist.md
+    - verify-accuracy.md
   templates:
     - book-research-report-tmpl.yaml
+    - accuracy-verification-report-tmpl.yaml
   checklists:
     - research-quality-checklist.md
   data:
@@ -496,9 +502,21 @@ id: create-book-research-queries
 name: Create Book Research Queries
 description: Generate comprehensive research questions for technical book chapter topics with copy/paste formatting for external tools
 persona_default: technical-researcher
-inputs: - chapter-topic - target-audience - book-context
-steps: - Analyze chapter topic and scope - Identify target audience knowledge level - Generate research questions for technical concepts - Identify code example needs - Create learning progression validation questions - Organize questions by priority and category - Define research methodology and sources - Format queries for copy/paste into external tools
-output: Formatted research queries ready for manual research or automated execution
+inputs:
+
+- chapter-topic
+- target-audience
+- book-context
+  steps:
+- Analyze chapter topic and scope
+- Identify target audience knowledge level
+- Generate research questions for technical concepts
+- Identify code example needs
+- Create learning progression validation questions
+- Organize questions by priority and category
+- Define research methodology and sources
+- Format queries for copy/paste into external tools
+  output: Formatted research queries ready for manual research or automated execution
 
 ---
 
@@ -814,6 +832,1290 @@ This task integrates with:
 - **book-research-report-tmpl.yaml**: Document research findings
 ==================== END: .bmad-technical-writing/tasks/create-book-research-queries.md ====================
 
+==================== START: .bmad-technical-writing/tasks/generate-research-questions.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Generate Research Questions
+
+---
+
+task:
+id: generate-research-questions
+name: Generate Research Questions
+description: Create comprehensive research question list (20-30 questions) for deep technical topic exploration
+persona_default: book-analyst
+inputs: - topic - target-audience - research-depth
+steps: - Understand research topic scope and depth goals - Generate foundational questions (What, Why, When, Where, Who) - Generate technical deep-dive questions (How, Architecture, Components) - Generate practical application questions (Use cases, Implementation, Best practices) - Generate advanced/edge case questions (Limitations, Scale, Advanced techniques) - Generate troubleshooting questions (Errors, Debugging, Tools) - Apply question templates (5W1H, Comparison, Implementation, Troubleshooting) - Organize questions by category (foundational, technical, practical, advanced) - Aim for 20-30 comprehensive, specific, answerable questions
+output: List of 20-30 research questions ready for research-technical-topic.md task
+
+---
+
+## Purpose
+
+This task generates Perplexity-style comprehensive research questions for deep technical topic exploration. Instead of manually wondering "what should I research?", you get a systematic list of 20-30 questions covering all aspects of the topic from basics to advanced techniques.
+
+## Prerequisites
+
+Before starting this task:
+
+- Clear research topic identified
+- Target audience skill level known (affects question depth)
+- Understanding of research purpose (chapter, section, book, learning)
+
+## Workflow Steps
+
+### 1. Understand Research Topic
+
+Define what you're researching:
+
+**Ask the user:**
+
+- What is the specific topic to research?
+- What is the target audience (beginner/intermediate/advanced)?
+- What is the current knowledge level about this topic?
+- What is the research goal (chapter content, tutorial, reference)?
+- How deep should the research go (overview vs comprehensive)?
+
+**Document:**
+
+- Topic scope clearly defined
+- Audience skill level
+- Research depth goal (overview / moderate / comprehensive)
+- Time constraints (if any)
+
+### 2. Generate Foundational Questions
+
+Start with essential context questions:
+
+#### What Questions (Definition & Description)
+
+- What is [topic]?
+- What problem does [topic] solve?
+- What are the core components of [topic]?
+- What are the key concepts in [topic]?
+- What does [topic] look like in practice?
+
+#### Why Questions (Motivation & Purpose)
+
+- Why is [topic] important?
+- Why was [topic] created?
+- Why would you use [topic] instead of alternatives?
+- Why do developers/engineers care about [topic]?
+- Why is [topic] relevant in [year/context]?
+
+#### When Questions (Applicability & Timing)
+
+- When should you use [topic]?
+- When should you NOT use [topic]?
+- When was [topic] introduced?
+- When is [topic] most beneficial?
+- When do you need to consider [topic]?
+
+#### Where Questions (Context & Architecture)
+
+- Where does [topic] fit in the architecture?
+- Where is [topic] used in production systems?
+- Where are the main use cases for [topic]?
+- Where does [topic] integrate with other technologies?
+
+#### Who Questions (Users & Community)
+
+- Who uses [topic]?
+- Who created [topic]?
+- Who maintains [topic]?
+- Who is the target user for [topic]?
+
+**Aim for 5-8 foundational questions**
+
+### 3. Generate Technical Deep-Dive Questions
+
+Explore how the technology works:
+
+#### How Questions (Mechanics & Implementation)
+
+- How does [topic] work internally?
+- How is [topic] architected?
+- How does [topic] achieve [key feature]?
+- How does [topic] handle [specific scenario]?
+- How is [topic] different from [alternative]?
+
+#### Architecture Questions
+
+- What is the internal architecture of [topic]?
+- What are the key components and how do they interact?
+- What design patterns does [topic] use?
+- What are the data structures in [topic]?
+- What is the request/processing flow in [topic]?
+
+#### Component Questions
+
+- What are the main modules/packages in [topic]?
+- What APIs does [topic] provide?
+- What configuration options exist?
+- What extension points are available?
+- What are the core abstractions in [topic]?
+
+#### Performance Questions
+
+- What are the performance characteristics of [topic]?
+- How does [topic] scale?
+- What are the resource requirements for [topic]?
+- What are performance bottlenecks in [topic]?
+- How do you optimize [topic] for performance?
+
+#### Security Questions
+
+- What are the security considerations for [topic]?
+- How does [topic] handle authentication/authorization?
+- What are common security vulnerabilities with [topic]?
+- What are security best practices for [topic]?
+- How do you secure [topic] in production?
+
+**Aim for 6-10 technical questions**
+
+### 4. Generate Practical Application Questions
+
+Focus on real-world usage:
+
+#### Use Case Questions
+
+- What are real-world use cases for [topic]?
+- What problems is [topic] commonly used to solve?
+- What types of applications benefit from [topic]?
+- What industry examples showcase [topic]?
+- What successful projects use [topic]?
+
+#### Implementation Questions
+
+- How do you implement [topic] in [language/framework]?
+- How do you get started with [topic]?
+- How do you configure [topic] for [use case]?
+- How do you integrate [topic] with [other technology]?
+- How do you deploy [topic] to production?
+
+#### Best Practices Questions
+
+- What are best practices for using [topic]?
+- What are anti-patterns to avoid with [topic]?
+- What are code conventions for [topic]?
+- What are recommended project structures?
+- What are industry standards around [topic]?
+
+#### Common Mistakes Questions
+
+- What are common mistakes beginners make with [topic]?
+- What are pitfalls to avoid?
+- What are gotchas in [topic]?
+- What do developers often get wrong about [topic]?
+- What are misconceptions about [topic]?
+
+#### Testing Questions
+
+- How do you test [topic]?
+- What testing strategies work for [topic]?
+- What are common test scenarios?
+- What tools help test [topic]?
+- How do you verify [topic] works correctly?
+
+**Aim for 6-10 practical questions**
+
+### 5. Generate Advanced/Edge Case Questions
+
+Explore boundaries and expertise:
+
+#### Limitations Questions
+
+- What are the limitations of [topic]?
+- What doesn't [topic] handle well?
+- What are the constraints of [topic]?
+- What are known issues with [topic]?
+- What trade-offs exist with [topic]?
+
+#### Scaling Questions
+
+- How does [topic] scale?
+- What are scalability challenges with [topic]?
+- How do you handle high load with [topic]?
+- What are distributed system considerations?
+- How do you optimize [topic] at scale?
+
+#### Advanced Techniques Questions
+
+- What advanced techniques exist for [topic]?
+- What separates expert usage from intermediate?
+- What are lesser-known features of [topic]?
+- What are advanced configuration options?
+- What are optimization strategies?
+
+#### Integration Questions
+
+- How does [topic] integrate with [ecosystem technology]?
+- What tools/libraries complement [topic]?
+- What are common technology stacks using [topic]?
+- How does [topic] work with [database/framework/service]?
+- What are integration patterns?
+
+#### Future Questions
+
+- What is the future of [topic]?
+- What are upcoming features/changes?
+- What are current trends around [topic]?
+- What are the roadmap plans?
+- How is [topic] evolving?
+
+**Aim for 3-6 advanced questions**
+
+### 6. Generate Troubleshooting Questions
+
+Address practical problems:
+
+#### Error Questions
+
+- What errors commonly occur with [topic]?
+- What do specific error messages mean?
+- What causes [common error] in [topic]?
+- What are warning signs of problems?
+- What are failure modes?
+
+#### Debugging Questions
+
+- How do you debug [topic] issues?
+- How do you diagnose [problem type] with [topic]?
+- How do you troubleshoot [specific issue]?
+- What logs/metrics help debug [topic]?
+- What debugging tools exist for [topic]?
+
+#### Tools Questions
+
+- What tools help work with [topic]?
+- What debugging utilities exist?
+- What monitoring solutions work for [topic]?
+- What profiling tools are available?
+- What development tools enhance [topic] workflow?
+
+#### Operations Questions
+
+- What monitoring/observability for [topic]?
+- How do you operate [topic] in production?
+- What are maintenance requirements?
+- How do you upgrade [topic]?
+- What are backup/recovery strategies?
+
+**Aim for 3-5 troubleshooting questions**
+
+### 7. Apply Question Templates
+
+Use these templates to generate additional questions:
+
+#### 5W1H Template
+
+- **What** is [topic]?
+- **Why** use [topic]?
+- **When** to use [topic]?
+- **Where** does [topic] fit in architecture?
+- **Who** uses [topic]?
+- **How** does [topic] work?
+
+#### Comparison Template
+
+- How does [topic] compare to [alternative A]?
+- How does [topic] compare to [alternative B]?
+- What are pros/cons of [topic] vs [alternative]?
+- When should you choose [topic] over [alternative]?
+- What are the trade-offs between [topic] and [alternative]?
+
+#### Implementation Template (Language/Framework Specific)
+
+- How do you implement [topic] in [JavaScript]?
+- How do you implement [topic] in [Python]?
+- How do you implement [topic] in [Java]?
+- How do you implement [topic] with [framework]?
+- What libraries support [topic] in [language]?
+
+#### Scenario Template
+
+- How do you use [topic] for [specific use case]?
+- How do you implement [feature] using [topic]?
+- What's the best approach for [scenario] with [topic]?
+- How do you solve [problem] using [topic]?
+
+#### Troubleshooting Template
+
+- What are common errors when using [topic]?
+- How do you debug [specific error] in [topic]?
+- What tools help troubleshoot [topic]?
+- How do you fix [common problem] with [topic]?
+
+### 8. Organize Questions
+
+Group and sequence your questions:
+
+**Create categories:**
+
+```markdown
+## Foundational Questions (5-8 questions)
+
+[Definition, motivation, context, applicability questions]
+
+## Technical Deep-Dive Questions (6-10 questions)
+
+[Architecture, components, performance, security questions]
+
+## Practical Application Questions (6-10 questions)
+
+[Use cases, implementation, best practices, testing questions]
+
+## Advanced Topics Questions (3-6 questions)
+
+[Limitations, scaling, advanced techniques, integration questions]
+
+## Troubleshooting Questions (3-5 questions)
+
+[Errors, debugging, tools, operations questions]
+```
+
+**Sequence within categories:**
+
+- Basic to advanced
+- General to specific
+- Common to edge cases
+
+**Remove duplicates:**
+
+- Check for similar questions
+- Consolidate overlapping questions
+- Ensure each question adds unique value
+
+**Aim for 20-30 total questions**
+
+### 9. Refine Questions
+
+Make questions specific and answerable:
+
+**Bad question (too vague):**
+
+- "How does React work?"
+
+**Good question (specific):**
+
+- "How does React's virtual DOM reconciliation algorithm work?"
+
+**Bad question (too broad):**
+
+- "What are best practices?"
+
+**Good question (specific):**
+
+- "What are best practices for managing state in React applications?"
+
+**Refinement checklist for each question:**
+
+- [ ] Is it specific enough to research?
+- [ ] Is it answerable (not purely opinion)?
+- [ ] Is it relevant to the topic?
+- [ ] Is it at appropriate depth for audience?
+- [ ] Does it add unique value (not duplicate)?
+
+### 10. Present Research Questions
+
+Output final list:
+
+**Format:**
+
+```markdown
+# Research Questions: [Topic]
+
+**Research Goal**: [Chapter/Section/Book/etc.]
+**Target Audience**: [Beginner/Intermediate/Advanced]
+**Research Depth**: [Overview/Moderate/Comprehensive]
+
+## Foundational Questions (7 questions)
+
+1. What is [topic] and how does it work?
+2. Why was [topic] created and what problems does it solve?
+3. When should you use [topic] vs alternatives?
+   [...continue...]
+
+## Technical Deep-Dive Questions (8 questions)
+
+1. How is [topic] architected internally?
+2. What are the key components and how do they interact?
+   [...continue...]
+
+## Practical Application Questions (9 questions)
+
+1. What are real-world use cases for [topic]?
+2. How do you implement [topic] in [language/framework]?
+   [...continue...]
+
+## Advanced Topics Questions (4 questions)
+
+1. What are the limitations and trade-offs of [topic]?
+2. How does [topic] scale in production environments?
+   [...continue...]
+
+## Troubleshooting Questions (4 questions)
+
+1. What are common errors when working with [topic]?
+2. How do you debug [topic] issues?
+   [...continue...]
+
+---
+
+**Total Questions**: 32
+**Next Step**: Use research-technical-topic.md to answer these questions
+```
+
+**Save to:**
+
+- User-specified location or `docs/research/[topic]-questions.md`
+
+## Success Criteria
+
+A successful research question list has:
+
+- [ ] 20-30 comprehensive questions
+- [ ] Questions organized by category (foundational, technical, practical, advanced, troubleshooting)
+- [ ] All major aspects of topic covered
+- [ ] Questions are specific and answerable
+- [ ] Questions appropriate for target audience
+- [ ] No significant duplicates
+- [ ] Progression from basic to advanced
+- [ ] Mix of "what/why/how/when" questions
+- [ ] Practical and theoretical balance
+- [ ] Ready to use with research-technical-topic.md task
+
+## Common Pitfalls to Avoid
+
+- **Too few questions**: Missing important aspects
+- **Too many questions**: Overwhelming, redundant
+- **Too vague**: "How does it work?" vs "How does [specific component] work?"
+- **Too broad**: "Best practices?" vs "Best practices for [specific use case]?"
+- **Only surface-level**: Need deep-dive questions too
+- **Only advanced**: Need foundational questions
+- **Unanswerable**: Opinion-based or too speculative
+- **No organization**: Random list is hard to work with
+- **Duplicates**: Same question asked multiple ways
+- **Off-topic**: Questions not relevant to research goal
+
+## Example: Research Questions for JWT Authentication
+
+**Topic**: JWT Authentication in Node.js
+**Target Audience**: Intermediate developers
+**Research Goal**: Chapter content for technical book
+**Depth**: Comprehensive
+
+### Foundational Questions (7)
+
+1. What is JWT (JSON Web Token) and how does it differ from session-based authentication?
+2. Why use JWT for authentication instead of traditional session cookies?
+3. When should you use JWT vs session-based authentication?
+4. What are the three components of a JWT (header, payload, signature)?
+5. Where are JWTs commonly used in modern web applications?
+6. Who created JWT and what standards define it (RFC 7519)?
+7. What problems does JWT solve in distributed/microservices architectures?
+
+### Technical Deep-Dive Questions (9)
+
+1. How does JWT signing and verification work cryptographically?
+2. What signing algorithms are available (HS256, RS256, etc.) and when to use each?
+3. How does the JWT signature prevent tampering?
+4. What are standard JWT claims (iss, sub, aud, exp, iat) and their purposes?
+5. How do you encode and decode JWTs in Node.js?
+6. What libraries are most commonly used for JWT in Node.js?
+7. How does token expiration work and how is it verified?
+8. What is the structure of a JWT token (base64url encoding)?
+9. How do refresh tokens work in JWT-based systems?
+
+### Practical Application Questions (10)
+
+1. How do you implement JWT authentication in an Express.js application?
+2. What is the recommended way to store JWTs on the client (localStorage vs cookies)?
+3. How do you create a JWT authentication middleware in Express?
+4. What are best practices for JWT secret key management?
+5. How do you implement protected API routes using JWT?
+6. How do you handle token refresh logic in a Node.js backend?
+7. What are common mistakes developers make when implementing JWT auth?
+8. How do you test JWT authentication endpoints?
+9. What HTTP headers should be used for transmitting JWTs?
+10. How do you implement role-based access control (RBAC) with JWTs?
+
+### Advanced Topics Questions (5)
+
+1. What are the security vulnerabilities of JWT and how to mitigate them?
+2. How do you implement JWT token revocation/blacklisting?
+3. What are the performance implications of JWT vs session tokens at scale?
+4. How do you handle JWT authentication in microservices architectures?
+5. What are the trade-offs between short-lived tokens + refresh vs long-lived tokens?
+
+### Troubleshooting Questions (4)
+
+1. What are common JWT verification errors and their causes?
+2. How do you debug "invalid signature" errors in JWT?
+3. What tools exist for inspecting and debugging JWTs (jwt.io, etc.)?
+4. How do you handle expired token scenarios gracefully in the UI?
+
+**Total: 35 questions**
+
+## Next Steps
+
+After generating research questions:
+
+1. Review questions with technical expert or co-author
+2. Prioritize questions (critical vs nice-to-know)
+3. Use research-technical-topic.md to systematically answer questions
+4. Document sources and findings
+5. Synthesize research into content outline
+==================== END: .bmad-technical-writing/tasks/generate-research-questions.md ====================
+
+==================== START: .bmad-technical-writing/tasks/research-technical-topic.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Research Technical Topic
+
+---
+
+task:
+id: research-technical-topic
+name: Research Technical Topic
+description: Systematic research workflow with source tracking and comprehensive note-taking
+persona_default: book-analyst
+inputs: - research-questions-list - topic
+steps: - Organize research questions by category and priority - Identify authoritative research sources (docs, papers, blogs, repos) - For each question systematically search, evaluate, and document answers - Take structured notes with source attribution - Track research progress (not started, in progress, complete) - Verify critical information across multiple sources - Test code examples when applicable - Organize research notes by category - Create source index for citations
+output: Comprehensive research notes with tracked sources ready for synthesis
+
+---
+
+## Purpose
+
+This task provides a systematic workflow for researching technical topics with proper source tracking. Instead of scattered research, you'll create organized, well-sourced notes that can be synthesized into high-quality content.
+
+## Prerequisites
+
+Before starting this task:
+
+- Research questions list (from generate-research-questions.md task)
+- Access to research tools (web browser, AI tools like Perplexity/ChatGPT, documentation)
+- Clear research goal (chapter, section, article)
+- Time allocation (estimate 2-4 hours for comprehensive research)
+
+## Workflow Steps
+
+### 1. Organize Research Questions
+
+Structure your research approach:
+
+**Review question list:**
+
+- Total questions to answer
+- Categories (foundational, technical, practical, advanced, troubleshooting)
+- Estimated effort per question
+
+**Prioritize questions:**
+
+**Critical (must answer):**
+
+- Core to understanding topic
+- Necessary for target content
+- Foundational knowledge
+
+**Important (should answer):**
+
+- Enhances understanding significantly
+- Best practices and patterns
+- Common use cases
+
+**Optional (nice to answer):**
+
+- Advanced topics
+- Edge cases
+- Bonus content
+
+**Identify dependencies:**
+
+- Which questions should be answered first?
+- Do some questions inform others?
+- What's the logical research sequence?
+
+**Create research plan:**
+
+```markdown
+## Research Plan: [Topic]
+
+**Time Budget**: 3 hours
+**Priority**: Critical questions first, then important, then optional
+
+### Phase 1: Foundational (30 min, 7 questions)
+
+- Question 1 (critical)
+- Question 2 (critical)
+  [...]
+
+### Phase 2: Technical Deep-Dive (60 min, 8 questions)
+
+[...]
+
+### Phase 3: Practical Application (45 min, 9 questions)
+
+[...]
+
+### Phase 4: Advanced Topics (30 min, 4 questions)
+
+[...]
+
+### Phase 5: Troubleshooting (15 min, 4 questions)
+
+[...]
+```
+
+### 2. Identify Research Sources
+
+Know where to look:
+
+**Primary Sources (Highest Trust):**
+
+- **Official Documentation**
+  - Language/framework official docs
+  - API references
+  - Official guides and tutorials
+  - Trust: High, Currency: Varies, Use: Definitions, specs, official guidance
+
+- **RFCs and Specifications**
+  - IETF RFCs for protocols
+  - W3C specifications
+  - Industry standards
+  - Trust: Authoritative, Currency: Varies, Use: Technical specifications
+
+- **Source Code**
+  - Official GitHub repositories
+  - Reference implementations
+  - Trust: Highest for "how it works", Use: Architecture understanding
+
+**Secondary Sources (Medium Trust):**
+
+- **Technical Blogs**
+  - Engineering blogs (e.g., Netflix, Airbnb tech blogs)
+  - Personal developer blogs
+  - Medium, Dev.to articles
+  - Trust: Medium (verify claims), Currency: Check dates, Use: Patterns, real-world usage
+
+- **Stack Overflow / Forums**
+  - Stack Overflow answers
+  - GitHub Discussions
+  - Reddit (r/programming, tech-specific subs)
+  - Trust: Medium (community-validated), Use: Troubleshooting, common issues
+
+- **Books and Courses**
+  - Technical books (O'Reilly, Manning, Packt)
+  - Online courses (Udemy, Pluralsight)
+  - Trust: High for established publishers, Use: Comprehensive coverage
+
+**Tertiary Sources (Verify First):**
+
+- **Tutorials and How-Tos**
+  - Random tutorials online
+  - YouTube videos
+  - Trust: Low to Medium (test everything), Use: Alternative explanations, examples
+
+**Tools:**
+
+- **AI Research Tools**
+  - Perplexity AI (with source citations)
+  - ChatGPT / Claude (verify outputs)
+  - GitHub Copilot (for code examples)
+  - Trust: Medium (always verify), Use: Quick answers, pattern discovery
+
+### 3. Systematic Research Process (Per Question)
+
+For each question, follow this workflow:
+
+#### Step 1: State the Question Clearly
+
+```markdown
+## Question 1: What is JWT and how does it differ from session-based authentication?
+
+**Category**: Foundational
+**Priority**: Critical
+**Estimated Time**: 15 minutes
+**Status**: In Progress
+```
+
+#### Step 2: Search for Answers
+
+**Search strategy:**
+
+1. Start with official documentation
+   - Google: "[topic] official documentation"
+   - Visit official website/docs
+
+2. Check authoritative sources
+   - RFCs, specifications if applicable
+   - Established technical resources (MDN, etc.)
+
+3. Supplement with secondary sources
+   - Technical blogs from reputable companies
+   - Stack Overflow top answers
+   - Relevant books/courses
+
+4. Use AI tools for synthesis
+   - Perplexity AI with "Find sources" mode
+   - ChatGPT/Claude for explanations (verify with sources)
+
+#### Step 3: Evaluate Sources
+
+**For each source, assess:**
+
+- **Authority**: Who wrote this? Are they credible?
+- **Currency**: When was this published? Is it up-to-date?
+- **Accuracy**: Does it match other sources? Any red flags?
+- **Coverage**: Does it answer the question fully?
+- **Clarity**: Is the explanation understandable?
+
+**Red flags:**
+
+- Very old content (pre-2020 for fast-moving tech)
+- No author attribution
+- Conflicts with official docs
+- Poor English/obvious errors
+- No sources cited for claims
+
+#### Step 4: Take Structured Notes
+
+Use this format for each question:
+
+```markdown
+## Question 1: What is JWT and how does it differ from session-based authentication?
+
+**Answer**:
+
+JWT (JSON Web Token) is a stateless authentication mechanism where the server generates a signed token containing user information and sends it to the client. The client includes this token in subsequent requests. Unlike session-based auth where server stores session data, JWT is self-contained and the server validates the token signature without needing to look up session storage.
+
+**Key Differences**:
+
+- JWT: Stateless, token stored client-side, server validates signature
+- Session: Stateful, session stored server-side, cookie contains session ID
+- JWT: Better for distributed systems/microservices (no shared session store needed)
+- Session: Easier to revoke access (delete server-side session)
+
+**Sources**:
+
+1. **JWT.io Introduction** (https://jwt.io/introduction)
+   - Official JWT website
+   - Explains structure (header.payload.signature)
+   - Diagrams showing flow
+   - Trust: High | Date: 2024
+
+2. **RFC 7519 - JSON Web Token** (https://tools.ietf.org/html/rfc7519)
+   - Official specification
+   - Technical definition of JWT structure
+   - Trust: Authoritative | Date: 2015 (stable spec)
+
+3. **Auth0 Blog: JWT vs Sessions** (https://auth0.com/blog/jwt-vs-sessions/)
+   - Comparison table
+   - Real-world trade-offs
+   - Security considerations
+   - Trust: High (Auth0 is authority on auth) | Date: 2023
+
+4. **Stack Overflow: JWT vs Session Cookies** (https://stackoverflow.com/questions/43452896/)
+   - Community discussion
+   - Multiple perspectives
+   - 450+ upvotes
+   - Trust: Medium | Date: 2019 (check if still accurate)
+
+**Key Takeaways**:
+
+- JWT is stateless; session is stateful
+- JWT better for distributed systems
+- Sessions easier to revoke
+- JWT requires careful security (HTTPS, secret management)
+- Both have valid use cases
+
+**Code Examples**:
+(Will need to create example showing both approaches)
+
+**Open Questions**:
+
+- How do you handle JWT revocation? (Research in later question)
+- What are specific security best practices? (Covered in security question)
+
+**Confidence Level**: High (multiple authoritative sources agree)
+```
+
+#### Step 5: Document Code Examples
+
+When you find code:
+
+```markdown
+**Code Example**: Basic JWT Generation (Node.js)
+
+**Source**: JWT.io documentation
+
+**Language**: JavaScript (Node.js)
+
+**Dependencies**: jsonwebtoken package
+
+**Code**:
+\`\`\`javascript
+const jwt = require('jsonwebtoken');
+
+const token = jwt.sign(
+{ userId: 123, email: 'user@example.com' },
+'your-secret-key',
+{ expiresIn: '1h' }
+);
+
+console.log(token);
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+\`\`\`
+
+**Notes**:
+
+- Never hardcode secrets in production
+- Token expires in 1 hour (expiresIn)
+- Payload should not contain sensitive data (it's base64 encoded, not encrypted)
+
+**Testing Status**: Not yet tested (will test in code example creation phase)
+
+**Attribution**: https://jwt.io/introduction
+```
+
+#### Step 6: Note Conflicting Information
+
+When sources disagree:
+
+```markdown
+**Conflicting Information Noted**:
+
+**Question**: Should JWTs be stored in localStorage or cookies?
+
+**Position A** (Source: Auth0 Blog):
+
+- Use httpOnly cookies for better XSS protection
+- LocalStorage vulnerable to XSS attacks
+- Cookies auto-sent by browser (secure if configured correctly)
+
+**Position B** (Source: Some Medium articles):
+
+- Use localStorage for easier mobile app integration
+- Cookies subject to CSRF (require CSRF tokens)
+- LocalStorage gives more control
+
+**Resolution**:
+
+- Security best practice: httpOnly cookies (prevents XSS access)
+- Trade-off: Cookies require CSRF protection
+- Context matters: SPA vs traditional web app
+- Recommendation: httpOnly cookies + SameSite attribute + CSRF tokens
+
+**Confidence**: Medium (context-dependent, both approaches have merit)
+```
+
+### 4. Track Research Progress
+
+Maintain a progress tracker:
+
+**Create status document:**
+
+```markdown
+# Research Progress: JWT Authentication
+
+**Started**: 2024-01-15
+**Last Updated**: 2024-01-15 14:30
+**Total Questions**: 32
+**Completed**: 8
+**In Progress**: 2
+**Not Started**: 22
+
+## Status by Category
+
+### Foundational Questions (7 total)
+
+- [x] Q1: What is JWT? (Completed - 15 min)
+- [x] Q2: Why use JWT? (Completed - 10 min)
+- [x] Q3: When to use JWT? (Completed - 12 min)
+- [ ] Q4: JWT components (In Progress)
+- [ ] Q5: Where are JWTs used? (Not Started)
+- [ ] Q6: Who created JWT? (Not Started)
+- [ ] Q7: What problems does JWT solve? (Not Started)
+
+### Technical Deep-Dive (9 total)
+
+[...]
+
+**Notes**:
+
+- Q1-Q3 took longer than expected (quality sources found)
+- Need to allocate more time for technical deep-dive questions
+- Found excellent resource: Auth0 blog has comprehensive guides
+```
+
+**Update regularly:**
+
+- Mark questions as you complete them
+- Note time spent per question
+- Identify blockers or difficult questions
+- Adjust timeline as needed
+
+### 5. Verify Critical Information
+
+For important claims, cross-reference:
+
+**Verification checklist:**
+
+- [ ] **Check official documentation**
+  - Does official source confirm this claim?
+
+- [ ] **Cross-reference multiple sources**
+  - Do 2+ independent sources agree?
+
+- [ ] **Check publication date**
+  - Is this information current?
+  - Has the technology changed since?
+
+- [ ] **Test code examples**
+  - Does the code actually work?
+  - Are there errors or outdated syntax?
+
+- [ ] **Verify statistics/data**
+  - What's the original source?
+  - Is the data current?
+
+**Mark confidence level for each answer:**
+
+- **High**: 3+ authoritative sources agree, tested if code
+- **Medium**: 2 sources agree, or single authoritative source
+- **Low**: Single source, not verified, or conflicting information
+
+### 6. Test Code Examples
+
+When research includes code:
+
+**Testing workflow:**
+
+1. **Extract code snippet** from source
+2. **Set up test environment**
+   - Create test project/file
+   - Install dependencies
+   - Match versions if specified
+
+3. **Run the code**
+   - Does it execute without errors?
+   - Does it produce expected output?
+
+4. **Document results**
+
+   ```markdown
+   **Test Results**: JWT Generation Example
+
+   - Environment: Node.js 18.12.0
+   - Package: jsonwebtoken@9.0.0
+   - Status: ✅ Works as documented
+   - Notes: None
+   ```
+
+5. **Note modifications needed**
+   - Did you need to change anything?
+   - What wasn't included in the example?
+   - What dependencies were missing?
+
+**Save tested examples:**
+
+- Organize in `research/code-examples/` folder
+- Include comments noting source
+- Mark which examples to include in book
+
+### 7. Organize Research Notes
+
+Structure your findings:
+
+**Create organized research document:**
+
+```markdown
+# Research Notes: JWT Authentication in Node.js
+
+**Research Date**: January 15-16, 2024
+**Total Questions Researched**: 32
+**Time Spent**: 4.5 hours
+**Sources Consulted**: 27
+
+---
+
+## Foundational Concepts
+
+### What is JWT?
+
+[Notes from Q1]
+
+### Why Use JWT?
+
+[Notes from Q2]
+
+[...continue for all foundational questions...]
+
+---
+
+## Technical Deep-Dive
+
+### JWT Structure and Signing
+
+[Notes from technical questions]
+
+[...continue...]
+
+---
+
+## Practical Application
+
+### Implementation in Node.js
+
+[Notes from practical questions]
+
+[...continue...]
+
+---
+
+## Advanced Topics
+
+### Security Considerations
+
+[Notes from security questions]
+
+[...continue...]
+
+---
+
+## Troubleshooting
+
+### Common Errors
+
+[Notes from troubleshooting questions]
+
+[...continue...]
+
+---
+
+## Code Examples Collected
+
+1. **JWT Generation** (jwt.io)
+2. **JWT Verification** (Auth0 docs)
+3. **Express Middleware** (Stack Overflow)
+   [...list all examples with sources...]
+
+---
+
+## Open Questions / Need More Research
+
+- [ ] JWT revocation strategies (need deeper dive)
+- [ ] Performance at scale (need case studies)
+- [ ] Specific security attack vectors (need security-focused research)
+
+---
+
+## Next Steps
+
+1. Synthesize notes into content outline
+2. Test all code examples in clean environment
+3. Create diagrams for JWT flow
+4. Identify which sections need which sources cited
+```
+
+**Save organized notes:**
+
+- `docs/research/[topic]-research-notes.md`
+
+### 8. Create Source Index
+
+Build citation reference:
+
+**Format:**
+
+```markdown
+# Source Index: JWT Authentication Research
+
+## Official Documentation
+
+1. **JWT.io Introduction**
+   - URL: https://jwt.io/introduction
+   - Type: Official Documentation
+   - Authority: High
+   - Date Accessed: 2024-01-15
+   - Key Topics: JWT structure, basic concepts
+   - Notes: Excellent diagrams, code examples in multiple languages
+
+2. **RFC 7519 - JSON Web Token**
+   - URL: https://tools.ietf.org/html/rfc7519
+   - Type: Specification
+   - Authority: Authoritative
+   - Date: May 2015
+   - Key Topics: Technical specification, formal definition
+   - Notes: Dry but definitive
+
+## Technical Articles
+
+1. **Auth0: JWT vs Sessions**
+   - URL: https://auth0.com/blog/jwt-vs-sessions/
+   - Author: Auth0 Team
+   - Authority: High (auth domain experts)
+   - Published: 2023-03-15
+   - Key Topics: Comparison, trade-offs, security
+   - Notes: Best practical comparison found
+
+[...continue for all sources...]
+
+## Books Referenced
+
+1. **"OAuth 2 in Action"** by Justin Richer
+   - Publisher: Manning
+   - Year: 2017
+   - Pages Referenced: 45-67
+   - Topics: JWT in OAuth context
+
+## Code Examples
+
+1. **jsonwebtoken GitHub Repository**
+   - URL: https://github.com/auth0/node-jsonwebtoken
+   - Stars: 15k+
+   - Last Updated: 2024-01-10
+   - Topics: Official library, examples, best practices
+
+---
+
+**Total Sources**: 27
+**Primary Sources**: 8
+**Secondary Sources**: 15
+**Tertiary Sources**: 4
+```
+
+### 9. Document Research Session Metadata
+
+Track your research effort:
+
+```markdown
+# Research Session Metadata
+
+**Topic**: JWT Authentication in Node.js
+**Research Goal**: Chapter 8 content
+**Researcher**: [Your Name]
+**Date**: January 15-16, 2024
+**Time Spent**: 4.5 hours
+
+## Time Breakdown
+
+- Foundational research: 1 hour
+- Technical deep-dive: 1.5 hours
+- Practical implementation: 1 hour
+- Code testing: 45 minutes
+- Organization/note-taking: 15 minutes
+
+## Questions Researched
+
+- Total: 32
+- Completed: 30
+- Skipped: 2 (out of scope)
+
+## Sources Consulted
+
+- Official docs: 8
+- Technical blogs: 12
+- Stack Overflow: 4
+- Books: 1
+- RFCs/Specs: 2
+
+## Code Examples
+
+- Found: 15
+- Tested: 8
+- Will use in chapter: 6
+
+## Key Findings
+
+- JWT best suited for stateless, distributed systems
+- Security requires careful implementation
+- Multiple approaches exist for token storage (context-dependent)
+
+## Confidence Assessment
+
+- High confidence: 22 answers
+- Medium confidence: 7 answers
+- Low confidence: 1 answer (need more research)
+
+## Follow-up Needed
+
+- Deeper dive on JWT revocation strategies
+- Find production-scale case studies
+- Research specific attack vectors
+```
+
+## Success Criteria
+
+Successful research produces:
+
+- [ ] All critical questions answered with sources
+- [ ] Structured notes for each question
+- [ ] Source attribution for all claims
+- [ ] Code examples collected and tested
+- [ ] Conflicting information resolved or noted
+- [ ] Confidence level assessed for each answer
+- [ ] Research notes organized by category
+- [ ] Source index created for citations
+- [ ] Open questions identified for follow-up
+- [ ] Research ready for synthesis into content
+
+## Common Pitfalls to Avoid
+
+- **No source tracking**: Can't cite or verify later
+- **Relying on single source**: Lack of verification
+- **Ignoring publication dates**: Using outdated info
+- **Not testing code**: Examples may not work
+- **Poor note organization**: Can't find information later
+- **Too shallow**: Answering "what" but not "how" or "why"
+- **Rabbit holes**: Spending 2 hours on one question
+- **No confidence assessment**: Don't know what to trust
+- **Copy-paste without understanding**: Notes are useless
+- **Skipping conflicting info**: Missing important nuances
+
+## Tips for Efficient Research
+
+**Time management:**
+
+- Set time limits per question (10-20 min typical)
+- Use timer to avoid rabbit holes
+- Mark complex questions for deeper dive later
+- Don't perfect; iterate
+
+**Source evaluation:**
+
+- Start with official docs (saves time)
+- Use CTRL+F to scan long documents
+- Check dates immediately (skip old content)
+- Trust GitHub stars/Stack Overflow votes as quality signals
+
+**Note-taking:**
+
+- Write notes in your own words (tests understanding)
+- Include "why this matters" context
+- Use bullet points for scannability
+- Link related questions
+
+**Tool usage:**
+
+- Use Perplexity AI for quick answers with sources
+- Use ChatGPT/Claude for explanation, but verify
+- Use browser bookmarks/tabs for session management
+- Use note-taking tools (Notion, Obsidian, etc.)
+
+## Next Steps
+
+After completing technical research:
+
+1. Review research notes for completeness
+2. Fill gaps with additional targeted research
+3. Test all code examples in clean environment
+4. Use synthesize-research-notes.md to create content outline
+5. Begin writing with well-sourced material
+6. Prepare citation list for book/article
+==================== END: .bmad-technical-writing/tasks/research-technical-topic.md ====================
+
 ==================== START: .bmad-technical-writing/tasks/execute-research-with-tools.md ====================
 <!-- Powered by BMAD™ Core -->
 
@@ -826,9 +2128,22 @@ id: execute-research-with-tools
 name: Execute Research With Tools
 description: Autonomously execute technical research queries using available tools (WebSearch, Perplexity, MCP tools) and compile findings with proper citations
 persona_default: technical-researcher
-inputs: - chapter-topic - research-queries - target-audience
-steps: - Detect available research tools - Match query types to optimal tools - Parse and organize research queries - Execute queries using available tools - Collect and organize findings by query - Extract source citations and credibility metadata - Synthesize findings across multiple sources - Identify gaps or conflicting information - Auto-populate book-research-report template
-output: Structured research findings document with source citations
+inputs:
+
+- chapter-topic
+- research-queries
+- target-audience
+  steps:
+- Detect available research tools
+- Match query types to optimal tools
+- Parse and organize research queries
+- Execute queries using available tools
+- Collect and organize findings by query
+- Extract source citations and credibility metadata
+- Synthesize findings across multiple sources
+- Identify gaps or conflicting information
+- Auto-populate book-research-report template
+  output: Structured research findings document with source citations
 
 ---
 
@@ -1416,9 +2731,18 @@ id: execute-checklist
 name: Execute Checklist
 description: Systematically execute checklist items with pass/fail/na status and evidence collection for quality assurance
 persona_default: technical-reviewer
-inputs: - checklist_path - subject_name - context_notes
-steps: - Load and parse checklist file - Process each category and item sequentially - Evaluate and mark status (PASS/FAIL/NA) with evidence - Generate results report with summary statistics - Save results to standard location
-output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
+inputs:
+
+- checklist_path
+- subject_name
+- context_notes
+  steps:
+- Load and parse checklist file
+- Process each category and item sequentially
+- Evaluate and mark status (PASS/FAIL/NA) with evidence
+- Generate results report with summary statistics
+- Save results to standard location
+  output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
 
 ---
 
@@ -1757,6 +3081,66 @@ Inputs:
 Output: reviews/checklist-results/packtpub-submission-checklist-2024-10-24-16-20.md
 ```
 
+### Example 4: Book Outline Validation
+
+```
+Agent: instructional-designer
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/book-outline-checklist.md
+  - subject_name: Machine Learning Fundamentals Book Outline
+  - context_notes: Initial outline review before chapter development
+Output: reviews/checklist-results/book-outline-checklist-2024-10-24-17-15.md
+```
+
+### Example 5: Chapter Outline Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/chapter-outline-checklist.md
+  - subject_name: Chapter 3: Neural Networks Outline
+  - context_notes: Validating structure before section planning
+Output: reviews/checklist-results/chapter-outline-checklist-2024-10-24-18-00.md
+```
+
+### Example 6: Section Plan Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-plan-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Section plan complete, ready for development
+Output: reviews/checklist-results/section-plan-checklist-2024-10-24-19-30.md
+```
+
+### Example 7: Section Completeness Check
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-completeness-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Before marking section DONE
+Output: reviews/checklist-results/section-completeness-checklist-2024-10-24-20-15.md
+```
+
+### Example 8: Code Example Quality Check
+
+```
+Agent: code-curator
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/code-example-checklist.md
+  - subject_name: neural_network_basic.py
+  - context_notes: After testing, before section integration
+Output: reviews/checklist-results/code-example-checklist-2024-10-24-21-00.md
+```
+
 ## Troubleshooting
 
 **Issue**: Checklist file not found
@@ -1817,6 +3201,655 @@ The results file provides an auditable record for:
 - Team communication
 - Process improvement analysis
 ==================== END: .bmad-technical-writing/tasks/execute-checklist.md ====================
+
+==================== START: .bmad-technical-writing/tasks/verify-accuracy.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Verify Technical Accuracy
+
+---
+
+task:
+id: verify-accuracy
+name: Verify Technical Accuracy
+description: Comprehensive technical accuracy verification with fact-checking, code validation, API correctness, and source verification. Ensures all technical claims are correct, current, and verifiable.
+persona_default: technical-reviewer
+inputs:
+
+- content_path
+- code_examples_path
+- reference_docs
+  steps:
+- Read content completely for technical claims
+- Identify all technical statements requiring verification
+- Verify technical statements against authoritative sources
+- Test all code examples for correctness
+- Check API and library usage against current documentation
+- Validate diagrams match descriptions
+- Cross-check terminology consistency
+- Identify outdated or deprecated information
+- Run execute-checklist.md with technical-accuracy-checklist.md
+- Compile verification report with severity ratings
+- Use template accuracy-verification-report-tmpl.yaml with create-doc.md
+  output: reviews/validation-results/accuracy-verification-{{timestamp}}.md
+
+---
+
+## Purpose
+
+This task performs rigorous technical accuracy verification to ensure all content is factually correct, uses current best practices, and can be verified against authoritative sources. It catches technical errors, outdated information, and incorrect API usage before publication.
+
+## Prerequisites
+
+- Chapter draft or content to review
+- Access to official documentation for technologies covered
+- Code testing environment
+- Subject matter expertise in content domain
+- Access to technical-accuracy-checklist.md
+- Familiarity with version-specific features
+
+## Workflow Steps
+
+### 1. Read Content Completely
+
+Gain full context before detailed review:
+
+- Read entire content without stopping
+- Understand the scope of technologies covered
+- Note version numbers mentioned
+- Identify all code examples
+- List all technical claims to verify
+
+**Purpose:** Understand context and identify verification targets.
+
+### 2. Identify Technical Statements Requiring Verification
+
+Create verification checklist:
+
+**Technical Claims:**
+
+- API behavior descriptions
+- Language feature explanations
+- Framework concepts
+- Performance characteristics
+- Security properties
+- Compatibility statements
+- Version-specific features
+
+**For Each Statement:**
+
+- Quote the exact statement
+- Note the location (section, page)
+- Identify authoritative source to check
+- Mark verification status (pending/verified/incorrect)
+
+**Example Verification List:**
+
+```
+Statement: "React's useEffect runs after every render by default"
+Location: Chapter 4, Section 2, Page 47
+Source: https://react.dev/reference/react/useEffect
+Status: Pending verification
+```
+
+### 3. Verify Technical Statements Against Authoritative Sources
+
+Check each statement for accuracy:
+
+**Authoritative Sources (in priority order):**
+
+1. **Official Documentation**
+   - Language docs (Python.org, MDN, docs.oracle.com)
+   - Framework official docs (reactjs.org, angular.io, vuejs.org)
+   - Library documentation (official repos/sites)
+
+2. **Standards and Specifications**
+   - RFCs (IETF specifications)
+   - PEPs (Python Enhancement Proposals)
+   - ECMAScript specifications
+   - W3C standards
+
+3. **Official Release Notes**
+   - Version-specific features
+   - Deprecation notices
+   - Breaking changes
+
+4. **Reputable Technical Sources**
+   - Official blogs (Mozilla Hacks, Go Blog, etc.)
+   - Conference talks by maintainers
+   - Authoritative technical books
+
+**Verification Process:**
+
+For each technical claim:
+
+1. Locate authoritative source
+2. Read relevant section carefully
+3. Compare claim to source
+4. Note any discrepancies
+5. Check version applicability
+6. Record verification result
+
+**Document Findings:**
+
+**For Correct Statements:**
+
+```
+Statement: "React's useEffect runs after every render by default"
+Verification: CORRECT
+Source: https://react.dev/reference/react/useEffect
+Notes: Confirmed in official docs. True when no dependency array provided.
+```
+
+**For Incorrect Statements:**
+
+```
+Statement: "Python's len() returns 1-indexed length"
+Verification: INCORRECT
+Severity: Critical
+Correct Info: len() returns 0-indexed count (number of items)
+Source: https://docs.python.org/3/library/functions.html#len
+Example: len([10, 20, 30]) returns 3, not 4
+```
+
+**For Imprecise Statements:**
+
+```
+Statement: "useEffect runs after render"
+Verification: IMPRECISE
+Severity: Minor
+Correct Info: "useEffect runs after render is committed to the screen (after browser paint)"
+Source: https://react.dev/reference/react/useEffect
+Notes: Original statement is technically correct but lacks precision
+```
+
+### 4. Test All Code Examples for Correctness
+
+Validate code execution and output:
+
+**For Each Code Example:**
+
+**Step 1: Extract Code**
+
+- Copy complete code example
+- Include all shown imports/dependencies
+- Note any setup code mentioned
+
+**Step 2: Set Up Test Environment**
+
+- Install correct language/framework versions
+- Install required dependencies
+- Configure environment as specified
+
+**Step 3: Run Code**
+
+- Execute code exactly as shown
+- Capture actual output
+- Note any errors or warnings
+
+**Step 4: Compare Results**
+
+- Does output match claimed output?
+- Does behavior match description?
+- Are there any unexpected errors?
+
+**Document Test Results:**
+
+**Working Example:**
+
+```
+Location: Chapter 3, Example 3.2
+Code: Array.map() example
+Test Result: PASS
+Output: Matches expected output exactly
+Environment: Node.js 20.0.0
+```
+
+**Broken Example:**
+
+```
+Location: Chapter 5, Example 5.1
+Code: Async database query
+Test Result: FAIL
+Severity: Critical
+Error: TypeError: Cannot read property 'query' of undefined
+Issue: Missing connection initialization code
+Fix: Add `const connection = await createConnection()` before query
+```
+
+**Incomplete Example:**
+
+```
+Location: Chapter 7, Example 7.3
+Code: Express middleware
+Test Result: INCOMPLETE
+Severity: Major
+Issue: Missing import statements (express, body-parser)
+Fix: Add required imports at top of example
+```
+
+### 5. Check API and Library Usage
+
+Verify API calls are correct and current:
+
+**For Each API/Library Call:**
+
+**Check:**
+
+- Function signature matches documentation
+- Parameters in correct order
+- Parameter types are correct
+- Return type is accurate
+- Method exists (not deprecated or renamed)
+- Version compatibility
+
+**Common API Issues:**
+
+❌ **Incorrect Parameter Order:**
+
+```javascript
+// Content claims:
+axios.get(headers, url);
+
+// Actual correct usage:
+axios.get(url, { headers });
+```
+
+❌ **Deprecated API:**
+
+```javascript
+// Content uses:
+ReactDOM.render(<App />, container);
+
+// Current API (React 18+):
+const root = ReactDOM.createRoot(container);
+root.render(<App />);
+```
+
+❌ **Wrong Return Type:**
+
+```python
+# Content claims map() returns a list
+result = map(lambda x: x * 2, [1, 2, 3])
+# Actually returns an iterator in Python 3
+
+# Correct statement:
+result = list(map(lambda x: x * 2, [1, 2, 3]))
+```
+
+**Document API Issues:**
+
+```
+Location: Chapter 6, Section 3
+API: Array.prototype.sort()
+Severity: Major
+Issue: Claims sort() returns a new array
+Correct: sort() mutates the original array in-place and returns reference to it
+Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+Impact: Readers may misunderstand side effects
+```
+
+### 6. Validate Diagrams Match Descriptions
+
+Ensure visual representations are accurate:
+
+**For Each Diagram:**
+
+**Check:**
+
+- Does diagram accurately represent the concept?
+- Do labels match terminology in text?
+- Are connections/flows correct?
+- Are there any misleading elements?
+- Does diagram match code/examples?
+
+**Common Diagram Issues:**
+
+- Arrows pointing wrong direction in data flow
+- Components labeled differently than in code
+- Missing important elements mentioned in text
+- Oversimplification that creates misconceptions
+
+**Document Diagram Issues:**
+
+```
+Location: Chapter 4, Figure 4.2
+Diagram: React component lifecycle
+Severity: Major
+Issue: Shows componentWillMount as recommended lifecycle method
+Correct: componentWillMount is deprecated (React 16.3+); show componentDidMount instead
+Source: https://react.dev/reference/react/Component#componentwillmount
+```
+
+### 7. Cross-Check Terminology Consistency
+
+Verify consistent and correct terminology:
+
+**Check:**
+
+- Terms used consistently throughout
+- Technical terms spelled correctly
+- Acronyms expanded on first use
+- No conflating of distinct concepts
+
+**Common Terminology Issues:**
+
+❌ **Inconsistent Terms:**
+
+- Uses "function," "method," and "procedure" interchangeably when discussing JavaScript
+- Correct: Distinguish class methods from standalone functions
+
+❌ **Incorrect Technical Terms:**
+
+- Calls all errors "exceptions" in JavaScript
+- Correct: JavaScript has errors; some languages have exceptions with different semantics
+
+❌ **Conflated Concepts:**
+
+- Uses "authentication" and "authorization" as synonyms
+- Correct: Authentication = who you are, Authorization = what you can do
+
+**Document Terminology Issues:**
+
+```
+Location: Throughout Chapter 8
+Severity: Minor
+Issue: Inconsistent terminology - alternates between "async function" and "asynchronous function"
+Recommendation: Choose one term and use consistently (prefer "async function" as it matches the keyword)
+```
+
+### 8. Identify Outdated or Deprecated Information
+
+Flag content that needs updating:
+
+**Check For:**
+
+**Deprecated Language Features:**
+
+- Python 2 syntax in Python 3+ content
+- var keyword in modern JavaScript guides
+- Old-style React class components without hooks mention
+
+**Deprecated APIs:**
+
+- Removed or deprecated functions/methods
+- Outdated library APIs
+- Framework features replaced by newer approaches
+
+**Outdated Best Practices:**
+
+- Callback-based patterns when async/await is standard
+- Older architectural patterns superseded
+- Security practices now considered inadequate
+
+**End-of-Life Software:**
+
+- Libraries no longer maintained
+- Language versions past EOL
+- Frameworks without active support
+
+**Document Outdated Content:**
+
+```
+Location: Chapter 9, Section 4
+Severity: Major
+Issue: Demonstrates Promise chaining with .then()
+Current Standard: async/await is now the standard (Node 8+, released 2017)
+Recommendation: Show .then() chaining briefly for understanding, then demonstrate async/await as the recommended approach
+Source: Modern JavaScript best practices (MDN)
+```
+
+```
+Location: Chapter 3, Examples
+Severity: Critical
+Issue: All examples use React class components
+Current Standard: Functional components with Hooks (React 16.8+, 2019)
+Recommendation: Rewrite examples using functional components with useState, useEffect
+Source: https://react.dev/learn - official docs now teach hooks-first
+```
+
+### 9. Run Technical Accuracy Checklist
+
+Execute systematic checklist:
+
+**Run:** `execute-checklist.md` with `technical-accuracy-checklist.md`
+
+**Verify:**
+
+- All technical claims verified
+- Version numbers correct
+- API usage current
+- Language features accurate
+- Framework concepts correct
+- No outdated information
+- Sources verified
+- Code correctness confirmed
+- Best practices current
+- Misconceptions avoided
+
+**Document** any checklist items that fail.
+
+### 10. Compile Verification Report
+
+Create structured accuracy verification report:
+
+**Report Structure:**
+
+#### Executive Summary
+
+- Overall verification status (Pass/Fail/Needs Revision)
+- Critical errors count (factual errors, broken code)
+- Major issues count (outdated info, API inaccuracies)
+- Minor issues count (imprecision, terminology)
+- Overall accuracy assessment
+
+#### Technical Claims Verification
+
+- Total claims verified: X
+- Correct: Y
+- Incorrect: Z
+- List of incorrect claims with severity and corrections
+
+#### Code Testing Results
+
+- Total examples tested: X
+- Working: Y
+- Broken: Z
+- Incomplete: W
+- Details of broken/incomplete examples
+
+#### API/Library Accuracy
+
+- APIs checked: X
+- Correct usage: Y
+- Incorrect/deprecated: Z
+- List of API issues with corrections
+
+#### Diagram Validation
+
+- Diagrams reviewed: X
+- Accurate: Y
+- Issues found: Z
+- List of diagram issues
+
+#### Terminology Consistency
+
+- Key terms reviewed
+- Consistency issues found
+- Recommendations for standardization
+
+#### Outdated Content
+
+- Deprecated features identified
+- Outdated practices found
+- Recommended updates
+
+#### Checklist Results
+
+- Technical accuracy checklist pass/fail items
+
+#### Recommendations
+
+- Prioritized fixes by severity
+- Specific corrections with sources
+- Update recommendations
+
+**Severity Definitions:**
+
+- **Critical:** Factually incorrect information that would mislead readers or cause errors
+  - Example: Wrong API signatures, broken code, security vulnerabilities
+  - Action: Must fix before publication
+
+- **Major:** Outdated or imprecise information that affects quality
+  - Example: Deprecated APIs without warnings, outdated best practices
+  - Action: Should fix before publication
+
+- **Minor:** Small inaccuracies or inconsistencies
+  - Example: Terminology inconsistencies, imprecise wording
+  - Action: Consider fixing if time permits
+
+**Pass/Fail Thresholds:**
+
+- **Pass:** 0 critical, ≤ 2 major, minor acceptable
+- **Needs Revision:** 0 critical, 3-5 major
+- **Fail:** Any critical errors OR > 5 major
+
+## Output
+
+Technical accuracy verification report should include:
+
+- Clear pass/fail status
+- All verified claims (correct and incorrect)
+- Code testing results
+- API accuracy findings
+- Diagram validation results
+- Terminology consistency check
+- Outdated content identification
+- Checklist results
+- Prioritized recommendations with sources
+
+**Save to:** `reviews/validation-results/accuracy-verification-{{timestamp}}.md`
+
+## Quality Standards
+
+Effective accuracy verification:
+
+✓ Verifies every technical claim against sources
+✓ Tests all code examples in proper environment
+✓ Checks API correctness against current docs
+✓ Identifies all deprecated/outdated content
+✓ Uses authoritative sources for verification
+✓ Provides specific corrections with references
+✓ Categorizes by appropriate severity
+✓ Includes actionable recommendations
+
+## Examples
+
+### Example: Factual Error Found
+
+**Finding:**
+
+```
+Location: Chapter 3, Section 2, Page 34
+Statement: "JavaScript's Array.sort() always sorts alphabetically"
+Verification: INCORRECT
+Severity: Critical
+
+Correct Information:
+Array.sort() converts elements to strings and sorts in UTF-16 code unit order by default.
+For numbers: [1, 10, 2].sort() returns [1, 10, 2] (NOT [1, 2, 10])
+To sort numbers: array.sort((a, b) => a - b)
+
+Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+
+Impact: Readers will incorrectly sort numeric arrays, causing bugs
+
+Recommended Fix:
+"JavaScript's Array.sort() converts elements to strings and sorts in UTF-16 code unit order.
+For numeric arrays, provide a compare function: numbers.sort((a, b) => a - b)"
+```
+
+### Example: Code Example Failure
+
+**Finding:**
+
+```
+Location: Chapter 5, Example 5.3
+Code Example: Async database query
+Test Result: FAIL
+Severity: Critical
+
+Error:
+```
+
+TypeError: Cannot read property 'query' of undefined
+at example5-3.js:10:25
+
+````
+
+Issue: Missing database connection initialization
+The example calls db.query() but never shows db connection setup
+
+Fixed Code:
+```javascript
+// Add before the query:
+const db = await createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'password',
+  database: 'testdb'
+})
+
+// Then the query works:
+const results = await db.query('SELECT * FROM users')
+````
+
+Recommendation: Either add connection setup to example, or add a note:
+"Assuming db connection is already established (see Chapter 4)"
+
+```
+
+### Example: Deprecated API Usage
+
+**Finding:**
+
+```
+
+Location: Chapter 7, Throughout
+API: ReactDOM.render()
+Severity: Major
+
+Issue: All examples use ReactDOM.render(<App />, root)
+This API is deprecated in React 18 (March 2022)
+
+Current API:
+
+```javascript
+// Old (deprecated):
+ReactDOM.render(<App />, document.getElementById('root'));
+
+// Current (React 18+):
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+```
+
+Source: https://react.dev/blog/2022/03/08/react-18-upgrade-guide
+
+Recommendation: Update all examples to use createRoot API, or add prominent warning that examples use React 17 API
+
+```
+
+## Next Steps
+
+After verification:
+
+1. Deliver verification report to author
+2. Author addresses critical issues (must fix)
+3. Author addresses major issues (should fix)
+4. Re-verify code examples if critical fixes made
+5. Approve for next review phase (editorial/QA)
+```
+==================== END: .bmad-technical-writing/tasks/verify-accuracy.md ====================
 
 ==================== START: .bmad-technical-writing/templates/book-research-report-tmpl.yaml ====================
 # <!-- Powered by BMAD™ Core -->
@@ -2134,6 +4167,407 @@ sections:
       - Custom hooks don't have to start with "use" but convention is strong
     elicit: true
 ==================== END: .bmad-technical-writing/templates/book-research-report-tmpl.yaml ====================
+
+==================== START: .bmad-technical-writing/templates/accuracy-verification-report-tmpl.yaml ====================
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: accuracy-verification-report
+  name: Technical Accuracy Verification Report
+  version: 1.0
+  description: Comprehensive technical accuracy verification with fact-checking, code validation, API correctness, and source verification
+  output:
+    format: markdown
+    filename: "reviews/validation-results/accuracy-verification-{{timestamp}}.md"
+
+workflow:
+  elicitation: false
+  allow_skip: false
+
+sections:
+  - id: metadata
+    title: Verification Metadata
+    instruction: |
+      Document verification information:
+      - Content reviewed (chapter number/title, section, document name)
+      - Reviewer name and expertise area
+      - Verification date
+      - Content version/draft number verified
+      - Verification scope (full content, code only, specific sections, claims only)
+
+  - id: executive_summary
+    title: Executive Summary
+    instruction: |
+      High-level verification overview:
+      - Overall verification status (Pass / Needs Revision / Fail)
+      - Critical errors count (factual errors, broken code, security issues)
+      - Major issues count (outdated info, API inaccuracies, deprecated usage)
+      - Minor issues count (imprecision, terminology inconsistencies)
+      - Overall accuracy assessment (0-100% or qualitative description)
+      - Recommendation: Ready for publication / Needs revision / Requires major rework
+
+  - id: technical_claims_verification
+    title: Technical Claims Verification
+    instruction: |
+      Fact-checking results for all technical statements:
+
+      **Summary:**
+      - Total technical claims verified: X
+      - Correct: Y
+      - Incorrect: Z
+      - Imprecise: W
+
+      **Incorrect Claims:**
+      For each inaccuracy:
+      - Location (section, page, line, paragraph)
+      - Incorrect statement (exact quote)
+      - Severity (Critical/Major/Minor)
+      - Correct information with detailed explanation
+      - Authoritative source reference (URL, specification, official docs)
+      - Recommended fix (exact replacement text)
+
+      **Examples:**
+      - "Section 2.3, page 12: States 'Python 3.8 supports match/case'. Actually introduced in Python 3.10. Source: PEP 634. Severity: Critical"
+      - "Chapter 4, para 3: Claims 'useEffect runs before render'. Actually runs after render is committed to screen. Source: https://react.dev/reference/react/useEffect. Severity: Critical"
+
+      **Imprecise or Incomplete Claims:**
+      For each imprecision:
+      - Location
+      - Current statement
+      - Severity (typically Minor)
+      - More precise formulation
+      - Source reference
+
+      **Verified Correct Claims:**
+      - List particularly complex or critical claims that passed verification
+      - Note well-researched or well-documented areas
+      - Acknowledge thorough source citation
+
+  - id: code_testing_results
+    title: Code Testing Results
+    instruction: |
+      Execution testing for all code examples:
+
+      **Summary:**
+      - Total code examples tested: X
+      - Working correctly: Y
+      - Broken/failing: Z
+      - Incomplete (missing setup): W
+
+      **Broken Examples:**
+      For each failing code example:
+      - Location (chapter, example number, page, file)
+      - Code snippet (relevant portion)
+      - Test result (FAIL)
+      - Severity (Critical/Major/Minor)
+      - Error message or incorrect behavior
+      - Root cause (syntax error, logic error, missing dependency, incorrect API usage)
+      - Fixed code example
+      - Testing environment details (language version, framework version, OS)
+
+      **Example:**
+      ```
+      Location: Chapter 5, Example 5.1
+      Code: Async database query
+      Test Result: FAIL
+      Severity: Critical
+      Error: TypeError: Cannot read property 'query' of undefined at line 10
+      Issue: Missing connection initialization code
+      Fix: Add `const connection = await createConnection()` before query
+      Environment: Node.js 20.0.0, mysql2 3.6.0
+      ```
+
+      **Incomplete Examples:**
+      For each incomplete example:
+      - Location
+      - Missing components (imports, setup, configuration)
+      - Severity
+      - Required additions
+
+      **Working Examples:**
+      - List examples that executed correctly
+      - Note particularly well-designed or clear examples
+
+  - id: api_library_accuracy
+    title: API and Library Usage Verification
+    instruction: |
+      API correctness and currency check:
+
+      **Summary:**
+      - APIs/libraries checked: X
+      - Correct current usage: Y
+      - Incorrect/deprecated usage: Z
+
+      **Incorrect API Usage:**
+      For each API issue:
+      - Location
+      - Incorrect API call or usage (code snippet)
+      - Severity (Critical/Major/Minor)
+      - Issue description (wrong signature, wrong parameter order, wrong types, deprecated method)
+      - Correct API usage (code example)
+      - API version where change occurred
+      - Official documentation reference
+
+      **Examples:**
+      ```javascript
+      Location: Chapter 7, page 89
+      Incorrect: axios.get(headers, url)
+      Issue: Parameters in wrong order
+      Severity: Critical
+      Correct: axios.get(url, { headers })
+      Source: https://axios-http.com/docs/api_intro
+      ```
+
+      **Deprecated APIs:**
+      For each deprecated API found:
+      - Location
+      - Deprecated API usage
+      - Severity (Major typically)
+      - When deprecated (version, date)
+      - Current recommended alternative
+      - Migration example
+      - Source reference
+
+      **Version Compatibility Issues:**
+      - List any version-specific concerns
+      - Note breaking changes relevant to examples
+      - Recommend version clarifications
+
+  - id: diagram_validation
+    title: Diagram Validation
+    instruction: |
+      Diagram accuracy and text alignment:
+
+      **Summary:**
+      - Diagrams reviewed: X
+      - Accurate: Y
+      - Issues found: Z
+
+      **Diagram Issues:**
+      For each diagram issue:
+      - Location (figure number, page, section)
+      - Issue description (mismatch with text, incorrect flow, missing elements, unclear labels)
+      - Severity (Critical/Major/Minor)
+      - Recommended fix (description or corrected diagram)
+
+      **Examples:**
+      - "Figure 3.2: Shows 4 steps in process flow but text describes 5 steps. Missing 'validation' step. Severity: Major"
+      - "Diagram 5.1: Labels use 'client' but text uses 'consumer' consistently. Recommend updating diagram labels for consistency. Severity: Minor"
+
+      **Accurate Diagrams:**
+      - List diagrams that correctly represent described concepts
+      - Note particularly effective visualizations
+
+  - id: terminology_consistency
+    title: Terminology Consistency
+    instruction: |
+      Terminology usage and consistency check:
+
+      **Key Terms Reviewed:**
+      - List important technical terms used in content
+      - Note primary terminology choices
+
+      **Inconsistencies Found:**
+      For each inconsistency:
+      - Terms used inconsistently (e.g., "function" vs "method", "client" vs "consumer")
+      - Locations where each variant appears
+      - Severity (typically Minor unless causes confusion)
+      - Recommended standard term
+      - Justification (industry standard, official docs terminology, clarity)
+
+      **Terminology Issues:**
+      - Incorrect technical terms used
+      - Ambiguous terms needing clarification
+      - Terms needing definition on first use
+
+      **Positive Findings:**
+      - Areas with consistent, clear terminology
+      - Good use of industry-standard terms
+
+  - id: outdated_content
+    title: Outdated and Deprecated Content
+    instruction: |
+      Currency check for content freshness:
+
+      **Summary:**
+      - Deprecated features identified: X
+      - Outdated practices found: Y
+      - Version updates recommended: Z
+
+      **Deprecated Features Used:**
+      For each deprecated feature:
+      - Location
+      - Deprecated feature/API/pattern
+      - Severity (Major typically)
+      - When deprecated (version, date)
+      - Current replacement/alternative
+      - Migration approach
+      - Source reference
+
+      **Example:**
+      ```
+      Location: Throughout Chapter 8
+      Deprecated: React class components with componentDidMount
+      Deprecated Since: React 16.8 (February 2019)
+      Severity: Major
+      Current Best Practice: Functional components with useEffect hook
+      Recommendation: Rewrite examples using hooks or add clear note about teaching legacy patterns
+      Source: https://react.dev/learn - official docs now teach hooks-first
+      ```
+
+      **Outdated Information:**
+      - Information that's no longer current or accurate
+      - References to EOL (End of Life) versions
+      - Security practices that are obsolete
+      - Performance recommendations superseded by better approaches
+
+      **Version Updates Needed:**
+      - Language/framework version updates recommended
+      - Library dependency updates needed
+      - Breaking changes to address in examples
+
+  - id: security_accuracy
+    title: Security Accuracy Review
+    instruction: |
+      Security-related accuracy verification:
+
+      **Security Claims:**
+      - Verify all security-related statements against current standards
+      - Check cryptographic recommendations are current
+      - Validate authentication/authorization patterns
+      - Review input validation approaches
+
+      **Security Issues Found:**
+      For each security concern:
+      - Location
+      - Issue description (vulnerable code, insecure recommendation, outdated practice)
+      - Severity (Critical/Major/Minor)
+      - Security impact (data breach, code execution, information disclosure, etc.)
+      - Secure alternative with code example
+      - Reference to security standard (OWASP, CWE, CVE)
+
+      **Examples:**
+      - Credentials hardcoded in examples
+      - Use of deprecated crypto functions (MD5, SHA-1 for passwords)
+      - Missing input validation or sanitization
+      - SQL injection vulnerabilities
+      - XSS vulnerabilities
+
+  - id: checklist_results
+    title: Technical Accuracy Checklist Results
+    instruction: |
+      Results from executing technical-accuracy-checklist.md:
+
+      **Checklist Summary:**
+      - Total checklist items: X
+      - Passed: Y
+      - Failed: Z
+
+      **Failed Items:**
+      List each failed checklist item with:
+      - Checklist item description
+      - Reason for failure
+      - Locations where issue occurs
+      - Remediation needed
+
+      **Notes:**
+      - Any checklist items requiring clarification
+      - Any checklist items not applicable to this content
+
+  - id: sources_verified
+    title: Sources and References Verified
+    instruction: |
+      Documentation and authoritative sources checked:
+
+      **Official Documentation:**
+      - List all official docs referenced for verification
+      - Note documentation versions used
+      - URLs checked and confirmed accessible
+
+      **Standards Referenced:**
+      - RFCs, PEPs, ECMAScript specs, W3C standards used
+      - Industry standards consulted
+
+      **Other Sources:**
+      - Technical blogs verified (official project blogs)
+      - Conference talks or presentations checked
+      - Books or authoritative guides referenced
+
+      **Source Quality Notes:**
+      - Note any concerns about source authority
+      - Identify areas where authoritative sources were hard to find
+      - Recommend additional sources for unclear areas
+
+  - id: positive_findings
+    title: Positive Findings
+    instruction: |
+      What worked well in terms of accuracy:
+      - Particularly well-researched sections
+      - Excellent source citation
+      - Accurate and current technical information
+      - Well-tested code examples
+      - Clear and precise technical explanations
+      - Good use of authoritative sources
+      - Effective fact-checking evident in content
+
+      Recognizing strengths helps maintain quality in revisions and guides future content creation.
+
+  - id: recommendations
+    title: Recommended Actions
+    instruction: |
+      Prioritized fix list with specific actions:
+
+      **Must Fix (Critical):**
+      List all critical issues with:
+      1. Brief description and location
+      2. Priority number
+      3. Estimated effort to fix
+
+      **Should Fix (Major):**
+      List all major issues with:
+      1. Brief description and location
+      2. Priority number
+      3. Estimated effort to fix
+
+      **Nice to Fix (Minor):**
+      List all minor issues with:
+      1. Brief description and location
+      2. Optional - can be deferred
+
+      **Overall Recommendation:**
+      - Ready to proceed? Yes/No
+      - Overall verification status: Pass / Needs Revision / Fail
+      - Total estimated effort to address all issues (hours or days)
+      - Re-verification needed after fixes? Yes/No
+      - Specific sections requiring re-review after changes
+
+      **Pass/Fail Criteria Applied:**
+      - Pass: 0 critical, ≤ 2 major, minor issues acceptable
+      - Needs Revision: 0 critical, 3-5 major issues
+      - Fail: Any critical errors OR > 5 major issues
+
+  - id: next_steps
+    title: Next Steps
+    instruction: |
+      Recommended workflow after verification:
+
+      1. Author addresses critical issues (immediate action required)
+      2. Author addresses major issues (should fix before publication)
+      3. Re-test code examples if critical fixes made
+      4. Re-verify updated sections
+      5. Consider minor issues for future updates
+      6. Proceed to next review phase (editorial, final QA, etc.)
+
+      **Timeline Recommendations:**
+      - Suggested timeline for addressing critical issues
+      - Suggested timeline for major issues
+      - Recommend re-review date
+
+      **Follow-up Actions:**
+      - Specific verification tasks to repeat after fixes
+      - Additional resources author may need
+      - Coordination with other reviewers or stakeholders
+==================== END: .bmad-technical-writing/templates/accuracy-verification-report-tmpl.yaml ====================
 
 ==================== START: .bmad-technical-writing/checklists/research-quality-checklist.md ====================
 # Research Quality Checklist

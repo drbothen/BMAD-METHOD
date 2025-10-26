@@ -86,9 +86,12 @@ dependencies:
     - generate-api-docs.md
     - build-glossary.md
     - execute-checklist.md
+    - document-function.md
+    - write-usage-examples.md
   templates:
     - api-reference-tmpl.yaml
     - appendix-tmpl.yaml
+    - glossary-entry-tmpl.yaml
   checklists:
     - glossary-accuracy-checklist.md
   data:
@@ -240,9 +243,25 @@ id: generate-api-docs
 name: Generate API Documentation
 description: Create comprehensive API reference documentation with parameters, return values, and usage examples
 persona_default: api-documenter
-inputs: - api-component (function, class, module, or API endpoint) - source-code or API specification - target-audience (developers using this API)
-steps: - Identify all API components that need documentation - Extract function/method signatures from source code or spec - Document all parameters with types, descriptions, and constraints - Document return values with types and descriptions - Document exceptions and error conditions - Create 2-3 realistic usage examples for each API - Add cross-references to related APIs - Create parameter and return value tables - Validate examples work correctly - Format per publisher requirements - Use template api-reference-tmpl.yaml with create-doc.md task - Run execute-checklist.md with glossary-accuracy-checklist.md
-output: docs/api-reference/{{api_name}}-reference.md
+inputs:
+
+- api-component (function, class, module, or API endpoint)
+- source-code or API specification
+- target-audience (developers using this API)
+  steps:
+- Identify all API components that need documentation
+- Extract function/method signatures from source code or spec
+- Document all parameters with types, descriptions, and constraints
+- Document return values with types and descriptions
+- Document exceptions and error conditions
+- Create 2-3 realistic usage examples for each API
+- Add cross-references to related APIs
+- Create parameter and return value tables
+- Validate examples work correctly
+- Format per publisher requirements
+- Use template api-reference-tmpl.yaml with create-doc.md task
+- Run execute-checklist.md with glossary-accuracy-checklist.md
+  output: docs/api-reference/{{api_name}}-reference.md
 
 ---
 
@@ -505,15 +524,31 @@ id: build-glossary
 name: Build Glossary
 description: Compile comprehensive glossary of technical terms with clear definitions
 persona_default: api-documenter
-inputs: - chapter-content or full manuscript - existing-glossary (if updating)
-steps: - Extract technical terms from all chapters - Define each term clearly and concisely - Provide context where term is used - Add cross-references to related terms - Organize alphabetically - Verify accuracy of definitions - Check for consistency across book - Add first-use markers if required by publisher - Format per publisher requirements - Review for completeness - Run execute-checklist.md with glossary-accuracy-checklist.md
-output: docs/glossary.md or Appendix: Glossary
+inputs:
+
+- chapter-content or full manuscript
+- existing-glossary (if updating)
+  steps:
+- Extract technical terms from all chapters
+- Define each term clearly and concisely
+- Provide context where term is used
+- Add cross-references to related terms
+- Organize alphabetically
+- Verify accuracy of definitions
+- Check for consistency across book
+- Add first-use markers if required by publisher
+- Format per publisher requirements
+- Review for completeness
+- Run execute-checklist.md with glossary-accuracy-checklist.md
+  output: docs/glossary.md or Appendix: Glossary
 
 ---
 
 ## Purpose
 
 This task guides you through creating a comprehensive, accurate glossary that helps readers quickly look up technical terms and concepts. The result is a reference resource that improves book usability and reader comprehension.
+
+**Note:** For creating individual glossary entries with structured guidance, consider using the `glossary-entry-tmpl.yaml` template via the `create-doc` task.
 
 ## Prerequisites
 
@@ -958,9 +993,18 @@ id: execute-checklist
 name: Execute Checklist
 description: Systematically execute checklist items with pass/fail/na status and evidence collection for quality assurance
 persona_default: technical-reviewer
-inputs: - checklist_path - subject_name - context_notes
-steps: - Load and parse checklist file - Process each category and item sequentially - Evaluate and mark status (PASS/FAIL/NA) with evidence - Generate results report with summary statistics - Save results to standard location
-output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
+inputs:
+
+- checklist_path
+- subject_name
+- context_notes
+  steps:
+- Load and parse checklist file
+- Process each category and item sequentially
+- Evaluate and mark status (PASS/FAIL/NA) with evidence
+- Generate results report with summary statistics
+- Save results to standard location
+  output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
 
 ---
 
@@ -1299,6 +1343,66 @@ Inputs:
 Output: reviews/checklist-results/packtpub-submission-checklist-2024-10-24-16-20.md
 ```
 
+### Example 4: Book Outline Validation
+
+```
+Agent: instructional-designer
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/book-outline-checklist.md
+  - subject_name: Machine Learning Fundamentals Book Outline
+  - context_notes: Initial outline review before chapter development
+Output: reviews/checklist-results/book-outline-checklist-2024-10-24-17-15.md
+```
+
+### Example 5: Chapter Outline Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/chapter-outline-checklist.md
+  - subject_name: Chapter 3: Neural Networks Outline
+  - context_notes: Validating structure before section planning
+Output: reviews/checklist-results/chapter-outline-checklist-2024-10-24-18-00.md
+```
+
+### Example 6: Section Plan Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-plan-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Section plan complete, ready for development
+Output: reviews/checklist-results/section-plan-checklist-2024-10-24-19-30.md
+```
+
+### Example 7: Section Completeness Check
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-completeness-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Before marking section DONE
+Output: reviews/checklist-results/section-completeness-checklist-2024-10-24-20-15.md
+```
+
+### Example 8: Code Example Quality Check
+
+```
+Agent: code-curator
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/code-example-checklist.md
+  - subject_name: neural_network_basic.py
+  - context_notes: After testing, before section integration
+Output: reviews/checklist-results/code-example-checklist-2024-10-24-21-00.md
+```
+
 ## Troubleshooting
 
 **Issue**: Checklist file not found
@@ -1359,6 +1463,1501 @@ The results file provides an auditable record for:
 - Team communication
 - Process improvement analysis
 ==================== END: .bmad-technical-writing/tasks/execute-checklist.md ====================
+
+==================== START: .bmad-technical-writing/tasks/document-function.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Document Function
+
+---
+
+task:
+id: document-function
+name: Document Function
+description: Generate comprehensive documentation for a function or method in various documentation formats
+persona_default: api-documenter
+inputs:
+
+- function-signature (the function signature to document)
+- language (programming language: javascript, python, ruby, go, etc.)
+- doc-format (optional: jsdoc, sphinx, rdoc, godoc, javadoc
+- auto-detected if not specified)
+  steps:
+- Parse function signature to extract name, parameters, and return type
+- Generate documentation template based on language and format
+- Add comprehensive parameter descriptions with types and constraints
+- Add detailed return value description
+- Document possible exceptions or error conditions
+- Create basic usage example
+- Add notes about side effects, performance, or important behaviors
+- Format according to documentation standard
+  output: Formatted function documentation ready for insertion into codebase
+
+---
+
+## Purpose
+
+This task helps you generate complete, professional function documentation in the appropriate format for your programming language. Proper documentation improves code maintainability, helps teammates understand APIs, and provides clear usage guidance.
+
+## Prerequisites
+
+Before starting this task:
+
+- Function signature is available (or full function code)
+- Programming language identified
+- Understanding of function's purpose and behavior
+- Knowledge of expected inputs/outputs
+
+## Supported Documentation Formats
+
+### JavaScript/TypeScript - JSDoc
+
+```javascript
+/**
+ * Brief description of what the function does
+ *
+ * @param {Type} paramName - Parameter description
+ * @param {Type} [optionalParam] - Optional parameter description
+ * @returns {ReturnType} Return value description
+ * @throws {ErrorType} When error occurs
+ * @example
+ * const result = functionName(arg1, arg2);
+ */
+```
+
+### Python - Sphinx/NumPy Style
+
+```python
+"""
+Brief description of what the function does.
+
+Parameters
+----------
+param_name : Type
+    Parameter description
+optional_param : Type, optional
+    Optional parameter description (default: value)
+
+Returns
+-------
+ReturnType
+    Return value description
+
+Raises
+------
+ErrorType
+    When error occurs
+
+Examples
+--------
+>>> result = function_name(arg1, arg2)
+>>> print(result)
+"""
+```
+
+### Ruby - RDoc
+
+```ruby
+##
+# Brief description of what the method does
+#
+# ==== Parameters
+# * +param_name+ - (Type) Parameter description
+# * +optional_param+ - (Type) Optional parameter description
+#
+# ==== Returns
+# * (ReturnType) Return value description
+#
+# ==== Raises
+# * ErrorType - When error occurs
+#
+# ==== Examples
+#   result = function_name(arg1, arg2)
+```
+
+### Go - GoDoc
+
+```go
+// FunctionName brief description of what the function does.
+//
+// Parameters:
+//   - paramName: Parameter description
+//   - optionalParam: Optional parameter description
+//
+// Returns the return value description.
+//
+// Errors:
+//   - ErrorType: When error occurs
+//
+// Example:
+//   result := FunctionName(arg1, arg2)
+```
+
+### Java - JavaDoc
+
+```java
+/**
+ * Brief description of what the method does
+ *
+ * @param paramName Parameter description
+ * @param optionalParam Optional parameter description
+ * @return Return value description
+ * @throws ErrorType When error occurs
+ * @see RelatedClass
+ * @since 1.0
+ * @example
+ * <pre>
+ * ReturnType result = functionName(arg1, arg2);
+ * </pre>
+ */
+```
+
+## Workflow Steps
+
+### 1. Parse Function Signature
+
+Extract key components from the function signature:
+
+**JavaScript Example:**
+
+```javascript
+async function fetchUser(userId, options = {})
+```
+
+**Extracted:**
+
+- **Name:** fetchUser
+- **Parameters:** userId (required), options (optional, default: {})
+- **Return type:** Promise (async)
+- **Modifiers:** async
+
+**Python Example:**
+
+```python
+def calculate_average(numbers: List[float], precision: int = 2) -> float:
+```
+
+**Extracted:**
+
+- **Name:** calculate_average
+- **Parameters:** numbers (List[float]), precision (int, default: 2)
+- **Return type:** float
+
+### 2. Generate Documentation Template
+
+Choose template based on language and format:
+
+**For JavaScript (JSDoc):**
+
+```javascript
+/**
+ * [DESCRIPTION]
+ *
+ * @param {[TYPE]} [PARAM_NAME] - [DESCRIPTION]
+ * @returns {[TYPE]} [DESCRIPTION]
+ * @throws {[ERROR_TYPE]} [CONDITION]
+ * @example
+ * [EXAMPLE_CODE]
+ */
+```
+
+### 3. Add Parameter Descriptions
+
+For each parameter, document:
+
+- **Type:** Data type (string, number, object, etc.)
+- **Purpose:** What the parameter controls
+- **Constraints:** Valid ranges, formats, or values
+- **Default value:** If parameter is optional
+
+**Example:**
+
+```javascript
+/**
+ * @param {string} userId - The unique identifier for the user to fetch.
+ *                          Must be a valid MongoDB ObjectId (24 hex chars).
+ * @param {Object} [options] - Optional configuration object
+ * @param {boolean} [options.includeDeleted=false] - Include soft-deleted users
+ * @param {string[]} [options.fields] - Fields to include in response
+ */
+```
+
+### 4. Add Return Value Description
+
+Document what the function returns:
+
+- **Type:** Return data type
+- **Structure:** For objects/arrays, describe shape
+- **Null/undefined cases:** When function returns nothing
+- **Promise resolution:** For async functions
+
+**Example:**
+
+```javascript
+/**
+ * @returns {Promise<User>} Promise resolving to User object with properties:
+ *   - id (string): User's unique identifier
+ *   - email (string): User's email address
+ *   - profile (Object): User profile data
+ * @returns {Promise<null>} If user not found
+ */
+```
+
+### 5. Document Error Conditions
+
+List exceptions or errors the function can throw:
+
+**Example:**
+
+```javascript
+/**
+ * @throws {ValidationError} If userId is not a valid ObjectId format
+ * @throws {DatabaseError} If database connection fails
+ * @throws {NotFoundError} If user does not exist (when options.strict = true)
+ */
+```
+
+**Python Example:**
+
+```python
+"""
+Raises
+------
+ValueError
+    If numbers list is empty
+TypeError
+    If numbers contains non-numeric values
+"""
+```
+
+### 6. Create Usage Example
+
+Provide clear, runnable example:
+
+**Basic Example:**
+
+```javascript
+/**
+ * @example
+ * const user = await fetchUser('507f1f77bcf86cd799439011');
+ * console.log(user.email); // 'user@example.com'
+ */
+```
+
+**Advanced Example (optional):**
+
+```javascript
+/**
+ * @example
+ * // Fetch user with specific fields only
+ * const user = await fetchUser('507f1f77bcf86cd799439011', {
+ *   fields: ['email', 'profile.name']
+ * });
+ *
+ * @example
+ * // Include soft-deleted users
+ * const deletedUser = await fetchUser('507f...', {
+ *   includeDeleted: true
+ * });
+ */
+```
+
+### 7. Add Important Notes
+
+Document critical behaviors:
+
+**Side effects:**
+
+```javascript
+/**
+ * @note This function modifies the global cache when user is fetched.
+ * Subsequent calls with same userId will return cached data.
+ */
+```
+
+**Performance considerations:**
+
+```javascript
+/**
+ * @note This function makes a database query. Consider using batch
+ * operations for fetching multiple users.
+ */
+```
+
+**Thread safety / async concerns:**
+
+```javascript
+/**
+ * @note This function is not thread-safe. Use mutex if calling
+ * concurrently with same userId.
+ */
+```
+
+### 8. Format According to Standard
+
+Apply language-specific formatting rules:
+
+**JSDoc standards:**
+
+- Use `@param` not `@parameter`
+- Use `{Type}` not `{type}`
+- Use hyphens between param name and description
+
+**Sphinx standards:**
+
+- Use underlines for section headers
+- Use proper indentation (4 spaces)
+- Follow NumPy style for scientific code
+
+## Success Criteria
+
+Function documentation is complete when:
+
+- [ ] Function name and signature documented
+- [ ] All parameters described with types and constraints
+- [ ] Return value clearly documented with type
+- [ ] All possible errors/exceptions listed
+- [ ] At least one usage example provided
+- [ ] Important behaviors/side effects noted
+- [ ] Documentation format matches language standard
+- [ ] Documentation is complete enough for someone unfamiliar with the code
+
+## Output Format
+
+The output should be formatted documentation ready to paste into source code:
+
+**JavaScript (JSDoc) Example:**
+
+```javascript
+/**
+ * Fetches a user from the database by their unique identifier.
+ *
+ * This function performs a database query to retrieve user data.
+ * Results are cached for 5 minutes to improve performance.
+ *
+ * @param {string} userId - The unique identifier for the user.
+ *                          Must be a valid MongoDB ObjectId (24 hex characters).
+ * @param {Object} [options] - Optional configuration object
+ * @param {boolean} [options.includeDeleted=false] - Include soft-deleted users in results
+ * @param {string[]} [options.fields] - Specific fields to include (improves performance)
+ * @param {boolean} [options.strict=false] - Throw error if user not found
+ *
+ * @returns {Promise<User|null>} Promise resolving to User object with properties:
+ *   - id (string): User's unique identifier
+ *   - email (string): User's email address
+ *   - profile (Object): User profile data
+ *   Returns null if user not found and strict=false.
+ *
+ * @throws {ValidationError} If userId is not a valid ObjectId format
+ * @throws {DatabaseError} If database connection fails
+ * @throws {NotFoundError} If user not found and options.strict=true
+ *
+ * @example
+ * // Basic usage
+ * const user = await fetchUser('507f1f77bcf86cd799439011');
+ * console.log(user.email);
+ *
+ * @example
+ * // Fetch specific fields only
+ * const user = await fetchUser('507f1f77bcf86cd799439011', {
+ *   fields: ['email', 'profile.name']
+ * });
+ *
+ * @example
+ * // Strict mode - throws if not found
+ * try {
+ *   const user = await fetchUser('invalid-id', { strict: true });
+ * } catch (error) {
+ *   console.error('User not found:', error);
+ * }
+ *
+ * @since 2.0.0
+ * @see User
+ * @see DatabaseError
+ */
+```
+
+**Python (Sphinx) Example:**
+
+```python
+"""
+Calculate the average of a list of numbers with configurable precision.
+
+This function computes the arithmetic mean of the input numbers and
+rounds the result to the specified number of decimal places.
+
+Parameters
+----------
+numbers : List[float]
+    List of numbers to average. Must contain at least one element.
+precision : int, optional
+    Number of decimal places to round to (default: 2).
+    Must be non-negative.
+
+Returns
+-------
+float
+    The arithmetic mean of the input numbers, rounded to specified precision.
+
+Raises
+------
+ValueError
+    If numbers list is empty or precision is negative.
+TypeError
+    If numbers contains non-numeric values.
+
+Examples
+--------
+>>> calculate_average([1.0, 2.0, 3.0])
+2.0
+>>> calculate_average([10, 20, 30], precision=0)
+20.0
+>>> calculate_average([1.234, 5.678], precision=3)
+3.456
+
+Notes
+-----
+This function uses Python's built-in round() which implements
+banker's rounding (round half to even).
+
+See Also
+--------
+median : Calculate median of numbers
+std_dev : Calculate standard deviation
+"""
+```
+
+## Common Pitfalls to Avoid
+
+**❌ Vague parameter descriptions:**
+
+```javascript
+@param {string} userId - The user ID
+```
+
+✅ **Better:**
+
+```javascript
+@param {string} userId - The unique identifier for the user.
+                         Must be a valid MongoDB ObjectId (24 hex characters).
+```
+
+**❌ Missing type information:**
+
+```javascript
+@param options - Configuration options
+```
+
+✅ **Better:**
+
+```javascript
+@param {Object} [options] - Optional configuration object
+@param {boolean} [options.includeDeleted=false] - Include soft-deleted users
+```
+
+**❌ No usage examples:**
+
+```javascript
+// Only parameter and return documentation, no examples
+```
+
+✅ **Better:**
+
+```javascript
+@example
+const user = await fetchUser('507f1f77bcf86cd799439011');
+```
+
+**❌ Not documenting error conditions:**
+
+```javascript
+// Missing @throws annotations
+```
+
+✅ **Better:**
+
+```javascript
+@throws {ValidationError} If userId is not a valid ObjectId
+@throws {DatabaseError} If database connection fails
+```
+
+**❌ Copying description to every parameter:**
+
+```javascript
+@param {string} firstName - The first name
+@param {string} lastName - The last name
+@param {string} email - The email
+```
+
+✅ **Better:**
+
+```javascript
+@param {string} firstName - User's first name (required for profile creation)
+@param {string} lastName - User's last name (used for display purposes)
+@param {string} email - User's email address (must be unique, used for login)
+```
+
+## Examples
+
+### Example 1: JavaScript Async Function
+
+**Input:**
+
+```javascript
+async function createOrder(userId, items, paymentMethod) {
+  // ... implementation
+}
+```
+
+**Generated Documentation:**
+
+```javascript
+/**
+ * Creates a new order for a user with specified items and payment method.
+ *
+ * This function validates the order data, calculates totals, processes
+ * payment, and creates the order record in the database. The entire
+ * operation is transactional and will roll back on any failure.
+ *
+ * @param {string} userId - The ID of the user placing the order.
+ *                          Must be a valid registered user ID.
+ * @param {OrderItem[]} items - Array of items to include in the order.
+ *                               Each item must have { productId, quantity, price }.
+ * @param {string} paymentMethod - Payment method identifier ('card', 'paypal', 'crypto').
+ *
+ * @returns {Promise<Order>} Promise resolving to created Order object with properties:
+ *   - id (string): Unique order identifier
+ *   - total (number): Total order amount in cents
+ *   - status (string): Order status ('pending', 'paid', 'failed')
+ *   - createdAt (Date): Order creation timestamp
+ *
+ * @throws {ValidationError} If userId invalid, items empty, or paymentMethod unsupported
+ * @throws {PaymentError} If payment processing fails
+ * @throws {InventoryError} If any item is out of stock
+ * @throws {DatabaseError} If order creation fails
+ *
+ * @example
+ * // Create order with credit card
+ * const order = await createOrder('user-123', [
+ *   { productId: 'prod-1', quantity: 2, price: 1999 },
+ *   { productId: 'prod-2', quantity: 1, price: 2999 }
+ * ], 'card');
+ * console.log('Order ID:', order.id);
+ *
+ * @example
+ * // Handle errors
+ * try {
+ *   const order = await createOrder(userId, items, 'paypal');
+ * } catch (error) {
+ *   if (error instanceof InventoryError) {
+ *     console.error('Out of stock:', error.outOfStockItems);
+ *   }
+ * }
+ */
+```
+
+### Example 2: Python Class Method
+
+**Input:**
+
+```python
+def parse_csv(self, file_path: str, delimiter: str = ',', skip_header: bool = True) -> pd.DataFrame:
+```
+
+**Generated Documentation:**
+
+```python
+"""
+Parse a CSV file and return a pandas DataFrame.
+
+This method reads a CSV file from the specified path, applies
+the configured parsing options, and returns the data as a
+DataFrame. Large files are processed in chunks to manage memory.
+
+Parameters
+----------
+file_path : str
+    Absolute or relative path to the CSV file to parse.
+    File must exist and be readable.
+delimiter : str, optional
+    Character used to separate fields in the CSV (default: ',').
+    Common alternatives: '\t' for TSV, ';' for European CSV.
+skip_header : bool, optional
+    Whether to skip the first row as header (default: True).
+    If False, generates numeric column names.
+
+Returns
+-------
+pd.DataFrame
+    DataFrame containing the parsed CSV data. Column names are
+    taken from the header row (if skip_header=True) or generated
+    as integers 0, 1, 2, ...
+
+Raises
+------
+FileNotFoundError
+    If file_path does not exist.
+PermissionError
+    If file_path is not readable due to permissions.
+ValueError
+    If delimiter is empty or multi-character.
+pd.errors.ParserError
+    If CSV file is malformed and cannot be parsed.
+
+Examples
+--------
+>>> parser = CSVParser()
+>>> df = parser.parse_csv('data/sales.csv')
+>>> print(df.shape)
+(1000, 5)
+
+>>> # Parse TSV file without header
+>>> df = parser.parse_csv('data/export.tsv', delimiter='\t', skip_header=False)
+>>> print(df.columns)
+Int64Index([0, 1, 2, 3], dtype='int64')
+
+Notes
+-----
+For files larger than 100MB, consider using parse_csv_chunked()
+for better memory efficiency.
+
+See Also
+--------
+parse_csv_chunked : Parse large CSV files in chunks
+to_csv : Export DataFrame to CSV format
+"""
+```
+
+## Next Steps
+
+After generating function documentation:
+
+1. Insert documentation into source code above function definition
+2. Use `write-usage-examples.md` task for more extensive examples
+3. Update API reference documentation if exists
+4. Run documentation linter (ESLint, pydocstyle, etc.)
+5. Generate HTML docs with documentation tool (JSDoc, Sphinx, etc.)
+6. Review with api-documenter agent for consistency
+==================== END: .bmad-technical-writing/tasks/document-function.md ====================
+
+==================== START: .bmad-technical-writing/tasks/write-usage-examples.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Write Usage Examples
+
+---
+
+task:
+id: write-usage-examples
+name: Write Usage Examples
+description: Create comprehensive usage examples for API functions including basic, advanced, and edge case scenarios
+persona_default: api-documenter
+inputs:
+
+- api-function (function name or API endpoint to demonstrate)
+- context (optional: book chapter, API section, tutorial level)
+- language (programming language for examples)
+  steps:
+- Identify function purpose and common use cases
+- Create basic usage example (simplest valid usage)
+- Create intermediate example (real-world scenario)
+- Create advanced example (complex configuration or chaining)
+- Add edge case examples (error handling, boundary conditions)
+- Include expected output for each example
+- Add explanatory comments to clarify non-obvious code
+- Ensure all examples are runnable and tested
+  output: Complete set of usage examples ready for documentation or book content
+
+---
+
+## Purpose
+
+This task helps you create clear, comprehensive usage examples that demonstrate how to use an API function or library feature. Good examples accelerate learning, reduce support questions, and showcase best practices.
+
+## Prerequisites
+
+Before starting this task:
+
+- Function or API is documented (or use `document-function.md` first)
+- Understanding of function parameters and behavior
+- Access to working environment for testing examples
+- Knowledge of target audience skill level
+
+## Example Categories
+
+### 1. Basic Usage Example
+
+**Purpose:** Show simplest possible valid usage
+
+**Characteristics:**
+
+- Minimal parameters
+- Default options
+- Clear, obvious use case
+- No error handling (unless critical)
+- 3-10 lines of code
+
+**Template:**
+
+```javascript
+// Basic usage: [what this demonstrates]
+const result = functionName(simpleArg);
+console.log(result); // Expected output
+```
+
+### 2. Intermediate/Real-World Example
+
+**Purpose:** Show practical, production-like usage
+
+**Characteristics:**
+
+- Realistic scenario
+- Some configuration options
+- Common patterns
+- Basic error handling
+- 10-25 lines of code
+
+**Template:**
+
+```javascript
+// Real-world usage: [scenario description]
+try {
+  const result = functionName(arg1, {
+    option1: value1,
+    option2: value2,
+  });
+
+  // Do something with result
+  processResult(result);
+} catch (error) {
+  console.error('Operation failed:', error.message);
+}
+```
+
+### 3. Advanced Example
+
+**Purpose:** Show complex or powerful usage patterns
+
+**Characteristics:**
+
+- Multiple features combined
+- Advanced configuration
+- Chaining or composition
+- Performance optimizations
+- 25-50 lines of code
+
+**Template:**
+
+```javascript
+// Advanced usage: [complex scenario]
+const config = {
+  advanced_option_1: value,
+  advanced_option_2: value,
+  callbacks: {
+    onProgress: (progress) => console.log(`${progress}%`),
+    onComplete: (result) => handleCompletion(result),
+  },
+};
+
+const pipeline = functionName(data, config).then(transform).then(validate).catch(handleError);
+```
+
+### 4. Edge Case Examples
+
+**Purpose:** Show error handling and boundary conditions
+
+**Characteristics:**
+
+- Error scenarios
+- Empty/null inputs
+- Maximum/minimum values
+- Timeout handling
+- Concurrent usage
+
+**Template:**
+
+```javascript
+// Edge case: [specific scenario]
+try {
+  const result = functionName(edgeCaseInput);
+} catch (SpecificError) {
+  // Handle expected error
+} catch (UnexpectedError) {
+  // Handle unexpected error
+}
+```
+
+## Workflow Steps
+
+### 1. Identify Function Purpose and Use Cases
+
+Brainstorm common scenarios where function is used:
+
+**Example: `fetchUser(userId, options)` function**
+
+**Common use cases:**
+
+- Fetch user by ID (basic)
+- Fetch user with specific fields (optimization)
+- Fetch deleted user (admin feature)
+- Handle user not found (error case)
+- Batch fetch multiple users (advanced)
+
+### 2. Create Basic Usage Example
+
+Write simplest valid usage:
+
+**Example:**
+
+```javascript
+// Basic usage: Fetch a user by ID
+const user = await fetchUser('507f1f77bcf86cd799439011');
+console.log(user.email);
+// Output: 'john.doe@example.com'
+```
+
+**Guidelines:**
+
+- One clear purpose stated in comment
+- Minimal code
+- Show expected output
+- No error handling (unless function requires it)
+
+### 3. Create Intermediate Example
+
+Write realistic production scenario:
+
+**Example:**
+
+```javascript
+// Real-world usage: Display user profile with error handling
+async function displayUserProfile(userId) {
+  try {
+    // Fetch only needed fields for performance
+    const user = await fetchUser(userId, {
+      fields: ['email', 'profile.name', 'profile.avatar'],
+    });
+
+    if (user) {
+      console.log(`Name: ${user.profile.name}`);
+      console.log(`Email: ${user.email}`);
+      console.log(`Avatar: ${user.profile.avatar}`);
+    } else {
+      console.log('User not found');
+    }
+  } catch (error) {
+    console.error('Failed to fetch user:', error.message);
+  }
+}
+
+displayUserProfile('507f1f77bcf86cd799439011');
+// Output:
+// Name: John Doe
+// Email: john.doe@example.com
+// Avatar: https://example.com/avatars/john.jpg
+```
+
+**Guidelines:**
+
+- Wrapped in function showing context
+- Error handling included
+- Comments explain key decisions
+- Shows result processing
+
+### 4. Create Advanced Example
+
+Write complex scenario combining features:
+
+**Example:**
+
+```javascript
+// Advanced usage: Batch fetch users with caching and retry logic
+class UserService {
+  constructor() {
+    this.cache = new Map();
+  }
+
+  async fetchUsers(userIds, options = {}) {
+    const { useCache = true, maxRetries = 3, onProgress = null } = options;
+
+    const results = [];
+    const uncachedIds = [];
+
+    // Check cache first
+    for (const userId of userIds) {
+      if (useCache && this.cache.has(userId)) {
+        results.push(this.cache.get(userId));
+      } else {
+        uncachedIds.push(userId);
+      }
+    }
+
+    // Fetch uncached users with retry logic
+    for (let i = 0; i < uncachedIds.length; i++) {
+      const userId = uncachedIds[i];
+      let retries = 0;
+      let user = null;
+
+      while (retries < maxRetries) {
+        try {
+          user = await fetchUser(userId, {
+            fields: options.fields,
+            includeDeleted: options.includeDeleted,
+          });
+
+          if (useCache && user) {
+            this.cache.set(userId, user);
+          }
+          break;
+        } catch (error) {
+          retries++;
+          if (retries === maxRetries) {
+            console.error(`Failed to fetch user ${userId} after ${maxRetries} retries`);
+          } else {
+            await new Promise((resolve) => setTimeout(resolve, 1000 * retries));
+          }
+        }
+      }
+
+      if (user) results.push(user);
+
+      if (onProgress) {
+        onProgress({
+          current: i + 1,
+          total: uncachedIds.length,
+          percentage: Math.round(((i + 1) / uncachedIds.length) * 100),
+        });
+      }
+    }
+
+    return results;
+  }
+}
+
+// Usage
+const service = new UserService();
+const users = await service.fetchUsers(['id1', 'id2', 'id3', 'id4', 'id5'], {
+  useCache: true,
+  maxRetries: 3,
+  fields: ['email', 'profile.name'],
+  onProgress: (progress) => {
+    console.log(`Fetching users: ${progress.percentage}% complete`);
+  },
+});
+
+console.log(`Fetched ${users.length} users`);
+// Output:
+// Fetching users: 20% complete
+// Fetching users: 40% complete
+// Fetching users: 60% complete
+// Fetching users: 80% complete
+// Fetching users: 100% complete
+// Fetched 5 users
+```
+
+**Guidelines:**
+
+- Shows architectural pattern
+- Combines multiple features
+- Demonstrates best practices
+- Includes performance considerations
+- Well-commented
+
+### 5. Add Edge Case Examples
+
+Cover error scenarios and boundaries:
+
+**Example 1: Handle user not found**
+
+```javascript
+// Edge case: User not found
+try {
+  const user = await fetchUser('nonexistent-id', { strict: true });
+} catch (NotFoundError) {
+  console.error('User does not exist');
+  // Fallback to default user or show error message
+}
+```
+
+**Example 2: Invalid input validation**
+
+```javascript
+// Edge case: Invalid user ID format
+try {
+  const user = await fetchUser('invalid-format');
+} catch (ValidationError) {
+  console.error('Invalid user ID format. Must be 24-character hex string.');
+}
+```
+
+**Example 3: Handle empty results**
+
+```javascript
+// Edge case: Fetch user with no data
+const user = await fetchUser('507f1f77bcf86cd799439011');
+if (!user) {
+  console.log('User not found or deleted');
+  // Handle gracefully
+}
+```
+
+**Example 4: Timeout handling**
+
+```javascript
+// Edge case: Request timeout
+const controller = new AbortController();
+const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+try {
+  const user = await fetchUser('507f1f77bcf86cd799439011', {
+    signal: controller.signal,
+  });
+  clearTimeout(timeoutId);
+  console.log('User fetched:', user.email);
+} catch (error) {
+  if (error.name === 'AbortError') {
+    console.error('Request timed out after 5 seconds');
+  }
+}
+```
+
+### 6. Include Expected Output
+
+Show what each example produces:
+
+**Good - Shows actual output:**
+
+```javascript
+const user = await fetchUser('507f...');
+console.log(user.email);
+// Output: 'john.doe@example.com'
+```
+
+**Better - Shows output structure:**
+
+```javascript
+const user = await fetchUser('507f...');
+console.log(JSON.stringify(user, null, 2));
+// Output:
+// {
+//   "id": "507f1f77bcf86cd799439011",
+//   "email": "john.doe@example.com",
+//   "profile": {
+//     "name": "John Doe",
+//     "avatar": "https://example.com/avatars/john.jpg"
+//   }
+// }
+```
+
+### 7. Add Explanatory Comments
+
+Clarify non-obvious code:
+
+**Example:**
+
+```javascript
+// Fetch user with field selection to minimize data transfer
+const user = await fetchUser(userId, {
+  fields: ['email', 'profile.name'], // Only fetch needed fields
+});
+
+// Cache result for 5 minutes to reduce database load
+cache.set(userId, user, { ttl: 300 });
+
+// Use optional chaining to safely access nested properties
+const userName = user?.profile?.name ?? 'Unknown User';
+```
+
+**Guidelines:**
+
+- Explain _why_, not _what_ (code shows what)
+- Clarify performance implications
+- Note security considerations
+- Explain non-standard patterns
+
+### 8. Ensure Examples Are Runnable
+
+Test all examples:
+
+**Checklist:**
+
+- [ ] Example can run without modification
+- [ ] All required imports/dependencies included
+- [ ] No undefined variables
+- [ ] Outputs match stated expectations
+- [ ] Error cases actually trigger errors as shown
+
+**Complete runnable example:**
+
+```javascript
+// Complete runnable example
+import { fetchUser } from './api/users.js';
+
+async function example() {
+  try {
+    // Basic usage
+    const user = await fetchUser('507f1f77bcf86cd799439011');
+    console.log('User email:', user.email);
+
+    // With options
+    const userWithFields = await fetchUser('507f1f77bcf86cd799439011', {
+      fields: ['email', 'profile.name'],
+    });
+    console.log('User name:', userWithFields.profile.name);
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+
+example();
+```
+
+## Success Criteria
+
+Usage examples are complete when:
+
+- [ ] Basic example shows simplest valid usage
+- [ ] Intermediate example shows realistic scenario
+- [ ] Advanced example demonstrates complex patterns
+- [ ] Edge cases covered (errors, boundaries)
+- [ ] All examples include expected output
+- [ ] Non-obvious code is commented
+- [ ] All examples are tested and runnable
+- [ ] Examples progress from simple to complex
+- [ ] Examples are relevant to target audience
+
+## Output Format
+
+Organize examples with clear headers and context:
+
+```markdown
+## Usage Examples
+
+### Basic Usage
+
+[Simple example with description]
+
+### Common Use Cases
+
+#### Fetching with Specific Fields
+
+[Intermediate example]
+
+#### Batch Operations
+
+[Another intermediate example]
+
+### Advanced Patterns
+
+#### Custom Caching Strategy
+
+[Advanced example]
+
+#### Error Recovery with Retry Logic
+
+[Advanced example]
+
+### Error Handling
+
+#### Handle User Not Found
+
+[Edge case example]
+
+#### Validate Input
+
+[Edge case example]
+
+#### Timeout Management
+
+[Edge case example]
+```
+
+## Language-Specific Considerations
+
+### JavaScript/TypeScript
+
+**Include:**
+
+- Async/await usage
+- Promise chaining alternative
+- Error handling (try/catch)
+- Type annotations (TypeScript)
+
+```javascript
+// TypeScript example
+const user: User = await fetchUser('507f...');
+
+// Promise chaining alternative
+fetchUser('507f...')
+  .then(user => console.log(user.email))
+  .catch(error => console.error(error));
+```
+
+### Python
+
+**Include:**
+
+- Type hints
+- Context managers where relevant
+- Exception handling
+- List comprehensions for data processing
+
+```python
+# Type-annotated example
+from typing import Optional
+from models import User
+
+user: Optional[User] = fetch_user('507f...')
+if user:
+    print(f"Email: {user.email}")
+```
+
+### Ruby
+
+**Include:**
+
+- Block syntax
+- Symbol vs string keys
+- Idiomatic Ruby patterns
+- Exception handling
+
+```ruby
+# Idiomatic Ruby example
+user = fetch_user('507f...') do |config|
+  config.fields = [:email, :profile]
+  config.cache_ttl = 300
+end
+
+puts user.email if user
+```
+
+### Go
+
+**Include:**
+
+- Error handling pattern
+- Struct initialization
+- Defer statements
+- Context usage
+
+```go
+// Idiomatic Go example
+ctx := context.Background()
+user, err := fetchUser(ctx, "507f...")
+if err != nil {
+    log.Printf("Failed to fetch user: %v", err)
+    return
+}
+
+fmt.Printf("Email: %s\n", user.Email)
+```
+
+## Common Pitfalls to Avoid
+
+**❌ Examples that can't run:**
+
+```javascript
+const user = fetchUser(userId); // Where is userId defined?
+```
+
+✅ **Better:**
+
+```javascript
+const user = await fetchUser('507f1f77bcf86cd799439011');
+```
+
+**❌ No context or explanation:**
+
+```javascript
+const user = await fetchUser(id, { fields: ['a', 'b'], cache: true });
+```
+
+✅ **Better:**
+
+```javascript
+// Fetch only email and name fields to reduce data transfer
+const user = await fetchUser('507f1f77bcf86cd799439011', {
+  fields: ['email', 'profile.name'],
+  cache: true, // Cache for 5 minutes
+});
+```
+
+**❌ No expected output:**
+
+```javascript
+const user = await fetchUser('507f...');
+console.log(user);
+```
+
+✅ **Better:**
+
+```javascript
+const user = await fetchUser('507f...');
+console.log(user.email);
+// Output: 'john.doe@example.com'
+```
+
+**❌ Mixing multiple concepts:**
+
+```javascript
+// Confusing example mixing validation, caching, and batch operations
+```
+
+✅ **Better:**
+
+```javascript
+// Example 1: Validation
+// Example 2: Caching
+// Example 3: Batch operations (combines previous concepts)
+```
+
+## Examples
+
+### Example Set 1: REST API Client
+
+**Function:** `apiClient.get(endpoint, options)`
+
+**Basic:**
+
+```javascript
+// Basic usage: Fetch users list
+const response = await apiClient.get('/users');
+console.log(response.data);
+// Output: [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }]
+```
+
+**Intermediate:**
+
+```javascript
+// Real-world usage: Fetch with query parameters and headers
+const response = await apiClient.get('/users', {
+  params: {
+    page: 1,
+    limit: 10,
+    role: 'admin',
+  },
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
+console.log(`Fetched ${response.data.length} admin users`);
+// Output: Fetched 3 admin users
+```
+
+**Advanced:**
+
+```javascript
+// Advanced usage: Pagination with automatic retry and caching
+class UserFetcher {
+  async fetchAllUsers(options = {}) {
+    const users = [];
+    let page = 1;
+    let hasMore = true;
+
+    const fetchOptions = {
+      headers: { Authorization: `Bearer ${options.token}` },
+      retry: {
+        attempts: 3,
+        delay: 1000,
+      },
+      cache: {
+        enabled: true,
+        ttl: 300,
+      },
+    };
+
+    while (hasMore) {
+      try {
+        const response = await apiClient.get('/users', {
+          ...fetchOptions,
+          params: {
+            page,
+            limit: options.pageSize || 50,
+            ...options.filters,
+          },
+        });
+
+        users.push(...response.data);
+
+        // Check if more pages exist
+        hasMore = response.data.length === (options.pageSize || 50);
+        page++;
+
+        if (options.onProgress) {
+          options.onProgress({ page, total: users.length });
+        }
+      } catch (error) {
+        console.error(`Failed on page ${page}:`, error.message);
+
+        if (options.continueOnError) {
+          page++;
+          continue;
+        }
+
+        throw error;
+      }
+    }
+
+    return users;
+  }
+}
+
+// Usage
+const fetcher = new UserFetcher();
+const allUsers = await fetcher.fetchAllUsers({
+  token: process.env.API_TOKEN,
+  pageSize: 100,
+  filters: { role: 'admin', active: true },
+  continueOnError: true,
+  onProgress: ({ page, total }) => {
+    console.log(`Fetched page ${page}, total users: ${total}`);
+  },
+});
+
+console.log(`Total users fetched: ${allUsers.length}`);
+```
+
+**Edge Cases:**
+
+```javascript
+// Edge case: Handle 404 Not Found
+try {
+  const response = await apiClient.get('/users/nonexistent-id');
+} catch (error) {
+  if (error.status === 404) {
+    console.log('User not found');
+  }
+}
+
+// Edge case: Handle rate limiting
+try {
+  const response = await apiClient.get('/users');
+} catch (error) {
+  if (error.status === 429) {
+    const retryAfter = error.headers['retry-after'];
+    console.log(`Rate limited. Retry after ${retryAfter} seconds`);
+  }
+}
+
+// Edge case: Timeout
+const response = await apiClient.get('/users', {
+  timeout: 5000, // 5 second timeout
+});
+```
+
+## Next Steps
+
+After creating usage examples:
+
+1. Test all examples in isolated environment
+2. Add examples to function documentation
+3. Include examples in book chapter or tutorial
+4. Create runnable sample code repository
+5. Use `organize-code-repo.md` to structure examples
+6. Add examples to API reference documentation
+7. Consider creating video walkthrough for complex examples
+==================== END: .bmad-technical-writing/tasks/write-usage-examples.md ====================
 
 ==================== START: .bmad-technical-writing/templates/api-reference-tmpl.yaml ====================
 # <!-- Powered by BMAD™ Core -->
@@ -1596,6 +3195,120 @@ sections:
       - Brief description
       - Why it's useful
 ==================== END: .bmad-technical-writing/templates/appendix-tmpl.yaml ====================
+
+==================== START: .bmad-technical-writing/templates/glossary-entry-tmpl.yaml ====================
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: glossary-entry
+  name: Glossary Entry
+  version: 1.0
+  description: Define individual glossary term with concise definition, context, and cross-references
+  output:
+    format: markdown
+    filename: "glossary-{{term_id}}.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: term
+    title: Term
+    instruction: |
+      Provide the term to be defined:
+      - Exact spelling and capitalization
+      - Alternative spellings or variations (if any)
+      - Acronym expansion (if applicable)
+      - Pronunciation guide (if non-obvious)
+
+      Example: "API (Application Programming Interface)"
+    elicit: true
+  - id: definition
+    title: Definition
+    instruction: |
+      Write a clear, concise definition (1-2 sentences maximum):
+      - Use simple, direct language
+      - Define in terms the target audience understands
+      - Avoid circular definitions (don't use term in its definition)
+      - Focus on what it IS, not just what it does
+
+      Example: "An API is a set of rules and protocols that allows different software applications to communicate with each other."
+    elicit: true
+  - id: context
+    title: Context and Usage
+    instruction: |
+      Provide context for when and how the term is used:
+      - Common usage scenarios
+      - Why it matters in this book's context
+      - Typical example or analogy
+      - When readers will encounter this term
+
+      Example: "APIs are used throughout this book to demonstrate how web services exchange data. You'll build several APIs starting in Chapter 3."
+  - id: example
+    title: Usage Example
+    instruction: |
+      Provide a concrete example showing the term in use:
+      - Code snippet (if technical term)
+      - Sentence demonstrating proper usage
+      - Real-world application
+      - Visual example if helpful
+
+      Example code:
+      ```python
+      # Using a weather API to get current temperature
+      response = requests.get('https://api.weather.com/current')
+      temperature = response.json()['temp']
+      ```
+
+      Example sentence: "The mobile app calls the backend API to retrieve user data."
+  - id: related_terms
+    title: Related Terms
+    instruction: |
+      List related glossary terms or concepts:
+      - Similar or contrasting terms
+      - Broader or narrower concepts
+      - Terms often used together
+      - Prerequisites for understanding this term
+
+      Format as bulleted list with brief explanations:
+      - REST API: A specific architectural style for APIs
+      - Endpoint: A specific URL path in an API
+      - HTTP: The protocol most web APIs use for communication
+
+      Use "See also [Term]" format for cross-references.
+  - id: chapter_references
+    title: Chapter References
+    instruction: |
+      List where this term appears in the book:
+      - First introduction (definition) chapter
+      - Chapters with significant coverage
+      - Where term is applied in practice
+      - Related exercises or examples
+
+      Example:
+      - Introduced: Chapter 3, page 45
+      - Main coverage: Chapter 4-6
+      - Applied in project: Chapter 8
+  - id: common_misconceptions
+    title: Common Misconceptions (Optional)
+    instruction: |
+      Address frequent misunderstandings:
+      - What people often think the term means (but doesn't)
+      - Common confusions with similar terms
+      - Clarify nuances or edge cases
+
+      Example: "APIs are not the same as databases. An API is an interface that may provide access to a database, but the two are distinct components."
+  - id: additional_resources
+    title: Additional Resources (Optional)
+    instruction: |
+      Provide links or references for deeper learning:
+      - Official documentation
+      - Standards or specifications (RFC, W3C, etc.)
+      - Authoritative blog posts or articles
+      - Related chapters in this book
+
+      Keep list short (2-3 items maximum).
+==================== END: .bmad-technical-writing/templates/glossary-entry-tmpl.yaml ====================
 
 ==================== START: .bmad-technical-writing/checklists/glossary-accuracy-checklist.md ====================
 # Glossary Accuracy Checklist

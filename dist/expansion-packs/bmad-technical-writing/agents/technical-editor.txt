@@ -85,7 +85,10 @@ dependencies:
   tasks:
     - create-doc.md
     - copy-edit-chapter.md
+    - validate-cross-references.md
     - execute-checklist.md
+    - extract-reusable-content.md
+    - generate-cross-references.md
   checklists:
     - packtpub-submission-checklist.md
     - oreilly-format-checklist.md
@@ -243,9 +246,26 @@ id: copy-edit-chapter
 name: Copy Edit Chapter
 description: Professional editorial polish including grammar, clarity, consistency, style compliance, and accessibility
 persona_default: technical-editor
-inputs: - chapter-draft - chapter-number - target-publisher
-steps: - Review chapter for grammar and spelling - Check terminology consistency throughout - Verify publisher style guide compliance - Improve sentence clarity and readability - Enhance transitions between sections - Check heading hierarchy and structure - Verify code formatting consistency - Review accessibility considerations - Polish language for professional quality - Ensure consistent voice and tone - Create summary of editorial changes - Run execute-checklist.md with accessibility-checklist.md - Run execute-checklist.md with relevant publisher checklist
-output: Edited chapter with change summary
+inputs:
+
+- chapter-draft
+- chapter-number
+- target-publisher
+  steps:
+- Review chapter for grammar and spelling
+- Check terminology consistency throughout
+- Verify publisher style guide compliance
+- Improve sentence clarity and readability
+- Enhance transitions between sections
+- Check heading hierarchy and structure
+- Verify code formatting consistency
+- Review accessibility considerations
+- Polish language for professional quality
+- Ensure consistent voice and tone
+- Create summary of editorial changes
+- Run execute-checklist.md with accessibility-checklist.md
+- Run execute-checklist.md with relevant publisher checklist
+  output: Edited chapter with change summary
 
 ---
 
@@ -587,6 +607,277 @@ After copy editing:
 6. Publisher may do additional copy editing pass
 ==================== END: .bmad-technical-writing/tasks/copy-edit-chapter.md ====================
 
+==================== START: .bmad-technical-writing/tasks/validate-cross-references.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Validate Cross References
+
+---
+
+task:
+id: validate-cross-references
+name: Validate Cross References
+description: Verify all cross-references, internal links, external URLs, and citations are accurate
+persona_default: technical-editor
+inputs:
+
+- manuscript-files
+- reference-type
+- validation-scope
+  steps:
+- Extract all cross-references (Chapter X, see Section Y, etc.)
+- Verify chapter and section numbers are correct
+- Check page number references (if used)
+- Validate internal links work
+- Verify external links (URLs) are accessible
+- Check glossary references
+- Validate index references
+- Ensure bidirectional references (if A references B does B note A)
+- Test all code repository links
+- Update broken or outdated references
+- Create cross-reference validation log
+  output: docs/validation/cross-reference-validation-log.md
+
+---
+
+## Purpose
+
+Ensure all references, links, and citations are accurate and functional, preventing reader frustration and maintaining book credibility.
+
+## Workflow Steps
+
+### 1. Extract All Cross-References
+
+Find all references:
+
+**Internal references:**
+
+- "See Chapter 5"
+- "As discussed in Section 3.2"
+- "Refer to Figure 7.4"
+- "Exercise 2.3 demonstrates..."
+- "Appendix B contains..."
+
+**External references:**
+
+- URLs to documentation
+- Code repository links
+- API documentation links
+- Tool download links
+
+### 2. Verify Chapter/Section Numbers
+
+Check accuracy:
+
+```markdown
+✅ Correct:
+"In Chapter 3, we learned about REST APIs..." [Chapter 3 exists and covers REST]
+
+❌ Incorrect:
+"See Chapter 8 for deployment details" [Chapter 8 is about testing, not deployment]
+```
+
+**Validation script (conceptual):**
+
+```python
+# Check all "Chapter X" references
+references = extract_references(manuscript, pattern=r'Chapter \d+')
+for ref in references:
+    chapter_num = ref.chapter_number
+    if chapter_num > total_chapters:
+        print(f"ERROR: Reference to non-existent {ref}")
+```
+
+### 3. Check Page References
+
+Validate page numbers:
+
+```markdown
+⚠️ During manuscript phase:
+"See page [TK]" or "See Chapter 3" (not page numbers)
+
+✅ During page proof phase:
+"See page 87 for details"
+```
+
+### 4. Validate Internal Links
+
+Test document links:
+
+**Markdown:**
+
+```markdown
+[Link to Section 3.2](#section-32)
+
+# Check target exists:
+
+<a name="section-32"></a>
+
+## 3.2 API Design Patterns
+```
+
+**HTML/ePub:**
+
+```html
+<a href="#chapter-03">Chapter 3</a>
+
+<!-- Verify target exists: -->
+<div id="chapter-03">...</div>
+```
+
+### 5. Verify External Links
+
+Test URL accessibility:
+
+```python
+# Check all URLs
+import requests
+
+urls = extract_urls(manuscript)
+broken_links = []
+
+for url in urls:
+    try:
+        response = requests.head(url, timeout=5, allow_redirects=True)
+        if response.status_code >= 400:
+            broken_links.append((url, response.status_code))
+    except requests.RequestException as e:
+        broken_links.append((url, str(e)))
+
+# Report broken links
+for url, error in broken_links:
+    print(f"BROKEN: {url} - {error}")
+```
+
+**Common issues:**
+
+- 404 Not Found (page removed)
+- Moved permanently (update URL)
+- SSL certificate errors
+- Timeout (site down)
+
+### 6. Check Glossary References
+
+Verify glossary terms:
+
+```markdown
+The API uses JWT (see Glossary) for authentication.
+
+[Verify "JWT" entry exists in glossary]
+```
+
+### 7. Validate Index References
+
+Cross-check index:
+
+```markdown
+Index entry: "Authentication, 45, 78, 103"
+
+[Verify pages 45, 78, and 103 actually discuss authentication]
+```
+
+### 8. Ensure Bidirectional References
+
+Check both directions:
+
+```markdown
+Chapter 3 says: "Authentication is covered in Chapter 7"
+
+[Verify Chapter 7 mentions being referenced from Chapter 3, if appropriate]
+
+✅ Chapter 7: "As introduced in Chapter 3, authentication..."
+```
+
+### 9. Test Code Repository Links
+
+Validate repo access:
+
+```markdown
+Code for this chapter: https://github.com/author/book/tree/main/chapter-03
+
+[Test link opens correctly]
+[Verify chapter-03 folder exists]
+[Check README.md in folder is accurate]
+```
+
+### 10. Create Validation Log
+
+Document findings:
+
+```markdown
+# Cross-Reference Validation Log
+
+Date: 2024-01-15
+Validator: [Name]
+Manuscript Version: Draft 3.2
+
+## Summary
+
+- Total references checked: 247
+- Valid references: 239 (96.8%)
+- Broken references: 8 (3.2%)
+
+## Issues Found
+
+### High Priority (Broken Links)
+
+1. Chapter 5, Line 234: "See Chapter 9" → Chapter 9 doesn't exist (was split into Ch 9-10)
+   - **Fix**: Update to "See Chapters 9 and 10"
+
+2. Chapter 7, Line 89: https://oldapi.example.com/docs → 404 Not Found
+   - **Fix**: Update to https://api.example.com/v2/docs
+
+### Medium Priority (Outdated References)
+
+3. Chapter 3, Line 145: "Appendix A" → Content moved to Appendix B
+   - **Fix**: Update reference
+
+### Low Priority (Inconsistencies)
+
+4. Chapter 4: Uses "Section 3.2" and "section 3.2" inconsistently
+   - **Fix**: Standardize capitalization
+
+## Verification Status
+
+| Reference Type  | Total | Valid | Broken |
+| --------------- | ----- | ----- | ------ |
+| Chapter refs    | 87    | 85    | 2      |
+| Section refs    | 64    | 64    | 0      |
+| Figure refs     | 42    | 40    | 2      |
+| External URLs   | 31    | 27    | 4      |
+| Code repo links | 18    | 18    | 0      |
+| Glossary refs   | 5     | 5     | 0      |
+
+## Next Steps
+
+1. Fix all high-priority broken references
+2. Update outdated references
+3. Standardize reference formatting
+4. Re-validate after changes
+```
+
+## Success Criteria
+
+- [ ] All cross-references extracted
+- [ ] Chapter/section numbers verified
+- [ ] Page references validated (if applicable)
+- [ ] Internal links tested
+- [ ] External URLs checked for accessibility
+- [ ] Glossary references confirmed
+- [ ] Index references validated
+- [ ] Bidirectional references verified
+- [ ] Code repository links tested
+- [ ] Validation log created with findings
+
+## Next Steps
+
+1. Fix all broken references
+2. Update outdated links
+3. Standardize reference formatting
+4. Re-validate after corrections
+5. Include validation in revision process
+==================== END: .bmad-technical-writing/tasks/validate-cross-references.md ====================
+
 ==================== START: .bmad-technical-writing/tasks/execute-checklist.md ====================
 <!-- Powered by BMAD™ Core -->
 
@@ -599,9 +890,18 @@ id: execute-checklist
 name: Execute Checklist
 description: Systematically execute checklist items with pass/fail/na status and evidence collection for quality assurance
 persona_default: technical-reviewer
-inputs: - checklist_path - subject_name - context_notes
-steps: - Load and parse checklist file - Process each category and item sequentially - Evaluate and mark status (PASS/FAIL/NA) with evidence - Generate results report with summary statistics - Save results to standard location
-output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
+inputs:
+
+- checklist_path
+- subject_name
+- context_notes
+  steps:
+- Load and parse checklist file
+- Process each category and item sequentially
+- Evaluate and mark status (PASS/FAIL/NA) with evidence
+- Generate results report with summary statistics
+- Save results to standard location
+  output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
 
 ---
 
@@ -940,6 +1240,66 @@ Inputs:
 Output: reviews/checklist-results/packtpub-submission-checklist-2024-10-24-16-20.md
 ```
 
+### Example 4: Book Outline Validation
+
+```
+Agent: instructional-designer
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/book-outline-checklist.md
+  - subject_name: Machine Learning Fundamentals Book Outline
+  - context_notes: Initial outline review before chapter development
+Output: reviews/checklist-results/book-outline-checklist-2024-10-24-17-15.md
+```
+
+### Example 5: Chapter Outline Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/chapter-outline-checklist.md
+  - subject_name: Chapter 3: Neural Networks Outline
+  - context_notes: Validating structure before section planning
+Output: reviews/checklist-results/chapter-outline-checklist-2024-10-24-18-00.md
+```
+
+### Example 6: Section Plan Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-plan-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Section plan complete, ready for development
+Output: reviews/checklist-results/section-plan-checklist-2024-10-24-19-30.md
+```
+
+### Example 7: Section Completeness Check
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-completeness-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Before marking section DONE
+Output: reviews/checklist-results/section-completeness-checklist-2024-10-24-20-15.md
+```
+
+### Example 8: Code Example Quality Check
+
+```
+Agent: code-curator
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/code-example-checklist.md
+  - subject_name: neural_network_basic.py
+  - context_notes: After testing, before section integration
+Output: reviews/checklist-results/code-example-checklist-2024-10-24-21-00.md
+```
+
 ## Troubleshooting
 
 **Issue**: Checklist file not found
@@ -1001,93 +1361,2408 @@ The results file provides an auditable record for:
 - Process improvement analysis
 ==================== END: .bmad-technical-writing/tasks/execute-checklist.md ====================
 
+==================== START: .bmad-technical-writing/tasks/extract-reusable-content.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Extract Reusable Content
+
+---
+
+task:
+id: extract-reusable-content
+name: Extract Reusable Content
+description: Identify patterns and explanations reusable across chapters
+persona_default: technical-editor
+inputs: - completed-chapters (one or more finished chapters) - manuscript-directory
+steps: - Analyze content for repeated patterns - Identify reusable concept explanations - Find common code patterns and templates - Extract troubleshooting content - Document each pattern with usage guidance - Create content library structure - Add reuse guidelines and customization points
+output: Content library with categorized reusable patterns
+ai_assistance: true
+human_verification_required: false
+
+---
+
+## Purpose
+
+This task identifies explanations, code patterns, and teaching content that appear repeatedly across chapters, then extracts them into a reusable content library. This enables consistency (same concepts explained the same way), efficiency (don't rewrite from scratch), and quality (polish patterns once, reuse everywhere).
+
+## Benefits of Content Library
+
+**Consistency:**
+
+- Same concepts explained the same way throughout the book
+- Consistent terminology and examples
+- Uniform teaching approach
+
+**Efficiency:**
+
+- Don't rewrite similar explanations from scratch
+- Faster chapter development
+- Reduce redundant work
+
+**Quality:**
+
+- Polished explanations refined over time
+- Tested and validated patterns
+- Improved through reader feedback
+
+**Maintenance:**
+
+- Update pattern once, applies everywhere referenced
+- Track where patterns are used
+- Easier to fix errors or improve clarity
+
+## Prerequisites
+
+Before starting this task:
+
+- **Completed chapters available** - At least 2-3 finished chapters
+- **Content finalized** - Chapters have been reviewed and polished
+- **Access to manuscript directory** - Can read all chapter files
+- **Understanding of book structure** - Know overall organization and topics
+
+## Workflow Steps
+
+### 1. Analyze Content
+
+Read through chapters looking for repetition and patterns:
+
+**Read Through Chapters:**
+
+- Read 2-3+ completed chapters thoroughly
+- Note explanations that seem familiar
+- Identify similar code structures
+- Find repeated teaching approaches
+
+**Look for Repetition:**
+
+```markdown
+## Pattern Detection
+
+**Repeated Explanations:**
+
+- "How async/await works" appears in Chapters 3, 5, 7
+- "Why we use const over let" in Chapters 2, 4, 6, 8
+- "Destructuring syntax" in Chapters 3, 4, 5
+
+**Similar Code Patterns:**
+
+- Try-catch error handling: Ch 3, 5, 7, 8
+- API request with fetch: Ch 4, 6, 7
+- Express route handlers: Ch 5, 6, 7, 8
+
+**Common Teaching Approaches:**
+
+- "Problem → Solution → Example" for new concepts
+- "Before/After code comparison" for refactoring
+- "Common Mistakes" sections
+```
+
+**Identify Themes:**
+
+```markdown
+## Theme Analysis
+
+**Error Handling:**
+
+- Appears in: 5 chapters
+- Variations: Basic try-catch, async error handling, API errors, database errors
+- Core pattern: Same structure, different context
+
+**API Interactions:**
+
+- Appears in: 4 chapters
+- Variations: GET, POST, authentication, error handling
+- Core pattern: fetch → parse → handle errors
+
+**Best Practices:**
+
+- Appears throughout
+- Variations: Security, performance, code organization
+- Core pattern: ❌ Don't... ✅ Do... pattern
+```
+
+### 2. Identify Reusable Patterns
+
+Categorize content by reusability type:
+
+#### Pattern Type 1: Concept Explanations
+
+Explanations that appear multiple times in different contexts:
+
+````markdown
+### Example: Async/Await Explanation
+
+**Used in:**
+
+- Chapter 3, Section 2: "Handling Asynchronous Operations"
+- Chapter 5, Section 4: "Making API Requests"
+- Chapter 7, Section 1: "Database Queries"
+
+**Core Explanation (Reusable):**
+
+Async/await provides a cleaner syntax for working with Promises. Instead of chaining `.then()` calls, you can write asynchronous code that looks synchronous.
+
+The `async` keyword before a function declaration means the function returns a Promise. The `await` keyword pauses execution until a Promise resolves, allowing you to assign the result directly to a variable.
+
+```javascript
+// Promise chaining (older style)
+fetchUser()
+  .then((user) => fetchOrders(user.id))
+  .then((orders) => console.log(orders))
+  .catch((err) => console.error(err));
+
+// Async/await (modern style)
+async function getUserOrders() {
+  try {
+    const user = await fetchUser();
+    const orders = await fetchOrders(user.id);
+    console.log(orders);
+  } catch (err) {
+    console.error(err);
+  }
+}
+```
+````
+
+**Context-Specific Variations:**
+
+- Chapter 3: Applied to file I/O
+- Chapter 5: Applied to HTTP requests
+- Chapter 7: Applied to database queries
+
+**Customization Points:**
+
+- Replace example domain (files, API, database)
+- Adjust error handling detail level
+- Add or remove complexity
+
+````
+
+#### Pattern Type 2: Code Patterns
+
+Reusable code templates with variations:
+
+```markdown
+### Example: Express Route Handler with Error Handling
+
+**Used in:**
+- Chapter 5: User authentication routes
+- Chapter 6: Product CRUD operations
+- Chapter 7: Order processing
+- Chapter 8: Admin dashboard
+
+**Generic Template:**
+
+```javascript
+// [DESCRIPTION]: Brief description of what route does
+router.[METHOD]('[PATH]', async (req, res) => {
+  try {
+    // 1. Extract and validate input
+    const { [PARAMS] } = req.[body|params|query];
+
+    // Validation
+    if (![VALIDATION_CONDITION]) {
+      return res.status(400).json({ error: '[ERROR_MESSAGE]' });
+    }
+
+    // 2. Perform operation
+    const result = await [OPERATION];
+
+    // 3. Return success response
+    res.status([SUCCESS_CODE]).json({
+      success: true,
+      data: result
+    });
+  } catch (err) {
+    console.error('[ERROR_PREFIX]:', err);
+    res.status(500).json({ error: '[GENERIC_ERROR_MESSAGE]' });
+  }
+});
+````
+
+**Customization Points:**
+
+- `[METHOD]`: get, post, put, delete
+- `[PATH]`: Route path ('/users', '/products/:id', etc.)
+- `[PARAMS]`: Parameter names to extract
+- `[VALIDATION_CONDITION]`: Specific validation logic
+- `[OPERATION]`: Core business logic
+- `[SUCCESS_CODE]`: 200, 201, 204, etc.
+
+**Usage Examples:**
+
+_Chapter 5 - Create User:_
+
+```javascript
+router.post('/users', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password required' });
+    }
+
+    const user = await User.create({ email, password });
+
+    res.status(201).json({
+      success: true,
+      data: user,
+    });
+  } catch (err) {
+    console.error('Create user error:', err);
+    res.status(500).json({ error: 'Failed to create user' });
+  }
+});
+```
+
+````
+
+#### Pattern Type 3: Troubleshooting Content
+
+Common errors explained repeatedly:
+
+```markdown
+### Example: "Cannot read property of undefined" Error
+
+**Used in:**
+- Chapter 2: Variable basics
+- Chapter 4: Object manipulation
+- Chapter 6: API responses
+- Chapter 8: Database results
+
+**Generic Explanation:**
+
+**Error:**
+````
+
+TypeError: Cannot read property 'X' of undefined
+
+````
+
+**Cause:**
+You're trying to access a property on an object that doesn't exist (it's `undefined`).
+
+**Common Scenarios:**
+
+1. **Optional chaining needed:**
+```javascript
+// ❌ Error if user is undefined
+const name = user.name;
+
+// ✅ Safe with optional chaining
+const name = user?.name;
+````
+
+2. **Missing null check:**
+
+```javascript
+// ❌ Error if getUserById returns null
+const user = getUserById(id);
+console.log(user.email);
+
+// ✅ Check before accessing
+const user = getUserById(id);
+if (user) {
+  console.log(user.email);
+}
+```
+
+3. **API response missing expected data:**
+
+```javascript
+// ❌ Error if response.data is undefined
+const items = response.data.items;
+
+// ✅ Provide default
+const items = response.data?.items || [];
+```
+
+**Prevention:**
+
+- Use optional chaining (`?.`) for potentially undefined values
+- Validate data before accessing nested properties
+- Provide default values with nullish coalescing (`??`)
+
+**Variations by Chapter:**
+
+- Chapter 2: Basic variable access
+- Chapter 4: Object manipulation context
+- Chapter 6: API response handling context
+- Chapter 8: Database query results context
+
+````
+
+#### Pattern Type 4: Best Practices
+
+Repeated advice given in multiple contexts:
+
+```markdown
+### Example: "Don't Store Sensitive Data in Client-Side Code"
+
+**Used in:**
+- Chapter 3: Environment variables
+- Chapter 5: API keys
+- Chapter 7: Database credentials
+- Chapter 9: Authentication tokens
+
+**Generic Guidance:**
+
+**❌ Don't:**
+```javascript
+// NEVER hardcode sensitive data
+const API_KEY = "sk_live_abc123..."; // ❌ Exposed in source code
+const DB_PASSWORD = "mySecretPassword"; // ❌ Committed to Git
+````
+
+**✅ Do:**
+
+```javascript
+// Use environment variables
+const API_KEY = process.env.API_KEY;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+```
+
+**Why This Matters:**
+
+- Source code is often public (GitHub, etc.)
+- Attackers can find hardcoded secrets
+- Secrets should be configurable per environment
+- Leaked credentials create security vulnerabilities
+
+**Implementation:**
+
+1. Create `.env` file (add to `.gitignore`)
+2. Store secrets in `.env`:
+   ```
+   API_KEY=sk_live_abc123...
+   DB_PASSWORD=mySecretPassword
+   ```
+3. Load with `dotenv` package:
+   ```javascript
+   require('dotenv').config();
+   const apiKey = process.env.API_KEY;
+   ```
+
+**Context-Specific Applications:**
+
+- Chapter 3: Focus on environment setup
+- Chapter 5: Focus on API key management
+- Chapter 7: Focus on database connection strings
+- Chapter 9: Focus on JWT secrets
+
+````
+
+### 3. Extract and Document
+
+For each reusable pattern, create a comprehensive document:
+
+**Pattern Documentation Template:**
+
+```markdown
+# Pattern: [Pattern Name]
+
+## Summary
+
+[One-sentence description of what this pattern is]
+
+## Used In
+
+- Chapter [X], Section [Y]: [Context]
+- Chapter [X], Section [Y]: [Context]
+- [Additional locations...]
+
+## Generic Version
+
+[Explanation/code that's context-independent]
+
+### Code Template (if applicable)
+
+```[language]
+[Reusable code with [PLACEHOLDERS]]
+````
+
+## Customization Points
+
+- **[PLACEHOLDER_1]**: [Description of what to replace and with what]
+- **[PLACEHOLDER_2]**: [Description of what to replace and with what]
+
+## Variations
+
+### Variation 1: [Name]
+
+[When to use this variation]
+
+```[language]
+[Code/explanation for this variation]
+```
+
+### Variation 2: [Name]
+
+[When to use this variation]
+
+```[language]
+[Code/explanation for this variation]
+```
+
+## Usage Guidelines
+
+**When to use this pattern:**
+
+- [Scenario 1]
+- [Scenario 2]
+
+**When NOT to use this pattern:**
+
+- [Scenario where alternative is better]
+
+**Customization steps:**
+
+1. [Step 1]
+2. [Step 2]
+
+## Examples
+
+### Example 1: [Context]
+
+[Full example showing pattern in specific context]
+
+### Example 2: [Context]
+
+[Full example showing pattern in different context]
+
+## Related Patterns
+
+- [Related Pattern 1]: [How they relate]
+- [Related Pattern 2]: [How they relate]
+
+## Notes
+
+[Any additional considerations, gotchas, or tips]
+
+```
+
+### 4. Create Content Library
+
+Organize extracted patterns into a structured library:
+
+**Directory Structure:**
+
+```
+
+content-library/
+├── README.md # Library overview and usage guide
+├── explanations/ # Reusable concept explanations
+│ ├── async-await-basics.md
+│ ├── destructuring-syntax.md
+│ ├── arrow-functions.md
+│ ├── scope-and-closures.md
+│ └── ...
+├── code-patterns/ # Reusable code templates
+│ ├── express-route-handler.md
+│ ├── api-request-fetch.md
+│ ├── error-handling-try-catch.md
+│ ├── database-query-template.md
+│ ├── authentication-middleware.md
+│ └── ...
+├── troubleshooting/ # Common errors and solutions
+│ ├── cannot-read-property-undefined.md
+│ ├── cors-errors.md
+│ ├── async-function-returns-promise.md
+│ ├── port-already-in-use.md
+│ └── ...
+├── best-practices/ # Repeated advice and guidelines
+│ ├── dont-store-secrets-in-code.md
+│ ├── use-const-over-let.md
+│ ├── validate-user-input.md
+│ ├── handle-errors-gracefully.md
+│ └── ...
+└── teaching-patterns/ # Pedagogical approaches
+├── problem-solution-example.md
+├── before-after-comparison.md
+├── progressive-complexity.md
+└── ...
+
+````
+
+**Library README:**
+
+```markdown
+# Content Library
+
+This library contains reusable explanations, code patterns, troubleshooting guides, and best practices extracted from the book manuscript.
+
+## Purpose
+
+- **Consistency**: Use the same explanation for a concept throughout the book
+- **Efficiency**: Don't rewrite common patterns from scratch
+- **Quality**: Refined, polished content reused in multiple contexts
+- **Maintenance**: Update once, benefit everywhere
+
+## Usage
+
+### Using an Explanation
+
+1. Find the concept in `explanations/`
+2. Read the generic version
+3. Check customization points
+4. Select appropriate variation for your context
+5. Customize as needed
+6. Reference in your chapter
+
+### Using a Code Pattern
+
+1. Find the pattern in `code-patterns/`
+2. Copy the template code
+3. Replace `[PLACEHOLDERS]` with your specific values
+4. Test the customized code
+5. Integrate into your chapter
+
+### Using a Troubleshooting Guide
+
+1. Find the error in `troubleshooting/`
+2. Use the generic explanation
+3. Adapt the context/examples to your chapter
+4. Include relevant prevention tips
+
+## Categories
+
+- **explanations/**: Concept explanations (async/await, closures, etc.)
+- **code-patterns/**: Reusable code templates (routes, error handling, etc.)
+- **troubleshooting/**: Common errors and solutions
+- **best-practices/**: Repeated advice and guidelines
+- **teaching-patterns/**: Pedagogical approaches and structures
+
+## Contributing
+
+When you write a new chapter and encounter content that could be reusable:
+
+1. Check if similar pattern already exists
+2. If yes, use existing pattern (adapt if needed)
+3. If no, consider extracting a new pattern
+4. Document thoroughly with customization guidance
+
+## Maintenance
+
+- Update patterns based on reader feedback
+- Refine explanations for clarity
+- Add new variations as discovered
+- Track usage to identify most valuable patterns
+````
+
+### 5. Add Usage Guidance
+
+For each pattern, provide clear instructions:
+
+**When to Use This Pattern:**
+
+```markdown
+## Usage Guidelines: Express Route Handler Template
+
+**Use this pattern when:**
+
+- Creating CRUD endpoints in Express
+- Need consistent error handling across routes
+- Want standard success/error response format
+- Building RESTful API endpoints
+
+**Don't use this pattern when:**
+
+- Building GraphQL endpoints (different structure)
+- Using different framework (adapt accordingly)
+- Need streaming responses (different approach)
+- Error handling is domain-specific (customize heavily)
+```
+
+**Customization Steps:**
+
+```markdown
+## How to Customize
+
+1. **Identify the HTTP method**
+   - GET for retrieving data
+   - POST for creating resources
+   - PUT/PATCH for updating
+   - DELETE for removing
+
+2. **Define the route path**
+   - Static: `/users`, `/products`
+   - Dynamic: `/users/:id`, `/products/:productId`
+
+3. **Determine input source**
+   - `req.body` for POST/PUT/PATCH
+   - `req.params` for URL parameters
+   - `req.query` for query strings
+
+4. **Add validation logic**
+   - Check required fields
+   - Validate data types
+   - Verify business rules
+
+5. **Implement core operation**
+   - Database query
+   - External API call
+   - Business logic processing
+
+6. **Set appropriate status code**
+   - 200 OK (successful GET/PUT/PATCH)
+   - 201 Created (successful POST)
+   - 204 No Content (successful DELETE)
+
+7. **Test thoroughly**
+   - Happy path
+   - Validation errors
+   - Server errors
+```
+
+**Examples in Context:**
+
+````markdown
+## Usage Examples
+
+### Example 1: User Registration (Chapter 5)
+
+**Context:** Creating a new user account
+
+**Customization:**
+
+- Method: POST
+- Path: /users
+- Input: req.body (email, password)
+- Validation: Email format, password strength
+- Operation: User.create()
+- Success: 201 Created
+
+**Result:**
+
+```javascript
+router.post('/users', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ error: 'Valid email required' });
+    }
+
+    const user = await User.create({ email, password });
+
+    res.status(201).json({
+      success: true,
+      data: { id: user.id, email: user.email },
+    });
+  } catch (err) {
+    console.error('Registration error:', err);
+    res.status(500).json({ error: 'Registration failed' });
+  }
+});
+```
+````
+
+### Example 2: Get Product Details (Chapter 6)
+
+**Context:** Retrieving a single product by ID
+
+**Customization:**
+
+- Method: GET
+- Path: /products/:id
+- Input: req.params (id)
+- Validation: ID exists, valid format
+- Operation: Product.findById()
+- Success: 200 OK
+
+**Result:**
+
+```javascript
+router.get('/products/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ error: 'Product ID required' });
+    }
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: product,
+    });
+  } catch (err) {
+    console.error('Get product error:', err);
+    res.status(500).json({ error: 'Failed to retrieve product' });
+  }
+});
+```
+
+````
+
+### 6. Track Usage
+
+Document where each pattern is used:
+
+**Usage Tracking:**
+
+```markdown
+# Pattern Usage: Express Route Handler Template
+
+## Chapters Using This Pattern
+
+### Chapter 5: Building Authentication
+- Section 3: User Registration (`POST /users`)
+- Section 4: User Login (`POST /login`)
+- Section 5: Get User Profile (`GET /users/:id`)
+- Section 6: Update Profile (`PUT /users/:id`)
+
+### Chapter 6: Product Management
+- Section 2: List Products (`GET /products`)
+- Section 3: Get Product (`GET /products/:id`)
+- Section 4: Create Product (`POST /products`)
+- Section 5: Update Product (`PUT /products/:id`)
+- Section 6: Delete Product (`DELETE /products/:id`)
+
+### Chapter 7: Order Processing
+- Section 2: Create Order (`POST /orders`)
+- Section 3: Get Order (`GET /orders/:id`)
+- Section 4: Cancel Order (`PUT /orders/:id/cancel`)
+
+## Total Uses: 12 instances across 3 chapters
+
+## Update History
+- 2024-01-15: Created pattern
+- 2024-01-22: Added 404 handling variation (Chapter 6)
+- 2024-02-01: Added async error handling note (reader feedback)
+````
+
+## Quality Standards
+
+A well-extracted content library provides:
+
+✅ **Comprehensive Coverage:**
+
+- All repeated patterns identified
+- Explanations, code, troubleshooting, best practices
+- Organized into clear categories
+
+✅ **Clear Documentation:**
+
+- Each pattern thoroughly documented
+- Generic version provided
+- Customization points identified
+- Usage examples included
+
+✅ **Practical Usability:**
+
+- Easy to find patterns
+- Clear instructions for customization
+- Multiple examples showing context adaptation
+- Guidelines for when to use each pattern
+
+✅ **Maintenance Tracking:**
+
+- Usage documented (where patterns appear)
+- Update history maintained
+- Feedback incorporated
+
+## Common Pitfalls
+
+❌ **Extracting non-reusable content** - One-off explanations don't belong in library
+
+✅ **Extract true patterns** - Must appear 2+ times with variations
+
+---
+
+❌ **Too specific** - Pattern is so specific it's not reusable
+
+✅ **Appropriate generalization** - Generic enough for reuse, specific enough for clarity
+
+---
+
+❌ **Insufficient documentation** - Just the code/explanation without usage guidance
+
+✅ **Complete documentation** - Generic version + customization points + examples + guidelines
+
+---
+
+❌ **Poor organization** - Random files with no structure
+
+✅ **Clear categorization** - Explanations, code, troubleshooting, best practices
+
+---
+
+❌ **No usage tracking** - Don't know where patterns are used
+
+✅ **Track usage** - Document all locations using each pattern
+
+## Integration with Workflows
+
+**When to Extract:**
+
+```
+Chapter Development:
+  Write Chapter 1 → Complete
+  Write Chapter 2 → Complete
+  Write Chapter 3 → Complete ← "Hmm, explaining async/await again..."
+    ↓
+  Run extract-reusable-content.md
+    ↓
+  Content Library Created
+    ↓
+  Write Chapter 4+ → Reference library patterns
+```
+
+**Ongoing Maintenance:**
+
+```
+Reader Feedback:
+  "Closure explanation in Ch 7 clearer than Ch 3"
+    ↓
+  Update content-library/explanations/closures.md
+    ↓
+  Revise Ch 3 using updated pattern
+    ↓
+  Consistency improved
+```
+
+## Next Steps
+
+After creating content library:
+
+1. **Integrate into workflow**
+   - Reference library when writing new chapters
+   - Use patterns instead of rewriting
+
+2. **Share with collaborators**
+   - Co-authors use same patterns
+   - Consistency across contributors
+
+3. **Maintain actively**
+   - Update based on feedback
+   - Refine patterns over time
+   - Add new patterns as discovered
+
+4. **Track effectiveness**
+   - Note time saved
+   - Monitor consistency improvements
+   - Identify most valuable patterns
+
+## Related Tasks
+
+- **synthesize-research-notes.md** - May identify reusable research patterns
+- **expand-outline-to-draft.md** - Can use library patterns when expanding
+- **generate-explanation-variants.md** - Refined variants become library patterns
+- **write-section-draft.md** - Reference library when writing sections
+- **technical-review-section.md** - May suggest extracting patterns for reuse
+==================== END: .bmad-technical-writing/tasks/extract-reusable-content.md ====================
+
+==================== START: .bmad-technical-writing/tasks/generate-cross-references.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Generate Cross-References
+
+---
+
+task:
+id: generate-cross-references
+name: Generate Cross-References
+description: Suggest where to add "see Chapter X" references
+persona_default: technical-editor
+inputs: - target-chapter (chapter to analyze for cross-references) - manuscript-directory (all chapters to search) - chapter-outline (understanding chapter structure)
+steps: - Analyze target chapter content and identify concepts - Search other chapters for related explanations - Identify prerequisite concepts from earlier chapters - Find related topics and examples elsewhere - Spot forward references to upcoming content - Generate reference suggestions with location and text - Categorize references (prerequisite, related, forward, example) - Prioritize references (high, medium, low) - Check for reciprocal references
+output: List of cross-reference suggestions with priority and proposed wording
+ai_assistance: true
+human_verification_required: false
+
+---
+
+## Purpose
+
+This task analyzes a chapter and suggests where to add cross-references to other chapters, helping readers navigate between related content. Well-placed cross-references improve comprehension (pointing to prerequisites), reduce redundancy (referring rather than repeating), and enhance discoverability (revealing connections between topics).
+
+## Benefits of Cross-References
+
+**Enhanced Navigation:**
+
+- Readers can jump to prerequisite knowledge
+- Easy to find related examples
+- Clear path through progressive topics
+
+**Reduced Redundancy:**
+
+- Reference detailed explanation instead of repeating
+- Keep content focused and concise
+- Avoid bloated chapters
+
+**Better Learning:**
+
+- Explicit connections between concepts
+- Preview upcoming advanced topics
+- Reinforce key ideas across chapters
+
+**Improved Discoverability:**
+
+- Readers find relevant content they might miss
+- Build mental model of topic relationships
+- Encourage exploration
+
+## Prerequisites
+
+Before starting this task:
+
+- **Target chapter completed** - Chapter to analyze for cross-references
+- **Other chapters available** - Need content to reference
+- **Chapter outlines** - Understanding of what each chapter covers
+- **Book structure** - Know overall organization and progression
+
+## Workflow Steps
+
+### 1. Analyze Chapter Content
+
+Read the target chapter and identify referenceable concepts:
+
+**Identify Concepts Mentioned:**
+
+```markdown
+## Chapter 5: JWT Authentication - Concept Inventory
+
+**Core Topics:**
+
+- JSON Web Tokens (JWT)
+- Authentication vs Authorization
+- Token-based auth
+- Cryptographic signatures
+- HMAC algorithms
+
+**Related Concepts Mentioned:**
+
+- HTTP headers (Authorization header)
+- Base64 encoding
+- Hashing and encryption (briefly mentioned)
+- Session-based auth (contrasted with JWT)
+- CORS (for API access)
+- Environment variables (for secrets)
+- Express middleware
+- Async/await (in code examples)
+
+**Prerequisites Assumed:**
+
+- HTTP request/response cycle
+- JavaScript objects and functions
+- Promise handling
+- REST API basics
+```
+
+**Note Topics That Might Be Explained Elsewhere:**
+
+```markdown
+## Potentially Referenced Topics
+
+**Likely in Earlier Chapters:**
+
+- HTTP basics → Probably Chapter 2 or 3
+- Express middleware → Likely Chapter 4
+- Environment variables → Could be Chapter 3
+- Async/await → Might be Chapter 2 or 3
+- Base64 encoding → May or may not be covered
+
+**Likely in Later Chapters:**
+
+- Authorization and roles → Advanced topic, Chapter 7+
+- OAuth 2.0 → Related but separate, Chapter 6?
+- Security best practices → Possibly Chapter 8+
+```
+
+**Find Terms That Need Definition:**
+
+```markdown
+## Terminology Check
+
+**Terms used without definition:**
+
+- "Cryptographic signature" - Mentioned but not fully explained
+- "HMAC" - Acronym used, might need expansion
+- "Lexical token" - Briefly mentioned
+- "Bearer token" - Standard term but not defined
+
+**Possible References:**
+
+- If "Cryptographic Basics" chapter exists → Reference it
+- If "Security Fundamentals" chapter exists → Reference it
+- Otherwise → Define inline or add brief explanation
+```
+
+**Spot Potential Forward/Backward References:**
+
+```markdown
+## Reference Opportunities
+
+**Backward (Prerequisites):**
+
+- "We covered Express middleware in Chapter 4"
+- "Recall HTTP headers from Chapter 2"
+- "As you learned in Chapter 3, environment variables..."
+
+**Forward (Advanced Topics):**
+
+- "We'll explore role-based authorization in Chapter 7"
+- "Chapter 8 covers advanced security patterns for production"
+- "You'll use JWTs with OAuth 2.0 in Chapter 6"
+
+**Lateral (Related Topics):**
+
+- "For an alternative approach, see session-based auth in Chapter 4"
+- "This pattern is similar to the API key strategy in Chapter 3"
+```
+
+### 2. Search for Related Content
+
+Search other chapters for related explanations and examples:
+
+**Search Techniques:**
+
+**Keyword Search:**
+
+```bash
+# Search for concept mentions across chapters
+grep -r "middleware" manuscripts/chapters/
+grep -r "environment variable" manuscripts/chapters/
+grep -r "async.*await" manuscripts/chapters/
+```
+
+**Concept Mapping:**
+
+```markdown
+## Search Results: "Express Middleware"
+
+**Found in:**
+
+- Chapter 4, Section 2: "Understanding Middleware" (detailed explanation)
+- Chapter 4, Section 3: "Creating Custom Middleware" (examples)
+- Chapter 5, Section 4: "Authentication Middleware" (JWT-specific)
+- Chapter 6, Section 2: "Logging Middleware" (logging example)
+
+**Potential References from Chapter 5:**
+
+- When introducing auth middleware → Reference Ch 4, Sec 2 (concepts)
+- When creating custom middleware → Reference Ch 4, Sec 3 (patterns)
+```
+
+**Related Examples:**
+
+```markdown
+## Related Examples Found
+
+**Async Error Handling:**
+
+- Chapter 3, Section 5: Try-catch with async/await
+- Chapter 5, Section 4: Error handling in auth routes (current chapter)
+- Chapter 7, Section 3: Database error handling
+
+**Potential Cross-References:**
+
+- Chapter 5 → Chapter 3: "For more on async error handling, see Chapter 3, Section 5"
+- Chapter 3 → Chapter 5: "You'll apply this pattern in Chapter 5 for auth"
+```
+
+**Prerequisites:**
+
+```markdown
+## Prerequisite Check
+
+**Chapter 5 assumes:**
+
+- Express.js basics → FOUND in Chapter 4, Sections 1-2
+- HTTP request cycle → FOUND in Chapter 2, Section 3
+- JavaScript Promises → FOUND in Chapter 3, Section 4
+- REST API concepts → FOUND in Chapter 2, Section 5
+
+**Action:** Add prerequisite references at chapter start
+```
+
+**Advanced Applications:**
+
+```markdown
+## Advanced Topics (Forward References)
+
+**Chapter 5 mentions but doesn't fully cover:**
+
+- Role-based access control → FOUND in Chapter 7, Section 2
+- OAuth 2.0 integration → FOUND in Chapter 6, Sections 3-5
+- Token refresh strategies → FOUND in Chapter 7, Section 4
+
+**Action:** Add forward references where mentioned
+```
+
+### 3. Generate Reference Suggestions
+
+For each potential cross-reference, create a detailed suggestion:
+
+**Reference Suggestion Template:**
+
+```markdown
+## Suggestion #1
+
+**Location:** Chapter 5, Section 2, Paragraph 4 (Line 87)
+
+**Current Text:**
+"Express middleware functions have access to the request and response objects and can modify them or terminate the request-response cycle."
+
+**Concept:** Middleware basics
+
+**Reference Target:** Chapter 4, Section 2 ("Understanding Middleware")
+
+**Type:** Prerequisite
+
+**Priority:** High
+
+**Proposed Addition:**
+"Express middleware functions have access to the request and response objects and can modify them or terminate the request-response cycle. If you need a refresher on how middleware works, see Chapter 4, Section 2."
+
+**Alternative Wording:**
+"Express middleware functions have access to the request and response objects and can modify them or terminate the request-response cycle. (For a detailed explanation of middleware, refer to Chapter 4, Section 2.)"
+
+**Rationale:**
+
+- Middleware is essential to understanding auth middleware
+- Chapter 4 provides detailed explanation (3 pages)
+- Readers may skip or forget Chapter 4 content
+- Helps readers who jump directly to authentication topic
+
+**Reciprocal Reference Needed:**
+In Chapter 4, Section 2, add forward reference: "You'll build authentication middleware using these concepts in Chapter 5."
+```
+
+**Generate Multiple Suggestions:**
+
+```markdown
+## Suggestion #2
+
+**Location:** Chapter 5, Section 3, Paragraph 2 (Line 134)
+
+**Current Text:**
+"Store your JWT secret in an environment variable, not in your source code."
+
+**Concept:** Environment variables for secrets
+
+**Reference Target:** Chapter 3, Section 6 ("Managing Configuration with Environment Variables")
+
+**Type:** Related Topic
+
+**Priority:** Medium
+
+**Proposed Addition:**
+"Store your JWT secret in an environment variable, not in your source code. For a complete guide to environment variables, see Chapter 3, Section 6."
+
+**Rationale:**
+
+- Chapter 3 covers .env files, dotenv library, best practices
+- Chapter 5 just mentions it without detail
+- Readers might not know how to implement this advice
+- Avoids repeating detailed explanation
+```
+
+```markdown
+## Suggestion #3
+
+**Location:** Chapter 5, Section 5, End of Section (Line 267)
+
+**Current Text:**
+"With JWT authentication implemented, your API endpoints are now protected from unauthorized access."
+
+**Concept:** Role-based authorization (mentioned but not covered)
+
+**Reference Target:** Chapter 7, Section 2 ("Role-Based Access Control with JWT Claims")
+
+**Type:** Forward Reference
+
+**Priority:** High
+
+**Proposed Addition:**
+"With JWT authentication implemented, your API endpoints are now protected from unauthorized access. In Chapter 7, you'll extend this further by implementing role-based authorization using JWT claims."
+
+**Rationale:**
+
+- Natural progression: authentication → authorization
+- Chapter 5 mentions roles briefly but doesn't implement
+- Sets expectation for upcoming content
+- Encourages readers to continue to advanced topics
+```
+
+### 4. Categorize References
+
+Organize suggestions by reference type:
+
+**Reference Types:**
+
+#### Type 1: Prerequisite
+
+**Characteristics:**
+
+- Points to earlier chapter
+- Essential for understanding current content
+- "Before continuing, review..."
+- High priority
+
+**Example:**
+
+```markdown
+**Prerequisite Reference:**
+Chapter 5 → Chapter 2
+
+"This section assumes familiarity with HTTP request headers. If you skipped Chapter 2 or need a refresher, see Chapter 2, Section 3 before continuing."
+```
+
+**Usage:**
+
+- Beginning of chapter
+- Before complex sections
+- When building on prior concepts
+
+#### Type 2: Related Topic
+
+**Characteristics:**
+
+- Points to parallel or related content
+- Helpful but not essential
+- "For more information, see..."
+- Medium priority
+
+**Example:**
+
+```markdown
+**Related Reference:**
+Chapter 5 → Chapter 4
+
+"For an alternative authentication approach using sessions instead of JWTs, see Chapter 4, Section 5."
+```
+
+**Usage:**
+
+- Comparisons and contrasts
+- Alternative approaches
+- Deeper dives into mentioned topics
+
+#### Type 3: Forward Reference
+
+**Characteristics:**
+
+- Points to later chapter
+- Previews upcoming content
+- "We'll cover this in detail in..."
+- Medium to high priority
+
+**Example:**
+
+```markdown
+**Forward Reference:**
+Chapter 5 → Chapter 7
+
+"While this chapter covers authentication (verifying identity), we'll explore authorization (verifying permissions) in Chapter 7."
+```
+
+**Usage:**
+
+- Building anticipation
+- Clarifying scope limitations
+- Showing learning progression
+
+#### Type 4: Example Reference
+
+**Characteristics:**
+
+- Points to example or code
+- Demonstrates concept in different context
+- "For an example, see..."
+- Low to medium priority
+
+**Example:**
+
+```markdown
+**Example Reference:**
+Chapter 5 → Chapter 6
+
+"For a complete example of JWT authentication in a production API, see the e-commerce API implementation in Chapter 6."
+```
+
+**Usage:**
+
+- Real-world applications
+- Code examples
+- Case studies
+
+### 5. Prioritize References
+
+Assign priority based on impact:
+
+**High Priority:**
+
+```markdown
+## High Priority References
+
+**Criteria:**
+
+- Essential for understanding current content
+- Prevents reader confusion
+- Fills significant knowledge gap
+- Widely applicable
+
+**Examples:**
+
+1. Prerequisite that most readers will need
+2. Forward reference to critical upcoming concept
+3. Alternative approach that solves same problem differently
+
+**Guideline:** Include these references in main text
+```
+
+**Medium Priority:**
+
+```markdown
+## Medium Priority References
+
+**Criteria:**
+
+- Helpful but not essential
+- Provides additional context
+- Interesting for curious readers
+- Specific use case or example
+
+**Examples:**
+
+1. Related topic that some readers want to explore
+2. Example in different context
+3. Deeper dive into mentioned concept
+
+**Guideline:** Include as parenthetical or sidebar
+```
+
+**Low Priority:**
+
+```markdown
+## Low Priority References
+
+**Criteria:**
+
+- Tangentially related
+- Optional additional reading
+- Advanced or edge case topic
+- Redundant with other references
+
+**Examples:**
+
+1. Footnote to academic paper
+2. Historical background
+3. Advanced optimization technique
+
+**Guideline:** Consider omitting or moving to appendix
+```
+
+**Prioritization Example:**
+
+```markdown
+## Chapter 5 Cross-Reference Priority
+
+**High Priority (Include in Main Text):**
+
+1. Chapter 4, Section 2 - Middleware basics (prerequisite)
+2. Chapter 3, Section 6 - Environment variables (essential practice)
+3. Chapter 7, Section 2 - Role-based auth (natural progression)
+
+**Medium Priority (Parenthetical or Sidebar):**
+
+1. Chapter 4, Section 5 - Session-based auth (alternative approach)
+2. Chapter 6, Section 3 - Complete API example (practical application)
+3. Chapter 2, Section 4 - HTTP headers (helpful refresher)
+
+**Low Priority (Consider Omitting):**
+
+1. Chapter 9, Section 7 - Advanced token optimization (too advanced)
+2. Appendix B - JWT specification details (too detailed)
+```
+
+### 6. Format Suggestions
+
+Provide exact placement and wording:
+
+**Suggestion Format:**
+
+```markdown
+# Cross-Reference Suggestions for Chapter 5
+
+## High Priority References
+
+### Reference #1
+
+**Location:** Chapter 5, Section 1, End of Introduction
+**Line:** After line 45
+**Placement:** New paragraph after introduction
+
+**Insert:**
+
+> **Prerequisites:** This chapter assumes you're comfortable with Express.js middleware (Chapter 4, Sections 1-2) and asynchronous JavaScript (Chapter 3, Section 4). If you need a refresher on these topics, review those sections before continuing.
+
+**Type:** Prerequisite
+**Priority:** High
+**Status:** Recommended
+
+---
+
+### Reference #2
+
+**Location:** Chapter 5, Section 3, Paragraph 5
+**Line:** 178 (after "Store JWT secrets in environment variables")
+**Placement:** Append to existing sentence
+
+**Current:**
+Store JWT secrets in environment variables, never hardcode them.
+
+**Modified:**
+Store JWT secrets in environment variables, never hardcode them. See Chapter 3, Section 6 for a complete guide to managing environment variables.
+
+**Type:** Related Topic
+**Priority:** High
+**Status:** Recommended
+
+---
+
+### Reference #3
+
+**Location:** Chapter 5, Section 5, End of Chapter
+**Line:** After line 312 (final paragraph)
+**Placement:** New paragraph before chapter summary
+
+**Insert:**
+
+> **What's Next:** You now have a working JWT authentication system. In Chapter 7, you'll extend this by implementing role-based authorization, allowing you to grant different permissions to users based on their roles.
+
+**Type:** Forward Reference
+**Priority:** High
+**Status:** Recommended
+
+## Medium Priority References
+
+### Reference #4
+
+**Location:** Chapter 5, Section 2, Paragraph 8
+**Line:** 156 (after JWT vs session comparison)
+**Placement:** Parenthetical addition
+
+**Current:**
+Unlike session-based authentication, JWTs are stateless and don't require server-side storage.
+
+**Modified:**
+Unlike session-based authentication, JWTs are stateless and don't require server-side storage. (For a detailed comparison of JWT and session-based auth, see Chapter 4, Section 5.)
+
+**Type:** Related Topic
+**Priority:** Medium
+**Status:** Consider
+
+---
+
+[Continue for all suggestions...]
+```
+
+**Reference Style Guide:**
+
+```markdown
+## Reference Formatting Standards
+
+**Inline References:**
+"...concept explanation... (See Chapter X, Section Y for more details.)"
+
+**End-of-Paragraph References:**
+"...concept explanation. For a deeper dive into this topic, see Chapter X, Section Y."
+
+**Prerequisite Callouts:**
+
+> **Prerequisite:** This section requires understanding of [concept]. See Chapter X, Section Y if you need to review this topic first.
+
+**Forward References:**
+"We'll explore [advanced topic] in Chapter X..."
+"Chapter X covers [topic] in detail..."
+
+**Alternative Approaches:**
+"For an alternative approach using [method], see Chapter X, Section Y."
+
+**Examples:**
+"For a working example, see [context] in Chapter X."
+```
+
+### 7. Check for Reciprocal References
+
+Identify where reciprocal cross-references should be added:
+
+**Reciprocal Reference Pattern:**
+
+```markdown
+## Reciprocal References
+
+### Reference Pair #1
+
+**Forward Reference (Chapter 4 → Chapter 5):**
+
+- Location: Chapter 4, Section 2 (Middleware)
+- Add: "You'll build authentication middleware using these patterns in Chapter 5."
+
+**Backward Reference (Chapter 5 → Chapter 4):**
+
+- Location: Chapter 5, Section 2 (Auth Middleware)
+- Add: "This builds on the middleware concepts from Chapter 4, Section 2."
+
+**Status:** Both needed for complete navigation
+
+---
+
+### Reference Pair #2
+
+**Backward Reference (Chapter 5 → Chapter 3):**
+
+- Location: Chapter 5, Section 3 (Configuration)
+- Add: "Store secrets in environment variables (see Chapter 3, Section 6)."
+
+**Forward Reference (Chapter 3 → Chapter 5):**
+
+- Location: Chapter 3, Section 6 (Environment Variables)
+- Add: "You'll use environment variables to secure JWT secrets in Chapter 5."
+
+**Status:** Forward reference optional but recommended
+```
+
+**Benefits of Reciprocal References:**
+
+- Bidirectional navigation
+- Reinforces concept connections
+- Helps readers who start mid-book
+- Creates cohesive learning experience
+
+## Cross-Reference Best Practices
+
+### Do:
+
+✅ **Prioritize forward references to upcoming content**
+
+- Builds anticipation
+- Shows learning progression
+- Encourages reading forward
+
+✅ **Back-reference prerequisites explicitly**
+
+- Prevents confusion
+- Helps readers who skip around
+- Sets clear expectations
+
+✅ **Use consistent reference format**
+
+- "See Chapter X, Section Y" (standard)
+- "Chapter X covers..." (variation)
+- Parenthetical "(Chapter X)" for brief references
+
+✅ **Verify references before publication**
+
+- Chapter numbers may change
+- Section titles may change
+- Reorganization affects references
+
+### Don't:
+
+❌ **Over-reference (too many disrupt flow)**
+
+- Limit to essential references
+- Combine multiple related references
+- Prioritize ruthlessly
+
+❌ **Reference every prerequisite**
+
+- Only reference when readers likely need reminder
+- Don't reference universal basics (variables, functions)
+- Focus on chapter-specific prerequisites
+
+❌ **Vague references**
+
+- ❌ "See earlier chapter on middleware"
+- ✅ "See Chapter 4, Section 2"
+
+❌ **Circular references without purpose**
+
+- Avoid Chapter X → Y → X loops
+- Unless showing iterative relationship
+
+## Output Format
+
+**Deliverable: Cross-Reference Report**
+
+```markdown
+# Cross-Reference Suggestions: Chapter 5 (JWT Authentication)
+
+**Analysis Date:** 2024-01-15
+**Target Chapter:** Chapter 5 - JWT Authentication
+**Chapters Analyzed:** 1-10
+**Total Suggestions:** 15
+**High Priority:** 5
+**Medium Priority:** 7
+**Low Priority:** 3
+
+---
+
+## Summary
+
+This analysis identified 15 cross-reference opportunities in Chapter 5. Key findings:
+
+- 5 high-priority prerequisites (Chapter 2, 3, 4 references)
+- 3 high-priority forward references (Chapter 6, 7)
+- 7 medium-priority related topics
+- 3 low-priority suggestions (advanced topics, consider omitting)
+
+**Recommendation:** Implement all high-priority references, select medium-priority based on space constraints, defer low-priority.
+
+---
+
+## High Priority References (Implement)
+
+### 1. Middleware Prerequisite
+
+- **Location:** Chapter 5, Section 1, Line 45
+- **Target:** Chapter 4, Section 2
+- **Type:** Prerequisite
+- **Proposed Text:** [Full text...]
+
+[Continue for all high-priority...]
+
+---
+
+## Medium Priority References (Consider)
+
+[List all medium-priority...]
+
+---
+
+## Low Priority References (Optional)
+
+[List all low-priority...]
+
+---
+
+## Reciprocal References Needed
+
+### In Chapter 3, Section 6
+
+Add forward reference to Chapter 5's JWT secret management
+
+### In Chapter 4, Section 2
+
+Add forward reference to Chapter 5's auth middleware
+
+[Continue...]
+
+---
+
+## Implementation Checklist
+
+- [ ] Review all high-priority suggestions
+- [ ] Insert references into Chapter 5
+- [ ] Add reciprocal references in Chapters 3, 4
+- [ ] Verify reference targets exist and are accurate
+- [ ] Check reference formatting consistency
+- [ ] Validate chapter/section numbers
+- [ ] Test references for clarity
+
+---
+
+## Notes
+
+- Chapter 5 is well-positioned in book structure
+- Strong prerequisite coverage in earlier chapters
+- Clear progression to advanced topics in Chapters 6-7
+- Consider creating a "Prerequisites" box at chapter start listing all 5 prerequisite references
+```
+
+## Quality Standards
+
+Effective cross-references provide:
+
+✅ **Complete Coverage:**
+
+- All significant prerequisites identified
+- Related topics connected
+- Forward references to upcoming content
+- Examples and applications linked
+
+✅ **Clear Prioritization:**
+
+- High/medium/low priority assigned
+- Rationale for each priority level
+- Actionable recommendations
+
+✅ **Precise Suggestions:**
+
+- Exact locations specified
+- Proposed wording provided
+- Multiple phrasing options when appropriate
+- Formatting consistent
+
+✅ **Reciprocal References:**
+
+- Bidirectional connections identified
+- Both directions documented
+- Implementation guidance provided
+
+## Common Pitfalls
+
+❌ **Too many references (cluttered text)**
+
+✅ **Selective references (essential only)**
+
+---
+
+❌ **Vague locations ("earlier chapter")**
+
+✅ **Specific citations ("Chapter 4, Section 2")**
+
+---
+
+❌ **No prioritization (all treated equally)**
+
+✅ **Clear priorities (high/medium/low)**
+
+---
+
+❌ **One-way references only**
+
+✅ **Reciprocal references (bidirectional)**
+
+---
+
+❌ **Never verifying references**
+
+✅ **Validation before publication**
+
+## Integration with Workflows
+
+**When to Generate Cross-References:**
+
+```
+Chapter Development Workflow:
+  Draft Chapter → Complete
+  Technical Review → Complete
+  Editorial Review → In Progress
+    ↓
+  Run generate-cross-references.md ← HERE
+    ↓
+  Implement suggested references
+    ↓
+  Final review with references
+    ↓
+  Publication
+```
+
+**Bulk Cross-Reference Pass:**
+
+```
+Book Completion Workflow:
+  All chapters drafted → Complete
+  All chapters reviewed → Complete
+    ↓
+  Run generate-cross-references.md for EACH chapter
+    ↓
+  Create comprehensive reference map
+    ↓
+  Implement all cross-references in batch
+    ↓
+  Validate all references
+    ↓
+  Final publication review
+```
+
+## Next Steps
+
+After generating cross-reference suggestions:
+
+1. **Review suggestions** - Read all recommendations
+2. **Prioritize implementation** - Decide which to include
+3. **Edit chapters** - Insert references
+4. **Add reciprocal references** - Update referenced chapters
+5. **Validate references** - Verify accuracy
+6. **Format consistently** - Apply style guide
+7. **Final check** - Test all references before publication
+
+## Related Tasks
+
+- **write-section-draft.md** - May add references during writing
+- **copy-edit-chapter.md** - Refine reference wording during editing
+- **technical-review-section.md** - Reviewers may suggest additional references
+- **build-glossary.md** - Cross-references complement glossary entries
+==================== END: .bmad-technical-writing/tasks/generate-cross-references.md ====================
+
 ==================== START: .bmad-technical-writing/checklists/packtpub-submission-checklist.md ====================
+<!-- Powered by BMAD™ Core -->
+
 # PacktPub Submission Checklist
 
-Use this checklist to ensure chapters meet Packt Publishing submission requirements.
+---
 
-## Format and Length
+checklist:
+id: packtpub-submission
+name: PacktPub Chapter/Manuscript Submission Checklist
+description: Official PacktPub quality checklist for technical book chapters and manuscripts
+source: Your Writing Checklist.pdf (PacktPub Author Bundle)
+persona_default: manuscript-reviewer
+applies_to: - Technical book chapters - Full manuscript submissions - Sample chapter submissions
+sections: - Outline Compliance - Structure Requirements - Readability Standards - Value Proposition - Technical Requirements - Code Quality - Image Quality - Style and Formatting
 
-- [ ] Chapter length 20-30 pages (typical range)
-- [ ] Submitted in required format (Word or Markdown per author guidelines)
-- [ ] SharePoint formatting guidelines followed
-- [ ] Proper heading levels used (H1 for chapter, H2 for sections)
-- [ ] Page breaks appropriate
+---
 
-## Chapter Structure
+## Purpose
 
-- [ ] Learning objectives clearly stated at beginning
-- [ ] Introduction section engaging and sets context
-- [ ] Main content broken into logical sections
-- [ ] Summary section included at end
-- [ ] "Further reading" or "See also" section provided
-- [ ] Prerequisites clearly listed
+This checklist validates technical book chapters and manuscripts against PacktPub's official submission requirements. All items must pass (or be documented as exceptions) before submitting to your PacktPub editor.
 
-## Code Examples
+**Source**: Official PacktPub Author Bundle ("Your Writing Checklist.pdf")
 
-- [ ] All code tested and working
-- [ ] Code formatting consistent
-- [ ] Syntax highlighting language specified
-- [ ] Long lines broken appropriately (no horizontal scrolling)
-- [ ] Code comments explain key concepts
-- [ ] Output examples provided where helpful
+## How to Use This Checklist
 
-## Screenshots and Images
+1. **During Writing**: Reference sections to ensure compliance
+2. **Before Submission**: Execute complete checklist validation
+3. **With Automation**: Use `format-for-packtpub.md` task which runs this checklist
+4. **Manual Review**: Check items marked "Manual Review Required"
 
-- [ ] Screenshots in required format (PNG typical, 300 DPI)
-- [ ] Images clearly labeled (Figure 1.1, Figure 1.2, etc.)
-- [ ] Captions provided for all figures
-- [ ] Images referenced in text
-- [ ] High quality and readable
-- [ ] Appropriate resolution for print and digital
+## Checklist Items
 
-## Style and Voice
+### 1. Outline Compliance
 
-- [ ] Second person ("you") perspective used
-- [ ] Active voice preferred over passive
-- [ ] Conversational but professional tone
-- [ ] Chicago Manual of Style guidelines followed
-- [ ] Consistent terminology throughout
+These items verify your chapter matches the agreed-upon outline and objectives.
 
-## Technical Content
+#### 1.1 Topic Coverage
 
-- [ ] Technical accuracy verified
-- [ ] Current best practices demonstrated
-- [ ] Version numbers specified for all software/libraries
-- [ ] Cross-platform considerations noted where relevant
-- [ ] Deprecated features avoided
+- [ ] **All topics/skills mentioned in outline are covered**
+  - Cross-reference outline document
+  - Verify each topic has dedicated section
+  - Check that no outline topics are missing
 
-## Educational Elements
+#### 1.2 Page Count
 
-- [ ] Concepts explained clearly before code
-- [ ] Progressive skill building through chapter
-- [ ] Real-world examples and use cases included
-- [ ] Troubleshooting tips provided
-- [ ] Key points highlighted or called out
+- [ ] **Chapter page count within acceptable range**
+  - Outline specifies target page count
+  - Too high: content may be too detailed or off-topic
+  - Too low: content may be insufficient or missing topics
+  - Acceptable variance: ±10% of target
 
-## References and Resources
+#### 1.3 Learning Objectives
 
-- [ ] URLs verified and working
-- [ ] Official documentation referenced
-- [ ] GitHub repository links included (if applicable)
-- [ ] Attribution for third-party code or content
-- [ ] License information for code included
+- [ ] **Chapter meets all stated learning objectives**
+  - Each objective listed in outline is addressed
+  - Reader can demonstrate each skill after reading
+  - Practical examples provided for each objective
 
-## Review and Quality
+---
 
-- [ ] Grammar and spelling checked
-- [ ] Technical review completed
-- [ ] Code review completed
-- [ ] Peer review feedback addressed
-- [ ] Author checklist completed (if provided by Packt)
+### 2. Structure Requirements
 
-## Submission Package
+These items ensure your chapter follows PacktPub's required structure and formatting.
 
-- [ ] Main chapter file
-- [ ] All images in separate folder
-- [ ] Code files organized and tested
-- [ ] README for code repository (if applicable)
-- [ ] Change log or revision notes (if resubmitting)
+#### 2.1 Introduction Section
+
+- [ ] **Chapter opens with brief introduction**
+  - Located before first H2 heading
+  - 1-3 paragraphs maximum
+  - Sets context for the chapter
+
+- [ ] **Introduction lists learning goals**
+  - "In this chapter, you will learn..."
+  - "This chapter covers..."
+  - Bullet list format
+
+- [ ] **Bullet list of main topics/Level 1 headings**
+  - Each H2 section listed
+  - Uses consistent format
+  - Gives reader roadmap of chapter content
+
+#### 2.2 Heading Standards
+
+- [ ] **Appropriate heading styles used (Heading 1-6)**
+  - Heading 1: Chapter title
+  - Heading 2: Major sections
+  - Heading 3: Subsections
+  - Avoid skipping levels (H2 → H4)
+
+- [ ] **Headings use "-ing" verbs to imply action**
+  - ✓ "Creating a React Component"
+  - ✓ "Installing the Development Environment"
+  - ✗ "React Components"
+  - ✗ "Development Environment"
+
+#### 2.3 Transitions and Flow
+
+- [ ] **Signposts/transitions between major sections**
+  - Link previous section to next
+  - "Now that we've covered X, let's explore Y..."
+  - "With X configured, we can now..."
+
+- [ ] **Content linked to create learning journey**
+  - Each section builds on previous
+  - Concepts introduced before being used
+  - Forward references when appropriate
+
+- [ ] **No consecutive headers (lead-in text required)**
+  - Every heading followed by explanatory paragraph
+  - Never: H2 immediately followed by H3
+  - Always: H2, paragraph(s), then H3
+
+- [ ] **No consecutive images (framing text required)**
+  - Text before image explaining what to look for
+  - Text after image explaining significance
+  - Never: image immediately following another image
+
+#### 2.4 Summary and Conclusion
+
+- [ ] **Summary section present at end of chapter**
+  - Recap main learnings
+  - Reinforce value/application
+  - "You have now learned..."
+  - "You can now configure..."
+  - "You now understand..."
+
+- [ ] **Summary closes by introducing next chapter topic**
+  - "In the next chapter, we will..."
+  - Creates continuity across chapters
+  - Maintains reader engagement
+
+- [ ] **Reader able to achieve goals mentioned in introduction**
+  - Introduction promises match summary delivery
+  - All learning objectives addressable by reader
+  - Practical skills demonstrated, not just explained
+
+---
+
+### 3. Readability Standards
+
+These items ensure your content is accessible and engaging for the target audience.
+
+#### 3.1 Audience Consideration
+
+- [ ] **Content appropriate for target audience level**
+  - Beginners: more detail, simpler explanations, more examples
+  - Intermediate: moderate detail, some assumptions of knowledge
+  - Advanced: technical depth, fewer basic explanations
+
+- [ ] **Terminology introduced before use**
+  - First use of term includes definition or context
+  - Use **Key Word [PACKT]** style for first appearance
+  - Avoid assuming reader knows jargon
+
+#### 3.2 Writing Style
+
+- [ ] **Content kept concise and straightforward**
+  - Short sentences (15-20 words average)
+  - One concept per paragraph
+  - Active voice preferred
+
+- [ ] **Reader addressed using "you" and "we"**
+  - "You can now configure..."
+  - "We will explore..."
+  - Avoid passive: "The configuration is done by..."
+  - Avoid third-person: "The user configures..."
+
+#### 3.3 Visual Variety
+
+- [ ] **Create visual variety throughout chapter**
+  - Mix of paragraphs, lists, code, images, tables
+  - Avoid long stretches of plain text
+  - Break up dense content with formatting
+
+- [ ] **Lists used appropriately**
+  - Bullet lists for unordered items
+  - Numbered lists for sequential steps
+  - Definition lists for term/description pairs
+
+- [ ] **Info boxes used for supplementary content**
+  - Tips, warnings, notes, information boxes
+  - Not essential to main flow
+  - Enhance understanding
+
+#### 3.4 Code and Image Framing
+
+- [ ] **Text before all code blocks explaining context**
+  - What the code does
+  - Why it's relevant
+  - What to focus on
+
+- [ ] **Text after all code blocks explaining significance**
+  - What was demonstrated
+  - Key points to remember
+  - How it connects to larger topic
+
+- [ ] **Text before all images explaining what to look for**
+  - "In the following screenshot, notice..."
+  - "The diagram shows..."
+  - Directs reader's attention
+
+- [ ] **Text after all images explaining significance**
+  - "As you can see..."
+  - "This illustrates..."
+  - Reinforces the point being made
+
+---
+
+### 4. Value Proposition
+
+These items ensure your content provides practical, real-world value to readers.
+
+#### 4.1 Practical Focus
+
+- [ ] **Content hands-on and practical with real-world examples**
+  - Prefer working code over theory
+  - Use realistic scenarios
+  - Avoid contrived "foo/bar" examples when possible
+
+- [ ] **Limit or avoid background information and theory**
+  - Some theory needed for understanding
+  - Should support practical application, not dominate
+  - "Just enough" theory to enable practice
+
+- [ ] **Numbered steps for complex tasks/code execution**
+  - 1. Do this
+  - 2. Then do this
+  - 3. Finally do this
+  - Makes procedures clear and followable
+
+#### 4.2 Visual Support
+
+- [ ] **Images support/simplify explanations, not just illustrate**
+  - Diagrams explain complex concepts
+  - Screenshots show specific UI elements
+  - Charts/graphs reveal patterns
+  - Each image has clear purpose
+
+#### 4.3 Learning Reinforcement
+
+- [ ] **Value/real-world application stated at end of each section**
+  - "This technique allows you to..."
+  - "You'll use this when..."
+  - "Real-world applications include..."
+
+- [ ] **"Close to goal" reminders for readers**
+  - Progress indicators throughout chapter
+  - "You're now halfway to building..."
+  - Maintains motivation
+
+- [ ] **Summary recaps learnings and reinforces value/application**
+  - Not just "we covered X, Y, Z"
+  - "You can now X, Y, Z in your projects"
+  - Emphasizes practical skills gained
+
+---
+
+### 5. Technical Requirements
+
+These items ensure your technical content is accurate, current, and complete.
+
+#### 5.1 Version Currency
+
+- [ ] **Latest/updated versions for all tech and code**
+  - Check for updates before starting chapter
+  - Document version numbers in text
+  - Avoid deprecated features/APIs
+
+- [ ] **Version updates checked before each chapter**
+  - Frameworks update frequently
+  - API changes may affect examples
+  - Syntax may evolve
+
+#### 5.2 Code Explanation
+
+- [ ] **All code explained in paragraph or sentence**
+  - No unexplained code blocks
+  - Key lines highlighted and discussed
+  - Complex logic broken down
+
+- [ ] **No in-code comments (explain in surrounding text)**
+  - Code should be clean, production-like
+  - Explanations belong in prose, not comments
+  - Exception: Standard documentation comments (JSDoc, etc.)
+
+#### 5.3 Code Repository
+
+- [ ] **GitHub repository updated with each chapter**
+  - Complete working examples
+  - Organized by chapter
+  - README with setup instructions
+  - Link provided in manuscript or to editor
+
+---
+
+### 6. Code Quality
+
+These items ensure code blocks meet PacktPub's formatting and quality standards.
+
+#### 6.1 Code Block Length (CRITICAL)
+
+- [ ] **No code blocks exceed 30 lines (HARD LIMIT)**
+  - 30 lines = absolute maximum
+  - Blocks over 30 lines MUST be split
+  - Solutions: extract functions, show key sections only, reference full code on GitHub
+
+- [ ] **Code blocks ideally ≤20 lines (RECOMMENDED)**
+  - 20 lines = optimal for readability
+  - Blocks 21-30 lines flagged as warning
+  - Strive for concise, focused examples
+
+- [ ] **Long code broken into logical sections**
+  - Show setup, then usage, then cleanup separately
+  - Use "..." to indicate omitted code
+  - Explain each section individually
+
+#### 6.2 Code Style and Formatting
+
+- [ ] **Code uses proper syntax highlighting**
+  - Language identifier on code fence: ```javascript
+  - Enables proper formatting in conversion
+  - Improves readability
+
+- [ ] **Code follows language best practices**
+  - Idiomatic code for the language
+  - Modern syntax (ES6+, Python 3, etc.)
+  - Not overly clever or obfuscated
+
+- [ ] **Code is tested and working**
+  - All examples actually run
+  - No syntax errors
+  - Produces expected output
+
+---
+
+### 7. Image Quality
+
+These items ensure images meet PacktPub's print quality standards.
+
+#### 7.1 Resolution Requirements (CRITICAL)
+
+- [ ] **All images 300 DPI minimum**
+  - Check DPI metadata
+  - Use GIMP for screenshot capture (auto 300 DPI)
+  - Paste PrtScr into GIMP document to convert
+
+- [ ] **All images 2000px minimum on shortest edge**
+  - Width AND height matter
+  - Measure shortest dimension
+  - Upscaling doesn't improve quality - capture at correct size
+
+#### 7.2 Format Requirements (CRITICAL)
+
+- [ ] **No JPG format images (PNG/TIFF only)**
+  - JPG loses quality with each save
+  - PNG: screenshots, UI captures
+  - TIFF: diagrams, artwork
+  - Convert existing JPG to PNG
+
+- [ ] **Original images provided to editor**
+  - Separate files, not just embedded
+  - Organized in dedicated folder
+  - Descriptive filenames with figure numbers
+
+#### 7.3 Screenshot Quality
+
+- [ ] **Screenshots focused on relevant content**
+  - Crop empty space
+  - Highlight UI elements being discussed
+  - Text in screenshot readable at print size
+
+- [ ] **Full-screen + snippet pairs for detail images**
+  - Detail: cropped area of interest
+  - Full: entire screen for context
+  - Naming: `figure-1-snip.png` and `figure-1-fullscreen.png`
+
+- [ ] **Screenshots file size ≥1000KB at full screen**
+  - Indicates sufficient resolution
+  - Smaller files likely insufficient quality
+
+#### 7.4 Third-Party Images
+
+- [ ] **Copyright/license checked for third-party images**
+  - Permission obtained if needed
+  - Attribution included where required
+  - Print/digital rights confirmed
+
+- [ ] **Highest resolution obtained (not screenshots of images)**
+  - Request original from source
+  - Download full-resolution version
+  - Don't screenshot existing images
+
+---
+
+### 8. Style and Formatting
+
+These items ensure proper PacktPub style application.
+
+#### 8.1 PACKT Styles Applied
+
+- [ ] **All paragraphs use PacktPub styles**
+  - Headings: "Heading 1-6" (standard, no [PACKT])
+  - Content: "[PACKT]" suffix styles (Normal [PACKT], Code [PACKT], etc.)
+  - No built-in Word styles (except headings)
+
+- [ ] **Code blocks use Code [PACKT] / Code End [PACKT]**
+  - Code [PACKT]: all lines except last
+  - Code End [PACKT]: last line of code block
+  - Single-line code uses Code [PACKT] only
+
+- [ ] **Lists use Bullet [PACKT] / Numbered Bullet [PACKT]**
+  - Bullet [PACKT]: unordered lists
+  - Numbered Bullet [PACKT]: ordered lists
+  - No standard Word list styles
+
+- [ ] **Inline formatting uses character [PACKT] styles**
+  - Key Word [PACKT]: first appearance of terms, important concepts
+  - Italics [PACKT]: emphasis
+  - Code In Text [PACKT]: inline code, commands, filenames
+
+#### 8.2 Document Template
+
+- [ ] **Document based on Sample Chapter.docx template**
+  - Contains all 77 [PACKT] styles
+  - Ensures style consistency
+  - Required for proper conversion
+
+---
+
+## Content Standards
+
+### Writing Quality
+
+- [ ] **Avoid repeating information; cross-reference instead**
+  - "As discussed in Chapter 3..."
+  - "See the X section earlier in this chapter..."
+  - Keeps content concise
+
+- [ ] **No disparaging references (race, gender, religion, etc.)**
+  - Inclusive language
+  - Professional tone
+  - Respectful examples
+
+- [ ] **No plagiarism (text, images, datasets, code)**
+  - Original content or properly licensed
+  - Citations where required
+  - Code examples original or open-source with attribution
+
+---
+
+## Validation Report Format
+
+When this checklist is executed, generate a report in this format:
+
+```markdown
+# PacktPub Submission Checklist Results
+
+**Chapter**: [Chapter Title]
+**Date**: [Date]
+**Overall Score**: X/Y items passed
+
+## Summary
+
+✅ **PASS** - Ready for submission
+🟡 **WARNINGS** - Address N warnings before submission
+🔴 **FAIL** - Fix N critical issues before submission
+
+## Section Results
+
+### 1. Outline Compliance: 3/3 ✓
+
+### 2. Structure Requirements: 10/11 ⚠️
+
+### 3. Readability Standards: 8/8 ✓
+
+### 4. Value Proposition: 6/7 ⚠️
+
+### 5. Technical Requirements: 4/4 ✓
+
+### 6. Code Quality: 2/4 ✗
+
+### 7. Image Quality: 5/7 ⚠️
+
+### 8. Style and Formatting: 8/8 ✓
+
+## Failed Items (MUST FIX)
+
+### 6.1 Code Block Length
+
+- ❌ Code block at line 245: 35 lines (MAX: 30)
+- ❌ Code block at line 389: 42 lines (MAX: 30)
+
+**Action Required**: Split these code blocks into smaller sections
+
+## Warnings (SHOULD FIX)
+
+### 2.3 Transitions and Flow
+
+- ⚠️ Section "Advanced Patterns" lacks transition from previous section
+
+### 4.1 Practical Focus
+
+- ⚠️ Consider adding more numbered steps for configuration procedure
+
+### 7.1 Resolution Requirements
+
+- ⚠️ Image figure-3.png: 1800px shortest edge (target: 2000px)
+
+## All Items Checked
+
+[Detailed list of all checklist items with ✓/⚠️/✗ status]
+```
+
+---
+
+## Notes
+
+### Manual Review Items
+
+Some checklist items require human judgment and cannot be fully automated:
+
+- **Audience appropriateness**: Requires understanding of target reader level
+- **Writing quality**: Conciseness, clarity, engagement
+- **Value proposition**: Whether examples feel "real-world" vs contrived
+- **Learning journey**: Whether content flows logically
+
+These items should be marked "Manual Review Required" in automated checks.
+
+### Critical vs Warning vs Info
+
+**Critical (MUST FIX before submission)**:
+
+- Code blocks >30 lines
+- Images <2000px or <300 DPI
+- JPG format images
+- Missing summary section
+- No [PACKT] styles applied
+
+**Warning (SHOULD FIX before submission)**:
+
+- Code blocks 21-30 lines (aim for ≤20)
+- Images missing frame text
+- Consecutive headers
+- Missing transitions
+
+**Info (NICE TO HAVE)**:
+
+- Consider adding more visual variety
+- Could add more real-world examples
+- Might benefit from diagram
+
+---
+
+## Integration
+
+This checklist is used by:
+
+- **format-for-packtpub.md** task - Automated execution during conversion
+- **manuscript-review.md** task - Manual content review process
+- **chapter-development-workflow.yaml** - Final validation step before submission
+
+## Related Files
+
+- `format-for-packtpub.md` - Automates Markdown→PacktPub Word conversion
+- `packtpub-author-bundle-analysis.md` - Detailed requirements documentation
+- `validate-manuscript.py` - Automated validation script (to be created)
 ==================== END: .bmad-technical-writing/checklists/packtpub-submission-checklist.md ====================
 
 ==================== START: .bmad-technical-writing/checklists/oreilly-format-checklist.md ====================

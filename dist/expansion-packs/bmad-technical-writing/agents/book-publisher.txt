@@ -86,10 +86,20 @@ dependencies:
   tasks:
     - create-doc.md
     - execute-checklist.md
+    - format-for-packtpub.md
+    - package-for-publisher.md
+    - prepare-meap-chapter.md
+    - self-publish-prep.md
+    - create-preface.md
+    - create-appendix.md
+    - create-index-entries.md
   templates:
     - book-proposal-tmpl.yaml
     - introduction-tmpl.yaml
+    - preface-tmpl.yaml
+    - appendix-tmpl.yaml
   checklists:
+    - generative-ai-compliance-checklist.md
     - packtpub-submission-checklist.md
     - oreilly-format-checklist.md
     - manning-meap-checklist.md
@@ -243,9 +253,18 @@ id: execute-checklist
 name: Execute Checklist
 description: Systematically execute checklist items with pass/fail/na status and evidence collection for quality assurance
 persona_default: technical-reviewer
-inputs: - checklist_path - subject_name - context_notes
-steps: - Load and parse checklist file - Process each category and item sequentially - Evaluate and mark status (PASS/FAIL/NA) with evidence - Generate results report with summary statistics - Save results to standard location
-output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
+inputs:
+
+- checklist_path
+- subject_name
+- context_notes
+  steps:
+- Load and parse checklist file
+- Process each category and item sequentially
+- Evaluate and mark status (PASS/FAIL/NA) with evidence
+- Generate results report with summary statistics
+- Save results to standard location
+  output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
 
 ---
 
@@ -584,6 +603,66 @@ Inputs:
 Output: reviews/checklist-results/packtpub-submission-checklist-2024-10-24-16-20.md
 ```
 
+### Example 4: Book Outline Validation
+
+```
+Agent: instructional-designer
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/book-outline-checklist.md
+  - subject_name: Machine Learning Fundamentals Book Outline
+  - context_notes: Initial outline review before chapter development
+Output: reviews/checklist-results/book-outline-checklist-2024-10-24-17-15.md
+```
+
+### Example 5: Chapter Outline Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/chapter-outline-checklist.md
+  - subject_name: Chapter 3: Neural Networks Outline
+  - context_notes: Validating structure before section planning
+Output: reviews/checklist-results/chapter-outline-checklist-2024-10-24-18-00.md
+```
+
+### Example 6: Section Plan Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-plan-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Section plan complete, ready for development
+Output: reviews/checklist-results/section-plan-checklist-2024-10-24-19-30.md
+```
+
+### Example 7: Section Completeness Check
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-completeness-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Before marking section DONE
+Output: reviews/checklist-results/section-completeness-checklist-2024-10-24-20-15.md
+```
+
+### Example 8: Code Example Quality Check
+
+```
+Agent: code-curator
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/code-example-checklist.md
+  - subject_name: neural_network_basic.py
+  - context_notes: After testing, before section integration
+Output: reviews/checklist-results/code-example-checklist-2024-10-24-21-00.md
+```
+
 ## Troubleshooting
 
 **Issue**: Checklist file not found
@@ -644,6 +723,2002 @@ The results file provides an auditable record for:
 - Team communication
 - Process improvement analysis
 ==================== END: .bmad-technical-writing/tasks/execute-checklist.md ====================
+
+==================== START: .bmad-technical-writing/tasks/format-for-packtpub.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Format for PacktPub Submission
+
+---
+
+task:
+id: format-for-packtpub
+name: Format Manuscript for PacktPub Submission
+description: Convert technical book manuscripts from Markdown to PacktPub-formatted Word documents with complete style application and validation
+persona_default: manuscript-formatter
+inputs:
+
+- manuscript_path (Markdown files or directory)
+- submission_type (chapter | full-manuscript)
+- author_bundle_path (PacktPub Author Bundle location)
+  steps:
+- Validate prerequisite files and tools
+- Pre-convert validation of Markdown content
+- Execute Pandoc conversion with PacktPub template
+- Apply PACKT styles with Python post-processing
+- Validate converted document against PacktPub requirements
+- Execute PacktPub submission checklist
+- Generate validation report
+  output: PacktPub-formatted .docx manuscript + validation report + checklist results
+
+---
+
+## Purpose
+
+This task automates the conversion of technical book manuscripts from Markdown format to PacktPub's required Word document format with proper [PACKT] style application and comprehensive validation against PacktPub's official submission requirements.
+
+## Prerequisites
+
+### Required Files
+
+1. **PacktPub Author Bundle** - Obtain from your PacktPub editor
+   - Location: `manuscripts/research/AuthorBundle_updated/` (or custom path)
+   - Required files:
+     - `Sample Chapter.docx` - Template with all [PACKT] styles
+     - `Packt_Image Guidelines.pdf` - Image specifications reference
+     - `Writing codes in your chapter.pdf` - Code formatting reference
+     - `Your Writing Checklist.pdf` - Submission checklist
+
+2. **Manuscript in Markdown** - Your chapter/book content
+   - Single file or multiple files
+   - Standard Markdown syntax
+   - Code blocks with language identifiers
+   - Images referenced with relative paths
+
+3. **Images Folder** - All images referenced in manuscript
+   - Organized structure (e.g., `images/chapter-5/`)
+   - Naming convention: descriptive names with figure numbers
+
+### Required Tools
+
+1. **Pandoc** (v2.x or higher)
+
+   ```bash
+   # Check installation
+   pandoc --version
+
+   # Install if needed:
+   # macOS: brew install pandoc
+   # Ubuntu: sudo apt-get install pandoc
+   # Windows: download from https://pandoc.org/installing.html
+   ```
+
+2. **Python 3** with `python-docx` library
+
+   ```bash
+   # Check installation
+   python3 --version
+
+   # Install python-docx
+   pip3 install python-docx
+   ```
+
+3. **GIMP** (optional, recommended for screenshot optimization)
+   - Download from www.gimp.org
+   - Used for 300 DPI screenshot creation
+
+## Input Parameters
+
+### manuscript_path
+
+- **Type**: File path or directory path
+- **Format**: `.md` file(s)
+- **Example**: `manuscripts/chapters/chapter-05-react-hooks.md`
+- **Multiple files**: `manuscripts/chapters/` (processes all .md files)
+
+### submission_type
+
+- **Options**: `chapter` | `full-manuscript`
+- **chapter**: Single chapter submission (most common)
+- **full-manuscript**: Complete book with multiple chapters
+
+### author_bundle_path
+
+- **Type**: Directory path
+- **Default**: `manuscripts/research/AuthorBundle_updated/`
+- **Contains**: PacktPub Author Bundle files
+
+### output_path (optional)
+
+- **Type**: Directory path
+- **Default**: `manuscripts/formatted-for-packtpub/`
+- **Contains**: Generated .docx file(s) and validation reports
+
+## Workflow Steps
+
+### Step 1: Validate Prerequisites
+
+**Check required files exist:**
+
+```bash
+# Verify PacktPub template
+test -f "${author_bundle_path}/Sample Chapter.docx" || echo "ERROR: Template not found"
+
+# Verify manuscript
+test -f "${manuscript_path}" || echo "ERROR: Manuscript not found"
+
+# Verify tools
+command -v pandoc >/dev/null 2>&1 || echo "ERROR: Pandoc not installed"
+python3 -c "import docx" 2>/dev/null || echo "ERROR: python-docx not installed"
+```
+
+**Validation Checks**:
+
+- [ ] Sample Chapter.docx template exists
+- [ ] Manuscript file(s) exist and are readable
+- [ ] Pandoc installed and accessible
+- [ ] Python 3 + python-docx available
+- [ ] Output directory writable
+
+### Step 2: Pre-Convert Markdown Validation
+
+**Validate manuscript content before conversion:**
+
+#### 2.1 Code Block Validation
+
+**PacktPub Requirement**: 20 lines ideal, 30 lines absolute maximum
+
+````python
+import re
+
+def validate_code_blocks(markdown_content):
+    """Check code block line counts"""
+    code_blocks = re.findall(r'```[\s\S]*?```', markdown_content)
+
+    violations = []
+    warnings = []
+
+    for i, block in enumerate(code_blocks, 1):
+        lines = block.count('\n') - 2  # Subtract fence lines
+        if lines > 30:
+            violations.append(f"Code block #{i}: {lines} lines (MAX: 30)")
+        elif lines > 20:
+            warnings.append(f"Code block #{i}: {lines} lines (IDEAL: ≤20)")
+
+    return violations, warnings
+````
+
+#### 2.2 Image Reference Validation
+
+**PacktPub Requirements**:
+
+- 300 DPI minimum
+- 2000 pixels minimum on shortest edge
+- PNG/TIFF format (NEVER JPG)
+
+```python
+from PIL import Image
+import os
+
+def validate_images(markdown_content, base_path):
+    """Check image requirements"""
+    # Extract image references
+    images = re.findall(r'!\[.*?\]\((.*?)\)', markdown_content)
+
+    issues = []
+
+    for img_path in images:
+        full_path = os.path.join(base_path, img_path)
+
+        if not os.path.exists(full_path):
+            issues.append(f"Image not found: {img_path}")
+            continue
+
+        # Check format
+        if img_path.lower().endswith('.jpg') or img_path.lower().endswith('.jpeg'):
+            issues.append(f"JPG format not allowed (use PNG/TIFF): {img_path}")
+
+        # Check resolution
+        try:
+            with Image.open(full_path) as img:
+                width, height = img.size
+                dpi = img.info.get('dpi', (72, 72))
+
+                shortest_edge = min(width, height)
+
+                if shortest_edge < 2000:
+                    issues.append(f"Image too small ({shortest_edge}px, need 2000px min): {img_path}")
+
+                if dpi[0] < 300 or dpi[1] < 300:
+                    issues.append(f"Image DPI too low ({dpi[0]}x{dpi[1]}, need 300 DPI): {img_path}")
+        except Exception as e:
+            issues.append(f"Cannot read image {img_path}: {e}")
+
+    return issues
+```
+
+#### 2.3 Caption Placement Validation
+
+**CRITICAL RULE**: Caption placement differs between tables and figures
+
+**Tables**: Caption comes BEFORE the table
+
+```markdown
+Table 2.1: React Hooks comparison and use cases
+
+| Hook     | Purpose          | When to Use         | Returns           |
+| -------- | ---------------- | ------------------- | ----------------- |
+| useState | State management | Simple state values | [state, setState] |
+```
+
+**Figures**: Caption comes AFTER the image
+
+```markdown
+![React component lifecycle diagram](images/lifecycle.png)
+
+Figure 2.1: Component lifecycle phases
+```
+
+**Why This Matters**:
+
+- Tables: Readers need context BEFORE scanning data
+- Figures: Images are self-contained and viewed first, caption explains AFTER
+
+**Common Mistake**:
+
+```markdown
+❌ WRONG - Table caption AFTER table:
+| Hook | Purpose |
+|------|---------|
+
+Table 2.1: React Hooks comparison ← INCORRECT PLACEMENT
+```
+
+**Caption Numbering Format**:
+
+- Format: `Table X.Y: Description` or `Figure X.Y: Description`
+- X = Chapter number
+- Y = Table/Figure number within chapter
+- Examples:
+  - `Table 1.1: User authentication methods`
+  - `Figure 2.3: Authentication workflow diagram`
+
+**Alt Text vs Caption**:
+
+- **Alt text** (for accessibility): Describes WHAT is IN the image
+  ```markdown
+  ![Component lifecycle flow showing mount, update, and unmount phases](images/lifecycle.png)
+  ```
+- **Caption** (for document reference): Label and brief description
+  ```markdown
+  Figure 1.1: React component lifecycle diagram
+  ```
+
+See `CAPTION-PLACEMENT-GUIDE.md` for comprehensive examples and validation rules.
+
+#### 2.4 Structure Validation
+
+**PacktPub Requirements**:
+
+- Chapter opens with introduction + learning goals
+- Bullet list of main topics
+- Summary section at end
+- Next chapter preview
+
+```python
+def validate_structure(markdown_content):
+    """Check required structural elements"""
+    issues = []
+
+    # Check for intro section (first H2 should have intro before it)
+    lines = markdown_content.split('\n')
+    first_h2_index = next((i for i, line in enumerate(lines) if line.startswith('## ')), None)
+
+    if first_h2_index and first_h2_index < 10:
+        issues.append("Missing chapter introduction (should have intro before first H2)")
+
+    # Check for bullet list in intro
+    intro_section = '\n'.join(lines[:first_h2_index] if first_h2_index else lines[:20])
+    if '- ' not in intro_section and '* ' not in intro_section:
+        issues.append("Missing bullet list of topics in introduction")
+
+    # Check for summary section
+    if '## Summary' not in markdown_content and '## Conclusion' not in markdown_content:
+        issues.append("Missing Summary or Conclusion section")
+
+    # Check for consecutive headers (no text between)
+    for i in range(len(lines) - 1):
+        if lines[i].startswith('#') and lines[i+1].startswith('#'):
+            issues.append(f"Consecutive headers found (line {i+1}): Need lead-in text")
+
+    return issues
+```
+
+**Execute all pre-convert validations:**
+
+```bash
+python3 validate-manuscript.py \
+  --manuscript "${manuscript_path}" \
+  --images-dir "$(dirname ${manuscript_path})/images" \
+  --report pre-convert-validation.md
+```
+
+### Step 3: Execute Pandoc Conversion
+
+**Convert Markdown to Word using PacktPub template:**
+
+```bash
+pandoc "${manuscript_path}" \
+  -o temp-converted.docx \
+  --reference-doc="${author_bundle_path}/Sample Chapter.docx" \
+  --standalone \
+  --toc \
+  --highlight-style=tango
+```
+
+**Pandoc Parameters Explained**:
+
+- `--reference-doc`: Use PacktPub Sample Chapter as style template
+- `--standalone`: Create complete document with metadata
+- `--toc`: Generate table of contents (optional, can remove later)
+- `--highlight-style`: Syntax highlighting for code blocks
+
+**What Pandoc Handles**:
+✓ Markdown parsing (headings, lists, code, emphasis, links)
+✓ Table creation
+✓ Image insertion
+✓ Document structure
+✓ Basic style application (Heading 1-6, Normal, Source Code)
+
+**What Pandoc Doesn't Handle**:
+✗ [PACKT] style application (uses built-in "Normal" not "Normal [PACKT]")
+✗ Character style mapping (bold/italic don't use [PACKT] styles)
+✗ Custom elements (info boxes, tips, warnings)
+
+### Step 4: Apply PACKT Styles with Python Post-Processing
+
+**Convert Pandoc's built-in styles to PacktPub [PACKT] styles:**
+
+**Understanding PacktPub Style System**:
+
+- **Headings**: Use standard "Heading 1-6" (NO [PACKT] suffix)
+- **All other content**: Uses [PACKT] suffix
+
+**Style Mapping**:
+
+```
+Pandoc Output          →  PacktPub Required
+────────────────────────────────────────────
+Heading 1              →  Heading 1 (unchanged - PacktPub standard)
+Heading 2-6            →  Heading 2-6 (unchanged - PacktPub standard)
+Normal                 →  Normal [PACKT]
+Source Code            →  Code [PACKT]
+List Bullet            →  Bullet [PACKT]
+List Number            →  Numbered Bullet [PACKT]
+Block Quote            →  Quote [PACKT]
+Strong (character)     →  Key Word [PACKT]
+Emphasis (character)   →  Italics [PACKT]
+```
+
+**Execute style application:**
+
+```bash
+python3 apply-packt-styles-v6.py \
+  temp-converted.docx \
+  "${output_path}/formatted-manuscript.docx"
+```
+
+**Python Script Logic** (see `apply-packt-styles-v6.py`):
+
+1. Load converted document
+2. Verify [PACKT] styles exist in document (from template)
+3. **Split multi-line code blocks** into separate paragraphs:
+   - Pandoc places entire code blocks in single paragraph with newlines
+   - PacktPub requires separate paragraph per line
+   - Apply "Code [PACKT]" to all lines except last
+   - Apply "Code End [PACKT]" to last line
+4. Skip headings (already correct - PacktPub uses standard "Heading 1-6")
+5. Detect list items by checking numbering properties (numPr XML elements)
+6. Distinguish bullet lists from numbered lists by examining numFmt attribute:
+   - `numFmt="bullet"` → "Bullet [PACKT]"
+   - `numFmt="decimal"/"lowerLetter"/etc.` → "Numbered Bullet [PACKT]"
+7. **Detect and style captions**:
+   - Table captions (format: `Table X.Y: Description`) → "Figure Caption [PACKT]"
+   - Figure captions (paragraphs with embedded images or caption keywords) → "Figure Caption [PACKT]"
+   - PacktPub uses single "Figure Caption [PACKT]" style for both tables and figures
+8. **Style table cells**:
+   - First row of each table → "Table Column Heading [PACKT]"
+   - All other rows → "Table Column Content [PACKT]"
+9. Map other styles according to STYLE_MAPPINGS dictionary
+10. Apply character styles to runs (Strong → Key Word [PACKT], Emphasis → Italics [PACKT])
+11. Save modified document with validation report
+
+### Step 5: Post-Convert Validation
+
+**Validate formatted Word document:**
+
+#### 5.1 Style Verification
+
+```python
+from docx import Document
+
+def verify_packt_styles(docx_path):
+    """Verify all styles are PacktPub-compliant"""
+    doc = Document(docx_path)
+
+    style_usage = {}
+    for para in doc.paragraphs:
+        style_name = para.style.name
+        style_usage[style_name] = style_usage.get(style_name, 0) + 1
+
+    issues = []
+
+    for style in style_usage:
+        # Check for unmapped styles (neither [PACKT] nor standard Heading)
+        if not style.startswith('Heading') and '[PACKT]' not in style:
+            issues.append(f"Unmapped style found: {style} ({style_usage[style]} instances)")
+
+    return issues
+```
+
+#### 5.2 Image Embedding Verification
+
+```python
+def verify_images_embedded(docx_path):
+    """Check all images are properly embedded"""
+    doc = Document(docx_path)
+
+    image_count = 0
+    for rel in doc.part.rels.values():
+        if "image" in rel.target_ref:
+            image_count += 1
+
+    return image_count
+```
+
+#### 5.3 Code Block Line Count Verification
+
+```python
+def verify_code_blocks(docx_path):
+    """Check code block line counts in Word document"""
+    doc = Document(docx_path)
+
+    violations = []
+    warnings = []
+
+    for i, para in enumerate(doc.paragraphs):
+        if para.style.name == 'Code [PACKT]':
+            line_count = para.text.count('\n') + 1
+
+            if line_count > 30:
+                violations.append(f"Code block at para {i}: {line_count} lines (MAX: 30)")
+            elif line_count > 20:
+                warnings.append(f"Code block at para {i}: {line_count} lines (IDEAL: ≤20)")
+
+    return violations, warnings
+```
+
+### Step 6: Execute PacktPub Checklists
+
+**Run official PacktPub checklists:**
+
+#### 6.1 Generative AI Compliance Check
+
+```bash
+# Execute AI compliance checklist
+execute-checklist \
+  --checklist generative-ai-compliance-checklist.md \
+  --context "${manuscript_path}" \
+  --report "${output_path}/ai-detection-report.md"
+```
+
+**AI Detection Avoidance validates**:
+
+- Content quality (accuracy, depth, value)
+- Authenticity and personal voice
+- Technical accuracy and specificity
+- Writing style (avoiding AI patterns)
+- Reader value and engagement
+
+See `generative-ai-compliance-checklist.md` for complete checklist.
+
+#### 6.2 Submission Requirements Check
+
+```bash
+# Execute submission checklist
+execute-checklist \
+  --checklist packtpub-submission-checklist.md \
+  --context "${output_path}/formatted-manuscript.docx" \
+  --report "${output_path}/submission-checklist-results.md"
+```
+
+**Submission Checklist validates**:
+
+- Outline compliance (topics covered, page count, objectives met)
+- Structure requirements (intro, bullet lists, headings, transitions, summary)
+- Readability standards (audience consideration, visual variety, framing)
+- Value proposition (hands-on examples, real-world application, learning reinforcement)
+- Technical requirements (latest versions, code explanations, GitHub updates)
+
+See `packtpub-submission-checklist.md` for complete checklist.
+
+### Step 7: Generate Validation Report
+
+**Create comprehensive validation report:**
+
+```markdown
+# PacktPub Formatting Validation Report
+
+**Manuscript**: ${manuscript_path}
+**Formatted Output**: ${output_path}/formatted-manuscript.docx
+**Date**: $(date)
+
+## Pre-Convert Validation
+
+### Code Blocks
+
+- ✓ 12 code blocks validated
+- ⚠️ 2 warnings: blocks exceed 20 lines (21, 23 lines)
+- ✗ 0 violations
+
+### Images
+
+- ✓ 8 images validated
+- ✗ 1 issue: screenshot-01.jpg should be PNG format
+
+### Structure
+
+- ✓ Chapter introduction present
+- ✓ Bullet list of topics present
+- ✓ Summary section present
+
+## Post-Convert Validation
+
+### Style Application
+
+- ✓ 100% PacktPub-compliant styles
+  - Normal [PACKT]: 45 instances
+  - Code [PACKT]: 12 instances
+  - Bullet [PACKT]: 18 instances
+  - Heading 1-3: 14 instances
+- ✗ 0 unmapped styles
+
+### Images
+
+- ✓ 8 images embedded successfully
+
+### Code Blocks (Word document)
+
+- ✓ All code blocks within limits
+- ⚠️ 2 warnings: consider splitting blocks
+
+## Submission Checklist
+
+**Overall Score**: 38/40 items passed
+
+### Failures
+
+- [ ] Update code files on GitHub with this chapter
+
+### Warnings
+
+- ⚠️ Consider adding more visual variety (tables, diagrams)
+
+## Recommendations
+
+1. **REQUIRED**: Convert screenshot-01.jpg to PNG format
+2. **REQUIRED**: Update GitHub repository with code files
+3. **SUGGESTED**: Split 2 long code blocks (21, 23 lines) into smaller sections
+4. **SUGGESTED**: Add diagram for architecture section
+
+## Ready for Submission?
+
+🟡 **ALMOST READY** - Address 1 required issue before submission
+```
+
+## Success Criteria
+
+The manuscript is ready for PacktPub submission when:
+
+**Formatting**:
+
+- [ ] All paragraphs use PacktPub styles (Heading 1-6 or [PACKT] styles)
+- [ ] No unmapped or built-in Word styles remain
+- [ ] Document uses Sample Chapter.docx template (styles preserved)
+
+**Images**:
+
+- [ ] All images embedded in document
+- [ ] All images meet 300 DPI / 2000px minimum (or documented exceptions)
+- [ ] No JPG format images (PNG/TIFF only)
+- [ ] Full-screen + snippet pairs provided for detail images
+
+**Code**:
+
+- [ ] No code blocks exceed 30 lines (hard limit)
+- [ ] Ideally all code blocks ≤20 lines
+- [ ] All code blocks have explanatory text before/after
+- [ ] No in-code comments (explanation in surrounding text)
+- [ ] Code [PACKT] style applied to all code blocks
+
+**Structure**:
+
+- [ ] Chapter opens with introduction listing learning goals
+- [ ] Bullet list of main topics present
+- [ ] Summary section present at end
+- [ ] Next chapter preview present (for multi-chapter books)
+- [ ] No consecutive headers (lead-in text between all headings)
+- [ ] No consecutive images (framing text around all images)
+
+**Checklist**:
+
+- [ ] PacktPub submission checklist passes (≥95% items)
+- [ ] All "required" items addressed
+- [ ] Warnings documented in validation report
+
+**Validation**:
+
+- [ ] Pre-convert validation passed (or issues documented)
+- [ ] Post-convert validation passed
+- [ ] Style verification passed
+- [ ] Validation report generated
+
+## Output Files
+
+After successful completion, the following files are generated:
+
+1. **formatted-manuscript.docx** - PacktPub-formatted Word document
+   - Location: `${output_path}/`
+   - Contains all [PACKT] styles properly applied
+   - Ready for submission to PacktPub AuthorSight portal
+
+2. **validation-report.md** - Comprehensive validation results
+   - Pre-convert checks (Markdown content)
+   - Post-convert checks (Word document)
+   - Submission checklist results
+   - Recommendations for improvement
+
+3. **pre-convert-validation.md** - Markdown validation details
+   - Code block analysis
+   - Image validation results
+   - Structure checks
+
+4. **submission-checklist-results.md** - PacktPub checklist execution results
+   - All 40+ checklist items with pass/fail/warning status
+   - Detailed findings for failed items
+
+5. **images/** (optional) - Optimized image folder
+   - Images converted to PNG/TIFF if needed
+   - Images resized to meet DPI requirements (if requested)
+
+## Examples
+
+### Example 1: Single Chapter Submission
+
+```bash
+# Format Chapter 5 for PacktPub
+execute-task format-for-packtpub \
+  --manuscript manuscripts/chapters/chapter-05-react-hooks.md \
+  --submission-type chapter \
+  --author-bundle manuscripts/research/AuthorBundle_updated/ \
+  --output manuscripts/formatted-for-packtpub/
+```
+
+**Output**:
+
+```
+✓ Pre-convert validation: 2 warnings
+✓ Pandoc conversion complete
+✓ PACKT styles applied: 67 paragraphs
+✓ Post-convert validation passed
+✓ Submission checklist: 39/40 passed
+
+📄 Output: manuscripts/formatted-for-packtpub/chapter-05-react-hooks.docx
+📊 Report: manuscripts/formatted-for-packtpub/validation-report.md
+
+🟢 READY FOR SUBMISSION (address 1 GitHub update reminder)
+```
+
+### Example 2: Full Manuscript Submission
+
+```bash
+# Format all chapters
+execute-task format-for-packtpub \
+  --manuscript manuscripts/chapters/ \
+  --submission-type full-manuscript \
+  --author-bundle manuscripts/research/AuthorBundle_updated/ \
+  --output manuscripts/formatted-for-packtpub/
+```
+
+**Processes**:
+
+- Converts all .md files in directory
+- Generates separate .docx for each chapter
+- Creates combined validation report
+- Executes checklist for each chapter
+
+### Example 3: With Image Optimization
+
+```bash
+# Format with automatic image optimization
+execute-task format-for-packtpub \
+  --manuscript manuscripts/chapters/chapter-05-react-hooks.md \
+  --submission-type chapter \
+  --author-bundle manuscripts/research/AuthorBundle_updated/ \
+  --output manuscripts/formatted-for-packtpub/ \
+  --optimize-images \
+  --target-dpi 300
+```
+
+**Additional processing**:
+
+- Converts JPG → PNG
+- Scales images to meet 2000px minimum
+- Sets DPI metadata to 300
+- Backs up original images
+
+## Common Issues and Solutions
+
+### Issue 1: "No [PACKT] styles found in document"
+
+**Cause**: Pandoc didn't use Sample Chapter.docx as reference
+
+**Solution**:
+
+```bash
+# Ensure correct template path
+pandoc manuscript.md -o output.docx \
+  --reference-doc="manuscripts/research/AuthorBundle_updated/Sample Chapter.docx"
+```
+
+### Issue 2: "Code block exceeds 30 lines"
+
+**Cause**: Code sample too long for PacktPub requirements
+
+**Solution**:
+
+1. Break code into logical sections (where you would normally comment)
+2. Show key sections, reference full code on GitHub
+3. Use "..." to indicate omitted code
+4. Explain each section separately
+
+### Issue 3: "Image format JPG not allowed"
+
+**Cause**: Screenshots saved as JPG lose quality
+
+**Solution**:
+
+```bash
+# Convert to PNG
+magick screenshot.jpg screenshot.png
+
+# Or use GIMP: File > Export As > PNG
+```
+
+### Issue 4: "Image resolution too low"
+
+**Cause**: Screenshot taken at 72 DPI or low resolution
+
+**Solution**:
+
+1. Use GIMP screenshot tool: File > Create > Screenshot (auto 300 DPI)
+2. Use 4K monitor for higher resolution screenshots
+3. Use PrtScr in GIMP, paste to new document (auto-converts to 300 DPI)
+
+### Issue 5: "Unmapped styles remain"
+
+**Cause**: Markdown contains non-standard elements
+
+**Solution**:
+
+1. Check for HTML tags in Markdown (convert to Markdown)
+2. Check for custom Markdown extensions
+3. Manually apply [PACKT] styles in Word for special elements
+
+## Integration with Workflows
+
+This task integrates with:
+
+- **chapter-development-workflow.yaml** - Final step before submission
+- **book-planning-workflow.yaml** - Formatting after content approval
+- **execute-checklist.md** - Runs PacktPub submission checklist
+- **validate-manuscript.md** - Pre-submission validation
+
+## Related Files
+
+**Scripts**:
+
+- `apply-packt-styles-v6.py` - Style application with caption and table support (in `data/packtpub-author-bundle/`)
+- `validate-manuscript.py` - Pre-convert validation
+- `verify-packtpub-doc.py` - Post-convert validation
+- `format-for-packtpub.sh` - Wrapper script for complete workflow
+
+**Checklists**:
+
+- `generative-ai-compliance-checklist.md` - AI content compliance validation
+- `packtpub-submission-checklist.md` - Official 40+ item checklist
+
+**Templates**:
+
+- `Sample Chapter.docx` (from Author Bundle) - PacktPub template
+
+**Documentation**:
+
+- `Generative_AI_Author_Guidelines.md` - Official PacktPub AI usage guidelines
+- `packtpub-author-bundle-analysis.md` - Research findings
+- `PANDOC-CONVERSION-FINDINGS.md` - Conversion workflow documentation
+- `CAPTION-PLACEMENT-GUIDE.md` - Comprehensive caption placement rules and examples
+
+## Notes
+
+- **Template Location**: Sample Chapter.docx must be from PacktPub Author Bundle (contains all 77 [PACKT] styles)
+- **Heading Styles**: PacktPub uses standard "Heading 1-6" without [PACKT] suffix
+- **Character Styles**: Bold/italic need manual attention for first appearance terms (Key Word [PACKT])
+- **Special Elements**: Info boxes, tips, warnings require manual application in Word
+- **GitHub Integration**: Remember to update code repository with each chapter (checklist item)
+
+## Author's Checklist
+
+Before running this task:
+
+- [ ] All code in manuscript tested and working
+- [ ] All images created and referenced correctly
+- [ ] Chapter follows outline and meets learning objectives
+- [ ] Content reviewed and proofread
+- [ ] Code repository updated with examples
+
+After running this task:
+
+- [ ] Review validation report
+- [ ] Address all required issues
+- [ ] Review warnings and suggestions
+- [ ] Manual review in Word for special formatting
+- [ ] Final proofread in formatted document
+- [ ] Submit via PacktPub AuthorSight portal or email to editor
+==================== END: .bmad-technical-writing/tasks/format-for-packtpub.md ====================
+
+==================== START: .bmad-technical-writing/tasks/package-for-publisher.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Package for Publisher
+
+---
+
+task:
+id: package-for-publisher
+name: Package for Publisher
+description: Prepare complete manuscript package according to publisher specifications
+persona_default: book-publisher
+inputs:
+
+- publisher-name
+- submission-guidelines
+- manuscript-files
+  steps:
+- Identify target publisher (PacktPub/O'Reilly/Manning/Other)
+- Gather all manuscript files (chapters, front matter, back matter)
+- Collect all images and diagrams
+- Verify code repository link or zip
+- Format per publisher requirements
+- Run publisher-specific checklist
+- Create submission package (zip or folder structure)
+- Include metadata file if required
+- Verify all cross-references work
+- Run execute-checklist.md with final-manuscript-checklist.md
+  output: submissions/{{publisher}}-{{book-name}}-submission.zip
+
+---
+
+## Purpose
+
+Prepare a complete, properly formatted manuscript package that meets publisher submission requirements.
+
+## Workflow Steps
+
+### 1. Publisher-Specific Requirements
+
+**Manning:**
+
+- Chapters in Microsoft Word (.docx)
+- Separate folder for images (PNG, 300 DPI)
+- Code samples in ZIP file
+- Metadata in Author Questionnaire form
+
+**O'Reilly:**
+
+- AsciiDoc or Markdown preferred
+- Images in separate folders
+- Atlas platform submission
+- Follows O'Reilly style guide
+
+**Packt:**
+
+- Microsoft Word (.docx)
+- Images embedded or separate
+- Code in GitHub repository
+- Specific formatting template
+
+### 2. Gather All Files
+
+**Manuscript Components:**
+
+```
+submission-package/
+├── front-matter/
+│   ├── preface.docx
+│   ├── acknowledgments.docx
+│   └── about-author.docx
+├── chapters/
+│   ├── chapter-01.docx
+│   ├── chapter-02.docx
+│   └── ...
+├── back-matter/
+│   ├── appendix-a.docx
+│   ├── glossary.docx
+│   └── index.docx
+├── images/
+│   ├── chapter-01/
+│   ├── chapter-02/
+│   └── ...
+├── code/
+│   └── code-examples.zip
+├── metadata.txt
+└── README.txt
+```
+
+### 3. Format Per Publisher
+
+Apply required formatting:
+
+- Heading styles (Heading 1, 2, 3)
+- Code block formatting
+- Figure captions
+- Cross-reference format
+- Citation style
+
+### 4. Create Submission Package
+
+Final packaging:
+
+```
+book-title-author-submission.zip
+├── manuscript/
+├── images/
+├── code/
+├── metadata.txt
+└── submission-checklist.pdf
+```
+
+## Success Criteria
+
+- [ ] All files gathered
+- [ ] Publisher format applied
+- [ ] Images at required resolution
+- [ ] Code repository included
+- [ ] Metadata complete
+- [ ] Cross-references validated
+- [ ] Final manuscript checklist passed
+
+## Next Steps
+
+1. Upload to publisher portal
+2. Notify acquisition editor
+3. Track submission status
+==================== END: .bmad-technical-writing/tasks/package-for-publisher.md ====================
+
+==================== START: .bmad-technical-writing/tasks/prepare-meap-chapter.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Prepare MEAP Chapter
+
+---
+
+task:
+id: prepare-meap-chapter
+name: Prepare MEAP Chapter
+description: Prepare chapter for Manning Early Access Program (MEAP) release
+persona_default: book-publisher
+inputs:
+
+- chapter-number
+- chapter-file
+- book-context
+  steps:
+- Ensure chapter works standalone (introduction includes context)
+- Verify chapter doesn't require unreleased chapters
+- Check author voice consistency
+- Link code repository clearly
+- Apply Manning MEAP-specific formatting
+- Add MEAP disclaimer if needed
+- Include "what's coming next" section
+- Run execute-checklist.md with manning-meap-checklist.md
+- Run execute-checklist.md with meap-readiness-checklist.md
+- Create MEAP package
+- Test chapter reads well independently
+  output: meap/chapter-{{n}}-meap-ready.docx
+
+---
+
+## Purpose
+
+Prepare a chapter for early release through Manning's MEAP program, ensuring it provides value to early readers even before the complete book is finished.
+
+## Workflow Steps
+
+### 1. Make Chapter Standalone
+
+Provide necessary context:
+
+**Add Chapter Introduction:**
+
+```
+This chapter covers [topic]. In the previous chapter, you learned [previous topic brief summary].
+In this chapter, you'll discover [current topic]. By the end, you'll be able to [learning outcomes].
+
+Note: This is an early access chapter. Some cross-references to future chapters are placeholders.
+```
+
+### 2. No Forward References
+
+Avoid referencing unreleased content:
+
+```
+❌ "As we'll see in Chapter 8..."
+✅ "In a future chapter on deployment..."
+
+❌ "See Section 7.3 for details"
+✅ "This will be covered in detail in the final book"
+```
+
+### 3. Link Code Repository
+
+Make code easily accessible:
+
+```
+Code Examples
+
+All code for this chapter is available at:
+https://github.com/username/book-code/tree/main/chapter-05
+
+Download: [Download ZIP button/link]
+```
+
+### 4. Add "What's Coming Next"
+
+Preview future content:
+
+```
+## Coming in Future Chapters
+
+In the next chapter, you'll learn about:
+- Topic 1
+- Topic 2
+- Topic 3
+
+Future chapters will cover:
+- Advanced patterns (Chapter 7)
+- Production deployment (Chapter 9)
+- Performance optimization (Chapter 10)
+```
+
+### 5. MEAP Disclaimer
+
+Set expectations:
+
+```
+📘 MEAP Early Access Notice
+
+This is an early access chapter. You may encounter:
+- Placeholders for future cross-references
+- Draft diagrams or images
+- Sections marked [TBD]
+
+Your feedback helps shape the final book! Please share thoughts at:
+[feedback forum link]
+```
+
+## Success Criteria
+
+- [ ] Chapter works standalone
+- [ ] No unreleased chapter references
+- [ ] Code repository linked
+- [ ] MEAP formatting applied
+- [ ] "What's next" section included
+- [ ] Disclaimer added
+- [ ] MEAP checklists passed
+- [ ] Independent reading tested
+
+## Next Steps
+
+1. Submit to Manning MEAP portal
+2. Monitor reader feedback
+3. Incorporate feedback into revisions
+==================== END: .bmad-technical-writing/tasks/prepare-meap-chapter.md ====================
+
+==================== START: .bmad-technical-writing/tasks/self-publish-prep.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Self-Publish Prep
+
+---
+
+task:
+id: self-publish-prep
+name: Self-Publish Prep
+description: Prepare book for self-publishing on Leanpub, Amazon KDP, or Gumroad
+persona_default: book-publisher
+inputs:
+
+- target-platform
+- book-files
+- cover-design
+  steps:
+- Choose platform (Leanpub/Amazon KDP/Gumroad)
+- Format manuscript for platform (Markdown/DOCX/PDF)
+- Optimize images for platform requirements
+- Create book metadata (title, description, keywords, categories)
+- Design or acquire cover image
+- Set pricing strategy
+- Create ISBN if needed (KDP provides free ISBNs)
+- Format for ePub/PDF/Kindle
+- Verify platform-specific requirements
+- Upload and test preview
+- Run execute-checklist.md with self-publishing-standards-checklist.md
+  output: self-publish/{{platform}}/{{book-name}}-ready/
+
+---
+
+## Purpose
+
+Prepare a complete, professional book package for self-publishing platforms, ensuring quality presentation and discoverability.
+
+## Workflow Steps
+
+### 1. Choose Platform
+
+**Leanpub:**
+
+- Markdown-based
+- Good for technical books
+- Built-in email marketing
+- Flexible pricing (minimum/suggested/maximum)
+
+**Amazon KDP:**
+
+- Largest audience
+- Print-on-demand available
+- Kindle format required
+- Free ISBN provided
+
+**Gumroad:**
+
+- Simple, flexible
+- PDF/ePub distribution
+- Direct customer relationships
+- No review requirements
+
+### 2. Format for Platform
+
+**Leanpub (Markdown):**
+
+````markdown
+# Chapter 1: Introduction
+
+{book: true, sample: true}
+
+This chapter introduces...
+
+## Section 1.1
+
+Content here...
+
+{class: code}
+
+```python
+# Code example
+```
+````
+
+**KDP (Word/ePub):**
+
+- Use heading styles
+- Insert page breaks
+- Format code blocks
+- Embed images
+
+### 3. Create Metadata
+
+**Title and Description:**
+
+```
+Title: Mastering Web APIs: A Practical Guide to REST and GraphQL
+
+Subtitle: Build, Secure, and Scale Production-Ready APIs
+
+Description:
+Learn to design, build, and deploy production-ready APIs with this hands-on guide.
+Covers REST, GraphQL, authentication, rate limiting, and more. Includes 50+ code
+examples in Python and Node.js.
+
+What you'll learn:
+• RESTful API design principles
+• GraphQL schema design
+• JWT authentication
+• Rate limiting and caching
+• Production deployment strategies
+```
+
+**Keywords/Categories:**
+
+```
+Keywords: API, REST, GraphQL, web development, Python, Node.js, authentication
+
+Categories:
+- Computers > Programming > Internet
+- Computers > Web > Web Services
+- Computers > Languages > Python
+```
+
+### 4. Cover Design
+
+Requirements:
+
+- **KDP**: 2560 x 1600 px minimum
+- **Leanpub**: 1600 x 2400 px recommended
+- **Readable thumbnail**: Text visible at small sizes
+- **Professional**: Use Canva, 99designs, or hire designer
+
+### 5. Set Pricing
+
+Pricing strategy:
+
+**Leanpub Pricing Model:**
+
+```
+Minimum: $9.99 (reader can pay more)
+Suggested: $29.99
+Maximum: $99
+```
+
+**KDP Pricing:**
+
+```
+eBook: $9.99 - $29.99 (70% royalty tier)
+Print: $39.99 (based on page count + margin)
+```
+
+### 6. ISBN (Optional)
+
+- **KDP**: Provides free ISBN
+- **Self-purchase**: $125 for single ISBN from Bowker (US)
+- **Not required** for eBooks on most platforms
+
+### 7. Format for Distribution
+
+**ePub (KDP, Gumroad):**
+
+- Use Calibre or Pandoc for conversion
+- Test on multiple e-readers
+- Validate with ePub validator
+
+**PDF (Leanpub, Gumroad):**
+
+- High-quality PDF export
+- Embedded fonts
+- Optimized images
+
+**Kindle (KDP):**
+
+- Upload DOCX or use Kindle Create tool
+- KDP converts to .mobi/.azw
+
+### 8. Platform-Specific Requirements
+
+**KDP:**
+
+- Copyright page required
+- Table of contents with links
+- "Look Inside" preview (first 10%)
+
+**Leanpub:**
+
+- Subset.txt for sample chapters
+- Book.txt for chapter ordering
+- Metadata in Book.txt
+
+### 9. Upload and Preview
+
+Test before publishing:
+
+- Upload to platform
+- Generate preview
+- Test on multiple devices (Kindle app, iPad, PDF reader)
+- Check formatting, images, code blocks
+- Verify table of contents links
+
+### 10. Run Quality Checklist
+
+- Run execute-checklist.md with self-publishing-standards-checklist.md
+
+## Success Criteria
+
+- [ ] Platform selected
+- [ ] Manuscript formatted correctly
+- [ ] Images optimized
+- [ ] Metadata complete (title, description, keywords)
+- [ ] Professional cover design
+- [ ] Pricing set
+- [ ] ISBN acquired (if needed)
+- [ ] ePub/PDF/Kindle formats created
+- [ ] Preview tested on target devices
+- [ ] Self-publishing checklist passed
+
+## Next Steps
+
+1. Publish to platform
+2. Set up marketing (email list, social media)
+3. Monitor sales and reviews
+4. Plan updates and revisions
+==================== END: .bmad-technical-writing/tasks/self-publish-prep.md ====================
+
+==================== START: .bmad-technical-writing/tasks/create-preface.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Create Preface
+
+---
+
+task:
+id: create-preface
+name: Create Preface
+description: Write compelling book preface that sets expectations and connects with readers
+persona_default: book-analyst
+inputs:
+
+- book-outline
+- target-audience
+- learning-objectives
+  steps:
+- Review preface template
+- Define target audience clearly
+- Explain what readers will learn (high-level outcomes)
+- State prerequisites assumed
+- Describe book organization (parts, structure)
+- List code repository and resources
+- Explain conventions used (code formatting, callouts)
+- Write acknowledgments
+- Add personal note if desired
+- Keep concise (2-4 pages max)
+- Use template preface-tmpl.yaml with create-doc.md
+  output: front-matter/preface.md
+
+---
+
+## Purpose
+
+Create a preface that helps readers understand who the book is for, what they'll learn, and how to use it effectively.
+
+## Workflow Steps
+
+### 1. Define Target Audience
+
+Be specific:
+
+```markdown
+## Who This Book Is For
+
+This book is designed for:
+
+✅ **Software developers** with 1-2 years of experience who want to master API development
+✅ **Backend engineers** transitioning to API-first architectures
+✅ **Full-stack developers** looking to strengthen their API design skills
+
+You'll get the most from this book if you have:
+
+- Working knowledge of Python or JavaScript
+- Basic understanding of HTTP and web concepts
+- Familiarity with command line tools
+
+This book may not be for you if:
+❌ You're brand new to programming (start with Python/JavaScript fundamentals)
+❌ You're looking for advanced distributed systems architecture (this focuses on API basics and intermediate patterns)
+```
+
+### 2. Explain Learning Outcomes
+
+High-level goals:
+
+```markdown
+## What You'll Learn
+
+By the end of this book, you'll be able to:
+
+1. **Design RESTful APIs** that follow industry best practices
+2. **Implement authentication** using JWT and OAuth 2.0
+3. **Build GraphQL schemas** and resolvers
+4. **Handle errors gracefully** with consistent error responses
+5. **Optimize API performance** with caching and rate limiting
+6. **Deploy APIs to production** on AWS, Heroku, or Docker
+7. **Document APIs** using OpenAPI/Swagger
+
+You'll build real-world projects including:
+
+- Task management API (REST)
+- E-commerce backend (GraphQL)
+- Real-time chat API (WebSockets)
+```
+
+### 3. State Prerequisites
+
+Be honest about assumptions:
+
+```markdown
+## Prerequisites
+
+**Required:**
+
+- Python 3.10+ or Node.js 18+ installed
+- Basic HTTP knowledge (GET, POST, status codes)
+- Comfortable with command line
+- Text editor or IDE
+
+**Helpful but not required:**
+
+- SQL database experience
+- Git version control
+- Basic Docker knowledge
+```
+
+### 4. Describe Book Organization
+
+Help readers navigate:
+
+```markdown
+## How This Book Is Organized
+
+This book is organized into three parts:
+
+**Part 1: Foundations (Chapters 1-4)**
+Covers REST fundamentals, HTTP, and basic API design. Read these chapters in order.
+
+**Part 2: Intermediate Patterns (Chapters 5-8)**
+Authentication, error handling, testing, and documentation. Mostly independent chapters.
+
+**Part 3: Production Readiness (Chapters 9-12)**
+Performance, security, deployment, and monitoring. Builds on earlier chapters.
+
+**Appendices:**
+
+- A: API design checklist
+- B: HTTP status codes reference
+- C: Exercise solutions
+
+### Reading Paths
+
+**Linear (Recommended for Beginners):**
+Read chapters 1-12 in order.
+
+**Fast Track (Experienced Developers):**
+Chapters 1, 3, 5, 7, 9-12 (skip basics).
+
+**Reference Use:**
+Jump to specific topics as needed; each chapter is as self-contained as possible.
+```
+
+### 5. List Resources
+
+Make code accessible:
+
+```markdown
+## Code and Resources
+
+### Code Repository
+
+All code examples: https://github.com/author/book-code
+
+### Book Website
+
+https://masteringwebapis.com
+
+- Errata and updates
+- Additional resources
+- Community forum
+
+### Author Contact
+
+- Twitter: @authorhandle
+- Email: author@example.com
+- Newsletter: [signup link]
+```
+
+### 6. Explain Conventions
+
+Set expectations:
+
+````markdown
+## Conventions Used in This Book
+
+### Code Examples
+
+```python
+# Code examples look like this
+def hello_world():
+    return "Hello, World!"
+```
+````
+
+### Callouts
+
+💡 **Tip**: Helpful suggestions and best practices
+
+⚠️ **Warning**: Common pitfalls to avoid
+
+📝 **Note**: Additional context or clarification
+
+### Chapter Structure
+
+Each chapter includes:
+
+- Learning objectives
+- Code examples with explanations
+- Exercises (solutions in Appendix C)
+- Summary and key takeaways
+
+````
+
+### 7. Write Acknowledgments
+
+Thank contributors:
+
+```markdown
+## Acknowledgments
+
+This book wouldn't exist without:
+
+- **Technical reviewers**: [Names] who caught errors and improved clarity
+- **Manning staff**: [Editor names] for guidance and support
+- **Beta readers**: The MEAP community for invaluable feedback
+- **My family**: [Personal thanks]
+- **Open source community**: For the amazing tools and libraries
+
+Special thanks to [specific acknowledgments].
+````
+
+### 8. Add Personal Note
+
+Connect with readers:
+
+```markdown
+## A Note from the Author
+
+I started learning about APIs five years ago, frustrated by incomplete documentation
+and scattered resources. This book is what I wish I had back then: a comprehensive,
+practical guide with working examples.
+
+My goal is not just to teach you API syntax, but to help you think like an API designer.
+Every example is tested, every pattern is battle-proven, and every chapter builds toward
+real-world competence.
+
+I hope this book accelerates your journey and helps you build APIs that developers love to use.
+
+Happy coding!
+
+[Author Name]
+```
+
+### 9. Keep Concise
+
+Target length: 2-4 pages (1000-2000 words)
+
+## Success Criteria
+
+- [ ] Target audience clearly defined
+- [ ] Learning outcomes specific and achievable
+- [ ] Prerequisites stated honestly
+- [ ] Book organization explained
+- [ ] Code repository and resources listed
+- [ ] Conventions documented
+- [ ] Acknowledgments included
+- [ ] Length: 2-4 pages
+- [ ] Personal and engaging tone
+
+## Next Steps
+
+1. Include preface in front matter
+2. Update as book evolves
+3. Get feedback from beta readers
+==================== END: .bmad-technical-writing/tasks/create-preface.md ====================
+
+==================== START: .bmad-technical-writing/tasks/create-appendix.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Create Appendix
+
+---
+
+task:
+id: create-appendix
+name: Create Appendix
+description: Develop comprehensive appendix content including reference materials, installation guides, and troubleshooting
+persona_default: technical-editor
+inputs:
+
+- appendix-type
+- content-requirements
+- book-chapters
+  steps:
+- Identify appendix content (reference tables, installation guides, troubleshooting)
+- Organize by topic
+- Create clear appendix titles
+- Reference from main chapters
+- Include platform-specific installation guides
+- Add troubleshooting FAQ
+- List additional resources (links, books, websites)
+- Ensure consistent formatting
+- Add to table of contents
+- Index appendix content
+- Use template appendix-tmpl.yaml with create-doc.md
+  output: back-matter/appendix-{{letter}}.md
+
+---
+
+## Purpose
+
+Create valuable reference appendices that complement the main text and help readers solve common problems.
+
+## Workflow Steps
+
+### 1. Identify Appendix Content
+
+**Common Appendix Types:**
+
+- **Appendix A**: Exercise solutions
+- **Appendix B**: Reference tables (HTTP codes, SQL commands, etc.)
+- **Appendix C**: Installation and setup guides
+- **Appendix D**: Troubleshooting and FAQs
+- **Appendix E**: Additional resources
+- **Appendix F**: Glossary of terms
+
+### 2. Organize by Topic
+
+Structure clearly:
+
+```markdown
+# Appendix A: Exercise Solutions
+
+## Chapter 1 Solutions
+
+### Exercise 1.1
+
+[Solution]
+
+### Exercise 1.2
+
+[Solution]
+
+## Chapter 2 Solutions
+
+[...]
+```
+
+### 3. Reference from Chapters
+
+Cross-reference effectively:
+
+```markdown
+For complete HTTP status code reference, see Appendix B.
+
+Try the exercises at the end of this chapter (solutions in Appendix A).
+
+Installation instructions for all platforms are in Appendix C.
+```
+
+### 4. Platform-Specific Installation
+
+Cover all platforms:
+
+````markdown
+# Appendix C: Installation Guide
+
+## Installing Python
+
+### Windows
+
+1. Download Python 3.11+ from python.org
+2. Run installer, check "Add Python to PATH"
+3. Verify: Open PowerShell and run `python --version`
+
+### macOS
+
+1. Install Homebrew: `/bin/bash -c "$(curl -fsSL...)"`
+2. Install Python: `brew install python@3.11`
+3. Verify: `python3 --version`
+
+### Linux (Ubuntu/Debian)
+
+```bash
+sudo apt update
+sudo apt install python3.11
+python3.11 --version
+```
+````
+
+````
+
+### 5. Troubleshooting FAQ
+
+Common issues:
+
+```markdown
+# Appendix D: Troubleshooting
+
+## Python Issues
+
+### Q: "python: command not found"
+**Problem**: Python not in PATH
+**Solution (Windows)**: Reinstall Python, check "Add to PATH" option
+**Solution (Mac/Linux)**: Use `python3` instead of `python`
+
+### Q: "ModuleNotFoundError: No module named 'requests'"
+**Problem**: Package not installed
+**Solution**: `pip install requests`
+
+## API Issues
+
+### Q: 401 Unauthorized errors
+**Causes**:
+- Expired JWT token
+- Missing Authorization header
+- Invalid API key
+
+**Solutions**:
+- Refresh token
+- Add header: `Authorization: Bearer [token]`
+- Verify API key in environment variables
+````
+
+### 6. Additional Resources
+
+Curated links:
+
+```markdown
+# Appendix E: Additional Resources
+
+## Official Documentation
+
+- Python Requests Library: https://requests.readthedocs.io
+- Flask Documentation: https://flask.palletsprojects.com
+- FastAPI: https://fastapi.tiangolo.com
+
+## Books
+
+- "RESTful Web APIs" by Leonard Richardson & Mike Amundsen
+- "Designing Data-Intensive Applications" by Martin Kleppmann
+
+## Online Resources
+
+- REST API Tutorial: https://restfulapi.net
+- HTTP Cats (status codes): https://http.cat
+- JSON Placeholder (test API): https://jsonplaceholder.typicode.com
+
+## Tools
+
+- Postman (API testing)
+- Insomnia (API client)
+- HTTPie (command-line HTTP client)
+```
+
+### 7. Reference Tables
+
+Quick lookup:
+
+```markdown
+# Appendix B: HTTP Status Code Reference
+
+| Code | Name                  | Meaning                          |
+| ---- | --------------------- | -------------------------------- |
+| 200  | OK                    | Request succeeded                |
+| 201  | Created               | Resource created successfully    |
+| 204  | No Content            | Success but no content to return |
+| 400  | Bad Request           | Invalid request syntax           |
+| 401  | Unauthorized          | Authentication required          |
+| 403  | Forbidden             | Authenticated but not authorized |
+| 404  | Not Found             | Resource doesn't exist           |
+| 500  | Internal Server Error | Server-side error                |
+| 503  | Service Unavailable   | Server temporarily unavailable   |
+```
+
+### 8. Index Appendix Content
+
+Ensure discoverability:
+
+```markdown
+\index{HTTP status codes}
+\index{Installation!Python}
+\index{Troubleshooting}
+```
+
+## Success Criteria
+
+- [ ] Appendix content identified
+- [ ] Organized logically by topic
+- [ ] Clear titles for each appendix
+- [ ] Referenced from main chapters
+- [ ] Platform-specific guides included
+- [ ] Troubleshooting FAQ comprehensive
+- [ ] Additional resources curated
+- [ ] Consistent formatting
+- [ ] Added to table of contents
+- [ ] Content indexed
+
+## Next Steps
+
+1. Add appendices to back matter
+2. Cross-reference from chapters
+3. Update during technical review
+==================== END: .bmad-technical-writing/tasks/create-appendix.md ====================
+
+==================== START: .bmad-technical-writing/tasks/create-index-entries.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Create Index Entries
+
+---
+
+task:
+id: create-index-entries
+name: Create Index Entries
+description: Generate comprehensive book index with primary entries, secondary entries, and cross-references
+persona_default: technical-editor
+inputs:
+
+- final-manuscript
+- key-terms-list
+- publisher-index-guidelines
+  steps:
+- Extract all key terms from manuscript
+- Identify technical terms, concepts, APIs, methods
+- Create primary index entries (main term)
+- Create secondary entries (sub-topics under main term)
+- Add cross-references ("See also...")
+- Ensure consistent terminology
+- Organize alphabetically
+- Add page number placeholders
+- Review for completeness (all important terms indexed)
+- Format per publisher requirements
+- Run execute-checklist.md with index-completeness-checklist.md
+  output: docs/index/{{book-name}}-index.md
+
+---
+
+## Purpose
+
+Create a comprehensive index that helps readers quickly locate information. A good index makes technical books significantly more useful as reference materials.
+
+## Workflow Steps
+
+### 1. Extract Key Terms
+
+Identify indexable content:
+
+- **Technical terms**: API, HTTP, REST, JSON
+- **Concepts**: Authentication, caching, rate limiting
+- **Tools/frameworks**: Express.js, Flask, Django
+- **Methods/functions**: `app.get()`, `request.json()`
+- **Patterns**: MVC, Singleton, Factory
+- **Acronyms**: CRUD, JWT, CORS
+
+### 2. Create Primary Entries
+
+Main index entries:
+
+```
+API (Application Programming Interface), 23, 45-52, 89
+  authentication, 105-112
+  design principles, 67-74
+  documentation, 156-163
+  REST vs GraphQL, 91-98
+  versioning, 142-149
+
+Caching, 201-218
+  cache invalidation, 210-212
+  HTTP caching headers, 205-209
+  Redis implementation, 213-218
+```
+
+### 3. Add Secondary Entries
+
+Sub-topics under main terms:
+
+```
+Express.js, 34-82
+  error handling, 76-82
+  middleware, 48-55
+  routing, 38-47
+  testing, 171-180
+```
+
+### 4. Cross-References
+
+Link related topics:
+
+```
+Authentication, 105-112
+  See also Security, Authorization
+
+JWT (JSON Web Tokens), 108-110
+  See also Authentication, Tokens
+
+Tokens
+  access tokens, 110
+  refresh tokens, 111
+  See also JWT, Authentication
+```
+
+### 5. Ensure Consistency
+
+Maintain uniform terminology:
+
+```
+✅ Correct - Consistent terminology:
+API design, 67
+REST API, 91
+API authentication, 105
+
+❌ Inconsistent:
+API design, 67
+Designing APIs, 67 (duplicate)
+Rest api, 91 (capitalization inconsistent)
+```
+
+### 6. Format Per Publisher
+
+Follow publisher guidelines:
+
+**Manning/O'Reilly Style:**
+
+```
+Term, page numbers
+  subterm, page numbers
+  subterm, page numbers
+```
+
+**LaTeX Style:**
+
+```
+\index{API}
+\index{API!authentication}
+\index{API!design}
+```
+
+### 7. Add Page Placeholders
+
+Structure for page numbering:
+
+```
+API (Application Programming Interface), [TK], [TK]-[TK]
+  authentication, [TK]-[TK]
+  design principles, [TK]-[TK]
+
+Note: [TK] = "To Come" placeholder for page numbers
+```
+
+## Success Criteria
+
+- [ ] All key terms indexed
+- [ ] Primary and secondary entries created
+- [ ] Cross-references added
+- [ ] Consistent terminology
+- [ ] Alphabetically organized
+- [ ] Publisher format followed
+- [ ] Index completeness checklist passed
+
+## Next Steps
+
+1. Submit index to publisher for page numbering
+2. Review final index in page proofs
+3. Update any missing entries
+==================== END: .bmad-technical-writing/tasks/create-index-entries.md ====================
 
 ==================== START: .bmad-technical-writing/templates/book-proposal-tmpl.yaml ====================
 # <!-- Powered by BMAD™ Core -->
@@ -1013,93 +3088,1174 @@ sections:
       This gives readers a mental model before diving in.
 ==================== END: .bmad-technical-writing/templates/introduction-tmpl.yaml ====================
 
+==================== START: .bmad-technical-writing/templates/preface-tmpl.yaml ====================
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: preface
+  name: Book Preface
+  version: 1.0
+  description: Book preface/foreword structure introducing the book to readers
+  output:
+    format: markdown
+    filename: "preface.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: audience
+    title: Who This Book Is For
+    instruction: |
+      Define the target reader:
+      - Primary audience (role, skill level)
+      - Secondary audiences (related roles who may benefit)
+      - Specific skills or knowledge assumed
+      - Who this book is NOT for (helps set expectations)
+
+      Example: "This book is for intermediate Python developers who want to learn machine learning. You should be comfortable with Python syntax, functions, and object-oriented programming, but no ML experience is required."
+    elicit: true
+  - id: outcomes
+    title: What You'll Learn
+    instruction: |
+      High-level learning outcomes:
+      - 4-6 major skills or knowledge areas readers will gain
+      - Practical projects or deliverables they'll build
+      - How this knowledge advances their career or projects
+      - What makes this book's approach unique
+
+      Focus on transformation: "By the end of this book, you'll be able to..."
+    elicit: true
+  - id: prerequisites
+    title: Prerequisites
+    instruction: |
+      Explicitly state what readers need before starting:
+      - Programming languages and skill level
+      - Tools or software (IDEs, databases, cloud accounts)
+      - Concepts from other domains
+      - Hardware requirements (if applicable)
+      - Time commitment estimate
+
+      Be specific to prevent frustration: "Python 3.11+, Git basics, comfort with command line"
+  - id: organization
+    title: How This Book Is Organized
+    instruction: |
+      Explain the book's structure:
+      - Part/section breakdown (if applicable)
+      - Logical progression of topics
+      - Where beginners should start vs. experienced readers
+      - Chapters that can be skipped or read out of order
+      - How chapters build on each other
+
+      Example: "Part 1 covers fundamentals (Chapters 1-4), Part 2 applies these to real projects (Chapters 5-8), and Part 3 explores advanced topics (Chapters 9-12)."
+    elicit: true
+  - id: resources
+    title: Code Repository and Resources
+    instruction: |
+      Point readers to companion materials:
+      - GitHub repository URL
+      - Repository structure explanation
+      - How to download and use code examples
+      - Additional resources (datasets, APIs, tools)
+      - Errata and updates page
+      - Author website or contact info
+      - Community forum or Discord (if available)
+  - id: conventions
+    title: Conventions Used in This Book
+    instruction: |
+      Explain formatting and notation:
+
+      **Code formatting:**
+      - Inline code: `variable_name`
+      - Code blocks and how they're labeled
+      - Command-line vs. Python REPL examples
+      - Syntax highlighting conventions
+
+      **Callouts and notes:**
+      - 📝 Note: Additional information
+      - ⚠️ Warning: Important cautions
+      - 💡 Tip: Best practices and shortcuts
+      - 🔍 Deep Dive: Advanced details
+
+      **Special elements:**
+      - Exercises and how they're marked
+      - File paths and naming conventions
+      - Platform-specific instructions (Windows/Mac/Linux)
+  - id: acknowledgments
+    title: Acknowledgments
+    instruction: |
+      Thank those who contributed:
+      - Technical reviewers
+      - Publisher and editorial team
+      - Early readers or beta testers
+      - Open source projects used
+      - Family and supporters
+      - Community members
+
+      Keep it genuine and specific where possible.
+==================== END: .bmad-technical-writing/templates/preface-tmpl.yaml ====================
+
+==================== START: .bmad-technical-writing/templates/appendix-tmpl.yaml ====================
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: appendix
+  name: Appendix
+  version: 1.0
+  description: Reference appendix with supplementary material, installation guides, and troubleshooting
+  output:
+    format: markdown
+    filename: "appendix-{{appendix_id}}.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+sections:
+  - id: title_purpose
+    title: Appendix Title and Purpose
+    instruction: |
+      Define this appendix:
+      - Appendix letter/number (Appendix A, B, etc.)
+      - Clear, descriptive title
+      - What supplementary information it contains
+      - Why this content is in an appendix vs. main chapters
+      - Who should reference this appendix
+    elicit: true
+  - id: reference_material
+    title: Reference Material
+    instruction: |
+      Include reference tables, charts, or specifications:
+      - API reference tables
+      - Configuration options
+      - Error code listings
+      - Compatibility matrices
+      - Command-line flag references
+      - Keyboard shortcuts
+      - Regular expression patterns
+      - Data format specifications
+
+      Structure as tables or lists for easy scanning.
+  - id: installation
+    title: Installation and Setup Guides
+    instruction: |
+      Platform-specific installation instructions:
+
+      **For each platform (Windows, macOS, Linux):**
+      - Prerequisites check (OS version, dependencies)
+      - Step-by-step installation commands
+      - Verification steps
+      - Common installation issues
+      - Environment configuration
+
+      **Include:**
+      - Package manager commands (apt, brew, choco)
+      - Version constraints
+      - Path configuration
+      - IDE setup (if applicable)
+  - id: troubleshooting
+    title: Troubleshooting Common Issues
+    instruction: |
+      Document frequent problems and solutions:
+
+      **For each issue:**
+      - Symptom/error message
+      - Root cause explanation
+      - Step-by-step solution
+      - Prevention tips
+      - Related issues
+
+      Organize by category:
+      - Installation problems
+      - Environment/configuration issues
+      - Runtime errors
+      - Platform-specific problems
+      - Version compatibility issues
+  - id: additional_resources
+    title: Additional Resources and Links
+    instruction: |
+      Curated resource list:
+
+      **Official Documentation:**
+      - Language/framework docs
+      - API references
+      - Release notes
+
+      **Tools:**
+      - IDEs and editors
+      - Testing frameworks
+      - Deployment tools
+      - Debugging utilities
+
+      **Learning Resources:**
+      - Related books
+      - Online courses
+      - Video tutorials
+      - Blog posts and articles
+
+      **Community:**
+      - Forums and Stack Overflow tags
+      - Discord/Slack channels
+      - Mailing lists
+      - Conferences and meetups
+
+      For each resource:
+      - Name and URL
+      - Brief description
+      - Why it's useful
+==================== END: .bmad-technical-writing/templates/appendix-tmpl.yaml ====================
+
+==================== START: .bmad-technical-writing/checklists/generative-ai-compliance-checklist.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Generative AI Compliance Checklist
+
+---
+
+checklist:
+id: generative-ai-compliance
+name: AI Detection Avoidance Checklist
+description: Validates manuscript content to ensure it does not trigger AI detection patterns and maintains human authenticity
+source: Generative AI Author Guidelines (PacktPub Author Bundle)
+persona_default: technical-editor
+applies_to: - All PacktPub manuscripts - Chapters that may contain AI-assisted content - Final manuscript review
+sections: - Content Quality - Authenticity and Voice - Technical Accuracy - Writing Style - Reader Value
+
+---
+
+## Purpose
+
+This checklist validates manuscript content to ensure it does not trigger AI detection patterns that readers find objectionable. It helps identify writing patterns that could negatively impact reader satisfaction, book reviews, and sales.
+
+**Source**: PacktPub "Generative AI – Guidance for Authors" (Official Author Bundle)
+
+**Key Principle**: Content must demonstrate authentic human expertise, unique insights, and personal experience regardless of how it was created.
+
+## How to Use This Checklist
+
+1. **During Writing**: Reference to avoid AI detection patterns
+2. **Before Submission**: Execute complete validation
+3. **Self-Review**: Identify and fix content that appears AI-generated
+4. **Final Polish**: Ensure all content reads as authentically human
+
+---
+
+## Checklist Items
+
+### 1. Content Quality
+
+Validation checks to ensure content meets quality standards regardless of how it was created.
+
+#### 1.1 Accuracy and Factual Integrity
+
+- [ ] **All technical information verified for accuracy**
+  - No hallucinations or invented facts
+  - No generic examples without citations
+  - No "financial institution" or "company X" vague examples
+  - Real-world examples with specific details
+
+- [ ] **All code examples tested and working**
+  - Not hypothetical or invented
+  - Specific to your expertise and experience
+  - Includes real output/results
+
+- [ ] **Citations provided for all claims**
+  - No uncited "case studies"
+  - No unverified statistics
+  - Sources for all external information
+
+#### 1.2 Depth and Value
+
+- [ ] **Content provides genuine insight beyond surface level**
+  - Not just definitions or basic explanations
+  - Includes expert analysis and interpretation
+  - Provides practical, actionable guidance
+
+- [ ] **Examples are specific and relevant**
+  - Connected to overall book goals
+  - Relevant to chapter topic
+  - Targeted to intended audience
+  - Not generic or overly broad
+
+- [ ] **No filler or unnecessary content**
+  - Every paragraph adds value
+  - No information overload
+  - Focused on reader needs
+
+---
+
+### 2. Authenticity and Voice
+
+Validation checks for authentic, human-written content with your unique voice.
+
+#### 2.1 Personal Voice and Experience
+
+- [ ] **Your unique expertise and insights are evident**
+  - Real-life experiences shared
+  - Personal anecdotes included
+  - Lessons learned from your work
+  - Specific technical challenges you've faced
+
+- [ ] **Content is written in your authentic voice**
+  - Consistent tone throughout
+  - Natural phrasing and word choices
+  - Your characteristic writing style
+  - Not impersonal or generic
+
+- [ ] **First-person perspective used where appropriate**
+  - "In my experience..."
+  - "I've found that..."
+  - "When I worked on..."
+  - Personal insights and opinions
+
+#### 2.2 Consistency
+
+- [ ] **Style and approach consistent throughout manuscript**
+  - No sudden shifts in tone
+  - Consistent terminology usage
+  - Uniform level of technical detail
+  - No sections that "feel different"
+
+- [ ] **No obvious transitions between writing styles**
+  - Smooth flow across sections
+  - Consistent paragraph structure
+  - Uniform sentence complexity
+
+---
+
+### 3. Technical Accuracy
+
+Specific checks for technical content quality.
+
+#### 3.1 Up-to-Date Information
+
+- [ ] **All technology versions current and specified**
+  - Framework versions documented
+  - Tool versions specified
+  - No outdated approaches or deprecated features
+
+- [ ] **Best practices reflect current industry standards**
+  - Not generic advice from 2+ years ago
+  - Aligned with latest community consensus
+  - Includes recent developments
+
+#### 3.2 Specificity
+
+- [ ] **Technical details are precise and specific**
+  - Exact configuration steps
+  - Specific parameter values
+  - Real command outputs
+  - Not vague or ambiguous
+
+- [ ] **Code examples are production-quality**
+  - Follow language best practices
+  - Include error handling
+  - Use realistic variable names
+  - Not toy examples
+
+---
+
+### 4. Writing Style
+
+Detection of AI-like writing patterns that readers find objectionable.
+
+#### 4.1 Word Choice and Phrasing
+
+- [ ] **No overuse of "AI words"**
+  - Check for excessive: sophisticated, delve, leverage, robust, seamless, groundbreaking, revolutionary, cutting-edge
+  - Avoid: "profound efficacy", "empirical realm", "compellingly exemplified"
+  - Use simple, clear language instead
+
+- [ ] **Avoid flowery or verbose descriptions**
+  - No "overblown" chapter introductions
+  - No excessive adjectives
+  - Direct and concise phrasing
+
+- [ ] **No polysyllabic words when simple ones work**
+  - "use" not "utilize"
+  - "help" not "facilitate"
+  - "show" not "demonstrate"
+  - Clear over clever
+
+#### 4.2 Metaphors and Analogies
+
+- [ ] **Metaphors used sparingly and appropriately**
+  - Maximum 1-2 metaphors per section
+  - Each metaphor adds clarity, not confusion
+  - No mixed metaphors
+
+- [ ] **Analogies make sense and are relevant**
+  - Connect logically to technical concept
+  - Help understanding, not obscure it
+  - Not forced or nonsensical
+
+#### 4.3 Sentence Structure
+
+- [ ] **Varied sentence length and structure**
+  - Mix of short and long sentences
+  - Not all sentences follow same pattern
+  - Natural rhythm and flow
+
+- [ ] **Active voice preferred**
+  - "We configure the server" not "The server is configured"
+  - "You can optimize performance" not "Performance can be optimized"
+  - Clear subject-verb-object
+
+---
+
+### 5. Reader Value
+
+Focus on delivering maximum value to the reader.
+
+#### 5.1 Engagement
+
+- [ ] **Content is engaging and interesting**
+  - Not dry or artificial
+  - Maintains reader interest
+  - Includes hooks and interesting details
+
+- [ ] **Practical and hands-on focus**
+  - Real-world applications clear
+  - Actionable takeaways
+  - Can implement immediately
+
+#### 5.2 Structure and Organization
+
+- [ ] **No overly rigid structure**
+  - Not every chapter follows exact same pattern
+  - Natural flow based on content
+  - Flexible organization
+
+- [ ] **Content progression makes sense**
+  - Builds logically from simple to complex
+  - No repetitive material
+  - Each section advances understanding
+
+#### 5.3 Reader Self-Check
+
+- [ ] **Ask yourself: "If I bought this book, would I be satisfied?"**
+  - Does it provide real value?
+  - Is it worth the price?
+  - Would I recommend it to colleagues?
+
+- [ ] **Ask yourself: "How much value will readers get?"**
+  - Beyond what they could find in documentation?
+  - Beyond basic tutorials?
+  - Unique insights and expertise?
+
+---
+
+## Red Flags: AI-Generated Content Indicators
+
+If you answer YES to multiple items below, content likely needs revision:
+
+### Content Red Flags
+
+- [ ] Generic examples without specific details or citations
+- [ ] Repetitive content across different sections
+- [ ] Filler paragraphs that add no real knowledge
+- [ ] Vague "a company" or "financial institution" examples
+- [ ] Information that feels dated or uncertain
+
+### Style Red Flags
+
+- [ ] Overly formal or stilted language
+- [ ] Heavy use of "sophisticated", "delve", "leverage", "robust"
+- [ ] Multiple metaphors in single paragraph
+- [ ] Nonsensical or forced metaphors
+- [ ] Extremely polysyllabic vocabulary
+- [ ] Every sentence follows same structure
+- [ ] Impersonal tone throughout
+
+### Structure Red Flags
+
+- [ ] Rigid, repetitive chapter structure
+- [ ] Identical opening patterns for sections
+- [ ] No personal anecdotes or experiences
+- [ ] No first-person perspective
+- [ ] Feels like reading documentation, not a book
+
+---
+
+## Validation Report Format
+
+When this checklist is executed, generate a report:
+
+```markdown
+# AI Detection Avoidance Report
+
+**Manuscript**: [Title]
+**Date**: [Date]
+**Reviewer**: [Name]
+
+## Content Quality Assessment
+
+### Accuracy: [PASS/FAIL]
+
+- [Results]
+
+### Depth and Value: [PASS/FAIL]
+
+- [Results]
+
+## Authenticity Assessment
+
+### Personal Voice: [PASS/FAIL]
+
+- [Results]
+
+### Consistency: [PASS/FAIL]
+
+- [Results]
+
+## Style Assessment
+
+### Word Choice: [PASS/FAIL]
+
+- Issues found: [List]
+
+### Writing Style: [PASS/FAIL]
+
+- Red flags: [List]
+
+## Overall Assessment
+
+- ✅ **PASS** - Content appears authentically human
+- ⚠️ **REVIEW** - Some AI patterns detected, needs revision
+- ❌ **FAIL** - Multiple AI detection patterns present
+
+## Recommendations
+
+[Specific recommendations for improvement]
+
+## Next Steps
+
+[Required revisions to avoid AI detection]
+```
+
+---
+
+## Integration
+
+This checklist is used by:
+
+- **technical-editor** agent - Content quality review
+- **manuscript-formatter** - Pre-submission validation
+- **format-for-packtpub.md** task - Part of complete workflow
+
+## Related Files
+
+- `Generative_AI_Author_Guidelines.md` - Full PacktPub guidelines
+- `packtpub-submission-checklist.md` - Overall submission validation
+- `format-for-packtpub.md` - Complete formatting workflow
+
+---
+
+## Notes
+
+### Why This Matters
+
+**From real reader reviews**:
+
+- Readers NOTICE AI-generated content
+- Readers COMPLAIN about AI-like writing
+- Reviews mention: repetitive, generic, boring, unhelpful
+- Negative reviews impact sales and author reputation
+
+**Key Insight**:
+
+- Readers expect authentic human expertise and unique insights
+- AI patterns trigger negative reactions even if unintentional
+- Quality and authenticity are critical to book success
+
+### Best Practice
+
+**Content Creation Guidelines**:
+
+1. Lead with your real expertise and experience
+2. Use specific, concrete examples from your work
+3. Write in your natural voice and style
+4. Vary sentence structure and paragraph patterns
+5. Avoid overused AI vocabulary
+
+**Content Revision Process**:
+
+1. Verify every technical fact for accuracy
+2. Replace generic examples with specific ones
+3. Add personal insights and real-world context
+4. Remove flowery language and excessive metaphors
+5. Ensure consistent voice throughout
+6. Check against AI detection patterns
+
+**Remember**: Authentic expertise and unique insights create lasting value for readers!
+==================== END: .bmad-technical-writing/checklists/generative-ai-compliance-checklist.md ====================
+
 ==================== START: .bmad-technical-writing/checklists/packtpub-submission-checklist.md ====================
+<!-- Powered by BMAD™ Core -->
+
 # PacktPub Submission Checklist
 
-Use this checklist to ensure chapters meet Packt Publishing submission requirements.
+---
 
-## Format and Length
+checklist:
+id: packtpub-submission
+name: PacktPub Chapter/Manuscript Submission Checklist
+description: Official PacktPub quality checklist for technical book chapters and manuscripts
+source: Your Writing Checklist.pdf (PacktPub Author Bundle)
+persona_default: manuscript-reviewer
+applies_to: - Technical book chapters - Full manuscript submissions - Sample chapter submissions
+sections: - Outline Compliance - Structure Requirements - Readability Standards - Value Proposition - Technical Requirements - Code Quality - Image Quality - Style and Formatting
 
-- [ ] Chapter length 20-30 pages (typical range)
-- [ ] Submitted in required format (Word or Markdown per author guidelines)
-- [ ] SharePoint formatting guidelines followed
-- [ ] Proper heading levels used (H1 for chapter, H2 for sections)
-- [ ] Page breaks appropriate
+---
 
-## Chapter Structure
+## Purpose
 
-- [ ] Learning objectives clearly stated at beginning
-- [ ] Introduction section engaging and sets context
-- [ ] Main content broken into logical sections
-- [ ] Summary section included at end
-- [ ] "Further reading" or "See also" section provided
-- [ ] Prerequisites clearly listed
+This checklist validates technical book chapters and manuscripts against PacktPub's official submission requirements. All items must pass (or be documented as exceptions) before submitting to your PacktPub editor.
 
-## Code Examples
+**Source**: Official PacktPub Author Bundle ("Your Writing Checklist.pdf")
 
-- [ ] All code tested and working
-- [ ] Code formatting consistent
-- [ ] Syntax highlighting language specified
-- [ ] Long lines broken appropriately (no horizontal scrolling)
-- [ ] Code comments explain key concepts
-- [ ] Output examples provided where helpful
+## How to Use This Checklist
 
-## Screenshots and Images
+1. **During Writing**: Reference sections to ensure compliance
+2. **Before Submission**: Execute complete checklist validation
+3. **With Automation**: Use `format-for-packtpub.md` task which runs this checklist
+4. **Manual Review**: Check items marked "Manual Review Required"
 
-- [ ] Screenshots in required format (PNG typical, 300 DPI)
-- [ ] Images clearly labeled (Figure 1.1, Figure 1.2, etc.)
-- [ ] Captions provided for all figures
-- [ ] Images referenced in text
-- [ ] High quality and readable
-- [ ] Appropriate resolution for print and digital
+## Checklist Items
 
-## Style and Voice
+### 1. Outline Compliance
 
-- [ ] Second person ("you") perspective used
-- [ ] Active voice preferred over passive
-- [ ] Conversational but professional tone
-- [ ] Chicago Manual of Style guidelines followed
-- [ ] Consistent terminology throughout
+These items verify your chapter matches the agreed-upon outline and objectives.
 
-## Technical Content
+#### 1.1 Topic Coverage
 
-- [ ] Technical accuracy verified
-- [ ] Current best practices demonstrated
-- [ ] Version numbers specified for all software/libraries
-- [ ] Cross-platform considerations noted where relevant
-- [ ] Deprecated features avoided
+- [ ] **All topics/skills mentioned in outline are covered**
+  - Cross-reference outline document
+  - Verify each topic has dedicated section
+  - Check that no outline topics are missing
 
-## Educational Elements
+#### 1.2 Page Count
 
-- [ ] Concepts explained clearly before code
-- [ ] Progressive skill building through chapter
-- [ ] Real-world examples and use cases included
-- [ ] Troubleshooting tips provided
-- [ ] Key points highlighted or called out
+- [ ] **Chapter page count within acceptable range**
+  - Outline specifies target page count
+  - Too high: content may be too detailed or off-topic
+  - Too low: content may be insufficient or missing topics
+  - Acceptable variance: ±10% of target
 
-## References and Resources
+#### 1.3 Learning Objectives
 
-- [ ] URLs verified and working
-- [ ] Official documentation referenced
-- [ ] GitHub repository links included (if applicable)
-- [ ] Attribution for third-party code or content
-- [ ] License information for code included
+- [ ] **Chapter meets all stated learning objectives**
+  - Each objective listed in outline is addressed
+  - Reader can demonstrate each skill after reading
+  - Practical examples provided for each objective
 
-## Review and Quality
+---
 
-- [ ] Grammar and spelling checked
-- [ ] Technical review completed
-- [ ] Code review completed
-- [ ] Peer review feedback addressed
-- [ ] Author checklist completed (if provided by Packt)
+### 2. Structure Requirements
 
-## Submission Package
+These items ensure your chapter follows PacktPub's required structure and formatting.
 
-- [ ] Main chapter file
-- [ ] All images in separate folder
-- [ ] Code files organized and tested
-- [ ] README for code repository (if applicable)
-- [ ] Change log or revision notes (if resubmitting)
+#### 2.1 Introduction Section
+
+- [ ] **Chapter opens with brief introduction**
+  - Located before first H2 heading
+  - 1-3 paragraphs maximum
+  - Sets context for the chapter
+
+- [ ] **Introduction lists learning goals**
+  - "In this chapter, you will learn..."
+  - "This chapter covers..."
+  - Bullet list format
+
+- [ ] **Bullet list of main topics/Level 1 headings**
+  - Each H2 section listed
+  - Uses consistent format
+  - Gives reader roadmap of chapter content
+
+#### 2.2 Heading Standards
+
+- [ ] **Appropriate heading styles used (Heading 1-6)**
+  - Heading 1: Chapter title
+  - Heading 2: Major sections
+  - Heading 3: Subsections
+  - Avoid skipping levels (H2 → H4)
+
+- [ ] **Headings use "-ing" verbs to imply action**
+  - ✓ "Creating a React Component"
+  - ✓ "Installing the Development Environment"
+  - ✗ "React Components"
+  - ✗ "Development Environment"
+
+#### 2.3 Transitions and Flow
+
+- [ ] **Signposts/transitions between major sections**
+  - Link previous section to next
+  - "Now that we've covered X, let's explore Y..."
+  - "With X configured, we can now..."
+
+- [ ] **Content linked to create learning journey**
+  - Each section builds on previous
+  - Concepts introduced before being used
+  - Forward references when appropriate
+
+- [ ] **No consecutive headers (lead-in text required)**
+  - Every heading followed by explanatory paragraph
+  - Never: H2 immediately followed by H3
+  - Always: H2, paragraph(s), then H3
+
+- [ ] **No consecutive images (framing text required)**
+  - Text before image explaining what to look for
+  - Text after image explaining significance
+  - Never: image immediately following another image
+
+#### 2.4 Summary and Conclusion
+
+- [ ] **Summary section present at end of chapter**
+  - Recap main learnings
+  - Reinforce value/application
+  - "You have now learned..."
+  - "You can now configure..."
+  - "You now understand..."
+
+- [ ] **Summary closes by introducing next chapter topic**
+  - "In the next chapter, we will..."
+  - Creates continuity across chapters
+  - Maintains reader engagement
+
+- [ ] **Reader able to achieve goals mentioned in introduction**
+  - Introduction promises match summary delivery
+  - All learning objectives addressable by reader
+  - Practical skills demonstrated, not just explained
+
+---
+
+### 3. Readability Standards
+
+These items ensure your content is accessible and engaging for the target audience.
+
+#### 3.1 Audience Consideration
+
+- [ ] **Content appropriate for target audience level**
+  - Beginners: more detail, simpler explanations, more examples
+  - Intermediate: moderate detail, some assumptions of knowledge
+  - Advanced: technical depth, fewer basic explanations
+
+- [ ] **Terminology introduced before use**
+  - First use of term includes definition or context
+  - Use **Key Word [PACKT]** style for first appearance
+  - Avoid assuming reader knows jargon
+
+#### 3.2 Writing Style
+
+- [ ] **Content kept concise and straightforward**
+  - Short sentences (15-20 words average)
+  - One concept per paragraph
+  - Active voice preferred
+
+- [ ] **Reader addressed using "you" and "we"**
+  - "You can now configure..."
+  - "We will explore..."
+  - Avoid passive: "The configuration is done by..."
+  - Avoid third-person: "The user configures..."
+
+#### 3.3 Visual Variety
+
+- [ ] **Create visual variety throughout chapter**
+  - Mix of paragraphs, lists, code, images, tables
+  - Avoid long stretches of plain text
+  - Break up dense content with formatting
+
+- [ ] **Lists used appropriately**
+  - Bullet lists for unordered items
+  - Numbered lists for sequential steps
+  - Definition lists for term/description pairs
+
+- [ ] **Info boxes used for supplementary content**
+  - Tips, warnings, notes, information boxes
+  - Not essential to main flow
+  - Enhance understanding
+
+#### 3.4 Code and Image Framing
+
+- [ ] **Text before all code blocks explaining context**
+  - What the code does
+  - Why it's relevant
+  - What to focus on
+
+- [ ] **Text after all code blocks explaining significance**
+  - What was demonstrated
+  - Key points to remember
+  - How it connects to larger topic
+
+- [ ] **Text before all images explaining what to look for**
+  - "In the following screenshot, notice..."
+  - "The diagram shows..."
+  - Directs reader's attention
+
+- [ ] **Text after all images explaining significance**
+  - "As you can see..."
+  - "This illustrates..."
+  - Reinforces the point being made
+
+---
+
+### 4. Value Proposition
+
+These items ensure your content provides practical, real-world value to readers.
+
+#### 4.1 Practical Focus
+
+- [ ] **Content hands-on and practical with real-world examples**
+  - Prefer working code over theory
+  - Use realistic scenarios
+  - Avoid contrived "foo/bar" examples when possible
+
+- [ ] **Limit or avoid background information and theory**
+  - Some theory needed for understanding
+  - Should support practical application, not dominate
+  - "Just enough" theory to enable practice
+
+- [ ] **Numbered steps for complex tasks/code execution**
+  - 1. Do this
+  - 2. Then do this
+  - 3. Finally do this
+  - Makes procedures clear and followable
+
+#### 4.2 Visual Support
+
+- [ ] **Images support/simplify explanations, not just illustrate**
+  - Diagrams explain complex concepts
+  - Screenshots show specific UI elements
+  - Charts/graphs reveal patterns
+  - Each image has clear purpose
+
+#### 4.3 Learning Reinforcement
+
+- [ ] **Value/real-world application stated at end of each section**
+  - "This technique allows you to..."
+  - "You'll use this when..."
+  - "Real-world applications include..."
+
+- [ ] **"Close to goal" reminders for readers**
+  - Progress indicators throughout chapter
+  - "You're now halfway to building..."
+  - Maintains motivation
+
+- [ ] **Summary recaps learnings and reinforces value/application**
+  - Not just "we covered X, Y, Z"
+  - "You can now X, Y, Z in your projects"
+  - Emphasizes practical skills gained
+
+---
+
+### 5. Technical Requirements
+
+These items ensure your technical content is accurate, current, and complete.
+
+#### 5.1 Version Currency
+
+- [ ] **Latest/updated versions for all tech and code**
+  - Check for updates before starting chapter
+  - Document version numbers in text
+  - Avoid deprecated features/APIs
+
+- [ ] **Version updates checked before each chapter**
+  - Frameworks update frequently
+  - API changes may affect examples
+  - Syntax may evolve
+
+#### 5.2 Code Explanation
+
+- [ ] **All code explained in paragraph or sentence**
+  - No unexplained code blocks
+  - Key lines highlighted and discussed
+  - Complex logic broken down
+
+- [ ] **No in-code comments (explain in surrounding text)**
+  - Code should be clean, production-like
+  - Explanations belong in prose, not comments
+  - Exception: Standard documentation comments (JSDoc, etc.)
+
+#### 5.3 Code Repository
+
+- [ ] **GitHub repository updated with each chapter**
+  - Complete working examples
+  - Organized by chapter
+  - README with setup instructions
+  - Link provided in manuscript or to editor
+
+---
+
+### 6. Code Quality
+
+These items ensure code blocks meet PacktPub's formatting and quality standards.
+
+#### 6.1 Code Block Length (CRITICAL)
+
+- [ ] **No code blocks exceed 30 lines (HARD LIMIT)**
+  - 30 lines = absolute maximum
+  - Blocks over 30 lines MUST be split
+  - Solutions: extract functions, show key sections only, reference full code on GitHub
+
+- [ ] **Code blocks ideally ≤20 lines (RECOMMENDED)**
+  - 20 lines = optimal for readability
+  - Blocks 21-30 lines flagged as warning
+  - Strive for concise, focused examples
+
+- [ ] **Long code broken into logical sections**
+  - Show setup, then usage, then cleanup separately
+  - Use "..." to indicate omitted code
+  - Explain each section individually
+
+#### 6.2 Code Style and Formatting
+
+- [ ] **Code uses proper syntax highlighting**
+  - Language identifier on code fence: ```javascript
+  - Enables proper formatting in conversion
+  - Improves readability
+
+- [ ] **Code follows language best practices**
+  - Idiomatic code for the language
+  - Modern syntax (ES6+, Python 3, etc.)
+  - Not overly clever or obfuscated
+
+- [ ] **Code is tested and working**
+  - All examples actually run
+  - No syntax errors
+  - Produces expected output
+
+---
+
+### 7. Image Quality
+
+These items ensure images meet PacktPub's print quality standards.
+
+#### 7.1 Resolution Requirements (CRITICAL)
+
+- [ ] **All images 300 DPI minimum**
+  - Check DPI metadata
+  - Use GIMP for screenshot capture (auto 300 DPI)
+  - Paste PrtScr into GIMP document to convert
+
+- [ ] **All images 2000px minimum on shortest edge**
+  - Width AND height matter
+  - Measure shortest dimension
+  - Upscaling doesn't improve quality - capture at correct size
+
+#### 7.2 Format Requirements (CRITICAL)
+
+- [ ] **No JPG format images (PNG/TIFF only)**
+  - JPG loses quality with each save
+  - PNG: screenshots, UI captures
+  - TIFF: diagrams, artwork
+  - Convert existing JPG to PNG
+
+- [ ] **Original images provided to editor**
+  - Separate files, not just embedded
+  - Organized in dedicated folder
+  - Descriptive filenames with figure numbers
+
+#### 7.3 Screenshot Quality
+
+- [ ] **Screenshots focused on relevant content**
+  - Crop empty space
+  - Highlight UI elements being discussed
+  - Text in screenshot readable at print size
+
+- [ ] **Full-screen + snippet pairs for detail images**
+  - Detail: cropped area of interest
+  - Full: entire screen for context
+  - Naming: `figure-1-snip.png` and `figure-1-fullscreen.png`
+
+- [ ] **Screenshots file size ≥1000KB at full screen**
+  - Indicates sufficient resolution
+  - Smaller files likely insufficient quality
+
+#### 7.4 Third-Party Images
+
+- [ ] **Copyright/license checked for third-party images**
+  - Permission obtained if needed
+  - Attribution included where required
+  - Print/digital rights confirmed
+
+- [ ] **Highest resolution obtained (not screenshots of images)**
+  - Request original from source
+  - Download full-resolution version
+  - Don't screenshot existing images
+
+---
+
+### 8. Style and Formatting
+
+These items ensure proper PacktPub style application.
+
+#### 8.1 PACKT Styles Applied
+
+- [ ] **All paragraphs use PacktPub styles**
+  - Headings: "Heading 1-6" (standard, no [PACKT])
+  - Content: "[PACKT]" suffix styles (Normal [PACKT], Code [PACKT], etc.)
+  - No built-in Word styles (except headings)
+
+- [ ] **Code blocks use Code [PACKT] / Code End [PACKT]**
+  - Code [PACKT]: all lines except last
+  - Code End [PACKT]: last line of code block
+  - Single-line code uses Code [PACKT] only
+
+- [ ] **Lists use Bullet [PACKT] / Numbered Bullet [PACKT]**
+  - Bullet [PACKT]: unordered lists
+  - Numbered Bullet [PACKT]: ordered lists
+  - No standard Word list styles
+
+- [ ] **Inline formatting uses character [PACKT] styles**
+  - Key Word [PACKT]: first appearance of terms, important concepts
+  - Italics [PACKT]: emphasis
+  - Code In Text [PACKT]: inline code, commands, filenames
+
+#### 8.2 Document Template
+
+- [ ] **Document based on Sample Chapter.docx template**
+  - Contains all 77 [PACKT] styles
+  - Ensures style consistency
+  - Required for proper conversion
+
+---
+
+## Content Standards
+
+### Writing Quality
+
+- [ ] **Avoid repeating information; cross-reference instead**
+  - "As discussed in Chapter 3..."
+  - "See the X section earlier in this chapter..."
+  - Keeps content concise
+
+- [ ] **No disparaging references (race, gender, religion, etc.)**
+  - Inclusive language
+  - Professional tone
+  - Respectful examples
+
+- [ ] **No plagiarism (text, images, datasets, code)**
+  - Original content or properly licensed
+  - Citations where required
+  - Code examples original or open-source with attribution
+
+---
+
+## Validation Report Format
+
+When this checklist is executed, generate a report in this format:
+
+```markdown
+# PacktPub Submission Checklist Results
+
+**Chapter**: [Chapter Title]
+**Date**: [Date]
+**Overall Score**: X/Y items passed
+
+## Summary
+
+✅ **PASS** - Ready for submission
+🟡 **WARNINGS** - Address N warnings before submission
+🔴 **FAIL** - Fix N critical issues before submission
+
+## Section Results
+
+### 1. Outline Compliance: 3/3 ✓
+
+### 2. Structure Requirements: 10/11 ⚠️
+
+### 3. Readability Standards: 8/8 ✓
+
+### 4. Value Proposition: 6/7 ⚠️
+
+### 5. Technical Requirements: 4/4 ✓
+
+### 6. Code Quality: 2/4 ✗
+
+### 7. Image Quality: 5/7 ⚠️
+
+### 8. Style and Formatting: 8/8 ✓
+
+## Failed Items (MUST FIX)
+
+### 6.1 Code Block Length
+
+- ❌ Code block at line 245: 35 lines (MAX: 30)
+- ❌ Code block at line 389: 42 lines (MAX: 30)
+
+**Action Required**: Split these code blocks into smaller sections
+
+## Warnings (SHOULD FIX)
+
+### 2.3 Transitions and Flow
+
+- ⚠️ Section "Advanced Patterns" lacks transition from previous section
+
+### 4.1 Practical Focus
+
+- ⚠️ Consider adding more numbered steps for configuration procedure
+
+### 7.1 Resolution Requirements
+
+- ⚠️ Image figure-3.png: 1800px shortest edge (target: 2000px)
+
+## All Items Checked
+
+[Detailed list of all checklist items with ✓/⚠️/✗ status]
+```
+
+---
+
+## Notes
+
+### Manual Review Items
+
+Some checklist items require human judgment and cannot be fully automated:
+
+- **Audience appropriateness**: Requires understanding of target reader level
+- **Writing quality**: Conciseness, clarity, engagement
+- **Value proposition**: Whether examples feel "real-world" vs contrived
+- **Learning journey**: Whether content flows logically
+
+These items should be marked "Manual Review Required" in automated checks.
+
+### Critical vs Warning vs Info
+
+**Critical (MUST FIX before submission)**:
+
+- Code blocks >30 lines
+- Images <2000px or <300 DPI
+- JPG format images
+- Missing summary section
+- No [PACKT] styles applied
+
+**Warning (SHOULD FIX before submission)**:
+
+- Code blocks 21-30 lines (aim for ≤20)
+- Images missing frame text
+- Consecutive headers
+- Missing transitions
+
+**Info (NICE TO HAVE)**:
+
+- Consider adding more visual variety
+- Could add more real-world examples
+- Might benefit from diagram
+
+---
+
+## Integration
+
+This checklist is used by:
+
+- **format-for-packtpub.md** task - Automated execution during conversion
+- **manuscript-review.md** task - Manual content review process
+- **chapter-development-workflow.yaml** - Final validation step before submission
+
+## Related Files
+
+- `format-for-packtpub.md` - Automates Markdown→PacktPub Word conversion
+- `packtpub-author-bundle-analysis.md` - Detailed requirements documentation
+- `validate-manuscript.py` - Automated validation script (to be created)
 ==================== END: .bmad-technical-writing/checklists/packtpub-submission-checklist.md ====================
 
 ==================== START: .bmad-technical-writing/checklists/oreilly-format-checklist.md ====================

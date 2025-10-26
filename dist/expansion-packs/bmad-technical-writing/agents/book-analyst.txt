@@ -244,9 +244,23 @@ id: analyze-existing-book
 name: Analyze Existing Technical Book
 description: Deep analysis of existing book state to inform revision planning
 persona_default: book-analyst
-inputs: - existing_book_path - revision_motivation (why analyze now?)
-steps: - Scan all chapters and sections to understand book structure - Extract book metadata (title, version, publisher, audience, publication date) - Analyze structural organization (parts, chapters, sections, learning flow) - Inventory all code examples (count, languages, versions, complexity) - Identify technology versions currently used in book - Extract writing style patterns (voice, tone, heading styles, terminology) - Map cross-references and chapter dependencies - Assess technical currency (what's outdated, deprecated, or broken) - Identify inconsistencies, gaps, or quality issues - Use template book-analysis-report-tmpl.yaml with create-doc.md task - Generate comprehensive analysis report
-output: docs/analysis/{{book_title}}-analysis-report.md
+inputs:
+
+- existing_book_path
+- revision_motivation (why analyze now?)
+  steps:
+- Scan all chapters and sections to understand book structure
+- Extract book metadata (title, version, publisher, audience, publication date)
+- Analyze structural organization (parts, chapters, sections, learning flow)
+- Inventory all code examples (count, languages, versions, complexity)
+- Identify technology versions currently used in book
+- Extract writing style patterns (voice, tone, heading styles, terminology)
+- Map cross-references and chapter dependencies
+- Assess technical currency (what's outdated, deprecated, or broken)
+- Identify inconsistencies, gaps, or quality issues
+- Use template book-analysis-report-tmpl.yaml with create-doc.md task
+- Generate comprehensive analysis report
+  output: docs/analysis/{{book_title}}-analysis-report.md
 
 ---
 
@@ -446,9 +460,26 @@ id: plan-book-revision
 name: Plan Book Revision Strategy
 description: Create strategic plan for updating existing technical book (2nd/3rd edition, version updates, chapter additions)
 persona_default: book-analyst
-inputs: - book_analysis_report (from analyze-existing-book.md) - revision_type (new edition, version update, chapter addition, feedback incorporation) - target_versions (if applicable)
-steps: - Review book analysis report to understand current state - Define revision scope (full edition? specific chapters? code-only? text-only?) - Identify all technology version changes needed - Create chapter revision matrix (complexity, effort, priority for each chapter) - Assess impact on learning progression and flow - Plan code testing strategy across target versions - Define timeline with phases and milestones - Identify chapter dependencies and critical path - Set success criteria and quality gates - Assess risks and create mitigation plans - Use template revision-plan-tmpl.yaml with create-doc.md task - Run execute-checklist.md with revision-completeness-checklist.md - Generate comprehensive revision plan
-output: manuscript/planning/{{book_title}}-revision-plan.md
+inputs:
+
+- book_analysis_report (from analyze-existing-book.md)
+- revision_type (new edition, version update, chapter addition, feedback incorporation)
+- target_versions (if applicable)
+  steps:
+- Review book analysis report to understand current state
+- Define revision scope (full edition? specific chapters? code-only? text-only?)
+- Identify all technology version changes needed
+- Create chapter revision matrix (complexity, effort, priority for each chapter)
+- Assess impact on learning progression and flow
+- Plan code testing strategy across target versions
+- Define timeline with phases and milestones
+- Identify chapter dependencies and critical path
+- Set success criteria and quality gates
+- Assess risks and create mitigation plans
+- Use template revision-plan-tmpl.yaml with create-doc.md task
+- Run execute-checklist.md with revision-completeness-checklist.md
+- Generate comprehensive revision plan
+  output: manuscript/planning/{{book_title}}-revision-plan.md
 
 ---
 
@@ -774,9 +805,23 @@ id: extract-code-patterns
 name: Extract Code Patterns from Existing Book
 description: Analyze existing code examples to learn style patterns for maintaining consistency in updates
 persona_default: book-analyst
-inputs: - existing_book_path - code_repository_path (if exists)
-steps: - Scan all code examples across entire book - Identify import organization patterns (standard library first? grouped? alphabetical?) - Note naming conventions (snake_case, camelCase, variable prefixes, class names) - Observe comment styles (docstrings? inline? comment density? formatting) - Extract error handling patterns (try/except usage, error messages, logging) - Identify common code structures (class-based? functional? procedural? OOP patterns) - Note formatting choices (indentation, line length, spacing, blank lines) - Document code file organization patterns (imports→constants→classes→main) - Analyze code complexity patterns (simple examples vs. comprehensive demos) - Generate style guide summary document - Run execute-checklist.md with existing-book-integration-checklist.md
-output: docs/style/{{book_title}}-code-patterns.md
+inputs:
+
+- existing_book_path
+- code_repository_path (if exists)
+  steps:
+- Scan all code examples across entire book
+- Identify import organization patterns (standard library first? grouped? alphabetical?)
+- Note naming conventions (snake_case, camelCase, variable prefixes, class names)
+- Observe comment styles (docstrings? inline? comment density? formatting)
+- Extract error handling patterns (try/except usage, error messages, logging)
+- Identify common code structures (class-based? functional? procedural? OOP patterns)
+- Note formatting choices (indentation, line length, spacing, blank lines)
+- Document code file organization patterns (imports→constants→classes→main)
+- Analyze code complexity patterns (simple examples vs. comprehensive demos)
+- Generate style guide summary document
+- Run execute-checklist.md with existing-book-integration-checklist.md
+  output: docs/style/{{book_title}}-code-patterns.md
 
 ---
 
@@ -1217,9 +1262,23 @@ id: incorporate-reviewer-feedback
 name: Systematically Incorporate Reviewer Feedback
 description: Process and address technical reviewer, publisher, and beta reader feedback systematically
 persona_default: book-analyst
-inputs: - reviewer_feedback (technical review comments, publisher requests, beta reader notes) - affected_chapters
-steps: - Collect all reviewer feedback from all sources (technical, publisher, beta readers) - Categorize feedback by severity (critical/must-fix, important/should-fix, optional/nice-to-have) - Create feedback tracking log with status for each item - Address critical issues first (technical errors, broken code, security issues) - Fix important issues (clarity problems, missing examples, structural issues) - Consider optional suggestions (enhancements, additional topics, style preferences) - Test all code changes from feedback - Update text for clarity improvements requested - Track completion status in feedback log - Generate feedback-resolution-log documenting all changes - Run execute-checklist.md with existing-book-integration-checklist.md
-output: docs/feedback/{{book_title}}-feedback-resolution-log.md
+inputs:
+
+- reviewer_feedback (technical review comments, publisher requests, beta reader notes)
+- affected_chapters
+  steps:
+- Collect all reviewer feedback from all sources (technical, publisher, beta readers)
+- Categorize feedback by severity (critical/must-fix, important/should-fix, optional/nice-to-have)
+- Create feedback tracking log with status for each item
+- Address critical issues first (technical errors, broken code, security issues)
+- Fix important issues (clarity problems, missing examples, structural issues)
+- Consider optional suggestions (enhancements, additional topics, style preferences)
+- Test all code changes from feedback
+- Update text for clarity improvements requested
+- Track completion status in feedback log
+- Generate feedback-resolution-log documenting all changes
+- Run execute-checklist.md with existing-book-integration-checklist.md
+  output: docs/feedback/{{book_title}}-feedback-resolution-log.md
 
 ---
 
@@ -1548,9 +1607,18 @@ id: execute-checklist
 name: Execute Checklist
 description: Systematically execute checklist items with pass/fail/na status and evidence collection for quality assurance
 persona_default: technical-reviewer
-inputs: - checklist_path - subject_name - context_notes
-steps: - Load and parse checklist file - Process each category and item sequentially - Evaluate and mark status (PASS/FAIL/NA) with evidence - Generate results report with summary statistics - Save results to standard location
-output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
+inputs:
+
+- checklist_path
+- subject_name
+- context_notes
+  steps:
+- Load and parse checklist file
+- Process each category and item sequentially
+- Evaluate and mark status (PASS/FAIL/NA) with evidence
+- Generate results report with summary statistics
+- Save results to standard location
+  output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
 
 ---
 
@@ -1887,6 +1955,66 @@ Inputs:
   - subject_name: Complete manuscript - Python Web Scraping Book
   - context_notes: Pre-submission quality gate
 Output: reviews/checklist-results/packtpub-submission-checklist-2024-10-24-16-20.md
+```
+
+### Example 4: Book Outline Validation
+
+```
+Agent: instructional-designer
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/book-outline-checklist.md
+  - subject_name: Machine Learning Fundamentals Book Outline
+  - context_notes: Initial outline review before chapter development
+Output: reviews/checklist-results/book-outline-checklist-2024-10-24-17-15.md
+```
+
+### Example 5: Chapter Outline Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/chapter-outline-checklist.md
+  - subject_name: Chapter 3: Neural Networks Outline
+  - context_notes: Validating structure before section planning
+Output: reviews/checklist-results/chapter-outline-checklist-2024-10-24-18-00.md
+```
+
+### Example 6: Section Plan Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-plan-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Section plan complete, ready for development
+Output: reviews/checklist-results/section-plan-checklist-2024-10-24-19-30.md
+```
+
+### Example 7: Section Completeness Check
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-completeness-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Before marking section DONE
+Output: reviews/checklist-results/section-completeness-checklist-2024-10-24-20-15.md
+```
+
+### Example 8: Code Example Quality Check
+
+```
+Agent: code-curator
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/code-example-checklist.md
+  - subject_name: neural_network_basic.py
+  - context_notes: After testing, before section integration
+Output: reviews/checklist-results/code-example-checklist-2024-10-24-21-00.md
 ```
 
 ## Troubleshooting
