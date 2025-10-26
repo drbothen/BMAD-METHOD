@@ -10,7 +10,7 @@ name: Shard Research Report
 description: Break 30+ page research reports into manageable sections for easier editing and focused review within AI context limits
 persona_default: technical-researcher
 inputs: - research-report-file-path - target-shard-size
-steps: - Check markdownExploder setting in core-config.yaml - Use md-tree explode if available or manual method - Analyze research report structure and identify optimal split points - Determine sharding strategy (by heading, by size, or hybrid) - Create shard files with proper naming and metadata - Generate comprehensive shard index file with cross-references - Validate all research content preserved (citations, code examples, expert insights) - Document cross-references between findings and sources
+steps: - Analyze research report structure and identify optimal split points - Determine sharding strategy (by template section, by size, or hybrid) - Create shard files with proper naming and metadata - Generate comprehensive shard index file with cross-references - Validate all research content preserved (citations, code examples, expert insights) - Document cross-references between findings and sources
 output: Multiple shard files in {topic}-shards/ directory with comprehensive index file
 
 ---
@@ -21,7 +21,7 @@ This task breaks large research reports (30+ pages) into smaller, manageable sha
 
 - Work within AI context window limits during editing
 - Enable focused review of specific research areas
-- Allow parallel development by multiple writers
+- Allow parallel work on different research sections
 - Improve version control granularity
 - Make extensive research findings easier to navigate
 - Maintain citation and source integrity across shards
@@ -54,58 +54,7 @@ Before sharding:
 - All source citations complete with URLs and access dates
 - Research content is saved and backed up
 
-## Primary Method: Automatic with markdown-tree
-
-[[LLM: First, check if markdownExplorer is set to true in .bmad-core/core-config.yaml. If it is, attempt to run the command: `md-tree explode manuscript/research/{topic}-research-report.md manuscript/research/{topic}-shards`
-
-If the command succeeds, inform the user that the research report has been sharded successfully and create the shard index file (see Step 4 below), then STOP.
-
-If the command fails (especially with an error indicating the command is not found or not available), inform the user: "The markdownExploder setting is enabled but the md-tree command is not available. Please either:
-
-1. Install @kayvan/markdown-tree-parser globally with: `npm install -g @kayvan/markdown-tree-parser`
-2. Or set markdownExploder to false in .bmad-core/core-config.yaml
-
-**IMPORTANT: STOP HERE - do not proceed with manual sharding until one of the above actions is taken.**"
-
-If markdownExploder is set to false, inform the user: "The markdownExploder setting is currently false. For better performance and reliability, you should:
-
-1. Set markdownExploder to true in .bmad-core/core-config.yaml
-2. Install @kayvan/markdown-tree-parser globally with: `npm install -g @kayvan/markdown-tree-parser`
-
-I will now proceed with the manual sharding process."
-
-Then proceed with the manual method below ONLY if markdownExploder is false.]]
-
-### Installation and Usage
-
-1. **Install globally**:
-
-   ```bash
-   npm install -g @kayvan/markdown-tree-parser
-   ```
-
-2. **Use the explode command for research reports**:
-
-   ```bash
-   # For a specific research report
-   md-tree explode manuscript/research/react-hooks-research-report.md manuscript/research/react-hooks-shards
-
-   # General pattern
-   md-tree explode manuscript/research/{topic}-research-report.md manuscript/research/{topic}-shards
-   ```
-
-3. **What it does**:
-   - Automatically splits the research report by level 2 sections
-   - Creates properly named files
-   - Adjusts heading levels appropriately
-   - Handles all edge cases with code blocks and special markdown
-   - Preserves citation integrity and source references
-
-If you have @kayvan/markdown-tree-parser installed, use it and skip the manual process below. After md-tree completes, proceed to Step 4 to create the shard index file.
-
----
-
-## Manual Method (if @kayvan/markdown-tree-parser is not available)
+## Workflow Steps
 
 ### 1. Analyze Research Report Structure
 
@@ -151,7 +100,7 @@ Choose where to divide the research report using the **Hybrid Strategy** (prefer
 
 **Sharding Strategies:**
 
-**A) By Heading (Preferred):**
+**A) By Template Section (Preferred):**
 
 - Split at ## (major section) boundaries following template structure
 - Preserves logical research organization
@@ -223,7 +172,6 @@ Add metadata at the top of each shard file:
 <!-- SHARD METADATA -->
 <!-- Original: react-hooks-research-report.md -->
 <!-- Shard: 1 of 6 -->
-<!-- Pages: 1-6 of 35 -->
 <!-- Sections: Frontmatter Metadata, Research Context -->
 <!-- Split Date: 2025-10-26 -->
 <!-- END METADATA -->
@@ -258,7 +206,6 @@ Add metadata at the top of each shard file:
 <!-- SHARD METADATA -->
 <!-- Original: react-hooks-research-report.md -->
 <!-- Shard: 2 of 6 -->
-<!-- Pages: 7-13 of 35 -->
 <!-- Sections: Research Questions & Answers (Q1-Q8) -->
 <!-- Split Date: 2025-10-26 -->
 <!-- END METADATA -->
@@ -276,7 +223,7 @@ A: [complete answer with citations...]
 
 ### 4. Create Comprehensive Shard Index File
 
-Create `{topic-slug}-shards-index.md` in the shard directory:
+Create `{topic-slug}-shards-index.md` or `research-shards-index.md` in the shard directory:
 
 ```markdown
 # React Hooks Research Report - Shards Index
@@ -514,6 +461,16 @@ The completed sharding produces:
 - Size: 5-10 pages per shard (target)
 - Content: Preserves all research questions, citations, code examples, expert insights
 
+**Shard metadata headers:**
+
+Each shard file includes metadata at the top:
+
+- Original filename
+- Shard number (N of M)
+- Page range (X-Y of Total)
+- Sections included
+- Split date
+
 **Index file:**
 
 - Filename: `research-shards-index.md` or `{topic}-shards-index.md`
@@ -555,11 +512,6 @@ Avoid these mistakes specific to research reports:
 - Solution: Split by question groups (e.g., "Technical Concepts" vs "Learning Progression")
 - Note split strategy in metadata: "Research Questions Part 1 (Q1-Q8)"
 
-**Problem: Code block contains ## in example (false heading)**
-
-- Solution: Properly parse markdown - ## inside ``` is not a heading
-- md-tree handles this correctly; manual sharding must check for fenced context
-
 **Problem: Citation references become unclear after sharding**
 
 - Solution: Add clarifying note: "(see shard 4, Code Example 5)" or "Source cited in shard 6 bibliography"
@@ -584,6 +536,32 @@ Avoid these mistakes specific to research reports:
 
 - Solution: Add explicit notes in both shards referencing each other
 - Document major cross-references in index file
+
+## Sharding Best Practices
+
+**Planning:**
+
+- Analyze structure before splitting
+- Choose split points carefully at template section boundaries
+- Document your strategy in the index
+
+**Execution:**
+
+- Use consistent naming convention
+- Add complete metadata headers to every shard
+- Preserve all formatting exactly
+
+**Validation:**
+
+- Check content completeness against original
+- Verify citation integrity across all shards
+- Test cross-references work correctly
+
+**Organization:**
+
+- Create dedicated shard directory
+- Keep original as backup
+- Maintain comprehensive index file with cross-references
 
 ## Next Steps
 
