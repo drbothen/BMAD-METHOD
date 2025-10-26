@@ -19,7 +19,7 @@ workflow:
     - agent: code-curator
       tests: code-example/
       requires: code draft
-      notes: "Test code on all target platforms and versions using *test-code command. Verify code runs correctly on target version {{target_version}}, test edge cases and error conditions, verify dependencies install correctly, check compatibility across platforms. Use code-testing-checklist.md. SAVE OUTPUT: Add test results to examples/{{example_name}}/test-results.md"
+      notes: "Test code on all target platforms and versions using *test-code command. Verify code runs correctly on target version {{target_version}}, test edge cases and error conditions, verify dependencies install correctly, check compatibility across platforms. Execute code-example-checklist.md using execute-checklist task to validate purpose, clarity, completeness, testing, progressive complexity, best practices, documentation, and integration. Use code-testing-checklist.md for general testing. SAVE OUTPUT: Add test results to examples/{{example_name}}/test-results.md"
 
     - agent: code-curator
       validates: code-example/
@@ -95,7 +95,7 @@ workflow:
       - Error conditions handled
       - Dependencies install cleanly
       - Cross-platform compatibility verified (if applicable)
-      - Checklist: code-testing-checklist.md
+      - Checklists: code-example-checklist.md, code-testing-checklist.md
 
     quality_verified:
       - Follows language style guide

@@ -359,6 +359,66 @@ Inputs:
 Output: reviews/checklist-results/packtpub-submission-checklist-2024-10-24-16-20.md
 ```
 
+### Example 4: Book Outline Validation
+
+```
+Agent: instructional-designer
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/book-outline-checklist.md
+  - subject_name: Machine Learning Fundamentals Book Outline
+  - context_notes: Initial outline review before chapter development
+Output: reviews/checklist-results/book-outline-checklist-2024-10-24-17-15.md
+```
+
+### Example 5: Chapter Outline Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/chapter-outline-checklist.md
+  - subject_name: Chapter 3: Neural Networks Outline
+  - context_notes: Validating structure before section planning
+Output: reviews/checklist-results/chapter-outline-checklist-2024-10-24-18-00.md
+```
+
+### Example 6: Section Plan Validation
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-plan-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Section plan complete, ready for development
+Output: reviews/checklist-results/section-plan-checklist-2024-10-24-19-30.md
+```
+
+### Example 7: Section Completeness Check
+
+```
+Agent: tutorial-architect
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/section-completeness-checklist.md
+  - subject_name: Section 2: Building Your First Neural Network
+  - context_notes: Before marking section DONE
+Output: reviews/checklist-results/section-completeness-checklist-2024-10-24-20-15.md
+```
+
+### Example 8: Code Example Quality Check
+
+```
+Agent: code-curator
+Task: execute-checklist
+Inputs:
+  - checklist_path: checklists/code-example-checklist.md
+  - subject_name: neural_network_basic.py
+  - context_notes: After testing, before section integration
+Output: reviews/checklist-results/code-example-checklist-2024-10-24-21-00.md
+```
+
 ## Troubleshooting
 
 **Issue**: Checklist file not found

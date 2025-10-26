@@ -13,7 +13,7 @@ workflow:
     - agent: tutorial-architect
       creates: chapter-outline.md
       requires: book-outline.md
-      notes: "Create detailed chapter outline using *create-chapter-outline command. Define learning objectives, prerequisites, main sections, exercises, and code examples needed. SAVE OUTPUT: Copy final chapter-outline.md to manuscript/outlines/chapter-{{chapter_number}}-outline.md"
+      notes: "Create detailed chapter outline using *create-chapter-outline command. Define learning objectives, prerequisites, main sections, exercises, and code examples needed. Execute chapter-outline-checklist.md using execute-checklist task to validate structure, objectives, and integration with book. SAVE OUTPUT: Copy final chapter-outline.md to manuscript/outlines/chapter-{{chapter_number}}-outline.md"
 
     - agent: tutorial-architect
       creates: section-list.md
@@ -108,7 +108,7 @@ workflow:
       - Prerequisites clearly stated
       - All code examples identified
       - Exercise plan created
-      - Checklist: prerequisite-clarity-checklist.md
+      - Checklists: chapter-outline-checklist.md, prerequisite-clarity-checklist.md
 
     draft_complete:
       - All sections from outline present

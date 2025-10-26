@@ -40,7 +40,7 @@ workflow:
     - agent: tutorial-architect
       finalizes: section-final.md
       requires: revised-section-draft.md
-      notes: "Verify section meets all success criteria from section plan. Check learning objectives addressed, code tested, length appropriate (2-5 pages), transitions clear. Mark section status as DONE. SAVE OUTPUT: Create manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-final.md and mark in section list as complete."
+      notes: "Verify section meets all success criteria from section plan. Execute section-completeness-checklist.md using execute-checklist task to validate length, structure, learning objectives, code integration, tutorial quality, transitions, technical accuracy, and readability. Mark section status as DONE only when checklist passes. SAVE OUTPUT: Create manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-final.md and mark in section list as complete."
 
   flow_diagram: |
     ```mermaid
@@ -120,6 +120,7 @@ workflow:
       - Code tested and working
       - Length appropriate (2-5 pages)
       - Ready to integrate into chapter
+      - Checklist: section-completeness-checklist.md passes
 
   handoff_prompts:
     plan_to_curator: "Section plan complete: {{section_title}}. Learning objective: {{objective}}. {{code_count}} code examples needed. Develop and test all code."

@@ -24,7 +24,7 @@ workflow:
     - agent: instructional-designer
       validates: book-outline.md
       requires: book-outline.md
-      notes: "Validate learning progression and difficulty curve using validate-learning-flow.md task. Check prerequisite flow ensures no knowledge gaps, concepts build logically chapter by chapter, exercises progress from basic to advanced, reader can complete book successfully with stated prerequisites. Use learning-objectives-checklist.md and prerequisite-clarity-checklist.md. SAVE OUTPUT: Create validation report at manuscript/planning/learning-path-validation.md"
+      notes: "Validate learning progression and difficulty curve using validate-learning-flow.md task. Check prerequisite flow ensures no knowledge gaps, concepts build logically chapter by chapter, exercises progress from basic to advanced, reader can complete book successfully with stated prerequisites. Execute book-outline-checklist.md using execute-checklist task to validate scope, structure, learning flow, and chapter balance. Also use learning-objectives-checklist.md and prerequisite-clarity-checklist.md. SAVE OUTPUT: Create validation report at manuscript/planning/learning-path-validation.md"
 
     - agent: technical-editor
       reviews: book-outline.md
@@ -95,7 +95,7 @@ workflow:
       - Topics and subtopics outlined
       - Exercise strategy defined
       - Estimated page counts provided
-      - Checklist: prerequisite-clarity-checklist.md
+      - Checklists: book-outline-checklist.md, prerequisite-clarity-checklist.md
 
     learning_path_validated:
       - No knowledge gaps between chapters

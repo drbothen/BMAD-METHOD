@@ -22,7 +22,7 @@ workflow:
     - agent: tutorial-architect
       creates: section-plans/
       requires: preliminary-section-list.md
-      notes: "For each section, create detailed section plan using section-plan-tmpl.yaml. Define learning objectives (1-2 max), prerequisites, content plan, code examples needed, success criteria, and dependencies. Use *create-doc with section-plan-tmpl to generate each plan. SAVE OUTPUT: Create section-plans/section-{{n}}.md for each section."
+      notes: "For each section, create detailed section plan using section-plan-tmpl.yaml. Define learning objectives (1-2 max), prerequisites, content plan, code examples needed, success criteria, and dependencies. Use *create-doc with section-plan-tmpl to generate each plan. Execute section-plan-checklist.md using execute-checklist task to validate focus, scope, and clarity of each section plan. SAVE OUTPUT: Create section-plans/section-{{n}}.md for each section."
 
     - agent: instructional-designer
       reviews: section-plans/
@@ -86,7 +86,7 @@ workflow:
       - Prerequisites identified for each section
       - Success criteria defined per section
       - Dependencies mapped
-      - Checklist: section-plan-tmpl validates
+      - Checklist: section-plan-checklist.md validates each plan
 
     learning_flow_validated:
       - Sections scaffold properly
