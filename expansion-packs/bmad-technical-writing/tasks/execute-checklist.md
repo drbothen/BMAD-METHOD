@@ -9,8 +9,16 @@ id: execute-checklist
 name: Execute Checklist
 description: Systematically execute checklist items with pass/fail/na status and evidence collection for quality assurance
 persona_default: technical-reviewer
-inputs: - checklist_path - subject_name - context_notes
-steps: - Load and parse checklist file - Process each category and item sequentially - Evaluate and mark status (PASS/FAIL/NA) with evidence - Generate results report with summary statistics - Save results to standard location
+inputs:
+  - checklist_path
+  - subject_name
+  - context_notes
+steps:
+  - Load and parse checklist file
+  - Process each category and item sequentially
+  - Evaluate and mark status (PASS/FAIL/NA) with evidence
+  - Generate results report with summary statistics
+  - Save results to standard location
 output: reviews/checklist-results/{{checklist-name}}-{{timestamp}}.md
 
 ---

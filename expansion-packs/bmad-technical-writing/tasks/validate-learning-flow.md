@@ -9,8 +9,21 @@ id: validate-learning-flow
 name: Validate Learning Flow
 description: Validate pedagogical progression, prerequisite dependencies, and difficulty curve in learning content. Ensures no knowledge gaps, logical concept building, and appropriate cognitive load.
 persona_default: instructional-designer
-inputs: - outline_or_chapter_path - prerequisites_defined
-steps: - Read the outline or chapter content completely - Map all concepts and their dependencies - Check prerequisite dependencies for circular references - Validate difficulty progression using Bloom's Taxonomy - Verify no knowledge gaps between sections/chapters - Assess exercise complexity alignment with concepts - Evaluate cognitive load management - Run execute-checklist.md with learning-objectives-checklist.md - Run execute-checklist.md with prerequisite-clarity-checklist.md - Compile validation report with pass/fail status - Use template learning-flow-validation-report-tmpl.yaml with create-doc.md
+inputs:
+  - outline_or_chapter_path
+  - prerequisites_defined
+steps:
+  - Read the outline or chapter content completely
+  - Map all concepts and their dependencies
+  - Check prerequisite dependencies for circular references
+  - Validate difficulty progression using Bloom's Taxonomy
+  - Verify no knowledge gaps between sections/chapters
+  - Assess exercise complexity alignment with concepts
+  - Evaluate cognitive load management
+  - Run execute-checklist.md with learning-objectives-checklist.md
+  - Run execute-checklist.md with prerequisite-clarity-checklist.md
+  - Compile validation report with pass/fail status
+  - Use template learning-flow-validation-report-tmpl.yaml with create-doc.md
 output: reviews/validation-results/learning-flow-validation-{{timestamp}}.md
 
 ---

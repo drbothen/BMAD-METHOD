@@ -9,8 +9,24 @@ id: copy-edit-chapter
 name: Copy Edit Chapter
 description: Professional editorial polish including grammar, clarity, consistency, style compliance, and accessibility
 persona_default: technical-editor
-inputs: - chapter-draft - chapter-number - target-publisher
-steps: - Review chapter for grammar and spelling - Check terminology consistency throughout - Verify publisher style guide compliance - Improve sentence clarity and readability - Enhance transitions between sections - Check heading hierarchy and structure - Verify code formatting consistency - Review accessibility considerations - Polish language for professional quality - Ensure consistent voice and tone - Create summary of editorial changes - Run execute-checklist.md with accessibility-checklist.md - Run execute-checklist.md with relevant publisher checklist
+inputs:
+  - chapter-draft
+  - chapter-number
+  - target-publisher
+steps:
+  - Review chapter for grammar and spelling
+  - Check terminology consistency throughout
+  - Verify publisher style guide compliance
+  - Improve sentence clarity and readability
+  - Enhance transitions between sections
+  - Check heading hierarchy and structure
+  - Verify code formatting consistency
+  - Review accessibility considerations
+  - Polish language for professional quality
+  - Ensure consistent voice and tone
+  - Create summary of editorial changes
+  - Run execute-checklist.md with accessibility-checklist.md
+  - Run execute-checklist.md with relevant publisher checklist
 output: Edited chapter with change summary
 
 ---

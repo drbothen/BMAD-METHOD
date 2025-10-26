@@ -9,8 +9,20 @@ id: plan-screenshots
 name: Plan Screenshots
 description: Create a comprehensive plan for screenshots including what to capture, when, and how to annotate
 persona_default: screenshot-specialist
-inputs: - chapter-outline (outline or content of chapter/section needing screenshots) - ui-components (optional: list of UI elements to demonstrate) - target-format (optional: book, documentation, tutorial - affects screenshot style)
-steps: - Review chapter content and learning objectives - Identify UI states and workflows to capture - Define screenshot sequence and narrative flow - Specify annotation requirements for each screenshot - Plan before/after comparisons where applicable - Determine optimal resolution and format - Create screenshot checklist with specifications - Document capture instructions
+inputs:
+  - chapter-outline (outline or content of chapter/section needing screenshots)
+  - ui-components (optional: list of UI elements to demonstrate)
+  - target-format (optional: book, documentation, tutorial
+  - affects screenshot style)
+steps:
+  - Review chapter content and learning objectives
+  - Identify UI states and workflows to capture
+  - Define screenshot sequence and narrative flow
+  - Specify annotation requirements for each screenshot
+  - Plan before/after comparisons where applicable
+  - Determine optimal resolution and format
+  - Create screenshot checklist with specifications
+  - Document capture instructions
 output: Screenshot plan with detailed specifications and capture checklist
 
 ---

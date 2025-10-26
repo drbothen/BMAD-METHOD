@@ -9,8 +9,19 @@ id: update-dependencies
 name: Update Dependencies
 description: Safely update project dependencies by checking for updates, testing incrementally, and documenting changes
 persona_default: version-manager
-inputs: - package-file (path to package.json, requirements.txt, Gemfile, go.mod, etc.) - update-strategy (conservative, balanced, aggressive) - test-command (optional: command to run tests after updates)
-steps: - Parse dependency file to list current versions - Check for available updates (npm outdated, pip list --outdated, etc.) - Categorize updates (patch, minor, major, breaking) - Apply updates based on strategy (incremental or batched) - Run tests after each update or batch - Document breaking changes and required code fixes - Update lockfile (package-lock.json, requirements.lock, etc.) - Generate change report
+inputs:
+  - package-file (path to package.json, requirements.txt, Gemfile, go.mod, etc.)
+  - update-strategy (conservative, balanced, aggressive)
+  - test-command (optional: command to run tests after updates)
+steps:
+  - Parse dependency file to list current versions
+  - Check for available updates (npm outdated, pip list --outdated, etc.)
+  - Categorize updates (patch, minor, major, breaking)
+  - Apply updates based on strategy (incremental or batched)
+  - Run tests after each update or batch
+  - Document breaking changes and required code fixes
+  - Update lockfile (package-lock.json, requirements.lock, etc.)
+  - Generate change report
 output: Updated dependency file, lockfile, and change report documenting all updates
 
 ---

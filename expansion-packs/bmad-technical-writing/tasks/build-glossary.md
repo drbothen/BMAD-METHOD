@@ -9,8 +9,21 @@ id: build-glossary
 name: Build Glossary
 description: Compile comprehensive glossary of technical terms with clear definitions
 persona_default: api-documenter
-inputs: - chapter-content or full manuscript - existing-glossary (if updating)
-steps: - Extract technical terms from all chapters - Define each term clearly and concisely - Provide context where term is used - Add cross-references to related terms - Organize alphabetically - Verify accuracy of definitions - Check for consistency across book - Add first-use markers if required by publisher - Format per publisher requirements - Review for completeness - Run execute-checklist.md with glossary-accuracy-checklist.md
+inputs:
+  - chapter-content or full manuscript
+  - existing-glossary (if updating)
+steps:
+  - Extract technical terms from all chapters
+  - Define each term clearly and concisely
+  - Provide context where term is used
+  - Add cross-references to related terms
+  - Organize alphabetically
+  - Verify accuracy of definitions
+  - Check for consistency across book
+  - Add first-use markers if required by publisher
+  - Format per publisher requirements
+  - Review for completeness
+  - Run execute-checklist.md with glossary-accuracy-checklist.md
 output: docs/glossary.md or Appendix: Glossary
 
 ---

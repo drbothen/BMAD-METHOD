@@ -9,8 +9,21 @@ id: write-summary
 name: Write Chapter Summary
 description: Create concise chapter summary recapping key concepts and previewing next steps
 persona_default: tutorial-architect
-inputs: - completed chapter content - learning-objectives (from introduction) - next-chapter topic
-steps: - Review chapter content thoroughly - Identify key concepts covered (3-5 main points) - Summarize main learning points in bullet format - Recap what readers accomplished - Reinforce learning objectives were met - Preview next chapter topic - Suggest further reading or practice - Keep concise (1-2 pages maximum) - Review for completeness - Ensure alignment with introduction
+inputs:
+  - completed chapter content
+  - learning-objectives (from introduction)
+  - next-chapter topic
+steps:
+  - Review chapter content thoroughly
+  - Identify key concepts covered (3-5 main points)
+  - Summarize main learning points in bullet format
+  - Recap what readers accomplished
+  - Reinforce learning objectives were met
+  - Preview next chapter topic
+  - Suggest further reading or practice
+  - Keep concise (1-2 pages maximum)
+  - Review for completeness
+  - Ensure alignment with introduction
 output: Chapter summary section (final 1-2 pages)
 
 ---

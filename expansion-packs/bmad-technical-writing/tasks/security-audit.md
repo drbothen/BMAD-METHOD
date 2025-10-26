@@ -9,8 +9,19 @@ id: security-audit
 name: Security Audit
 description: Perform comprehensive security audit on code examples to identify vulnerabilities and security issues
 persona_default: code-curator
-inputs: - code_path - language - security_standards
-steps: - Identify target code files and language - Set up security scanning tools for the language - Run automated security scanners - Perform manual security code review - Review against security-best-practices-checklist.md - Identify vulnerabilities with severity levels - Document findings with remediation guidance - Generate security audit report
+inputs:
+  - code_path
+  - language
+  - security_standards
+steps:
+  - Identify target code files and language
+  - Set up security scanning tools for the language
+  - Run automated security scanners
+  - Perform manual security code review
+  - Review against security-best-practices-checklist.md
+  - Identify vulnerabilities with severity levels
+  - Document findings with remediation guidance
+  - Generate security audit report
 output: docs/security/security-audit-report.md
 
 ---

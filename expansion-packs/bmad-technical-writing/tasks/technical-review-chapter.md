@@ -9,8 +9,26 @@ id: technical-review-chapter
 name: Technical Review Chapter
 description: Comprehensive technical accuracy review with fact-checking, code validation, security audit, and best practices assessment
 persona_default: technical-reviewer
-inputs: - chapter-draft - chapter-number - subject-area-expertise
-steps: - Read chapter draft completely for overview - Verify technical accuracy against official documentation - Review all code examples for correctness and best practices - Test code examples to ensure they run properly - Check for security vulnerabilities in code - Assess performance implications of recommendations - Identify outdated information or deprecated features - Note factual errors or misconceptions - Compile findings into structured review report - Assign severity levels to issues (Critical/Major/Minor) - Provide constructive recommendations with sources - Run execute-checklist.md with technical-accuracy-checklist.md - Run execute-checklist.md with security-best-practices-checklist.md - Run execute-checklist.md with performance-considerations-checklist.md - Use template technical-review-report-tmpl.yaml with create-doc.md
+inputs:
+  - chapter-draft
+  - chapter-number
+  - subject-area-expertise
+steps:
+  - Read chapter draft completely for overview
+  - Verify technical accuracy against official documentation
+  - Review all code examples for correctness and best practices
+  - Test code examples to ensure they run properly
+  - Check for security vulnerabilities in code
+  - Assess performance implications of recommendations
+  - Identify outdated information or deprecated features
+  - Note factual errors or misconceptions
+  - Compile findings into structured review report
+  - Assign severity levels to issues (Critical/Major/Minor)
+  - Provide constructive recommendations with sources
+  - Run execute-checklist.md with technical-accuracy-checklist.md
+  - Run execute-checklist.md with security-best-practices-checklist.md
+  - Run execute-checklist.md with performance-considerations-checklist.md
+  - Use template technical-review-report-tmpl.yaml with create-doc.md
 output: reviews/technical-review-chapter-{{chapter_number}}.md
 
 ---

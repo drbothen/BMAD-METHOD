@@ -9,8 +9,20 @@ id: performance-review
 name: Performance Review
 description: Analyze code example performance to identify bottlenecks and optimization opportunities
 persona_default: technical-reviewer
-inputs: - code_path - performance_targets - language
-steps: - Identify code to analyze and performance targets - Review performance-considerations-checklist.md - Set up profiling tools for the language - Create performance benchmarks - Profile code execution (time, memory, CPU) - Analyze results against targets and best practices - Identify performance bottlenecks - Provide optimization recommendations - Generate performance analysis report
+inputs:
+  - code_path
+  - performance_targets
+  - language
+steps:
+  - Identify code to analyze and performance targets
+  - Review performance-considerations-checklist.md
+  - Set up profiling tools for the language
+  - Create performance benchmarks
+  - Profile code execution (time, memory, CPU)
+  - Analyze results against targets and best practices
+  - Identify performance bottlenecks
+  - Provide optimization recommendations
+  - Generate performance analysis report
 output: docs/performance/performance-report.md
 
 ---

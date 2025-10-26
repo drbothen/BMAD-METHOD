@@ -9,8 +9,22 @@ id: design-assessment-strategy
 name: Design Assessment Strategy
 description: Design aligned assessment strategy including exercises, quizzes, and projects based on learning objectives
 persona_default: instructional-designer
-inputs: - learning-objectives (path to objectives or chapter outline) - chapter-outline (path to chapter or book outline) - target-audience (beginner/intermediate/advanced)
-steps: - Load learning objectives and chapter content - Map each objective to Bloom's Taxonomy level - Select appropriate assessment types per Bloom's level - Design difficulty progression for exercises - Specify formative vs summative assessment placement - Create exercise specification templates - Plan hands-on project requirements - Build assessment alignment matrix - Verify coverage of all learning objectives - Balance difficulty distribution - Run execute-checklist.md with assessment-strategy-checklist.md
+inputs:
+  - learning-objectives (path to objectives or chapter outline)
+  - chapter-outline (path to chapter or book outline)
+  - target-audience (beginner/intermediate/advanced)
+steps:
+  - Load learning objectives and chapter content
+  - Map each objective to Bloom's Taxonomy level
+  - Select appropriate assessment types per Bloom's level
+  - Design difficulty progression for exercises
+  - Specify formative vs summative assessment placement
+  - Create exercise specification templates
+  - Plan hands-on project requirements
+  - Build assessment alignment matrix
+  - Verify coverage of all learning objectives
+  - Balance difficulty distribution
+  - Run execute-checklist.md with assessment-strategy-checklist.md
 output: Assessment strategy document with alignment matrix, exercise specs, and project plans
 
 ---

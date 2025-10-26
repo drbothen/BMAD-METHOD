@@ -9,8 +9,22 @@ id: write-section-draft
 name: Write Section Draft
 description: Transform section plan and code examples into complete 2-5 page pedagogically sound section content
 persona_default: tutorial-architect
-inputs: - section-plan.md (learning objectives, prerequisites, content plan) - section-code-examples/ (tested code with outputs) - chapter-outline.md (chapter context and positioning)
-steps: - Review section plan learning objectives and content plan - Study tested code examples and expected outputs - Understand section positioning in chapter flow - Write concept introduction (what and why) - Write concept explanation (background and theory) - Write tutorial walkthrough with code examples inline - Add practical applications and best practices - Create transitions (from previous, to next section) - Verify learning objectives addressed - Check length (2-5 pages) and pedagogical quality - Reference tutorial-section-tmpl.yaml for structure guidance
+inputs:
+  - section-plan.md (learning objectives, prerequisites, content plan)
+  - section-code-examples/ (tested code with outputs)
+  - chapter-outline.md (chapter context and positioning)
+steps:
+  - Review section plan learning objectives and content plan
+  - Study tested code examples and expected outputs
+  - Understand section positioning in chapter flow
+  - Write concept introduction (what and why)
+  - Write concept explanation (background and theory)
+  - Write tutorial walkthrough with code examples inline
+  - Add practical applications and best practices
+  - Create transitions (from previous, to next section)
+  - Verify learning objectives addressed
+  - Check length (2-5 pages) and pedagogical quality
+  - Reference tutorial-section-tmpl.yaml for structure guidance
 output: manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-draft.md
 
 ---

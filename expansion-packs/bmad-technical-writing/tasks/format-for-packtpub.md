@@ -9,8 +9,18 @@ id: format-for-packtpub
 name: Format Manuscript for PacktPub Submission
 description: Convert technical book manuscripts from Markdown to PacktPub-formatted Word documents with complete style application and validation
 persona_default: manuscript-formatter
-inputs: - manuscript_path (Markdown files or directory) - submission_type (chapter | full-manuscript) - author_bundle_path (PacktPub Author Bundle location)
-steps: - Validate prerequisite files and tools - Pre-convert validation of Markdown content - Execute Pandoc conversion with PacktPub template - Apply PACKT styles with Python post-processing - Validate converted document against PacktPub requirements - Execute PacktPub submission checklist - Generate validation report
+inputs:
+  - manuscript_path (Markdown files or directory)
+  - submission_type (chapter | full-manuscript)
+  - author_bundle_path (PacktPub Author Bundle location)
+steps:
+  - Validate prerequisite files and tools
+  - Pre-convert validation of Markdown content
+  - Execute Pandoc conversion with PacktPub template
+  - Apply PACKT styles with Python post-processing
+  - Validate converted document against PacktPub requirements
+  - Execute PacktPub submission checklist
+  - Generate validation report
 output: PacktPub-formatted .docx manuscript + validation report + checklist results
 
 ---

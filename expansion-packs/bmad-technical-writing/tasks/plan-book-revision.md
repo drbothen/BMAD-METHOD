@@ -9,8 +9,24 @@ id: plan-book-revision
 name: Plan Book Revision Strategy
 description: Create strategic plan for updating existing technical book (2nd/3rd edition, version updates, chapter additions)
 persona_default: book-analyst
-inputs: - book_analysis_report (from analyze-existing-book.md) - revision_type (new edition, version update, chapter addition, feedback incorporation) - target_versions (if applicable)
-steps: - Review book analysis report to understand current state - Define revision scope (full edition? specific chapters? code-only? text-only?) - Identify all technology version changes needed - Create chapter revision matrix (complexity, effort, priority for each chapter) - Assess impact on learning progression and flow - Plan code testing strategy across target versions - Define timeline with phases and milestones - Identify chapter dependencies and critical path - Set success criteria and quality gates - Assess risks and create mitigation plans - Use template revision-plan-tmpl.yaml with create-doc.md task - Run execute-checklist.md with revision-completeness-checklist.md - Generate comprehensive revision plan
+inputs:
+  - book_analysis_report (from analyze-existing-book.md)
+  - revision_type (new edition, version update, chapter addition, feedback incorporation)
+  - target_versions (if applicable)
+steps:
+  - Review book analysis report to understand current state
+  - Define revision scope (full edition? specific chapters? code-only? text-only?)
+  - Identify all technology version changes needed
+  - Create chapter revision matrix (complexity, effort, priority for each chapter)
+  - Assess impact on learning progression and flow
+  - Plan code testing strategy across target versions
+  - Define timeline with phases and milestones
+  - Identify chapter dependencies and critical path
+  - Set success criteria and quality gates
+  - Assess risks and create mitigation plans
+  - Use template revision-plan-tmpl.yaml with create-doc.md task
+  - Run execute-checklist.md with revision-completeness-checklist.md
+  - Generate comprehensive revision plan
 output: manuscript/planning/{{book_title}}-revision-plan.md
 
 ---

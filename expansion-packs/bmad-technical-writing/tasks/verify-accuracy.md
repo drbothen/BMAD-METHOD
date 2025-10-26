@@ -9,8 +9,22 @@ id: verify-accuracy
 name: Verify Technical Accuracy
 description: Comprehensive technical accuracy verification with fact-checking, code validation, API correctness, and source verification. Ensures all technical claims are correct, current, and verifiable.
 persona_default: technical-reviewer
-inputs: - content_path - code_examples_path - reference_docs
-steps: - Read content completely for technical claims - Identify all technical statements requiring verification - Verify technical statements against authoritative sources - Test all code examples for correctness - Check API and library usage against current documentation - Validate diagrams match descriptions - Cross-check terminology consistency - Identify outdated or deprecated information - Run execute-checklist.md with technical-accuracy-checklist.md - Compile verification report with severity ratings - Use template accuracy-verification-report-tmpl.yaml with create-doc.md
+inputs:
+  - content_path
+  - code_examples_path
+  - reference_docs
+steps:
+  - Read content completely for technical claims
+  - Identify all technical statements requiring verification
+  - Verify technical statements against authoritative sources
+  - Test all code examples for correctness
+  - Check API and library usage against current documentation
+  - Validate diagrams match descriptions
+  - Cross-check terminology consistency
+  - Identify outdated or deprecated information
+  - Run execute-checklist.md with technical-accuracy-checklist.md
+  - Compile verification report with severity ratings
+  - Use template accuracy-verification-report-tmpl.yaml with create-doc.md
 output: reviews/validation-results/accuracy-verification-{{timestamp}}.md
 
 ---

@@ -9,8 +9,21 @@ id: extract-code-patterns
 name: Extract Code Patterns from Existing Book
 description: Analyze existing code examples to learn style patterns for maintaining consistency in updates
 persona_default: book-analyst
-inputs: - existing_book_path - code_repository_path (if exists)
-steps: - Scan all code examples across entire book - Identify import organization patterns (standard library first? grouped? alphabetical?) - Note naming conventions (snake_case, camelCase, variable prefixes, class names) - Observe comment styles (docstrings? inline? comment density? formatting) - Extract error handling patterns (try/except usage, error messages, logging) - Identify common code structures (class-based? functional? procedural? OOP patterns) - Note formatting choices (indentation, line length, spacing, blank lines) - Document code file organization patterns (imports→constants→classes→main) - Analyze code complexity patterns (simple examples vs. comprehensive demos) - Generate style guide summary document - Run execute-checklist.md with existing-book-integration-checklist.md
+inputs:
+  - existing_book_path
+  - code_repository_path (if exists)
+steps:
+  - Scan all code examples across entire book
+  - Identify import organization patterns (standard library first? grouped? alphabetical?)
+  - Note naming conventions (snake_case, camelCase, variable prefixes, class names)
+  - Observe comment styles (docstrings? inline? comment density? formatting)
+  - Extract error handling patterns (try/except usage, error messages, logging)
+  - Identify common code structures (class-based? functional? procedural? OOP patterns)
+  - Note formatting choices (indentation, line length, spacing, blank lines)
+  - Document code file organization patterns (imports→constants→classes→main)
+  - Analyze code complexity patterns (simple examples vs. comprehensive demos)
+  - Generate style guide summary document
+  - Run execute-checklist.md with existing-book-integration-checklist.md
 output: docs/style/{{book_title}}-code-patterns.md
 
 ---

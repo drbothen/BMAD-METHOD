@@ -9,8 +9,20 @@ id: annotate-images
 name: Annotate Images
 description: Add professional annotations to screenshots including arrows, callouts, labels, highlights, and captions
 persona_default: screenshot-specialist
-inputs: - image-path (path to image file to annotate) - annotation-specs (description of what annotations to add) - output-path (optional: where to save annotated image)
-steps: - Load image in annotation tool - Add numbered callouts for multi-step explanations - Add arrows to show relationships or flow - Add text labels for identification - Highlight important areas with boxes or overlays - Blur or redact sensitive information - Add figure caption and alt text - Save in appropriate format - Verify annotations are clear and professional
+inputs:
+  - image-path (path to image file to annotate)
+  - annotation-specs (description of what annotations to add)
+  - output-path (optional: where to save annotated image)
+steps:
+  - Load image in annotation tool
+  - Add numbered callouts for multi-step explanations
+  - Add arrows to show relationships or flow
+  - Add text labels for identification
+  - Highlight important areas with boxes or overlays
+  - Blur or redact sensitive information
+  - Add figure caption and alt text
+  - Save in appropriate format
+  - Verify annotations are clear and professional
 output: Annotated image with caption and alt text
 
 ---

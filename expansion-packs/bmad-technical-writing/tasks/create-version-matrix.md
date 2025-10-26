@@ -9,8 +9,19 @@ id: create-version-matrix
 name: Create Version Matrix
 description: Build a comprehensive version compatibility matrix showing which features work with which versions
 persona_default: version-manager
-inputs: - technology (technology or library to analyze: node, python, react, etc.) - version-range (versions to cover: e.g., "16-20" for Node 16 through 20) - feature-list (optional: specific features to track)
-steps: - Research version release history and dates - Identify all version-dependent features in book/code - Map each feature to minimum required version - Create compatibility matrix table - Add migration notes between major versions - Document deprecated features per version - Generate testing requirements per version - Create visual timeline (optional Mermaid diagram)
+inputs:
+  - technology (technology or library to analyze: node, python, react, etc.)
+  - version-range (versions to cover: e.g., "16-20" for Node 16 through 20)
+  - feature-list (optional: specific features to track)
+steps:
+  - Research version release history and dates
+  - Identify all version-dependent features in book/code
+  - Map each feature to minimum required version
+  - Create compatibility matrix table
+  - Add migration notes between major versions
+  - Document deprecated features per version
+  - Generate testing requirements per version
+  - Create visual timeline (optional Mermaid diagram)
 output: Version compatibility matrix document with feature mapping and testing guide
 
 ---

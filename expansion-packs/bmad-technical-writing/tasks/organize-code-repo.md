@@ -9,8 +9,21 @@ id: organize-code-repo
 name: Organize Code Repository
 description: Create a well-structured code repository with clear organization, documentation, and professional presentation
 persona_default: sample-code-maintainer
-inputs: - code-files (list of code files to organize) - organization-strategy (by-chapter, by-topic, by-feature, monorepo) - repo-name (name for the repository)
-steps: - Analyze code files and determine optimal structure - Create folder hierarchy based on strategy - Organize code files into appropriate folders - Create README.md for repository root - Create README.md files for each major folder - Add .gitignore for language-specific artifacts - Create LICENSE file - Add CONTRIBUTING.md guidelines - Create example .env.example if needed - Validate structure meets quality standards
+inputs:
+  - code-files (list of code files to organize)
+  - organization-strategy (by-chapter, by-topic, by-feature, monorepo)
+  - repo-name (name for the repository)
+steps:
+  - Analyze code files and determine optimal structure
+  - Create folder hierarchy based on strategy
+  - Organize code files into appropriate folders
+  - Create README.md for repository root
+  - Create README.md files for each major folder
+  - Add .gitignore for language-specific artifacts
+  - Create LICENSE file
+  - Add CONTRIBUTING.md guidelines
+  - Create example .env.example if needed
+  - Validate structure meets quality standards
 output: Organized repository structure with documentation files
 
 ---

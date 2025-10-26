@@ -9,8 +9,25 @@ id: check-best-practices
 name: Check Code Best Practices
 description: Comprehensive code quality and best practices review. Validates style guide compliance, design patterns, error handling, security, naming conventions, and educational value. Integrates automated linting with manual review.
 persona_default: technical-reviewer
-inputs: - code_path - language - style_guide
-steps: - Identify all code examples and language(s) used - Set up linting tools for each language - Run automated linting and capture results - Review style guide compliance manually - Check naming conventions and code structure - Validate error handling completeness - Review design pattern usage - Check comments and documentation quality - Assess DRY principle adherence - Evaluate security best practices - Check educational value and clarity - Run execute-checklist.md with code-quality-checklist.md - Compile best practices review report - Use template best-practices-report-tmpl.yaml with create-doc.md
+inputs:
+  - code_path
+  - language
+  - style_guide
+steps:
+  - Identify all code examples and language(s) used
+  - Set up linting tools for each language
+  - Run automated linting and capture results
+  - Review style guide compliance manually
+  - Check naming conventions and code structure
+  - Validate error handling completeness
+  - Review design pattern usage
+  - Check comments and documentation quality
+  - Assess DRY principle adherence
+  - Evaluate security best practices
+  - Check educational value and clarity
+  - Run execute-checklist.md with code-quality-checklist.md
+  - Compile best practices review report
+  - Use template best-practices-report-tmpl.yaml with create-doc.md
 output: reviews/validation-results/best-practices-review-{{timestamp}}.md
 
 ---

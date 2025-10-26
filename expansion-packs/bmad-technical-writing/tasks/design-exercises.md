@@ -9,8 +9,23 @@ id: design-exercises
 name: Design Exercises
 description: Create practice exercises with progressive difficulty, hints, and solution approaches
 persona_default: instructional-designer
-inputs: - chapter-number - learning-objectives - difficulty-range
-steps: - Identify learning objectives to assess - Determine appropriate difficulty levels (basic to advanced) - Create 4-6 exercises per chapter with progressive difficulty - Progress from basic application to challenging problems - Write clear instructions for each exercise - Develop solution approaches (not full solutions) - Add progressive hints for learners - Create extension challenges for advanced students - Estimate completion time for each exercise - Validate exercises are solvable and appropriate - Run execute-checklist.md with exercise-difficulty-checklist.md - Use template exercise-set-tmpl.yaml with create-doc.md
+inputs:
+  - chapter-number
+  - learning-objectives
+  - difficulty-range
+steps:
+  - Identify learning objectives to assess
+  - Determine appropriate difficulty levels (basic to advanced)
+  - Create 4-6 exercises per chapter with progressive difficulty
+  - Progress from basic application to challenging problems
+  - Write clear instructions for each exercise
+  - Develop solution approaches (not full solutions)
+  - Add progressive hints for learners
+  - Create extension challenges for advanced students
+  - Estimate completion time for each exercise
+  - Validate exercises are solvable and appropriate
+  - Run execute-checklist.md with exercise-difficulty-checklist.md
+  - Use template exercise-set-tmpl.yaml with create-doc.md
 output: exercises/chapter-{{chapter_number}}-exercises.md
 
 ---

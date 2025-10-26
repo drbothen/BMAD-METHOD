@@ -9,8 +9,19 @@ id: cross-platform-test
 name: Cross-Platform Test
 description: Test code examples across multiple platforms to ensure cross-platform compatibility
 persona_default: code-curator
-inputs: - code_path - target_platforms - language
-steps: - Identify target platforms and code to test - Review cross-platform-checklist.md for platform-specific concerns - Set up testing environments (Windows, macOS, Linux) - Test code on each platform - Document platform-specific behaviors - Identify compatibility issues - Provide platform-specific fixes or workarounds - Generate cross-platform compatibility report
+inputs:
+  - code_path
+  - target_platforms
+  - language
+steps:
+  - Identify target platforms and code to test
+  - Review cross-platform-checklist.md for platform-specific concerns
+  - Set up testing environments (Windows, macOS, Linux)
+  - Test code on each platform
+  - Document platform-specific behaviors
+  - Identify compatibility issues
+  - Provide platform-specific fixes or workarounds
+  - Generate cross-platform compatibility report
 output: docs/testing/cross-platform-report.md
 
 ---

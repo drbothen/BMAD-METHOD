@@ -9,8 +9,21 @@ id: map-prerequisites
 name: Map Prerequisites
 description: Map concept dependencies and prerequisites across chapters to validate learning progression
 persona_default: instructional-designer
-inputs: - outline-path (path to book outline or chapter list) - granularity (chapter/section/concept)
-steps: - Load book outline or content structure - Extract concepts from each chapter/section - Identify prerequisite relationships between concepts - Build dependency graph - Detect circular dependencies - Identify orphaned concepts (no prerequisites defined) - Validate topological ordering is possible - Generate Mermaid flowchart of dependencies - Highlight critical path through learning progression - Document prerequisite gaps or issues - Run execute-checklist.md with prerequisite-mapping-checklist.md
+inputs:
+  - outline-path (path to book outline or chapter list)
+  - granularity (chapter/section/concept)
+steps:
+  - Load book outline or content structure
+  - Extract concepts from each chapter/section
+  - Identify prerequisite relationships between concepts
+  - Build dependency graph
+  - Detect circular dependencies
+  - Identify orphaned concepts (no prerequisites defined)
+  - Validate topological ordering is possible
+  - Generate Mermaid flowchart of dependencies
+  - Highlight critical path through learning progression
+  - Document prerequisite gaps or issues
+  - Run execute-checklist.md with prerequisite-mapping-checklist.md
 output: Prerequisite dependency map (Mermaid diagram + analysis report)
 
 ---

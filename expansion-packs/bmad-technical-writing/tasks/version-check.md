@@ -9,8 +9,20 @@ id: version-check
 name: Version Check
 description: Verify code compatibility across multiple language versions with automated testing
 persona_default: code-curator
-inputs: - code_path (file or directory to test) - language (javascript|python|ruby|java|go) - version_matrix (e.g., "Node 16,18,20" or "Python 3.9,3.10,3.11")
-steps: - Parse target versions from version_matrix input - Set up testing environments for each version (Docker or version managers) - Execute code on each version - Capture output, errors, and warnings - Compare results across versions - Identify version-specific issues (deprecated APIs, syntax changes, breaking changes) - Generate compatibility matrix report - Run execute-checklist.md with version-compatibility-checklist.md - Document recommendations for version support
+inputs:
+  - code_path (file or directory to test)
+  - language (javascript|python|ruby|java|go)
+  - version_matrix (e.g., "Node 16,18,20" or "Python 3.9,3.10,3.11")
+steps:
+  - Parse target versions from version_matrix input
+  - Set up testing environments for each version (Docker or version managers)
+  - Execute code on each version
+  - Capture output, errors, and warnings
+  - Compare results across versions
+  - Identify version-specific issues (deprecated APIs, syntax changes, breaking changes)
+  - Generate compatibility matrix report
+  - Run execute-checklist.md with version-compatibility-checklist.md
+  - Document recommendations for version support
 output: docs/testing/version-compatibility-report.md
 
 ---

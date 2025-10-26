@@ -9,8 +9,19 @@ id: assess-version-impact
 name: Assess Version Impact
 description: Analyze the impact of upgrading from one version to another by identifying breaking changes and affected code
 persona_default: version-manager
-inputs: - current-version (current version being used) - target-version (version to upgrade to) - codebase-path (path to code samples or project)
-steps: - Review official changelog for breaking changes - Identify deprecated features in target version - Scan codebase for patterns affected by changes - Generate impact report listing affected files - Estimate migration effort (hours/complexity) - Create prioritized migration checklist - Document required code changes - Identify testing requirements
+inputs:
+  - current-version (current version being used)
+  - target-version (version to upgrade to)
+  - codebase-path (path to code samples or project)
+steps:
+  - Review official changelog for breaking changes
+  - Identify deprecated features in target version
+  - Scan codebase for patterns affected by changes
+  - Generate impact report listing affected files
+  - Estimate migration effort (hours/complexity)
+  - Create prioritized migration checklist
+  - Document required code changes
+  - Identify testing requirements
 output: Version migration impact report with affected files, effort estimate, and migration checklist
 
 ---
