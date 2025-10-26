@@ -32,6 +32,7 @@ The BMad Technical Writing Expansion Pack provides a **complete, structured syst
 ### Critical Innovation: Section-Driven Development
 
 The pack introduces **section-driven development** (analogous to BMad's story-driven approach), enabling:
+
 - Incremental chapter writing in 2-5 page sections
 - Parallel section development when dependencies allow
 - Earlier feedback and quality gates
@@ -144,6 +145,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 **Objective**: Transform book concept into approved, pedagogically sound outline
 
 #### Step 1.1: Draft Proposal (4-8 hours)
+
 - **Agent**: Book Publisher
 - **Command**: `*create-proposal`
 - **Template**: `book-proposal-tmpl.yaml`
@@ -158,6 +160,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
   - Timeline
 
 #### Step 1.2: Design Book Outline (8-12 hours)
+
 - **Agent**: Instructional Designer
 - **Command**: `*create-book-outline`
 - **Task**: `design-book-outline.md`
@@ -172,6 +175,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 - **Key Principle**: Pedagogical soundness (Bloom's Taxonomy progression)
 
 #### Step 1.3: Validate Learning Path (3-5 hours)
+
 - **Agent**: Instructional Designer
 - **Task**: `validate-learning-flow.md`
 - **Checklists**:
@@ -185,6 +189,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
   - Prerequisites are achievable
 
 #### Step 1.4: Editorial Review (3-5 hours)
+
 - **Agent**: Technical Editor
 - **Command**: `*review-outline`
 - **Deliverable**: `manuscript/planning/book-outline-edited.md`
@@ -195,6 +200,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
   - Publisher best practices
 
 #### Step 1.5: Publisher Format Check (2-3 hours)
+
 - **Agent**: Book Publisher
 - **Checklists**: `packtpub-submission-checklist.md`
 - **Deliverable**: `manuscript/planning/book-outline-final.md`
@@ -214,18 +220,21 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 #### Research Workflow Modes
 
 **Mode 1: Manual Query Generation** (Copy/Paste)
+
 1. Technical Researcher: `*generate-queries {topic}`
 2. Author conducts external research (Perplexity, web search)
 3. Technical Researcher: `*import-research`
 4. Deliverable: `manuscript/research/chapter-XX-research.md`
 
 **Mode 2: Research Import** (Existing Findings)
+
 1. Author provides notes/interviews/documentation
 2. Technical Researcher: `*import-research`
 3. Interactive elicitation workflow
 4. Deliverable: Structured research report
 
 **Mode 3: Automated Research** (AI-Powered)
+
 1. Technical Researcher: `*research-auto {topic}`
 2. Auto-detects available tools (WebSearch, MCP)
 3. Executes queries autonomously
@@ -233,6 +242,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 5. Deliverable: Auto-populated research report
 
 **Supporting Tasks**:
+
 - `create-book-research-queries.md`
 - `generate-research-questions.md`
 - `research-technical-topic.md`
@@ -269,18 +279,21 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 **Purpose**: Break chapter into deliverable section units (BMad story analog)
 
 ##### Step 3.2.1: Analyze Chapter (1-2 hours)
+
 - **Agent**: Tutorial Architect
 - **Action**: Review chapter outline structure
 - **Identifies**: Natural breaking points, concept boundaries
 - **Deliverable**: `section-analysis.md`
 
 ##### Step 3.2.2: Identify Section Boundaries (1-2 hours)
+
 - **Agent**: Tutorial Architect
 - **Action**: Break chapter into 5-8 logical sections
 - **Criteria**: Each section = 2-5 pages, 1-2 concepts, 1-3 code examples
 - **Deliverable**: `preliminary-section-list.md`
 
 ##### Step 3.2.3: Create Section Plans (2-4 hours)
+
 - **Agent**: Tutorial Architect
 - **Template**: `section-plan-tmpl.yaml`
 - **Task**: `create-doc.md` with section-plan template
@@ -296,6 +309,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
   - Dependencies on other sections
 
 ##### Step 3.2.4: Validate Learning Flow (1-2 hours)
+
 - **Agent**: Instructional Designer
 - **Validates**:
   - Sections scaffold properly
@@ -305,6 +319,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 - **Deliverable**: `section-flow-validation.md`
 
 ##### Step 3.2.5: Finalize Section List (1 hour)
+
 - **Agent**: Tutorial Architect
 - **Action**: Incorporate feedback, adjust order/prerequisites
 - **Deliverable**: `manuscript/sections/chapter-XX-section-list.md`
@@ -319,6 +334,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 **REPEAT THIS WORKFLOW FOR EACH SECTION (typically 5-8 times per chapter)**
 
 ##### Step 3.3.1: Develop Code Examples (1-2 hours)
+
 - **Agent**: Code Curator
 - **Command**: `*create-example`
 - **Task**: `create-code-example.md`
@@ -331,6 +347,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
   - Tests for code
 
 ##### Step 3.3.2: Test Code Examples (30 min - 1 hour)
+
 - **Agent**: Code Curator
 - **Task**: `test-code-examples.md`
 - **Checklist**: `code-testing-checklist.md`
@@ -342,6 +359,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 - **Deliverable**: Test results, bug fixes committed
 
 ##### Step 3.3.3: Write Section Content (2-4 hours)
+
 - **Agent**: Tutorial Architect
 - **Requires**: `section-plan.md`, code examples, `chapter-outline.md`
 - **Action**: Write 2-5 page section
@@ -354,6 +372,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 - **Deliverable**: `manuscript/sections/chapter-XX/section-YY-draft.md`
 
 ##### Step 3.3.4: Quick Technical Review (30 min - 1 hour)
+
 - **Agent**: Technical Reviewer
 - **Checklist**: `technical-accuracy-checklist.md` (focused review)
 - **Validates**:
@@ -365,12 +384,14 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 - **Deliverable**: `section-review-notes.md` (critical/major/minor issues)
 
 ##### Step 3.3.5: Revise Section (1-2 hours)
+
 - **Agent**: Tutorial Architect
 - **Action**: Address review feedback
 - **Coordinates**: Code Curator if code changes needed
 - **Deliverable**: Updated `section-draft.md`
 
 ##### Step 3.3.6: Finalize Section (30 min)
+
 - **Agent**: Tutorial Architect
 - **Checklist**: `section-completeness-checklist.md`
 - **Validates**:
@@ -395,6 +416,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 **Purpose**: Integrate all completed sections into cohesive chapter (BMad Sprint Review analog)
 
 ##### Step 3.4.1: Merge Sections (1-2 hours)
+
 - **Agent**: Tutorial Architect
 - **Task**: `merge-sections.md`
 - **Action**: Systematically merge all completed sections
@@ -403,6 +425,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 - **Deliverable**: `manuscript/chapters/chapter-XX-integrated.md`
 
 ##### Step 3.4.2: Improve Transitions (2-3 hours)
+
 - **Agent**: Tutorial Architect
 - **Task**: `enhance-transitions.md`
 - **Action**:
@@ -413,6 +436,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 - **Deliverable**: Updated `chapter-integrated.md`
 
 ##### Step 3.4.3: Validate Learning Flow (1-2 hours)
+
 - **Agent**: Instructional Designer
 - **Task**: `validate-learning-flow.md`
 - **Validates**:
@@ -423,6 +447,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 - **Deliverable**: `learning-flow-validation.md`
 
 ##### Step 3.4.4: Full Technical Review (3-5 hours)
+
 - **Agent**: Technical Reviewer
 - **Tasks**: `verify-accuracy.md`, `check-best-practices.md`
 - **Checklists**:
@@ -439,6 +464,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 - **Deliverable**: `reviews/technical-review-chapter-XX.md`
 
 ##### Step 3.4.5: Revise Chapter (3-6 hours)
+
 - **Agent**: Tutorial Architect
 - **Requires**: `learning-flow-validation.md`, `technical-review-report.md`
 - **Action**:
@@ -449,6 +475,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 - **Deliverable**: Updated `chapter-integrated.md`
 
 ##### Step 3.4.6: Professional Copy Edit (2-4 hours)
+
 - **Agent**: Technical Editor
 - **Command**: `*edit-chapter`
 - **Checklists**:
@@ -463,6 +490,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 - **Deliverable**: `edited-chapter.md` with change summary
 
 ##### Step 3.4.7: Finalize Chapter (1-2 hours)
+
 - **Agent**: Tutorial Architect
 - **Action**:
   - Review and approve editorial changes
@@ -478,6 +506,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 **After all chapters complete, run comprehensive reviews**
 
 #### Technical Review Workflow (Full Book)
+
 - **Agent**: Technical Reviewer
 - **Scope**: Comprehensive book-level validation
 - **Validates**:
@@ -487,6 +516,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
   - Best practices maintained throughout
 
 #### Incorporate Review Feedback Workflow
+
 - **Agent**: Tutorial Architect (with support)
 - **Purpose**: Systematically address reviewer feedback
 - **Time**: 4-12 hours per chapter (depends on revision scope)
@@ -510,6 +540,7 @@ OUTCOME: Complete PacktPub-ready manuscript with code repository
 **Tool**: `format-for-packtpub.md` task
 
 **Complete Workflow Script** (Single command):
+
 ```bash
 cd expansion-packs/bmad-technical-writing/data/packtpub-author-bundle
 ./format-for-packtpub.sh path/to/manuscript.md output-directory
@@ -518,37 +549,45 @@ cd expansion-packs/bmad-technical-writing/data/packtpub-author-bundle
 **Manual Step-by-Step** (if needed):
 
 1. **Pre-Conversion Validation**
+
    ```bash
    python3 validate-manuscript.py manuscript.md images/
    ```
+
    - Checks: Code blocks ≤30 lines, images 300 DPI/2000px
    - Validates: Proper markdown structure
 
 2. **Pandoc Conversion** (Markdown → Word)
+
    ```bash
    pandoc -f markdown -t docx \
      --reference-doc="Sample Chapter.docx" \
      -o temp-converted.docx \
      manuscript.md
    ```
+
    - Uses: PacktPub official template (`Sample Chapter.docx`)
    - Preserves: Structure and formatting
 
 3. **Apply PacktPub Styles**
+
    ```bash
    python3 apply-packt-styles-v6.py \
      temp-converted.docx \
      formatted-manuscript.docx
    ```
+
    - Applies: All 77 [PACKT] styles
    - Handles: Table captions (BEFORE tables), figure captions (AFTER images)
    - Styles: Code [PACKT], Bullet [PACKT], Table Column Heading [PACKT], etc.
    - Uses: Headings 1-6 (standard, no [PACKT] suffix)
 
 4. **Post-Conversion Verification**
+
    ```bash
    python3 verify-packt-document.py formatted-manuscript.docx
    ```
+
    - Validates: [PACKT] style compliance
    - Checks: Caption placement (critical)
    - Reports: Style coverage
@@ -556,6 +595,7 @@ cd expansion-packs/bmad-technical-writing/data/packtpub-author-bundle
 **Output**: `formatted-chapters/` with .docx files
 
 **Critical Resources** (Included):
+
 - `data/packtpub-author-bundle/Sample Chapter.docx` - Official template
 - `data/packtpub-author-bundle/CAPTION-PLACEMENT-GUIDE.md` - Caption rules
 - Validation scripts (Python)
@@ -606,6 +646,7 @@ cd expansion-packs/bmad-technical-writing/data/packtpub-author-bundle
 - **Validates**:
 
   **Repository Structure**:
+
   ```
   book-repository/
   ├── chapter-01/
@@ -651,6 +692,7 @@ cd expansion-packs/bmad-technical-writing/data/packtpub-author-bundle
 - **Creates**: Complete submission package
 
 **Package Structure**:
+
 ```
 submission-package/packtpub-submission/
 ├── ChapterFiles/
@@ -671,6 +713,7 @@ submission-package/packtpub-submission/
 ```
 
 **Naming Conventions**:
+
 - Chapters: `chapter-XX.docx` or `chapter-XX-title.docx`
 - Images: `chapterXX-figureYY-description.png`
 - Code: Organized by chapter folders
@@ -699,6 +742,7 @@ submission-package/packtpub-submission/
 ### Core Agents (Required)
 
 #### 1. Instructional Designer 🎓
+
 - **Name**: Instructional Designer
 - **ID**: `instructional-designer`
 - **Activation**: `/bmad-tw:instructional-designer`
@@ -716,6 +760,7 @@ submission-package/packtpub-submission/
   - Data: `learning-frameworks.md` (Bloom's Taxonomy)
 
 #### 2. Tutorial Architect 📝
+
 - **Name**: Tutorial Architect
 - **ID**: `tutorial-architect`
 - **Activation**: `/bmad-tw:tutorial-architect`
@@ -732,6 +777,7 @@ submission-package/packtpub-submission/
   - Checklists: `tutorial-effectiveness-checklist.md`, `chapter-completeness-checklist.md`
 
 #### 3. Code Curator 🔧
+
 - **Name**: Code Curator
 - **ID**: `code-curator`
 - **Activation**: `/bmad-tw:code-curator`
@@ -749,6 +795,7 @@ submission-package/packtpub-submission/
   - Data: `code-style-guides.md`
 
 #### 4. Technical Reviewer 🔍
+
 - **Name**: Technical Reviewer
 - **ID**: `technical-reviewer`
 - **Activation**: `/bmad-tw:technical-reviewer`
@@ -765,6 +812,7 @@ submission-package/packtpub-submission/
   - Checklists: `technical-accuracy-checklist.md`, `security-best-practices-checklist.md`, `performance-considerations-checklist.md`
 
 #### 5. Technical Editor ✍️
+
 - **Name**: Technical Editor
 - **ID**: `technical-editor`
 - **Activation**: `/bmad-tw:technical-editor`
@@ -780,6 +828,7 @@ submission-package/packtpub-submission/
   - Data: `publisher-guidelines.md`, `technical-writing-standards.md`
 
 #### 6. Book Publisher 📦
+
 - **Name**: Book Publisher
 - **ID**: `book-publisher`
 - **Activation**: `/bmad-tw:book-publisher`
@@ -797,6 +846,7 @@ submission-package/packtpub-submission/
   - Data: `publisher-guidelines.md`
 
 #### 7. API Documenter 📚
+
 - **Name**: API Documenter
 - **ID**: `api-documenter`
 - **Activation**: `/bmad-tw:api-documenter`
@@ -811,6 +861,7 @@ submission-package/packtpub-submission/
   - Templates: `api-reference-tmpl.yaml`, `glossary-entry-tmpl.yaml`, `appendix-tmpl.yaml`
 
 #### 8. Screenshot Specialist 📸
+
 - **Name**: Screenshot Specialist
 - **ID**: `screenshot-specialist`
 - **Activation**: `/bmad-tw:screenshot-specialist`
@@ -826,6 +877,7 @@ submission-package/packtpub-submission/
   - Checklists: `screenshot-quality-checklist.md`, `diagram-clarity-checklist.md`
 
 #### 9. Exercise Creator 🏋️
+
 - **Name**: Exercise Creator
 - **ID**: `exercise-creator`
 - **Activation**: `/bmad-tw:exercise-creator`
@@ -841,6 +893,7 @@ submission-package/packtpub-submission/
   - Checklists: `exercise-difficulty-checklist.md`
 
 #### 10. Technical Researcher 🔬
+
 - **Name**: Dr. Research
 - **ID**: `technical-researcher`
 - **Activation**: `/bmad-tw:technical-researcher`
@@ -861,6 +914,7 @@ submission-package/packtpub-submission/
   - Checklists: `research-quality-checklist.md`
 
 #### 11. Book Analyst 📖 (Brownfield)
+
 - **Name**: Book Analyst
 - **ID**: `book-analyst`
 - **Activation**: `/bmad-tw:book-analyst`
@@ -881,18 +935,21 @@ submission-package/packtpub-submission/
 ### Optional Agents (Advanced Scenarios)
 
 #### 12. Learning Path Designer 🗺️ (Optional)
+
 - **ID**: `learning-path-designer`
 - **Use When**: Complex prerequisite mapping, multi-book series, advanced scaffolding
 - **Can Merge With**: Instructional Designer (for simpler deployments)
 - **Commands**: `*map-learning-path`, `*validate-prerequisites`, `*design-progression`
 
 #### 13. Sample Code Maintainer 🔧 (Optional)
+
 - **ID**: `sample-code-maintainer`
 - **Use When**: Extensive code repositories, CI/CD pipelines, automated testing
 - **Can Merge With**: Code Curator (for simpler deployments)
 - **Commands**: `*setup-ci-cd`, `*manage-dependencies`, `*automate-testing`
 
 #### 14. Version Manager 🔢 (Optional)
+
 - **ID**: `version-manager`
 - **Use When**: Multi-version compatibility matrices, platform-specific code
 - **Can Merge With**: Code Curator (for simpler deployments)
@@ -905,6 +962,7 @@ submission-package/packtpub-submission/
 ### 33 Core Tasks by Category
 
 #### Planning Tasks (8)
+
 1. `design-book-outline.md` - Create pedagogical book outline
 2. `create-chapter-outline.md` - Plan chapter structure
 3. `create-learning-objectives.md` - Define measurable outcomes
@@ -915,6 +973,7 @@ submission-package/packtpub-submission/
 8. `design-assessment-strategy.md` - Plan exercises and assessments
 
 #### Writing Tasks (10)
+
 9. `write-chapter-draft.md` - Complete chapter manuscript
 10. `develop-tutorial.md` - Hands-on tutorial creation
 11. `write-walkthrough.md` - Step-by-step guide
@@ -927,22 +986,26 @@ submission-package/packtpub-submission/
 18. `synthesize-research-notes.md` - Convert research to content
 
 #### Code Tasks (3)
+
 19. `create-code-example.md` - Develop code example
 20. `test-code-examples.md` - Test all code
 21. `design-exercises.md` - Create practice problems
 
 #### Review Tasks (3)
+
 22. `verify-accuracy.md` - Technical accuracy check
 23. `check-best-practices.md` - Best practices validation
 24. `execute-checklist.md` - Run quality checklist
 
 #### Research Tasks (4)
+
 25. `create-book-research-queries.md` - Generate research queries
 26. `generate-research-questions.md` - Deep questions (Perplexity-style)
 27. `research-technical-topic.md` - Systematic research
 28. `execute-research-with-tools.md` - Automated research
 
 #### Specialist Tasks (8)
+
 29. `generate-api-docs.md` - API reference creation
 30. `build-glossary.md` - Glossary compilation
 31. `take-screenshots.md` - Screenshot planning
@@ -953,6 +1016,7 @@ submission-package/packtpub-submission/
 36. `create-appendix.md` - Appendix content
 
 #### Publishing Tasks (5)
+
 37. `format-for-packtpub.md` - PacktPub formatting workflow
 38. `package-for-publisher.md` - Submission package
 39. `prepare-meap-chapter.md` - Manning MEAP prep
@@ -960,6 +1024,7 @@ submission-package/packtpub-submission/
 41. `validate-cross-references.md` - Cross-reference check
 
 #### Brownfield Tasks (5)
+
 42. `analyze-existing-book.md` - Existing book analysis
 43. `plan-book-revision.md` - Revision planning
 44. `extract-code-patterns.md` - Pattern extraction
@@ -1043,12 +1108,14 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 ### Complete Book Time Estimates
 
 **Assumptions**:
+
 - 12-chapter book
 - Average 20 pages per chapter
 - Section-driven approach
 - PacktPub submission
 
 #### Planning Phase
+
 - Book Planning Workflow: **20-33 hours**
   - Proposal: 4-8 hours
   - Outline: 8-12 hours
@@ -1057,6 +1124,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
   - Publisher check: 2-3 hours
 
 #### Development Phase (Per Chapter)
+
 - Research (optional): **2-6 hours**
 - Section Planning: **6-11 hours**
 - Section Development (6 sections × 8 hours avg): **48 hours**
@@ -1065,14 +1133,17 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 - **12 chapters**: **828-1068 hours**
 
 #### Review Phase
+
 - Technical Review (per chapter): **3-5 hours** × 12 = **36-60 hours**
 - Incorporate Feedback: **4-12 hours** × 12 = **48-144 hours**
 - **Total**: **84-204 hours**
 
 #### Publishing Phase
+
 - PacktPub formatting: **10-19 hours**
 
 #### Grand Total (Greenfield Book)
+
 **Min**: 942 hours (≈ 24 weeks at 40 hrs/week)
 **Max**: 1324 hours (≈ 33 weeks at 40 hrs/week)
 
@@ -1109,6 +1180,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 ### 1. Workflow Selection
 
 **When to Use Section-Driven Approach**:
+
 - ✓ Chapters 15+ pages
 - ✓ Complex topics requiring incremental development
 - ✓ Want progress tracking at granular level
@@ -1117,6 +1189,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 - ✓ Want to review work-in-progress before full chapter done
 
 **When to Use Traditional Approach**:
+
 - ✓ Short chapters (<12 pages)
 - ✓ Simple reference sections
 - ✓ Author prefers writing full chapter at once
@@ -1125,6 +1198,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 ### 2. Quality Gates - Never Skip!
 
 **Critical Quality Gates**:
+
 1. **Book Outline Approved** - Don't write chapters until outline validated
 2. **Section Plans Complete** - Don't write until section boundaries clear
 3. **Code Tested** - Never write tutorials for untested code
@@ -1133,6 +1207,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 6. **PacktPub Validation** - Run all validation scripts before submission
 
 **Why Quality Gates Matter**:
+
 - Catch issues early (cheaper to fix)
 - Prevent downstream rework
 - Ensure pedagogical soundness
@@ -1142,12 +1217,14 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 ### 3. Agent Coordination
 
 **Handoff Best Practices**:
+
 - Save outputs to specified locations (agents depend on them)
 - Use handoff prompts to communicate context
 - Follow workflow sequence (agents build on prior work)
 - Mark deliverables as DONE when criteria met
 
 **Parallel Development**:
+
 - Sections without dependencies can be developed in parallel
 - Check section plan for dependency flags
 - Coordinate code changes across sections
@@ -1155,6 +1232,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 ### 4. PacktPub-Specific Tips
 
 **Critical Success Factors**:
+
 1. **Caption Placement** (CRITICAL):
    - Table captions BEFORE tables
    - Figure captions AFTER images
@@ -1186,11 +1264,13 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 ### 5. Research Workflow Tips
 
 **When to Use Each Mode**:
+
 - **Manual**: Best for specialized technical domains, author has expertise
 - **Import**: Converting conference notes, expert interviews, existing research
 - **Automated**: Quick research, broad topics, AI tools available
 
 **Research Quality**:
+
 - Always cite sources
 - Assess source credibility
 - Document research date (technology changes)
@@ -1199,6 +1279,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 ### 6. Code Quality Standards
 
 **Before Writing Tutorials**:
+
 - ✓ Code tested and passing
 - ✓ Error handling included
 - ✓ Inline comments present
@@ -1207,6 +1288,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 - ✓ Works on target platforms
 
 **Repository Best Practices**:
+
 - Organize by chapter folders
 - README per chapter
 - Dependencies documented
@@ -1217,24 +1299,28 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 ### 7. Common Pitfalls to Avoid
 
 **Planning Phase**:
+
 - ❌ Skipping learning path validation
 - ❌ Assuming too much prerequisite knowledge
 - ❌ Uneven difficulty curve
 - ❌ Writing chapters before outline approved
 
 **Development Phase**:
+
 - ❌ Writing tutorials for untested code
 - ❌ Skipping section plans (section-driven approach)
 - ❌ Not marking sections DONE when criteria met
 - ❌ Rewriting content during chapter assembly (preserve sections!)
 
 **Review Phase**:
+
 - ❌ Skipping technical review
 - ❌ Ignoring critical issues
 - ❌ Copy editing before technical review
 - ❌ Not re-testing code after changes
 
 **Publishing Phase**:
+
 - ❌ Missing "What You Will Learn" sections (PacktPub requirement)
 - ❌ Table captions placed AFTER tables (should be BEFORE)
 - ❌ Low-resolution screenshots
@@ -1245,6 +1331,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 ### 8. Workflow Efficiency Tips
 
 **For Solo Authors**:
+
 1. Use section-driven for long chapters (easier to track progress)
 2. Complete sections incrementally (avoid marathon writing sessions)
 3. Automate code testing (CI/CD saves hours)
@@ -1252,6 +1339,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 5. Run validation scripts early and often
 
 **For Team Collaboration**:
+
 1. Assign agents to different team members
 2. Parallel section development (multiple authors)
 3. Code Curator can work ahead on examples
@@ -1259,6 +1347,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 5. Clear handoff points between agents
 
 **Time Management**:
+
 1. Block 2-4 hour chunks for section writing
 2. Write code first, then explanations
 3. Review frequently (catch issues early)
@@ -1270,6 +1359,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 ## Appendix: Quick Reference Commands
 
 ### Agent Activation Commands
+
 ```bash
 # Planning agents
 /bmad-tw:instructional-designer
@@ -1299,6 +1389,7 @@ BROWNFIELD BOOK (EXISTING BOOK UPDATE)
 ```
 
 ### PacktPub Formatting Commands
+
 ```bash
 # Complete workflow (single command)
 ./format-for-packtpub.sh manuscript.md output-dir
@@ -1311,6 +1402,7 @@ python3 verify-packt-document.py formatted.docx
 ```
 
 ### Critical File Locations
+
 ```
 manuscript/
 ├── planning/
@@ -1348,6 +1440,7 @@ The BMad Technical Writing Expansion Pack provides a **complete, professional-gr
 4. **PacktPub Automation** - Complete formatting pipeline with validation
 
 **Success Formula**:
+
 - ✓ Follow workflow sequences
 - ✓ Never skip quality gates
 - ✓ Use section-driven for complex chapters

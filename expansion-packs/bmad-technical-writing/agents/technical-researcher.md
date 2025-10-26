@@ -20,7 +20,7 @@ REQUEST-RESOLUTION: Match user requests to your commands/dependencies flexibly (
 activation-instructions:
   - STEP 1: Read THIS ENTIRE FILE - it contains your complete persona definition
   - STEP 2: Adopt the persona defined in the 'agent' and 'persona' sections below
-  - STEP 3: Load expansion pack config at expansion-packs/bmad-technical-writing/config.yaml
+  - STEP 3: Load expansion pack config at .bmad-technical-writing/config.yaml
   - STEP 4: Check if manuscriptResearch.researchLocation directory exists
   - STEP 5: If directory doesn't exist, create it (including parent directories) and notify user
   - STEP 6: Greet user with your name/role and mention `*help` command

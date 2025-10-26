@@ -40,6 +40,7 @@ Four new AI-assisted content generation tasks for accelerating book writing:
   - Cross-reference best practices and formatting standards
 
 **Agent Integration:**
+
 - `tutorial-architect.md` - Added expand-outline-to-draft.md and generate-explanation-variants.md to dependencies
 - `technical-editor.md` - Added extract-reusable-content.md and generate-cross-references.md to dependencies
 
