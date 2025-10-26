@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2025-10-26
+
+### Added
+
+**Content Generation and Enhancement Tasks (Story 7.18)**
+
+Four new AI-assisted content generation tasks for accelerating book writing:
+
+- **expand-outline-to-draft.md** - Converts bullet-point outlines into initial prose drafts with AI assistance
+  - 6-step workflow: Review outline → Expand bullets → Integrate code → Add structure → Quality check → Save as draft
+  - Prominent AI safety warnings and mandatory human verification
+  - Before/after examples showing outline → prose transformation
+  - Expected time savings: 2-4 hours per chapter
+
+- **generate-explanation-variants.md** - Creates multiple ways to explain complex technical concepts
+  - 5 explanation approaches: Analogy, Bottom-up, Top-down, Example-driven, Comparison-based
+  - Comprehensive evaluation matrix for selecting best variant
+  - Detailed JavaScript closure examples demonstrating all approaches
+  - Selection and combination guidance for multi-learning-style content
+
+- **extract-reusable-content.md** - Identifies patterns and explanations reusable across chapters
+  - 4 pattern categories: Concept explanations, Code patterns, Troubleshooting, Best practices
+  - Complete content library directory structure
+  - Pattern documentation template for consistency
+  - Usage tracking system to monitor pattern reuse
+
+- **generate-cross-references.md** - Suggests where to add "see Chapter X" references
+  - 4 reference types: Prerequisite, Related, Forward, Example
+  - Priority system (high/medium/low) with clear criteria
+  - Reciprocal reference checking for bidirectional navigation
+  - Cross-reference best practices and formatting standards
+
+**Agent Integration:**
+- `tutorial-architect.md` - Added expand-outline-to-draft.md and generate-explanation-variants.md to dependencies
+- `technical-editor.md` - Added extract-reusable-content.md and generate-cross-references.md to dependencies
+
+**Research and Brainstorming Tasks (Story 7.16)**
+
+Two new tasks for early-stage research and ideation:
+
+- **brainstorm-chapter-ideas.md** - Generates chapter ideas from topic analysis
+  - Mind mapping and concept clustering techniques
+  - Learning progression analysis
+  - Topic dependency identification
+  - Example: Generated 12 chapter ideas from "Modern JavaScript" topic
+
+- **synthesize-research-notes.md** - Transforms research notes into structured outlines
+  - Multi-source research aggregation
+  - Automatic outline generation with hierarchical structure
+  - Code example placeholders
+  - Integration with expand-outline-to-draft.md for complete workflow
+
 ### Changed
 
 **Orphaned Templates Resolution (Story 7.15)**
