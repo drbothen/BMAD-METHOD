@@ -149,9 +149,9 @@ For each determined split point, create a shard file:
 - Use original chapter filename as base
 - Number sequentially starting at 1
 
-**Shard metadata header:**
+**Shard metadata:**
 
-Add metadata at the top of each shard file:
+Add metadata at the top and bottom of each shard file:
 
 ```markdown
 <!-- SHARD METADATA -->
@@ -167,6 +167,9 @@ Add metadata at the top of each shard file:
 ## Introduction
 
 [content...]
+
+<!-- SHARD END -->
+<!-- Continue to chapter-7-shard-2.md -->
 ```
 
 **Content extraction:**
@@ -188,9 +191,11 @@ Add metadata at the top of each shard file:
 ```markdown
 <!-- chapter-7-shard-2.md -->
 <!-- SHARD METADATA -->
-
-...
-
+<!-- Original: chapter-7-advanced-queries.md -->
+<!-- Shard: 2 of 6 -->
+<!-- Pages: 7-12 of 32 -->
+<!-- Sections: Complex Joins -->
+<!-- Split Date: 2025-10-26 -->
 <!-- END METADATA -->
 
 ## Section 2: Complex Joins
@@ -198,6 +203,11 @@ Add metadata at the top of each shard file:
 ### Inner Joins
 
 ### Outer Joins
+
+[... more content ...]
+
+<!-- SHARD END -->
+<!-- Continue to chapter-7-shard-3.md -->
 ```
 
 ### 4. Create Shard Index File
@@ -371,6 +381,21 @@ The completed sharding produces:
 - Naming: `{chapter-name}-shard-{n}.md`
 - Count: Based on chapter size and strategy
 - Size: 5-10 pages per shard (target)
+
+**Shard metadata:**
+
+Each shard file includes metadata at the top and bottom:
+
+**Header metadata:**
+- Original filename
+- Shard number (N of M)
+- Page range (X-Y of Total)
+- Sections included
+- Split date
+
+**Footer metadata:**
+- SHARD END marker
+- Continuation pointer to next shard
 
 **Index file:**
 
