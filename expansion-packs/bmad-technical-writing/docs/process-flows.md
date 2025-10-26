@@ -356,15 +356,18 @@ graph TD
 #### How to Execute This Workflow
 
 **Prerequisites**:
+
 - Chapter outline completed: `manuscript/outlines/chapter-{n}-outline.md`
 - Outline includes learning objectives and main topics
 
 **Step 1: Activate Tutorial Architect**
+
 ```bash
 /bmad-tw:agents:tutorial-architect
 ```
 
 **Step 2: Analyze Chapter Structure**
+
 - Read chapter outline: `manuscript/outlines/chapter-{n}-outline.md`
 - Review learning objectives, main sections, code examples
 - Identify natural breaking points for sections (2-5 pages each)
@@ -372,6 +375,7 @@ graph TD
 - **Output**: Create `section-analysis.md` documenting structure
 
 **Step 3: Identify Section Boundaries**
+
 - Break chapter into 5-8 logical sections
 - Each section should teach 1-2 concepts and include 1-3 code examples
 - Name each section clearly and define what it teaches
@@ -379,6 +383,7 @@ graph TD
 - **Output**: Create `preliminary-section-list.md`
 
 **Step 4: Create Section Plans**
+
 - **Command**: `*create-doc` (or run `tasks/create-doc.md`)
 - **Template**: Use `templates/section-plan-tmpl.yaml`
 - For each section, define:
@@ -391,11 +396,13 @@ graph TD
 - **Output**: Create `section-plans/section-{n}.md` for each section
 
 **Step 5: Switch to Instructional Designer**
+
 ```bash
 /bmad-tw:agents:instructional-designer
 ```
 
 **Step 6: Validate Learning Flow**
+
 - Review all section plans in `section-plans/`
 - **Task**: Run `tasks/validate-learning-flow.md` (Story 7.4)
 - Verify:
@@ -409,9 +416,11 @@ graph TD
 - **Output**: Create `section-flow-validation.md` with approval/recommendations
 
 **Step 7: Finalize Section List** (back to Tutorial Architect)
+
 ```bash
 /bmad-tw:agents:tutorial-architect
 ```
+
 - Incorporate instructional designer feedback
 - Adjust section order, prerequisites, or granularity if needed
 - Create final prioritized section list with dependencies mapped
@@ -420,6 +429,7 @@ graph TD
 - **Output**: `manuscript/sections/chapter-{n}-section-list.md` (authoritative plan)
 
 **Success Criteria**:
+
 - [ ] 5-8 sections defined
 - [ ] Each section has clear learning objective
 - [ ] Prerequisites identified for each section
@@ -429,6 +439,7 @@ graph TD
 - [ ] Section granularity appropriate (2-5 pages each)
 
 **File Outputs**:
+
 - `section-analysis.md` - Chapter structure analysis
 - `preliminary-section-list.md` - Initial section breakdown
 - `section-plans/section-{n}.md` - Detailed plan for each section (5-8 files)
@@ -485,15 +496,18 @@ graph TD
 #### How to Execute This Workflow
 
 **Prerequisites**:
+
 - Section plan completed: `section-plans/section-{n}.md`
 - Chapter outline available: `manuscript/outlines/chapter-{n}-outline.md`
 
 **Step 1: Activate Code Curator**
+
 ```bash
 /bmad-tw:agents:code-curator
 ```
 
 **Step 2: Develop Code Examples**
+
 - **Command**: `*create-code-example` (runs `tasks/create-code-example.md`)
 - Read section plan code example requirements
 - Create all code examples identified in section plan (typically 1-3 examples)
@@ -503,6 +517,7 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 3: Test Code Examples**
+
 - **Command**: `*test-all-examples` (runs `tasks/test-code-examples.md`)
 - Verify correct output for each example
 - Test edge cases and error handling
@@ -512,11 +527,13 @@ graph TD
 - **Time**: 30 minutes - 1 hour
 
 **Step 4: Switch to Tutorial Architect**
+
 ```bash
 /bmad-tw:agents:tutorial-architect
 ```
 
 **Step 5: Write Section Draft**
+
 - **Task**: Execute `tasks/write-section-draft.md` (Story 7.9 - follow task instructions)
 - **Alternative**: If task not yet implemented, use workflow notes from YAML
 - **Input Files**:
@@ -532,11 +549,13 @@ graph TD
 - **Time**: 2-4 hours
 
 **Step 6: Switch to Technical Reviewer**
+
 ```bash
 /bmad-tw:agents:technical-reviewer
 ```
 
 **Step 7: Quick Technical Review**
+
 - Read `section-draft.md`
 - **Task**: Run `tasks/verify-accuracy.md` (Story 7.4) for focused section review
 - Verify technical accuracy, code correctness, completeness
@@ -546,9 +565,11 @@ graph TD
 - **Time**: 30 minutes - 1 hour
 
 **Step 8: Back to Tutorial Architect for Revisions**
+
 ```bash
 /bmad-tw:agents:tutorial-architect
 ```
+
 - Read review notes
 - Address all critical and major issues
 - Update code examples if needed (coordinate with code-curator if major changes)
@@ -557,6 +578,7 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 9: Verify and Finalize**
+
 - Verify section meets ALL success criteria from section plan
 - Check:
   - [ ] Learning objectives addressed
@@ -569,6 +591,7 @@ graph TD
 - **Time**: 30 minutes
 
 **Success Criteria**:
+
 - [ ] All code examples developed and tested
 - [ ] Section draft 2-5 pages
 - [ ] Learning objectives from section plan addressed
@@ -577,6 +600,7 @@ graph TD
 - [ ] All section plan success criteria met
 
 **File Outputs**:
+
 - `code/chapter-{n}/section-{n}/example-{name}.{ext}` - Code examples (1-3 files)
 - `manuscript/sections/chapter-{n}/section-{n}-draft.md` - Section draft
 - `section-{n}-review-notes.md` - Technical review findings
@@ -637,15 +661,18 @@ graph TD
 #### How to Execute This Workflow
 
 **Prerequisites**:
+
 - All chapter sections marked DONE
 - All section files in `manuscript/sections/chapter-{n}/section-{n}-final.md`
 
 **Step 1: Activate Tutorial Architect**
+
 ```bash
 /bmad-tw:agents:tutorial-architect
 ```
 
 **Step 2: Merge Sections**
+
 - **Task**: Execute `tasks/merge-sections.md` (Story 7.10)
 - Systematically merge all completed sections into single chapter file
 - Preserve section content (don't rewrite)
@@ -656,6 +683,7 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 3: Enhance Transitions**
+
 - **Task**: Execute `tasks/enhance-transitions.md` (Story 7.10)
 - Review transitions between sections
 - Add bridging paragraphs where sections feel disconnected
@@ -666,11 +694,13 @@ graph TD
 - **Time**: 2-3 hours
 
 **Step 4: Switch to Instructional Designer**
+
 ```bash
 /bmad-tw:agents:instructional-designer
 ```
 
 **Step 5: Validate Learning Flow**
+
 - **Task**: Execute `tasks/validate-learning-flow.md` (Story 7.4)
 - Verify chapter builds concepts logically
 - Check exercises progress from easy to challenging
@@ -680,11 +710,13 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 6: Switch to Technical Reviewer**
+
 ```bash
 /bmad-tw:agents:technical-reviewer
 ```
 
 **Step 7: Full Chapter Technical Review**
+
 - Read complete `chapter-integrated.md`
 - **Tasks**:
   - `tasks/verify-accuracy.md` (Story 7.4) - Technical accuracy
@@ -700,9 +732,11 @@ graph TD
 - **Time**: 3-5 hours
 
 **Step 8: Back to Tutorial Architect for Revisions**
+
 ```bash
 /bmad-tw:agents:tutorial-architect
 ```
+
 - Incorporate all review feedback
 - Address learning flow issues from instructional designer
 - Fix all critical and major technical issues
@@ -712,11 +746,13 @@ graph TD
 - **Time**: 3-6 hours
 
 **Step 9: Switch to Technical Editor**
+
 ```bash
 /bmad-tw:agents:technical-editor
 ```
 
 **Step 10: Copy Edit Chapter**
+
 - **Command**: `*copy-edit` (or `tasks/copy-edit-chapter.md`)
 - Improve clarity and readability
 - Check terminology consistency
@@ -730,9 +766,11 @@ graph TD
 - **Time**: 2-4 hours
 
 **Step 11: Back to Tutorial Architect for Final Approval**
+
 ```bash
 /bmad-tw:agents:tutorial-architect
 ```
+
 - Review and approve editorial changes
 - Verify technical accuracy preserved during editing
 - **Checklist**: Run `tasks/execute-checklist.md` with `checklists/chapter-completeness-checklist.md`
@@ -741,6 +779,7 @@ graph TD
 - **Time**: 1-2 hours
 
 **Success Criteria**:
+
 - [ ] All sections merged in correct order
 - [ ] Smooth transitions between sections
 - [ ] Learning flow validated (no gaps)
@@ -750,6 +789,7 @@ graph TD
 - [ ] Chapter completeness checklist verified
 
 **File Outputs**:
+
 - `manuscript/chapters/chapter-{n}-integrated.md` - Merged sections
 - `learning-flow-validation.md` - Instructional designer validation
 - `reviews/technical-review-chapter-{n}.md` - Technical review report
@@ -958,21 +998,25 @@ graph TD
 #### How to Execute This Workflow
 
 **Prerequisites**:
+
 - Technical review report received: `reviews/technical-review-chapter-{n}.md`
 - Review status is "NEEDS REVISION" or "APPROVED WITH CHANGES"
 
 **Step 1: Activate Tutorial Architect**
+
 ```bash
 /bmad-tw:agents:tutorial-architect
 ```
 
 **Step 2: Read Review Report**
+
 - Read complete technical review report
 - Understand all identified issues
 - Note reviewer's overall assessment
 - **Time**: 15-30 minutes
 
 **Step 3: Categorize Issues**
+
 - **Task**: Execute `tasks/incorporate-reviewer-feedback.md`
 - Create issue categories:
   - **Critical**: Must fix (blocks approval)
@@ -983,6 +1027,7 @@ graph TD
 - **Time**: 30 minutes
 
 **Step 4: Address Critical Issues First**
+
 - If critical issues exist, tackle them immediately
 - Review each critical issue:
   - Understand the problem
@@ -991,16 +1036,19 @@ graph TD
 - **Time**: 1-4 hours (depends on critical issue count)
 
 **Step 5: Determine if Code Changes Needed**
+
 - Review issues to identify which require code updates
 - If yes, proceed to Step 6
 - If no documentation-only changes, skip to Step 10
 
 **Step 6: Switch to Code Curator (if code changes needed)**
+
 ```bash
 /bmad-tw:agents:code-curator
 ```
 
 **Step 7: Update Code Examples**
+
 - Fix all code issues identified in review
 - Apply best practices suggestions
 - Address security concerns
@@ -1009,6 +1057,7 @@ graph TD
 - **Time**: 1-3 hours
 
 **Step 8: Re-test Code**
+
 - **Task**: `tasks/test-code-examples.md`
 - Test all modified code examples
 - Ensure fixes work correctly
@@ -1016,13 +1065,16 @@ graph TD
 - **Time**: 30 minutes - 1 hour
 
 **Step 9: Verify Tests Pass**
+
 - If tests fail, return to Step 7
 - If tests pass, continue to Step 10
 
 **Step 10: Back to Tutorial Architect - Update Documentation**
+
 ```bash
 /bmad-tw:agents:tutorial-architect
 ```
+
 - Update chapter text to reflect code changes
 - Fix technical inaccuracies noted in review
 - Improve unclear explanations
@@ -1031,18 +1083,21 @@ graph TD
 - **Time**: 1-3 hours
 
 **Step 11: Address Major Issues**
+
 - Work through all major issues
 - Apply improvements and corrections
 - Enhance quality based on feedback
 - **Time**: 1-2 hours
 
 **Step 12: Address Minor Issues**
+
 - Review minor suggestions
 - Apply quick wins
 - Skip minor issues if time-constrained (these are nice-to-have)
 - **Time**: 30 minutes - 1 hour
 
 **Step 13: Verify All Issues Addressed**
+
 - Review original technical review report
 - Check off each issue as addressed
 - Create summary of changes made
@@ -1051,12 +1106,14 @@ graph TD
 - **Time**: 30 minutes
 
 **Step 14: Check Completeness**
+
 - Ensure critical issues: 100% addressed
 - Ensure major issues: 90%+ addressed
 - Minor issues: Best effort
 - If incomplete, go back and complete remaining items
 
 **Step 15: Submit for Re-review**
+
 - Update chapter status to "Ready for Re-review"
 - Notify technical reviewer
 - Provide feedback-response.md showing what was addressed
@@ -1064,6 +1121,7 @@ graph TD
 - **Time**: 15 minutes
 
 **Success Criteria**:
+
 - [ ] All critical issues addressed
 - [ ] 90%+ of major issues addressed
 - [ ] Code changes tested and working
@@ -1072,6 +1130,7 @@ graph TD
 - [ ] Chapter improved based on review
 
 **File Outputs**:
+
 - `feedback-categorized.md` - Categorized issue list
 - Updated code files (if code changes needed)
 - Updated chapter file with corrections
@@ -1160,22 +1219,26 @@ graph TD
 #### How to Execute This Workflow
 
 **Prerequisites**:
+
 - All chapters finalized: `manuscript/chapters/chapter-{n}-final.md`
 - Code repository organized and tested
 - All images and diagrams prepared
 
 **Step 1: Activate Book Publisher**
+
 ```bash
 /bmad-tw:agents:book-publisher
 ```
 
 **Step 2: Gather All Chapters**
+
 - Collect all final chapter files from `manuscript/chapters/`
 - Verify chapter numbering is sequential
 - Check that all chapters are marked as final
 - **Output**: Create `publishing/packtpub/chapters/` directory with all chapters
 
 **Step 3: Format to PacktPub Standards**
+
 - **Task**: Execute `tasks/format-for-packtpub.md` (Story 7.7)
 - Apply PacktPub markdown formatting requirements
 - Convert headings to PacktPub hierarchy
@@ -1185,6 +1248,7 @@ graph TD
 - **Time**: 2-3 hours
 
 **Step 4: Create Front Matter**
+
 - Write title page, copyright page, dedication
 - Create table of contents
 - Write preface/foreword
@@ -1193,6 +1257,7 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 5: Create Back Matter**
+
 - Compile index entries
 - Create bibliography/references
 - Add appendices if needed
@@ -1200,18 +1265,22 @@ graph TD
 - **Time**: 1 hour
 
 **Step 6: Switch to API Documenter**
+
 ```bash
 /bmad-tw:agents:api-documenter
 ```
+
 - Generate API reference appendix if book covers APIs
 - **Task**: `tasks/generate-api-docs.md`
 - **Output**: `publishing/packtpub/back-matter/appendix-api-reference.md`
 - **Time**: 1-2 hours
 
 **Step 7: Back to Book Publisher - Package Code Repository**
+
 ```bash
 /bmad-tw:agents:book-publisher
 ```
+
 - **Task**: `tasks/organize-code-repo.md`
 - Organize all code examples in clear directory structure
 - Create README for code repository
@@ -1221,9 +1290,11 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 8: Switch to Screenshot Specialist**
+
 ```bash
 /bmad-tw:agents:screenshot-specialist
 ```
+
 - Optimize all images for print resolution (300 DPI)
 - Convert to PacktPub-approved formats
 - **Task**: `tasks/optimize-visuals.md`
@@ -1231,9 +1302,11 @@ graph TD
 - **Time**: 30 minutes - 1 hour
 
 **Step 9: Back to Book Publisher - Run Checklist**
+
 ```bash
 /bmad-tw:agents:book-publisher
 ```
+
 - **Checklist**: Execute `tasks/execute-checklist.md` with `checklists/packtpub-submission-checklist.md`
 - Verify:
   - [ ] All chapters formatted correctly
@@ -1247,6 +1320,7 @@ graph TD
 - **Time**: 30 minutes
 
 **Step 10: Create Submission Package**
+
 - Compile everything into submission package
 - Create ZIP file with all materials
 - Write submission letter
@@ -1254,6 +1328,7 @@ graph TD
 - **Time**: 30 minutes
 
 **Success Criteria**:
+
 - [ ] All chapters formatted to PacktPub standards
 - [ ] Front and back matter complete
 - [ ] Code repository organized and tested
@@ -1262,6 +1337,7 @@ graph TD
 - [ ] Submission package ready to upload
 
 **File Outputs**:
+
 - `publishing/packtpub/formatted/` - All formatted chapters
 - `publishing/packtpub/front-matter/` - Title, TOC, preface, about author
 - `publishing/packtpub/back-matter/` - Index, bibliography, appendices
@@ -1309,16 +1385,19 @@ graph TD
 #### How to Execute This Workflow
 
 **Prerequisites**:
+
 - All chapters finalized: `manuscript/chapters/chapter-{n}-final.md`
 - Familiarity with O'Reilly Atlas platform
 - O'Reilly HTMLBook specification reviewed
 
 **Step 1: Activate Book Publisher**
+
 ```bash
 /bmad-tw:agents:book-publisher
 ```
 
 **Step 2: Convert to AsciiDoc/HTMLBook Format**
+
 - **Task**: Execute `tasks/format-for-oreilly.md` (Story 7.7)
 - Convert markdown chapters to HTMLBook format
 - Apply O'Reilly semantic markup
@@ -1328,6 +1407,7 @@ graph TD
 - **Time**: 3-5 hours
 
 **Step 3: Validate O'Reilly Format**
+
 - Run O'Reilly's HTMLBook validator
 - Check for semantic markup errors
 - Verify all cross-references resolve
@@ -1336,12 +1416,14 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 4: Fix Format Issues (if any)**
+
 - Address validation errors
 - Correct markup issues
 - Re-validate until clean
 - **Iterate**: Repeat validation until all issues resolved
 
 **Step 5: Create Atlas Project**
+
 - Set up O'Reilly Atlas project structure
 - Configure book metadata (title, authors, ISBN)
 - Set up chapter ordering
@@ -1350,9 +1432,11 @@ graph TD
 - **Time**: 1 hour
 
 **Step 6: Switch to API Documenter**
+
 ```bash
 /bmad-tw:agents:api-documenter
 ```
+
 - Generate comprehensive index
 - **Task**: `tasks/create-index-entries.md`
 - Add semantic index markup
@@ -1361,9 +1445,11 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 7: Switch to Screenshot Specialist**
+
 ```bash
 /bmad-tw:agents:screenshot-specialist
 ```
+
 - Prepare images in O'Reilly-approved formats (SVG preferred, PNG acceptable)
 - **Task**: `tasks/optimize-visuals.md`
 - Ensure images meet O'Reilly resolution requirements
@@ -1372,9 +1458,11 @@ graph TD
 - **Time**: 1 hour
 
 **Step 8: Back to Book Publisher - Setup Code Repository**
+
 ```bash
 /bmad-tw:agents:book-publisher
 ```
+
 - **Task**: `tasks/organize-code-repo.md`
 - Create GitHub repository for code examples
 - Organize code by chapter
@@ -1384,6 +1472,7 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 9: Run O'Reilly Checklist**
+
 - **Checklist**: Execute `tasks/execute-checklist.md` with `checklists/oreilly-format-checklist.md`
 - Verify:
   - [ ] All chapters in valid HTMLBook format
@@ -1398,6 +1487,7 @@ graph TD
 - **Time**: 30 minutes
 
 **Step 10: Upload to O'Reilly Atlas**
+
 - Push project to O'Reilly Atlas
 - Trigger build process
 - Review build output
@@ -1406,6 +1496,7 @@ graph TD
 - **Time**: 30 minutes - 1 hour
 
 **Success Criteria**:
+
 - [ ] All chapters in valid HTMLBook format
 - [ ] O'Reilly validation passes
 - [ ] Atlas project builds successfully
@@ -1414,6 +1505,7 @@ graph TD
 - [ ] All checklists complete
 
 **File Outputs**:
+
 - `publishing/oreilly/htmlbook/` - HTMLBook-formatted chapters
 - `publishing/oreilly/atlas-project/` - Complete Atlas project
 - `publishing/oreilly/atlas-project/images/` - Optimized images
@@ -1457,16 +1549,19 @@ graph TD
 #### How to Execute This Workflow
 
 **Prerequisites**:
+
 - Chapter finalized: `manuscript/chapters/chapter-{n}-final.md`
 - Manning MEAP agreement in place
 - Manning format guidelines reviewed
 
 **Step 1: Activate Book Publisher**
+
 ```bash
 /bmad-tw:agents:book-publisher
 ```
 
 **Step 2: Format to Manning Standards**
+
 - **Task**: Execute `tasks/prepare-meap-chapter.md`
 - Convert chapter to Manning DocBook XML or Microsoft Word format
 - Apply Manning style guidelines
@@ -1475,6 +1570,7 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 3: Create Chapter Introduction**
+
 - Write brief introduction for MEAP readers
 - Explain what the chapter covers
 - Note any prerequisites from earlier chapters
@@ -1483,6 +1579,7 @@ graph TD
 - **Time**: 30 minutes
 
 **Step 4: Prepare MEAP Metadata**
+
 - Fill out Manning MEAP chapter metadata form
 - Add chapter title, number, description
 - Set release date
@@ -1491,9 +1588,11 @@ graph TD
 - **Time**: 15 minutes
 
 **Step 5: Switch to Screenshot Specialist**
+
 ```bash
 /bmad-tw:agents:screenshot-specialist
 ```
+
 - **Task**: `tasks/optimize-visuals.md`
 - Optimize chapter images for MEAP
 - Convert to Manning-approved formats
@@ -1502,9 +1601,11 @@ graph TD
 - **Time**: 30 minutes
 
 **Step 6: Switch to Code Curator**
+
 ```bash
 /bmad-tw:agents:code-curator
 ```
+
 - **Task**: `tasks/organize-code-repo.md`
 - Package all code examples for this chapter
 - Create chapter-specific README
@@ -1514,9 +1615,11 @@ graph TD
 - **Time**: 30 minutes - 1 hour
 
 **Step 7: Back to Book Publisher - Run MEAP Checklist**
+
 ```bash
 /bmad-tw:agents:book-publisher
 ```
+
 - **Checklist**: Execute `tasks/execute-checklist.md` with `checklists/manning-meap-checklist.md`
 - Verify:
   - [ ] Chapter formatted to Manning standards
@@ -1530,6 +1633,7 @@ graph TD
 - **Time**: 15 minutes
 
 **Step 8: Submit to Manning**
+
 - Upload chapter file to Manning portal
 - Upload images
 - Upload code examples
@@ -1539,11 +1643,13 @@ graph TD
 - **Time**: 15-30 minutes
 
 **Step 9: Address Manning Feedback (if any)**
+
 - Review Manning's editorial feedback
 - Make required corrections
 - Re-submit if needed
 
 **Success Criteria**:
+
 - [ ] Chapter formatted to Manning standards
 - [ ] Chapter introduction clear and helpful
 - [ ] All images included and optimized
@@ -1552,6 +1658,7 @@ graph TD
 - [ ] Chapter accepted by Manning for MEAP release
 
 **File Outputs**:
+
 - `publishing/manning-meap/chapter-{n}-formatted.xml` (or `.docx`) - Formatted chapter
 - `publishing/manning-meap/chapter-{n}-metadata.md` - Chapter metadata
 - `publishing/manning-meap/images/chapter-{n}/` - Chapter images
@@ -1604,11 +1711,13 @@ graph TD
 #### How to Execute This Workflow
 
 **Prerequisites**:
+
 - All chapters finalized: `manuscript/chapters/chapter-{n}-final.md`
 - Decision made on target platform (Leanpub, Amazon KDP, or Gumroad)
 - Platform account created
 
 **Step 1: Activate Book Publisher**
+
 ```bash
 /bmad-tw:agents:book-publisher
 ```
@@ -1616,6 +1725,7 @@ graph TD
 **Step 2: Choose Platform and Convert Format**
 
 **Option A - Leanpub**:
+
 - **Task**: `tasks/self-publish-prep.md` (Leanpub variant)
 - Convert chapters to Leanpub markdown format
 - Create `manuscript/` directory structure
@@ -1625,6 +1735,7 @@ graph TD
 - **Time**: 2-3 hours
 
 **Option B - Amazon KDP**:
+
 - **Task**: `tasks/self-publish-prep.md` (KDP variant)
 - Convert to Microsoft Word or KDP-compatible format
 - Apply KDP formatting requirements
@@ -1633,6 +1744,7 @@ graph TD
 - **Time**: 3-4 hours
 
 **Option C - Gumroad**:
+
 - **Task**: `tasks/self-publish-prep.md` (Gumroad variant)
 - Convert to PDF using Pandoc or similar tool
 - Apply professional formatting
@@ -1643,18 +1755,21 @@ graph TD
 **Step 3: Setup Platform Project**
 
 **Leanpub**:
+
 - Create new book on Leanpub
 - Connect to Dropbox or GitHub
 - Upload manuscript folder
 - Configure book metadata
 
 **Amazon KDP**:
+
 - Create new title on KDP
 - Upload manuscript file
 - Configure book details (title, description, keywords)
 - Set territories and pricing
 
 **Gumroad**:
+
 - Create new product on Gumroad
 - Upload PDF and ePub files
 - Write product description
@@ -1664,6 +1779,7 @@ graph TD
 **Time**: 1 hour
 
 **Step 4: Configure Pricing**
+
 - Research comparable books in your niche
 - Set base price (consider $19-$49 for technical books)
 - Configure discount options if desired
@@ -1672,6 +1788,7 @@ graph TD
 - **Time**: 30 minutes
 
 **Step 5: Create Marketing Materials**
+
 - Write compelling book description
 - Create bullet points of what readers will learn
 - Write author bio
@@ -1681,9 +1798,11 @@ graph TD
 - **Time**: 2-3 hours
 
 **Step 6: Switch to Screenshot Specialist**
+
 ```bash
 /bmad-tw:agents:screenshot-specialist
 ```
+
 - **Task**: `tasks/design-diagram-set.md` (marketing variant)
 - Create professional book cover (or hire designer)
 - Design promotional graphics for social media
@@ -1692,9 +1811,11 @@ graph TD
 - **Time**: 3-5 hours (or budget for professional designer)
 
 **Step 7: Back to Book Publisher - Run Checklist**
+
 ```bash
 /bmad-tw:agents:book-publisher
 ```
+
 - **Checklist**: Execute `tasks/execute-checklist.md` with `checklists/self-publishing-standards-checklist.md`
 - Verify:
   - [ ] Manuscript formatted for chosen platform
@@ -1712,17 +1833,20 @@ graph TD
 **Step 8: Publish**
 
 **Leanpub**:
+
 - Preview book on Leanpub
 - Publish to Leanpub store
 - Set publish mode (published/unpublished)
 
 **Amazon KDP**:
+
 - Preview book with KDP previewer tool
 - Submit for review
 - Wait for approval (24-72 hours)
 - Book goes live on Amazon
 
 **Gumroad**:
+
 - Preview product page
 - Publish product
 - Share product link
@@ -1731,6 +1855,7 @@ graph TD
 **Time**: 30 minutes - 3 days (depending on platform)
 
 **Step 9: Post-Launch Marketing**
+
 - Share on social media
 - Email announcement to mailing list
 - Post on relevant communities (Reddit, HN, etc.)
@@ -1738,6 +1863,7 @@ graph TD
 - **Optional**: Set up launch promotions
 
 **Success Criteria**:
+
 - [ ] Book published on chosen platform
 - [ ] Cover looks professional
 - [ ] Description is compelling
@@ -1747,6 +1873,7 @@ graph TD
 - [ ] Book is discoverable (SEO, keywords)
 
 **File Outputs**:
+
 - **Leanpub**: `publishing/leanpub/manuscript/` - Complete Leanpub project
 - **Amazon KDP**: `publishing/kdp/manuscript.docx` - KDP-ready manuscript
 - **Gumroad**: `publishing/gumroad/book.pdf`, `book.epub` - Digital files
@@ -1808,16 +1935,19 @@ graph TD
 #### How to Execute This Workflow
 
 **Prerequisites**:
+
 - Existing book published (1st edition)
 - Decision to create new edition
 - Reasons for update identified (new version, outdated content, reader feedback)
 
 **Step 1: Activate Book Analyst**
+
 ```bash
 /bmad-tw:agents:book-analyst
 ```
 
 **Step 2: Analyze Current Edition**
+
 - **Task**: Execute `tasks/analyze-existing-book.md`
 - Read complete current edition
 - Note outdated sections, deprecated APIs, old versions
@@ -1827,6 +1957,7 @@ graph TD
 - **Time**: 4-8 hours
 
 **Step 3: Identify Changes Needed**
+
 - Review analysis report
 - Categorize needed changes:
   - Content updates (new features, APIs, best practices)
@@ -1838,6 +1969,7 @@ graph TD
 - **Time**: 2-3 hours
 
 **Step 4: Create Revision Plan**
+
 - **Task**: Execute `tasks/plan-book-revision.md`
 - For each change, determine scope (major/moderate/minor)
 - Estimate effort per change
@@ -1850,22 +1982,26 @@ graph TD
 **Step 5: Determine Scope and Approach**
 
 **Major Changes** (Full restructure needed):
+
 - Switch to Instructional Designer
 - Redesign book structure from scratch
 - Follow Book Planning Workflow (greenfield)
 - Reuse relevant content from 1st edition
 
 **Moderate Changes** (Chapter updates):
+
 - Select chapters to fully rewrite
 - Select chapters to update partially
 - Keep unchanged chapters as-is
 
 **Minor Changes** (Section updates):
+
 - Identify specific sections to update
 - Update code examples and screenshots
 - Add new content where needed
 
 **Step 6: Execute Greenfield Workflows**
+
 - For new/rewritten content, use standard development workflows:
   - Section Planning Workflow
   - Section Development Workflow
@@ -1874,9 +2010,11 @@ graph TD
 - **Time**: Varies by scope (10-80 hours)
 
 **Step 7: Switch to Version Manager**
+
 ```bash
 /bmad-tw:agents:version-manager
 ```
+
 - **Task**: Execute `tasks/assess-version-impact.md` (Story 7.8)
 - Update all version references throughout book
 - Document version compatibility matrix
@@ -1885,9 +2023,11 @@ graph TD
 - **Time**: 2-4 hours
 
 **Step 8: Switch to Code Curator**
+
 ```bash
 /bmad-tw:agents:code-curator
 ```
+
 - **Task**: Execute `tasks/update-chapter-for-version.md` or `update-dependencies.md`
 - Update ALL code examples to new versions
 - Test every example with updated dependencies
@@ -1897,9 +2037,11 @@ graph TD
 - **Time**: 10-30 hours (depending on extent of changes)
 
 **Step 9: Switch to Technical Reviewer**
+
 ```bash
 /bmad-tw:agents:technical-reviewer
 ```
+
 - Review all changed chapters
 - Verify technical accuracy of updates
 - Test all updated code examples
@@ -1909,14 +2051,17 @@ graph TD
 - **Time**: 8-15 hours
 
 **Step 10: Address Review Issues**
+
 - Fix all identified issues
 - Re-test problematic code
 - Re-review if needed
 
 **Step 11: Switch to Technical Editor**
+
 ```bash
 /bmad-tw:agents:technical-editor
 ```
+
 - Ensure consistency across updated and unchanged chapters
 - Verify terminology is consistent
 - Check cross-references still work
@@ -1925,6 +2070,7 @@ graph TD
 - **Time**: 5-10 hours
 
 **Success Criteria**:
+
 - [ ] All outdated content updated
 - [ ] All code examples work with new versions
 - [ ] Version references accurate throughout
@@ -1934,6 +2080,7 @@ graph TD
 - [ ] Changelog documenting all changes
 
 **File Outputs**:
+
 - `book-analysis-report.md` - Analysis of current edition
 - `changes-needed.md` - Categorized list of changes
 - `revision-plan.md` - Complete revision plan
@@ -1987,16 +2134,19 @@ graph TD
 #### How to Execute This Workflow
 
 **Prerequisites**:
+
 - Existing book published
 - Decision to add new chapter
 - Reason for new chapter identified (missing topic, reader requests, new feature)
 
 **Step 1: Activate Book Analyst**
+
 ```bash
 /bmad-tw:agents:book-analyst
 ```
 
 **Step 2: Analyze Existing Book**
+
 - **Task**: Execute `tasks/analyze-existing-book.md`
 - Review current book structure
 - Understand existing learning progression
@@ -2006,6 +2156,7 @@ graph TD
 - **Time**: 2-3 hours
 
 **Step 3: Determine Chapter Position**
+
 - Decide exact chapter number for new content
 - Consider:
   - Does it build on existing chapters?
@@ -2016,11 +2167,13 @@ graph TD
 - **Time**: 1 hour
 
 **Step 4: Switch to Instructional Designer**
+
 ```bash
 /bmad-tw:agents:instructional-designer
 ```
 
 **Step 5: Design Chapter**
+
 - **Task**: Execute `tasks/create-chapter-outline.md`
 - Create chapter outline following existing book style
 - Define learning objectives
@@ -2031,6 +2184,7 @@ graph TD
 - **Time**: 3-4 hours
 
 **Step 6: Validate Prerequisites**
+
 - **Task**: Execute `tasks/validate-learning-flow.md` (Story 7.4)
 - Check: Does this chapter require concepts not yet introduced?
 - Check: Does this chapter introduce concepts needed later?
@@ -2039,6 +2193,7 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 7: Handle Missing Prerequisites (if any)**
+
 - If prerequisites missing, decide:
   - Add prerequisite sections to earlier chapters, OR
   - Reposition the new chapter later, OR
@@ -2047,6 +2202,7 @@ graph TD
 - **Time**: 2-6 hours (if prerequisites missing)
 
 **Step 8: Execute Chapter Development**
+
 - Use standard development workflows:
   - **Section Planning Workflow** to break chapter into sections
   - **Section Development Workflow** for each section
@@ -2055,11 +2211,13 @@ graph TD
 - **Time**: 12-20 hours
 
 **Step 9: Switch to Technical Editor**
+
 ```bash
 /bmad-tw:agents:technical-editor
 ```
 
 **Step 10: Update Book Structure**
+
 - Renumber later chapters if needed
 - Update all file names and references
 - Adjust chapter numbering in existing chapters
@@ -2067,6 +2225,7 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 11: Update Cross-References**
+
 - Find all cross-references in existing chapters
 - Update chapter numbers in cross-references
 - Add cross-references TO new chapter from relevant chapters
@@ -2075,6 +2234,7 @@ graph TD
 - **Time**: 2-3 hours
 
 **Step 12: Update TOC/Index**
+
 - Add new chapter to table of contents
 - Update all page references (if print book)
 - Add index entries for new chapter
@@ -2083,11 +2243,13 @@ graph TD
 - **Time**: 1-2 hours
 
 **Step 13: Switch to Book Publisher**
+
 ```bash
 /bmad-tw:agents:book-publisher
 ```
 
 **Step 14: Integration Check**
+
 - **Checklist**: `existing-book-integration-checklist.md`
 - Verify:
   - [ ] Chapter position makes sense
@@ -2103,11 +2265,13 @@ graph TD
 - **Time**: 1 hour
 
 **Step 15: Fix Integration Issues (if any)**
+
 - Address any checklist failures
 - Re-validate
 - **Iterate** until all checks pass
 
 **Success Criteria**:
+
 - [ ] New chapter integrates seamlessly
 - [ ] Prerequisites satisfied
 - [ ] Learning flow maintained
@@ -2117,6 +2281,7 @@ graph TD
 - [ ] No broken references
 
 **File Outputs**:
+
 - `book-structure-analysis.md` - Analysis of existing structure
 - `new-chapter-position.md` - Rationale for chapter placement
 - `manuscript/outlines/chapter-{n}-outline.md` - New chapter outline
@@ -2135,68 +2300,73 @@ graph TD
 
 Complete reference showing which agents execute which commands and tasks.
 
-| Agent File | Command | Task File | Purpose |
-|-----------|---------|-----------|---------|
-| **tutorial-architect.md** | `*create-tutorial` | `tasks/develop-tutorial.md` | Create standalone tutorial |
-| | `*outline-chapter` | `tasks/create-chapter-outline.md` | Design chapter structure |
-| | `*write-walkthrough` | `tasks/write-walkthrough.md` (Story 7.11) | Create step-by-step guide |
-| | `*design-exercises` | `tasks/design-exercises.md` | Create practice problems |
-| | `*write-summary` | `tasks/write-summary.md` | Create chapter recap |
-| | `*create-doc` | `tasks/create-doc.md` | Universal document creation |
-| **code-curator.md** | `*create-code-example` | `tasks/create-code-example.md` | Develop code example |
-| | `*test-all-examples` | `tasks/test-code-examples.md` | Test all code |
-| | `*security-audit` | `tasks/security-audit.md` (Story 7.3) | Security vulnerability scan |
-| | `*cross-platform-test` | `tasks/cross-platform-test.md` (Story 7.3) | Test across platforms |
-| | `*version-check` | `tasks/version-check.md` (Story 7.6) | Verify version compatibility |
-| | `*optimize-code` | `tasks/optimize-code.md` (Story 7.6) | Improve example efficiency |
-| **instructional-designer.md** | `*create-book-outline` | `tasks/design-book-outline.md` | Create book structure |
-| | `*create-learning-objectives` | `tasks/create-learning-objectives.md` | Define learning goals |
-| | `*design-learning-path` | `tasks/map-prerequisites.md` | Map prerequisite flow |
-| | `*analyze-difficulty-curve` | `tasks/analyze-difficulty-curve.md` (Story 7.5) | Check progression |
-| **technical-reviewer.md** | `*review-chapter` | `tasks/technical-review-chapter.md` | Full chapter review |
-| | _Execute tasks directly_ | `tasks/verify-accuracy.md` (Story 7.4) | Verify technical accuracy |
-| | | `tasks/check-best-practices.md` (Story 7.4) | Check code practices |
-| | | `tasks/test-code-examples.md` | Test all code |
-| | | `tasks/security-audit.md` (Story 7.3) | Security review |
-| **technical-editor.md** | `*copy-edit` | `tasks/copy-edit-chapter.md` | Professional editing |
-| | `*review-outline` | Editorial review | Outline clarity review |
-| **book-publisher.md** | `*create-proposal` | `tasks/create-doc.md` with `book-proposal-tmpl.yaml` | Draft book proposal |
-| | _Format tasks_ | `tasks/format-for-packtpub.md` (Story 7.7) | PacktPub formatting |
-| | | `tasks/format-for-oreilly.md` (Story 7.7) | O'Reilly formatting |
-| | | `tasks/prepare-meap-chapter.md` | Manning MEAP prep |
-| **exercise-creator.md** | `*design-exercises` | `tasks/design-exercises.md` | Create practice exercises |
-| **book-analyst.md** | `*analyze-book` | `tasks/analyze-existing-book.md` | Analyze existing book |
-| | _Plan revision_ | `tasks/plan-book-revision.md` | Create revision plan |
-| **version-manager.md** | _Assess impact_ | `tasks/assess-version-impact.md` (Story 7.8) | Evaluate version changes |
-| **learning-path-designer.md** | `*validate-flow` | `tasks/validate-learning-flow.md` (Story 7.4) | Validate learning progression |
+| Agent File                    | Command                       | Task File                                            | Purpose                       |
+| ----------------------------- | ----------------------------- | ---------------------------------------------------- | ----------------------------- |
+| **tutorial-architect.md**     | `*create-tutorial`            | `tasks/develop-tutorial.md`                          | Create standalone tutorial    |
+|                               | `*outline-chapter`            | `tasks/create-chapter-outline.md`                    | Design chapter structure      |
+|                               | `*write-walkthrough`          | `tasks/write-walkthrough.md` (Story 7.11)            | Create step-by-step guide     |
+|                               | `*design-exercises`           | `tasks/design-exercises.md`                          | Create practice problems      |
+|                               | `*write-summary`              | `tasks/write-summary.md`                             | Create chapter recap          |
+|                               | `*create-doc`                 | `tasks/create-doc.md`                                | Universal document creation   |
+| **code-curator.md**           | `*create-code-example`        | `tasks/create-code-example.md`                       | Develop code example          |
+|                               | `*test-all-examples`          | `tasks/test-code-examples.md`                        | Test all code                 |
+|                               | `*security-audit`             | `tasks/security-audit.md` (Story 7.3)                | Security vulnerability scan   |
+|                               | `*cross-platform-test`        | `tasks/cross-platform-test.md` (Story 7.3)           | Test across platforms         |
+|                               | `*version-check`              | `tasks/version-check.md` (Story 7.6)                 | Verify version compatibility  |
+|                               | `*optimize-code`              | `tasks/optimize-code.md` (Story 7.6)                 | Improve example efficiency    |
+| **instructional-designer.md** | `*create-book-outline`        | `tasks/design-book-outline.md`                       | Create book structure         |
+|                               | `*create-learning-objectives` | `tasks/create-learning-objectives.md`                | Define learning goals         |
+|                               | `*design-learning-path`       | `tasks/map-prerequisites.md`                         | Map prerequisite flow         |
+|                               | `*analyze-difficulty-curve`   | `tasks/analyze-difficulty-curve.md` (Story 7.5)      | Check progression             |
+| **technical-reviewer.md**     | `*review-chapter`             | `tasks/technical-review-chapter.md`                  | Full chapter review           |
+|                               | _Execute tasks directly_      | `tasks/verify-accuracy.md` (Story 7.4)               | Verify technical accuracy     |
+|                               |                               | `tasks/check-best-practices.md` (Story 7.4)          | Check code practices          |
+|                               |                               | `tasks/test-code-examples.md`                        | Test all code                 |
+|                               |                               | `tasks/security-audit.md` (Story 7.3)                | Security review               |
+| **technical-editor.md**       | `*copy-edit`                  | `tasks/copy-edit-chapter.md`                         | Professional editing          |
+|                               | `*review-outline`             | Editorial review                                     | Outline clarity review        |
+| **book-publisher.md**         | `*create-proposal`            | `tasks/create-doc.md` with `book-proposal-tmpl.yaml` | Draft book proposal           |
+|                               | _Format tasks_                | `tasks/format-for-packtpub.md` (Story 7.7)           | PacktPub formatting           |
+|                               |                               | `tasks/format-for-oreilly.md` (Story 7.7)            | O'Reilly formatting           |
+|                               |                               | `tasks/prepare-meap-chapter.md`                      | Manning MEAP prep             |
+| **exercise-creator.md**       | `*design-exercises`           | `tasks/design-exercises.md`                          | Create practice exercises     |
+| **book-analyst.md**           | `*analyze-book`               | `tasks/analyze-existing-book.md`                     | Analyze existing book         |
+|                               | _Plan revision_               | `tasks/plan-book-revision.md`                        | Create revision plan          |
+| **version-manager.md**        | _Assess impact_               | `tasks/assess-version-impact.md` (Story 7.8)         | Evaluate version changes      |
+| **learning-path-designer.md** | `*validate-flow`              | `tasks/validate-learning-flow.md` (Story 7.4)        | Validate learning progression |
 
 ### File Path Conventions
 
 Standard file paths for manuscript organization.
 
 #### Planning Phase
+
 - **Book Proposal**: `manuscript/planning/book-proposal.md`
 - **Book Outline**: `manuscript/planning/book-outline.md`
 - **Learning Path Validation**: `manuscript/planning/learning-path-validation.md`
 - **Final Outline**: `manuscript/planning/book-outline-final.md`
 
 #### Chapter Development
+
 - **Chapter Outline**: `manuscript/outlines/chapter-{n}-outline.md`
 - **Section Analysis**: `section-analysis.md` (working file)
 - **Section List**: `manuscript/sections/chapter-{n}-section-list.md`
 - **Section Plans**: `section-plans/section-{n}.md` (working files, 5-8 per chapter)
 
 #### Section Development
+
 - **Section Draft**: `manuscript/sections/chapter-{n}/section-{n}-draft.md`
 - **Section Final**: `manuscript/sections/chapter-{n}/section-{n}-final.md`
 - **Section Review Notes**: `section-{n}-review-notes.md` (working file)
 
 #### Code Examples
+
 - **Code Files**: `code/chapter-{n}/section-{n}/example-{name}.{ext}`
 - **Tests**: `code/chapter-{n}/section-{n}/tests/`
 - **README**: `code/chapter-{n}/README.md`
 
 #### Chapter Assembly
+
 - **Integrated Chapter**: `manuscript/chapters/chapter-{n}-integrated.md`
 - **Learning Flow Validation**: `learning-flow-validation.md` (working file)
 - **Technical Review**: `reviews/technical-review-chapter-{n}.md`
@@ -2204,12 +2374,14 @@ Standard file paths for manuscript organization.
 - **Final Chapter**: `manuscript/chapters/chapter-{n}-final.md`
 
 #### Publication
+
 - **Publisher-Specific Packages**: `publishing/{publisher}/`
 - **Submission Packages**: `publishing/{publisher}/submission-package/`
 - **Marketing Materials**: `marketing/`
 - **Cover Graphics**: `marketing/graphics/`
 
 #### Working Files (Not in Manuscript)
+
 - **Analysis Documents**: Root or `analysis/` directory
 - **Review Notes**: Root or `reviews/` directory
 - **Validation Reports**: Root or `validation/` directory
@@ -2218,24 +2390,24 @@ Standard file paths for manuscript organization.
 
 Quality gates and their associated checklists.
 
-| Quality Gate | Checklist File | Used By | Execute With |
-|-------------|----------------|---------|--------------|
-| Section Plan Complete | `section-plan-tmpl.yaml` validates | Tutorial Architect | Template validation |
-| Learning Flow Validated | `learning-objectives-checklist.md` | Instructional Designer | `execute-checklist.md` |
-| | `prerequisite-clarity-checklist.md` | Instructional Designer | `execute-checklist.md` |
-| Code Quality | `code-testing-checklist.md` | Code Curator | `execute-checklist.md` |
-| | `code-quality-checklist.md` | Code Curator | `execute-checklist.md` |
-| Security Review | `security-best-practices-checklist.md` | Code Curator, Technical Reviewer | `execute-checklist.md` |
-| Cross-Platform | `cross-platform-checklist.md` | Code Curator | `execute-checklist.md` |
-| Technical Accuracy | `technical-accuracy-checklist.md` | Technical Reviewer | `execute-checklist.md` |
-| Best Practices | (checked via `check-best-practices.md` task) | Technical Reviewer | Task execution |
-| Performance | `performance-considerations-checklist.md` | Technical Reviewer | `execute-checklist.md` |
-| Tutorial Effectiveness | `tutorial-effectiveness-checklist.md` | Code Curator | `execute-checklist.md` |
-| Chapter Completeness | `chapter-completeness-checklist.md` | Tutorial Architect | `execute-checklist.md` |
-| Accessibility | `accessibility-checklist.md` | Technical Editor | `execute-checklist.md` |
-| PacktPub Submission | `packtpub-submission-checklist.md` | Book Publisher | `execute-checklist.md` |
-| O'Reilly Format | `oreilly-format-checklist.md` | Book Publisher | `execute-checklist.md` |
-| Manning MEAP | `manning-meap-checklist.md` | Book Publisher | `execute-checklist.md` |
+| Quality Gate            | Checklist File                               | Used By                          | Execute With           |
+| ----------------------- | -------------------------------------------- | -------------------------------- | ---------------------- |
+| Section Plan Complete   | `section-plan-tmpl.yaml` validates           | Tutorial Architect               | Template validation    |
+| Learning Flow Validated | `learning-objectives-checklist.md`           | Instructional Designer           | `execute-checklist.md` |
+|                         | `prerequisite-clarity-checklist.md`          | Instructional Designer           | `execute-checklist.md` |
+| Code Quality            | `code-testing-checklist.md`                  | Code Curator                     | `execute-checklist.md` |
+|                         | `code-quality-checklist.md`                  | Code Curator                     | `execute-checklist.md` |
+| Security Review         | `security-best-practices-checklist.md`       | Code Curator, Technical Reviewer | `execute-checklist.md` |
+| Cross-Platform          | `cross-platform-checklist.md`                | Code Curator                     | `execute-checklist.md` |
+| Technical Accuracy      | `technical-accuracy-checklist.md`            | Technical Reviewer               | `execute-checklist.md` |
+| Best Practices          | (checked via `check-best-practices.md` task) | Technical Reviewer               | Task execution         |
+| Performance             | `performance-considerations-checklist.md`    | Technical Reviewer               | `execute-checklist.md` |
+| Tutorial Effectiveness  | `tutorial-effectiveness-checklist.md`        | Code Curator                     | `execute-checklist.md` |
+| Chapter Completeness    | `chapter-completeness-checklist.md`          | Tutorial Architect               | `execute-checklist.md` |
+| Accessibility           | `accessibility-checklist.md`                 | Technical Editor                 | `execute-checklist.md` |
+| PacktPub Submission     | `packtpub-submission-checklist.md`           | Book Publisher                   | `execute-checklist.md` |
+| O'Reilly Format         | `oreilly-format-checklist.md`                | Book Publisher                   | `execute-checklist.md` |
+| Manning MEAP            | `manning-meap-checklist.md`                  | Book Publisher                   | `execute-checklist.md` |
 
 ---
 

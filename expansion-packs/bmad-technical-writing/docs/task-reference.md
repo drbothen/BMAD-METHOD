@@ -166,6 +166,7 @@ This comprehensive reference documents all 67 tasks organized by phase, with:
 **When to Use**: Validating chapter sequence, checking learning flow, ensuring proper difficulty progression
 
 **Prerequisites**:
+
 - Book outline or chapter content
 - Learning objectives defined
 
@@ -232,6 +233,7 @@ This comprehensive reference documents all 67 tasks organized by phase, with:
 **When to Use**: Quality gate in workflows, validating chapter sequences, ensuring no knowledge gaps
 
 **Prerequisites**:
+
 - Outline or chapter content
 - Prerequisites defined
 
@@ -298,6 +300,7 @@ This comprehensive reference documents all 67 tasks organized by phase, with:
 **When to Use**: Section-driven development workflow (step 3), writing individual sections incrementally
 
 **Prerequisites**:
+
 - Section plan (section-plan.md) with learning objectives
 - Code examples from code-curator (tested and documented)
 - Chapter outline (chapter context)
@@ -476,6 +479,7 @@ This comprehensive reference documents all 67 tasks organized by phase, with:
 **When to Use**: Quality gate for code examples, validating security best practices, before publication
 
 **Prerequisites**:
+
 - Code examples complete
 - Language and security standards defined
 
@@ -866,6 +870,7 @@ This comprehensive reference documents all 67 tasks organized by phase, with:
 **When to Use**: Submitting to PacktPub, preparing PacktPub-specific deliverables
 
 **Prerequisites**:
+
 - Manuscript complete and reviewed
 - PacktPub style guide reviewed
 
@@ -884,6 +889,7 @@ This comprehensive reference documents all 67 tasks organized by phase, with:
 **When to Use**: Submitting to O'Reilly Media, preparing O'Reilly-specific deliverables
 
 **Prerequisites**:
+
 - Manuscript complete and reviewed
 - O'Reilly Atlas guidelines reviewed
 
@@ -902,6 +908,7 @@ This comprehensive reference documents all 67 tasks organized by phase, with:
 **When to Use**: Submitting to Manning Publications, preparing Manning MEAP deliverables
 
 **Prerequisites**:
+
 - Manuscript complete and reviewed
 - Manning author guide reviewed
 
@@ -1253,6 +1260,7 @@ The BMad Technical Writing Expansion Pack's **67 executable tasks** provide step
 - `copy-edit-chapter.md` - Professional polish
 
 **Sprint 7 (v2.1) Additions**: 33 new tasks
+
 - Instructional Design: 5 tasks
 - Section Development: 4 tasks
 - Code Security & Quality: 10 tasks

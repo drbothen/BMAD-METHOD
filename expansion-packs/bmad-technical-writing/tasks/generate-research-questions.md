@@ -5,25 +5,13 @@
 ---
 
 task:
-  id: generate-research-questions
-  name: Generate Research Questions
-  description: Create comprehensive research question list (20-30 questions) for deep technical topic exploration
-  persona_default: book-analyst
-  inputs:
-    - topic
-    - target-audience
-    - research-depth
-  steps:
-    - Understand research topic scope and depth goals
-    - Generate foundational questions (What, Why, When, Where, Who)
-    - Generate technical deep-dive questions (How, Architecture, Components)
-    - Generate practical application questions (Use cases, Implementation, Best practices)
-    - Generate advanced/edge case questions (Limitations, Scale, Advanced techniques)
-    - Generate troubleshooting questions (Errors, Debugging, Tools)
-    - Apply question templates (5W1H, Comparison, Implementation, Troubleshooting)
-    - Organize questions by category (foundational, technical, practical, advanced)
-    - Aim for 20-30 comprehensive, specific, answerable questions
-  output: List of 20-30 research questions ready for research-technical-topic.md task
+id: generate-research-questions
+name: Generate Research Questions
+description: Create comprehensive research question list (20-30 questions) for deep technical topic exploration
+persona_default: book-analyst
+inputs: - topic - target-audience - research-depth
+steps: - Understand research topic scope and depth goals - Generate foundational questions (What, Why, When, Where, Who) - Generate technical deep-dive questions (How, Architecture, Components) - Generate practical application questions (Use cases, Implementation, Best practices) - Generate advanced/edge case questions (Limitations, Scale, Advanced techniques) - Generate troubleshooting questions (Errors, Debugging, Tools) - Apply question templates (5W1H, Comparison, Implementation, Troubleshooting) - Organize questions by category (foundational, technical, practical, advanced) - Aim for 20-30 comprehensive, specific, answerable questions
+output: List of 20-30 research questions ready for research-technical-topic.md task
 
 ---
 
@@ -46,6 +34,7 @@ Before starting this task:
 Define what you're researching:
 
 **Ask the user:**
+
 - What is the specific topic to research?
 - What is the target audience (beginner/intermediate/advanced)?
 - What is the current knowledge level about this topic?
@@ -53,6 +42,7 @@ Define what you're researching:
 - How deep should the research go (overview vs comprehensive)?
 
 **Document:**
+
 - Topic scope clearly defined
 - Audience skill level
 - Research depth goal (overview / moderate / comprehensive)
@@ -329,27 +319,34 @@ Group and sequence your questions:
 
 ```markdown
 ## Foundational Questions (5-8 questions)
+
 [Definition, motivation, context, applicability questions]
 
 ## Technical Deep-Dive Questions (6-10 questions)
+
 [Architecture, components, performance, security questions]
 
 ## Practical Application Questions (6-10 questions)
+
 [Use cases, implementation, best practices, testing questions]
 
 ## Advanced Topics Questions (3-6 questions)
+
 [Limitations, scaling, advanced techniques, integration questions]
 
 ## Troubleshooting Questions (3-5 questions)
+
 [Errors, debugging, tools, operations questions]
 ```
 
 **Sequence within categories:**
+
 - Basic to advanced
 - General to specific
 - Common to edge cases
 
 **Remove duplicates:**
+
 - Check for similar questions
 - Consolidate overlapping questions
 - Ensure each question adds unique value
@@ -361,18 +358,23 @@ Group and sequence your questions:
 Make questions specific and answerable:
 
 **Bad question (too vague):**
+
 - "How does React work?"
 
 **Good question (specific):**
+
 - "How does React's virtual DOM reconciliation algorithm work?"
 
 **Bad question (too broad):**
+
 - "What are best practices?"
 
 **Good question (specific):**
+
 - "What are best practices for managing state in React applications?"
 
 **Refinement checklist for each question:**
+
 - [ ] Is it specific enough to research?
 - [ ] Is it answerable (not purely opinion)?
 - [ ] Is it relevant to the topic?
@@ -397,31 +399,31 @@ Output final list:
 1. What is [topic] and how does it work?
 2. Why was [topic] created and what problems does it solve?
 3. When should you use [topic] vs alternatives?
-[...continue...]
+   [...continue...]
 
 ## Technical Deep-Dive Questions (8 questions)
 
 1. How is [topic] architected internally?
 2. What are the key components and how do they interact?
-[...continue...]
+   [...continue...]
 
 ## Practical Application Questions (9 questions)
 
 1. What are real-world use cases for [topic]?
 2. How do you implement [topic] in [language/framework]?
-[...continue...]
+   [...continue...]
 
 ## Advanced Topics Questions (4 questions)
 
 1. What are the limitations and trade-offs of [topic]?
 2. How does [topic] scale in production environments?
-[...continue...]
+   [...continue...]
 
 ## Troubleshooting Questions (4 questions)
 
 1. What are common errors when working with [topic]?
 2. How do you debug [topic] issues?
-[...continue...]
+   [...continue...]
 
 ---
 
@@ -430,6 +432,7 @@ Output final list:
 ```
 
 **Save to:**
+
 - User-specified location or `docs/research/[topic]-questions.md`
 
 ## Success Criteria

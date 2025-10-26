@@ -62,6 +62,7 @@ print(from_range)  # [1, 2, 3, 4, 5]
 ```
 
 **When to use which:**
+
 - Use `[]` for most cases - it's simpler and more readable
 - Use `list()` when converting other data types to lists
 
@@ -111,6 +112,7 @@ fruits  │ "apple" │ "banana" │ "cherry" │
 ```
 
 **Why use negative indexing?**
+
 - Access the last element without knowing the list length
 - More readable code when working from the end: `last = items[-1]` vs `last = items[len(items)-1]`
 
@@ -296,6 +298,7 @@ Now that you know how to create lists and access their elements, you're ready to
 ## Section Summary
 
 **Key Concepts:**
+
 - Lists are ordered, mutable collections
 - Create lists with `[]` or `list()`
 - Access elements with positive (0, 1, 2...) or negative (-1, -2, -3...) indices

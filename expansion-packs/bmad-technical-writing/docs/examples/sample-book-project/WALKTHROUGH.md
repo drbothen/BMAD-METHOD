@@ -22,6 +22,7 @@ This walkthrough shows you **step-by-step** how this sample chapter was created 
 This walkthrough demonstrates the **complete section-driven development workflow** for creating a technical book chapter, from initial outline to final polished chapter.
 
 **You will see:**
+
 - Which agent to activate at each step
 - Which task to execute for each workflow phase
 - What inputs are needed and what outputs are produced
@@ -43,6 +44,7 @@ This walkthrough demonstrates the **complete section-driven development workflow
 ### Sprint 7 Tasks Highlighted ⭐
 
 Throughout this walkthrough, you'll see these new Sprint 7 tasks in action:
+
 - `write-section-draft.md` - Core section writing task
 - `execute-checklist.md` - Quality gate execution
 - `merge-sections.md` - Chapter assembly
@@ -56,6 +58,7 @@ Throughout this walkthrough, you'll see these new Sprint 7 tasks in action:
 ### Prerequisites
 
 Before starting, ensure you have:
+
 - BMAD Technical Writing Expansion Pack installed
 - Project directory structure set up
 - Access to agents: tutorial-architect, instructional-designer, code-curator, technical-reviewer, technical-editor
@@ -80,6 +83,7 @@ sample-book-project/
 ### File Naming Conventions
 
 Follow these patterns for consistency:
+
 - **Outlines**: `{chapter-name}-outline.md`
 - **Section plans**: `section-{n}-plan.md`
 - **Section drafts**: `section-{n}-draft.md`
@@ -103,6 +107,7 @@ Follow these patterns for consistency:
 **Input**: Book idea, target audience, rough chapter list
 
 **Process**:
+
 1. Activate instructional-designer agent
 2. Request book outline creation
 3. Define 5-7 chapters with descriptions
@@ -112,6 +117,7 @@ Follow these patterns for consistency:
 **Output**: `book-outline.md`
 
 **Sample book outline**:
+
 - **Title**: Python Essentials: Data Structures and Algorithms
 - **Audience**: Beginner programmers with basic Python syntax knowledge
 - **Chapters**: 5 chapters (Ch 1-2: Review, Ch 3: Lists/Tuples ← focus, Ch 4-5: Dicts/Algorithms)
@@ -120,9 +126,11 @@ Follow these patterns for consistency:
 
 ```markdown
 # Activate agent
+
 /bmad-tw:agents:instructional-designer
 
 # Request outline
+
 "I want to create a beginner Python book focusing on data structures.
 Target audience is new programmers who know basic syntax.
 5 chapters covering fundamentals through algorithms."
@@ -143,6 +151,7 @@ Target audience is new programmers who know basic syntax.
 **Input**: Book outline, chapter number/topic
 
 **Process**:
+
 1. Activate tutorial-architect
 2. Reference book outline for context
 3. Request chapter 3 outline
@@ -152,6 +161,7 @@ Target audience is new programmers who know basic syntax.
 **Output**: `manuscript/outlines/chapter-3-outline.md`
 
 **Key decisions**:
+
 - **Chapter scope**: 15-20 pages (good fit for section-driven)
 - **Sections**: 6-8 sections recommended
 - **Code examples**: Yes, working Python code
@@ -161,9 +171,11 @@ Target audience is new programmers who know basic syntax.
 
 ```markdown
 # Activate agent
+
 /bmad-tw:agents:tutorial-architect
 
 # Request chapter outline
+
 "Create outline for Chapter 3: Working with Lists and Tuples.
 Should cover list basics, operations, tuples, and some advanced topics.
 Aimed at beginners who completed Chapter 2 on data types."
@@ -186,6 +198,7 @@ Aimed at beginners who completed Chapter 2 on data types."
 **Input**: `chapter-3-outline.md`
 
 **Process**:
+
 1. Tutorial-architect analyzes chapter outline
 2. Breaks chapter into 6-8 logical sections
 3. Instructional-designer validates learning progression
@@ -194,6 +207,7 @@ Aimed at beginners who completed Chapter 2 on data types."
 **Output**: `manuscript/sections/chapter-3/section-list.md`
 
 **6 Sections Planned**:
+
 1. **Section 3.1**: List Basics (Creating and Accessing Lists) ← develop
 2. **Section 3.2**: List Operations (Modify, Add, Remove) ← develop
 3. **Section 3.3**: Tuples and Immutability ← develop
@@ -202,11 +216,13 @@ Aimed at beginners who completed Chapter 2 on data types."
 6. **Section 3.6**: Practical Applications (planned, not developed)
 
 **Why 3 developed + 3 planned?**
+
 - Demonstrates complete workflow without overwhelming sample size
 - Shows planning foresight (sections 4-6 planned for future)
 - Keeps sample creation time reasonable (12-16 hours vs 30+ hours)
 
 **Section plan details**: Each section plan includes:
+
 - Learning objectives
 - Prerequisites (which previous section required)
 - Content structure (concept → tutorial → practice)
@@ -217,15 +233,19 @@ Aimed at beginners who completed Chapter 2 on data types."
 
 ```markdown
 # Activate agent
+
 /bmad-tw:agents:tutorial-architect
 
 # Request section planning
+
 "Analyze chapter-3-outline.md and break it into 6-8 sections.
 Create section plans for each. I want to develop 3 sections fully
 and leave 3 as planned for scope management."
 
 # Agent executes section-planning-workflow.yaml
+
 # Creates section-list.md with 6 section plans
+
 # Marks sections 1-3 for development, 4-6 as planned
 ```
 
@@ -250,6 +270,7 @@ This is the **core workflow** - repeat 3 times (once per section).
 **Input**: `section-1-plan.md` (code examples needed: 2-3)
 
 **Process**:
+
 1. Activate code-curator
 2. Reference section-1-plan learning objectives
 3. Create `list_basics.py` with 3 examples:
@@ -260,6 +281,7 @@ This is the **core workflow** - repeat 3 times (once per section).
 5. Verify tests pass
 
 **Output**:
+
 - `code/chapter-3/section-1/list_basics.py`
 - `code/chapter-3/section-1/test_list_basics.py`
 
@@ -278,15 +300,19 @@ first_three = numbers[0:3]    # [1, 2, 3]
 
 ```markdown
 # Activate agent
+
 /bmad-tw:agents:code-curator
 
 # Request code examples
+
 "Create code examples for Section 3.1 List Basics.
 Need 3 examples: creating lists, accessing elements, slicing.
 Include unit tests. All code must be working and tested."
 
 # Agent creates code files
+
 # Run: pytest code/chapter-3/section-1/test_list_basics.py
+
 # All tests pass ✅
 ```
 
@@ -303,6 +329,7 @@ Include unit tests. All code must be working and tested."
 **Input**: `section-1-plan.md` + `code/chapter-3/section-1/*.py`
 
 **Process**:
+
 1. Activate tutorial-architect
 2. Execute write-section-draft.md task
 3. Agent writes 3-4 page section following structure:
@@ -316,6 +343,7 @@ Include unit tests. All code must be working and tested."
 **Output**: `manuscript/sections/chapter-3/section-1-draft.md`
 
 **Key content elements**:
+
 - Clear learning objectives stated upfront
 - Progressive complexity (simple → complex)
 - Code examples explained line-by-line
@@ -326,9 +354,11 @@ Include unit tests. All code must be working and tested."
 
 ```markdown
 # Activate agent
+
 /bmad-tw:agents:tutorial-architect
 
 # Request section draft
+
 "Write draft for Section 3.1: List Basics using write-section-draft.md.
 Use section-1-plan.md and integrate code from code/chapter-3/section-1/.
 Target 3-4 pages. Follow tutorial-section-tmpl.yaml structure."
@@ -349,6 +379,7 @@ Target 3-4 pages. Follow tutorial-section-tmpl.yaml structure."
 **Input**: `section-1-draft.md`
 
 **Process**:
+
 1. Activate technical-reviewer
 2. Execute checklist for technical accuracy:
    - ✅ Code examples accurate and tested
@@ -363,6 +394,7 @@ Target 3-4 pages. Follow tutorial-section-tmpl.yaml structure."
 **Checklist results**: `checklists/section-1-checklist-results.md`
 
 **Review findings** (example):
+
 - ✅ All code examples tested and working
 - ⚠️ Suggest adding note about negative indexing edge cases
 - ✅ Terminology accurate
@@ -372,9 +404,11 @@ Target 3-4 pages. Follow tutorial-section-tmpl.yaml structure."
 
 ```markdown
 # Activate agent
+
 /bmad-tw:agents:technical-reviewer
 
 # Request technical review
+
 "Review section-1-draft.md for technical accuracy.
 Execute technical-accuracy-checklist.md.
 Save results to checklists/section-1-checklist-results.md"
@@ -391,6 +425,7 @@ Save results to checklists/section-1-checklist-results.md"
 **Input**: `section-1-draft.md` + `reviews/section-1-review-notes.md`
 
 **Process**:
+
 1. Reactivate tutorial-architect
 2. Address review feedback:
    - Added note about negative indexing edge cases
@@ -406,6 +441,7 @@ Save results to checklists/section-1-checklist-results.md"
 **Agent**: `tutorial-architect`
 
 **Process**:
+
 1. Create final version: `section-1-final.md`
 2. Mark section 1 as DONE in `section-list.md`
 3. Section ready for chapter assembly
@@ -423,12 +459,14 @@ Same workflow as Section 1, key differences:
 #### Step 5.2.A: Create Code Examples
 
 **Code focus**: Mutating lists
+
 - `list_operations.py`: modify, append, insert, remove, pop
 - `test_list_operations.py`: full test coverage
 
 #### Step 5.2.B: Write Section Draft ⭐
 
 **Content focus**:
+
 - Builds on Section 1 (references previous concepts)
 - Shows transition from Section 1
 - 3-4 code examples integrated
@@ -439,6 +477,7 @@ Same workflow as Section 1, key differences:
 #### Step 5.2.C-E: Review, Revise, Finalize
 
 Same checklist process, produces:
+
 - `reviews/section-2-review-notes.md`
 - `checklists/section-2-checklist-results.md`
 - `section-2-final.md`
@@ -454,12 +493,14 @@ Same workflow, key differences:
 #### Step 5.3.A: Create Code Examples
 
 **Code focus**: Tuples vs lists
+
 - `tuples_demo.py`: Creating tuples, immutability, when to use
 - `test_tuples_demo.py`: tests
 
 #### Step 5.3.B: Write Section Draft ⭐
 
 **Content focus**:
+
 - Contrast pattern (tuples vs lists)
 - When to use each
 - Immutability explained
@@ -470,6 +511,7 @@ Same workflow, key differences:
 #### Step 5.3.C-E: Review, Revise, Finalize
 
 Produces:
+
 - `reviews/section-3-review-notes.md`
 - `checklists/section-3-checklist-results.md`
 - `section-3-final.md`
@@ -497,11 +539,13 @@ Now we merge the 3 sections into a cohesive chapter.
 **Task**: `merge-sections.md` ⭐ (Sprint 7 addition - Story 7.10)
 
 **Input**:
+
 - `section-1-final.md`
 - `section-2-final.md`
 - `section-3-final.md`
 
 **Process**:
+
 1. Activate tutorial-architect
 2. Execute merge-sections.md
 3. Agent combines sections:
@@ -517,9 +561,11 @@ Now we merge the 3 sections into a cohesive chapter.
 
 ```markdown
 # Activate agent
+
 /bmad-tw:agents:tutorial-architect
 
 # Request merge
+
 "Merge section-1-final, section-2-final, section-3-final into chapter.
 Use merge-sections.md task.
 Add chapter intro and summary.
@@ -541,6 +587,7 @@ Save as chapter-3-integrated.md"
 **Input**: `chapter-3-integrated.md`
 
 **Process**:
+
 1. Identify section boundaries
 2. Improve transitions between sections:
    - Section 1 → 2: "Now that you understand list basics, let's explore how to modify lists..."
@@ -556,6 +603,7 @@ Save as chapter-3-integrated.md"
 # Still in tutorial-architect
 
 # Request transition enhancement
+
 "Enhance transitions between sections in chapter-3-integrated.md.
 Use enhance-transitions.md task.
 Ensure smooth narrative flow section-to-section."
@@ -576,6 +624,7 @@ Ensure smooth narrative flow section-to-section."
 **Input**: `chapter-3-integrated.md`
 
 **Process**:
+
 1. Activate instructional-designer
 2. Check learning progression:
    - ✅ Concepts build progressively
@@ -591,9 +640,11 @@ Ensure smooth narrative flow section-to-section."
 
 ```markdown
 # Activate agent
+
 /bmad-tw:agents:instructional-designer
 
 # Request validation
+
 "Validate learning flow in chapter-3-integrated.md.
 Check progression, scaffolding, difficulty curve.
 Use validate-learning-flow.md task."
@@ -616,6 +667,7 @@ Use validate-learning-flow.md task."
 **Input**: `chapter-3-integrated.md`
 
 **Process**:
+
 1. Activate technical-reviewer
 2. Full chapter technical review:
    - Code accuracy across all sections
@@ -628,6 +680,7 @@ Use validate-learning-flow.md task."
 **Output**: `reviews/chapter-3-technical-review.md`
 
 **Review findings** (example):
+
 - ✅ All code tested and working
 - ✅ Technical accuracy excellent
 - ⚠️ Suggest adding chapter-level summary table comparing lists vs tuples
@@ -645,6 +698,7 @@ Use validate-learning-flow.md task."
 **Input**: `chapter-3-integrated.md` + `reviews/chapter-3-technical-review.md`
 
 **Process**:
+
 1. Reactivate tutorial-architect
 2. Address review feedback:
    - Added comparison table (lists vs tuples)
@@ -667,6 +721,7 @@ Use validate-learning-flow.md task."
 **Input**: `chapter-3-integrated.md`
 
 **Process**:
+
 1. Activate technical-editor
 2. Polish prose:
    - Grammar, punctuation, spelling
@@ -692,6 +747,7 @@ Use validate-learning-flow.md task."
 **Input**: `chapter-3-integrated.md`
 
 **Process**:
+
 1. Reactivate tutorial-architect
 2. Execute chapter completeness checklist:
    - ✅ All learning objectives met
@@ -713,6 +769,7 @@ Use validate-learning-flow.md task."
 **Agent**: `tutorial-architect`
 
 **Process**:
+
 1. Create final chapter version
 2. Mark chapter as complete
 
@@ -757,12 +814,14 @@ Use validate-learning-flow.md task."
 ### Workflow Efficiency
 
 **Time breakdown** (actual):
+
 - Planning: 2-3 hours (book outline + chapter outline + section planning)
 - Section development: 3-4 hours × 3 sections = 9-12 hours
 - Chapter assembly: 2-3 hours
 - **Total: 13-18 hours** for complete chapter
 
 **Per section time**:
+
 - Code examples: 30-45 min
 - Writing draft: 1.5-2 hours
 - Review: 20-30 min
@@ -773,6 +832,7 @@ Use validate-learning-flow.md task."
 ### Quality Metrics
 
 **Review layers**:
+
 1. Section-level technical review (3×)
 2. Chapter-level technical review (1×)
 3. Copy editing (1×)
@@ -787,6 +847,7 @@ Use validate-learning-flow.md task."
 ### For Your Topic
 
 Replace Python content with your domain:
+
 - **Web development**: Sections on HTML, CSS, JavaScript
 - **Data science**: Sections on pandas, numpy, visualization
 - **DevOps**: Sections on Docker, Kubernetes, CI/CD
@@ -797,6 +858,7 @@ Replace Python content with your domain:
 ### Scaling to More Sections
 
 **For 6-8 sections per chapter**:
+
 - Continue section development loop
 - Each section: 3-4 hours
 - 8 sections = 24-32 hours of section development
@@ -804,12 +866,14 @@ Replace Python content with your domain:
 - **Total**: ~30-40 hours per chapter
 
 **Time management**:
+
 - 1 section per day = 1 week for 6-section chapter
 - 2 sections per day (if full-time) = 3-4 days
 
 ### When to Use Section-Driven vs Traditional
 
 **Use section-driven when**:
+
 - Chapter is 10+ pages
 - Multiple distinct topics in chapter
 - Want incremental progress and quality gates
@@ -817,6 +881,7 @@ Replace Python content with your domain:
 - Need to parallelize work
 
 **Use traditional (write whole chapter) when**:
+
 - Chapter is short (5-8 pages)
 - Single cohesive topic
 - Narrative flow is paramount
@@ -825,6 +890,7 @@ Replace Python content with your domain:
 ### Publisher Integration
 
 Most publishers accept section-driven workflow:
+
 1. Deliver sections for early review
 2. Assemble into chapters
 3. Submit chapters to publisher
@@ -840,8 +906,9 @@ Most publishers accept section-driven workflow:
 You've seen the **complete section-driven development workflow** from book outline to final chapter.
 
 **Next steps**:
+
 1. Explore the sample files in this project
-2. Run the code examples (`pytest` in code/chapter-3/*)
+2. Run the code examples (`pytest` in code/chapter-3/\*)
 3. Read the final chapter (`manuscript/chapters/chapter-3-final.md`)
 4. Use this structure as a template for your book project
 
@@ -852,6 +919,7 @@ You've seen the **complete section-driven development workflow** from book outli
 ## Questions?
 
 Join the BMAD community:
+
 - Discord: https://discord.gg/gk8jAdXWmj
 - GitHub: https://github.com/bmadcode/bmad-method
 - Issues: https://github.com/bmadcode/bmad-method/issues

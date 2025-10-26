@@ -3,6 +3,7 @@
 ## What This Demonstrates
 
 Complete section-driven development workflow for technical book writing:
+
 1. Chapter outline creation
 2. Section planning (breaking chapter into sections)
 3. Section development (3 complete sections)
@@ -58,16 +59,19 @@ Complete section-driven development workflow for technical book writing:
 ## Sample Sections Developed
 
 **Section 3.1: List Basics (Creating and Accessing Lists)**
+
 - Demonstrates: Creating lists, indexing, slicing
 - Code: `code/chapter-3/section-1/`
 - Pages: 3-4
 
 **Section 3.2: List Operations (Modify, Add, Remove)**
+
 - Demonstrates: Mutating lists, append, insert, remove, pop
 - Code: `code/chapter-3/section-2/`
 - Pages: 3-4
 
 **Section 3.3: Tuples and Immutability**
+
 - Demonstrates: Tuples vs lists, when to use each
 - Code: `code/chapter-3/section-3/`
 - Pages: 3-4
@@ -75,6 +79,7 @@ Complete section-driven development workflow for technical book writing:
 ## Sections Planned (Not Developed)
 
 These sections are planned in the section-list but not developed in this sample:
+
 - Section 3.4: List Comprehensions
 - Section 3.5: Sorting and Searching
 - Section 3.6: Practical Applications
@@ -84,6 +89,7 @@ These sections are planned in the section-list but not developed in this sample:
 **Total**: 12-16 hours
 
 **Breakdown**:
+
 - Planning (outlines, section plans): 2-3 hours
 - Section 1 development: 3-4 hours
 - Section 2 development: 3-4 hours
@@ -109,5 +115,6 @@ These sections are planned in the section-list but not developed in this sample:
 ## Questions or Feedback
 
 Join the BMAD community:
+
 - Discord: https://discord.gg/gk8jAdXWmj
 - GitHub: https://github.com/bmadcode/bmad-method

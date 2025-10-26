@@ -5,25 +5,13 @@
 ---
 
 task:
-  id: brainstorm-chapter-ideas
-  name: Brainstorm Chapter Topic Ideas
-  description: Generate comprehensive list of 15-25 potential chapter topics from book concept
-  persona_default: instructional-designer
-  inputs:
-    - book-concept
-    - target-audience
-    - book-goals
-  steps:
-    - Analyze book concept, audience, and scope
-    - Identify essential topics (must-have for this book)
-    - Review similar/competing books for coverage gaps
-    - Apply brainstorming techniques (mind mapping, SCAMPER, 5W1H)
-    - Generate 15-25 chapter topic ideas with rationale
-    - Organize by learning progression and priority
-    - Tag difficulty level and estimated length
-    - Identify gaps and opportunities
-    - Present ideas grouped by category (Essential/Valuable/Optional)
-  output: List of 15-25 chapter ideas ready for book outline design
+id: brainstorm-chapter-ideas
+name: Brainstorm Chapter Topic Ideas
+description: Generate comprehensive list of 15-25 potential chapter topics from book concept
+persona_default: instructional-designer
+inputs: - book-concept - target-audience - book-goals
+steps: - Analyze book concept, audience, and scope - Identify essential topics (must-have for this book) - Review similar/competing books for coverage gaps - Apply brainstorming techniques (mind mapping, SCAMPER, 5W1H) - Generate 15-25 chapter topic ideas with rationale - Organize by learning progression and priority - Tag difficulty level and estimated length - Identify gaps and opportunities - Present ideas grouped by category (Essential/Valuable/Optional)
+output: List of 15-25 chapter ideas ready for book outline design
 
 ---
 
@@ -47,6 +35,7 @@ Before starting this task:
 Understand the foundation:
 
 **Ask the user:**
+
 - What is the book topic and core technology/framework?
 - Who is the target audience (beginner/intermediate/advanced)?
 - What will readers accomplish after reading this book?
@@ -55,6 +44,7 @@ Understand the foundation:
 - What publisher or format are you targeting?
 
 **Document:**
+
 - Book title or working title
 - Target reader persona
 - Book scope and constraints
@@ -65,12 +55,14 @@ Understand the foundation:
 Research competitive landscape:
 
 **Identify 3-5 competing or similar books:**
+
 - What topics do they cover?
 - What topics do they miss?
 - What's their approach (tutorial, reference, conceptual)?
 - What page count and chapter count?
 
 **Find opportunities:**
+
 - Underserved topics in the space
 - Better approaches to common topics
 - New technologies or practices not yet covered
@@ -81,21 +73,25 @@ Research competitive landscape:
 Determine essential content:
 
 **Must-have topics** (essential for this book):
+
 - What topics are absolutely required?
 - What would make the book incomplete without them?
 - What are foundational concepts?
 
 **Foundation topics** (prerequisites):
+
 - What background knowledge is needed?
 - Should prerequisites be covered in the book?
 - What can be assumed vs. taught?
 
 **Advanced topics** (stretch goals):
+
 - What advanced techniques separate experts from intermediates?
 - What cutting-edge topics could be included?
 - What bonus/optional chapters make sense?
 
 **Topic dependencies:**
+
 - What must be taught before other topics?
 - What natural progression exists?
 - Are there independent topics (can be read in any order)?
@@ -109,6 +105,7 @@ Generate diverse ideas using multiple approaches:
 Start with your core topic in the center, branch out:
 
 **Example for "React Web Development":**
+
 ```
 React Development
 ├── Fundamentals (Components, Props, State, Hooks)
@@ -161,29 +158,34 @@ Explore alternatives and trade-offs:
 Ask yourself these questions to generate specific ideas:
 
 **Learning Path Prompts:**
+
 - "What does the reader need to know to accomplish [book goal]?"
 - "What's the logical progression from beginner to proficient?"
 - "What milestones mark progress toward mastery?"
 
 **Problem-Solving Prompts:**
+
 - "What mistakes do beginners make with [technology]?"
 - "What pain points does [technology] solve?"
 - "What troubleshooting skills are essential?"
 - "What errors and edge cases need coverage?"
 
 **Practical Application Prompts:**
+
 - "What real-world projects demonstrate [concepts]?"
 - "What build tutorials would teach [skills]?"
 - "What production concerns need addressing?"
 - "What deployment scenarios are common?"
 
 **Advanced Technique Prompts:**
+
 - "What advanced techniques separate experts from intermediates?"
 - "What performance optimization strategies exist?"
 - "What security considerations are critical?"
 - "What scalability patterns matter?"
 
 **Ecosystem Prompts:**
+
 - "What tools and libraries complement [technology]?"
 - "What integrations are commonly needed?"
 - "What testing strategies apply?"
@@ -218,6 +220,7 @@ Create your brainstormed list:
 ```
 
 **Aim for diversity:**
+
 - Mix of foundational and advanced topics
 - Balance theory and hands-on tutorials
 - Variety of chapter types (concept, tutorial, reference, troubleshooting)
@@ -228,26 +231,31 @@ Create your brainstormed list:
 Group and sequence your ideas:
 
 **Category 1: Essential Chapters**
+
 - Topics required for book completeness
 - Foundational concepts
 - Core learning objectives
 
 **Category 2: Valuable Chapters**
+
 - Topics that enhance the book significantly
 - Common use cases
 - Best practices and patterns
 
 **Category 3: Optional Chapters**
+
 - Nice-to-have topics
 - Advanced or specialized content
 - Bonus material
 
 **Sequence by learning progression:**
+
 - Which topics are prerequisites for others?
 - What's the natural teaching order?
 - Where are the major skill milestones?
 
 **Identify gaps:**
+
 - Are there topic areas missing?
 - Is coverage balanced across difficulty levels?
 - Are there too many or too few chapters?
@@ -258,28 +266,34 @@ Group and sequence your ideas:
 Present ideas to the user:
 
 **Present organized list:**
+
 ```markdown
 ## Essential Chapters (Must-Have)
+
 1. [Chapter idea with description]
 2. [Chapter idea with description]
-...
+   ...
 
 ## Valuable Chapters (Strongly Recommended)
+
 1. [Chapter idea with description]
-...
+   ...
 
 ## Optional Chapters (Nice-to-Have)
+
 1. [Chapter idea with description]
-...
+   ...
 ```
 
 **Ask for feedback:**
+
 - Which ideas resonate most?
 - Are there topics to add or remove?
 - Does the mix feel right for the target audience?
 - Is anything missing from the competitive landscape?
 
 **Iterate:**
+
 - Add new ideas based on feedback
 - Merge similar topics
 - Remove low-priority items if scope is too large
@@ -290,12 +304,14 @@ Present ideas to the user:
 Create final brainstormed chapter list:
 
 **Output format:**
+
 - List of 15-25 chapter ideas
 - Organized by priority (Essential/Valuable/Optional)
 - Each with description, rationale, difficulty, dependencies
 - Ready for use in design-book-outline.md task
 
 **Save to:**
+
 - `docs/brainstorming/chapter-ideas.md` (or user-specified location)
 
 ## Success Criteria

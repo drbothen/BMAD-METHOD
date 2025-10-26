@@ -17,6 +17,7 @@
 This book teaches fundamental data structures and algorithms through Python, building from basic collections (lists, tuples, dictionaries) to simple algorithms (searching, sorting). Each chapter includes working code examples, practice exercises, and real-world applications to solidify understanding.
 
 **What makes this book different**:
+
 - Code-first approach: All examples are tested and working
 - Progressive complexity: Each chapter builds on previous concepts
 - Practical focus: Real-world use cases for every concept
@@ -27,12 +28,14 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Primary audience**: New programmers (3-12 months Python experience)
 
 **Background knowledge**:
+
 - Understands Python syntax (variables, loops, conditionals)
 - Can write simple functions
 - Knows basic data types (int, str, float, bool)
 - Has Python environment set up
 
 **Learning goals**:
+
 - Master core data structures (lists, tuples, dicts, sets)
 - Understand when to use each data structure
 - Learn fundamental algorithms (search, sort)
@@ -45,6 +48,7 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Purpose**: Quick review of prerequisites, establish coding style
 
 **Topics**:
+
 - Python environment setup
 - Variables and data types review
 - Functions and parameters
@@ -56,6 +60,7 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Development approach**: Traditional (single cohesive review chapter)
 
 **Learning objectives**:
+
 - Set up Python development environment
 - Write well-formatted Python functions
 - Use control flow structures effectively
@@ -70,6 +75,7 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Purpose**: Comprehensive understanding of Python's built-in types
 
 **Topics**:
+
 - Numeric types (int, float, complex)
 - Strings and string methods
 - Booleans and truthiness
@@ -81,6 +87,7 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Development approach**: Section-driven (6-7 sections)
 
 **Learning objectives**:
+
 - Master string manipulation
 - Understand numeric operations
 - Grasp type conversion concepts
@@ -95,6 +102,7 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Purpose**: Master Python's fundamental sequence types
 
 **Topics**:
+
 - List creation and access
 - List operations (modify, add, remove)
 - Tuples and immutability
@@ -107,6 +115,7 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Development approach**: Section-driven (6-8 sections)
 
 **Learning objectives**:
+
 - Create and manipulate lists effectively
 - Understand when to use lists vs tuples
 - Write list comprehensions
@@ -118,11 +127,13 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Sample status**: ⭐ **This chapter is fully developed in the sample project**
 
 **Sections developed** (in sample):
+
 - Section 3.1: List Basics (Creating and Accessing Lists)
 - Section 3.2: List Operations (Modify, Add, Remove)
 - Section 3.3: Tuples and Immutability
 
 **Sections planned** (not in sample):
+
 - Section 3.4: List Comprehensions
 - Section 3.5: Sorting and Searching
 - Section 3.6: Practical Applications
@@ -134,6 +145,7 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Purpose**: Master Python's key-value and unique collection types
 
 **Topics**:
+
 - Dictionary creation and access
 - Dictionary methods
 - Nested dictionaries
@@ -146,6 +158,7 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Development approach**: Section-driven (6-8 sections)
 
 **Learning objectives**:
+
 - Create and manipulate dictionaries
 - Use sets for unique collections
 - Understand hash-based data structures
@@ -161,6 +174,7 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Purpose**: Understand fundamental algorithms using data structures from Ch 1-4
 
 **Topics**:
+
 - What are algorithms
 - Linear search
 - Binary search
@@ -174,6 +188,7 @@ This book teaches fundamental data structures and algorithms through Python, bui
 **Development approach**: Section-driven (7-8 sections)
 
 **Learning objectives**:
+
 - Understand algorithmic thinking
 - Implement basic search algorithms
 - Implement basic sort algorithms
@@ -212,6 +227,7 @@ code/
 ```
 
 Each section includes:
+
 - Main code file(s) with examples
 - Test file(s) with unit tests
 - README with setup/run instructions
@@ -235,18 +251,21 @@ Chapter 5 (Algorithms)
 ## Estimated Timeline for Development
 
 **Per chapter** (using section-driven approach):
+
 - Planning (outline + sections): 2-3 hours
 - Section development: 3-4 hours per section × 6-8 sections = 18-32 hours
 - Chapter assembly: 2-3 hours
 - **Total per chapter**: ~22-38 hours
 
 **Full book** (5 chapters):
+
 - **Total**: ~110-190 hours of writing/development
 - **Timeline**: 3-6 months (part-time), 1-2 months (full-time)
 
 ## Quality Assurance
 
 **Review process**:
+
 1. Section-level technical review (all sections)
 2. Chapter-level technical review (all chapters)
 3. Copy editing (all chapters)
@@ -254,6 +273,7 @@ Chapter 5 (Algorithms)
 5. Final technical review (full book)
 
 **Testing**:
+
 - All code examples tested and working
 - Unit tests for all code files
 - Examples tested on Python 3.8+
@@ -275,6 +295,7 @@ Chapter 5 (Algorithms)
 This book outline was created to provide context for **Chapter 3: Working with Lists and Tuples**, which is fully developed in the sample project located in `expansion-packs/bmad-technical-writing/docs/examples/sample-book-project/`.
 
 The sample demonstrates:
+
 - Complete section-driven workflow for one chapter
 - 3 sections fully developed (3.1, 3.2, 3.3)
 - All code examples tested and working

@@ -5,26 +5,13 @@
 ---
 
 task:
-  id: write-walkthrough
-  name: Write Walkthrough
-  description: Transform code examples and learning objectives into clear, step-by-step instructional walkthrough (8-15 steps)
-  persona_default: tutorial-architect
-  inputs:
-    - code_examples_list (curated code demonstrating progression)
-    - learning_objective (what reader will accomplish)
-    - prerequisites (assumed knowledge)
-    - target_audience (beginner/intermediate/advanced)
-  steps:
-    - Analyze code examples for natural progression
-    - Identify key concepts and breakpoints for steps
-    - Plan step sequence (8-15 steps typical)
-    - Write setup instructions
-    - Write incremental steps with code inline
-    - Document expected outputs at each step
-    - Add troubleshooting section
-    - Write completion summary
-    - Run quality checklist
-  output: walkthrough-content.md
+id: write-walkthrough
+name: Write Walkthrough
+description: Transform code examples and learning objectives into clear, step-by-step instructional walkthrough (8-15 steps)
+persona_default: tutorial-architect
+inputs: - code_examples_list (curated code demonstrating progression) - learning_objective (what reader will accomplish) - prerequisites (assumed knowledge) - target_audience (beginner/intermediate/advanced)
+steps: - Analyze code examples for natural progression - Identify key concepts and breakpoints for steps - Plan step sequence (8-15 steps typical) - Write setup instructions - Write incremental steps with code inline - Document expected outputs at each step - Add troubleshooting section - Write completion summary - Run quality checklist
+output: walkthrough-content.md
 
 ---
 

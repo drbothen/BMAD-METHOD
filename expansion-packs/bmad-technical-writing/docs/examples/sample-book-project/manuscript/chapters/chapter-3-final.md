@@ -16,6 +16,7 @@ Lists and tuples let you work with collections of data instead of individual val
 **What You'll Learn:**
 
 By the end of this chapter, you'll be able to:
+
 - Create and access lists using various techniques
 - Modify lists by adding, removing, and changing elements
 - Understand when to use tuples instead of lists
@@ -25,6 +26,7 @@ By the end of this chapter, you'll be able to:
 **Prerequisites:**
 
 This chapter builds on concepts from Chapter 2 (Data Types), particularly the idea of mutability vs. immutability. You should be comfortable with:
+
 - Variables and assignment
 - Basic data types (int, str, bool)
 - For loops and conditionals
@@ -47,6 +49,7 @@ Let's begin your journey into Python's sequence types!
 Lists are one of Python's most fundamental and versatile data structures. A **list** is an ordered, mutable collection that can store multiple items of any data type.
 
 Think of a list as a container that:
+
 - **Holds multiple items** in a specific order
 - **Can be changed** after creation (add, remove, or modify items)
 - **Remembers the order** of items
@@ -107,16 +110,19 @@ reversed_list = numbers[::-1] # [5, 4, 3, 2, 1]
 ### Common Operations
 
 Check membership:
+
 ```python
 has_apple = "apple" in fruits        # True
 ```
 
 Find position:
+
 ```python
 position = fruits.index("banana")    # 1
 ```
 
 Count occurrences:
+
 ```python
 numbers = [1, 2, 2, 3, 2, 4]
 count = numbers.count(2)              # 3
@@ -147,6 +153,7 @@ fruits[0] = "orange"          # Replace "apple" with "orange"
 Python provides several ways to add elements to lists:
 
 **append()** - add single element to end:
+
 ```python
 fruits = ["apple", "banana"]
 fruits.append("cherry")
@@ -154,12 +161,14 @@ fruits.append("cherry")
 ```
 
 **insert()** - add element at specific position:
+
 ```python
 fruits.insert(1, "mango")     # Insert "mango" at index 1
 # fruits is now: ["apple", "mango", "banana", "cherry"]
 ```
 
 **extend()** - add multiple elements:
+
 ```python
 more_fruits = ["grape", "kiwi"]
 fruits.extend(more_fruits)
@@ -169,40 +178,44 @@ fruits.extend(more_fruits)
 ### Removing Elements
 
 **remove()** - remove first occurrence by value:
+
 ```python
 fruits.remove("banana")       # Removes first "banana"
 ```
 
 **pop()** - remove and return element at index:
+
 ```python
 last = fruits.pop()           # Removes and returns last element
 first = fruits.pop(0)         # Removes and returns first element
 ```
 
 **del** statement - remove by index:
+
 ```python
 del fruits[0]                 # Remove first element
 ```
 
 **clear()** - remove all elements:
+
 ```python
 fruits.clear()                # Empty the list
 ```
 
 ### Method Comparison
 
-| Method | What It Does | Returns | Example |
-|--------|--------------|---------|---------|
-| `append(x)` | Add x to end | None | `lst.append(4)` |
-| `insert(i, x)` | Add x at index i | None | `lst.insert(0, 4)` |
-| `extend(iter)` | Add all from iterable | None | `lst.extend([4,5])` |
-| `remove(x)` | Remove first x | None | `lst.remove(4)` |
-| `pop()` | Remove last, return it | Element | `x = lst.pop()` |
-| `pop(i)` | Remove at i, return it | Element | `x = lst.pop(0)` |
+| Method         | What It Does           | Returns | Example             |
+| -------------- | ---------------------- | ------- | ------------------- |
+| `append(x)`    | Add x to end           | None    | `lst.append(4)`     |
+| `insert(i, x)` | Add x at index i       | None    | `lst.insert(0, 4)`  |
+| `extend(iter)` | Add all from iterable  | None    | `lst.extend([4,5])` |
+| `remove(x)`    | Remove first x         | None    | `lst.remove(4)`     |
+| `pop()`        | Remove last, return it | Element | `x = lst.pop()`     |
+| `pop(i)`       | Remove at i, return it | Element | `x = lst.pop(0)`    |
 
 **Important:** Methods like `append()` and `extend()` modify the list **in place** and return `None`, not the modified list.
 
-**Transition:** Lists are mutable and powerful for changing data. But what if you need a sequence that *can't* be changed? That's where tuples come in.
+**Transition:** Lists are mutable and powerful for changing data. But what if you need a sequence that _can't_ be changed? That's where tuples come in.
 
 ---
 
@@ -259,6 +272,7 @@ new_coords = (old_coords[0], old_coords[1], 30)  # (10, 20, 30)
 ### When to Use Tuples vs Lists
 
 **Use TUPLES for:**
+
 - Fixed data that shouldn't change (coordinates, RGB colors, dates)
 - Function return values (returning multiple values)
 - Dictionary keys (tuples are hashable, lists aren't)
@@ -280,6 +294,7 @@ city_locations = {
 ```
 
 **Use LISTS for:**
+
 - Collections that will change (shopping cart, to-do list)
 - Data that needs sorting or filtering
 - Unknown or variable size collections
@@ -330,14 +345,14 @@ index = numbers.index(3)      # 2
 
 ### Lists vs Tuples Summary
 
-| Feature | Lists | Tuples |
-|---------|-------|--------|
-| Syntax | `[1, 2, 3]` | `(1, 2, 3)` |
-| Mutable | ✅ Yes | ❌ No |
-| Methods | Many (append, remove, sort...) | Two (count, index) |
-| Dictionary keys | ❌ No | ✅ Yes |
-| Use case | Changing collections | Fixed data |
-| Performance | Slower | Faster |
+| Feature         | Lists                          | Tuples             |
+| --------------- | ------------------------------ | ------------------ |
+| Syntax          | `[1, 2, 3]`                    | `(1, 2, 3)`        |
+| Mutable         | ✅ Yes                         | ❌ No              |
+| Methods         | Many (append, remove, sort...) | Two (count, index) |
+| Dictionary keys | ❌ No                          | ✅ Yes             |
+| Use case        | Changing collections           | Fixed data         |
+| Performance     | Slower                         | Faster             |
 
 ---
 
@@ -346,6 +361,7 @@ index = numbers.index(3)      # 2
 Congratulations! You've mastered Python's core sequence types. Let's review what you've learned:
 
 **Lists:**
+
 - Ordered, mutable collections created with `[]`
 - Access elements with positive/negative indices
 - Slice with `[start:end:step]` syntax
@@ -353,6 +369,7 @@ Congratulations! You've mastered Python's core sequence types. Let's review what
 - Perfect for collections that change
 
 **Tuples:**
+
 - Ordered, immutable sequences created with `()`
 - Access like lists but can't modify
 - Use for fixed data and function returns
@@ -360,6 +377,7 @@ Congratulations! You've mastered Python's core sequence types. Let's review what
 - Hashable (can be dictionary keys)
 
 **Key Decision:**
+
 - Need to change the collection? → Use a **list**
 - Data is fixed and shouldn't change? → Use a **tuple**
 
@@ -400,6 +418,7 @@ if "mouse" in shopping_cart:
 In **Chapter 4**, you'll learn about dictionaries and sets - Python's key-value and unique collection types. Dictionaries let you look up values by name rather than position, opening up powerful new programming patterns.
 
 **Preview:**
+
 ```python
 # Coming in Chapter 4: Dictionaries
 student = {

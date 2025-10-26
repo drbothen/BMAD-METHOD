@@ -955,6 +955,7 @@ The BMad Technical Writing Expansion Pack's **34 quality checklists** provide co
 - research-quality-checklist **(v2.1+)** - Research credibility validation
 
 **Sprint 7 (v2.1) Additions**: 3 new checklists
+
 - Repository Integration (Manning MEAP, publisher requirements)
 - Generative AI Compliance (authenticity, reader satisfaction)
 - Research Quality (credibility, actionability)

@@ -5,24 +5,13 @@
 ---
 
 task:
-  id: research-technical-topic
-  name: Research Technical Topic
-  description: Systematic research workflow with source tracking and comprehensive note-taking
-  persona_default: book-analyst
-  inputs:
-    - research-questions-list
-    - topic
-  steps:
-    - Organize research questions by category and priority
-    - Identify authoritative research sources (docs, papers, blogs, repos)
-    - For each question systematically search, evaluate, and document answers
-    - Take structured notes with source attribution
-    - Track research progress (not started, in progress, complete)
-    - Verify critical information across multiple sources
-    - Test code examples when applicable
-    - Organize research notes by category
-    - Create source index for citations
-  output: Comprehensive research notes with tracked sources ready for synthesis
+id: research-technical-topic
+name: Research Technical Topic
+description: Systematic research workflow with source tracking and comprehensive note-taking
+persona_default: book-analyst
+inputs: - research-questions-list - topic
+steps: - Organize research questions by category and priority - Identify authoritative research sources (docs, papers, blogs, repos) - For each question systematically search, evaluate, and document answers - Take structured notes with source attribution - Track research progress (not started, in progress, complete) - Verify critical information across multiple sources - Test code examples when applicable - Organize research notes by category - Create source index for citations
+output: Comprehensive research notes with tracked sources ready for synthesis
 
 ---
 
@@ -46,6 +35,7 @@ Before starting this task:
 Structure your research approach:
 
 **Review question list:**
+
 - Total questions to answer
 - Categories (foundational, technical, practical, advanced, troubleshooting)
 - Estimated effort per question
@@ -53,21 +43,25 @@ Structure your research approach:
 **Prioritize questions:**
 
 **Critical (must answer):**
+
 - Core to understanding topic
 - Necessary for target content
 - Foundational knowledge
 
 **Important (should answer):**
+
 - Enhances understanding significantly
 - Best practices and patterns
 - Common use cases
 
 **Optional (nice to answer):**
+
 - Advanced topics
 - Edge cases
 - Bonus content
 
 **Identify dependencies:**
+
 - Which questions should be answered first?
 - Do some questions inform others?
 - What's the logical research sequence?
@@ -81,20 +75,25 @@ Structure your research approach:
 **Priority**: Critical questions first, then important, then optional
 
 ### Phase 1: Foundational (30 min, 7 questions)
+
 - Question 1 (critical)
 - Question 2 (critical)
-[...]
+  [...]
 
 ### Phase 2: Technical Deep-Dive (60 min, 8 questions)
+
 [...]
 
 ### Phase 3: Practical Application (45 min, 9 questions)
+
 [...]
 
 ### Phase 4: Advanced Topics (30 min, 4 questions)
+
 [...]
 
 ### Phase 5: Troubleshooting (15 min, 4 questions)
+
 [...]
 ```
 
@@ -202,6 +201,7 @@ For each question, follow this workflow:
 - **Clarity**: Is the explanation understandable?
 
 **Red flags:**
+
 - Very old content (pre-2020 for fast-moving tech)
 - No author attribution
 - Conflicts with official docs
@@ -220,6 +220,7 @@ Use this format for each question:
 JWT (JSON Web Token) is a stateless authentication mechanism where the server generates a signed token containing user information and sends it to the client. The client includes this token in subsequent requests. Unlike session-based auth where server stores session data, JWT is self-contained and the server validates the token signature without needing to look up session storage.
 
 **Key Differences**:
+
 - JWT: Stateless, token stored client-side, server validates signature
 - Session: Stateful, session stored server-side, cookie contains session ID
 - JWT: Better for distributed systems/microservices (no shared session store needed)
@@ -251,6 +252,7 @@ JWT (JSON Web Token) is a stateless authentication mechanism where the server ge
    - Trust: Medium | Date: 2019 (check if still accurate)
 
 **Key Takeaways**:
+
 - JWT is stateless; session is stateful
 - JWT better for distributed systems
 - Sessions easier to revoke
@@ -261,6 +263,7 @@ JWT (JSON Web Token) is a stateless authentication mechanism where the server ge
 (Will need to create example showing both approaches)
 
 **Open Questions**:
+
 - How do you handle JWT revocation? (Research in later question)
 - What are specific security best practices? (Covered in security question)
 
@@ -285,9 +288,9 @@ When you find code:
 const jwt = require('jsonwebtoken');
 
 const token = jwt.sign(
-  { userId: 123, email: 'user@example.com' },
-  'your-secret-key',
-  { expiresIn: '1h' }
+{ userId: 123, email: 'user@example.com' },
+'your-secret-key',
+{ expiresIn: '1h' }
 );
 
 console.log(token);
@@ -295,6 +298,7 @@ console.log(token);
 \`\`\`
 
 **Notes**:
+
 - Never hardcode secrets in production
 - Token expires in 1 hour (expiresIn)
 - Payload should not contain sensitive data (it's base64 encoded, not encrypted)
@@ -314,16 +318,19 @@ When sources disagree:
 **Question**: Should JWTs be stored in localStorage or cookies?
 
 **Position A** (Source: Auth0 Blog):
+
 - Use httpOnly cookies for better XSS protection
 - LocalStorage vulnerable to XSS attacks
 - Cookies auto-sent by browser (secure if configured correctly)
 
 **Position B** (Source: Some Medium articles):
+
 - Use localStorage for easier mobile app integration
 - Cookies subject to CSRF (require CSRF tokens)
 - LocalStorage gives more control
 
 **Resolution**:
+
 - Security best practice: httpOnly cookies (prevents XSS access)
 - Trade-off: Cookies require CSRF protection
 - Context matters: SPA vs traditional web app
@@ -351,6 +358,7 @@ Maintain a progress tracker:
 ## Status by Category
 
 ### Foundational Questions (7 total)
+
 - [x] Q1: What is JWT? (Completed - 15 min)
 - [x] Q2: Why use JWT? (Completed - 10 min)
 - [x] Q3: When to use JWT? (Completed - 12 min)
@@ -360,15 +368,18 @@ Maintain a progress tracker:
 - [ ] Q7: What problems does JWT solve? (Not Started)
 
 ### Technical Deep-Dive (9 total)
+
 [...]
 
 **Notes**:
+
 - Q1-Q3 took longer than expected (quality sources found)
 - Need to allocate more time for technical deep-dive questions
 - Found excellent resource: Auth0 blog has comprehensive guides
 ```
 
 **Update regularly:**
+
 - Mark questions as you complete them
 - Note time spent per question
 - Identify blockers or difficult questions
@@ -399,6 +410,7 @@ For important claims, cross-reference:
   - Is the data current?
 
 **Mark confidence level for each answer:**
+
 - **High**: 3+ authoritative sources agree, tested if code
 - **Medium**: 2 sources agree, or single authoritative source
 - **Low**: Single source, not verified, or conflicting information
@@ -420,8 +432,10 @@ When research includes code:
    - Does it produce expected output?
 
 4. **Document results**
+
    ```markdown
    **Test Results**: JWT Generation Example
+
    - Environment: Node.js 18.12.0
    - Package: jsonwebtoken@9.0.0
    - Status: ✅ Works as documented
@@ -434,6 +448,7 @@ When research includes code:
    - What dependencies were missing?
 
 **Save tested examples:**
+
 - Organize in `research/code-examples/` folder
 - Include comments noting source
 - Mark which examples to include in book
@@ -513,7 +528,7 @@ Structure your findings:
 1. **JWT Generation** (jwt.io)
 2. **JWT Verification** (Auth0 docs)
 3. **Express Middleware** (Stack Overflow)
-[...list all examples with sources...]
+   [...list all examples with sources...]
 
 ---
 
@@ -534,6 +549,7 @@ Structure your findings:
 ```
 
 **Save organized notes:**
+
 - `docs/research/[topic]-research-notes.md`
 
 ### 8. Create Source Index
@@ -613,6 +629,7 @@ Track your research effort:
 **Time Spent**: 4.5 hours
 
 ## Time Breakdown
+
 - Foundational research: 1 hour
 - Technical deep-dive: 1.5 hours
 - Practical implementation: 1 hour
@@ -620,11 +637,13 @@ Track your research effort:
 - Organization/note-taking: 15 minutes
 
 ## Questions Researched
+
 - Total: 32
 - Completed: 30
 - Skipped: 2 (out of scope)
 
 ## Sources Consulted
+
 - Official docs: 8
 - Technical blogs: 12
 - Stack Overflow: 4
@@ -632,21 +651,25 @@ Track your research effort:
 - RFCs/Specs: 2
 
 ## Code Examples
+
 - Found: 15
 - Tested: 8
 - Will use in chapter: 6
 
 ## Key Findings
+
 - JWT best suited for stateless, distributed systems
 - Security requires careful implementation
 - Multiple approaches exist for token storage (context-dependent)
 
 ## Confidence Assessment
+
 - High confidence: 22 answers
 - Medium confidence: 7 answers
 - Low confidence: 1 answer (need more research)
 
 ## Follow-up Needed
+
 - Deeper dive on JWT revocation strategies
 - Find production-scale case studies
 - Research specific attack vectors
@@ -683,24 +706,28 @@ Successful research produces:
 ## Tips for Efficient Research
 
 **Time management:**
+
 - Set time limits per question (10-20 min typical)
 - Use timer to avoid rabbit holes
 - Mark complex questions for deeper dive later
 - Don't perfect; iterate
 
 **Source evaluation:**
+
 - Start with official docs (saves time)
 - Use CTRL+F to scan long documents
 - Check dates immediately (skip old content)
 - Trust GitHub stars/Stack Overflow votes as quality signals
 
 **Note-taking:**
+
 - Write notes in your own words (tests understanding)
 - Include "why this matters" context
 - Use bullet points for scannability
 - Link related questions
 
 **Tool usage:**
+
 - Use Perplexity AI for quick answers with sources
 - Use ChatGPT/Claude for explanation, but verify
 - Use browser bookmarks/tabs for session management

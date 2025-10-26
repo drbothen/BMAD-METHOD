@@ -5,24 +5,13 @@
 ---
 
 task:
-  id: synthesize-research-notes
-  name: Synthesize Research into Content Outline
-  description: Transform research notes into structured outline ready for chapter/section writing
-  persona_default: tutorial-architect
-  inputs:
-    - research-notes
-    - content-type (chapter, section, article)
-  steps:
-    - Review all research notes and identify themes
-    - Identify content structure based on teaching sequence
-    - Extract key learning points and concepts
-    - Create section-by-section content outline
-    - Plan code examples from research
-    - Apply content patterns (concept, tutorial, problem, comparison)
-    - Add teaching guidance (analogies, visualizations)
-    - Create citation list mapping sources to sections
-    - Identify remaining gaps for follow-up
-  output: Structured content outline ready for writing (use with write-section-draft.md)
+id: synthesize-research-notes
+name: Synthesize Research into Content Outline
+description: Transform research notes into structured outline ready for chapter/section writing
+persona_default: tutorial-architect
+inputs: - research-notes - content-type (chapter, section, article)
+steps: - Review all research notes and identify themes - Identify content structure based on teaching sequence - Extract key learning points and concepts - Create section-by-section content outline - Plan code examples from research - Apply content patterns (concept, tutorial, problem, comparison) - Add teaching guidance (analogies, visualizations) - Create citation list mapping sources to sections - Identify remaining gaps for follow-up
+output: Structured content outline ready for writing (use with write-section-draft.md)
 
 ---
 
@@ -46,6 +35,7 @@ Before starting this task:
 Read through your research comprehensively:
 
 **Initial review:**
+
 - Read all research answers
 - Read all key takeaways
 - Review all code examples collected
@@ -62,6 +52,7 @@ Read through your research comprehensively:
 **Research Time**: 4.5 hours
 
 **Main Themes Identified**:
+
 1. JWT structure and cryptography
 2. Implementation patterns in Node.js
 3. Security considerations
@@ -70,6 +61,7 @@ Read through your research comprehensively:
 6. Production concerns
 
 **Key Insights**:
+
 - JWT is best for distributed/stateless systems
 - Security requires HTTPS + careful secret management
 - Multiple valid approaches for token storage
@@ -77,11 +69,13 @@ Read through your research comprehensively:
 - RBAC can be implemented via JWT claims
 
 **Conflicting Info to Resolve**:
+
 - LocalStorage vs Cookie storage (context-dependent)
 - Revocation strategies (multiple approaches)
 ```
 
 **Identify what resonates:**
+
 - Which concepts appeared repeatedly?
 - What surprised you during research?
 - What are the "aha!" moments?
@@ -94,17 +88,20 @@ Determine how to organize the content:
 **Consider target format:**
 
 **For a book chapter (15-25 pages):**
+
 - Introduction (1-2 pages)
 - 3-5 main sections (3-6 pages each)
 - Exercises (2-3 pages)
 - Summary (1 page)
 
 **For a section (2-5 pages):**
+
 - Brief intro (0.5 page)
 - Main content (1.5-4 pages)
 - Brief wrap-up (0.5 page)
 
 **For an article (1000-3000 words):**
+
 - Hook/intro
 - Problem statement
 - Solution/implementation
@@ -162,21 +159,25 @@ Identify the must-know takeaways:
 **For each major section, answer:**
 
 **What are the must-know concepts?**
+
 - Core definitions
 - Fundamental principles
 - Critical facts
 
 **What are common misconceptions?**
+
 - What do people get wrong?
 - What confusion did you encounter in research?
 - What needs clarification?
 
 **What are practical applications?**
+
 - Real-world use cases
 - When to apply this knowledge
 - Concrete examples
 
 **What are pitfalls to avoid?**
+
 - Common mistakes from research
 - Security vulnerabilities
 - Performance issues
@@ -188,22 +189,26 @@ Identify the must-know takeaways:
 ## Section: Understanding JWT Structure
 
 **Must-Know Concepts**:
+
 - JWT has three parts: header, payload, signature
 - Payload is base64url encoded (readable, not encrypted)
 - Signature prevents tampering but doesn't encrypt
 - Standard claims: iss, sub, aud, exp, iat, jti
 
 **Common Misconceptions**:
+
 - "JWT is encrypted" → No, it's signed (integrity) not encrypted (confidentiality)
 - "Put user password in JWT" → Never put sensitive data; payload is readable
 - "JWT can't be tampered with" → True if signature verified; false if not checked
 
 **Practical Applications**:
+
 - User info in payload avoids database lookups
 - Expiration claim (exp) enables time-limited access
 - Custom claims support role-based access control
 
 **Pitfalls to Avoid**:
+
 - Storing sensitive data in payload
 - Not validating signature
 - Using weak signing secret
@@ -220,6 +225,7 @@ Build detailed outline for each section:
 ### Section 2: Understanding JWT Structure (4 pages, ~2000 words)
 
 **Learning Objectives**:
+
 - Explain the three components of a JWT
 - Describe how JWT signing prevents tampering
 - Identify standard JWT claims and their purposes
@@ -258,36 +264,43 @@ Build detailed outline for each section:
    - Source: JWT.io, Auth0 blog
 
 **Key Concepts to Explain**:
+
 - Base64url encoding vs encryption
 - Signing vs encryption
 - Claims and their purposes
 - Token validation process
 
 **Code Examples**:
+
 1. Decoding JWT to see payload (jwt-decode library)
 2. Creating JWT with custom claims (jsonwebtoken)
 3. Verifying JWT signature (jsonwebtoken)
 
 **Visuals Needed**:
+
 1. Diagram: JWT structure (header.payload.signature)
 2. Flowchart: How signature verification works
 3. Screenshot: jwt.io debugger showing token parts
 
 **Common Mistakes to Highlight**:
+
 - Storing passwords or sensitive data in payload
 - Assuming JWT is encrypted
 - Not verifying signature before trusting payload
 
 **Analogies/Explanations**:
+
 - JWT like a sealed envelope: Contents visible (encoding), but seal (signature) proves authenticity
 - Signature like wax seal on letter: Shows tampering, doesn't hide contents
 
 **Exercises**:
+
 1. Decode a JWT and identify claims
 2. Explain why changing payload breaks signature
 3. Create JWT with custom claims
 
 **Sources to Cite**:
+
 - JWT.io introduction
 - RFC 7519 (JSON Web Token specification)
 - Auth0 blog on JWT security
@@ -303,6 +316,7 @@ Organize code from research:
 ## Code Examples Plan
 
 ### Example 1: Generating a JWT
+
 - **Purpose**: Show basic token creation
 - **Source**: JWT.io docs + Auth0 blog
 - **File**: `examples/01-generate-token.js`
@@ -311,6 +325,7 @@ Organize code from research:
 - **Page Estimate**: 0.5 pages
 
 ### Example 2: Verifying a JWT
+
 - **Purpose**: Show signature validation
 - **Source**: jsonwebtoken GitHub
 - **File**: `examples/02-verify-token.js`
@@ -319,6 +334,7 @@ Organize code from research:
 - **Page Estimate**: 0.5 pages
 
 ### Example 3: Express Auth Middleware
+
 - **Purpose**: Real-world integration
 - **Source**: Stack Overflow + own design
 - **File**: `examples/03-auth-middleware.js`
@@ -337,6 +353,7 @@ Organize code from research:
 4. **Advanced example**: Optimization or advanced technique
 
 **Document expected learning:**
+
 - What does each example teach?
 - What new concept does it introduce?
 - How does it build on previous examples?
@@ -351,6 +368,7 @@ Use proven teaching patterns:
 **Pattern**: Definition → Motivation → Context → Example
 
 **Application**:
+
 1. What is [concept]? (Definition)
 2. Why does [concept] matter? (Motivation)
 3. Where does [concept] fit? (Context)
@@ -363,6 +381,7 @@ Use proven teaching patterns:
 **Pattern**: Setup → Build → Verify → Extend
 
 **Application**:
+
 1. Prerequisites and setup
 2. Step-by-step implementation
 3. Test and verify it works
@@ -375,6 +394,7 @@ Use proven teaching patterns:
 **Pattern**: Problem → Consequences → Solution → Implementation
 
 **Application**:
+
 1. Present the problem/challenge
 2. Show why it matters (consequences of not solving)
 3. Introduce the solution
@@ -387,6 +407,7 @@ Use proven teaching patterns:
 **Pattern**: Option A → Option B → Trade-offs → Recommendation
 
 **Application**:
+
 1. Explain approach A
 2. Explain approach B
 3. Compare side-by-side
@@ -399,6 +420,7 @@ Use proven teaching patterns:
 **Pattern**: Symptom → Cause → Solution → Prevention
 
 **Application**:
+
 1. Describe the error/problem
 2. Explain root cause
 3. Show how to fix
@@ -413,11 +435,13 @@ Use proven teaching patterns:
 **Pattern Applied**: Setup → Build → Verify → Extend
 
 **Setup** (0.5 pages):
+
 - Install dependencies (express, jsonwebtoken)
 - Create basic Express app
 - Define routes structure
 
 **Build** (3 pages):
+
 - Step 1: Create login endpoint
 - Step 2: Generate JWT on successful auth
 - Step 3: Return token to client
@@ -425,11 +449,13 @@ Use proven teaching patterns:
 - Step 5: Add auth middleware
 
 **Verify** (0.5 pages):
+
 - Test with curl/Postman
 - Verify token format
 - Test protected route with/without token
 
 **Extend** (1 page):
+
 - Add error handling
 - Add token refresh
 - Add logout (blacklist approach)
@@ -440,12 +466,14 @@ Use proven teaching patterns:
 Note what's missing:
 
 **Content gaps:**
+
 - [ ] What concepts need more explanation?
 - [ ] What examples are missing?
 - [ ] What questions weren't fully answered?
 - [ ] What transitions need smoothing?
 
 **Research gaps:**
+
 - [ ] What needs deeper investigation?
 - [ ] What sources are needed for citation?
 - [ ] What code examples need to be written/tested?
@@ -457,16 +485,19 @@ Note what's missing:
 ## Identified Gaps
 
 **Need More Research**:
+
 - [ ] JWT revocation strategies (only surface-level coverage)
 - [ ] Production-scale performance data (no benchmarks found)
 - [ ] Specific attack vectors and mitigation (need security-focused source)
 
 **Need to Create**:
+
 - [ ] Complete working example app (no source found, must build)
 - [ ] Diagram showing token flow from login to protected route
 - [ ] Comparison table: JWT vs Session (consolidate from multiple sources)
 
 **Need to Clarify**:
+
 - [ ] LocalStorage vs Cookie debate (present both sides clearly)
 - [ ] When to use HS256 vs RS256 (needs decision framework)
 ```
@@ -481,27 +512,32 @@ Enhance outline with pedagogical notes:
 ### Teaching JWT Signature Verification
 
 **Best Explanation Approach**:
+
 - Use analogy: Wax seal on envelope
 - Visual: Show signature computation step-by-step
 - Code walkthrough: Line-by-line explanation
 - Interactive: jwt.io debugger
 
 **Analogies That Work** (from research):
+
 - Signature = tamper-evident seal
 - Payload = postcard (anyone can read)
 - Secret key = royal seal stamp
 
 **Visualizations Needed**:
+
 - Flowchart: Signature creation process
 - Diagram: Verification flow
 - Screenshot: jwt.io showing signature change when payload modified
 
 **Common Stumbling Blocks**:
+
 - Confusion between encoding and encryption
 - Not understanding why signature matters
 - Thinking signature hides payload
 
 **How to Address**:
+
 - Explicitly contrast encoding vs encryption
 - Demonstrate tampering detection
 - Show base64 decoding to prove payload readable
@@ -513,24 +549,28 @@ Enhance outline with pedagogical notes:
 ### Section Exercises
 
 **Guided Exercise 1** (Reinforcement):
+
 - Task: Create JWT with custom claims (name, role, permissions)
 - Solution: Provided in full
 - Estimated Time: 10 minutes
 - Learning Goal: Understand claims and payload structure
 
 **Guided Exercise 2** (Application):
+
 - Task: Build middleware that checks user role from JWT
 - Solution: Provided in full
 - Estimated Time: 15 minutes
 - Learning Goal: Apply JWT in authorization context
 
 **Challenge Exercise** (Stretch Goal):
+
 - Task: Implement token refresh logic
 - Solution: Hints only, no full solution
 - Estimated Time: 30 minutes
 - Learning Goal: Design token lifecycle management
 
 **Self-Assessment Questions**:
+
 1. Why is the JWT payload not encrypted?
 2. What happens if you change one character in the payload?
 3. When should you use refresh tokens?
@@ -544,24 +584,29 @@ Map sources to content sections:
 ## Source Attribution Map
 
 ### Section 1: Introduction
+
 - JWT.io Introduction (general overview)
 - RFC 7519 (formal definition)
 
 ### Section 2: Understanding JWT Structure
+
 - JWT.io Introduction (structure explanation, diagrams)
 - RFC 7519 Section 4 (claims specification)
 - Auth0 Blog "JWT Security Best Practices" (encoding vs encryption)
 
 ### Section 3: Building Authentication Endpoints
+
 - jsonwebtoken GitHub repository (code examples)
 - Express.js documentation (middleware patterns)
 - Stack Overflow #43452896 (protected routes pattern)
 
 ### Section 4: Token Lifecycle
+
 - Auth0 Blog "Refresh Tokens" (refresh token flow)
 - JWT.io Introduction (expiration handling)
 
 ### Section 5: Security Best Practices
+
 - Auth0 Blog "JWT Security" (vulnerabilities, mitigations)
 - OWASP JWT Cheat Sheet (security guidance)
 - RFC 7519 Section 8 (security considerations)
@@ -600,6 +645,7 @@ Create polished outline document:
 **Prerequisites**: Node.js, Express.js, basic authentication concepts
 
 **Learning Objectives**:
+
 1. Explain JWT structure and how signing ensures integrity
 2. Implement JWT authentication in Express.js application
 3. Handle token lifecycle (generation, verification, refresh, expiration)
@@ -641,18 +687,20 @@ Create polished outline document:
 
 **Code Repository Structure**:
 ```
+
 chapter-08-jwt-auth/
 ├── examples/
-│   ├── 01-generate-token.js
-│   ├── 02-verify-token.js
-│   ├── 03-auth-middleware.js
-│   └── ...
+│ ├── 01-generate-token.js
+│ ├── 02-verify-token.js
+│ ├── 03-auth-middleware.js
+│ └── ...
 ├── complete-app/
-│   ├── server.js
-│   ├── routes/auth.js
-│   ├── middleware/auth.js
-│   └── tests/auth.test.js
+│ ├── server.js
+│ ├── routes/auth.js
+│ ├── middleware/auth.js
+│ └── tests/auth.test.js
 └── package.json
+
 ```
 
 ---
@@ -722,6 +770,7 @@ chapter-08-jwt-auth/
 ```
 
 **Save outline:**
+
 - `docs/outlines/chapter-08-jwt-outline.md` (or user-specified location)
 
 ## Success Criteria
@@ -755,6 +804,7 @@ A successful synthesized outline has:
 ## Example: Before and After Synthesis
 
 **Before (Raw Research Notes)**:
+
 - Q8: How does JWT signing work? Answer: Uses HMAC with secret key to create signature...
 - Q9: What algorithms? Answer: HS256, RS256, ES256...
 - Q14: How to protect routes? Answer: Use middleware to verify token...
@@ -767,6 +817,7 @@ A successful synthesized outline has:
 **Teaching Approach**: Problem → Solution → Implementation
 
 **Content**:
+
 1. **Problem**: How does server trust unsigned data? (0.5 pages)
    - Motivation for signing
    - Attack vector: Tampered tokens

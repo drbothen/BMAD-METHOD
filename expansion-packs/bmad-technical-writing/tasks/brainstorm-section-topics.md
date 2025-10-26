@@ -5,24 +5,13 @@
 ---
 
 task:
-  id: brainstorm-section-topics
-  name: Brainstorm Section Topics
-  description: Break chapter into 8-12 manageable sections (2-5 pages each)
-  persona_default: tutorial-architect
-  inputs:
-    - chapter-topic
-    - learning-objectives
-    - target-length
-  steps:
-    - Analyze chapter scope and learning objectives
-    - Calculate target sections needed (chapter length ÷ section length)
-    - Break down learning objectives into section-sized pieces
-    - Identify natural content breakpoints
-    - Apply section generation patterns (concept, tutorial, problem, comparison)
-    - Generate 8-12 section topic ideas
-    - Validate coverage and flow
-    - Prioritize and sequence sections
-  output: List of 8-12 section topics ready for section planning
+id: brainstorm-section-topics
+name: Brainstorm Section Topics
+description: Break chapter into 8-12 manageable sections (2-5 pages each)
+persona_default: tutorial-architect
+inputs: - chapter-topic - learning-objectives - target-length
+steps: - Analyze chapter scope and learning objectives - Calculate target sections needed (chapter length ÷ section length) - Break down learning objectives into section-sized pieces - Identify natural content breakpoints - Apply section generation patterns (concept, tutorial, problem, comparison) - Generate 8-12 section topic ideas - Validate coverage and flow - Prioritize and sequence sections
+output: List of 8-12 section topics ready for section planning
 
 ---
 
@@ -46,6 +35,7 @@ Before starting this task:
 Understand what you're working with:
 
 **Review chapter information:**
+
 - Chapter topic and title
 - Learning objectives (what readers will accomplish)
 - Target length (typical technical book chapter: 15-25 pages)
@@ -53,12 +43,14 @@ Understand what you're working with:
 - Position in book (early, middle, late)
 
 **Identify chapter structure:**
+
 - Introduction needs (hook, overview, prerequisites)
 - Main content areas
 - Exercises/practice needed
 - Summary/conclusion
 
 **Note constraints:**
+
 - Page limit
 - Code example count
 - Diagram/screenshot needs
@@ -71,16 +63,19 @@ Determine how many sections to create:
 **Typical section length:** 2-5 pages each
 
 **Calculate target count:**
+
 - 15-page chapter → 3-8 sections (average 4-5)
 - 20-page chapter → 4-10 sections (average 6-8)
 - 25-page chapter → 5-12 sections (average 8-10)
 
 **Consider:**
+
 - Shorter sections (2-3 pages): Focused, bite-sized, easier to write
 - Longer sections (4-5 pages): Deeper coverage, fewer transitions
 - Mix of lengths: Varies pacing, matches content naturally
 
 **Account for fixed sections:**
+
 - Introduction: ~1-2 pages
 - Summary: ~1 page
 - Remaining pages for content sections
@@ -90,6 +85,7 @@ Determine how many sections to create:
 Map objectives to sections:
 
 **For each learning objective:**
+
 - Can this be taught in one section? Or needs multiple?
 - What's the teaching sequence (prerequisite order)?
 - What examples demonstrate this objective?
@@ -99,12 +95,14 @@ Map objectives to sections:
 **Chapter**: "JWT Authentication in Node.js"
 
 **Learning Objectives:**
+
 1. Understand JWT structure and security model
 2. Implement JWT authentication middleware
 3. Handle token refresh and expiration
 4. Secure endpoints with role-based access control
 
 **Mapped to sections:**
+
 - LO 1 → Section 1 (Understanding JWTs), Section 2 (Security considerations)
 - LO 2 → Section 3 (Creating auth middleware), Section 4 (Integration tutorial)
 - LO 3 → Section 5 (Token expiration handling), Section 6 (Refresh token flow)
@@ -116,27 +114,32 @@ Map objectives to sections:
 Find logical places to divide content:
 
 **Concept boundaries:**
+
 - Where topics naturally separate
 - Transition between related ideas
 - Shift from theory to practice
 
 **Practical applications:**
+
 - Each major hands-on tutorial is a section
 - Code walkthroughs grouped by feature
 - Implementation stages
 
 **Code example groupings:**
+
 - Related code files taught together
 - Progressive iterations (v1, v2, v3)
 - Before/after refactorings
 
 **Tutorial stages:**
+
 - Setup and prerequisites
 - Basic implementation
 - Adding features
 - Optimization and polish
 
 **Skill milestones:**
+
 - Checkpoints where readers gain new capability
 - "After this section, you can..."
 - Natural stopping points
@@ -152,6 +155,7 @@ Focus on explaining ideas:
 **Pattern:** "Understanding X", "How Y Works", "Z Fundamentals"
 
 **Examples:**
+
 - "Understanding JWT Structure and Claims"
 - "How Token Signing and Verification Work"
 - "Security Fundamentals for Token-Based Auth"
@@ -165,6 +169,7 @@ Focus on building something:
 **Pattern:** "Building X", "Implementing Y", "Creating Z"
 
 **Examples:**
+
 - "Building Your First JWT Authentication Endpoint"
 - "Implementing Token Refresh Logic"
 - "Creating a Protected API Route"
@@ -178,6 +183,7 @@ Focus on solving challenges:
 **Pattern:** "Solving X", "Debugging Y", "Optimizing Z", "Handling W"
 
 **Examples:**
+
 - "Handling Token Expiration Gracefully"
 - "Debugging Authentication Failures"
 - "Solving Token Storage Security Issues"
@@ -191,6 +197,7 @@ Focus on evaluating options:
 **Pattern:** "X vs Y", "Choosing Between Options", "Evaluating Trade-offs"
 
 **Examples:**
+
 - "JWT vs Session-Based Authentication"
 - "Choosing Token Storage: LocalStorage vs Cookies"
 - "Comparing Signing Algorithms: HS256 vs RS256"
@@ -204,6 +211,7 @@ Focus on combining technologies:
 **Pattern:** "Integrating X with Y", "Connecting Z", "Combining W"
 
 **Examples:**
+
 - "Integrating JWT with Express Middleware"
 - "Connecting Frontend and Backend Auth"
 - "Combining JWT with OAuth 2.0"
@@ -239,32 +247,38 @@ Create your section list:
 **Typical Chapter Structure:**
 
 **Introduction Section (1-2 pages):**
+
 - Hook and motivation
 - Chapter overview
 - Prerequisites check
 
 **Foundational Sections (2-3 sections, 6-9 pages total):**
+
 - Core concepts explained
 - Background and theory
 - Why this approach matters
 
 **Implementation Sections (3-5 sections, 9-15 pages total):**
+
 - Step-by-step tutorials
 - Code walkthroughs
 - Hands-on practice
 
 **Advanced/Edge Case Sections (1-2 sections, 3-6 pages total):**
+
 - Optimization techniques
 - Error handling
 - Security considerations
 - Production concerns
 
 **Practice Section (1 section, 2-3 pages):**
+
 - Exercises
 - Challenges
 - Self-assessment
 
 **Summary Section (1 page):**
+
 - Key takeaways
 - Skills checklist
 - Next steps
@@ -274,30 +288,35 @@ Create your section list:
 Check your section list:
 
 **Coverage:**
+
 - [ ] All learning objectives addressed
 - [ ] No major gaps in content
 - [ ] Appropriate depth for audience
 - [ ] Examples for each concept
 
 **Flow:**
+
 - [ ] Logical progression (simple → complex)
 - [ ] Prerequisites taught before usage
 - [ ] Clear transitions possible between sections
 - [ ] Natural reading experience
 
 **Balance:**
+
 - [ ] Mix of theory and practice
 - [ ] Not too many concept-only sections
 - [ ] Enough hands-on tutorials
 - [ ] Appropriate difficulty curve
 
 **Scope:**
+
 - [ ] Sections fit within page estimates
 - [ ] Total adds up to target chapter length
 - [ ] No single section too large (>6 pages)
 - [ ] No section too small (<2 pages unless intro/summary)
 
 **Feasibility:**
+
 - [ ] Code examples are realistic to create
 - [ ] Time to write is reasonable
 - [ ] Testing is manageable
@@ -308,22 +327,26 @@ Check your section list:
 Classify each section:
 
 **Critical Sections (Must-Have):**
+
 - Essential for learning objectives
 - Cannot skip without knowledge gaps
 - Core to chapter purpose
 
 **Valuable Sections (Should-Have):**
+
 - Enhance understanding significantly
 - Best practices and patterns
 - Common use cases
 
 **Optional Sections (Nice-to-Have):**
+
 - Advanced techniques
 - Edge cases
 - Bonus content
 - Can be cut if space-limited
 
 **Identify sections that could:**
+
 - Be combined (if too granular)
 - Be split (if too complex)
 - Be expanded to full chapter (if rich enough)
@@ -334,6 +357,7 @@ Classify each section:
 Determine final order:
 
 **Scaffolding principles:**
+
 - Teach simple before complex
 - Prerequisites before dependents
 - Theory before practice (but not too much theory upfront)
@@ -341,6 +365,7 @@ Determine final order:
 - Common before edge cases
 
 **Flow considerations:**
+
 - Vary pacing (concept → tutorial → concept → tutorial)
 - Build momentum (quick wins early)
 - Natural breaks (sections are stopping points)
@@ -368,6 +393,7 @@ Create final output:
 # Section Plan: [Chapter Title]
 
 ## Chapter Info
+
 - **Learning Objectives**: [List 3-5 objectives]
 - **Target Length**: [15-25 pages]
 - **Sections**: [8-12 sections]
@@ -375,12 +401,14 @@ Create final output:
 ## Section Breakdown
 
 ### Section 1: [Title] (Introduction, 2 pages)
+
 - **Type**: Introduction
 - **Focus**: [What this section accomplishes]
 - **Content**: [Topics covered]
 - **Code Examples**: [None for intro]
 
 ### Section 2: [Title] (Concept, 3 pages)
+
 - **Type**: Concept
 - **Focus**: [Learning outcome]
 - **Content**: [Topics covered]
@@ -389,6 +417,7 @@ Create final output:
 [... continue for all 8-12 sections ...]
 
 ## Total Estimation
+
 - **Total Sections**: 10
 - **Estimated Pages**: 22
 - **Code Files**: 8
@@ -396,6 +425,7 @@ Create final output:
 ```
 
 **Save to:**
+
 - User-specified location or `docs/planning/[chapter-name]-sections.md`
 
 ## Success Criteria
