@@ -12,12 +12,14 @@ workflow:
     - agent: tutorial-architect
       creates: chapter-integrated.md
       requires: completed-sections[]
-      notes: "Merge all completed sections into single chapter file. Preserve section content. Add chapter introduction (if not in section 1) and chapter summary (if not in final section). Verify all sections present in correct order. SAVE OUTPUT: Create manuscript/chapters/chapter-{{chapter_number}}-integrated.md"
+      task: merge-sections.md
+      notes: "Execute merge-sections.md task to systematically merge all completed sections into single chapter file. Preserve section content. Add chapter introduction (if not in section 1) and chapter summary (if not in final section). Verify all sections present in correct order. SAVE OUTPUT: Create manuscript/chapters/chapter-{{chapter_number}}-integrated.md"
 
     - agent: tutorial-architect
       improves: chapter-integrated.md
       requires: chapter-integrated.md
-      notes: "Review and improve transitions between sections. Add bridging paragraphs where sections feel disconnected. Ensure smooth flow from one concept to next. Check that prerequisites mentioned in earlier sections are fulfilled. Add cross-references where helpful. SAVE OUTPUT: Update chapter-integrated.md with improved transitions."
+      task: enhance-transitions.md
+      notes: "Execute enhance-transitions.md task to review and improve transitions between sections. Add bridging paragraphs where sections feel disconnected. Ensure smooth flow from one concept to next. Check that prerequisites mentioned in earlier sections are fulfilled. Add cross-references where helpful. SAVE OUTPUT: Update chapter-integrated.md with improved transitions."
 
     - agent: instructional-designer
       validates: chapter-integrated.md

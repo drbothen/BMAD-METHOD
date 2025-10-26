@@ -67,7 +67,10 @@ dependencies:
     - develop-tutorial.md
     - write-introduction.md
     - write-summary.md
+    - design-diagram-set.md
     - execute-checklist.md
+    - merge-sections.md
+    - enhance-transitions.md
   templates:
     - chapter-outline-tmpl.yaml
     - chapter-draft-tmpl.yaml

@@ -63,6 +63,7 @@ dependencies:
     - create-diagram-spec.md
     - execute-checklist.md
     - plan-screenshots.md
+    - take-screenshots.md
     - annotate-images.md
     - optimize-visuals.md
   templates:
