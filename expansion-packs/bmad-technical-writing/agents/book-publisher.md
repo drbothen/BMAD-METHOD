@@ -66,9 +66,17 @@ dependencies:
     - create-doc.md
     - execute-checklist.md
     - format-for-packtpub.md
+    - package-for-publisher.md
+    - prepare-meap-chapter.md
+    - self-publish-prep.md
+    - create-preface.md
+    - create-appendix.md
+    - create-index-entries.md
   templates:
     - book-proposal-tmpl.yaml
     - introduction-tmpl.yaml
+    - preface-tmpl.yaml
+    - appendix-tmpl.yaml
   checklists:
     - generative-ai-compliance-checklist.md
     - packtpub-submission-checklist.md
