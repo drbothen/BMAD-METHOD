@@ -181,6 +181,9 @@ Add metadata at the top of each shard file:
 ## Frontmatter Metadata
 
 [content...]
+
+<!-- SHARD END -->
+<!-- Continue to react-hooks-shard-2.md -->
 ```
 
 **Content extraction:**
@@ -219,6 +222,11 @@ Add metadata at the top of each shard file:
 A: [complete answer with citations...]
 
 *Source: [React Hooks Documentation](https://react.dev/reference/react) (Official Docs) - Accessed 2025-10-25*
+
+[... more content ...]
+
+<!-- SHARD END -->
+<!-- Continue to react-hooks-shard-3.md -->
 ```
 
 ### 4. Create Comprehensive Shard Index File
@@ -461,15 +469,19 @@ The completed sharding produces:
 - Size: 5-10 pages per shard (target)
 - Content: Preserves all research questions, citations, code examples, expert insights
 
-**Shard metadata headers:**
+**Shard metadata:**
 
-Each shard file includes metadata at the top:
+Each shard file includes metadata at the top and bottom:
 
+**Header metadata:**
 - Original filename
 - Shard number (N of M)
-- Page range (X-Y of Total)
 - Sections included
 - Split date
+
+**Footer metadata:**
+- SHARD END marker
+- Continuation pointer to next shard
 
 **Index file:**
 
