@@ -61,6 +61,7 @@ dependencies:
   tasks:
     - create-doc.md
     - design-exercises.md
+    - create-solutions.md
     - execute-checklist.md
   templates:
     - exercise-set-tmpl.yaml

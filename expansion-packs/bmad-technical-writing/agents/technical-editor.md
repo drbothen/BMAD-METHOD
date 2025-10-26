@@ -64,6 +64,7 @@ dependencies:
   tasks:
     - create-doc.md
     - copy-edit-chapter.md
+    - validate-cross-references.md
     - execute-checklist.md
   checklists:
     - packtpub-submission-checklist.md

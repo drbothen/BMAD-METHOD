@@ -66,6 +66,7 @@ dependencies:
     - create-version-matrix.md
     - assess-version-impact.md
     - update-dependencies.md
+    - update-chapter-for-version.md
   checklists:
     - version-compatibility-checklist.md
     - cross-platform-checklist.md

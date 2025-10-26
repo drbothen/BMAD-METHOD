@@ -67,6 +67,7 @@ dependencies:
     - test-code-examples.md
     - security-audit.md
     - cross-platform-test.md
+    - check-best-practices.md
     - execute-checklist.md
     - version-check.md
     - optimize-code.md
