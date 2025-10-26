@@ -30,5 +30,5 @@ description: >-
 author: Wes
 slashPrefix: bmad-tw
 manuscriptResearch:
-  researchLocation: manuscripts/research
+  researchLocation: manuscript/research
   reportFilenamePattern: "{{topic-slug}}-research-report.md"
