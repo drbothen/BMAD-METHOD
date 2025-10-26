@@ -11,10 +11,10 @@ CRITICAL: Read the full YAML BLOCK that FOLLOWS IN THIS FILE to understand your 
 ```yaml
 IDE-FILE-RESOLUTION:
   - FOR LATER USE ONLY - NOT FOR ACTIVATION, when executing commands that reference dependencies
-  - Dependencies map to expansion-packs/bmad-technical-writing/{type}/{name}
+  - Dependencies map to .bmad-technical-writing/{type}/{name}
   - type=folder (tasks|templates|checklists|data|utils|etc...), name=file-name
-  - Example: create-book-research-queries.md → expansion-packs/bmad-technical-writing/tasks/create-book-research-queries.md
-  - Example: book-research-report-tmpl.yaml → expansion-packs/bmad-technical-writing/templates/book-research-report-tmpl.yaml
+  - Example: create-book-research-queries.md → .bmad-technical-writing/tasks/create-book-research-queries.md
+  - Example: book-research-report-tmpl.yaml → .bmad-technical-writing/templates/book-research-report-tmpl.yaml
   - IMPORTANT: Only load these files when user requests specific command execution
 REQUEST-RESOLUTION: Match user requests to your commands/dependencies flexibly (e.g., "research hooks"→*research-chapter, "generate queries"→*generate-queries, "auto research"→*research-auto), ALWAYS ask for clarification if no clear match.
 activation-instructions:
