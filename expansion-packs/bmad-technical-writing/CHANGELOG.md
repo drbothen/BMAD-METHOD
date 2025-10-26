@@ -55,13 +55,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New function: `has_image()` - Checks for embedded images in paragraphs
 - Table caption regex: `r'^Table\s+\d+\.\d+:'`
 - Automatic table cell styling based on row position (first row = headers)
+- **NEW**: Automatic removal of Pandoc alt text paragraphs for cleaner output
+- **FIXED**: 2-paragraph lookback for figure caption detection (handles Pandoc 3-para structure)
+- **SIMPLIFIED**: After alt text removal, only need 1-paragraph lookback
 
-**Testing**:
-- ✅ 4 tables tested with captions (92 cells: 14 headers + 78 content)
-- ✅ 3 figures tested with embedded images
-- ✅ All captions correctly positioned and styled
-- ✅ Pre-conversion validation: PASS (0 errors, 0 warnings)
-- ✅ Post-conversion verification: PASS (0 errors, 0 warnings)
+**Testing** (Comprehensive):
+- ✅ 5 tables tested with captions (139 cells: 25 headers + 114 content)
+- ✅ 4 figures tested with embedded images (all captions detected)
+- ✅ Alt text removal: 4 paragraphs removed (130 → 126 total)
+- ✅ All captions correctly positioned and styled (9/9 = 100%)
+- ✅ Code blocks: 2/2 correctly styled
+- ✅ Lists: 34/34 items correctly styled
+- ✅ Pre-conversion validation: PASS (0 errors, warnings only)
+- ✅ Post-conversion verification: PASS (0 errors)
+- ✅ **Overall compliance: 126/126 paragraphs (100%)**
 
 ---
 

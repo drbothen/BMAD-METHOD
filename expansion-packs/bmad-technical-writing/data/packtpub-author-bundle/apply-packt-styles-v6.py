@@ -25,6 +25,7 @@ from docx import Document
 from docx.oxml import parse_xml, OxmlElement
 from docx.oxml.ns import qn
 import sys
+import re
 from pathlib import Path
 
 # Mapping from Pandoc's built-in styles to PacktPub styles
@@ -318,7 +319,41 @@ def apply_packt_styles(input_file, output_file):
     if code_splits > 0:
         print(f"✓ Split {code_splits} multi-line code blocks")
 
-    # Third pass: apply paragraph style mappings
+    # Third pass: Remove alt text paragraphs (Pandoc pattern cleanup)
+    # Pandoc creates: [image para] → [alt text para] → [Figure X.Y: caption]
+    # We want to remove the alt text paragraph
+    paras_to_remove = []
+    all_paragraphs = list(doc.paragraphs)
+
+    for idx, para in enumerate(all_paragraphs):
+        # Check if previous paragraph has an image
+        if idx > 0:
+            prev_para = all_paragraphs[idx - 1]
+            if has_image(prev_para):
+                # Check if next paragraph is a Figure caption
+                if idx + 1 < len(all_paragraphs):
+                    next_para = all_paragraphs[idx + 1]
+                    next_text = next_para.text.strip()
+                    if re.match(r'^Figure\s+\d+\.\d+:', next_text, re.IGNORECASE):
+                        # This is the alt text paragraph between image and caption
+                        paras_to_remove.append(idx)
+
+    # Remove alt text paragraphs (work backwards to preserve indices)
+    alt_text_removed = 0
+    for idx in reversed(paras_to_remove):
+        para = all_paragraphs[idx]
+        para_element = para._element
+        parent = para_element.getparent()
+        parent.remove(para_element)
+        alt_text_removed += 1
+
+    if alt_text_removed > 0:
+        print(f"✓ Removed {alt_text_removed} alt text paragraphs")
+
+    # Rebuild paragraph list after removals
+    all_paragraphs = list(doc.paragraphs)
+
+    # Fourth pass: apply paragraph style mappings
     para_count = 0
     para_mapped = 0
     para_skipped_headings = 0
@@ -328,7 +363,7 @@ def apply_packt_styles(input_file, output_file):
     code_mapped = 0
     captions_mapped = 0
 
-    for para in doc.paragraphs:
+    for idx, para in enumerate(all_paragraphs):
         para_count += 1
         current_style = para.style.name
 
@@ -343,7 +378,20 @@ def apply_packt_styles(input_file, output_file):
             continue
 
         # Check if this is a figure caption
-        if is_figure_caption(para):
+        # After removing alt text, pattern is: [empty para with image] → [Figure X.Y: caption]
+        is_caption = is_figure_caption(para)
+
+        if not is_caption:
+            text = para.text.strip()
+            # Check if this looks like a caption (starts with "Figure X.Y:")
+            if re.match(r'^Figure\s+\d+\.\d+:', text, re.IGNORECASE):
+                # Check if previous paragraph has an image (alt text already removed)
+                if idx > 0:
+                    prev_para = all_paragraphs[idx - 1]
+                    if has_image(prev_para):
+                        is_caption = True
+
+        if is_caption:
             target_style = 'Figure Caption [PACKT]'
             if target_style in available_styles:
                 para.style = target_style
