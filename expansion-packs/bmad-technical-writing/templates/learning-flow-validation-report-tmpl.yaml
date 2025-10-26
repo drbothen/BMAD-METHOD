@@ -1,0 +1,316 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: learning-flow-validation-report
+  name: Learning Flow Validation Report
+  version: 1.0
+  description: Pedagogical validation report assessing prerequisite dependencies, difficulty progression, knowledge gaps, and cognitive load in learning content
+  output:
+    format: markdown
+    filename: "learning-flow-validation-{{timestamp}}.md"
+
+workflow:
+  elicitation: false
+  allow_skip: false
+sections:
+  - id: executive_summary
+    title: Executive Summary
+    instruction: |
+      High-level validation results:
+      - Overall Pass/Fail status (Pass/Minor Revision/Major Revision)
+      - Critical issues count (prerequisite violations, circular dependencies)
+      - Major issues count (knowledge gaps, Bloom's jumps, high cognitive load)
+      - Minor issues count (small improvements, clarifications)
+      - Overall recommendation (Approve / Minor Revision Needed / Major Revision Required)
+
+      **Pass/Fail Thresholds:**
+      - **Pass:** 0 critical issues, ≤ 2 major issues, minor issues acceptable
+      - **Minor Revision:** 0 critical, 3-5 major issues
+      - **Major Revision:** Any critical issues OR > 5 major issues
+  - id: concept_dependency_analysis
+    title: Concept Dependency Analysis
+    instruction: |
+      Map all concepts and their prerequisite relationships:
+
+      **Dependency Map:**
+      Create a concept dependency map or list showing:
+      - Concept name
+      - Prerequisite concepts needed
+      - Where prerequisites are taught (chapter/section number)
+      - Whether prerequisite is external (not taught in book)
+
+      **Example Format:**
+      ```
+      Concept: JWT Authentication
+      Prerequisites:
+        - HTTP requests (Chapter 2, Section 1) ✓
+        - JSON format (Chapter 1, Section 3) ✓
+        - Basic cryptography (External - stated in intro) ✓
+      ```
+
+      **Circular Dependency Findings:**
+      - List any circular dependencies found (Concept A requires B, B requires A)
+      - Mark severity as CRITICAL
+      - Suggest resolution approach
+
+      **Forward Dependency Findings:**
+      - List concepts used before they are taught
+      - Example: "Chapter 3 uses async/await but it's taught in Chapter 5"
+      - Mark severity as CRITICAL
+      - Suggest fix (move teaching earlier or delay usage)
+
+      **Missing Prerequisite Findings:**
+      - External prerequisites not clearly stated
+      - In-book prerequisites not explicitly noted
+      - Mark severity (Critical/Major/Minor)
+      - Suggest where to state prerequisites
+
+      **Status:** Pass / Fail
+  - id: blooms_taxonomy_progression
+    title: Bloom's Taxonomy Progression Analysis
+    instruction: |
+      Assess cognitive difficulty progression using Bloom's Taxonomy:
+
+      **Bloom's Levels Reference:**
+      1. Remember - Recall facts, terms, concepts
+      2. Understand - Explain ideas or concepts
+      3. Apply - Use information in new situations
+      4. Analyze - Draw connections among ideas
+      5. Evaluate - Justify decisions or approaches
+      6. Create - Produce new or original work
+
+      **Chapter/Section Progression Table:**
+
+      | Chapter/Section | Primary Bloom's Level | Difficulty Jump | Issues |
+      |-----------------|----------------------|-----------------|---------|
+      | Chapter 1       | Remember/Understand  | N/A             | None    |
+      | Chapter 2       | Apply                | +1 level ✓      | None    |
+      | Chapter 3       | Analyze              | +1 level ✓      | None    |
+
+      **Difficulty Progression Assessment:**
+      - Is progression smooth (incremental increases)?
+      - Are there jumps > 2 levels between adjacent chapters?
+      - Do exercises match or slightly exceed objective level?
+
+      **Target Audience Appropriateness:**
+      - For Beginners: Should start Remember/Understand, build to Apply
+      - For Intermediate: Apply/Analyze heavily, introduce Evaluate
+      - For Advanced: Analyze/Evaluate/Create focus
+
+      **Bloom's Jump Findings:**
+      List any problematic difficulty jumps:
+      - Location (chapter transition)
+      - Current level → New level (gap size)
+      - Severity (Major if > 2 level jump)
+      - Recommendation (add intermediate exercises/content)
+
+      **Exercise Alignment:**
+      - Do exercises practice the appropriate Bloom's level?
+      - Are exercises too easy or too difficult for stated objectives?
+      - List misalignments found
+
+      **Status:** Pass / Fail
+  - id: knowledge_gap_analysis
+    title: Knowledge Gap Analysis
+    instruction: |
+      Identify missing conceptual bridges and unexplained concepts:
+
+      **Gaps Identified:**
+
+      For each gap found, document:
+      - **Location:** Chapter/section where gap first appears
+      - **Gap Description:** What knowledge is missing or assumed
+      - **Severity:** Critical (blocks learning) / Major (confusing) / Minor (small clarification)
+      - **First Usage:** Where the unexplained concept is first used
+      - **Recommendation:** Where/how to teach the missing concept
+
+      **Examples of Knowledge Gaps:**
+
+      ❌ **Gap Example:**
+      - Location: Chapter 4, Section 2
+      - Description: Uses promises extensively but Chapter 3 only briefly mentions them
+      - Severity: Critical
+      - Recommendation: Expand Chapter 3 to thoroughly teach promises before Chapter 4 usage
+
+      ✓ **No Gap Example:**
+      - Chapter 3 teaches promises thoroughly
+      - Chapter 4 builds on that foundation
+      - No missing knowledge
+
+      **Assumption Violations:**
+      - Concepts used without definition
+      - Terms assumed to be known but not in stated prerequisites
+      - Examples using unfamiliar syntax/patterns
+
+      **Critical Gaps:** [count] - Must fix before publication
+      **Major Gaps:** [count] - Should fix for clarity
+      **Minor Gaps:** [count] - Nice to fix
+
+      **Status:** Pass / Fail
+  - id: cognitive_load_assessment
+    title: Cognitive Load Assessment
+    instruction: |
+      Evaluate if content avoids overwhelming learners:
+
+      **Intrinsic Load (Concept Difficulty):**
+      - Are complex concepts broken into digestible parts?
+      - Is new terminology introduced gradually?
+      - Are difficult topics given sufficient time/space?
+      - List sections with high intrinsic load
+
+      **Extraneous Load (Presentation Issues):**
+      - Are diagrams clear and necessary?
+      - Are code examples focused (not too many concepts at once)?
+      - Are digressions or "nice to know" items clearly marked?
+      - List sections with high extraneous load
+
+      **Germane Load (Schema Building):**
+      - Are patterns and connections explicitly highlighted?
+      - Are summaries provided to aid memory?
+      - Are mental models reinforced?
+      - Note positive examples of good schema building
+
+      **Red Flags Found:**
+      - Sections introducing > 3 new concepts simultaneously
+      - Complex code examples with 5+ unfamiliar elements
+      - Missing scaffolding for difficult transitions
+
+      **High Cognitive Load Sections:**
+
+      For each section with concerning load:
+      - Location (chapter, section)
+      - Number of new concepts introduced
+      - Why load is high
+      - Severity (Critical/Major/Minor)
+      - Recommendation for reducing load
+
+      **Example:**
+      ```
+      Location: Chapter 2, Section 3
+      Concepts: 5 simultaneously (promises, async/await, error handling, HTTP clients, JSON parsing)
+      Severity: Major
+      Recommendation: Break into 3 subsections:
+        - Section 3A: Promises basics with simple examples
+        - Section 3B: Async/await with promise refactoring
+        - Section 3C: HTTP requests combining all concepts
+      ```
+
+      **Status:** Pass / Fail
+  - id: exercise_complexity_alignment
+    title: Exercise Complexity Alignment
+    instruction: |
+      Verify exercises support learning objectives appropriately:
+
+      **Exercise Completability:**
+
+      For each exercise reviewed:
+      - Can it be completed with knowledge from current + prior chapters?
+      - Does it require unstated prerequisites?
+      - Is difficulty appropriate for reader's current level?
+      - Does it practice the concept just taught?
+
+      **Exercise Progression Check:**
+
+      Assess progression pattern:
+      - Early exercises: Guided and concrete? ✓/✗
+      - Middle exercises: Less guided, more application? ✓/✗
+      - Later exercises: Open-ended problem solving? ✓/✗
+
+      **Good Progression Example:**
+      1. Chapter 2 End: "Add a GET endpoint to the provided server" (Guided)
+      2. Chapter 5 End: "Implement authentication for your API" (Less guided)
+      3. Chapter 10 End: "Design and implement a complete feature" (Open-ended)
+
+      **Misaligned Exercises:**
+
+      List exercises that don't align:
+      - Location (chapter, exercise number)
+      - Issue (requires forward knowledge, too difficult, too easy, etc.)
+      - Severity (Critical/Major/Minor)
+      - Recommendation (modify exercise or move placement)
+
+      **Status:** Pass / Fail
+  - id: checklist_results
+    title: Checklist Validation Results
+    instruction: |
+      Results from running validation checklists:
+
+      **Learning Objectives Checklist Results:**
+      - Checklist: learning-objectives-checklist.md
+      - Pass/Fail items:
+        - [ ] Action verbs used appropriately (Pass/Fail)
+        - [ ] Objectives are measurable (Pass/Fail)
+        - [ ] Specificity is adequate (Pass/Fail)
+        - [ ] Alignment with content (Pass/Fail)
+        - [ ] Prerequisites are clear (Pass/Fail)
+        - [ ] Difficulty level is appropriate (Pass/Fail)
+      - Overall: Pass / Fail
+      - Issues found: [describe any failures]
+
+      **Prerequisite Clarity Checklist Results:**
+      - Checklist: prerequisite-clarity-checklist.md
+      - Pass/Fail items:
+        - [ ] Prerequisites are explicitly stated (Pass/Fail)
+        - [ ] Required knowledge level is clear (Pass/Fail)
+        - [ ] External dependencies identified (Pass/Fail)
+        - [ ] In-book dependencies noted (Pass/Fail)
+      - Overall: Pass / Fail
+      - Issues found: [describe any failures]
+  - id: recommendations
+    title: Prioritized Recommendations
+    instruction: |
+      Actionable recommendations with priority:
+
+      **Critical Actions (Must Fix):**
+      1. [Issue description with location]
+         - Why critical: [impact on learning]
+         - Recommended fix: [specific action]
+         - Effort estimate: [time needed]
+
+      **Major Actions (Should Fix):**
+      1. [Issue description with location]
+         - Impact: [how it affects learning]
+         - Recommended fix: [specific action]
+         - Effort estimate: [time needed]
+
+      **Minor Actions (Nice to Fix):**
+      1. [Issue description with location]
+         - Benefit: [improvement gained]
+         - Recommended fix: [specific action]
+         - Effort estimate: [time needed]
+
+      **Positive Patterns to Maintain:**
+      - List examples of effective pedagogical approaches found
+      - Note what's working well
+      - Highlight sections with excellent scaffolding
+
+      **Total Estimated Remediation Effort:** [X-Y hours]
+  - id: validation_conclusion
+    title: Validation Conclusion
+    instruction: |
+      Final assessment and next steps:
+
+      **Overall Validation Status:** Pass / Minor Revision / Major Revision
+
+      **Summary:**
+      - Total critical issues: [count]
+      - Total major issues: [count]
+      - Total minor issues: [count]
+      - Pedagogical soundness: [assessment]
+      - Learning progression quality: [assessment]
+
+      **Recommendation:**
+      - [ ] **APPROVE** - Ready for continued development/publication
+      - [ ] **MINOR REVISION** - Address major issues, then proceed
+      - [ ] **MAJOR REVISION** - Address critical issues and re-validate
+
+      **Next Steps:**
+      1. [Action item]
+      2. [Action item]
+      3. Re-validate if critical or major changes made
+
+      **Re-validation Required?** Yes / No
+
+      **Validator Name:** [name]
+      **Validation Date:** [date]
+      **Content Reviewed:** [outline/chapter description]

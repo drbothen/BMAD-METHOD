@@ -62,10 +62,12 @@ commands:
 dependencies:
   tasks:
     - design-learning-path.md
+    - validate-learning-flow.md
     - execute-checklist.md
   templates:
     - learning-objectives-tmpl.yaml
     - book-outline-tmpl.yaml
+    - learning-flow-validation-report-tmpl.yaml
   checklists:
     - learning-objectives-checklist.md
     - prerequisite-clarity-checklist.md
