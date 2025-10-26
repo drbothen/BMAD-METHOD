@@ -52,6 +52,7 @@ core_principles:
 commands:
   - '*help - Show numbered list of available commands for selection'
   - '*create-book-outline - Run task design-book-outline.md'
+  - '*brainstorm-chapters - Run task brainstorm-chapter-ideas.md'
   - '*create-learning-objectives - Run task create-learning-objectives.md'
   - '*design-learning-path - Run task map-prerequisites.md'
   - '*analyze-difficulty-curve - Run task analyze-difficulty-curve.md'
@@ -63,6 +64,7 @@ dependencies:
   tasks:
     - create-doc.md
     - design-book-outline.md
+    - brainstorm-chapter-ideas.md
     - create-learning-objectives.md
     - execute-checklist.md
     - analyze-difficulty-curve.md

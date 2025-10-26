@@ -58,6 +58,8 @@ core_principles:
 commands:
   - '*help - Show numbered list of available commands for selection'
   - '*generate-queries {topic} - Generate research queries formatted for copy/paste into external tools (manual workflow)'
+  - '*generate-deep-questions {topic} - Generate 20-30 Perplexity-style comprehensive research questions'
+  - '*research-topic {topic} - Execute systematic research with source tracking and comprehensive notes'
   - '*import-research - Accept user-provided research findings and create structured report (import workflow)'
   - '*research-auto {topic} - Execute automated research using available tools and generate report (automated workflow)'
   - '*research-chapter {topic} - Enhanced research command offering workflow mode selection (manual/import/auto)'
@@ -69,6 +71,8 @@ dependencies:
   tasks:
     - create-doc.md
     - create-book-research-queries.md
+    - generate-research-questions.md
+    - research-technical-topic.md
     - execute-research-with-tools.md
     - execute-checklist.md
     - verify-accuracy.md

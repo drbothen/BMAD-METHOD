@@ -53,6 +53,8 @@ commands:
   - '*help - Show numbered list of available commands for selection'
   - '*create-tutorial - Design hands-on tutorial section'
   - '*outline-chapter - Run task create-chapter-outline.md'
+  - '*brainstorm-sections - Run task brainstorm-section-topics.md'
+  - '*synthesize-research - Run task synthesize-research-notes.md'
   - '*write-walkthrough - Create detailed step-by-step guide'
   - '*add-troubleshooting - Document common issues and solutions'
   - '*design-exercises - Create practice problems and activities'
@@ -63,6 +65,8 @@ dependencies:
   tasks:
     - create-doc.md
     - create-chapter-outline.md
+    - brainstorm-section-topics.md
+    - synthesize-research-notes.md
     - write-chapter-draft.md
     - develop-tutorial.md
     - write-walkthrough.md
