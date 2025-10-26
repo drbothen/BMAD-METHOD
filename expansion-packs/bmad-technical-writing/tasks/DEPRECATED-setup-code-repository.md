@@ -2,11 +2,21 @@
 
 # Setup Code Repository
 
+> **⚠️ DEPRECATED**: This task has been superseded by more comprehensive specialized tasks.
+>
+> **Use instead:**
+> - `organize-code-repo.md` - Create well-structured repository with professional presentation
+> - `create-ci-pipeline.md` - Set up CI/CD automation
+> - `publish-repo.md` - Prepare and publish repository
+> - `run-tests.md` - Execute comprehensive test suite
+>
+> This file is maintained for backward compatibility only and will be removed in a future version.
+
 ---
 
 task:
 id: setup-code-repository
-name: Setup Code Repository
+name: Setup Code Repository (DEPRECATED)
 description: Initialize and structure GitHub repository for book code examples
 persona_default: sample-code-maintainer
 inputs:

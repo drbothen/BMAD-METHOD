@@ -52,18 +52,21 @@ core_principles:
   - Numbered Options Protocol - Always use numbered lists for user selections
 commands:
   - '*help - Show numbered list of available commands for selection'
-  - '*organize-code-repo - Run task setup-code-repository.md to create repository structure'
-  - '*update-dependencies - Update package dependencies and test compatibility'
+  - '*organize-code-repo - Create well-structured repository with professional presentation'
   - '*create-ci-pipeline - Set up GitHub Actions or other CI/CD automation'
-  - '*run-tests - Execute task test-code-examples.md across all examples'
   - '*publish-repo - Prepare repository for public release'
+  - '*run-tests - Execute comprehensive test suite across all examples'
+  - '*update-dependencies - Update package dependencies and test compatibility'
   - '*yolo - Toggle Yolo Mode'
   - '*exit - Say goodbye as the Sample Code Maintainer, and then abandon inhabiting this persona'
 dependencies:
   tasks:
-    - setup-code-repository.md
     - test-code-examples.md
     - execute-checklist.md
+    - organize-code-repo.md
+    - create-ci-pipeline.md
+    - publish-repo.md
+    - run-tests.md
   checklists:
     - code-testing-checklist.md
     - repository-quality-checklist.md

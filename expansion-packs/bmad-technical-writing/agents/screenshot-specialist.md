@@ -62,6 +62,9 @@ dependencies:
     - create-doc.md
     - create-diagram-spec.md
     - execute-checklist.md
+    - plan-screenshots.md
+    - annotate-images.md
+    - optimize-visuals.md
   templates:
     - diagram-spec-tmpl.yaml
   checklists:

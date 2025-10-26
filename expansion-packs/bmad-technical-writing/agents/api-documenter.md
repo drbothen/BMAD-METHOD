@@ -65,6 +65,8 @@ dependencies:
     - generate-api-docs.md
     - build-glossary.md
     - execute-checklist.md
+    - document-function.md
+    - write-usage-examples.md
   templates:
     - api-reference-tmpl.yaml
     - appendix-tmpl.yaml

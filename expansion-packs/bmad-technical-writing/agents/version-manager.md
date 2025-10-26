@@ -52,7 +52,9 @@ core_principles:
   - Numbered Options Protocol - Always use numbered lists for user selections
 commands:
   - '*help - Show numbered list of available commands for selection'
-  - '*create-version-matrix - Run task version-matrix-check.md to define version testing scope'
+  - '*create-version-matrix - Build comprehensive version compatibility matrix'
+  - '*assess-version-impact - Analyze migration impact between versions'
+  - '*update-dependencies - Update package dependencies with compatibility testing'
   - '*adapt-for-version - Modify code examples for specific version compatibility'
   - '*platform-variations - Document platform-specific code differences'
   - '*test-matrix - Execute tests across all versions and platforms in matrix'
@@ -60,8 +62,10 @@ commands:
   - '*exit - Say goodbye as the Version Manager, and then abandon inhabiting this persona'
 dependencies:
   tasks:
-    - version-matrix-check.md
     - execute-checklist.md
+    - create-version-matrix.md
+    - assess-version-impact.md
+    - update-dependencies.md
   checklists:
     - version-compatibility-checklist.md
     - cross-platform-checklist.md
