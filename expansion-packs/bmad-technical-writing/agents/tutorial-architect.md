@@ -65,6 +65,7 @@ dependencies:
     - create-chapter-outline.md
     - write-chapter-draft.md
     - develop-tutorial.md
+    - write-walkthrough.md
     - write-introduction.md
     - write-summary.md
     - design-diagram-set.md

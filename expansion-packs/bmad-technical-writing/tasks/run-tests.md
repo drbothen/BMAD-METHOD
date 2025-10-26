@@ -10,19 +10,20 @@ name: Run Tests
 description: Execute test suite with coverage reporting and provide debugging guidance for failures
 persona_default: sample-code-maintainer
 inputs:
-  - test-path (path to test files or directory)
-  - language (javascript, python, ruby, go, etc.)
-  - framework (jest, pytest, rspec, go-test, etc.)
-steps:
-  - Detect test framework from project configuration
-  - Install test dependencies if needed
-  - Run tests with coverage enabled
-  - Generate test report (HTML, JSON, or terminal output)
-  - Identify failing tests
-  - Provide debugging guidance for failures
-  - Generate coverage report
-  - Check coverage thresholds
-output: Test execution report with pass/fail status, coverage metrics, and failure diagnostics
+
+- test-path (path to test files or directory)
+- language (javascript, python, ruby, go, etc.)
+- framework (jest, pytest, rspec, go-test, etc.)
+  steps:
+- Detect test framework from project configuration
+- Install test dependencies if needed
+- Run tests with coverage enabled
+- Generate test report (HTML, JSON, or terminal output)
+- Identify failing tests
+- Provide debugging guidance for failures
+- Generate coverage report
+- Check coverage thresholds
+  output: Test execution report with pass/fail status, coverage metrics, and failure diagnostics
 
 ---
 

@@ -20,6 +20,7 @@ This directory contains sample chapter sections for testing the `merge-sections.
 ## Testing merge-sections.md
 
 **Expected Behavior:**
+
 - All 6 sections merged in correct order
 - Chapter introduction added (learning objectives, prerequisites)
 - Chapter summary added (key concepts, skills developed)
@@ -34,11 +35,13 @@ This directory contains sample chapter sections for testing the `merge-sections.
 **Test Planted Abrupt Transitions:**
 
 After merging, remove bridging text between:
+
 - Section 5.3 → 5.4 (CRUD to Filtering)
 - Section 5.4 → 5.5 (Filtering to Joins)
 - Section 5.5 → 5.6 (Joins to Transactions)
 
 **Expected Enhancements:**
+
 - Bridging paragraphs added between sections
 - Smooth narrative flow established
 - Cross-references added where appropriate

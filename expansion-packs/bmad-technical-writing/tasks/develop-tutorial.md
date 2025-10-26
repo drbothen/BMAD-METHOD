@@ -10,23 +10,24 @@ name: Develop Tutorial
 description: Create hands-on step-by-step tutorial with tested code, clear instructions, and troubleshooting
 persona_default: tutorial-architect
 inputs:
-  - tutorial-topic
-  - learning-objective
-  - difficulty-level
-steps:
-  - Identify specific learning objective for tutorial
-  - Define prerequisite knowledge and setup requirements
-  - Design step-by-step progression (8-15 steps typical)
-  - Write clear, actionable instructions for each step
-  - Create and test code examples for each step
-  - Document expected outputs at each step
-  - Add troubleshooting section for common issues
-  - Test complete tutorial end-to-end
-  - Verify progressive difficulty and skill building
-  - Include summary and next steps
-  - Run execute-checklist.md with tutorial-effectiveness-checklist.md
-  - Use template tutorial-section-tmpl.yaml with create-doc.md
-output: tutorials/{{tutorial-slug}}.md
+
+- tutorial-topic
+- learning-objective
+- difficulty-level
+  steps:
+- Identify specific learning objective for tutorial
+- Define prerequisite knowledge and setup requirements
+- Design step-by-step progression (8-15 steps typical)
+- Write clear, actionable instructions for each step
+- Create and test code examples for each step
+- Document expected outputs at each step
+- Add troubleshooting section for common issues
+- Test complete tutorial end-to-end
+- Verify progressive difficulty and skill building
+- Include summary and next steps
+- Run execute-checklist.md with tutorial-effectiveness-checklist.md
+- Use template tutorial-section-tmpl.yaml with create-doc.md
+  output: tutorials/{{tutorial-slug}}.md
 
 ---
 

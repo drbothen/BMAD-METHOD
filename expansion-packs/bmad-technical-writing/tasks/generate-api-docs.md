@@ -10,23 +10,24 @@ name: Generate API Documentation
 description: Create comprehensive API reference documentation with parameters, return values, and usage examples
 persona_default: api-documenter
 inputs:
-  - api-component (function, class, module, or API endpoint)
-  - source-code or API specification
-  - target-audience (developers using this API)
-steps:
-  - Identify all API components that need documentation
-  - Extract function/method signatures from source code or spec
-  - Document all parameters with types, descriptions, and constraints
-  - Document return values with types and descriptions
-  - Document exceptions and error conditions
-  - Create 2-3 realistic usage examples for each API
-  - Add cross-references to related APIs
-  - Create parameter and return value tables
-  - Validate examples work correctly
-  - Format per publisher requirements
-  - Use template api-reference-tmpl.yaml with create-doc.md task
-  - Run execute-checklist.md with glossary-accuracy-checklist.md
-output: docs/api-reference/{{api_name}}-reference.md
+
+- api-component (function, class, module, or API endpoint)
+- source-code or API specification
+- target-audience (developers using this API)
+  steps:
+- Identify all API components that need documentation
+- Extract function/method signatures from source code or spec
+- Document all parameters with types, descriptions, and constraints
+- Document return values with types and descriptions
+- Document exceptions and error conditions
+- Create 2-3 realistic usage examples for each API
+- Add cross-references to related APIs
+- Create parameter and return value tables
+- Validate examples work correctly
+- Format per publisher requirements
+- Use template api-reference-tmpl.yaml with create-doc.md task
+- Run execute-checklist.md with glossary-accuracy-checklist.md
+  output: docs/api-reference/{{api_name}}-reference.md
 
 ---
 

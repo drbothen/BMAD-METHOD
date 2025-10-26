@@ -10,20 +10,21 @@ name: Optimize Visuals
 description: Optimize images for web and print by resizing, compressing, and converting to optimal formats
 persona_default: screenshot-specialist
 inputs:
-  - image-path (path to image file to optimize)
-  - optimization-target (web, print, or both)
-  - quality-threshold (optional: acceptable quality loss percentage)
-steps:
-  - Analyze current image properties (dimensions, format, file size)
-  - Determine target dimensions based on usage
-  - Resize to appropriate dimensions
-  - Compress without significant quality loss
-  - Convert to optimal format if needed (PNG/JPEG/SVG/WebP)
-  - Generate multiple resolutions if needed (1×, 2× for Retina)
-  - Optimize for print (300 DPI) if required
-  - Verify quality meets standards
-  - Generate optimized file(s)
-output: Optimized image file(s) with metadata report
+
+- image-path (path to image file to optimize)
+- optimization-target (web, print, or both)
+- quality-threshold (optional: acceptable quality loss percentage)
+  steps:
+- Analyze current image properties (dimensions, format, file size)
+- Determine target dimensions based on usage
+- Resize to appropriate dimensions
+- Compress without significant quality loss
+- Convert to optimal format if needed (PNG/JPEG/SVG/WebP)
+- Generate multiple resolutions if needed (1×, 2× for Retina)
+- Optimize for print (300 DPI) if required
+- Verify quality meets standards
+- Generate optimized file(s)
+  output: Optimized image file(s) with metadata report
 
 ---
 

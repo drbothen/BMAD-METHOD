@@ -10,20 +10,21 @@ name: Document Function
 description: Generate comprehensive documentation for a function or method in various documentation formats
 persona_default: api-documenter
 inputs:
-  - function-signature (the function signature to document)
-  - language (programming language: javascript, python, ruby, go, etc.)
-  - doc-format (optional: jsdoc, sphinx, rdoc, godoc, javadoc
-  - auto-detected if not specified)
-steps:
-  - Parse function signature to extract name, parameters, and return type
-  - Generate documentation template based on language and format
-  - Add comprehensive parameter descriptions with types and constraints
-  - Add detailed return value description
-  - Document possible exceptions or error conditions
-  - Create basic usage example
-  - Add notes about side effects, performance, or important behaviors
-  - Format according to documentation standard
-output: Formatted function documentation ready for insertion into codebase
+
+- function-signature (the function signature to document)
+- language (programming language: javascript, python, ruby, go, etc.)
+- doc-format (optional: jsdoc, sphinx, rdoc, godoc, javadoc
+- auto-detected if not specified)
+  steps:
+- Parse function signature to extract name, parameters, and return type
+- Generate documentation template based on language and format
+- Add comprehensive parameter descriptions with types and constraints
+- Add detailed return value description
+- Document possible exceptions or error conditions
+- Create basic usage example
+- Add notes about side effects, performance, or important behaviors
+- Format according to documentation standard
+  output: Formatted function documentation ready for insertion into codebase
 
 ---
 

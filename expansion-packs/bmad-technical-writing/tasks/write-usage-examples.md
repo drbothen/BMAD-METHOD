@@ -10,19 +10,20 @@ name: Write Usage Examples
 description: Create comprehensive usage examples for API functions including basic, advanced, and edge case scenarios
 persona_default: api-documenter
 inputs:
-  - api-function (function name or API endpoint to demonstrate)
-  - context (optional: book chapter, API section, tutorial level)
-  - language (programming language for examples)
-steps:
-  - Identify function purpose and common use cases
-  - Create basic usage example (simplest valid usage)
-  - Create intermediate example (real-world scenario)
-  - Create advanced example (complex configuration or chaining)
-  - Add edge case examples (error handling, boundary conditions)
-  - Include expected output for each example
-  - Add explanatory comments to clarify non-obvious code
-  - Ensure all examples are runnable and tested
-output: Complete set of usage examples ready for documentation or book content
+
+- api-function (function name or API endpoint to demonstrate)
+- context (optional: book chapter, API section, tutorial level)
+- language (programming language for examples)
+  steps:
+- Identify function purpose and common use cases
+- Create basic usage example (simplest valid usage)
+- Create intermediate example (real-world scenario)
+- Create advanced example (complex configuration or chaining)
+- Add edge case examples (error handling, boundary conditions)
+- Include expected output for each example
+- Add explanatory comments to clarify non-obvious code
+- Ensure all examples are runnable and tested
+  output: Complete set of usage examples ready for documentation or book content
 
 ---
 

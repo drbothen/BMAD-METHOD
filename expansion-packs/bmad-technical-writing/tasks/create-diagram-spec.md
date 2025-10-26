@@ -10,23 +10,24 @@ name: Create Diagram Specification
 description: Design technical diagram specifications for visual documentation
 persona_default: screenshot-specialist
 inputs:
-  - concept or process to visualize
-  - chapter-section where diagram will appear
-  - target-audience
-steps:
-  - Identify concept or process that needs visualization
-  - Choose appropriate diagram type (flowchart, sequence, architecture, etc.)
-  - List all key elements and components
-  - Define relationships and flows between elements
-  - Plan labels and annotations
-  - Specify style requirements (colors, shapes, etc.)
-  - Write alternative text description for accessibility
-  - Define size and format requirements
-  - Review for clarity and completeness
-  - Validate diagram supports text explanation
-  - Use template diagram-spec-tmpl.yaml with create-doc.md task
-  - Run execute-checklist.md with diagram-clarity-checklist.md
-output: docs/diagrams/{{diagram_id}}-spec.md
+
+- concept or process to visualize
+- chapter-section where diagram will appear
+- target-audience
+  steps:
+- Identify concept or process that needs visualization
+- Choose appropriate diagram type (flowchart, sequence, architecture, etc.)
+- List all key elements and components
+- Define relationships and flows between elements
+- Plan labels and annotations
+- Specify style requirements (colors, shapes, etc.)
+- Write alternative text description for accessibility
+- Define size and format requirements
+- Review for clarity and completeness
+- Validate diagram supports text explanation
+- Use template diagram-spec-tmpl.yaml with create-doc.md task
+- Run execute-checklist.md with diagram-clarity-checklist.md
+  output: docs/diagrams/{{diagram_id}}-spec.md
 
 ---
 

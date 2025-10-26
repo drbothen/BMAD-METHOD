@@ -10,21 +10,22 @@ name: Analyze Existing Technical Book
 description: Deep analysis of existing book state to inform revision planning
 persona_default: book-analyst
 inputs:
-  - existing_book_path
-  - revision_motivation (why analyze now?)
-steps:
-  - Scan all chapters and sections to understand book structure
-  - Extract book metadata (title, version, publisher, audience, publication date)
-  - Analyze structural organization (parts, chapters, sections, learning flow)
-  - Inventory all code examples (count, languages, versions, complexity)
-  - Identify technology versions currently used in book
-  - Extract writing style patterns (voice, tone, heading styles, terminology)
-  - Map cross-references and chapter dependencies
-  - Assess technical currency (what's outdated, deprecated, or broken)
-  - Identify inconsistencies, gaps, or quality issues
-  - Use template book-analysis-report-tmpl.yaml with create-doc.md task
-  - Generate comprehensive analysis report
-output: docs/analysis/{{book_title}}-analysis-report.md
+
+- existing_book_path
+- revision_motivation (why analyze now?)
+  steps:
+- Scan all chapters and sections to understand book structure
+- Extract book metadata (title, version, publisher, audience, publication date)
+- Analyze structural organization (parts, chapters, sections, learning flow)
+- Inventory all code examples (count, languages, versions, complexity)
+- Identify technology versions currently used in book
+- Extract writing style patterns (voice, tone, heading styles, terminology)
+- Map cross-references and chapter dependencies
+- Assess technical currency (what's outdated, deprecated, or broken)
+- Identify inconsistencies, gaps, or quality issues
+- Use template book-analysis-report-tmpl.yaml with create-doc.md task
+- Generate comprehensive analysis report
+  output: docs/analysis/{{book_title}}-analysis-report.md
 
 ---
 

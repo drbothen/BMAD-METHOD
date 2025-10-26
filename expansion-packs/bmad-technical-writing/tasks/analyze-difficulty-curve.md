@@ -10,20 +10,21 @@ name: Analyze Difficulty Curve
 description: Analyze learning progression and difficulty pacing across chapters or sections
 persona_default: instructional-designer
 inputs:
-  - outline-path (path to book outline or chapter list)
-  - target-audience-background (beginner/intermediate/advanced)
-steps:
-  - Load book outline or chapter list
-  - For each chapter/section, assess difficulty level (1-10 scale)
-  - Identify prerequisite concepts required per chapter
-  - Plot difficulty progression curve (ASCII or Mermaid)
-  - Detect difficulty spikes (jumps >2 levels between consecutive chapters)
-  - Detect plateaus (3+ consecutive chapters at same difficulty)
-  - Generate recommendations for smoothing curve
-  - Create prerequisite flow diagram (Mermaid)
-  - Document ideal vs actual progression
-  - Run execute-checklist.md with difficulty-curve-checklist.md
-output: Difficulty curve analysis report with visualizations and recommendations
+
+- outline-path (path to book outline or chapter list)
+- target-audience-background (beginner/intermediate/advanced)
+  steps:
+- Load book outline or chapter list
+- For each chapter/section, assess difficulty level (1-10 scale)
+- Identify prerequisite concepts required per chapter
+- Plot difficulty progression curve (ASCII or Mermaid)
+- Detect difficulty spikes (jumps >2 levels between consecutive chapters)
+- Detect plateaus (3+ consecutive chapters at same difficulty)
+- Generate recommendations for smoothing curve
+- Create prerequisite flow diagram (Mermaid)
+- Document ideal vs actual progression
+- Run execute-checklist.md with difficulty-curve-checklist.md
+  output: Difficulty curve analysis report with visualizations and recommendations
 
 ---
 

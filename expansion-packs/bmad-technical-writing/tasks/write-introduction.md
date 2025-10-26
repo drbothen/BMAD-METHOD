@@ -10,22 +10,23 @@ name: Write Chapter Introduction
 description: Create engaging chapter introduction with learning objectives, prerequisites, and roadmap
 persona_default: tutorial-architect
 inputs:
-  - chapter-number and title
-  - chapter-outline (topics to be covered)
-  - learning-objectives
-steps:
-  - Create compelling hook or opening
-  - State chapter overview and scope
-  - List learning objectives clearly
-  - Define prerequisites explicitly
-  - Explain what readers will build or learn
-  - Provide time estimate for chapter
-  - Create section roadmap
-  - Connect to previous and next chapters
-  - Review for engagement and clarity
-  - Validate prerequisites are accurate
-  - Use template introduction-tmpl.yaml with create-doc.md task (if needed)
-output: Chapter introduction section (first 1-3 pages)
+
+- chapter-number and title
+- chapter-outline (topics to be covered)
+- learning-objectives
+  steps:
+- Create compelling hook or opening
+- State chapter overview and scope
+- List learning objectives clearly
+- Define prerequisites explicitly
+- Explain what readers will build or learn
+- Provide time estimate for chapter
+- Create section roadmap
+- Connect to previous and next chapters
+- Review for engagement and clarity
+- Validate prerequisites are accurate
+- Use template introduction-tmpl.yaml with create-doc.md task (if needed)
+  output: Chapter introduction section (first 1-3 pages)
 
 ---
 

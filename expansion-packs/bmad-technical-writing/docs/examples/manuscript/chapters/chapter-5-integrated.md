@@ -7,6 +7,7 @@ By the end of this chapter, you'll be able to connect to databases, design table
 **What You'll Build**: A complete database-backed user management system with posts, supporting full CRUD operations, complex queries, and transactional integrity.
 
 **Prerequisites**:
+
 - Python 3.8 or later installed
 - Basic understanding of Python classes and objects
 - PostgreSQL installed locally (or access to a PostgreSQL server)
@@ -15,6 +16,7 @@ By the end of this chapter, you'll be able to connect to databases, design table
 **Time Commitment**: 4-6 hours to complete all sections and exercises
 
 **Learning Objectives**:
+
 1. Establish and manage database connections using psycopg2 and SQLAlchemy
 2. Define database schemas using SQLAlchemy's ORM and create tables programmatically
 3. Perform all CRUD operations (Create, Read, Update, Delete) on database records
@@ -632,6 +634,7 @@ engine = create_engine(
 ### Best Practices Summary
 
 **DO:**
+
 - ✓ Always use try/except/finally for database operations
 - ✓ Close sessions promptly
 - ✓ Commit related changes together
@@ -639,6 +642,7 @@ engine = create_engine(
 - ✓ Log errors for debugging
 
 **DON'T:**
+
 - ✗ Leave sessions open indefinitely
 - ✗ Ignore exceptions
 - ✗ Mix committed and uncommitted data
@@ -652,6 +656,7 @@ With proper transaction management and error handling, your database operations 
 Congratulations! You've completed Chapter 5 and learned the essential skills for working with PostgreSQL databases in Python. You started with basic connection setup and progressed through table creation, CRUD operations, advanced querying, relationships, and transaction management—everything you need to build robust database-backed applications.
 
 **Key Concepts Covered**:
+
 - Database connections using psycopg2 and SQLAlchemy
 - ORM model definitions and table creation
 - CRUD operations (Create, Read, Update, Delete)
@@ -660,6 +665,7 @@ Congratulations! You've completed Chapter 5 and learned the essential skills for
 - Transaction management with proper error handling
 
 **Skills Developed**:
+
 - Connect to PostgreSQL and verify connectivity
 - Define database schemas using SQLAlchemy's declarative ORM
 - Perform all CRUD operations safely with proper error handling
@@ -672,6 +678,7 @@ Congratulations! You've completed Chapter 5 and learned the essential skills for
 Building on your database foundation, Chapter 6 explores advanced topics like database migrations, query optimization, full-text search, and caching strategies. You'll learn how to evolve your schema over time without data loss, optimize slow queries for production scale, and implement caching to reduce database load.
 
 **Further Reading**:
+
 - SQLAlchemy Official Documentation: https://docs.sqlalchemy.org/
 - PostgreSQL Documentation: https://www.postgresql.org/docs/
 - "SQL Performance Explained" by Markus Winand

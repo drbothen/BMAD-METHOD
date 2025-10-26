@@ -10,20 +10,21 @@ name: Enhance Transitions
 description: Improve transitions between sections and within content to create smooth narrative flow and cohesive chapter experience
 persona_default: tutorial-architect
 inputs:
-  - chapter-integrated-path
-  - chapter-number
-steps:
-  - Read integrated chapter to understand overall flow
-  - Identify section boundaries and transition points
-  - Assess current transitions for quality
-  - Add bridging paragraphs between sections
-  - Improve within-section flow between paragraphs
-  - Connect code examples to explanations
-  - Add cross-references to related content
-  - Apply transition patterns for natural flow
-  - Ensure transitions feel natural, not formulaic
-  - Update chapter-integrated.md with improvements
-output: Updated manuscript/chapters/chapter-{{chapter_number}}-integrated.md with improved transitions
+
+- chapter-integrated-path
+- chapter-number
+  steps:
+- Read integrated chapter to understand overall flow
+- Identify section boundaries and transition points
+- Assess current transitions for quality
+- Add bridging paragraphs between sections
+- Improve within-section flow between paragraphs
+- Connect code examples to explanations
+- Add cross-references to related content
+- Apply transition patterns for natural flow
+- Ensure transitions feel natural, not formulaic
+- Update chapter-integrated.md with improvements
+  output: Updated manuscript/chapters/chapter-{{chapter_number}}-integrated.md with improved transitions
 
 ---
 
@@ -86,10 +87,12 @@ Primary transition points:
 
 ```markdown
 ## Section 3.1: Lists
+
 ...content...
 {{TRANSITION POINT 1}}
 
 ## Section 3.2: Dictionaries
+
 ...content...
 {{TRANSITION POINT 2}}
 
@@ -336,10 +339,10 @@ Don't use same pattern for every transition:
 
 ```markdown
 ✓ Good: Sequential → Building → Contrast → Preview
-  (Varied, natural)
+(Varied, natural)
 
 ✗ Monotonous: Sequential → Sequential → Sequential → Sequential
-  (Formulaic, boring)
+(Formulaic, boring)
 ```
 
 **Purpose:** Natural variety in transitions maintains reader engagement.
@@ -361,12 +364,12 @@ Use transition words and phrases:
 **Example:**
 
 ```markdown
-Before (abrupt):
----
+## Before (abrupt):
+
 Lists can store multiple values. Dictionaries use key-value pairs.
 
-After (smooth):
----
+## After (smooth):
+
 Lists can store multiple values in a specific order. In contrast,
 dictionaries use key-value pairs for associative storage where you
 look up values by their keys rather than by position.
@@ -376,23 +379,29 @@ look up values by their keys rather than by position.
 
 Link examples to concepts:
 
-```markdown
+````markdown
 ✗ Disconnected:
 Here's how to create a dictionary:
+
 ```python
 user = {"name": "Alice", "age": 30}
 ```
+````
+
 You can access values using keys.
 
 ✓ Connected:
 Here's how to create a dictionary with curly braces and key-value pairs:
+
 ```python
 user = {"name": "Alice", "age": 30}
 ```
+
 Notice how each key (like "name") is associated with a value (like "Alice").
 You can access these values using their keys, which is much faster than
 searching through a list.
-```
+
+````
 
 **Link Concepts to Applications:**
 
@@ -407,7 +416,7 @@ Tuples are immutable, meaning they can't be changed after creation. This
 makes them perfect for representing data that shouldn't change, like GPS
 coordinates (latitude, longitude) or database records where you want to
 prevent accidental modifications.
-```
+````
 
 **Purpose:** Smooth flow within sections, not just between them.
 

@@ -111,6 +111,7 @@ engine = create_engine(
 ### Best Practices Summary
 
 **DO:**
+
 - ✓ Always use try/except/finally for database operations
 - ✓ Close sessions promptly
 - ✓ Commit related changes together
@@ -118,6 +119,7 @@ engine = create_engine(
 - ✓ Log errors for debugging
 
 **DON'T:**
+
 - ✗ Leave sessions open indefinitely
 - ✗ Ignore exceptions
 - ✗ Mix committed and uncommitted data

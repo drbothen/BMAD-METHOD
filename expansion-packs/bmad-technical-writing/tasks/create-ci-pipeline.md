@@ -10,20 +10,21 @@ name: Create CI Pipeline
  description: Set up continuous integration pipeline to automatically test code on every commit
 persona_default: sample-code-maintainer
 inputs:
-  - language (programming language: javascript, python, ruby, go)
-  - test-framework (jest, pytest, rspec, go-test, etc.)
-  - platform (github-actions, gitlab-ci, circleci, travis)
-steps:
-  - Choose CI platform based on repository host
-  - Create CI configuration file (.github/workflows/\*.yml, .gitlab-ci.yml, etc.)
-  - Define test job with language runtime setup
-  - Configure dependency installation
-  - Add test execution command
-  - Add linting/formatting checks (optional)
-  - Add code coverage reporting (optional)
-  - Add status badge to README
-  - Test CI pipeline with sample commit
-output: CI configuration file(s) and status badge in README
+
+- language (programming language: javascript, python, ruby, go)
+- test-framework (jest, pytest, rspec, go-test, etc.)
+- platform (github-actions, gitlab-ci, circleci, travis)
+  steps:
+- Choose CI platform based on repository host
+- Create CI configuration file (.github/workflows/\*.yml, .gitlab-ci.yml, etc.)
+- Define test job with language runtime setup
+- Configure dependency installation
+- Add test execution command
+- Add linting/formatting checks (optional)
+- Add code coverage reporting (optional)
+- Add status badge to README
+- Test CI pipeline with sample commit
+  output: CI configuration file(s) and status badge in README
 
 ---
 

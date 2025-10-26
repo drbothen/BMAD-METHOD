@@ -10,20 +10,21 @@ name: Execute Research With Tools
 description: Autonomously execute technical research queries using available tools (WebSearch, Perplexity, MCP tools) and compile findings with proper citations
 persona_default: technical-researcher
 inputs:
-  - chapter-topic
-  - research-queries
-  - target-audience
-steps:
-  - Detect available research tools
-  - Match query types to optimal tools
-  - Parse and organize research queries
-  - Execute queries using available tools
-  - Collect and organize findings by query
-  - Extract source citations and credibility metadata
-  - Synthesize findings across multiple sources
-  - Identify gaps or conflicting information
-  - Auto-populate book-research-report template
-output: Structured research findings document with source citations
+
+- chapter-topic
+- research-queries
+- target-audience
+  steps:
+- Detect available research tools
+- Match query types to optimal tools
+- Parse and organize research queries
+- Execute queries using available tools
+- Collect and organize findings by query
+- Extract source citations and credibility metadata
+- Synthesize findings across multiple sources
+- Identify gaps or conflicting information
+- Auto-populate book-research-report template
+  output: Structured research findings document with source citations
 
 ---
 

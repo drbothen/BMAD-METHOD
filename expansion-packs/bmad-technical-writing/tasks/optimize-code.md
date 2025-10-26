@@ -10,20 +10,21 @@ name: Optimize Code
 description: Improve code clarity, readability, and efficiency for technical documentation
 persona_default: code-curator
 inputs:
-  - code_path (file or directory containing code to optimize)
-  - optimization_goals (clarity|performance|both)
-  - target_audience (beginner|intermediate|advanced)
-steps:
-  - Read and analyze existing code
-  - Identify optimization opportunities based on goals
-  - For clarity optimizations, improve naming, comments, structure, and readability
-  - For performance optimizations, improve algorithms, data structures, and efficiency
-  - Create before/after examples with annotations
-  - Explain rationale for each optimization
-  - Include performance benchmarks if applicable
-  - Run execute-checklist.md with code-quality-checklist.md
-  - Generate optimization recommendations report
-output: docs/optimization/{{code-name}}-optimization-report.md
+
+- code_path (file or directory containing code to optimize)
+- optimization_goals (clarity|performance|both)
+- target_audience (beginner|intermediate|advanced)
+  steps:
+- Read and analyze existing code
+- Identify optimization opportunities based on goals
+- For clarity optimizations, improve naming, comments, structure, and readability
+- For performance optimizations, improve algorithms, data structures, and efficiency
+- Create before/after examples with annotations
+- Explain rationale for each optimization
+- Include performance benchmarks if applicable
+- Run execute-checklist.md with code-quality-checklist.md
+- Generate optimization recommendations report
+  output: docs/optimization/{{code-name}}-optimization-report.md
 
 ---
 

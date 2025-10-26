@@ -10,21 +10,22 @@ name: Systematically Incorporate Reviewer Feedback
 description: Process and address technical reviewer, publisher, and beta reader feedback systematically
 persona_default: book-analyst
 inputs:
-  - reviewer_feedback (technical review comments, publisher requests, beta reader notes)
-  - affected_chapters
-steps:
-  - Collect all reviewer feedback from all sources (technical, publisher, beta readers)
-  - Categorize feedback by severity (critical/must-fix, important/should-fix, optional/nice-to-have)
-  - Create feedback tracking log with status for each item
-  - Address critical issues first (technical errors, broken code, security issues)
-  - Fix important issues (clarity problems, missing examples, structural issues)
-  - Consider optional suggestions (enhancements, additional topics, style preferences)
-  - Test all code changes from feedback
-  - Update text for clarity improvements requested
-  - Track completion status in feedback log
-  - Generate feedback-resolution-log documenting all changes
-  - Run execute-checklist.md with existing-book-integration-checklist.md
-output: docs/feedback/{{book_title}}-feedback-resolution-log.md
+
+- reviewer_feedback (technical review comments, publisher requests, beta reader notes)
+- affected_chapters
+  steps:
+- Collect all reviewer feedback from all sources (technical, publisher, beta readers)
+- Categorize feedback by severity (critical/must-fix, important/should-fix, optional/nice-to-have)
+- Create feedback tracking log with status for each item
+- Address critical issues first (technical errors, broken code, security issues)
+- Fix important issues (clarity problems, missing examples, structural issues)
+- Consider optional suggestions (enhancements, additional topics, style preferences)
+- Test all code changes from feedback
+- Update text for clarity improvements requested
+- Track completion status in feedback log
+- Generate feedback-resolution-log documenting all changes
+- Run execute-checklist.md with existing-book-integration-checklist.md
+  output: docs/feedback/{{book_title}}-feedback-resolution-log.md
 
 ---
 

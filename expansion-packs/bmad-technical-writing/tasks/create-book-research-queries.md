@@ -10,19 +10,20 @@ name: Create Book Research Queries
 description: Generate comprehensive research questions for technical book chapter topics with copy/paste formatting for external tools
 persona_default: technical-researcher
 inputs:
-  - chapter-topic
-  - target-audience
-  - book-context
-steps:
-  - Analyze chapter topic and scope
-  - Identify target audience knowledge level
-  - Generate research questions for technical concepts
-  - Identify code example needs
-  - Create learning progression validation questions
-  - Organize questions by priority and category
-  - Define research methodology and sources
-  - Format queries for copy/paste into external tools
-output: Formatted research queries ready for manual research or automated execution
+
+- chapter-topic
+- target-audience
+- book-context
+  steps:
+- Analyze chapter topic and scope
+- Identify target audience knowledge level
+- Generate research questions for technical concepts
+- Identify code example needs
+- Create learning progression validation questions
+- Organize questions by priority and category
+- Define research methodology and sources
+- Format queries for copy/paste into external tools
+  output: Formatted research queries ready for manual research or automated execution
 
 ---
 

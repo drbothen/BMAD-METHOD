@@ -10,21 +10,22 @@ name: Publish Repository
 description: Publish code repository to GitHub/GitLab with proper configuration and documentation
 persona_default: sample-code-maintainer
 inputs:
-  - repo-path (local path to repository)
-  - platform (github, gitlab, bitbucket)
-  - visibility (public, private)
-steps:
-  - Initialize Git repository if not already initialized
-  - Create .gitignore file
-  - Make initial commit
-  - Create remote repository on platform (GitHub/GitLab)
-  - Add remote origin
-  - Push to remote
-  - Configure repository settings (description, topics, etc.)
-  - Add CONTRIBUTING.md for collaboration guidelines
-  - Enable issue templates (optional)
-  - Enable discussions (optional)
-output: Published repository URL with proper configuration
+
+- repo-path (local path to repository)
+- platform (github, gitlab, bitbucket)
+- visibility (public, private)
+  steps:
+- Initialize Git repository if not already initialized
+- Create .gitignore file
+- Make initial commit
+- Create remote repository on platform (GitHub/GitLab)
+- Add remote origin
+- Push to remote
+- Configure repository settings (description, topics, etc.)
+- Add CONTRIBUTING.md for collaboration guidelines
+- Enable issue templates (optional)
+- Enable discussions (optional)
+  output: Published repository URL with proper configuration
 
 ---
 

@@ -10,23 +10,24 @@ name: Update Chapter for New Technology Version
 description: Update a specific chapter for new technology version (e.g., Python 3.9 → 3.12)
 persona_default: book-analyst
 inputs:
-  - chapter_path
-  - current_version (e.g., Python 3.9)
-  - target_version (e.g., Python 3.12)
-  - breaking_changes_list
-steps:
-  - Review chapter current state and code examples
-  - Identify target version (Python 3.12, Node 20, etc.)
-  - Update import statements for new version conventions
-  - Replace deprecated methods/APIs with current equivalents
-  - Adopt new syntax features where applicable (e.g., match/case in Python 3.10+)
-  - Update all code examples and test on exact target version
-  - Revise explanatory text for new best practices
-  - Add migration notes if changes are significant
-  - Update cross-references if chapter numbers or sections changed
-  - Run execute-checklist.md with version-update-checklist.md
-  - Document changes in chapter change log
-output: Updated chapter file with version-specific changes documented
+
+- chapter_path
+- current_version (e.g., Python 3.9)
+- target_version (e.g., Python 3.12)
+- breaking_changes_list
+  steps:
+- Review chapter current state and code examples
+- Identify target version (Python 3.12, Node 20, etc.)
+- Update import statements for new version conventions
+- Replace deprecated methods/APIs with current equivalents
+- Adopt new syntax features where applicable (e.g., match/case in Python 3.10+)
+- Update all code examples and test on exact target version
+- Revise explanatory text for new best practices
+- Add migration notes if changes are significant
+- Update cross-references if chapter numbers or sections changed
+- Run execute-checklist.md with version-update-checklist.md
+- Document changes in chapter change log
+  output: Updated chapter file with version-specific changes documented
 
 ---
 

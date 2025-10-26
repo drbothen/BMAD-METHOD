@@ -10,19 +10,20 @@ name: Apply Learning Framework
 description: Apply pedagogical frameworks (Bloom's, scaffolding, mastery, cognitive load) to book content
 persona_default: instructional-designer
 inputs:
-  - content-path (path to chapter, outline, or section)
-  - framework-choice (blooms/scaffolding/mastery/cognitive-load/all)
-  - target-audience (beginner/intermediate/advanced)
-steps:
-  - Load content to analyze
-  - Select pedagogical framework to apply
-  - Execute framework-specific analysis workflow
-  - Generate framework application report
-  - Provide specific recommendations for content improvement
-  - Create framework templates or worksheets
-  - Document framework rationale and decisions
-  - Run execute-checklist.md with learning-framework-checklist.md
-output: Framework application report with analysis, recommendations, and templates
+
+- content-path (path to chapter, outline, or section)
+- framework-choice (blooms/scaffolding/mastery/cognitive-load/all)
+- target-audience (beginner/intermediate/advanced)
+  steps:
+- Load content to analyze
+- Select pedagogical framework to apply
+- Execute framework-specific analysis workflow
+- Generate framework application report
+- Provide specific recommendations for content improvement
+- Create framework templates or worksheets
+- Document framework rationale and decisions
+- Run execute-checklist.md with learning-framework-checklist.md
+  output: Framework application report with analysis, recommendations, and templates
 
 ---
 

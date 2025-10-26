@@ -10,22 +10,23 @@ name: Write Chapter Draft
 description: Develop complete chapter manuscript from outline with introduction, main content, code examples, and exercises
 persona_default: tutorial-architect
 inputs:
-  - chapter-outline
-  - learning-objectives
-  - target-page-count
-steps:
-  - Review chapter outline for structure and objectives
-  - Write compelling introduction (hook, context, overview, prerequisites)
-  - Draft main content sections (concept → tutorial → examples progression)
-  - Create and test all code examples inline
-  - Develop practice exercises with progressive difficulty
-  - Write chapter summary with key takeaways
-  - Add cross-references to other chapters and resources
-  - Include further reading references
-  - Verify all learning objectives are addressed
-  - Run execute-checklist.md with chapter-completeness-checklist.md
-  - Use template chapter-draft-tmpl.yaml with create-doc.md task
-output: manuscript/chapters/chapter-{{chapter_number}}-draft.md
+
+- chapter-outline
+- learning-objectives
+- target-page-count
+  steps:
+- Review chapter outline for structure and objectives
+- Write compelling introduction (hook, context, overview, prerequisites)
+- Draft main content sections (concept → tutorial → examples progression)
+- Create and test all code examples inline
+- Develop practice exercises with progressive difficulty
+- Write chapter summary with key takeaways
+- Add cross-references to other chapters and resources
+- Include further reading references
+- Verify all learning objectives are addressed
+- Run execute-checklist.md with chapter-completeness-checklist.md
+- Use template chapter-draft-tmpl.yaml with create-doc.md task
+  output: manuscript/chapters/chapter-{{chapter_number}}-draft.md
 
 ---
 

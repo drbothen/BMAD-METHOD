@@ -10,22 +10,23 @@ name: Merge Sections
 description: Systematically merge completed chapter sections into single integrated chapter file with introduction, summary, and consistent formatting
 persona_default: tutorial-architect
 inputs:
-  - completed-sections-list
-  - chapter-number
-  - chapter-outline
-steps:
-  - Gather all completed section files
-  - Verify all sections marked DONE and present
-  - Validate section order for logical learning progression
-  - Merge sections in order preserving all content
-  - Add chapter introduction if not in section 1
-  - Add chapter summary if not in final section
-  - Standardize heading hierarchy throughout
-  - Ensure code formatting consistency
-  - Unify terminology and naming conventions
-  - Validate no content lost during merge
-  - Create manuscript/chapters/chapter-{{chapter_number}}-integrated.md
-output: manuscript/chapters/chapter-{{chapter_number}}-integrated.md
+
+- completed-sections-list
+- chapter-number
+- chapter-outline
+  steps:
+- Gather all completed section files
+- Verify all sections marked DONE and present
+- Validate section order for logical learning progression
+- Merge sections in order preserving all content
+- Add chapter introduction if not in section 1
+- Add chapter summary if not in final section
+- Standardize heading hierarchy throughout
+- Ensure code formatting consistency
+- Unify terminology and naming conventions
+- Validate no content lost during merge
+- Create manuscript/chapters/chapter-{{chapter_number}}-integrated.md
+  output: manuscript/chapters/chapter-{{chapter_number}}-integrated.md
 
 ---
 
@@ -36,7 +37,7 @@ Merge all completed sections into a single cohesive chapter file while preservin
 ## Prerequisites
 
 - All chapter sections marked DONE
-- Section files available (section-*-final.md or equivalent)
+- Section files available (section-\*-final.md or equivalent)
 - Chapter outline available with section order
 - No critical issues blocking sections from integration
 
@@ -198,12 +199,14 @@ If first section doesn't include chapter intro, add one:
 **What You'll Build**: {{Specific outcome or project}}
 
 **Prerequisites**:
+
 - {{Previous chapter or knowledge required}}
 - {{Tools or environment setup needed}}
 
 **Time Commitment**: {{Estimated hours to complete chapter}}
 
 **Learning Objectives**:
+
 1. {{Objective 1 - specific, measurable}}
 2. {{Objective 2}}
 3. {{Objective 3}}
@@ -256,12 +259,14 @@ If final section doesn't include summary, add one:
 {{Recap paragraph - what reader accomplished in this chapter}}
 
 **Key Concepts Covered**:
+
 - {{Concept 1 - brief reminder}}
 - {{Concept 2}}
 - {{Concept 3}}
 - {{Concept 4}}
 
 **Skills Developed**:
+
 - {{Skill 1 - what reader can now do}}
 - {{Skill 2}}
 - {{Skill 3}}
@@ -271,6 +276,7 @@ If final section doesn't include summary, add one:
 {{Preview of Chapter N+1 - how it builds on this foundation}}
 
 **Further Reading**:
+
 - {{Resource 1 - official docs, articles, books}}
 - {{Resource 2}}
 - {{Resource 3}}
@@ -287,6 +293,7 @@ If final section doesn't include summary, add one:
 **Example Skills:**
 
 > "After completing this chapter, you can now:
+>
 > - Design normalized database schemas with proper relationships
 > - Write efficient SQL queries with joins and indexes
 > - Optimize query performance using EXPLAIN ANALYZE
@@ -316,6 +323,7 @@ Ensure consistent structure:
 ```
 
 **Check:**
+
 - Only one H1 (chapter title)
 - H2 for each section
 - H3 for subsections
