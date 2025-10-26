@@ -67,8 +67,10 @@ dependencies:
     - technical-review-chapter.md
     - performance-review.md
     - execute-checklist.md
+    - verify-accuracy.md
   templates:
     - technical-review-report-tmpl.yaml
+    - accuracy-verification-report-tmpl.yaml
   checklists:
     - technical-accuracy-checklist.md
     - security-best-practices-checklist.md

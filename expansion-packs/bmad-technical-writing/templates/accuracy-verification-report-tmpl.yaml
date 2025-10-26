@@ -1,0 +1,398 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: accuracy-verification-report
+  name: Technical Accuracy Verification Report
+  version: 1.0
+  description: Comprehensive technical accuracy verification with fact-checking, code validation, API correctness, and source verification
+  output:
+    format: markdown
+    filename: "reviews/validation-results/accuracy-verification-{{timestamp}}.md"
+
+workflow:
+  elicitation: false
+  allow_skip: false
+
+sections:
+  - id: metadata
+    title: Verification Metadata
+    instruction: |
+      Document verification information:
+      - Content reviewed (chapter number/title, section, document name)
+      - Reviewer name and expertise area
+      - Verification date
+      - Content version/draft number verified
+      - Verification scope (full content, code only, specific sections, claims only)
+
+  - id: executive_summary
+    title: Executive Summary
+    instruction: |
+      High-level verification overview:
+      - Overall verification status (Pass / Needs Revision / Fail)
+      - Critical errors count (factual errors, broken code, security issues)
+      - Major issues count (outdated info, API inaccuracies, deprecated usage)
+      - Minor issues count (imprecision, terminology inconsistencies)
+      - Overall accuracy assessment (0-100% or qualitative description)
+      - Recommendation: Ready for publication / Needs revision / Requires major rework
+
+  - id: technical_claims_verification
+    title: Technical Claims Verification
+    instruction: |
+      Fact-checking results for all technical statements:
+
+      **Summary:**
+      - Total technical claims verified: X
+      - Correct: Y
+      - Incorrect: Z
+      - Imprecise: W
+
+      **Incorrect Claims:**
+      For each inaccuracy:
+      - Location (section, page, line, paragraph)
+      - Incorrect statement (exact quote)
+      - Severity (Critical/Major/Minor)
+      - Correct information with detailed explanation
+      - Authoritative source reference (URL, specification, official docs)
+      - Recommended fix (exact replacement text)
+
+      **Examples:**
+      - "Section 2.3, page 12: States 'Python 3.8 supports match/case'. Actually introduced in Python 3.10. Source: PEP 634. Severity: Critical"
+      - "Chapter 4, para 3: Claims 'useEffect runs before render'. Actually runs after render is committed to screen. Source: https://react.dev/reference/react/useEffect. Severity: Critical"
+
+      **Imprecise or Incomplete Claims:**
+      For each imprecision:
+      - Location
+      - Current statement
+      - Severity (typically Minor)
+      - More precise formulation
+      - Source reference
+
+      **Verified Correct Claims:**
+      - List particularly complex or critical claims that passed verification
+      - Note well-researched or well-documented areas
+      - Acknowledge thorough source citation
+
+  - id: code_testing_results
+    title: Code Testing Results
+    instruction: |
+      Execution testing for all code examples:
+
+      **Summary:**
+      - Total code examples tested: X
+      - Working correctly: Y
+      - Broken/failing: Z
+      - Incomplete (missing setup): W
+
+      **Broken Examples:**
+      For each failing code example:
+      - Location (chapter, example number, page, file)
+      - Code snippet (relevant portion)
+      - Test result (FAIL)
+      - Severity (Critical/Major/Minor)
+      - Error message or incorrect behavior
+      - Root cause (syntax error, logic error, missing dependency, incorrect API usage)
+      - Fixed code example
+      - Testing environment details (language version, framework version, OS)
+
+      **Example:**
+      ```
+      Location: Chapter 5, Example 5.1
+      Code: Async database query
+      Test Result: FAIL
+      Severity: Critical
+      Error: TypeError: Cannot read property 'query' of undefined at line 10
+      Issue: Missing connection initialization code
+      Fix: Add `const connection = await createConnection()` before query
+      Environment: Node.js 20.0.0, mysql2 3.6.0
+      ```
+
+      **Incomplete Examples:**
+      For each incomplete example:
+      - Location
+      - Missing components (imports, setup, configuration)
+      - Severity
+      - Required additions
+
+      **Working Examples:**
+      - List examples that executed correctly
+      - Note particularly well-designed or clear examples
+
+  - id: api_library_accuracy
+    title: API and Library Usage Verification
+    instruction: |
+      API correctness and currency check:
+
+      **Summary:**
+      - APIs/libraries checked: X
+      - Correct current usage: Y
+      - Incorrect/deprecated usage: Z
+
+      **Incorrect API Usage:**
+      For each API issue:
+      - Location
+      - Incorrect API call or usage (code snippet)
+      - Severity (Critical/Major/Minor)
+      - Issue description (wrong signature, wrong parameter order, wrong types, deprecated method)
+      - Correct API usage (code example)
+      - API version where change occurred
+      - Official documentation reference
+
+      **Examples:**
+      ```javascript
+      Location: Chapter 7, page 89
+      Incorrect: axios.get(headers, url)
+      Issue: Parameters in wrong order
+      Severity: Critical
+      Correct: axios.get(url, { headers })
+      Source: https://axios-http.com/docs/api_intro
+      ```
+
+      **Deprecated APIs:**
+      For each deprecated API found:
+      - Location
+      - Deprecated API usage
+      - Severity (Major typically)
+      - When deprecated (version, date)
+      - Current recommended alternative
+      - Migration example
+      - Source reference
+
+      **Version Compatibility Issues:**
+      - List any version-specific concerns
+      - Note breaking changes relevant to examples
+      - Recommend version clarifications
+
+  - id: diagram_validation
+    title: Diagram Validation
+    instruction: |
+      Diagram accuracy and text alignment:
+
+      **Summary:**
+      - Diagrams reviewed: X
+      - Accurate: Y
+      - Issues found: Z
+
+      **Diagram Issues:**
+      For each diagram issue:
+      - Location (figure number, page, section)
+      - Issue description (mismatch with text, incorrect flow, missing elements, unclear labels)
+      - Severity (Critical/Major/Minor)
+      - Recommended fix (description or corrected diagram)
+
+      **Examples:**
+      - "Figure 3.2: Shows 4 steps in process flow but text describes 5 steps. Missing 'validation' step. Severity: Major"
+      - "Diagram 5.1: Labels use 'client' but text uses 'consumer' consistently. Recommend updating diagram labels for consistency. Severity: Minor"
+
+      **Accurate Diagrams:**
+      - List diagrams that correctly represent described concepts
+      - Note particularly effective visualizations
+
+  - id: terminology_consistency
+    title: Terminology Consistency
+    instruction: |
+      Terminology usage and consistency check:
+
+      **Key Terms Reviewed:**
+      - List important technical terms used in content
+      - Note primary terminology choices
+
+      **Inconsistencies Found:**
+      For each inconsistency:
+      - Terms used inconsistently (e.g., "function" vs "method", "client" vs "consumer")
+      - Locations where each variant appears
+      - Severity (typically Minor unless causes confusion)
+      - Recommended standard term
+      - Justification (industry standard, official docs terminology, clarity)
+
+      **Terminology Issues:**
+      - Incorrect technical terms used
+      - Ambiguous terms needing clarification
+      - Terms needing definition on first use
+
+      **Positive Findings:**
+      - Areas with consistent, clear terminology
+      - Good use of industry-standard terms
+
+  - id: outdated_content
+    title: Outdated and Deprecated Content
+    instruction: |
+      Currency check for content freshness:
+
+      **Summary:**
+      - Deprecated features identified: X
+      - Outdated practices found: Y
+      - Version updates recommended: Z
+
+      **Deprecated Features Used:**
+      For each deprecated feature:
+      - Location
+      - Deprecated feature/API/pattern
+      - Severity (Major typically)
+      - When deprecated (version, date)
+      - Current replacement/alternative
+      - Migration approach
+      - Source reference
+
+      **Example:**
+      ```
+      Location: Throughout Chapter 8
+      Deprecated: React class components with componentDidMount
+      Deprecated Since: React 16.8 (February 2019)
+      Severity: Major
+      Current Best Practice: Functional components with useEffect hook
+      Recommendation: Rewrite examples using hooks or add clear note about teaching legacy patterns
+      Source: https://react.dev/learn - official docs now teach hooks-first
+      ```
+
+      **Outdated Information:**
+      - Information that's no longer current or accurate
+      - References to EOL (End of Life) versions
+      - Security practices that are obsolete
+      - Performance recommendations superseded by better approaches
+
+      **Version Updates Needed:**
+      - Language/framework version updates recommended
+      - Library dependency updates needed
+      - Breaking changes to address in examples
+
+  - id: security_accuracy
+    title: Security Accuracy Review
+    instruction: |
+      Security-related accuracy verification:
+
+      **Security Claims:**
+      - Verify all security-related statements against current standards
+      - Check cryptographic recommendations are current
+      - Validate authentication/authorization patterns
+      - Review input validation approaches
+
+      **Security Issues Found:**
+      For each security concern:
+      - Location
+      - Issue description (vulnerable code, insecure recommendation, outdated practice)
+      - Severity (Critical/Major/Minor)
+      - Security impact (data breach, code execution, information disclosure, etc.)
+      - Secure alternative with code example
+      - Reference to security standard (OWASP, CWE, CVE)
+
+      **Examples:**
+      - Credentials hardcoded in examples
+      - Use of deprecated crypto functions (MD5, SHA-1 for passwords)
+      - Missing input validation or sanitization
+      - SQL injection vulnerabilities
+      - XSS vulnerabilities
+
+  - id: checklist_results
+    title: Technical Accuracy Checklist Results
+    instruction: |
+      Results from executing technical-accuracy-checklist.md:
+
+      **Checklist Summary:**
+      - Total checklist items: X
+      - Passed: Y
+      - Failed: Z
+
+      **Failed Items:**
+      List each failed checklist item with:
+      - Checklist item description
+      - Reason for failure
+      - Locations where issue occurs
+      - Remediation needed
+
+      **Notes:**
+      - Any checklist items requiring clarification
+      - Any checklist items not applicable to this content
+
+  - id: sources_verified
+    title: Sources and References Verified
+    instruction: |
+      Documentation and authoritative sources checked:
+
+      **Official Documentation:**
+      - List all official docs referenced for verification
+      - Note documentation versions used
+      - URLs checked and confirmed accessible
+
+      **Standards Referenced:**
+      - RFCs, PEPs, ECMAScript specs, W3C standards used
+      - Industry standards consulted
+
+      **Other Sources:**
+      - Technical blogs verified (official project blogs)
+      - Conference talks or presentations checked
+      - Books or authoritative guides referenced
+
+      **Source Quality Notes:**
+      - Note any concerns about source authority
+      - Identify areas where authoritative sources were hard to find
+      - Recommend additional sources for unclear areas
+
+  - id: positive_findings
+    title: Positive Findings
+    instruction: |
+      What worked well in terms of accuracy:
+      - Particularly well-researched sections
+      - Excellent source citation
+      - Accurate and current technical information
+      - Well-tested code examples
+      - Clear and precise technical explanations
+      - Good use of authoritative sources
+      - Effective fact-checking evident in content
+
+      Recognizing strengths helps maintain quality in revisions and guides future content creation.
+
+  - id: recommendations
+    title: Recommended Actions
+    instruction: |
+      Prioritized fix list with specific actions:
+
+      **Must Fix (Critical):**
+      List all critical issues with:
+      1. Brief description and location
+      2. Priority number
+      3. Estimated effort to fix
+
+      **Should Fix (Major):**
+      List all major issues with:
+      1. Brief description and location
+      2. Priority number
+      3. Estimated effort to fix
+
+      **Nice to Fix (Minor):**
+      List all minor issues with:
+      1. Brief description and location
+      2. Optional - can be deferred
+
+      **Overall Recommendation:**
+      - Ready to proceed? Yes/No
+      - Overall verification status: Pass / Needs Revision / Fail
+      - Total estimated effort to address all issues (hours or days)
+      - Re-verification needed after fixes? Yes/No
+      - Specific sections requiring re-review after changes
+
+      **Pass/Fail Criteria Applied:**
+      - Pass: 0 critical, ≤ 2 major, minor issues acceptable
+      - Needs Revision: 0 critical, 3-5 major issues
+      - Fail: Any critical errors OR > 5 major issues
+
+  - id: next_steps
+    title: Next Steps
+    instruction: |
+      Recommended workflow after verification:
+
+      1. Author addresses critical issues (immediate action required)
+      2. Author addresses major issues (should fix before publication)
+      3. Re-test code examples if critical fixes made
+      4. Re-verify updated sections
+      5. Consider minor issues for future updates
+      6. Proceed to next review phase (editorial, final QA, etc.)
+
+      **Timeline Recommendations:**
+      - Suggested timeline for addressing critical issues
+      - Suggested timeline for major issues
+      - Recommend re-review date
+
+      **Follow-up Actions:**
+      - Specific verification tasks to repeat after fixes
+      - Additional resources author may need
+      - Coordination with other reviewers or stakeholders

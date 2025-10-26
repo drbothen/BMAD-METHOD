@@ -71,8 +71,10 @@ dependencies:
     - create-book-research-queries.md
     - execute-research-with-tools.md
     - execute-checklist.md
+    - verify-accuracy.md
   templates:
     - book-research-report-tmpl.yaml
+    - accuracy-verification-report-tmpl.yaml
   checklists:
     - research-quality-checklist.md
   data:
