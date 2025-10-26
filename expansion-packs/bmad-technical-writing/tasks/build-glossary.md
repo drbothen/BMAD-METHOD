@@ -33,6 +33,8 @@ inputs:
 
 This task guides you through creating a comprehensive, accurate glossary that helps readers quickly look up technical terms and concepts. The result is a reference resource that improves book usability and reader comprehension.
 
+**Note:** For creating individual glossary entries with structured guidance, consider using the `glossary-entry-tmpl.yaml` template via the `create-doc` task.
+
 ## Prerequisites
 
 Before starting this task:

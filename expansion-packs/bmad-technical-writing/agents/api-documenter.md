@@ -70,6 +70,7 @@ dependencies:
   templates:
     - api-reference-tmpl.yaml
     - appendix-tmpl.yaml
+    - glossary-entry-tmpl.yaml
   checklists:
     - glossary-accuracy-checklist.md
   data:

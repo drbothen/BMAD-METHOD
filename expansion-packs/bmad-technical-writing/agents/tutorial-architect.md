@@ -74,6 +74,7 @@ dependencies:
     - enhance-transitions.md
   templates:
     - chapter-outline-tmpl.yaml
+    - section-plan-tmpl.yaml
     - chapter-draft-tmpl.yaml
     - tutorial-section-tmpl.yaml
     - introduction-tmpl.yaml

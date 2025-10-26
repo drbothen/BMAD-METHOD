@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+**Orphaned Templates Resolution (Story 7.15)**
+
+- **api-documenter.md**: Added `glossary-entry-tmpl.yaml` to dependencies for structured glossary entry creation
+- **tutorial-architect.md**: Added `section-plan-tmpl.yaml` to dependencies for section-level planning
+- **build-glossary.md**: Added note referencing `glossary-entry-tmpl.yaml` template for individual glossary entries
+- Both previously orphaned templates now properly integrated with their parent agents
+
 **PacktPub Formatting Workflow - v6 Script Update**
 
 - Updated all references from `apply-packt-styles-v5.py` to `apply-packt-styles-v6.py`
