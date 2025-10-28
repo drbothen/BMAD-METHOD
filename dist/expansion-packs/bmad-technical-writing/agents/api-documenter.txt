@@ -4731,6 +4731,180 @@ Response 404:
 
 ---
 
+## Manuscript Metrics and Page Count Standards
+
+### Words Per Page Definitions
+
+Understanding page count metrics is essential for planning, estimating, and tracking manuscript progress. Different contexts require different calculations.
+
+#### Manuscript Planning (Estimation Phase)
+
+**Standard Estimation: 500 words per page**
+
+Use this baseline when:
+- Planning book outlines and chapter structures
+- Estimating manuscript length for proposals
+- Setting writing targets and milestones
+- Calculating initial project scope
+
+```
+Example:
+- Book target: 300 pages
+- Estimated word count: 150,000 words (300 × 500)
+- Chapter target: 20 pages
+- Estimated word count: 10,000 words (20 × 500)
+```
+
+#### Published Page Reality (Verification Phase)
+
+**Realistic Published: 300-400 words per page**
+
+Actual published technical books typically contain:
+- Body text: 250-350 words per page
+- Code examples: Reduce word count per page
+- Diagrams and screenshots: Reduce word count per page
+- Whitespace and margins: Reduce word count per page
+
+```
+Example Published Chapter:
+- 20 published pages
+- 3 pages of code examples (~150 words/page)
+- 2 pages with large diagrams (~100 words/page)
+- 15 pages of body text (~350 words/page)
+- Total: ~6,000-7,000 words (not 10,000)
+```
+
+#### Context-Aware Calculations
+
+Adjust estimates based on content type:
+
+**Code-Heavy Chapters:**
+- Tutorials with extensive code examples
+- API reference chapters
+- Implementation guides
+- Estimate: 250-350 words per page
+
+**Concept-Heavy Chapters:**
+- Theory and architecture
+- Planning and design chapters
+- Conceptual overviews
+- Estimate: 400-500 words per page
+
+**Balanced Chapters:**
+- Mix of explanation and code
+- Standard tutorial format
+- Most technical book chapters
+- Estimate: 350-450 words per page
+
+**Diagram-Heavy Chapters:**
+- Architecture diagrams
+- Workflow visualizations
+- Annotated screenshots
+- Estimate: 200-350 words per page
+
+### Token to Page Conversion
+
+For AI-assisted writing and document sharding:
+
+**Estimate: 500-1000 tokens per page**
+
+```
+Token estimation guidelines:
+- 1 token ≈ 0.75 words (English)
+- 500 words = ~650-700 tokens
+- Therefore: 1 page ≈ 650-1000 tokens depending on formatting
+```
+
+**Use cases:**
+- Calculating when to shard large chapters (shard-large-chapter.md)
+- Estimating context window usage for AI tools
+- Planning document processing batches
+
+### Validation Guidelines
+
+When reviewing completed manuscripts:
+
+**Check page count alignment:**
+
+```
+✓ Outline estimated: 25 pages
+✓ Manuscript word count: 10,000 words
+✓ Calculation: 10,000 ÷ 400 words/page = 25 pages
+✓ Result: Aligned with outline
+
+❌ Outline estimated: 25 pages
+❌ Manuscript word count: 6,000 words
+❌ Calculation: 6,000 ÷ 400 = 15 pages
+❌ Result: Chapter is under target, needs expansion
+```
+
+**Publisher-Specific Requirements:**
+
+Always verify with your publisher's specific guidelines:
+
+- **PacktPub**: 20-30 pages per chapter typical
+- **O'Reilly**: Variable, depends on book scope
+- **Manning**: 15-25 pages per chapter typical
+- **Self-Publishing**: Author determines length
+
+### Planning Tools
+
+**Chapter Scope Calculator:**
+
+```
+Target: 20-page chapter
+Content breakdown:
+- Introduction: 2 pages × 400 words = 800 words
+- Section 1: 5 pages × 350 words = 1,750 words (code-heavy)
+- Section 2: 4 pages × 450 words = 1,800 words (concept-heavy)
+- Section 3: 6 pages × 350 words = 2,100 words (balanced)
+- Summary & Exercises: 3 pages × 400 words = 1,200 words
+Total estimated: 7,650 words (~19 published pages)
+```
+
+**Book Scope Calculator:**
+
+```
+Book target: 300 pages
+- Front matter: 15 pages
+- 12 chapters × 20 pages each: 240 pages
+- Appendices: 30 pages
+- Index: 15 pages
+Total: 300 pages
+
+Word count estimate:
+- 270 content pages × 400 words = 108,000 words
+- Realistic technical book length
+```
+
+### Best Practices
+
+**For Authors:**
+
+1. Use 500 words/page for initial planning
+2. Use 400 words/page for progress verification
+3. Track actual ratio for your writing style
+4. Adjust future estimates based on your metrics
+5. Account for code/diagrams in dense chapters
+
+**For Editors and Reviewers:**
+
+1. Check word count against page estimates
+2. Flag chapters significantly over/under target
+3. Consider content type when evaluating length
+4. Verify publisher requirements are met
+5. Use actual published page metrics when available
+
+**For Project Managers:**
+
+1. Build buffer into timeline for length adjustments
+2. Track actual vs estimated page counts
+3. Communicate early if scope is off-target
+4. Provide clear word count targets to writers
+5. Review metrics after each chapter to improve estimates
+
+---
+
 ## References and Resources
 
 ### Style Guide Standards
