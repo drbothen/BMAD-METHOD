@@ -9,11 +9,11 @@ The Technical Writing Expansion Pack extends BMad-Method with a comprehensive su
 ### Key Features
 
 - 🤖 **14 Specialized Agents** - Complete writing team with 11 required agents (greenfield planning/writing/review + research + brownfield book analysis) + 3 optional agents (Learning Path Designer, Sample Code Maintainer, Version Manager) for advanced scenarios
-- 📝 **33 Core Tasks** - Full chapter development, API documentation, diagram design, publishing workflows, PLUS learning path design, code repository setup, version matrix testing, solutions creation, index generation, screenshot management, publisher packaging, MEAP preparation, self-publishing prep, preface/appendix creation, diagram set design, cross-reference validation, and brownfield tasks
-- 📋 **31 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility, visual quality, PLUS cross-platform compatibility, inclusive language, readability, index completeness, citation accuracy, final manuscript review, book proposals, self-publishing standards, repository quality, MEAP readiness, and brownfield checklists
-- 🎯 **18 Professional Templates** - Book planning, chapter development, API reference, diagrams, preface, appendix, publishing, brownfield templates, PLUS glossary entry template
-- 📚 **6 Knowledge Bases** - Comprehensive publisher guidelines and technical writing standards
-- 🔄 **15 Workflows** - Section-driven development, publisher-specific submission workflows (PacktPub, O'Reilly, Manning, Self-Publishing), brownfield workflows for edition updates, and complete book lifecycle management
+- 📝 **36 Core Tasks** - Full chapter development, API documentation, diagram design, publishing workflows, **PLUS NEW: tone specification (define-book-tone, extract-tone-patterns, apply-tone-patterns)**, learning path design, code repository setup, version matrix testing, solutions creation, index generation, screenshot management, publisher packaging, MEAP preparation, self-publishing prep, preface/appendix creation, diagram set design, cross-reference validation, and brownfield tasks
+- 📋 **32 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility, visual quality, **PLUS NEW: tone-consistency-checklist**, cross-platform compatibility, inclusive language, readability, index completeness, citation accuracy, final manuscript review, book proposals, self-publishing standards, repository quality, MEAP readiness, and brownfield checklists
+- 🎯 **19 Professional Templates** - Book planning, chapter development, API reference, diagrams, preface, appendix, publishing, brownfield templates, glossary entry template, **PLUS NEW: tone-specification-tmpl**
+- 📚 **7 Knowledge Bases** - Comprehensive publisher guidelines, technical writing standards, **PLUS NEW: writing-voice-guides** with 6 tone profiles
+- 🔄 **15 Workflows** - Section-driven development, publisher-specific submission workflows (PacktPub, O'Reilly, Manning, Self-Publishing), brownfield workflows for edition updates, **NOW WITH: integrated tone definition in book-planning-workflow**, and complete book lifecycle management
 
 ## 📖 Documentation
 

@@ -1,0 +1,459 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: tone-specification
+  name: Tone Specification
+  version: 1.0
+  description: Comprehensive tone and voice specification for technical book project ensuring consistent style throughout manuscript
+  output:
+    format: markdown
+    filename: "tone-specification.md"
+
+workflow:
+  elicitation: true
+  allow_skip: false
+
+sections:
+  - id: book_overview
+    title: Book Overview & Audience
+    instruction: |
+      Provide context for tone decisions:
+
+      **Book Information:**
+      - Book title and topic
+      - Target audience (skill level, role, experience)
+      - Publisher (PacktPub, O'Reilly, Manning, Self-Publishing)
+      - Book type (tutorial, reference, cookbook, comprehensive guide)
+      - Estimated page count
+
+      **Tone Context:**
+      - Why tone specification matters for THIS book
+      - Key challenges this tone addresses (e.g., "500-page book needs consistent voice", "multiple authors need shared guidance")
+      - Audience expectations for tone (e.g., "DevOps engineers expect practical, no-nonsense guidance")
+
+      This section sets the foundation for all tone decisions that follow.
+    elicit: true
+
+  - id: tone_personality
+    title: Tone Personality (5 Key Adjectives)
+    instruction: |
+      Define the 5 key adjectives that characterize this book's tone:
+
+      **For each adjective, provide:**
+      1. **Adjective:** (e.g., "Encouraging", "Authoritative", "Practical")
+      2. **Definition:** What this means specifically for THIS book (not generic definition)
+      3. **Example:** A 2-3 sentence passage from YOUR book topic demonstrating this characteristic
+
+      **Example Format:**
+
+      **1. Encouraging**
+      - **Definition:** Reader feels supported when facing difficult concepts, with acknowledgment that learning takes time and mistakes are normal
+      - **Example:** "If Kubernetes networking seems overwhelming right now, that's completely normal. Even experienced engineers find it complex at first. We'll break it into manageable pieces, and by Chapter 8, you'll be confidently debugging network policies."
+
+      **2. Practical**
+      - **Definition:** Every concept immediately connects to real-world application with production-ready examples, not toy demos
+      - **Example:** "Let's deploy this authentication service to AWS. You'll use the same Terraform configuration that handles our team's production infrastructure at scale—no shortcuts or 'this works on my laptop' examples."
+
+      Continue this format for all 5 adjectives. Choose adjectives that meaningfully differentiate your book's voice.
+    elicit: true
+
+  - id: voice_characteristics
+    title: Voice Characteristics
+    instruction: |
+      Define specific voice decisions for this book:
+
+      **Formality Level:** [Select one and provide book-specific examples]
+      - ☐ Level 1 (Very Casual): Frequent contractions, exclamations, very conversational
+      - ☐ Level 2 (Casual/Friendly): Contractions used, friendly but structured
+      - ☐ Level 3 (Professional/Conversational): Balanced contractions, professional yet warm [MOST COMMON]
+      - ☐ Level 4 (Formal/Professional): Minimal contractions, structured tone
+      - ☐ Level 5 (Very Formal/Academic): No contractions, scholarly tone
+
+      **Perspective:**
+      - First person: "I recommend this approach because..."
+      - Second person: "You'll implement authentication in this chapter..." [MOST COMMON for technical books]
+      - Third person: "Developers implement authentication by..."
+      - Mixed: Specify when each is used
+
+      **Active vs. Passive Voice:**
+      - Primarily active: "We'll deploy the application..." [RECOMMENDED]
+      - Primarily passive: "The application will be deployed..."
+      - Mixed: Specify ratio and context for each
+
+      **Contractions Usage:**
+      - Frequent: "We'll", "You're", "It's", "Don't" (casual)
+      - Moderate: Use in explanations, avoid in technical instructions [COMMON]
+      - Rare: Only in direct quotes
+      - Never: Always use "We will", "You are", "It is", "Do not" (formal)
+
+      Provide 2-3 example sentences for each decision showing how it applies to YOUR book's content.
+    elicit: true
+
+  - id: formality_scale
+    title: Formality Level Specification
+    instruction: |
+      Based on the formality level selected in Voice Characteristics, provide detailed examples:
+
+      **Selected Formality Level:** [Restate: Level 1-5]
+
+      **Comparison Examples Using YOUR Book's Topic:**
+
+      Show the SAME technical concept written at different formality levels to demonstrate your choice:
+
+      **Level 1 (Very Casual):**
+      "Hey! Let's dive into [YOUR TOPIC]. This stuff is actually pretty cool once you get the hang of it. Don't worry if it seems weird at first—everyone finds it confusing!"
+
+      **Level 2 (Casual/Friendly):**
+      "Let's explore [YOUR TOPIC] together. You'll find it makes sense once you try a few examples. We'll start simple and build up to more complex scenarios."
+
+      **Level 3 (Professional/Conversational):**
+      "In this chapter, we'll examine [YOUR TOPIC]. You'll apply these concepts through practical examples. By the end, you'll understand both the theory and real-world applications."
+
+      **Level 4 (Formal/Professional):**
+      "This chapter examines [YOUR TOPIC]. Readers will apply these concepts through practical examples. The chapter covers both theoretical foundations and real-world applications."
+
+      **Level 5 (Very Formal/Academic):**
+      "This chapter presents an examination of [YOUR TOPIC]. Subsequent examples demonstrate practical applications. Coverage includes both theoretical foundations and applied implementations."
+
+      **Your Choice:** [Mark which level matches your book's tone]
+
+      **Rationale:** Explain why this formality level fits your audience and publisher requirements.
+
+      Provide 3 additional examples using actual topics from your book outline, all written at your chosen formality level to demonstrate consistency.
+    elicit: true
+
+  - id: publisher_alignment
+    title: Publisher Alignment
+    instruction: |
+      Document how your tone aligns with publisher requirements:
+
+      **Publisher:** [PacktPub / O'Reilly / Manning / Self-Publishing]
+
+      **PacktPub Requirements (if applicable):**
+      - Expected tone: "Conversational but professional"
+      - Recommended formality: Level 2-3
+      - Adjustments made: [List specific tone decisions made to align with PacktPub expectations]
+      - Example aligned passage: [2-3 sentences from YOUR book showing PacktPub-appropriate tone]
+
+      **O'Reilly Requirements (if applicable):**
+      - Expected tone: "Authoritative with technical precision"
+      - Recommended formality: Level 3-4
+      - Adjustments made: [List specific tone decisions made to align with O'Reilly expectations]
+      - Example aligned passage: [2-3 sentences from YOUR book showing O'Reilly-appropriate tone]
+
+      **Manning Requirements (if applicable):**
+      - Expected tone: "Author voice with personality"
+      - Recommended formality: Level 2-3 (author preference)
+      - Adjustments made: [List specific tone decisions made to align with Manning expectations]
+      - Example aligned passage: [2-3 sentences from YOUR book showing Manning-appropriate tone with author personality]
+
+      **Self-Publishing (if applicable):**
+      - Tone flexibility: No publisher constraints
+      - Chosen approach: [Describe your rationale for chosen tone]
+      - Target audience alignment: [How tone matches audience expectations]
+      - Example passage: [2-3 sentences demonstrating your chosen tone]
+
+      **Validation:**
+      - Has publisher editor reviewed this tone specification? [Yes/No/Pending]
+      - Feedback received: [Any publisher comments on tone]
+      - Adjustments needed: [Changes requested by publisher]
+    elicit: true
+
+  - id: terminology_preferences
+    title: Terminology Preferences
+    instruction: |
+      Define terminology decisions that reflect your tone:
+
+      **Technical Terms:**
+      - Terminology source: [Official docs / Industry standard / Simplified for audience]
+      - Introduce-before-use: [Yes - always define terms first / No - assume knowledge]
+      - Acronym handling: [Spell out first use / Use directly / Depends on audience familiarity]
+
+      **Example Term Decisions:**
+
+      | Concept | Term Used | Alternative Rejected | Rationale |
+      |---------|-----------|---------------------|-----------|
+      | Example: Container orchestration | Kubernetes or K8s? | "Container orchestrator" (too generic) | Target audience knows Kubernetes; "K8s" used after first mention |
+      | [Your term 1] | [Chosen term] | [Rejected alternative] | [Why this choice fits tone] |
+      | [Your term 2] | [Chosen term] | [Rejected alternative] | [Why this choice fits tone] |
+      | [Your term 3] | [Chosen term] | [Rejected alternative] | [Why this choice fits tone] |
+
+      **Consistency Rules:**
+      - Function vs method: [Which term used when]
+      - Setup vs set up: [Noun vs verb usage]
+      - Filename vs file name: [One word or two]
+      - Backend vs back-end vs back end: [Hyphenation choice]
+
+      **Jargon Approach:**
+      - Use without explanation: [List terms assumed knowledge]
+      - Define on first use: [List terms explained]
+      - Avoid entirely: [List terms replaced with simpler alternatives]
+
+      Provide 5-8 term decisions specific to YOUR book's domain.
+    elicit: true
+
+  - id: code_comment_style
+    title: Code Comment Style
+    instruction: |
+      Define how code comments reflect your book's tone:
+
+      **Comment Philosophy:**
+      - Comment density: [Heavy / Moderate / Light / Minimal]
+      - Comment purpose: [Explain what code does / Explain why decisions made / Both]
+      - Tone in comments: [Match prose tone / More concise / More technical]
+
+      **Example Code with Comments (Use YOUR book's language/topic):**
+
+      ```[your-language]
+      # [Comment example 1 - showing your comment style]
+      [code line 1]
+
+      # [Comment example 2 - showing tone consistency]
+      [code line 2]
+
+      # [Comment example 3 - showing technical detail level]
+      [code line 3]
+      ```
+
+      **Contrasting Styles to Show Your Choice:**
+
+      **Overly verbose (if you're avoiding this):**
+      ```[your-language]
+      # Now we're going to create a function that will handle user authentication!
+      # This is super important because we need to keep user data safe.
+      def authenticate_user():
+      ```
+
+      **Your chosen style:**
+      ```[your-language]
+      # Authenticate user credentials against database and return session token
+      def authenticate_user():
+      ```
+
+      **Too terse (if you're avoiding this):**
+      ```[your-language]
+      # Auth
+      def authenticate_user():
+      ```
+
+      Provide 3-5 code examples with comments from different chapters showing consistent comment style that matches your prose tone.
+    elicit: true
+
+  - id: example_passages
+    title: Example Passages
+    instruction: |
+      Provide 3-5 complete example passages demonstrating your target tone:
+
+      **Passage 1: Chapter Introduction**
+
+      [2-3 paragraphs showing how you'll open chapters - use actual content from your book outline]
+
+      **Tone characteristics demonstrated:** [List which of your 5 adjectives are evident]
+      **Formality level:** [Confirm this matches your Level 1-5 choice]
+
+      ---
+
+      **Passage 2: Technical Explanation**
+
+      [2-3 paragraphs teaching a concept from your book - use actual technical content]
+
+      **Tone characteristics demonstrated:** [List which characteristics are evident]
+      **Formality level:** [Confirm consistency]
+
+      ---
+
+      **Passage 3: Code Example with Commentary**
+
+      [Code block with surrounding explanation showing how you present and discuss code]
+
+      **Tone characteristics demonstrated:** [List which characteristics are evident]
+      **Comment style notes:** [Confirm matches code_comment_style section]
+
+      ---
+
+      **Passage 4 (Optional): Transition Between Topics**
+
+      [1-2 paragraphs showing how you transition from one section/chapter to next]
+
+      **Tone characteristics demonstrated:** [List which characteristics are evident]
+
+      ---
+
+      **Passage 5 (Optional): Chapter Summary/Conclusion**
+
+      [1-2 paragraphs showing how you conclude chapters]
+
+      **Tone characteristics demonstrated:** [List which characteristics are evident]
+
+      ---
+
+      **Consistency Check:**
+      - Do all passages use same formality level? [Yes/No - if no, explain intentional variation]
+      - Do all passages demonstrate your 5 tone characteristics? [Yes/No - note any gaps]
+      - Can these serve as "write like THIS" reference for chapter drafting? [Yes/No]
+
+      These passages become your primary reference when drafting chapters. Make them substantial and representative.
+    elicit: true
+
+  - id: consistency_rules
+    title: Tone Consistency Rules
+    instruction: |
+      Define rules for maintaining tone throughout the book:
+
+      **Chapter-Level Consistency:**
+      - Every chapter introduction uses [describe pattern]
+      - Technical explanations always [describe approach]
+      - Code examples always include [describe pattern]
+      - Chapter conclusions always [describe pattern]
+
+      **Sentence-Level Patterns:**
+      - Start explanations with: [pattern, e.g., "Let's...", "We'll...", "This chapter..."]
+      - Introduce new terms with: [pattern, e.g., define before use, provide examples]
+      - Present warnings/cautions with: [pattern, e.g., "⚠️ Warning:", "Important:"]
+      - Offer encouragement with: [pattern, e.g., "You've got this", "Well done"]
+
+      **Transition Words/Phrases (reflecting your formality level):**
+      - Between sections: [List 3-5 transition patterns you'll use]
+      - Between concepts: [List 3-5 transition patterns you'll use]
+      - From theory to practice: [Pattern for this common transition]
+
+      **Metaphor/Analogy Usage:**
+      - Frequency: [Often / Occasionally / Rarely / Never]
+      - Types preferred: [Real-world scenarios / Technical analogies / Everyday objects]
+      - Example metaphor in your tone: [Provide 1-2 examples]
+
+      **Humor/Personality:**
+      - Appropriate amount: [Frequent light humor / Occasional wit / Serious throughout]
+      - Style: [Self-deprecating / Observational / Puns / Dry wit / None]
+      - Example (if applicable): [Show 1-2 examples of humor in your tone]
+
+      **Addressing Reader Directly:**
+      - Question usage: "Have you ever wondered...?" [Yes/No - if yes, provide pattern]
+      - Reader challenges: "Try this yourself..." [Yes/No - if yes, provide pattern]
+      - Shared journey: "Let's discover together..." [Yes/No - if yes, provide pattern]
+
+      **Error Handling and Troubleshooting Tone:**
+      - When things go wrong: [Encouraging / Matter-of-fact / Diagnostic]
+      - Example: [Show how you'd address a common error in your tone]
+
+      Provide specific patterns, not generic advice. These rules help maintain consistency across 400+ pages.
+    elicit: true
+
+  - id: excluded_tones
+    title: Excluded Tones and Anti-Patterns
+    instruction: |
+      Define what to AVOID (equally important as what to include):
+
+      **Excluded Tone Approaches:**
+
+      Provide 5-8 specific tone approaches explicitly rejected for THIS book:
+
+      **1. [Tone approach to avoid]**
+      - **What it looks like:** [Example passage showing this unwanted tone]
+      - **Why excluded:** [Specific reason this doesn't fit your book - audience mismatch, publisher requirements, authorial choice]
+      - **Risk:** [What problem this tone would cause - e.g., "Alienates experienced readers", "Undermines technical credibility"]
+
+      **2. [Tone approach to avoid]**
+      - **What it looks like:** [Example passage]
+      - **Why excluded:** [Specific reason]
+      - **Risk:** [Potential problem]
+
+      [Continue for 5-8 exclusions]
+
+      **Common Examples of Excluded Tones:**
+
+      - ❌ **Overly playful/childish:** "Wheee! Let's make our code go zoom zoom with super speedy algorithms!" (Why: Undermines professional audience)
+
+      - ❌ **Condescending:** "Even a beginner should understand this obvious concept. If you don't get it, go back to Chapter 1." (Why: Alienates learners)
+
+      - ❌ **Aggressive/preachy:** "You're doing it WRONG if you don't use X framework! Anyone using Y is incompetent." (Why: Discourages exploration, damages credibility)
+
+      - ❌ **Overly academic:** "Herein we shall explicate the algorithmic paradigm pursuant to theoretical foundations..." (Why: Too formal for practitioner audience)
+
+      - ❌ **Salesy/marketing hype:** "This AMAZING, REVOLUTIONARY technique will CHANGE YOUR LIFE and make you a 10x developer!" (Why: Reduces technical credibility)
+
+      - ❌ **Apologetic/uncertain:** "I'm not sure if this is the best way, but maybe try this approach if you want..." (Why: Undermines author authority)
+
+      Customize these examples for YOUR book's specific context and audience.
+
+      **Anti-Patterns to Monitor:**
+
+      - Tone inconsistency (formal introduction, then suddenly casual mid-chapter)
+      - Formality level drift (starting Level 3, drifting to Level 1 by Chapter 10)
+      - Excessive metaphors (every concept becomes elaborate analogy)
+      - Exclamation point overuse (or complete absence if encouraging tone intended)
+      - Inconsistent contraction usage (mixing "we'll" and "we will" randomly)
+      - Pronoun perspective shifts (switching between "you", "we", "one" without pattern)
+
+      **Validation Questions:**
+      - Have you identified tone approaches that would genuinely harm YOUR specific book? [Yes/No]
+      - Are exclusions specific enough to guide editing decisions? [Yes/No]
+      - Do anti-patterns address realistic drift risks for YOUR writing style? [Yes/No]
+
+      These exclusions help editors catch tone violations during copy editing.
+    elicit: true
+
+  - id: usage_notes
+    title: Usage Notes for Drafting and Editing
+    instruction: |
+      Practical guidance for applying this tone specification:
+
+      **For Chapter Drafting (expand-outline-to-draft task):**
+      - Before drafting: Review sections [list which sections to review first]
+      - Primary reference: [Which example passage to use as main model]
+      - Consistency check: [Which rules to verify during drafting]
+
+      **For AI-Assisted Drafting:**
+      - Key sections to load: [List essential sections for AI context]
+      - Most important examples: [Which passages best demonstrate tone for AI]
+      - Critical characteristics: [Which of your 5 adjectives must be present in AI output]
+
+      **For Copy Editing (copy-edit-chapter task):**
+      - Tone validation checklist: Use tone-consistency-checklist.md
+      - Reference passages: Compare draft sections to Example Passages (section 8)
+      - Common violations: Watch for anti-patterns listed in section 10
+
+      **For Multi-Author Projects:**
+      - Required review: All authors must read sections [list essential sections]
+      - Tone guardian role: [Who ensures consistency - lead author, editor, rotating]
+      - Conflict resolution: [How to handle tone disagreements between authors]
+
+      **Tone Evolution:**
+      - When to update: [Circumstances requiring tone specification revision]
+      - Update process: [Who can update, how changes are approved]
+      - Version control: [Track tone specification versions with dates]
+
+      **Publisher Submission:**
+      - Include with proposal: [Yes/No - if yes, which sections to include]
+      - Share with editor: [When to share - before writing, after sample chapter, other]
+      - Revision requests: [Process for incorporating publisher tone feedback]
+    elicit: false
+
+  - id: metadata
+    title: Tone Specification Metadata
+    instruction: |
+      Document version and ownership:
+
+      **Version Information:**
+      - Tone specification version: 1.0
+      - Created date: [Date]
+      - Last updated: [Date]
+      - Created by: [Author name(s)]
+
+      **Associated Documents:**
+      - Book proposal: [filename or location]
+      - Book outline: [filename or location]
+      - Chapter drafts location: [directory path]
+
+      **Review History:**
+
+      | Date | Reviewer | Changes Made | Reason |
+      |------|----------|--------------|--------|
+      | [Date] | [Name] | Initial creation | Defined tone before chapter drafting |
+      | [Date] | [Name] | [Change description] | [Reason for update] |
+
+      **Approval Status:**
+      - Author approval: ☐ Approved ☐ Pending ☐ Revisions needed
+      - Publisher approval: ☐ Approved ☐ Pending ☐ Not required ☐ Revisions needed
+      - Co-author approval (if applicable): ☐ Approved ☐ Pending ☐ Revisions needed
+    elicit: false

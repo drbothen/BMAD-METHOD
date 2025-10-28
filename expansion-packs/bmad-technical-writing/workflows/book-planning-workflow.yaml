@@ -22,6 +22,11 @@ workflow:
       notes: "Create detailed book outline using *design-outline command. Define learning progression across chapters, prerequisites for each chapter, main topics and subtopics, exercise strategy, and difficulty curve. Use templates/book-outline-tmpl.yaml. Ensure pedagogical soundness and logical skill building. SAVE OUTPUT: Copy outline to manuscript/planning/book-outline.md"
 
     - agent: instructional-designer
+      creates: tone-specification.md
+      requires: book-outline.md
+      notes: "Define book's tone and voice using define-book-tone.md task. This MUST be completed BEFORE any chapter drafting begins. Elicit tone preferences from author including: target audience tone expectations, formality level (1-5 scale), 5 key tone characteristics (encouraging/authoritative/friendly/etc), publisher alignment (PacktPub/O'Reilly/Manning/Self-Publishing). Create example passages demonstrating target tone using actual book content. Document excluded tones/anti-patterns. Use templates/tone-specification-tmpl.yaml with create-doc task. This provides critical guidance for AI-assisted chapter drafting and ensures consistent voice across 400+ page manuscripts. SAVE OUTPUT: Copy tone-specification.md to manuscript/planning/tone-specification.md. TIME ESTIMATE: 2-3 hours for comprehensive tone definition."
+
+    - agent: instructional-designer
       validates: book-outline.md
       requires: book-outline.md
       notes: "Validate learning progression and difficulty curve using validate-learning-flow.md task. Check prerequisite flow ensures no knowledge gaps, concepts build logically chapter by chapter, exercises progress from basic to advanced, reader can complete book successfully with stated prerequisites. Execute book-outline-checklist.md using execute-checklist task to validate scope, structure, learning flow, and chapter balance. Also use learning-objectives-checklist.md and prerequisite-clarity-checklist.md. SAVE OUTPUT: Create validation report at manuscript/planning/learning-path-validation.md"
@@ -41,7 +46,8 @@ workflow:
     graph TD
         A[Start: Book Concept] --> B[book-publisher: Draft Proposal]
         B --> C[instructional-designer: Design Outline]
-        C --> D[instructional-designer: Validate Learning Path]
+        C --> C2[instructional-designer: Define Tone]
+        C2 --> D[instructional-designer: Validate Learning Path]
         D --> E{Prerequisites Flow?}
         E -->|Issues Found| F[instructional-designer: Adjust Outline]
         F --> D
@@ -55,11 +61,13 @@ workflow:
 
         B -.-> B1[Optional: Market Research]
         C -.-> C1[Optional: Competitive Analysis]
+        C2 -.-> C3[Optional: Refine Tone with Publisher]
         D -.-> D1[Optional: Pedagogical Review]
 
         style L fill:#90EE90
         style B fill:#FFE4B5
         style C fill:#FFE4B5
+        style C2 fill:#DDA0DD
         style D fill:#ADD8E6
         style G fill:#ADD8E6
         style H fill:#F0E68C
@@ -97,6 +105,15 @@ workflow:
       - Estimated page counts provided
       - Checklists: book-outline-checklist.md, prerequisite-clarity-checklist.md
 
+    tone_specification_complete:
+      - Tone personality defined with 5 adjectives
+      - Formality level specified (1-5 scale)
+      - Publisher requirements addressed
+      - Example passages provided (minimum 3)
+      - Excluded tones documented
+      - Code comment style examples included
+      - Author confirms: "This feels like my book's voice"
+
     learning_path_validated:
       - No knowledge gaps between chapters
       - Difficulty curve is smooth
@@ -122,7 +139,8 @@ workflow:
   handoff_prompts:
     concept_to_proposal: "Starting book planning for {{book_topic}} targeting {{target_audience}}. Publisher: {{publisher}}. Creating comprehensive proposal."
     proposal_to_outline: "Proposal approved with {{chapter_count}} planned chapters. Creating detailed pedagogical outline with learning progression."
-    outline_to_validation: "Book outline complete. Validating prerequisite flow and difficulty curve across {{chapter_count}} chapters."
+    outline_to_tone: "Book outline complete with {{chapter_count}} chapters. Creating tone specification aligned with {{publisher}} requirements for {{target_audience}} audience."
+    tone_to_validation: "Tone specification complete. Book voice defined. Validating prerequisite flow and difficulty curve across {{chapter_count}} chapters."
     validation_to_editorial: "Learning path validated successfully. Ready for editorial review to ensure clarity and consistency."
     editorial_to_publisher: "Editorial review complete. Checking outline against {{publisher}} format requirements and submission guidelines."
     publisher_to_final: "Publisher requirements verified. Book outline approved and ready for chapter development. Save to manuscript/planning/book-outline-final.md."
@@ -130,14 +148,17 @@ workflow:
   time_estimates:
     draft_proposal: "4-8 hours"
     design_outline: "8-12 hours"
+    define_tone: "2-3 hours"
     validate_learning_path: "3-5 hours"
     editorial_review: "3-5 hours"
     publisher_format_check: "2-3 hours"
-    total_time: "20-33 hours for complete book planning"
+    total_time: "22-36 hours for complete book planning"
 
   best_practices:
     - Start with clear target audience definition - affects everything
     - Research competitive titles before outlining
+    - Define tone before writing any chapters to ensure consistency from first draft
+    - Tone specification is especially important for multi-author projects or books targeting specific publishers
     - Ensure realistic prerequisites (don't assume too much)
     - Build difficulty progressively (avoid knowledge jumps)
     - Plan exercises early (they affect chapter structure)

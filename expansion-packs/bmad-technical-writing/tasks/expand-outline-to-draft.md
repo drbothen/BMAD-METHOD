@@ -9,8 +9,18 @@ id: expand-outline-to-draft
 name: Expand Outline to Draft
 description: Convert bullet outline into initial prose draft for editing
 persona_default: tutorial-architect
-inputs: - outline (bullet-point format from research synthesis or chapter planning) - target-audience - tone-guidelines
-steps: - Review complete outline and understand structure - Identify target audience and appropriate tone - Expand bullet points into flowing prose paragraphs - Integrate code examples at appropriate points - Add section introductions and transitions - Mark as DRAFT requiring human technical review
+inputs:
+  - outline (bullet-point format from research synthesis or chapter planning)
+  - target-audience
+  - tone-specification.md (REQUIRED - defines book's voice, formality, characteristics)
+steps:
+  - Review tone-specification.md to understand book's voice
+  - Review complete outline and understand structure
+  - Identify target audience and appropriate tone from specification
+  - Expand bullet points into flowing prose using defined tone
+  - Integrate code examples at appropriate points with tone-appropriate comments
+  - Add section introductions and transitions matching tone style
+  - Mark as DRAFT requiring human technical review
 output: Draft prose document (marked for technical review)
 ai_assistance: true
 human_verification_required: true
@@ -45,13 +55,79 @@ Before starting this task:
 
 - **Completed outline** - Bullet-point outline from synthesize-research-notes.md or chapter planning
 - **Target audience identified** - Know who you're writing for
-- **Tone guidelines** - Understand desired writing style
+- **tone-specification.md** (REQUIRED) - Complete tone specification defining book's voice, formality level, characteristics, and example passages. If missing, run define-book-tone.md task first.
 - **Code examples available** (if referenced in outline) - Have working code ready
 - **Understanding of content domain** - Ability to verify technical accuracy
 
 ## Workflow Steps
 
-### 1. Review Outline
+### 1. Review Tone Specification (CRITICAL FIRST STEP)
+
+**Before drafting any prose, load and review tone-specification.md:**
+
+This step is MANDATORY. Tone must be applied from the first sentence, not added during editing.
+
+**Load tone-specification.md:**
+
+If file does not exist:
+- ⚠️ **STOP** - Do not proceed with drafting
+- Run define-book-tone.md task first
+- Tone specification must be complete before any chapter drafting
+
+**Review Key Sections:**
+
+1. **Tone Personality (5 adjectives)** - Understand the characteristics that define this book's voice
+2. **Formality Level (1-5 scale)** - Note whether writing should be casual, professional, or formal
+3. **Example Passages** - Read all example passages carefully - these are your "write like THIS" models
+4. **Code Comment Style** - Note how code comments should sound in this book
+5. **Excluded Tones** - Review anti-patterns to avoid
+
+**Internalize Writing Style:**
+
+- Which of the 5 tone characteristics are most important?
+- What formality level guides sentence structure and vocabulary?
+- What does "encouraging" or "authoritative" mean for THIS book specifically?
+- How should transitions sound? (Check example passages)
+- Should I use contractions? (Check formality level)
+
+**Tone Application Strategy:**
+
+Based on tone-specification.md, determine:
+
+- **Opening style:** How will chapter introductions sound?
+- **Explanation style:** Formal definitions or conversational teaching?
+- **Code commentary:** Detailed explanations or concise notes?
+- **Encouragement approach:** Explicit support ("You've got this!") or implicit confidence?
+- **Transition phrases:** Which transition words match the tone?
+
+**Example Tone Review:**
+
+```markdown
+**From tone-specification.md:**
+
+Tone Personality: Practical, Encouraging, Conversational, Direct, Experienced
+
+Formality Level: 3 (Professional/Conversational)
+- Use: "Let's deploy this application"
+- Avoid: "We shall deploy the application"
+
+Example Passage:
+"Let's deploy your authentication service to AWS. You'll use production-ready Terraform configuration—no toy examples or 'works on my laptop' shortcuts. By the end of this chapter, you'll have a secure, scalable auth service running in the cloud."
+
+**Application Strategy for This Chapter:**
+- Open with "Let's [action]" pattern
+- Use contractions moderately ("you'll", "we'll")
+- Emphasize practical production readiness
+- Encourage but don't coddle ("you'll have a secure service" - implies confidence)
+- Be direct about what's happening (no hedging)
+```
+
+**Output of This Step:**
+- Clear understanding of book's voice
+- Specific tone application strategy for this chapter
+- Reference examples loaded for comparison during drafting
+
+### 2. Review Outline
 
 Read and understand the complete outline before expansion:
 
@@ -114,9 +190,18 @@ Read and understand the complete outline before expansion:
 - Key teaching point: Encoding vs encryption distinction
 ```
 
-### 2. Expand Bullet Points to Paragraphs
+### 3. Expand Bullet Points to Paragraphs (Applying Tone)
 
-Convert each bullet point into flowing prose:
+Convert each bullet point into flowing prose WHILE APPLYING TONE from Step 1:
+
+**CRITICAL: Tone Application**
+
+Every expansion must reflect the tone-specification.md:
+- Use formality level from specification (contractions, sentence structure, vocabulary)
+- Demonstrate tone characteristics (encouraging, authoritative, practical, etc.)
+- Match example passage style
+- Follow transition patterns from specification
+- Apply code comment style consistently
 
 **Expansion Guidelines:**
 
@@ -127,6 +212,7 @@ Convert each bullet point into flowing prose:
 - Use appropriate technical terminology
 - Maintain active voice
 - Keep audience in mind
+- **APPLY TONE** from specification
 
 **Example:**
 
@@ -183,7 +269,32 @@ The header specifies the algorithm. The payload contains claims. The signature p
 The header specifies the algorithm used for signing. Building on this, the payload contains the claims—the actual data you want to transmit. Finally, the signature ties everything together by preventing tampering with either the header or payload.
 ```
 
-### 3. Integrate Code Examples
+**Tone Application Examples:**
+
+Same content, different tones based on tone-specification.md:
+
+```markdown
+**Outline Bullet:**
+- JWT has three parts: header, payload, signature
+
+**Formal Tone (Level 4 - Authoritative):**
+A JSON Web Token comprises three distinct components: the header, the payload, and the signature. Each component serves a specific cryptographic purpose. The three parts are base64url-encoded and concatenated with period separators to form the complete token.
+
+**Professional/Conversational Tone (Level 3 - Practical + Encouraging):**
+A JSON Web Token consists of three parts: the header, the payload, and the signature. You'll see these three components joined with periods (.) to form the complete token string. Understanding each part's role will help you implement and secure JWT-based authentication in your applications.
+
+**Casual/Friendly Tone (Level 2 - Approachable + Conversational):**
+Let's break down a JSON Web Token. It's got three parts: the header, payload, and signature. Think of them as three pieces that snap together with periods (.) to make the complete token you'll use in practice. Once you understand what each part does, JWT authentication will make a lot more sense.
+
+**Key Differences:**
+- Formality Level 4: "comprises", "cryptographic purpose", no contractions
+- Formality Level 3: "consists of", "you'll see", moderate contractions, direct but professional
+- Formality Level 2: "let's break down", "it's got", "you'll use", frequent contractions, conversational
+
+**YOUR TASK:** Match the tone from YOUR tone-specification.md, not these examples.
+```
+
+### 4. Integrate Code Examples
 
 Place code examples at appropriate points with proper framing:
 

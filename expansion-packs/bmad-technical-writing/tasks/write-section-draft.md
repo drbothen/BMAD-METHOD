@@ -41,6 +41,7 @@ Before starting this task:
 - **Section plan completed** - Contains learning objectives, prerequisites, content plan
 - **Code examples developed and tested** - All code working with documented outputs
 - **Chapter outline available** - Understand how this section fits the chapter
+- **tone-specification.md reviewed** - Understand book's voice, formality level, and tone characteristics
 - **Access to tutorial-section-tmpl.yaml** - Structure and format guidance
 - **Previous section complete** (if not first) - For transition references
 
@@ -49,6 +50,18 @@ Before starting this task:
 ### 1. Review and Prepare
 
 Read all inputs thoroughly before writing:
+
+**Review Tone Specification:**
+
+Before writing any prose, review tone-specification.md to understand:
+
+- **Formality level** (1-5 scale) - Guides sentence structure, contractions, vocabulary
+- **Tone characteristics** (5 adjectives) - Defines the book's personality (encouraging, authoritative, practical, etc.)
+- **Example passages** - Your "write like THIS" reference models
+- **Code comment style** - How technical, how dense, explain "what" vs "why"
+- **Excluded tones** - Anti-patterns to avoid
+
+Apply tone consistently throughout the section from the first sentence.
 
 **Read Section Plan:**
 
@@ -485,7 +498,7 @@ Validate section meets standards:
 - [ ] Clear, concise language
 - [ ] Active voice predominates
 - [ ] Imperative instructions ("Create...", "Add...")
-- [ ] Appropriate tone for audience
+- [ ] Tone matches tone-specification.md (formality level, characteristics)
 - [ ] No unnecessary jargon
 - [ ] Technical terms defined
 
@@ -565,7 +578,7 @@ Complete these checks before marking section complete:
 
 - [ ] 2-5 pages (not too short, not too long)
 - [ ] Consistent terminology
-- [ ] Active, engaging tone
+- [ ] Tone aligned with tone-specification.md
 - [ ] Clear, concise language
 
 **Ready for Review:**
@@ -640,7 +653,7 @@ A high-quality section draft:
 ✓ **Well-Written:**
 
 - Clear, concise language
-- Engaging, encouraging tone
+- Tone matches tone-specification.md (formality, characteristics)
 - Smooth narrative flow
 - Proper transitions
 - Consistent terminology

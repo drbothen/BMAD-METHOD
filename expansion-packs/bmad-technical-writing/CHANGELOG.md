@@ -7,6 +7,94 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2025-10-27
+
+### Added
+
+**Tone Specification System (Story: tone-specification-feature)**
+
+Complete tone and voice management system for maintaining consistent writing style throughout technical books:
+
+**Core Tasks (Greenfield):**
+- **define-book-tone.md** - 8-step elicitation workflow for defining book tone before writing begins
+  - Formality level definition (1-5 scale with examples)
+  - 5 tone characteristics selection (encouraging, authoritative, practical, etc.)
+  - Publisher-specific guidance (PacktPub, O'Reilly, Manning, Self-Publishing)
+  - Example passages demonstrating target tone
+  - Excluded tones/anti-patterns documentation
+
+**Brownfield Tasks (Editions/Updates):**
+- **extract-tone-patterns.md** - Extract voice and tone patterns from existing book chapters
+  - 9-step workflow analyzing 3-5 existing chapters
+  - Voice profile extraction (perspective, active/passive, formality)
+  - Common phrase pattern identification
+  - Code comment style analysis
+  - Author personality marker extraction
+
+- **apply-tone-patterns.md** - Apply extracted patterns to new content for consistency
+  - 10-step workflow for tone alignment
+  - Voice characteristic matching
+  - Formality level adjustment
+  - Code comment style alignment
+  - Tone adjustment logging
+
+**Template:**
+- **tone-specification-tmpl.yaml** - Structured 12-section template for tone documentation
+  - Elicitation-enabled for interactive completion
+  - Book overview, tone personality, voice characteristics
+  - Formality level specification, publisher alignment
+  - Example passages, consistency rules, excluded tones
+
+**Checklist:**
+- **tone-consistency-checklist.md** - Comprehensive tone validation (10 categories, 15+ items)
+  - Voice consistency, formality level, publisher alignment
+  - Code comment style, transition patterns
+  - Before/after correction examples
+  - Red flags and remediation process
+
+**Knowledge Base:**
+- **writing-voice-guides.md** - Reference guide with 6 tone profile examples
+  - Academic/Formal, Authoritative/Technical, Professional/Conversational
+  - Casual/Friendly, Encouraging/Supportive, Direct/Pragmatic
+  - Sample passages (3-5 paragraphs each) demonstrating each profile
+  - Decision matrix for choosing appropriate tone
+  - Publisher-specific tone preferences
+
+**Workflow Integration:**
+- **book-planning-workflow.yaml** - Added tone definition step after outline, before validation
+  - Updated Mermaid flow diagram with tone definition node
+  - New quality gate: `tone_specification_complete`
+  - Handoff prompts: `outline_to_tone`, `tone_to_validation`
+  - Time estimate: 2-3 hours for tone definition
+
+**Task Enhancements:**
+- **expand-outline-to-draft.md** - Enhanced with Step 1: Review Tone Specification (MANDATORY)
+  - Tone application examples comparing formality levels
+  - Error handling for missing tone-specification.md
+
+- **copy-edit-chapter.md** - Enhanced Step 9 with 5 substeps for tone validation
+  - Load tone reference document (greenfield/brownfield)
+  - Execute tone-consistency-checklist.md
+  - Document tone violations with examples
+  - Apply corrections systematically
+  - Verify author voice authenticity
+
+**Agent Updates:**
+- **instructional-designer.md** - Added `*define-tone` command, tone awareness in startup context
+- **tutorial-architect.md** - Added `*define-tone` command, tone reminder in startup context
+- **technical-editor.md** - Added `*validate-tone` command, tone validation responsibility
+
+**Use Cases:**
+- **Greenfield**: Define tone → Generate specification → Apply during drafting → Validate during editing
+- **Brownfield**: Extract patterns → Apply to new chapters → Validate consistency
+- **Multi-author**: Shared tone specification ensures unified voice across contributors
+
+**Impact:**
+- Prevents tone drift in 400+ page manuscripts
+- Enables consistent AI-assisted chapter drafting
+- Maintains author voice across editions
+- Meets publisher-specific tone requirements
+
 ## [2.2.0] - 2025-10-26
 
 ### Added
