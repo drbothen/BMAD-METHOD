@@ -447,7 +447,227 @@ If corrections sound robotic or forced, dial back:
 - Replace vague terms with specific ones
 - Ensure confident tone per specification (some avoid "might"/"maybe", others embrace uncertainty where appropriate)
 
-### 10. Create Summary of Changes
+### 10. Final AI Pattern Check
+
+Validate that all AI-generated content patterns have been removed (final quality gate before publication):
+
+**Purpose**: This is the FINAL validation that humanization was successful. More stringent than humanization step (target: <5% vs <20%).
+
+**When to Execute**:
+- ALL chapters, regardless of whether AI was used (defensive check)
+- After all other copy-editing steps complete
+- Before chapter marked "Ready for Publication"
+
+**Critical Context**:
+- If chapter was AI-assisted: humanize-ai-drafted-chapter.md should have been executed earlier
+- This step validates humanization was effective
+- Catches any residual AI patterns missed during humanization
+- Final safeguard before publisher submission
+
+#### Step 10.1: Execute Humanization Checklist
+
+**Run execute-checklist.md with humanization-checklist.md:**
+
+```markdown
+Checklist: humanization-checklist.md
+Chapter: {{chapter_number}}
+Reviewer: {{editor_name}}
+Date: {{date}}
+```
+
+**Evaluate All Categories:**
+
+1. **Word Choice Validation** (9 items):
+   - No overuse of AI vocabulary (sophisticated, delve, leverage ≤2 per chapter)
+   - Polysyllabic words replaced with simple alternatives
+   - Varied vocabulary used (no excessive repetition)
+
+2. **Metaphor Quality** (6 items):
+   - Maximum 1-2 metaphors per section
+   - No nonsense or confusing metaphors
+   - Metaphors enhance clarity
+
+3. **Sentence Rhythm** (6 items):
+   - Sentence lengths vary throughout
+   - Sentence structures varied
+   - Natural rhythm evident
+
+4. **Voice Authenticity** (6 items):
+   - Personal perspective present (≥1 per section)
+   - Author expertise evident
+   - Real-world experiences included
+   - Not impersonal/generic
+
+5. **Example Specificity** (6 items):
+   - No generic "company X" examples
+   - Specific real-world examples with details
+   - Examples cited or attributed
+
+6. **Content Depth** (6 items):
+   - No filler paragraphs
+   - Actionable insights throughout
+   - Appropriate depth for expert book
+
+7. **Structural Variation** (6 items):
+   - Section openings vary
+   - Natural structure (not rigid template)
+   - No formulaic language
+
+**Calculate Pass Rate:**
+- (Items Passed / 45 Total Items) × 100 = Pass Rate %
+- AI Pattern Score = 100 - Pass Rate
+
+#### Step 10.2: Calculate AI Pattern Score
+
+**Copy-Edit Target**: <5% AI patterns remaining (more stringent than humanization target of <20%)
+
+**Scoring:**
+```markdown
+**Final AI Pattern Check Results:**
+
+Humanization Checklist: {{passed}}/45 items passed
+Pass Rate: {{percentage}}%
+AI Pattern Score: {{100 - percentage}}%
+
+**Status:**
+- [ ] ✅ EXCELLENT (<5% AI patterns) - Publication ready
+- [ ] ⚠️ ACCEPTABLE (5-10% AI patterns) - Minor patterns acceptable, document justification
+- [ ] ❌ NEEDS REWORK (>10% AI patterns) - Return to humanization step
+
+**Target**: <5% AI patterns for final publication
+```
+
+**If >10% AI Patterns:**
+- HALT - Do not proceed to finalization
+- Return chapter to tutorial-architect for additional humanization
+- Re-execute humanize-ai-drafted-chapter.md focusing on failing categories
+- Do not finalize until <10% threshold met
+
+**If 5-10% AI Patterns:**
+- Document specific residual patterns with justification
+- Example: "Residual 'robust testing framework' (1 occurrence) is industry-standard term, acceptable"
+- Obtain author approval for residual patterns
+- May proceed to finalization with documented exceptions
+
+#### Step 10.3: Specific AI Pattern Validation
+
+Beyond checklist scoring, validate specific critical patterns:
+
+**AI Vocabulary Spot Check:**
+
+Search and count:
+- "sophisticated": {{count}} (target: ≤1)
+- "delve": {{count}} (target: 0)
+- "leverage": {{count}} (target: ≤1)
+- "robust": {{count}} (target: ≤2 if technical term, ≤1 otherwise)
+- "seamless": {{count}} (target: ≤1)
+
+**If any word >2 occurrences**: Flag for removal
+
+**Generic Example Check:**
+
+Search for:
+- "company X" or "a company": 0 allowed
+- "financial institution": 0 allowed (use specific company names)
+- Uncited case studies: All examples must be cited or author's own
+
+**If generic examples found**: Require specific replacement
+
+**First-Person Perspective Check:**
+
+Count instances per section:
+- Sections with 0 first-person: Acceptable if technical reference material
+- Sections with 0 first-person + no author voice: Flag for voice injection
+- Target: ≥1 personal insight per major section (H2)
+
+#### Step 10.4: Publisher-Specific AI Pattern Check
+
+Apply additional scrutiny based on target publisher:
+
+**PacktPub Chapters:**
+- Extra attention to "sophisticated" (documented 36x case)
+- All examples specific and cited (no "financial institution")
+- Conversational tone (Level 2-3) maintained
+- Personal voice evident throughout
+
+**O'Reilly Chapters:**
+- Authoritative expert voice present
+- Production context and real-world scale included
+- Architectural reasoning ("why") explained
+- No generic technical explanations
+
+**Manning Chapters:**
+- Author personality and humor present
+- Strong first/second person voice
+- Personal opinions stated clearly
+- Not impersonal corporate-speak
+
+**Self-Publishing:**
+- All publisher patterns combined
+- ≥95% pass rate recommended (higher standard)
+- Beta reader feedback validation
+
+**Reference**: publisher-specific-ai-patterns.md for detailed patterns
+
+#### Step 10.5: Document Final AI Pattern Status
+
+**Add to Editorial Changes Summary:**
+
+```markdown
+## Final AI Pattern Check (Step 10)
+
+**Humanization Checklist Results:**
+- Pass Rate: {{percentage}}% ({{passed}}/45 items)
+- AI Pattern Score: {{ai_score}}% (target: <5%)
+
+**Status**: {{EXCELLENT / ACCEPTABLE / NEEDS REWORK}}
+
+**AI Vocabulary Counts:**
+- sophisticated: {{count}}
+- delve: {{count}}
+- leverage: {{count}}
+- robust: {{count}}
+- seamless: {{count}}
+
+**Critical Validations:**
+- Generic examples: {{count}} (target: 0)
+- First-person perspective: {{sections_with_personal_voice}}/{{total_sections}} sections
+- Metaphor density: {{average_per_section}} per section (target: ≤2)
+
+**Residual Patterns (if any):**
+- [List any patterns >threshold with justification for acceptance]
+
+**Publisher-Specific Notes:**
+- [Any publisher-specific pattern concerns or validations]
+
+**Recommendation**: {{APPROVE FOR PUBLICATION / RETURN FOR ADDITIONAL HUMANIZATION}}
+```
+
+#### Step 10.6: Handle Results
+
+**If EXCELLENT (<5% AI patterns):**
+- Proceed to Step 11 (Create Summary of Changes)
+- Chapter ready for finalization
+- Document validation in chapter metadata
+
+**If ACCEPTABLE (5-10% AI patterns):**
+- Document residual patterns with clear justification
+- Obtain author approval for exceptions
+- May proceed to finalization with documented acceptance
+- Note residual patterns in change summary
+
+**If NEEDS REWORK (>10% AI patterns):**
+- HALT finalization process
+- Document failing categories in detail
+- Return to tutorial-architect with specific rework guidance
+- Re-execute humanize-ai-drafted-chapter.md steps for failing areas
+- Validation required before copy-edit can continue
+
+**Quality Gate**: Do not finalize chapter with >10% AI patterns
+
+**Integration Note**: This step builds on earlier humanization (if AI-assisted) or serves as defensive check (if human-written but displaying AI-like patterns).
+
+### 11. Create Summary of Changes
 
 Document editorial modifications:
 
@@ -513,6 +733,8 @@ Professional copy edit:
 ✓ Accessible to all readers
 ✓ Professional tone maintained
 ✓ Author voice preserved
+✓ **Final AI pattern check passed (<5% AI patterns)**
+✓ **Humanization validated (if AI-assisted content)**
 
 ## Common Pitfalls
 

@@ -2,9 +2,9 @@
 
 ## Introduction
 
-The BMad Technical Writing Expansion Pack provides **34 quality assurance checklists** that serve as validation gates throughout the book authoring lifecycle. Each checklist defines specific criteria that must be met before proceeding to the next phase.
+The BMad Technical Writing Expansion Pack provides **35 quality assurance checklists** that serve as validation gates throughout the book authoring lifecycle. Each checklist defines specific criteria that must be met before proceeding to the next phase.
 
-This comprehensive reference documents all 34 checklists organized by phase, with:
+This comprehensive reference documents all 35 checklists organized by phase, with:
 
 - **Checklist name and purpose** - What it validates
 - **When to use** - Quality gate timing
@@ -16,7 +16,7 @@ This comprehensive reference documents all 34 checklists organized by phase, wit
 ### Checklist Categories
 
 - **Planning Phase (3 checklists)** **(v2.1+ expanded)**: Learning objectives, prerequisites, research quality
-- **Drafting Phase (6 checklists)** **(v2.1+ expanded)**: Chapter completeness, book proposals, tutorials, AI compliance
+- **Drafting Phase (7 checklists)** **(v2.1+ expanded)**: Chapter completeness, book proposals, tutorials, AI compliance, **AI pattern humanization validation**
 - **Code Quality (5 checklists)**: Code quality, testing, security, version compatibility, performance
 - **Review Phase (4 checklists)**: Technical accuracy, readability, accessibility, inclusive language
 - **Publishing Phase (8 checklists)** **(v2.1+ expanded)**: Publisher-specific formats, final manuscript, MEAP, self-publishing, repository integration
@@ -240,6 +240,34 @@ This comprehensive reference documents all 34 checklists organized by phase, wit
 
 **Related Workflows**: Publisher Submission Workflows (PacktPub, O'Reilly, Manning), Final Manuscript Review
 **Related Agents**: technical-editor, book-publisher
+
+---
+
+### humanization-checklist.md
+
+**Purpose**: Validates AI-generated patterns have been successfully removed from AI-assisted content
+
+**When to Use**: After humanize-ai-drafted-chapter task (validation step), during copy-edit final AI check (Step 10), before technical review
+
+**Key Criteria** (45 validation items across 7 categories):
+
+- **Word Choice Validation**: No AI vocabulary overuse (sophisticated, delve, leverage <2x), varied vocabulary, natural conversational words
+- **Metaphor Quality**: Maximum 1-2 metaphors per section, no nonsense metaphors, metaphors enhance clarity
+- **Sentence Rhythm**: Sentence lengths vary, structures vary, natural mix of simple/complex
+- **Voice Authenticity**: Personal perspective present ("I", "we"), author expertise evident, real experiences/anecdotes, not impersonal
+- **Example Specificity**: No generic examples ("company X"), specific real-world examples with details, proper citations
+- **Content Depth**: No filler paragraphs, actionable insights throughout, substantive value
+- **Structural Variation**: Section openings vary, natural topic transitions, no repetitive patterns
+
+**Pass Criteria**:
+- Humanization step: ≥80% items pass (≤20% AI patterns remaining)
+- Copy-edit final check: ≥95% items pass (<5% AI patterns remaining)
+- AI pattern score reduction ≥50% from baseline
+
+**Related Workflows**: Chapter Development Workflow (humanization quality gate), copy-edit-chapter.md (Step 10 final validation)
+**Related Agents**: tutorial-architect (humanization validation), technical-editor (copy-edit final check)
+
+**Note**: This checklist VALIDATES removal effectiveness. Use generative-ai-compliance-checklist for initial DETECTION of AI patterns. Target <20% for humanization step, <5% for final publication quality.
 
 ---
 

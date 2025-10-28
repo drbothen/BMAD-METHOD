@@ -667,6 +667,191 @@ This middleware extracts the token from the Authorization header, then calls `jw
 
 ```
 
+## AI-Assisted Drafting & Humanization
+
+This section addresses AI-assisted content generation and the REQUIRED humanization workflow.
+
+### Acknowledgment of AI Assistance
+
+**If you use AI tools to assist with drafting** (including this task's AI execution via ChatGPT, Claude, Gemini, or similar), the resulting content **MUST be humanized before submission** to technical review.
+
+**Why Humanization is Required:**
+
+- Readers notice and complain about AI-generated patterns (documented in PacktPub reviews)
+- Publishers require AI use declaration (PacktPub transparency requirement)
+- AI patterns reduce content quality, credibility, and reader satisfaction
+- Technical reviewers waste time on AI artifacts vs. substantive technical feedback
+- Negative reviews specifically cite "AI-like" content
+
+**PacktPub Official Requirement** (Generative_AI_Author_Guidelines.md):
+> "Your editor can help you with this; we have many options to work on your writing to make it the best it can be... **to make it human**."
+
+### AI Flag in Draft Metadata
+
+**Output Metadata** (add to draft file header):
+
+```markdown
+---
+status: DRAFT
+ai_assisted: YES
+created_date: {{date}}
+outline_source: {{outline_file}}
+tone_specification: {{tone_spec_file}}
+requires_humanization: true
+requires_technical_review: true
+---
+```
+
+**If AI-Assisted = YES:**
+- Humanization workflow is MANDATORY before technical review
+- Next required step: humanize-ai-drafted-chapter.md
+- Do not proceed to technical review without humanization
+
+**If AI-Assisted = NO:**
+- Humanization step can be skipped
+- Proceed directly to technical review
+- Note: Even human-written content may benefit from AI pattern checks if generic or formal
+
+### Common AI Patterns to Avoid During Drafting
+
+While humanization will systematically remove patterns, **try to avoid these during initial drafting** to reduce humanization effort:
+
+#### Top 5 AI Patterns (will need removal during humanization):
+
+1. **AI Vocabulary Overuse:**
+   - sophisticated, delve, leverage, robust, seamless (use sparingly, ≤2 per chapter)
+   - Polysyllabic words when simple ones work ("utilize" → "use", "facilitate" → "help")
+
+2. **Metaphor Excess:**
+   - Maximum 1-2 metaphors per section (not 4+ in single paragraph)
+   - Avoid nonsense metaphors that confuse rather than clarify
+
+3. **Generic Uncited Examples:**
+   - NO: "a company", "financial institution", "company X"
+   - YES: "Netflix's CDN architecture", "JPMorgan Chase fraud detection (cited)"
+
+4. **Impersonal Voice:**
+   - Encourage first-person perspective during drafting: "I've found that...", "In my experience..."
+   - Include personal anecdotes, real projects, lessons learned
+
+5. **Sentence Structure Uniformity:**
+   - Vary sentence lengths (mix short 5-10, medium 10-20, long 20-30 words)
+   - Avoid all sentences following same pattern (not all subject-verb-object)
+
+**Note:** Full AI pattern list in ai-pattern-removal-guide.md (8 patterns with examples)
+
+### Required Next Step: Humanization
+
+**After drafting with AI assistance, you MUST execute:**
+
+```
+Draft Complete (AI-Assisted)
+    ↓
+humanize-ai-drafted-chapter.md ← MANDATORY NEXT STEP
+    ↓
+humanization-checklist.md (validation)
+    ↓
+Technical Review (only after humanization)
+```
+
+**Do NOT skip humanization:**
+- Saves technical reviewer time (they review content, not AI artifacts)
+- Prevents publisher rejection
+- Avoids negative reader reviews
+- Required for PacktPub compliance
+
+### Humanization Workflow Summary
+
+**Step 1: Baseline Detection**
+- Execute generative-ai-compliance-checklist.md
+- Document AI pattern score (baseline for improvement measurement)
+
+**Step 2: Pattern Removal** (humanize-ai-drafted-chapter.md task executes 11 steps):
+- Remove AI vocabulary (sophisticated, delve, leverage, etc.)
+- Fix metaphor problems (overuse, nonsense)
+- Introduce sentence rhythm variation
+- Add personal voice and author perspective
+- Replace generic examples with specific citations
+- Remove filler, increase content depth
+- Break rigid structural patterns
+- Document all changes in change log
+
+**Step 3: Validation**
+- Execute humanization-checklist.md
+- Target: ≥80% pass rate (≤20% AI patterns remaining)
+- AI score improvement: ≥50% reduction from baseline
+
+**Time Investment:** 2-4 hours per chapter for thorough humanization
+
+**Quality Gate:** Do not proceed to technical review until humanization-checklist passes ≥80%
+
+### PacktPub AI Declaration
+
+**If using AI assistance for drafting:**
+
+1. **Notify PacktPub editor immediately** - Transparency required
+2. **Specify how AI was used** - "expand-outline-to-draft task with ChatGPT/Claude/Gemini"
+3. **Confirm humanization executed** - Provide humanization-checklist results
+4. **Acknowledge accountability** - Author remains accountable for accuracy, originality, integrity
+
+**PacktPub Will:**
+- Include AI use disclaimer in published book
+- Work with you to ensure content quality meets standards
+- Require humanization validation
+
+### Integration with Tone Specification
+
+**Relationship Between Tone & Humanization:**
+
+| Concern | Tone Specification | Humanization |
+|---------|-------------------|--------------|
+| **Purpose** | Define consistent voice | Remove AI artifacts |
+| **When** | Before writing (proactive) | After AI drafting (reactive) |
+| **Question** | "Should we sound friendly or professional?" | "Does this sound AI-generated?" |
+| **Focus** | Consistency, formality, style | Pattern removal, variation, authenticity |
+
+**Workflow:**
+```
+Define Tone (before writing)
+    ↓
+AI Draft (using tone specification)
+    ↓
+Humanize (remove AI patterns while preserving tone)
+    ↓
+Copy-Edit (validate tone consistency + final AI pattern check)
+    ↓
+Publish
+```
+
+**Both are Required:**
+- Tone specification ensures consistency
+- Humanization ensures authenticity
+- Together: consistent AND authentically human voice
+
+### Cautionary Notes
+
+**AI Content Risks:**
+- **Accuracy:** AI may hallucinate facts, code, examples (always verify)
+- **Quality:** Generic, superficial, lacks expert depth
+- **Reputation:** Readers detect AI patterns, leave negative reviews
+- **Publisher Trust:** Undisclosed AI use damages credibility
+- **Legal/Ethical:** Author accountability for content integrity
+
+**Author Responsibility:**
+- YOU are accountable for every word in published book
+- AI is tool for assistance, NOT replacement for expertise
+- Humanization is NOT optional for AI-assisted content
+- Technical verification MANDATORY before publication
+
+**Best Practice:**
+- Lead with your real expertise and experience
+- Use AI for structural starting point, not final content
+- Inject personal voice, insights, real-world examples during humanization
+- Verify every technical claim
+- Document AI use transparently
+
+**Remember:** Your unique expertise, insights, and experience are what readers want—AI cannot replicate that value.
+
 ## Integration with Workflows
 
 This task fits into content generation workflows:
@@ -678,10 +863,12 @@ This task fits into content generation workflows:
 synthesize-research-notes.md
 ↓ (produces outline)
 expand-outline-to-draft.md ← THIS TASK
-↓ (produces prose draft)
+↓ (produces prose draft with ai_assisted flag)
+humanize-ai-drafted-chapter.md (if AI-assisted)
+↓ (produces humanized draft)
 Technical Review
 ↓
-Editorial Polish
+Editorial Polish + Final AI Pattern Check (Step 10)
 ↓
 Final Content
 
@@ -691,13 +878,17 @@ Final Content
 
 ```
 
-Option A (Manual):
-Outline → Write from scratch → Review
+Option A (Manual - No AI):
+Outline → Write from scratch → Review → Polish
 
-Option B (AI-Assisted):
-Outline → expand-outline-to-draft.md → Technical Review → Polish
+Option B (AI-Assisted - with Humanization):
+Outline → expand-outline-to-draft.md → Humanize → Technical Review → Polish
 
-Time Savings: 2-4 hours per chapter (depending on complexity)
+Time Investment:
+- Drafting: Save 2-4 hours (AI-assisted vs manual)
+- Humanization: Invest 2-4 hours (AI pattern removal)
+- Net: Similar time, but AI provides structural starting point
+- Quality: Humanization ensures authentic expert voice
 
 ```
 
@@ -705,12 +896,17 @@ Time Savings: 2-4 hours per chapter (depending on complexity)
 
 After expanding outline to draft:
 
-1. **Save draft with clear status** - Filename includes DRAFT, metadata indicates AI-generated
-2. **Test all code examples** - Run every code snippet in clean environment
-3. **Technical review** - Subject matter expert verifies accuracy
-4. **Editorial polish** - Refine prose, improve clarity
-5. **Final verification** - Check against outline completeness
-6. **Remove DRAFT status** - Only after human verification complete
+1. **Save draft with clear status** - Filename includes DRAFT, metadata indicates ai_assisted: YES/NO
+2. **Execute humanization (if AI-assisted)** - MANDATORY: humanize-ai-drafted-chapter.md task
+   - Execute generative-ai-compliance-checklist.md (baseline)
+   - Remove AI patterns (vocabulary, metaphors, examples, voice, structure)
+   - Validate with humanization-checklist.md (target: ≥80% pass)
+   - Document changes in change log
+3. **Test all code examples** - Run every code snippet in clean environment
+4. **Technical review** - Subject matter expert verifies accuracy (AFTER humanization)
+5. **Editorial polish** - Refine prose, improve clarity, final AI pattern check (Step 10)
+6. **Final verification** - Check against outline completeness
+7. **Remove DRAFT status** - Only after humanization + human verification complete
 
 ## Related Tasks
 

@@ -2,9 +2,9 @@
 
 ## Introduction
 
-The BMad Technical Writing Expansion Pack provides **67 executable tasks** that guide agents through specific workflows. Tasks are procedural markdown files with step-by-step instructions that agents follow exactly.
+The BMad Technical Writing Expansion Pack provides **68 executable tasks** that guide agents through specific workflows. Tasks are procedural markdown files with step-by-step instructions that agents follow exactly.
 
-This comprehensive reference documents all 67 tasks organized by phase, with:
+This comprehensive reference documents all 68 tasks organized by phase, with:
 
 - **Task name and purpose** - What the task accomplishes
 - **When to use** - Specific scenarios
@@ -18,7 +18,7 @@ This comprehensive reference documents all 67 tasks organized by phase, with:
 
 - **Planning Phase (7 tasks)**: Book outlines, learning paths, proposals, research
 - **Instructional Design (5 tasks)** **(v2.1+)**: Learning frameworks, difficulty curves, assessment strategies, prerequisite mapping
-- **Chapter Development (12 tasks)**: Drafts, outlines, summaries, sections, walkthroughs, transitions
+- **Chapter Development (13 tasks)**: Drafts, outlines, summaries, sections, walkthroughs, transitions, **AI content humanization**
 - **Code Management (14 tasks)** **(v2.1+ expanded)**: Examples, testing, repositories, security audits, version checks, optimization
 - **Review & Editing (9 tasks)** **(v2.1+ expanded)**: Technical reviews, copy editing, checklist execution, validation, verification
 - **Publishing (10 tasks)** **(v2.1+ expanded)**: Packaging, MEAP, self-publishing, format conversions, indexes
@@ -360,6 +360,31 @@ This comprehensive reference documents all 67 tasks organized by phase, with:
 **Related Workflows**: Section Development Workflow, Chapter Assembly Workflow
 **Related Agents**: tutorial-architect, technical-editor
 **Estimated Time**: 1-3 hours
+
+---
+
+### humanize-ai-drafted-chapter.md
+
+**Purpose**: Systematically removes AI-generated patterns from AI-assisted content to ensure authentic human voice
+
+**When to Use**: After drafting with AI assistance (expand-outline-to-draft, ChatGPT, Claude, etc.), before technical review
+
+**Prerequisites**:
+- Chapter draft complete (AI-assisted or AI-generated)
+- generative-ai-compliance-checklist.md executed (baseline AI patterns identified)
+
+**Outputs**:
+- `chapter-{n}-humanized.md` with AI patterns removed
+- Change log documenting all humanization changes
+- humanization-checklist.md validation report with <20% AI patterns remaining
+
+**Related Workflows**: Chapter Development Workflow (humanization step after drafting)
+**Related Agents**: tutorial-architect
+**Estimated Time**: 2-4 hours per chapter
+
+**Key Features**: 11-step systematic workflow removing 8 AI pattern types (vocabulary, metaphors, generic examples, impersonal voice, sentence uniformity, flowery language, repetitive content, rigid structure), before/after examples embedded, quality validation with scoring
+
+**Note**: REQUIRED when AI tools assisted drafting. Critical for publisher compliance (PacktPub AI disclosure) and reader trust. Prevents negative reviews citing "AI-generated feel".
 
 ---
 
@@ -749,16 +774,20 @@ This comprehensive reference documents all 67 tasks organized by phase, with:
 
 ### copy-edit-chapter.md
 
-**Purpose**: Professional copy editing for clarity, consistency, style
+**Purpose**: Professional copy editing for clarity, consistency, style, with final AI pattern validation
 
 **When to Use**: After technical review, before finalization
 
-**Prerequisites**: Technically accurate chapter
+**Prerequisites**: Technically accurate chapter (humanized if AI-assisted)
 
-**Outputs**: Edited chapter with change summary
+**Outputs**: Edited chapter with change summary, final AI pattern check report (<5% patterns)
 
 **Related Agents**: technical-editor
 **Estimated Time**: 2-4 hours per chapter
+
+**Key Features**: 11-step workflow including grammar/spelling, clarity, terminology consistency, publisher style, tone validation (Step 9), **final AI pattern check (Step 10)**, and summary creation
+
+**Note**: Step 10 validates humanization effectiveness with target <5% AI patterns remaining for publication-ready quality
 
 ---
 

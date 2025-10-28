@@ -27,9 +27,14 @@ workflow:
         - chapter-outline.md
       notes: "Write section content (2-5 pages). Follow section plan learning objectives and content plan. Include concept explanation, tutorial walkthrough with code examples inline, and practical applications. Address prerequisites and connect to previous sections. SAVE OUTPUT: Create manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-draft.md"
 
+    - agent: tutorial-architect
+      creates: section-humanized.md
+      requires: section-draft.md
+      notes: "HUMANIZATION STEP (if AI-assisted drafting used): If AI tools assisted with section drafting, execute humanize-ai-drafted-chapter.md task (adapted for sections) to remove AI patterns. Systematic pattern removal: AI vocabulary, metaphors, generic examples, impersonal voice, sentence uniformity, etc. Validate with humanization-checklist.md (target: ≥80% pass, <20% AI patterns). SAVE OUTPUT: manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-humanized.md. SKIP: If section is fully human-written without AI assistance. TIME ESTIMATE: 30-60 minutes per section."
+
     - agent: technical-reviewer
       reviews: section-draft.md
-      requires: section-draft.md
+      requires: section-humanized.md OR section-draft.md
       notes: "Quick technical review of section (focused review, not full chapter review). Verify technical accuracy, code correctness, and completeness of explanations. Check for security issues or bad practices. Use technical-accuracy-checklist for focused review. SAVE OUTPUT: Create section-review-notes.md with findings (critical/major/minor issues)."
 
     - agent: tutorial-architect
@@ -51,7 +56,10 @@ workflow:
         D -->|No| E[code-curator: Fix Code]
         E --> C
         D -->|Yes| F[tutorial-architect: Write Section]
-        F --> G[technical-reviewer: Quick Review]
+        F --> F2{AI-Assisted?}
+        F2 -->|Yes| F3[tutorial-architect: Humanize Section]
+        F2 -->|No| G
+        F3 --> G[technical-reviewer: Quick Review]
         G --> H{Critical Issues?}
         H -->|Yes| I[tutorial-architect: Revise Section]
         I --> J[Update Code if Needed?]
@@ -66,6 +74,7 @@ workflow:
 
         B -.-> B1[Use section plan code list]
         F -.-> F1[Reference section-plan objectives]
+        F3 -.-> F4[Remove AI patterns: <20% target]
         G -.-> G1[Use technical-accuracy-checklist]
         L -.-> L1[Check section plan success criteria]
 
@@ -73,6 +82,7 @@ workflow:
         style B fill:#FFE4B5
         style C fill:#FFE4B5
         style F fill:#FFE4B5
+        style F3 fill:#FFB6C1
         style G fill:#ADD8E6
         style L fill:#F0E68C
     ```
@@ -98,6 +108,13 @@ workflow:
       - Examples demonstrate concepts clearly
       - Error handling included
       - Inline comments present
+
+    humanization_complete:
+      - humanization-checklist.md executed (if AI-assisted)
+      - AI pattern score reduced by ≥50% from baseline
+      - AI pattern score <20% (target for humanization step)
+      - Change log documents all humanization changes
+      - Note: Skip this gate if content is fully human-written without AI assistance
 
     draft_complete:
       - Section length 2-5 pages (appropriate granularity)
@@ -125,7 +142,10 @@ workflow:
   handoff_prompts:
     plan_to_curator: "Section plan complete: {{section_title}}. Learning objective: {{objective}}. {{code_count}} code examples needed. Develop and test all code."
     curator_to_architect: "Code examples complete for {{section_title}}. All {{example_count}} examples tested and passing. Code in chapter-{{chapter_number}}/section-{{section_number}}/. Ready for section writing."
-    architect_to_reviewer: "Section draft complete: {{section_title}} ({{page_count}} pages). Learning objective addressed with {{example_count}} code examples. Quick technical review needed."
+    draft_to_humanization: "Section draft complete: {{section_title}} ({{page_count}} pages). AI assistance was used during drafting. Executing humanization pass to remove AI patterns before technical review."
+    humanization_to_review: "Humanization complete for {{section_title}}. AI pattern score reduced from {{baseline_score}}% to {{final_score}}% ({{improvement}}% improvement). Section now reads as authentically human-written. Ready for technical review."
+    humanization_skipped: "Section {{section_title}} drafted without AI assistance. Skipping humanization step. Proceeding directly to technical review."
+    architect_to_reviewer: "Section ready for review: {{section_title}} ({{page_count}} pages). Learning objective addressed with {{example_count}} code examples. Quick technical review needed."
     reviewer_to_architect: "Technical review complete. Found {{critical_count}} critical and {{major_count}} major issues. Review notes available. Please revise and address."
     architect_final: "Section {{section_id}} DONE. All acceptance criteria met. {{page_count}} pages with {{example_count}} tested code examples. Section marked complete in section list."
 
@@ -133,16 +153,19 @@ workflow:
     develop_code: "1-2 hours (per section, 1-3 examples)"
     test_code: "30 minutes - 1 hour"
     write_section: "2-4 hours (2-5 pages)"
+    humanize_if_ai_assisted: "30-60 minutes (if AI drafting used, skip if fully human-written)"
     technical_review: "30 minutes - 1 hour (focused section review)"
     revise_section: "1-2 hours"
     verify_criteria: "30 minutes"
-    total_time: "5.5-10.5 hours per section"
+    total_time: "5.5-10.5 hours per section (no AI), 6-11.5 hours (with AI + humanization)"
 
   best_practices:
     - Start with code - test it before writing explanations
     - Follow section plan learning objectives closely
     - Keep section focused (1-2 objectives max)
     - Section should be independently reviewable
+    - ALWAYS humanize AI-assisted sections before technical review (saves reviewer time)
+    - Humanization for sections is faster than chapters (30-60 min vs 2-4 hours)
     - Mark section DONE only when ALL criteria met
     - Good sections are 2-5 pages (not too small, not too large)
     - Each section is a natural stopping point

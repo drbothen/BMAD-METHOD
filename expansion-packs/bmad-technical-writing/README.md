@@ -6,14 +6,16 @@ Transform your AI into a complete technical book writing studio with specialized
 
 The Technical Writing Expansion Pack extends BMad-Method with a comprehensive suite of tools for creating high-quality technical books, tutorials, and instructional content. Whether you're writing for PacktPub, O'Reilly, Manning, or self-publishing, this pack provides structured AI assistance throughout your technical writing process.
 
+**Full support for AI-assisted writing with systematic humanization workflow** - Remove AI-generated patterns (vocabulary, metaphors, generic examples, impersonal voice) to ensure content reads as authentic human-written expert guidance and meets publisher AI compliance requirements.
+
 ### Key Features
 
 - 🤖 **14 Specialized Agents** - Complete writing team with 11 required agents (greenfield planning/writing/review + research + brownfield book analysis) + 3 optional agents (Learning Path Designer, Sample Code Maintainer, Version Manager) for advanced scenarios
-- 📝 **36 Core Tasks** - Full chapter development, API documentation, diagram design, publishing workflows, **PLUS NEW: tone specification (define-book-tone, extract-tone-patterns, apply-tone-patterns)**, learning path design, code repository setup, version matrix testing, solutions creation, index generation, screenshot management, publisher packaging, MEAP preparation, self-publishing prep, preface/appendix creation, diagram set design, cross-reference validation, and brownfield tasks
-- 📋 **32 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility, visual quality, **PLUS NEW: tone-consistency-checklist**, cross-platform compatibility, inclusive language, readability, index completeness, citation accuracy, final manuscript review, book proposals, self-publishing standards, repository quality, MEAP readiness, and brownfield checklists
-- 🎯 **19 Professional Templates** - Book planning, chapter development, API reference, diagrams, preface, appendix, publishing, brownfield templates, glossary entry template, **PLUS NEW: tone-specification-tmpl**
-- 📚 **7 Knowledge Bases** - Comprehensive publisher guidelines, technical writing standards, **PLUS NEW: writing-voice-guides** with 6 tone profiles
-- 🔄 **15 Workflows** - Section-driven development, publisher-specific submission workflows (PacktPub, O'Reilly, Manning, Self-Publishing), brownfield workflows for edition updates, **NOW WITH: integrated tone definition in book-planning-workflow**, and complete book lifecycle management
+- 📝 **37 Core Tasks** - Full chapter development, API documentation, diagram design, publishing workflows, **tone specification (define-book-tone, extract-tone-patterns, apply-tone-patterns)**, **AI content humanization (humanize-ai-drafted-chapter)**, learning path design, code repository setup, version matrix testing, solutions creation, index generation, screenshot management, publisher packaging, MEAP preparation, self-publishing prep, preface/appendix creation, diagram set design, cross-reference validation, and brownfield tasks
+- 📋 **33 Quality Checklists** - Technical accuracy, security, performance, publisher compliance, accessibility, visual quality, **tone-consistency-checklist**, **humanization-checklist (AI pattern validation)**, cross-platform compatibility, inclusive language, readability, index completeness, citation accuracy, final manuscript review, book proposals, self-publishing standards, repository quality, MEAP readiness, and brownfield checklists
+- 🎯 **19 Professional Templates** - Book planning, chapter development, API reference, diagrams, preface, appendix, publishing, brownfield templates, glossary entry template, **tone-specification-tmpl**
+- 📚 **10 Knowledge Bases** - Comprehensive publisher guidelines, technical writing standards, **writing-voice-guides** with 6 tone profiles, **ai-pattern-removal-guide**, **publisher-specific-ai-patterns**, **humanization-examples** with 20 before/after transformations
+- 🔄 **15 Workflows** - Section-driven development, publisher-specific submission workflows (PacktPub, O'Reilly, Manning, Self-Publishing), brownfield workflows for edition updates, **integrated tone definition and AI content humanization in chapter-development-workflow**, and complete book lifecycle management
 
 ## 📖 Documentation
 
