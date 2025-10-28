@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2025-10-27
+
+### Added
+
+**Section-Writing Enhancements:**
+- Added `*write-section` command to tutorial-architect agent for direct access to write-section-draft.md task
+  - Enables section-driven workflow (incremental chapter development)
+  - Provides 2-5 page granular writing capability
+  - Complements existing `*create-tutorial` and chapter-level commands
+
+### Enhanced
+
+**Tone Awareness for Section Writing:**
+- **write-section-draft.md** - Added comprehensive tone specification guidance
+  - Prerequisites now require tone-specification.md review
+  - Step 1 includes "Review Tone Specification" subsection with formality level, characteristics, example passages
+  - Quality checklists updated to verify tone alignment
+  - Quality standards updated to include tone matching
+
+**tutorial-architect Agent:**
+- Added write-section-draft.md to task dependencies
+- Updated startup context with section-driven workflow guidance
+- Enhanced "Think in terms of" and "Always consider" lists to include tone awareness
+- Clarified that tone definition applies to both chapters and sections
+
+**Impact:**
+- Complete tone coverage across all writing workflows (chapter-level, section-level, and AI-assisted)
+- Consistent voice enforcement from first sentence in section-driven development
+- Tutorial-architect now supports both monolithic (chapter) and incremental (section) writing approaches
+
 ## [2.3.0] - 2025-10-27
 
 ### Added
