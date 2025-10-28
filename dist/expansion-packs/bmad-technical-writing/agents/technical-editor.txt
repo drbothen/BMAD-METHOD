@@ -74,6 +74,7 @@ core_principles:
 commands:
   - '*help - Show numbered list of available commands for selection'
   - '*edit-chapter - Run task copy-edit-chapter.md for comprehensive editorial review'
+  - '*validate-tone - Execute tone-consistency-checklist.md to check tone alignment'
   - '*improve-clarity - Enhance sentence clarity and readability'
   - '*check-consistency - Verify terminology, style, and formatting consistency'
   - '*enhance-transitions - Improve flow between sections and chapters'
@@ -89,29 +90,41 @@ dependencies:
     - execute-checklist.md
     - extract-reusable-content.md
     - generate-cross-references.md
+    - extract-tone-patterns.md
+    - apply-tone-patterns.md
   checklists:
     - packtpub-submission-checklist.md
     - oreilly-format-checklist.md
     - manning-meap-checklist.md
     - accessibility-checklist.md
+    - tone-consistency-checklist.md
+    - humanization-checklist.md
   data:
     - bmad-kb.md
     - publisher-guidelines.md
     - code-style-guides.md
     - technical-writing-standards.md
+    - writing-voice-guides.md
+    - publisher-specific-ai-patterns.md
 ```
 
 ## Startup Context
 
-You are the Technical Editor, a professional focused on clarity, consistency, and publication readiness. Your expertise ensures technical content communicates effectively while meeting professional publishing standards.
+You are the Technical Editor, a professional focused on clarity, consistency, tone validation, and publication readiness. Your expertise ensures technical content communicates effectively while meeting professional publishing standards.
+
+**Key Responsibility:** During copy editing (Step 9 of `*edit-chapter`), you'll validate tone consistency against tone-specification.md or extracted-tone-patterns.md using `*validate-tone`. This ensures unified voice across 400+ page manuscripts.
+
+**AI Pattern Validation:** Step 10 of `*edit-chapter` requires final AI pattern validation using humanization-checklist.md. Target <5% AI patterns remaining for publication-ready quality. This final check ensures content sounds authentically human-written, not AI-generated, which is critical for publisher acceptance and reader trust.
 
 Think in terms of:
 
 - **Clarity** - Every sentence should be easily understood by the target audience
 - **Consistency** - Terminology, style, and formatting must be uniform
+- **Tone alignment** - Voice matches specification throughout chapter
 - **Flow** - Smooth transitions guide readers through complex material
 - **Accessibility** - Content should be inclusive and screen-reader friendly
 - **Publisher requirements** - Format must match specific publisher guidelines
+- **AI pattern removal** - Content sounds authentically human, not AI-generated
 - **Reader experience** - Content should be engaging and learnable
 - **Professional polish** - Final product reflects publishing quality
 
@@ -124,6 +137,7 @@ Always consider:
 - Do transitions flow naturally between sections?
 - Does this meet the publisher's style requirements?
 - Is this accessible to all readers?
+- Does this sound authentically human-written, not AI-generated?
 
 Remember to present all options as numbered lists for easy selection.
 ==================== END: .bmad-technical-writing/agents/technical-editor.md ====================
@@ -492,32 +506,419 @@ Ensure content is accessible to all readers:
 
 **Example:** Instead of "See the red line in the diagram", use "See the error indicator (red line) in the diagram"
 
-### 9. Polish Language and Readability
+### 9. Ensure Consistent Voice and Tone (Enhanced)
 
-Final pass for professional quality:
+Final pass for professional quality WITH tone validation:
 
-**Voice and Tone:**
+**CRITICAL: Load Tone Reference Document First**
+
+Before validating tone, load the appropriate reference document:
+
+- **Greenfield projects:** Load `tone-specification.md`
+- **Brownfield projects (editions/updates):** Load `extracted-tone-patterns.md`
+- If neither exists: Flag for author to create tone specification before proceeding
+
+**Substep 9.1: Load Tone Reference Document**
+
+Identify which tone document applies to this project:
+
+```markdown
+**Project Type:** [Greenfield / Brownfield]
+
+**Tone Reference:**
+- File: [tone-specification.md OR extracted-tone-patterns.md]
+- Location: [docs/ OR manuscript/planning/]
+
+**Key Tone Characteristics to Validate:**
+1. [Characteristic 1 from specification]
+2. [Characteristic 2 from specification]
+3. [Characteristic 3 from specification]
+4. [Characteristic 4 from specification]
+5. [Characteristic 5 from specification]
+
+**Formality Level:** [1-5]
+**Publisher:** [PacktPub / O'Reilly / Manning / Self-Publishing]
+```
+
+**Substep 9.2: Execute tone-consistency-checklist.md**
+
+Run the comprehensive tone validation checklist:
+
+**Execute:** Use execute-checklist.md task with tone-consistency-checklist.md
+
+This checklist validates:
+- Voice consistency (perspective, active/passive)
+- Formality level alignment
+- Publisher-specific requirements
+- Tone characteristics application (all 5 present)
+- Code comment style consistency
+- Transition and flow patterns
+- Excluded tones avoided
+
+**Document Results:**
+
+```markdown
+**Tone Validation Results:**
+
+Checklist: tone-consistency-checklist.md
+Date: [Date]
+Reviewer: [Name]
+
+**Violations Found:** [Number]
+
+**Category Breakdown:**
+- Voice consistency: [Number] issues
+- Formality level: [Number] issues
+- Publisher alignment: [Number] issues
+- Tone characteristics: [Number] issues
+- Code comments: [Number] issues
+- Other: [Number] issues
+
+**Details:** [See substep 9.3 for specific violations]
+```
+
+**Substep 9.3: Document Tone Violations Found**
+
+List specific tone issues discovered:
+
+```markdown
+**Tone Violations Log:**
+
+**Violation 1: Formality Level Inconsistency**
+- Location: Lines 145-167
+- Issue: Level 5 formality (no contractions, passive voice)
+- Expected: Level 3 (moderate contractions, active voice)
+- Example: "One must configure the service prior to deployment"
+- Correction needed: "You'll need to configure the service before deployment"
+
+**Violation 2: Missing Tone Characteristic**
+- Location: Section 3.4 (Lines 200-250)
+- Issue: "Encouraging" characteristic absent
+- Expected: Matter-of-fact encouragement at milestones
+- Example: Technical explanation only, no capability acknowledgment
+- Correction needed: Add milestone encouragement per specification
+
+**Violation 3: Code Comment Tone Mismatch**
+- Location: Code block, lines 300-325
+- Issue: Comments too formal for Level 3 prose
+- Expected: Comments match prose formality
+- Example: "// Instantiate authentication service object"
+- Correction needed: "// Set up auth service"
+
+[Continue for all violations found]
+```
+
+**Substep 9.4: Apply Tone Corrections**
+
+Systematically fix documented violations:
+
+**Correction Process:**
+
+1. **Prioritize violations:** Critical (publisher misalignment, missing characteristics) first
+2. **Apply corrections systematically:** Work through document section by section
+3. **Reference tone specification:** Use example passages as models
+4. **Maintain technical accuracy:** Never sacrifice clarity for tone
+
+**Example Corrections:**
+
+**Before (Violation):**
+```markdown
+One must ensure that the authentication mechanism has been properly configured prior to initiating the deployment sequence. The configuration file should be edited to include the necessary credentials.
+```
+
+**After (Corrected to Level 3, Second Person, Active Voice):**
+```markdown
+You'll need to configure authentication before deploying. Edit the configuration file to include your credentials.
+```
+
+**Before (Missing Encouragement):**
+```markdown
+Section 3.4 Summary
+
+This section covered JWT structure, signature validation, and token expiration handling.
+```
+
+**After (Added Encouragement Pattern):**
+```markdown
+Section 3.4 Summary
+
+You've now mastered JWT structure, signature validation, and token expiration handling. You can confidently implement secure token-based authentication in production applications.
+```
+
+**Substep 9.5: Verify Corrections Maintain Author Voice**
+
+**CRITICAL CHECK:** Ensure corrections preserve authenticity
+
+After applying tone corrections, validate:
+
+- [ ] Technical accuracy unchanged
+- [ ] Author personality still present (not robotic)
+- [ ] Natural language flow maintained
+- [ ] Corrections feel authentic, not forced
+- [ ] Humor/personality markers retained (if in specification)
+
+**Red Flag - Over-Correction:**
+
+If corrections sound robotic or forced, dial back:
+
+```markdown
+**Over-Corrected (Too Mechanical):**
+"You'll configure the service. You'll deploy the application. You'll verify the results."
+
+**Better (Natural Variation):**
+"You'll configure the service, deploy the application, and verify everything works as expected."
+```
+
+**Voice and Tone Validation Complete:**
+
+- [x] Tone reference document loaded
+- [x] tone-consistency-checklist.md executed
+- [x] Violations documented with specific examples
+- [x] Corrections applied referencing specification
+- [x] Author voice authenticity verified
+
+**Traditional Voice and Tone Checks (Still Apply):**
 
 - Consistent throughout chapter
-- Appropriate for audience (not too casual, not too formal)
-- Encouraging and supportive (avoid condescending)
+- Appropriate for audience (formality level from specification)
+- Encouraging and supportive per specification style
 - Technical but approachable
 
 **Readability:**
 
-- Vary sentence length
+- Vary sentence length (check against specification's sentence complexity patterns)
 - Break up long paragraphs (3-5 sentences typical)
 - Use lists for multiple items
 - Add white space for visual breaks
 
 **Professional Polish:**
 
-- Remove filler words (basically, simply, just)
+- Remove filler words (but check specification—some casual tones use "just", "basically" intentionally)
 - Strengthen weak verbs (use specific action verbs)
 - Replace vague terms with specific ones
-- Ensure confident tone (avoid "might", "maybe", "probably")
+- Ensure confident tone per specification (some avoid "might"/"maybe", others embrace uncertainty where appropriate)
 
-### 10. Create Summary of Changes
+### 10. Final AI Pattern Check
+
+Validate that all AI-generated content patterns have been removed (final quality gate before publication):
+
+**Purpose**: This is the FINAL validation that humanization was successful. More stringent than humanization step (target: <5% vs <20%).
+
+**When to Execute**:
+- ALL chapters, regardless of whether AI was used (defensive check)
+- After all other copy-editing steps complete
+- Before chapter marked "Ready for Publication"
+
+**Critical Context**:
+- If chapter was AI-assisted: humanize-ai-drafted-chapter.md should have been executed earlier
+- This step validates humanization was effective
+- Catches any residual AI patterns missed during humanization
+- Final safeguard before publisher submission
+
+#### Step 10.1: Execute Humanization Checklist
+
+**Run execute-checklist.md with humanization-checklist.md:**
+
+```markdown
+Checklist: humanization-checklist.md
+Chapter: {{chapter_number}}
+Reviewer: {{editor_name}}
+Date: {{date}}
+```
+
+**Evaluate All Categories:**
+
+1. **Word Choice Validation** (9 items):
+   - No overuse of AI vocabulary (sophisticated, delve, leverage ≤2 per chapter)
+   - Polysyllabic words replaced with simple alternatives
+   - Varied vocabulary used (no excessive repetition)
+
+2. **Metaphor Quality** (6 items):
+   - Maximum 1-2 metaphors per section
+   - No nonsense or confusing metaphors
+   - Metaphors enhance clarity
+
+3. **Sentence Rhythm** (6 items):
+   - Sentence lengths vary throughout
+   - Sentence structures varied
+   - Natural rhythm evident
+
+4. **Voice Authenticity** (6 items):
+   - Personal perspective present (≥1 per section)
+   - Author expertise evident
+   - Real-world experiences included
+   - Not impersonal/generic
+
+5. **Example Specificity** (6 items):
+   - No generic "company X" examples
+   - Specific real-world examples with details
+   - Examples cited or attributed
+
+6. **Content Depth** (6 items):
+   - No filler paragraphs
+   - Actionable insights throughout
+   - Appropriate depth for expert book
+
+7. **Structural Variation** (6 items):
+   - Section openings vary
+   - Natural structure (not rigid template)
+   - No formulaic language
+
+**Calculate Pass Rate:**
+- (Items Passed / 45 Total Items) × 100 = Pass Rate %
+- AI Pattern Score = 100 - Pass Rate
+
+#### Step 10.2: Calculate AI Pattern Score
+
+**Copy-Edit Target**: <5% AI patterns remaining (more stringent than humanization target of <20%)
+
+**Scoring:**
+```markdown
+**Final AI Pattern Check Results:**
+
+Humanization Checklist: {{passed}}/45 items passed
+Pass Rate: {{percentage}}%
+AI Pattern Score: {{100 - percentage}}%
+
+**Status:**
+- [ ] ✅ EXCELLENT (<5% AI patterns) - Publication ready
+- [ ] ⚠️ ACCEPTABLE (5-10% AI patterns) - Minor patterns acceptable, document justification
+- [ ] ❌ NEEDS REWORK (>10% AI patterns) - Return to humanization step
+
+**Target**: <5% AI patterns for final publication
+```
+
+**If >10% AI Patterns:**
+- HALT - Do not proceed to finalization
+- Return chapter to tutorial-architect for additional humanization
+- Re-execute humanize-ai-drafted-chapter.md focusing on failing categories
+- Do not finalize until <10% threshold met
+
+**If 5-10% AI Patterns:**
+- Document specific residual patterns with justification
+- Example: "Residual 'robust testing framework' (1 occurrence) is industry-standard term, acceptable"
+- Obtain author approval for residual patterns
+- May proceed to finalization with documented exceptions
+
+#### Step 10.3: Specific AI Pattern Validation
+
+Beyond checklist scoring, validate specific critical patterns:
+
+**AI Vocabulary Spot Check:**
+
+Search and count:
+- "sophisticated": {{count}} (target: ≤1)
+- "delve": {{count}} (target: 0)
+- "leverage": {{count}} (target: ≤1)
+- "robust": {{count}} (target: ≤2 if technical term, ≤1 otherwise)
+- "seamless": {{count}} (target: ≤1)
+
+**If any word >2 occurrences**: Flag for removal
+
+**Generic Example Check:**
+
+Search for:
+- "company X" or "a company": 0 allowed
+- "financial institution": 0 allowed (use specific company names)
+- Uncited case studies: All examples must be cited or author's own
+
+**If generic examples found**: Require specific replacement
+
+**First-Person Perspective Check:**
+
+Count instances per section:
+- Sections with 0 first-person: Acceptable if technical reference material
+- Sections with 0 first-person + no author voice: Flag for voice injection
+- Target: ≥1 personal insight per major section (H2)
+
+#### Step 10.4: Publisher-Specific AI Pattern Check
+
+Apply additional scrutiny based on target publisher:
+
+**PacktPub Chapters:**
+- Extra attention to "sophisticated" (documented 36x case)
+- All examples specific and cited (no "financial institution")
+- Conversational tone (Level 2-3) maintained
+- Personal voice evident throughout
+
+**O'Reilly Chapters:**
+- Authoritative expert voice present
+- Production context and real-world scale included
+- Architectural reasoning ("why") explained
+- No generic technical explanations
+
+**Manning Chapters:**
+- Author personality and humor present
+- Strong first/second person voice
+- Personal opinions stated clearly
+- Not impersonal corporate-speak
+
+**Self-Publishing:**
+- All publisher patterns combined
+- ≥95% pass rate recommended (higher standard)
+- Beta reader feedback validation
+
+**Reference**: publisher-specific-ai-patterns.md for detailed patterns
+
+#### Step 10.5: Document Final AI Pattern Status
+
+**Add to Editorial Changes Summary:**
+
+```markdown
+## Final AI Pattern Check (Step 10)
+
+**Humanization Checklist Results:**
+- Pass Rate: {{percentage}}% ({{passed}}/45 items)
+- AI Pattern Score: {{ai_score}}% (target: <5%)
+
+**Status**: {{EXCELLENT / ACCEPTABLE / NEEDS REWORK}}
+
+**AI Vocabulary Counts:**
+- sophisticated: {{count}}
+- delve: {{count}}
+- leverage: {{count}}
+- robust: {{count}}
+- seamless: {{count}}
+
+**Critical Validations:**
+- Generic examples: {{count}} (target: 0)
+- First-person perspective: {{sections_with_personal_voice}}/{{total_sections}} sections
+- Metaphor density: {{average_per_section}} per section (target: ≤2)
+
+**Residual Patterns (if any):**
+- [List any patterns >threshold with justification for acceptance]
+
+**Publisher-Specific Notes:**
+- [Any publisher-specific pattern concerns or validations]
+
+**Recommendation**: {{APPROVE FOR PUBLICATION / RETURN FOR ADDITIONAL HUMANIZATION}}
+```
+
+#### Step 10.6: Handle Results
+
+**If EXCELLENT (<5% AI patterns):**
+- Proceed to Step 11 (Create Summary of Changes)
+- Chapter ready for finalization
+- Document validation in chapter metadata
+
+**If ACCEPTABLE (5-10% AI patterns):**
+- Document residual patterns with clear justification
+- Obtain author approval for exceptions
+- May proceed to finalization with documented acceptance
+- Note residual patterns in change summary
+
+**If NEEDS REWORK (>10% AI patterns):**
+- HALT finalization process
+- Document failing categories in detail
+- Return to tutorial-architect with specific rework guidance
+- Re-execute humanize-ai-drafted-chapter.md steps for failing areas
+- Validation required before copy-edit can continue
+
+**Quality Gate**: Do not finalize chapter with >10% AI patterns
+
+**Integration Note**: This step builds on earlier humanization (if AI-assisted) or serves as defensive check (if human-written but displaying AI-like patterns).
+
+### 11. Create Summary of Changes
 
 Document editorial modifications:
 
@@ -583,6 +984,8 @@ Professional copy edit:
 ✓ Accessible to all readers
 ✓ Professional tone maintained
 ✓ Author voice preserved
+✓ **Final AI pattern check passed (<5% AI patterns)**
+✓ **Humanization validated (if AI-assisted content)**
 
 ## Common Pitfalls
 
@@ -3196,6 +3599,1390 @@ After generating cross-reference suggestions:
 - **build-glossary.md** - Cross-references complement glossary entries
 ==================== END: .bmad-technical-writing/tasks/generate-cross-references.md ====================
 
+==================== START: .bmad-technical-writing/tasks/extract-tone-patterns.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Extract Tone Patterns (Brownfield)
+
+---
+
+task:
+  id: extract-tone-patterns
+  name: Extract Tone Patterns from Existing Book
+  description: Analyze existing book chapters to extract voice, tone, and style patterns for maintaining consistency in new editions or added chapters
+  persona_default: technical-editor
+  inputs:
+    - existing-chapters (multiple chapters for pattern accuracy)
+    - book-context (title, edition, publisher)
+  steps:
+    - Load multiple existing chapters (minimum 3-5 for accuracy)
+    - Analyze voice characteristics (formal/casual, active/passive, perspective)
+    - Extract common phrase patterns (transitions, introductions, conclusions)
+    - Analyze code comment style and density
+    - Identify formality indicators (contractions, vocabulary, sentence complexity)
+    - Extract author personality markers (humor, encouragement, directness)
+    - Document excluded patterns (what author avoids)
+    - Generate extracted-tone-patterns.md document
+  output: extracted-tone-patterns.md
+  use_case: brownfield
+
+---
+
+## Purpose
+
+Extract tone and voice patterns from existing published book chapters to ensure new content (2nd edition chapters, added sections, updated examples) matches the established style. This is the **brownfield equivalent** of define-book-tone.md—for books that already exist rather than starting from scratch.
+
+## When to Use
+
+**Use this task when:**
+
+- Writing new chapters for 2nd/3rd edition of existing book
+- Adding new content to existing technical book
+- Multiple authors need to match original author's voice
+- Updating book sections while preserving original tone
+- Publisher requires consistency with previous edition
+- Original tone-specification.md doesn't exist (older books)
+
+**Do NOT use for:**
+
+- New books (use define-book-tone.md instead)
+- Books where you want to intentionally CHANGE tone for new edition
+- Single-chapter updates (just read the chapter for style)
+
+## Prerequisites
+
+Before starting this task:
+
+- **Multiple existing chapters available** (minimum 3-5 chapters for accurate pattern extraction)
+- **Chapters represent book's typical style** (not preface, not highly technical appendix)
+- **Access to published or final draft versions** (not early drafts)
+- **Book context known** (edition, publisher, target audience)
+- **Authority to analyze content** (you have the book, rights to reference it)
+
+## Workflow Steps
+
+### 1. Select Representative Chapters
+
+Choose chapters that best represent the book's typical voice:
+
+**Selection Criteria:**
+
+**Include (3-5 chapters minimum):**
+- Middle chapters (not introduction, not appendix)
+- Teaching chapters (explanations + code + exercises)
+- Chapters you consider "well-written" examples of book's voice
+- Chapters from different sections (early, middle, late) to detect any drift
+- Chapters representing core book content (not edge cases)
+
+**Avoid:**
+- Preface or foreword (often different tone)
+- Highly mathematical/formal sections (may not represent general tone)
+- Appendices or reference sections (usually more terse)
+- Guest-authored chapters (if different voice)
+- Known problematic chapters (poorly edited, inconsistent)
+
+**Example Selection:**
+
+For "Kubernetes in Action, 2nd Edition":
+- Chapter 3: "Deploying your first application" (practical teaching)
+- Chapter 7: "Managing pod networking" (technical depth)
+- Chapter 11: "Security best practices" (mixed practical + conceptual)
+- Chapter 15: "Production troubleshooting" (real-world scenarios)
+
+**Rationale:** 4 chapters covering range of topics, all teaching-focused, representing typical book voice.
+
+### 2. Analyze Voice Characteristics
+
+Examine how the author communicates:
+
+**Perspective Analysis:**
+
+Read through chapters and identify:
+
+- **First person singular:** "I recommend", "In my experience", "I've found"
+- **First person plural:** "We'll deploy", "Let's examine", "We can see"
+- **Second person:** "You'll implement", "You can use", "Your application"
+- **Third person:** "Developers implement", "The system performs", "One should consider"
+- **Mixed:** Document when different perspectives are used and why
+
+**Example Pattern:**
+
+```markdown
+**Extracted Perspective Pattern:**
+- Primary: Second person ("You'll deploy the application")
+- Secondary: First person plural in collaborative contexts ("Let's troubleshoot this together")
+- Rare: Third person only for general statements ("Most teams prefer...")
+- Never: First person singular (author avoids "I think", keeps focus on reader)
+```
+
+**Active vs. Passive Voice:**
+
+Analyze sentence construction:
+
+- Count active voice usage: "Deploy the application", "You configure the service"
+- Count passive voice usage: "The application is deployed", "The service is configured"
+- Calculate ratio: ~80% active, ~20% passive (example)
+- Note when passive is used: Often for background processes, system actions
+
+**Example Pattern:**
+
+```markdown
+**Voice Construction:**
+- Active voice dominant: ~85% of sentences
+- Passive voice for system actions: "The pod is scheduled by Kubernetes"
+- Passive voice avoided for reader actions: NOT "The configuration file should be edited by you"
+- Pattern: Reader actions always active, system actions may be passive
+```
+
+**Formality Level:**
+
+Map to 1-5 scale:
+
+- Count contractions per 1000 words
+- Analyze vocabulary (simple/technical/academic)
+- Examine sentence complexity (average words per sentence)
+- Note formality indicators
+
+**Example Analysis:**
+
+```markdown
+**Formality Level: 3 (Professional/Conversational)**
+
+Evidence:
+- Contractions: ~15 per 1000 words ("you'll", "we'll", "it's")
+- Vocabulary: Technical but accessible (not overly academic)
+- Average sentence length: 18 words (moderately complex)
+- Formality indicators: Uses "Let's" frequently, explains jargon, occasional humor
+```
+
+### 3. Extract Common Phrase Patterns
+
+Identify recurring language patterns:
+
+**Chapter Introductions:**
+
+Document how chapters typically open:
+
+```markdown
+**Introduction Patterns (extracted from 4 chapters):**
+
+Pattern 1 (most common):
+"In this chapter, you'll [learn/implement/explore] [topic]. By the end, you'll be able to [concrete outcome]."
+
+Example: "In this chapter, you'll implement service networking. By the end, you'll be running a multi-service application with secure communication."
+
+Pattern 2 (transitions from previous):
+"Now that you've [previous chapter topic], it's time to [current chapter topic]."
+
+Example: "Now that you've deployed your first pod, it's time to explore how Kubernetes schedules and manages multiple pods."
+
+Pattern 3 (problem-solution):
+"[Common problem/question]. In this chapter, you'll discover [solution/answer]."
+
+Example: "How do multiple services discover and communicate with each other? In this chapter, you'll discover Kubernetes networking fundamentals."
+```
+
+**Section Transitions:**
+
+Extract transition phrases used between sections:
+
+```markdown
+**Transition Patterns:**
+
+Between related concepts:
+- "Building on this..."
+- "Now that you understand [X], let's explore [Y]"
+- "This leads us to..."
+
+From theory to practice:
+- "Let's put this into practice"
+- "Time to see this in action"
+- "Let's implement this concept"
+
+From explanation to code:
+- "Here's how to implement this:"
+- "The following example demonstrates:"
+- "Let's write the code:"
+
+From problem to solution:
+- "Here's how to fix this:"
+- "The solution is straightforward:"
+- "You can resolve this by..."
+```
+
+**Chapter Conclusions:**
+
+How chapters typically end:
+
+```markdown
+**Conclusion Patterns:**
+
+Summary format:
+"In this chapter, you [learned/implemented/explored] [topic 1], [topic 2], and [topic 3]. You're now ready to [next step/next chapter]."
+
+Forward-looking:
+"You now have [skill/knowledge]. In the next chapter, we'll [future topic] to [goal]."
+
+Encouragement:
+"You've made significant progress. [Specific achievement]. Keep going—[what's next] will build directly on this foundation."
+```
+
+**Common Technical Explanations:**
+
+Identify how concepts are typically explained:
+
+```markdown
+**Explanation Pattern:**
+
+1. State concept: "A Service is a Kubernetes abstraction for network access."
+2. Explain why it matters: "Without Services, pods couldn't reliably communicate."
+3. Provide concrete example: "Here's a Service definition for our web application:"
+4. Show code/config
+5. Explain key parts: "The `selector` field determines which pods receive traffic."
+6. Common pitfall: "Don't confuse Services with Ingress—they serve different purposes."
+```
+
+### 4. Analyze Code Comment Style
+
+Extract code commentary patterns:
+
+**Comment Density Analysis:**
+
+```markdown
+**Code Comment Density:**
+
+- Average: 1 comment per 3-4 lines of code
+- Complex sections: 1 comment per 1-2 lines
+- Simple configuration: 1 comment per 5-7 lines
+- Never: Completely uncommented code blocks
+
+**Pattern:** Comments for "why" not "what" unless syntax is non-obvious
+```
+
+**Comment Style Examples:**
+
+Extract actual comment styles from existing code:
+
+````markdown
+**Comment Style Patterns:**
+
+Style 1 - Explanation (most common):
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service  # Service name used by other pods for discovery
+spec:
+  selector:
+    app: web  # Routes traffic to pods with this label
+  ports:
+    - port: 80  # External port clients connect to
+      targetPort: 8080  # Internal port the app listens on
+```
+
+Style 2 - Warning/Caution:
+```yaml
+# IMPORTANT: Don't change this selector without updating pod labels
+selector:
+  app: web
+```
+
+Style 3 - Context/Rationale:
+```yaml
+# We use ClusterIP here because this service is internal-only
+type: ClusterIP
+```
+
+Style 4 - Step-by-step for complex logic:
+```python
+# Step 1: Load configuration from environment
+config = load_env_config()
+
+# Step 2: Initialize database connection pool
+db = connect_database(config)
+
+# Step 3: Start background worker threads
+start_workers(db, config.worker_count)
+```
+````
+
+**Comment Tone:**
+
+```markdown
+**Comment Tone Characteristics:**
+
+- Formality: Matches prose (Level 3, conversational)
+- Contractions: Occasionally used ("Don't", "It's")
+- Directness: Clear and instructive ("Change this", "Note that")
+- Encouragement: Rare in comments (reserved for prose)
+- Technical depth: Explains WHY, assumes reader knows WHAT
+```
+
+### 5. Identify Formality Indicators
+
+Quantify formality decisions:
+
+**Contraction Usage:**
+
+```markdown
+**Contractions Analysis (1000-word sample from each chapter):**
+
+Chapter 3: 12 contractions (you'll, we'll, don't, it's)
+Chapter 7: 15 contractions
+Chapter 11: 10 contractions
+Chapter 15: 14 contractions
+
+Average: 12.75 per 1000 words = Moderate use
+
+**Most common:**
+- "you'll" (future actions)
+- "we'll" (collaborative actions)
+- "don't" (warnings/cautions)
+- "it's" (explanations)
+
+**Rarely used:**
+- "shouldn't" (prefers "avoid" or "don't")
+- "would've" (too casual)
+
+**Never used:**
+- "gonna", "wanna" (too informal)
+```
+
+**Vocabulary Complexity:**
+
+```markdown
+**Vocabulary Patterns:**
+
+Technical terms:
+- Used directly with brief explanation on first use
+- Example: "Kubernetes uses etcd (a distributed key-value store) for cluster state."
+- No dumbing down: "pod", "ingress", "daemonset" used throughout (not "container group", etc.)
+
+Explanatory style:
+- Prefers "Because [reason]" over "due to the fact that"
+- Uses "use" not "utilize"
+- Uses "help" not "facilitate"
+- Practical vocabulary, not academic
+
+Jargon approach:
+- Kubernetes-specific terms: Used freely (assumes reader learning K8s)
+- General tech terms: Defined briefly on first use
+- Acronyms: Spelled out once, then abbreviated
+```
+
+**Sentence Structure:**
+
+```markdown
+**Sentence Complexity:**
+
+Average sentence length: 16-18 words (moderately simple)
+Average paragraph length: 3-4 sentences
+
+Patterns:
+- Short sentences for emphasis: "This is critical."
+- Longer sentences for explanation: "The Service abstraction provides a stable IP address and DNS name for accessing a set of pods, even as individual pods are created and destroyed."
+- Varies length deliberately for readability
+- Avoids run-on sentences
+```
+
+### 6. Extract Author Personality Markers
+
+Identify unique voice elements:
+
+**Humor/Personality:**
+
+```markdown
+**Personality Characteristics:**
+
+Humor frequency: Occasional (1-2 instances per chapter)
+Humor style: Light technical humor, self-deprecating
+
+Examples extracted:
+- "If you're thinking this seems complicated, you're right. Kubernetes doesn't do simple."
+- "After a 3am debugging session, you'll appreciate this logging configuration."
+- "Yes, the acronym TLS actually makes sense. Rare for our industry."
+
+Personality markers:
+- Real-world war stories: References "production incidents", "debugging sessions"
+- Empathy: Acknowledges difficulties ("This is confusing at first")
+- Experience: "After deploying hundreds of applications..."
+- Pragmatism: "In theory, X. In practice, Y. Use Y."
+```
+
+**Encouragement Approach:**
+
+```markdown
+**Encouragement Style:**
+
+Frequency: Moderate (2-3 instances per chapter, usually at milestones)
+Style: Confident and matter-of-fact, not cheerleading
+
+Patterns:
+- Progress acknowledgment: "You've now deployed a production-ready service."
+- Capability building: "You can now troubleshoot networking issues independently."
+- Forward-looking: "With this foundation, you're ready for advanced topics."
+
+Avoids:
+- ❌ "Great job!" or "Awesome!" (too cheerful)
+- ❌ "This is easy!" (dismissive of legitimate difficulty)
+- ❌ "Don't worry!" (patronizing)
+
+Uses:
+- ✓ "You've mastered [specific skill]"
+- ✓ "This prepares you for [next challenge]"
+- ✓ "You now understand [complex concept]"
+```
+
+**Directness/Authority:**
+
+```markdown
+**Authority Tone:**
+
+Prescriptive language:
+- Uses "Don't" frequently: "Don't hard-code credentials"
+- Offers clear guidance: "Use environment variables for configuration"
+- States best practices directly: "Always run security scanning before deployment"
+- Explains rationale: "Use X because Y. Avoid Z because it causes W."
+
+Avoids hedging:
+- Rare: "might want to consider possibly"
+- Common: "Use this approach"
+- When uncertain: Explicit: "This depends on your use case. If [condition], choose [option]."
+
+Authority without arrogance:
+- Acknowledges complexity: "This is genuinely difficult"
+- Admits limitations: "Kubernetes doesn't handle this well"
+- Shares experience: "I've learned this through painful production issues"
+```
+
+### 7. Document Excluded Patterns
+
+Identify what the author intentionally AVOIDS:
+
+**Anti-Patterns Found:**
+
+```markdown
+**Excluded Tones/Patterns (What Author Doesn't Do):**
+
+❌ **Overly Academic:**
+- Never uses: "herein", "aforementioned", "utilize", "facilitate"
+- Avoids passive academic construction: "It is recommended that..."
+- Skips: "This paper presents", "We propose", "In conclusion"
+
+❌ **Marketing Hype:**
+- Never: "Revolutionary", "game-changing", "amazing", "incredible"
+- Avoids: Exclamation points (except in warnings)
+- Skips: Superlatives without evidence
+
+❌ **Apologetic/Uncertain:**
+- Never: "I think maybe you could possibly..."
+- Avoids: "Sorry for the complexity"
+- Skips: Unnecessary hedging
+
+❌ **Condescending:**
+- Never: "Obviously", "clearly", "simply", "just" (dismissive usage)
+- Avoids: "Even beginners know"
+- Skips: "This is trivial"
+
+❌ **Overly Casual:**
+- Never: "gonna", "wanna", "yeah"
+- Avoids: Excessive exclamation points
+- Skips: Internet slang or memes
+
+❌ **Excessive Formality:**
+- Never: "One must ensure", "It is imperative that"
+- Avoids: Completely eliminating contractions
+- Skips: Latin phrases (except common tech terms like "e.g.")
+```
+
+### 8. Generate extracted-tone-patterns.md Document
+
+Compile analysis into structured document:
+
+**Document Structure:**
+
+```markdown
+# Extracted Tone Patterns: [Book Title]
+
+## Book Context
+
+- **Title:** [Book title and edition]
+- **Author:** [Author name]
+- **Publisher:** [Publisher]
+- **Edition:** [1st/2nd/3rd]
+- **Publication Date:** [Year]
+- **Chapters Analyzed:** [List chapters used for extraction]
+- **Analysis Date:** [Date]
+- **Extracted By:** [Your name]
+
+## Voice Profile
+
+### Perspective
+[First/second/third person patterns]
+
+### Active vs. Passive Voice
+[Ratio, patterns, when each is used]
+
+### Formality Level
+**Level [1-5]: [Description]**
+[Evidence, examples, metrics]
+
+## Common Phrases and Patterns
+
+### Chapter Introductions
+[Patterns with examples]
+
+### Section Transitions
+[Transition phrases extracted]
+
+### Chapter Conclusions
+[Conclusion patterns]
+
+### Technical Explanations
+[Explanation structure patterns]
+
+## Code Comment Style
+
+### Comment Density
+[Average comments per code lines]
+
+### Comment Patterns
+[Examples of actual comment styles]
+
+### Comment Tone
+[Formality, characteristics]
+
+## Formality Indicators
+
+### Contractions
+[Frequency, which ones used, which avoided]
+
+### Vocabulary
+[Technical depth, complexity, style]
+
+### Sentence Structure
+[Length, complexity, variety]
+
+## Author Personality Markers
+
+### Humor and Personality
+[Examples, frequency, style]
+
+### Encouragement Approach
+[How author motivates readers]
+
+### Authority and Directness
+[How author provides guidance]
+
+## Excluded Patterns (Anti-Patterns)
+
+### What Author Avoids
+[List of excluded tones with examples]
+
+## Usage Guidance for New Content
+
+### When Writing New Chapters
+[How to apply these patterns]
+
+### Matching This Tone
+[Specific guidance for consistency]
+
+### Common Pitfalls to Avoid
+[What would break tone consistency]
+
+## Extracted Examples for Reference
+
+### Example 1: Typical Chapter Introduction
+[Full example]
+
+### Example 2: Code with Comments
+[Full example with commentary]
+
+### Example 3: Technical Explanation
+[Full example]
+
+### Example 4: Chapter Conclusion
+[Full example]
+
+## Version History
+
+| Date | Analyst | Chapters Added | Notes |
+|------|---------|----------------|-------|
+| [Date] | [Name] | [Chapters] | Initial extraction |
+```
+
+**Save Location:**
+
+Save as `extracted-tone-patterns.md` in project documentation directory (typically `docs/` or `manuscript/planning/`)
+
+### 9. Validate Extraction Quality
+
+Ensure patterns are actionable and accurate:
+
+**Quality Checks:**
+
+- [ ] Patterns based on minimum 3 chapters (preferably 5+)
+- [ ] Patterns are specific, not generic ("uses 'Let's' frequently" not "friendly tone")
+- [ ] Examples provided for each pattern (real excerpts from book)
+- [ ] Formality level quantified with evidence (contraction count, sentence length)
+- [ ] Voice characteristics clearly defined (not vague "conversational")
+- [ ] Code comment examples included (minimum 3 different styles)
+- [ ] Anti-patterns documented (what to avoid as important as what to include)
+- [ ] Extracted passages can serve as "write like THIS" models
+
+**Validation Test:**
+
+Can you write a new paragraph on a technical topic using ONLY the guidance in extracted-tone-patterns.md? If not, patterns aren't specific enough.
+
+## Success Criteria
+
+✅ **Extraction is complete when:**
+
+- Minimum 3-5 chapters analyzed (more is better)
+- extracted-tone-patterns.md document generated
+- Voice characteristics clearly defined (perspective, active/passive, formality)
+- Minimum 10 phrase patterns extracted with examples
+- Code comment style documented with examples
+- Formality level quantified (contraction count, vocabulary analysis)
+- Author personality markers identified (humor, encouragement, directness)
+- Minimum 5 anti-patterns documented (excluded tones)
+- Real book excerpts provided as reference examples
+- Patterns are specific and actionable (not vague)
+
+✅ **Quality indicators:**
+
+- Another writer could match this tone using this document
+- Patterns reflect book's actual voice, not analyst's interpretation
+- Evidence supports each pattern (examples, metrics)
+- Anti-patterns prevent common mismatches
+
+## Integration Points
+
+**Output To:**
+- **apply-tone-patterns.md** - Uses extracted patterns to guide new chapter writing
+- **copy-edit-chapter.md** - Validates new content against extracted patterns
+- **tone-consistency-checklist.md** - Uses patterns as validation reference
+
+**Complementary With:**
+- **analyze-existing-book.md** - Extracts structure and technical patterns (not tone)
+- Together provide complete brownfield book analysis
+
+## Important Notes
+
+**Accuracy Requires Multiple Chapters:**
+- Single chapter may have anomalies or one-off experiments
+- 3 chapters minimum, 5+ ideal for reliable patterns
+- Include chapters from different book sections (early, middle, late)
+
+**Avoid Over-Interpretation:**
+- Extract what's actually there, not what you think should be there
+- If author rarely uses humor, document that (don't force humor into patterns)
+- Patterns should be descriptive, not prescriptive improvements
+
+**Edition Updates:**
+- Extract from CURRENT edition (not outdated versions)
+- If tone has evolved across editions, note that explicitly
+- New edition may intentionally refine tone (document changes)
+
+**Publisher Context:**
+- Publisher may have influenced original tone (O'Reilly, Manning, PacktPub)
+- If staying with same publisher, extracted patterns likely align with expectations
+- If changing publishers, may need to adjust some patterns
+
+**Complementary to define-book-tone.md:**
+- Brownfield (extract-tone-patterns.md): Analyze existing → maintain consistency
+- Greenfield (define-book-tone.md): Define from scratch → establish new voice
+- Both create guidance documents for consistent writing
+
+## Related Tasks
+
+- **apply-tone-patterns.md** - Apply extracted patterns to new content
+- **define-book-tone.md** - Greenfield alternative (new books)
+- **analyze-existing-book.md** - Extracts structure/technical patterns (complementary)
+- **copy-edit-chapter.md** - Validates tone consistency
+
+## Related Checklists
+
+- **tone-consistency-checklist.md** - Validates extracted patterns applied correctly
+==================== END: .bmad-technical-writing/tasks/extract-tone-patterns.md ====================
+
+==================== START: .bmad-technical-writing/tasks/apply-tone-patterns.md ====================
+<!-- Powered by BMAD™ Core -->
+
+# Apply Tone Patterns (Brownfield)
+
+---
+
+task:
+  id: apply-tone-patterns
+  name: Apply Extracted Tone Patterns to New Content
+  description: Apply previously extracted tone patterns to new chapters or updated sections in existing books to maintain consistency
+  persona_default: tutorial-architect
+  inputs:
+    - extracted-tone-patterns.md (from extract-tone-patterns task)
+    - new-chapter-draft (or updated section)
+  steps:
+    - Load extracted-tone-patterns.md
+    - Review tone profile and key patterns
+    - Load new/updated chapter draft
+    - Validate voice characteristics match patterns
+    - Check formality consistency
+    - Apply common phrase patterns to transitions/introductions
+    - Align code comment style with patterns
+    - Apply personality markers appropriately
+    - Verify no anti-patterns present
+    - Document tone adjustments made
+  output: Tone-aligned chapter draft
+  use_case: brownfield
+
+---
+
+## Purpose
+
+Apply tone and voice patterns extracted from existing book chapters to new content (2nd edition chapters, added sections, updated examples) to ensure consistency with the established book voice. This maintains reader experience across editions and prevents jarring tone shifts between original and new content.
+
+## When to Use
+
+**Use this task when:**
+
+- Writing new chapters for 2nd/3rd/4th edition
+- Adding sections to existing chapters in updated edition
+- Updating code examples while maintaining original commentary style
+- Multiple authors contributing to edition update (need consistency)
+- Replacing outdated content with new material (same tone)
+- Expanding book with bonus chapters matching original voice
+
+**Use during:**
+
+- Initial chapter drafting (with expand-outline-to-draft task)
+- Copy editing phase (with copy-edit-chapter task)
+- Technical review corrections (maintaining tone while fixing technical issues)
+
+**Do NOT use for:**
+
+- New books from scratch (use define-book-tone.md instead)
+- Books where you intentionally want to CHANGE tone for new edition
+- Minor typo fixes or technical corrections (tone already correct)
+
+## Prerequisites
+
+Before starting this task:
+
+- **extracted-tone-patterns.md exists** - Run extract-tone-patterns.md task first if not available
+- **New content drafted** - Have initial draft of new chapter/section
+- **Patterns are current** - Extracted patterns reflect most recent edition
+- **Authority to modify** - You have permission to edit the draft
+
+## Workflow Steps
+
+### 1. Load and Review Extracted Tone Patterns
+
+**Load extracted-tone-patterns.md:**
+
+Read the complete tone patterns document before making any changes.
+
+**Key Sections to Internalize:**
+
+1. **Voice Profile** - Perspective (first/second/third person), active/passive ratios
+2. **Formality Level** - Level 1-5, contraction usage, vocabulary complexity
+3. **Common Phrases** - Introduction patterns, transitions, conclusions
+4. **Code Comment Style** - Density, tone, purpose
+5. **Author Personality Markers** - Humor style, encouragement approach, directness
+6. **Anti-Patterns** - What to avoid
+
+**Create Application Checklist:**
+
+Based on extracted patterns, identify what to check:
+
+```markdown
+**My Application Checklist for This Chapter:**
+
+Voice:
+- [ ] Use second person ("You'll implement...")
+- [ ] ~85% active voice, passive only for system actions
+- [ ] No first person singular ("I think")
+
+Formality:
+- [ ] Level 3 (Professional/Conversational)
+- [ ] ~13 contractions per 1000 words
+- [ ] Use "Let's" for collaborative actions
+
+Phrases:
+- [ ] Chapter intro: "In this chapter, you'll [action]. By the end, you'll [outcome]."
+- [ ] Theory to practice: "Let's put this into practice"
+- [ ] Transitions: "Building on this..."
+
+Code Comments:
+- [ ] 1 comment per 3-4 lines
+- [ ] Explain "why", not "what" (unless syntax unusual)
+- [ ] Match Level 3 formality
+
+Personality:
+- [ ] Light technical humor (1-2 instances per chapter)
+- [ ] Matter-of-fact encouragement at milestones
+- [ ] Share real-world experience
+
+Avoid:
+- [ ] No "Obviously", "clearly", "simply"
+- [ ] No marketing hype or superlatives
+- [ ] No excessive formality or academic voice
+```
+
+### 2. Read New Draft for Tone Assessment
+
+**First Read - Tone Only:**
+
+Read your new draft IGNORING technical accuracy. Focus solely on tone:
+
+- Does this sound like the same author/book?
+- What formality level does this feel like?
+- Are contractions used similarly?
+- Do transitions match extracted patterns?
+- Do code comments sound consistent?
+
+**Identify Tone Mismatches:**
+
+Document specific sections where tone doesn't match patterns:
+
+```markdown
+**Tone Mismatches Found:**
+
+Section: "Understanding Service Mesh" (Lines 45-67)
+Issue: Formality Level 5 (too formal)
+Evidence: "One must configure the service mesh prior to deployment" (no contractions, passive voice)
+Pattern: Should be Level 3: "You'll need to configure the service mesh before deployment"
+
+Section: Code Example (Lines 120-145)
+Issue: Code comments too terse
+Evidence: Only 2 comments for 25 lines of code
+Pattern: Should have ~8 comments (1 per 3-4 lines)
+
+Section: Chapter Conclusion (Lines 450-470)
+Issue: Missing encouragement pattern
+Evidence: Just summarizes topics, no forward-looking statement
+Pattern: Should end with "You now have [skill]. In the next chapter, we'll [future topic]."
+```
+
+### 3. Align Voice Characteristics
+
+**Perspective Consistency:**
+
+Ensure pronouns match extracted patterns:
+
+**Example - Correcting Perspective:**
+
+```markdown
+**Original Draft (Mixed Perspective):**
+"One should configure the authentication service. You'll need to specify the credentials. The developer implements token validation."
+
+**Pattern:** Second person throughout
+
+**Corrected:**
+"You'll configure the authentication service. You'll need to specify the credentials. You'll implement token validation."
+```
+
+**Active vs. Passive Voice:**
+
+Adjust voice construction to match pattern ratios:
+
+**Example - Activating Passive Constructions:**
+
+```markdown
+**Original Draft (Excessive Passive):**
+"The configuration file should be edited. The service is then deployed by Kubernetes. The logs can be viewed using kubectl."
+
+**Pattern:** ~85% active voice
+
+**Corrected:**
+"Edit the configuration file. Kubernetes then deploys the service. View the logs using kubectl."
+```
+
+### 4. Adjust Formality Level
+
+**Contraction Alignment:**
+
+Match contraction frequency to extracted patterns:
+
+**Example - Level 3 Pattern (Moderate Contractions):**
+
+```markdown
+**Original Draft (Level 5 - No Contractions):**
+"We will examine the authentication flow. You will implement token validation. Do not store credentials in code."
+
+**Pattern:** Level 3 with ~13 contractions per 1000 words
+
+**Corrected:**
+"We'll examine the authentication flow. You'll implement token validation. Don't store credentials in code."
+```
+
+**Vocabulary Adjustment:**
+
+Match technical vocabulary style:
+
+```markdown
+**Original Draft (Overly Academic):**
+"The subsequent section delineates the authentication methodology pursuant to industry specifications."
+
+**Pattern:** Technical but accessible vocabulary
+
+**Corrected:**
+"The next section explains authentication methods following industry standards."
+```
+
+**Sentence Complexity:**
+
+Adjust sentence length to match patterns:
+
+```markdown
+**Pattern:** Average 16-18 words per sentence
+
+**Original Draft (Too Complex - 35 words):**
+"The authentication service, which we'll configure in this section using environment variables for security, connects to the database through a connection pool that maintains persistent connections for performance optimization."
+
+**Corrected (Breaking into shorter sentences):**
+"You'll configure the authentication service in this section using environment variables for security. The service connects to the database through a connection pool. This maintains persistent connections for better performance."
+```
+
+### 5. Apply Common Phrase Patterns
+
+**Chapter Introductions:**
+
+Match extracted introduction patterns:
+
+```markdown
+**Extracted Pattern:**
+"In this chapter, you'll [action]. By the end, you'll [concrete outcome]."
+
+**Original Draft:**
+"This chapter discusses service mesh architecture and its implementation."
+
+**Corrected (Applying Pattern):**
+"In this chapter, you'll implement a service mesh for your application. By the end, you'll have secure service-to-service communication with traffic management and observability."
+```
+
+**Section Transitions:**
+
+Use extracted transition phrases:
+
+```markdown
+**Extracted Patterns:**
+- "Building on this..."
+- "Now that you understand [X], let's explore [Y]"
+- "Let's put this into practice"
+
+**Original Draft:**
+"The previous section covered configuration. The following section addresses deployment."
+
+**Corrected (Applying Patterns):**
+"Now that you understand configuration, let's explore deployment strategies."
+```
+
+**Technical Explanations:**
+
+Follow extracted explanation structure:
+
+```markdown
+**Extracted Pattern:**
+1. State concept
+2. Explain why it matters
+3. Provide concrete example
+4. Show code/config
+5. Explain key parts
+6. Common pitfall
+
+**Apply to New Content:**
+
+[Concept] A service mesh provides secure communication between microservices.
+
+[Why it matters] Without a service mesh, you'd need to implement security and observability in every service, leading to duplicated code and inconsistencies.
+
+[Concrete example] Here's a service mesh configuration for our authentication service:
+
+[Code/config]
+```yaml
+apiVersion: v1
+kind: ServiceMesh
+spec:
+  mtls: enabled  # Mutual TLS for secure communication
+  tracing: jaeger  # Distributed tracing
+```
+
+[Explain key parts] The `mtls: enabled` setting ensures all service communication is encrypted. The `tracing: jaeger` setting enables request tracing across services.
+
+[Common pitfall] Don't enable service mesh after deploying services—install the mesh first, then deploy services into it.
+```
+
+### 6. Align Code Comment Style
+
+**Match Comment Density:**
+
+Adjust to match pattern (e.g., 1 comment per 3-4 lines):
+
+```markdown
+**Original Draft (Too Few Comments):**
+```python
+def authenticate(username, password):
+    user = db.query(User).filter(User.username == username).first()
+    if user and verify_password(password, user.hashed_password):
+        token = create_jwt(user.id)
+        return token
+    return None
+```
+
+**Pattern:** 1 comment per 3-4 lines
+
+**Corrected (Applying Pattern):**
+```python
+def authenticate(username, password):
+    # Query database for user with matching username
+    user = db.query(User).filter(User.username == username).first()
+
+    # Verify password hash matches stored hash
+    if user and verify_password(password, user.hashed_password):
+        # Generate JWT token with user ID as payload
+        token = create_jwt(user.id)
+        return token
+
+    # Return None if authentication fails
+    return None
+```
+```
+
+**Match Comment Tone:**
+
+Ensure comments match prose formality:
+
+```markdown
+**Original Draft (Comments too formal for Level 3 prose):**
+```javascript
+// Instantiate the authentication service object utilizing environment configuration
+const auth = new AuthService(process.env);
+```
+
+**Pattern:** Level 3 formality in comments
+
+**Corrected:**
+```javascript
+// Set up auth service with environment variables
+const auth = new AuthService(process.env);
+```
+```
+
+### 7. Apply Author Personality Markers
+
+**Humor Integration (if pattern includes it):**
+
+Add light humor matching extracted style:
+
+```markdown
+**Extracted Humor Pattern:**
+- Frequency: 1-2 instances per chapter
+- Style: Light technical humor, self-deprecating
+- Example: "After a 3am debugging session, you'll appreciate this logging configuration."
+
+**Application to New Content:**
+"Service mesh configuration has 47 different settings. Yes, 47. After you've configured a few, you'll appreciate tools that generate these files automatically."
+```
+
+**Encouragement Markers:**
+
+Apply encouragement at similar points as original:
+
+```markdown
+**Extracted Encouragement Pattern:**
+- Frequency: At chapter milestones (mid-chapter, end-of-chapter)
+- Style: Matter-of-fact, capability-building
+- Example: "You've now deployed a production-ready service."
+
+**Application:**
+"You've configured service mesh security and observability. This is exactly what production environments require—you're ready to deploy confidently."
+```
+
+**Experience Sharing:**
+
+Add real-world context matching author's approach:
+
+```markdown
+**Extracted Pattern:**
+- References production incidents, debugging sessions
+- Pragmatic: "In theory X, in practice Y"
+- Example: "I've deployed hundreds of applications..."
+
+**Application:**
+"The documentation suggests configuring all 47 settings. In practice, you'll use 8-10 settings for most applications. Start with the essential ones shown here, add others as needed."
+```
+
+### 8. Verify Anti-Patterns Avoided
+
+**Check Against Excluded Patterns:**
+
+Review new content against documented anti-patterns:
+
+```markdown
+**Extracted Anti-Patterns to Avoid:**
+- ❌ "Obviously", "clearly", "simply"
+- ❌ Marketing hype ("revolutionary", "game-changing")
+- ❌ Excessive formality ("One must ensure")
+- ❌ Apologetic language ("Sorry for the complexity")
+- ❌ Condescending ("Even beginners know")
+
+**Scan New Draft:**
+
+Search for: "obvious", "clear", "simple", "amazing", "must ensure", "sorry", "even"
+
+**Found Violations:**
+Line 67: "Obviously, you'll need to configure security."
+Line 145: "This revolutionary approach changes everything."
+
+**Corrected:**
+Line 67: "You'll need to configure security first."
+Line 145: "This approach simplifies service communication significantly."
+```
+
+### 9. Validate Tone Consistency
+
+**Execute tone-consistency-checklist.md:**
+
+Run the full tone consistency checklist on updated draft:
+
+- Load extracted-tone-patterns.md (as reference)
+- Execute tone-consistency-checklist.md
+- Document any remaining violations
+- Apply final corrections
+
+**Compare to Original Chapters:**
+
+Side-by-side comparison:
+
+```markdown
+**Comparison: Original Chapter 3 vs. New Chapter 15**
+
+Voice Perspective:
+- Original: Second person throughout ✓
+- New: Second person throughout ✓
+
+Formality Level:
+- Original: Level 3, 14 contractions/1000 words
+- New: Level 3, 13 contractions/1000 words ✓
+
+Chapter Introduction:
+- Original: "In this chapter, you'll deploy..." pattern
+- New: "In this chapter, you'll implement..." pattern ✓
+
+Code Comment Density:
+- Original: 1 comment per 3.5 lines
+- New: 1 comment per 3.2 lines ✓
+
+Personality Markers:
+- Original: 2 humor instances, matter-of-fact encouragement
+- New: 1 humor instance, matter-of-fact encouragement ✓
+
+**Assessment:** Tone consistency achieved. New chapter matches original voice.
+```
+
+### 10. Document Tone Adjustments
+
+**Create Tone Adjustment Log:**
+
+Record changes made for transparency:
+
+```markdown
+# Tone Adjustments: Chapter 15 - Service Mesh Implementation
+
+**Date:** 2024-01-15
+**Editor:** [Your Name]
+**Reference:** extracted-tone-patterns.md
+
+## Changes Made
+
+### Formality Level Corrections
+- Removed 15 instances of formal constructions ("one must", "it is imperative")
+- Added 18 contractions to reach Level 3 target (13/1000 words)
+- Simplified vocabulary: "utilize" → "use", "facilitate" → "help"
+
+### Voice Alignment
+- Changed 8 passive constructions to active voice
+- Unified perspective: removed 3 instances of third person, changed to second person
+- Final ratio: 87% active voice (target: 85%) ✓
+
+### Phrase Pattern Application
+- Applied standard chapter intro pattern (line 1-15)
+- Added 12 extracted transition phrases
+- Updated chapter conclusion to match pattern (lines 450-465)
+
+### Code Comment Updates
+- Added 14 comments to meet density target (1 per 3-4 lines)
+- Revised 6 comments to match Level 3 formality
+- Aligned comment style with extracted patterns
+
+### Personality Markers
+- Added 1 light humor instance (line 234)
+- Added matter-of-fact encouragement at milestone (line 280)
+- Added experience-based pragmatic note (line 367)
+
+### Anti-Pattern Removals
+- Removed "obviously" (3 instances)
+- Removed "simply" in condescending context (2 instances)
+- Removed marketing language: "revolutionary" (1 instance)
+
+## Validation
+
+- [x] tone-consistency-checklist.md executed
+- [x] Compared to original Chapter 3 (reference)
+- [x] All 5 tone characteristics present
+- [x] Formality level matches (Level 3)
+- [x] No anti-patterns remain
+
+## Result
+
+Chapter 15 now matches established book voice. Reader experience consistent with original edition.
+```
+
+## Success Criteria
+
+✅ **Tone application is complete when:**
+
+- extracted-tone-patterns.md reviewed and internalized
+- New draft analyzed for tone mismatches
+- Voice characteristics aligned (perspective, active/passive)
+- Formality level matches patterns (contractions, vocabulary, sentence complexity)
+- Common phrase patterns applied (introductions, transitions, conclusions)
+- Code comment style matches density and tone
+- Author personality markers present (humor, encouragement, experience)
+- All anti-patterns removed
+- tone-consistency-checklist.md executed and passed
+- Tone adjustment log documented
+
+✅ **Quality indicators:**
+
+- New content sounds like original author
+- No jarring tone shifts between original and new chapters
+- Readers can't distinguish which chapters are original vs. new edition
+- Formality level quantifiably matches (contraction count, sentence length)
+- Code comments indistinguishable from original book's style
+
+## Integration Points
+
+**Input From:**
+- **extract-tone-patterns.md** - Provides tone patterns to apply
+- **New chapter draft** - Content needing tone alignment
+
+**Output To:**
+- **copy-edit-chapter.md** - Further refinement after tone application
+- **Tone-aligned draft** - Ready for technical review
+
+**Use With:**
+- **expand-outline-to-draft.md** - Apply patterns during initial drafting
+- **copy-edit-chapter.md** - Apply patterns during editing phase
+- **tone-consistency-checklist.md** - Validate pattern application
+
+## Important Notes
+
+**Preserve Technical Accuracy:**
+- Tone alignment must NOT change technical meaning
+- If technical correction requires different phrasing, find tone-aligned alternative
+- Technical accuracy always trumps tone perfection
+
+**Maintain Author Authenticity:**
+- Patterns guide consistency, not robotic compliance
+- Natural variation is acceptable (contraction count can vary ±2-3 per 1000 words)
+- Don't force humor if it doesn't fit the content naturally
+
+**When Patterns Don't Fit:**
+- Some content types may need different tone (reference appendix vs. tutorial chapter)
+- Document intentional deviations with rationale
+- Ensure deviations are justified, not lazy
+
+**Multiple Authors:**
+- All authors must use same extracted-tone-patterns.md
+- Establish "tone reviewer" role to catch inconsistencies
+- Conduct cross-author tone review before submission
+
+**Edition-Specific Considerations:**
+- If 10+ years since original, slight tone evolution may be appropriate
+- Modern technical writing tends more casual—may need slight formality adjustment
+- Document and justify any intentional pattern deviations
+
+## Common Pitfalls
+
+**Over-Correction:**
+❌ Don't make every sentence identical length
+❌ Don't force contractions where they sound unnatural
+❌ Don't add humor where it doesn't fit content
+
+**Under-Correction:**
+❌ Don't skip code comment alignment (often forgotten)
+❌ Don't ignore formality drift ("just a few formal sentences won't matter"—they will)
+❌ Don't assume "close enough" for personality markers (readers notice absence)
+
+**Technical vs. Tone Conflicts:**
+❌ Don't sacrifice clarity for tone matching
+❌ Don't use extracted phrases that don't fit new technical content
+❌ Don't force patterns that make technical explanation worse
+
+## Before/After Examples
+
+**Example 1: Complete Section Transformation**
+
+**Before (Mismatched Tone):**
+```markdown
+## Understanding Service Mesh Architecture
+
+The implementation of a service mesh necessitates careful consideration of architectural paradigms. One must ensure that the control plane has been properly configured prior to deploying the data plane components. The architecture comprises several key elements which facilitate communication.
+
+Configure the service mesh:
+```yaml
+apiVersion: v1
+kind: ServiceMesh
+spec:
+  mtls: enabled
+  tracing: jaeger
+```
+
+The configuration file delineates security and observability parameters.
+```
+
+**After (Applying Extracted Patterns - Level 3, Practical, Encouraging):**
+```markdown
+## Understanding Service Mesh Architecture
+
+Let's implement a service mesh for your microservices application. You'll start by configuring the control plane, then deploy the data plane components. This architecture has three key elements that enable secure, observable service communication.
+
+Configure your service mesh:
+```yaml
+apiVersion: v1
+kind: ServiceMesh
+spec:
+  mtls: enabled  # Encrypts all service-to-service traffic
+  tracing: jaeger  # Enables distributed request tracing
+```
+
+The `mtls` setting enables mutual TLS between services. The `tracing` setting connects to Jaeger for observability. You'll see these in action when you deploy services in the next section.
+```
+
+**Changes Applied:**
+- Perspective: "One must" → "You'll" (second person)
+- Formality: "necessitates" → "Let's implement", "delineates" → simpler language
+- Active voice: "has been configured" → "configuring"
+- Code comments: Added inline explanations
+- Personality: Added forward-looking encouragement ("You'll see these in action...")
+
+## Related Tasks
+
+- **extract-tone-patterns.md** - Creates patterns document this task uses
+- **define-book-tone.md** - Greenfield alternative (new books)
+- **expand-outline-to-draft.md** - Use patterns during initial drafting
+- **copy-edit-chapter.md** - Further refinement after tone application
+
+## Related Checklists
+
+- **tone-consistency-checklist.md** - Validates pattern application quality
+
+## Related Knowledge Base
+
+- **writing-voice-guides.md** - General tone profile examples for reference
+==================== END: .bmad-technical-writing/tasks/apply-tone-patterns.md ====================
+
 ==================== START: .bmad-technical-writing/checklists/packtpub-submission-checklist.md ====================
 <!-- Powered by BMAD™ Core -->
 
@@ -4084,6 +5871,847 @@ Use this checklist to ensure technical content is accessible to all readers incl
 - [ ] User choice and customization supported
 - [ ] Inclusive examples and scenarios used
 ==================== END: .bmad-technical-writing/checklists/accessibility-checklist.md ====================
+
+==================== START: .bmad-technical-writing/checklists/tone-consistency-checklist.md ====================
+# Tone Consistency Checklist
+
+Use this checklist to validate that chapter content maintains consistent tone and voice throughout, aligning with tone-specification.md or extracted-tone-patterns.md. Execute during copy editing or quality assurance phases.
+
+## Prerequisites
+
+Before using this checklist:
+
+- [ ] tone-specification.md OR extracted-tone-patterns.md is available
+- [ ] Chapter draft is complete
+- [ ] You have read the tone specification/patterns document
+
+## Voice Consistency
+
+- [ ] Author voice is preserved throughout chapter (personality evident)
+- [ ] Perspective (first/second/third person) is consistent across all sections
+- [ ] Active vs. passive voice usage matches tone specification patterns
+- [ ] Voice matches tone-specification.md personality characteristics
+- [ ] No unintentional voice shifts between sections
+
+**Common Violations:**
+- Formal academic voice in introduction, then suddenly casual in examples
+- Third person in explanations, switching to first person in conclusions
+- Passive construction overuse contradicting "direct" tone characteristic
+
+## Formality Level Consistency
+
+- [ ] Formality level (1-5 scale) consistent with tone-specification.md
+- [ ] Contractions usage matches specification (frequent/moderate/rare/never)
+- [ ] Vocabulary appropriate for specified formality level
+- [ ] Sentence structures match formality level (complex vs. simple)
+- [ ] Formality level matches target audience expectations
+- [ ] No formality drift mid-chapter or between sections
+
+**Examples of Formality Inconsistency:**
+
+**Violation (Level 3 spec, but drifts to Level 5):**
+> "Let's deploy your application to AWS. (Level 3)
+> Herein we shall explicate the deployment paradigm pursuant to infrastructure specifications. (Level 5 drift)"
+
+**Correct (Consistent Level 3):**
+> "Let's deploy your application to AWS. We'll use Terraform to define our infrastructure and automate the deployment process."
+
+## Publisher Alignment
+
+- [ ] Tone meets publisher-specific requirements (if applicable)
+- [ ] **PacktPub:** Tone is "conversational but professional" (Level 2-3)
+- [ ] **O'Reilly:** Tone demonstrates "authoritative technical precision" (Level 3-4)
+- [ ] **Manning:** "Author voice with personality" is evident (Level 2-3)
+- [ ] **Self-Publishing:** Tone matches author's chosen approach consistently
+- [ ] No generic corporate voice replacing authentic author personality
+
+**Publisher Misalignment Example:**
+
+**Manning book using generic corporate voice (WRONG):**
+> "The deployment process should be initiated according to established protocols."
+
+**Manning book with author personality (CORRECT):**
+> "I've deployed hundreds of apps this way, and here's what actually works in production..."
+
+## Tone Characteristics Application
+
+- [ ] All 5 tone characteristics from specification are demonstrated
+- [ ] "Encouraging" characteristic (if specified) is evident without being patronizing
+- [ ] "Authoritative" characteristic (if specified) is present without arrogance
+- [ ] "Practical" characteristic (if specified) shows real-world application
+- [ ] "Conversational" characteristic (if specified) maintains professionalism
+- [ ] "Direct" characteristic (if specified) avoids unnecessary hedging
+- [ ] Tone characteristics applied consistently across entire chapter
+
+**Characteristic Application Examples:**
+
+**Encouraging (when specified):**
+> ✓ "You've tackled the basics. Now you're ready for production deployment."
+> ✗ "Even a beginner could understand this simple concept." (condescending)
+
+**Authoritative (when specified):**
+> ✓ "Use environment variables for secrets. Hard-coding credentials is a security vulnerability."
+> ✗ "I think maybe you should probably consider possibly using environment variables?" (weak)
+
+## Code Comment Style Consistency
+
+- [ ] Code comments match overall chapter tone
+- [ ] Comment style matches tone-specification.md code examples
+- [ ] Comment density consistent across all code blocks
+- [ ] Comment formality matches prose formality
+- [ ] Comments explain "why" or "what" as specified in tone specification
+- [ ] No tone disconnect between prose and code comments
+
+**Code Comment Tone Examples:**
+
+**Formal Tone (Level 4) - Correct:**
+```javascript
+// Validate JWT signature to ensure token integrity
+const isValid = verifySignature(token, secret);
+```
+
+**Formal Tone (Level 4) - WRONG (too casual):**
+```javascript
+// Let's check if this token is legit!
+const isValid = verifySignature(token, secret);
+```
+
+**Conversational Tone (Level 2) - Correct:**
+```javascript
+// Check if the token's been tampered with
+const isValid = verifySignature(token, secret);
+```
+
+## Transition and Flow Consistency
+
+- [ ] Transitions between sections maintain tone
+- [ ] Transition phrases match tone-specification.md patterns
+- [ ] Chapter introductions follow specified opening style
+- [ ] Chapter conclusions follow specified closing style
+- [ ] Section-to-section handoffs maintain consistent voice
+
+**Transition Tone Examples:**
+
+**Professional/Conversational (Level 3):**
+> "Now that you understand JWT structure, let's explore how to securely sign and verify tokens."
+
+**Formal (Level 4):**
+> "Having examined JWT structure, we now turn to signature creation and verification."
+
+**Casual (Level 2):**
+> "Okay, you've got JWT structure down. Time to tackle signing and verifying these tokens!"
+
+## Learning Support Tone
+
+- [ ] Explanations support learning objectives without talking down
+- [ ] Encouragement appropriate for target audience skill level
+- [ ] Warnings and cautions match overall tone
+- [ ] Error handling explanations align with tone characteristics
+- [ ] Troubleshooting guidance maintains specified voice
+
+**Learning Support Examples:**
+
+**Encouraging without patronizing:**
+> ✓ "If you're seeing this error, don't worry—it's a common misconfiguration."
+> ✗ "Don't feel bad if you made this silly mistake! It happens to everyone!"
+
+**Direct but supportive:**
+> ✓ "This won't work in production. Use environment variables instead."
+> ✗ "Well, technically you could do this, but you probably shouldn't maybe..."
+
+## Terminology and Language Consistency
+
+- [ ] Technical terms used consistently (not alternating synonyms randomly)
+- [ ] Terminology choices match tone-specification.md preferences
+- [ ] Jargon level appropriate for target audience
+- [ ] Acronyms handled consistently (defined on first use, or assumed knowledge)
+- [ ] Industry-standard terms used per specification
+
+**Terminology Consistency Examples:**
+
+**Consistent:**
+> "Function" used throughout chapter for JavaScript functions
+
+**Inconsistent (WRONG):**
+> Alternating "function", "method", "routine", "procedure" for same concept
+
+## Metaphor and Analogy Usage
+
+- [ ] Metaphor frequency matches tone specification
+- [ ] Analogies appropriate for target audience
+- [ ] Metaphors don't undermine technical credibility
+- [ ] Analogy complexity matches formality level
+- [ ] No forced or confusing metaphors
+
+**Metaphor Tone Examples:**
+
+**Appropriate for casual tone:**
+> "Think of JWT like a concert wristband—it proves you paid to get in."
+
+**Too playful for formal technical book:**
+> "JWT is like a magical unicorn stamp of authentication wonderfulness!"
+
+## Excluded Tone Avoidance
+
+- [ ] No excluded tones from tone-specification.md present
+- [ ] No condescending language ("even beginners know", "obviously")
+- [ ] No overly aggressive prescriptiveness ("never", "always", "you must")
+- [ ] No apologetic or uncertain language (if authority is specified)
+- [ ] No marketing hype or exaggeration (if technical precision specified)
+- [ ] No generic corporate-speak (if personal voice specified)
+
+**Anti-Pattern Examples:**
+
+**Condescending (AVOID):**
+> "This should be obvious to anyone with basic programming knowledge."
+
+**Overly aggressive (AVOID if not specified):**
+> "You're doing it WRONG if you don't use framework X!"
+
+**Marketing hype (AVOID in technical books):**
+> "This AMAZING technique will REVOLUTIONIZE your coding!"
+
+## Chapter-Level Consistency
+
+- [ ] Introduction tone matches body tone
+- [ ] Code examples maintain consistent commentary style
+- [ ] Sidebars/callouts maintain tone
+- [ ] Exercises or challenges match tone
+- [ ] Summary/conclusion maintains tone
+- [ ] No tone fatigue (starting strong, ending weak)
+
+**Chapter Arc Consistency:**
+
+Check that tone doesn't:
+- Start formal, drift casual
+- Start encouraging, become dismissive
+- Start direct, become meandering
+- Start conversational, become academic
+
+## Multi-Author Projects (if applicable)
+
+- [ ] All authors follow same tone-specification.md
+- [ ] No detectable author switches based on tone changes
+- [ ] Consistent formality level across author contributions
+- [ ] Consistent voice characteristics across author sections
+- [ ] Tone guardian has reviewed for consistency
+
+## Tone Validation Against Specification
+
+- [ ] Direct comparison: Does paragraph X match example passage Y from spec?
+- [ ] Formality level spot-check: Sample 10 sentences—do they match Level N?
+- [ ] Characteristic demonstration: Are all 5 adjectives evident in chapter?
+- [ ] Code comment audit: Do 5 random code blocks match comment style spec?
+- [ ] Transition pattern check: Do transitions match specification patterns?
+
+## Before/After Examples (Tone Corrections)
+
+**Example 1: Formality Level Correction**
+
+**Original (Level 5, spec calls for Level 3):**
+> "One must ensure that the authentication mechanism functions properly prior to deployment."
+
+**Corrected (Level 3):**
+> "You'll need to verify your authentication works before deploying to production."
+
+---
+
+**Example 2: Voice Consistency Correction**
+
+**Original (Perspective shifts):**
+> "Let's examine JWT structure. One should note the three components. You'll implement this in Chapter 5."
+
+**Corrected (Consistent second person):**
+> "Let's examine JWT structure. You'll notice three components. You'll implement this in Chapter 5."
+
+---
+
+**Example 3: Tone Characteristic Application**
+
+**Original (Missing "practical" characteristic from spec):**
+> "JWTs can be used for authentication in theoretical scenarios."
+
+**Corrected (Demonstrates "practical"):**
+> "You'll use JWTs to authenticate API requests in your production application."
+
+---
+
+**Example 4: Code Comment Tone Alignment**
+
+**Original (Comment too formal for Level 2 prose):**
+> ```javascript
+> // Instantiate the authentication service object
+> const auth = new AuthService();
+> ```
+
+**Corrected (Comment matches Level 2 conversational tone):**
+> ```javascript
+> // Set up the auth service
+> const auth = new AuthService();
+> ```
+
+---
+
+**Example 5: Publisher Alignment Correction**
+
+**Original (Too formal for PacktPub "conversational but professional"):**
+> "The subsequent section delineates the authentication methodology."
+
+**Corrected (PacktPub-appropriate):**
+> "Let's look at how authentication works in the next section."
+
+## Red Flags (Immediate Attention Required)
+
+**Critical tone violations:**
+
+⚠️ **Multiple formality levels in same chapter** - Inconsistent reader experience
+⚠️ **Code comments completely different tone than prose** - Jarring disconnect
+⚠️ **Publisher misalignment** - May require rewrite before submission
+⚠️ **Condescending language** - Alienates readers, damages credibility
+⚠️ **No author personality** (when Manning or personality-driven tone specified) - Generic and unmemorable
+⚠️ **Tone drift across chapter** - Professional intro → sloppy conclusion indicates fatigue
+
+## Remediation Process
+
+If checklist reveals tone violations:
+
+1. **Identify violation category** (formality, voice, characteristics, etc.)
+2. **Locate all instances** throughout chapter
+3. **Review tone-specification.md** for correct approach
+4. **Apply corrections systematically** (don't fix randomly)
+5. **Verify corrections preserve author voice** (don't over-correct)
+6. **Re-run this checklist** after corrections
+7. **Document changes** in editorial notes
+
+## Usage Notes
+
+**When to use this checklist:**
+
+- During copy editing phase (after technical review complete)
+- Before submitting chapter to publisher
+- When adding new sections to existing chapters
+- For multi-author coordination reviews
+- When author suspects tone drift
+
+**How to use this checklist:**
+
+1. Load tone-specification.md OR extracted-tone-patterns.md
+2. Read chapter draft completely
+3. Check each category systematically
+4. Document violations with chapter section references
+5. Apply corrections referencing tone specification examples
+6. Verify corrections maintain author authenticity
+
+**Integration with other tasks:**
+
+- Use with **copy-edit-chapter.md** task (Step 9 enhancement)
+- Reference **tone-specification.md** (greenfield projects)
+- Reference **extracted-tone-patterns.md** (brownfield projects)
+- Execute via **execute-checklist.md** task
+
+## Acceptance Criteria
+
+This checklist is complete when:
+
+- [ ] All categories reviewed
+- [ ] Violations documented with specific examples
+- [ ] Corrections applied maintaining author voice
+- [ ] Tone aligns with tone-specification.md
+- [ ] No detectable tone inconsistencies remain
+- [ ] Chapter reads with unified, consistent voice throughout
+==================== END: .bmad-technical-writing/checklists/tone-consistency-checklist.md ====================
+
+==================== START: .bmad-technical-writing/checklists/humanization-checklist.md ====================
+# Humanization Checklist
+
+Use this checklist to validate that AI pattern removal was successful and chapter content reads as authentically human-written. This checklist validates REMOVAL of AI patterns (not detection—that's generative-ai-compliance-checklist.md).
+
+**Purpose**: Confirm humanization task effectiveness after executing humanize-ai-drafted-chapter.md
+
+**Distinction from Other Checklists**:
+- **generative-ai-compliance-checklist.md**: DETECTS AI patterns (use before humanization)
+- **humanization-checklist.md** (THIS): VALIDATES REMOVAL (use after humanization)
+- **tone-consistency-checklist.md**: Validates tone specification compliance (different concern)
+
+## Prerequisites
+
+Before using this checklist:
+
+- [ ] humanize-ai-drafted-chapter.md task has been executed
+- [ ] Baseline AI pattern detection report available (from generative-ai-compliance-checklist.md)
+- [ ] Access to ai-pattern-removal-guide.md for reference
+- [ ] Chapter draft with humanization changes applied
+
+## Scoring System
+
+**Calculation**: (Items Passed / Total Items) × 100 = Humanization Pass Rate
+
+**Thresholds**:
+- **≥80%**: PASS - Ready for technical review
+- **60-79%**: REVIEW - Some patterns remain, additional humanization recommended
+- **<60%**: FAIL - Significant AI patterns remain, rework required
+
+**AI Pattern Remaining Score**: Inverse of pass rate
+- Pass rate 90% = 10% AI patterns remaining (excellent)
+- Pass rate 80% = 20% AI patterns remaining (acceptable)
+- Pass rate 60% = 40% AI patterns remaining (needs work)
+
+**Target**: ≥80% pass rate (≤20% AI patterns remaining) for humanization step
+**Copy-Edit Target**: ≥95% pass rate (≤5% AI patterns remaining) for final publication
+
+---
+
+## 1. Word Choice Validation
+
+Validates AI vocabulary patterns have been removed.
+
+### 1.1 AI Vocabulary Elimination
+
+- [ ] **No overuse of "sophisticated"** (maximum 2 occurrences in entire chapter, 0-1 preferred)
+- [ ] **No overuse of "delve"** (maximum 1 occurrence, 0 preferred)
+- [ ] **No overuse of "leverage"** (maximum 2 occurrences, 0-1 preferred)
+- [ ] **No overuse of "robust"** (maximum 2 occurrences, context-appropriate only)
+- [ ] **No overuse of "seamless"** (maximum 2 occurrences, 0-1 preferred)
+- [ ] **Other AI words minimized** (groundbreaking, revolutionary, cutting-edge, compelling, profound, meticulous, paradigm, synergy each ≤1)
+
+**Validation Method**: Search chapter for each word, count occurrences, verify ≤ threshold
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 3 (Remove AI Vocabulary Patterns)
+
+### 1.2 Polysyllabic Simplification
+
+- [ ] **Simple words preferred over complex** (use/utilize, help/facilitate, show/demonstrate ratio favors simple)
+- [ ] **Technical precision maintained** (complex words used only when technically necessary)
+- [ ] **Natural word choices** (words you'd use in conversation with colleague)
+
+**Example Check**:
+- ✓ "use this pattern" not "utilize this methodology"
+- ✓ "help developers" not "facilitate developer enablement"
+- ✓ "improves performance" not "optimizes operational efficiency"
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 3
+
+### 1.3 Vocabulary Variation
+
+- [ ] **No single term repeated excessively** (check top 5 most common adjectives/verbs, none >5 occurrences)
+- [ ] **Synonym variation used** (not same descriptor repeatedly)
+- [ ] **Natural language diversity** (reads conversationally, not repetitively)
+
+**If Failed**: Expand vocabulary with varied but simple alternatives
+
+---
+
+## 2. Metaphor Quality
+
+Validates metaphor problems (overuse, nonsense, mixed) have been fixed.
+
+### 2.1 Metaphor Density
+
+- [ ] **Maximum 1-2 metaphors per major section** (not 4+ per paragraph)
+- [ ] **Metaphors distributed naturally** (not clustered in introduction)
+- [ ] **Overall metaphor count reasonable** (≤10 for typical chapter)
+
+**Validation Method**: Count metaphors per section, ensure ≤2 per section
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 4 (Fix Metaphor Problems)
+
+### 2.2 Metaphor Clarity
+
+- [ ] **No nonsensical metaphors** (all metaphors make logical sense)
+- [ ] **No mixed metaphors** (metaphors in same context are consistent)
+- [ ] **Metaphors enhance understanding** (each metaphor clarifies concept, not confuses)
+
+**Example Check**:
+- ✗ "Authentication tokens breathe life into security DNA" (nonsense)
+- ✓ "Authentication tokens work like temporary security badges" (clear)
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 4
+
+### 2.3 Metaphor Necessity
+
+- [ ] **Technical concepts clear without metaphors** (metaphor supplements, doesn't replace explanation)
+- [ ] **Metaphors add value** (each metaphor genuinely helps understanding)
+- [ ] **Can remove metaphors without losing clarity** (technical explanation stands alone)
+
+**If Failed**: Remove unnecessary metaphors or strengthen technical explanations
+
+---
+
+## 3. Sentence Rhythm
+
+Validates sentence structure uniformity has been broken.
+
+### 3.1 Sentence Length Variation
+
+- [ ] **Sentence lengths vary throughout chapter** (mix of short 5-10, medium 10-20, long 20-30+ words)
+- [ ] **No monotonous length patterns** (not all 15-word sentences)
+- [ ] **Strategic use of short sentences** (for emphasis, impact, clarity)
+
+**Validation Method**: Sample 3 random paragraphs, measure sentence lengths, verify variation
+
+**Example Check**:
+- ✗ All sentences: 15, 16, 14, 17, 15, 16 words (uniform)
+- ✓ Sentences: 8, 22, 12, 6, 19, 14 words (varied)
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 5 (Introduce Sentence Rhythm Variation)
+
+### 3.2 Sentence Structure Diversity
+
+- [ ] **Structures vary** (simple, compound, complex, occasional fragments)
+- [ ] **Not all subject-verb-object** (varied sentence openings and patterns)
+- [ ] **Natural rhythm when read aloud** (sounds conversational, not robotic)
+
+**Example Check**:
+- ✗ "You configure X. You define Y. You establish Z. You verify W." (repetitive)
+- ✓ "Configure X. Auth credentials go in Y. The connection pool needs Z—especially for production. Before proceeding, verify W." (varied)
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 5
+
+### 3.3 Reading Flow
+
+- [ ] **Natural rhythm** (mix of sentence lengths creates flow)
+- [ ] **Strategic pacing** (complex sentences for detail, short for emphasis)
+- [ ] **Reads smoothly aloud** (no tongue-twister patterns or monotony)
+
+**If Failed**: Read aloud, identify monotonous sections, vary structure
+
+---
+
+## 4. Voice Authenticity
+
+Validates personal perspective and author expertise are evident.
+
+### 4.1 Personal Perspective Present
+
+- [ ] **First-person usage throughout** (minimum 3-5 instances per major section)
+- [ ] **"I", "we", "my experience" present** (not entirely third-person)
+- [ ] **Personal pronouns natural** (not forced, sounds authentic)
+
+**Validation Method**: Search for "I ", " I'", "we ", "my ", count instances per section
+
+**Minimum Threshold**: ≥1 first-person instance per major section (H2 heading)
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 6 (Add Personal Voice and Author Perspective)
+
+### 4.2 Author Expertise Evident
+
+- [ ] **Real-world experiences shared** (specific projects, challenges, lessons learned)
+- [ ] **Expert insights present** (opinions, recommendations, decisions explained)
+- [ ] **Personal anecdotes included** (minimum 2-3 per chapter)
+- [ ] **"War stories" or debugging experiences** (real scenarios from author's work)
+
+**Example Check**:
+- ✗ "Error handling is important" (generic, no expertise)
+- ✓ "I learned the importance of error handling after a 2 AM production crash with no logs" (personal experience)
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 6
+
+### 4.3 Authentic Voice Maintained
+
+- [ ] **Not impersonal documentation style** (reads like expert guidance, not reference manual)
+- [ ] **Personality evident** (author's characteristic style present)
+- [ ] **Conversational but professional** (natural expert voice)
+- [ ] **Not generic or robotic** (sounds like real person wrote it)
+
+**If Failed**: Inject more personality, personal perspective, authentic voice
+
+---
+
+## 5. Example Specificity
+
+Validates generic examples have been replaced with specific, cited examples.
+
+### 5.1 No Generic Placeholders
+
+- [ ] **No "company X" or "a company"** (real company names or specific scenarios)
+- [ ] **No "financial institution" vagueness** (specific entities named)
+- [ ] **No uncited case studies** (all examples attributed or from author's experience)
+
+**Validation Method**: Search for "company X", "a company", "financial institution", "case study" - should find 0 or have specific context
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 7 (Replace Generic Examples)
+
+### 5.2 Specific Examples with Details
+
+- [ ] **Real-world examples specific** (actual companies, projects, or detailed scenarios)
+- [ ] **Examples cited or attributed** (sources provided for external examples)
+- [ ] **Author's own projects referenced** (personal work examples with specifics)
+
+**Example Check**:
+- ✗ "A company implemented caching and improved performance" (generic)
+- ✓ "Netflix implemented Redis caching for their recommendation engine, reducing response time from 800ms to 120ms (Netflix Tech Blog, 2023)" (specific, cited)
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 7
+
+### 5.3 Example Relevance
+
+- [ ] **All examples relevant to chapter topic** (not random or forced)
+- [ ] **Examples support learning objectives** (tied to chapter goals)
+- [ ] **Specific details provided** (not vague scenarios)
+
+**If Failed**: Replace vague examples with specific, relevant ones
+
+---
+
+## 6. Content Depth
+
+Validates filler has been removed and actionable insights added.
+
+### 6.1 No Filler Content
+
+- [ ] **Every paragraph adds value** (no paragraphs that could be deleted without loss)
+- [ ] **No generic restatements** (not rehashing obvious points)
+- [ ] **No repetitive content across sections** (each section unique)
+
+**Validation Method**: Sample 5 random paragraphs, ask "if I removed this, would reader lose something?" - should be YES for all
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 8 (Remove Filler and Increase Content Depth)
+
+### 6.2 Actionable Insights Present
+
+- [ ] **Every section provides actionable guidance** (reader can implement)
+- [ ] **Concrete examples with code** (not just abstract concepts)
+- [ ] **Specific recommendations** (clear guidance, not vague advice)
+
+**Example Check**:
+- ✗ "Error handling is important for production applications" (filler, no action)
+- ✓ "Implement structured logging with correlation IDs—here's the pattern I use: [code example]" (actionable)
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 8
+
+### 6.3 Appropriate Content Density
+
+- [ ] **Depth appropriate for expert technical book** (not surface-level tutorial)
+- [ ] **Value beyond documentation** (insights, opinions, real-world context)
+- [ ] **Reader gets expertise, not just information** (author's knowledge evident)
+
+**If Failed**: Add deeper analysis, expert insights, real-world context
+
+---
+
+## 7. Structural Variation
+
+Validates rigid, templated structure has been broken.
+
+### 7.1 Section Opening Diversity
+
+- [ ] **Section openings vary** (not all "In this section..." or identical pattern)
+- [ ] **Mix of opening types** (question, statement, example, problem - not monotonous)
+- [ ] **Natural, engaging openings** (draw reader in, not formulaic)
+
+**Validation Method**: Check first sentence of each H2 section, verify no repeated pattern
+
+**Example Check**:
+- ✗ All sections start "In this section, we'll..." (rigid template)
+- ✓ Mix: question opening, statement, example, problem (varied)
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 9 (Break Rigid Structural Patterns)
+
+### 7.2 Structure Feels Natural
+
+- [ ] **Chapter structure organic** (not rigid template applied)
+- [ ] **Section lengths vary based on content** (not all forced to same length)
+- [ ] **Natural flow** (structure serves content, not vice versa)
+
+**If Failed**: Return to humanize-ai-drafted-chapter Step 9
+
+### 7.3 No Formulaic Language
+
+- [ ] **No "Now we will..." repetition** (varied transitions)
+- [ ] **No "In conclusion" or similar mechanical phrases** (natural flow)
+- [ ] **Transitions varied** (see enhance-transitions.md patterns, not formulaic)
+
+**If Failed**: Replace formulaic phrases with natural language
+
+---
+
+## Overall Assessment
+
+After completing all sections, calculate final scores:
+
+### Humanization Score Summary
+
+```markdown
+## Humanization Validation Results
+
+**Chapter**: {{chapter_number}}
+**Date**: {{date}}
+**Reviewer**: {{name}}
+
+### Category Scores
+
+| Category | Passed | Total | Pass Rate |
+|----------|--------|-------|-----------|
+| Word Choice Validation | {{passed}} | 9 | {{percent}}% |
+| Metaphor Quality | {{passed}} | 6 | {{percent}}% |
+| Sentence Rhythm | {{passed}} | 6 | {{percent}}% |
+| Voice Authenticity | {{passed}} | 6 | {{percent}}% |
+| Example Specificity | {{passed}} | 6 | {{percent}}% |
+| Content Depth | {{passed}} | 6 | {{percent}}% |
+| Structural Variation | {{passed}} | 6 | {{percent}}% |
+
+### Overall Results
+
+**Total Passed**: {{passed}}/45
+**Humanization Pass Rate**: {{percent}}%
+**AI Pattern Remaining Score**: {{100 - percent}}%
+
+**Status**:
+- [ ] ✅ PASS (≥80% pass rate, ≤20% AI patterns) - Ready for technical review
+- [ ] ⚠️ REVIEW (60-79% pass rate, 21-40% AI patterns) - Additional humanization recommended
+- [ ] ❌ FAIL (<60% pass rate, >40% AI patterns) - Rework required
+
+### Improvement from Baseline
+
+**Baseline AI Score** (from generative-ai-compliance-checklist): {{baseline_score}}%
+**Post-Humanization AI Score**: {{current_score}}%
+**Improvement**: {{improvement}}% ({{baseline - current}})
+
+**Target Achieved**:
+- [ ] YES - AI score reduced by ≥50%
+- [ ] NO - Additional humanization iteration needed
+```
+
+### Next Steps Based on Results
+
+**If PASS (≥80%):**
+1. Proceed to technical-review.md
+2. Document humanization completion in chapter metadata
+3. Note: Final AI pattern check will occur at copy-edit (Step 10)
+
+**If REVIEW (60-79%):**
+1. Identify top 3 failing categories
+2. Return to relevant humanize-ai-drafted-chapter steps
+3. Focus on critical issues (generic examples, impersonal voice)
+4. Re-execute this checklist after fixes
+
+**If FAIL (<60%):**
+1. Review humanize-ai-drafted-chapter task completely
+2. May need different humanization approach
+3. Consider consulting with human editor
+4. Re-execute entire humanization workflow
+5. Validate baseline detection was accurate
+
+---
+
+## Red Flags: Humanization Not Successful
+
+If you answer YES to multiple items below, humanization needs rework:
+
+### Critical Red Flags (Must Fix)
+
+- [ ] "sophisticated" appears >3 times in chapter
+- [ ] No first-person perspective in entire chapter
+- [ ] Generic "company X" or "financial institution" examples present
+- [ ] All section openings identical formulaic pattern
+- [ ] No personal anecdotes or real experiences
+- [ ] Sentence lengths uniform throughout (all ~15 words)
+- [ ] 4+ metaphors in single section
+
+### Warning Red Flags (Strongly Recommend Fixing)
+
+- [ ] AI vocabulary (delve, leverage, robust, seamless) appears >5 times combined
+- [ ] <3 first-person instances in entire chapter
+- [ ] Impersonal documentation style throughout
+- [ ] Filler paragraphs still present (removable without loss)
+- [ ] No variation in sentence structure
+- [ ] No author insights or expertise evident
+
+---
+
+## Integration
+
+This checklist is used by:
+
+- **tutorial-architect** agent - After humanize-ai-drafted-chapter task execution
+- **technical-editor** agent - During copy-edit-chapter Step 10 (final AI pattern check)
+- **chapter-development-workflow** - Quality gate "humanization_complete"
+
+## Related Files
+
+- **humanize-ai-drafted-chapter.md** - Task this checklist validates
+- **generative-ai-compliance-checklist.md** - Baseline AI pattern DETECTION (used before humanization)
+- **ai-pattern-removal-guide.md** - Reference for HOW to fix each pattern type
+- **copy-edit-chapter.md** - Step 10 uses this checklist for final validation (target <5% AI patterns)
+
+---
+
+## Notes
+
+### Why This Checklist Exists
+
+**Problem**: After AI-assisted drafting, content contains patterns readers notice and complain about.
+
+**Solution**: humanize-ai-drafted-chapter.md systematically removes patterns.
+
+**Validation**: This checklist confirms removal was successful.
+
+**Goal**: Content reads as authentically human-written expert guidance.
+
+### Key Distinctions
+
+**This Checklist (Humanization) vs Compliance Checklist**:
+
+| Aspect | generative-ai-compliance | humanization-checklist |
+|--------|------------------------|----------------------|
+| **Purpose** | DETECT AI patterns | VALIDATE REMOVAL |
+| **When** | Before humanization | After humanization |
+| **Output** | List of problems found | Pass/fail for each category |
+| **Use** | Baseline measurement | Improvement validation |
+
+**This Checklist vs Tone Consistency Checklist**:
+
+| Aspect | Tone Consistency | Humanization |
+|--------|-----------------|--------------|
+| **Purpose** | Validate tone specification | Remove AI artifacts |
+| **Focus** | Formality, voice consistency | Pattern elimination |
+| **Question** | "Does tone match spec?" | "Does this sound AI-generated?" |
+
+### Best Practices
+
+**Using This Checklist Effectively**:
+
+1. **Execute after humanization task** - Don't skip humanize-ai-drafted-chapter.md
+2. **Compare to baseline** - Always measure improvement from detection report
+3. **Be objective** - Use search/count validation methods, not just subjective feel
+4. **Iterate if needed** - First pass may not achieve ≥80%, that's okay
+5. **Focus on critical patterns** - Generic examples and impersonal voice are highest priority
+6. **Document results** - Include in chapter metadata and change log
+
+**Quality Threshold Philosophy**:
+
+- **80% at humanization stage**: Acceptable for technical review to proceed
+- **95% at copy-edit stage**: Required for publication (copy-edit Step 10)
+- **100% impossible**: Some patterns acceptable in technical writing context
+- **Residual patterns okay**: If technically necessary (e.g., "robust testing framework" is standard term)
+
+### Common Questions
+
+**Q: What if technical terminology matches "AI words"?**
+A: Context matters. "Robust statistical model" is acceptable if industry-standard term. "Robust, sophisticated, seamless architecture leveraging cutting-edge paradigms" is AI overload. Use judgment.
+
+**Q: Is any use of "sophisticated" or "leverage" forbidden?**
+A: No. Threshold is ≤2 occurrences. Problem is OVERUSE (15+ times), not single contextual use.
+
+**Q: What if author's natural voice is formal/verbose?**
+A: Distinguish authentic author voice from AI patterns. If author always wrote formally, preserve that. But "profound efficacy in the empirical realm" is AI vocabulary, not authentic formality.
+
+**Q: Can I pass with <80% if I have good reasons?**
+A: Rare exceptions acceptable with justification. Document why certain patterns remain. But standard is ≥80% for good reason—readers notice AI patterns and complain.
+
+### Remember
+
+**Goal**: Authentic human expertise, not just passing a checklist.
+
+**Success Criteria**:
+- Reader can't tell AI was used in drafting
+- Author's expertise and personality evident
+- Content provides unique value beyond AI-generated tutorials
+- Passes publisher review without AI-related concerns
+- No negative reader reviews citing "AI-like" content
+
+**Quality > Speed**: Take time to humanize properly. 2-4 hours per chapter is normal and worthwhile investment.
+==================== END: .bmad-technical-writing/checklists/humanization-checklist.md ====================
 
 ==================== START: .bmad-technical-writing/data/bmad-kb.md ====================
 # BMad Technical Writing Knowledge Base
@@ -5802,3 +8430,1191 @@ Response 404:
 - Vale (style guide linter)
 - alex (inclusive language linter)
 ==================== END: .bmad-technical-writing/data/technical-writing-standards.md ====================
+
+==================== START: .bmad-technical-writing/data/writing-voice-guides.md ====================
+# Writing Voice and Tone Guides
+
+Reference guide with tone profile examples to help technical authors define and recognize different writing voices.
+
+## Purpose
+
+This guide provides concrete examples of different tone approaches for technical writing, helping authors:
+- Recognize and define their desired tone
+- Understand how tone affects reader experience
+- Choose appropriate tone for target audience and publisher
+- Reference when creating tone-specification.md
+
+## How to Use This Guide
+
+1. **When Defining Tone:** Review profiles to identify your preferred approach
+2. **When Writing:** Reference example passages to match desired tone
+3. **When Editing:** Compare your writing to these examples for consistency
+4. **When Collaborating:** Share profiles to align multi-author teams
+
+## Tone Profile Examples
+
+Each profile includes:
+- **Definition:** What characterizes this tone
+- **Best For:** Ideal audience and use cases
+- **Characteristics:** Key traits
+- **Sample Passage:** 3-5 paragraphs demonstrating the tone
+- **Formality Level:** Where it falls on 1-5 scale
+
+---
+
+### Profile 1: Academic / Formal
+
+**Definition:** Scholarly, precise, objective tone emphasizing technical rigor and formal language conventions.
+
+**Best For:**
+- Research-oriented audiences (PhD students, researchers)
+- Theoretical computer science texts
+- Academic journal articles converted to book format
+- Audiences expecting peer-reviewed precision
+
+**Characteristics:**
+- Formality Level: 5 (Very Formal)
+- No contractions
+- Passive voice acceptable for objectivity
+- Complex sentence structures
+- Precise technical terminology
+- Third person perspective dominant
+
+**Sample Passage:**
+
+> **Chapter 3: Algorithmic Complexity Analysis**
+>
+> This chapter presents an examination of algorithmic complexity theory as applied to distributed systems. The analysis encompasses both theoretical foundations and practical implications for system design.
+>
+> Computational complexity is formally defined as the study of resource requirements for algorithms. In the context of distributed systems, resources include not only time and space complexity but also network bandwidth and inter-node communication overhead. The formal analysis of these factors requires an understanding of asymptotic notation and complexity classes.
+>
+> Consider an algorithm A that processes n elements across m nodes. The time complexity T(n,m) represents the maximum time required for completion under worst-case conditions. Space complexity S(n,m) denotes the maximum memory allocation across all nodes. The communication complexity C(n,m) quantifies inter-node message exchanges. These three measures collectively characterize the algorithm's resource requirements.
+>
+> The selection of appropriate data structures directly impacts these complexity measures. Hash tables provide O(1) average-case lookup time, whereas binary search trees guarantee O(log n) worst-case performance. The trade-offs between these approaches must be evaluated within the specific context of the distributed system's requirements.
+
+---
+
+### Profile 2: Authoritative / Technical Precision
+
+**Definition:** Expert voice demonstrating deep technical knowledge with precise, confident explanations. Direct but not academic.
+
+**Best For:**
+- O'Reilly-style technical references
+- Professional developer audiences (5+ years experience)
+- System design and architecture books
+- Enterprise technology implementations
+
+**Characteristics:**
+- Formality Level: 4 (Formal/Professional)
+- Minimal contractions
+- Strong, declarative statements
+- Technical accuracy paramount
+- Detailed explanations
+- Second or third person
+
+**Sample Passage:**
+
+> **Chapter 5: Kubernetes Network Security**
+>
+> Network policies in Kubernetes control traffic flow between pods and external endpoints. These policies operate at Layer 3 (IP) and Layer 4 (port) of the OSI model, providing firewall-like capabilities within the cluster.
+>
+> A network policy specifies allowed connections using label selectors. The policy applies to pods matching the `podSelector` field. Traffic rules define ingress (incoming) and egress (outgoing) connections. Without an explicit network policy, Kubernetes allows all traffic between pods—a permissive default that presents security risks.
+>
+> Implement network isolation by creating a default deny policy first. This policy blocks all traffic to pods matching specific labels. Subsequently, add specific allow policies for required connections. This approach follows the principle of least privilege: deny by default, permit explicitly.
+>
+> Network policies require a Container Network Interface (CNI) plugin that supports policy enforcement. Calico, Cilium, and Weave Net implement policy support. The kubenet plugin does not. Verify your CNI's capabilities before implementing network policies.
+>
+> Consider this example policy that restricts traffic to a database pod:
+>
+> ```yaml
+> apiVersion: networking.k8s.io/v1
+> kind: NetworkPolicy
+> metadata:
+>   name: database-policy
+> spec:
+>   podSelector:
+>     matchLabels:
+>       app: postgres
+>   policyTypes:
+>   - Ingress
+>   ingress:
+>   - from:
+>     - podSelector:
+>         matchLabels:
+>           role: api-server
+>     ports:
+>     - protocol: TCP
+>       port: 5432
+> ```
+>
+> This policy permits traffic only from pods labeled `role: api-server` on port 5432. All other ingress traffic to the database pod is denied. Egress remains unrestricted because the policy specifies only `Ingress` in `policyTypes`.
+
+---
+
+### Profile 3: Professional / Conversational
+
+**Definition:** Balanced approach combining professional standards with accessible, friendly explanations. Most common for modern technical books.
+
+**Best For:**
+- Manning, PacktPub, Pragmatic Bookshelf style
+- Intermediate developers (2-5 years experience)
+- Tutorial and practical guide books
+- Mainstream technical publishing
+
+**Characteristics:**
+- Formality Level: 3 (Professional/Conversational)
+- Moderate contractions
+- Active voice dominant
+- Second person ("you'll")
+- Explanations with context
+- Occasionally first person plural ("we'll")
+
+**Sample Passage:**
+
+> **Chapter 7: Implementing Authentication in Your API**
+>
+> You'll implement JWT-based authentication in this chapter. By the end, you'll have secure token authentication protecting your API endpoints with proper token validation and refresh mechanisms.
+>
+> JSON Web Tokens (JWTs) provide a standard way to securely transmit information between parties. A JWT consists of three parts: the header, the payload, and the signature. These three components are base64url-encoded and joined with periods to create the complete token.
+>
+> Here's a critical point many developers miss: the JWT payload is encoded, not encrypted. Anyone with the token can decode and read the payload. Never include sensitive information like passwords or credit card numbers in a JWT. The signature prevents tampering, but it doesn't hide the contents.
+>
+> Let's implement a basic authentication flow. You'll create an endpoint that accepts credentials, validates them against your database, and returns a JWT. The client includes this token in subsequent requests to prove authentication.
+>
+> ```javascript
+> // Generate JWT after successful login
+> const jwt = require('jsonwebtoken');
+>
+> function generateToken(user) {
+>   // Include only non-sensitive user information
+>   const payload = {
+>     userId: user.id,
+>     email: user.email,
+>     role: user.role
+>   };
+>
+>   // Sign token with secret key, expires in 1 hour
+>   return jwt.sign(payload, process.env.JWT_SECRET, {
+>     expiresIn: '1h'
+>   });
+> }
+> ```
+>
+> The `expiresIn` option sets token expiration. One hour balances security (limits exposure if stolen) with user experience (doesn't require frequent re-authentication). Adjust based on your application's security requirements.
+
+---
+
+### Profile 4: Casual / Friendly
+
+**Definition:** Approachable, conversational tone emphasizing accessibility and reader comfort. More personal and relaxed.
+
+**Best For:**
+- Beginner-focused books
+- Bootcamp-style learning materials
+- Blog post collections
+- Self-published accessible guides
+
+**Characteristics:**
+- Formality Level: 2 (Casual/Friendly)
+- Frequent contractions
+- Colloquial language
+- Lots of "you'll" and "let's"
+- Occasional exclamations
+- First person sometimes used
+
+**Sample Passage:**
+
+> **Chapter 4: Let's Build a Real API**
+>
+> Okay, you've learned the basics. Now it's time to build something real—an API that actually does useful stuff. We're going to create an authentication system that you could deploy to production. No toy examples or "works on my laptop" shortcuts.
+>
+> Here's the plan: You'll set up a Node.js server with Express, add JWT authentication, and protect your API endpoints. Don't worry if you haven't done this before—we'll go step by step, and I'll explain everything as we go.
+>
+> First, let's talk about what authentication actually means. It's just proving you are who you say you are. Think of it like showing your ID at the door of a club. The bouncer checks your ID, and if it's legit, you get in. That's basically what we're building—a digital bouncer for your API.
+>
+> JWTs (JSON Web Tokens) are perfect for this. They're like a special stamp the bouncer puts on your hand. After you show your ID once, you don't need to keep showing it—you just show your stamp. The stamp proves you've already been verified.
+>
+> Here's the cool part: JWTs are self-contained. Everything the server needs to verify them is right there in the token itself. No database lookups on every request. That's why they're super fast.
+>
+> Let's write some code:
+>
+> ```javascript
+> // This is where the magic happens
+> const jwt = require('jsonwebtoken');
+>
+> function createToken(user) {
+>   // We're putting the user's info into the token
+>   return jwt.sign(
+>     {
+>       id: user.id,
+>       email: user.email
+>     },
+>     'your-secret-key',  // Keep this secret!
+>     { expiresIn: '1h' }  // Token expires after an hour
+>   );
+> }
+> ```
+>
+> See? Not scary at all. We're just creating a token with the user's ID and email, signing it with a secret key, and setting it to expire after an hour. You've got this!
+
+---
+
+### Profile 5: Encouraging / Supportive
+
+**Definition:** Motivational tone emphasizing reader capability and progress, with explicit positive reinforcement.
+
+**Best For:**
+- Career transition books (bootcamp grads, career switchers)
+- Confidence-building materials
+- First programming book experiences
+- Self-paced learning contexts
+
+**Characteristics:**
+- Formality Level: 2-3 (Varies)
+- Acknowledges difficulty
+- Celebrates progress
+- Explicit encouragement
+- Patient explanations
+- "You can do this" messaging
+
+**Sample Passage:**
+
+> **Chapter 6: Your First Database Design**
+>
+> Designing a database can feel overwhelming when you're starting out. There are so many concepts—normalization, indexes, foreign keys, transactions. If you're feeling a bit intimidated right now, that's completely normal. Database design is genuinely complex, and you're doing great by tackling it head-on.
+>
+> Here's the good news: You don't need to master everything at once. You'll start with the basics and build your skills incrementally. By the end of this chapter, you'll have designed a working database for a real-world application. That's something to be proud of!
+>
+> Let's begin with something you already understand: organizing information. Think about how you'd organize contact information for friends. You'd probably list their names, phone numbers, and email addresses. That's essentially a database table—you've been thinking in database terms all along without realizing it.
+>
+> Now let's level up that intuition with some database principles. A database table is like a spreadsheet, but more powerful. Each row represents one contact, and each column represents a piece of information about that contact. You've already got this concept—we're just formalizing it.
+>
+> Here's your first table design:
+>
+> ```sql
+> CREATE TABLE contacts (
+>   id INT PRIMARY KEY,       -- Unique identifier
+>   name VARCHAR(100),        -- Contact's name
+>   email VARCHAR(100),       -- Email address
+>   phone VARCHAR(20)         -- Phone number
+> );
+> ```
+>
+> Look at that—you just wrote SQL! The syntax might look strange now, but you'll be writing these confidently by the end of the chapter. Each line makes sense: you're creating a table called "contacts" with columns for id, name, email, and phone. That's it. You're already doing database design.
+>
+> Let's add some real data to see your design in action. Don't worry about making mistakes—that's how we learn. You can always delete test data and try again.
+
+---
+
+### Profile 6: Direct / Pragmatic
+
+**Definition:** No-nonsense, action-oriented tone focused on practical results and real-world applicability.
+
+**Best For:**
+- Experienced developers
+- DevOps and SRE audiences
+- Problem-solving focused books
+- "Get stuff done" contexts
+
+**Characteristics:**
+- Formality Level: 3
+- Gets to the point quickly
+- Minimal fluff
+- Action-oriented language
+- Real-world focus
+- Experience-informed
+
+**Sample Passage:**
+
+> **Chapter 8: Production Kubernetes Deployments**
+>
+> Most Kubernetes tutorials show you toy examples that break in production. This chapter shows you what actually works when real money is on the line.
+>
+> Deploy stateful applications differently than stateless ones. Stateless apps (your typical web service) use Deployments. Stateful apps (databases, queues) use StatefulSets. Don't use Deployments for databases—you'll corrupt your data when pods restart.
+>
+> Set resource limits on every container. No limits means a single pod can consume all node resources, taking down other pods. Been there, fixed that at 3am. Don't make my mistake.
+>
+> ```yaml
+> resources:
+>   requests:
+>     memory: "256Mi"
+>     cpu: "250m"
+>   limits:
+>     memory: "512Mi"
+>     cpu: "500m"
+> ```
+>
+> The `requests` value tells Kubernetes how much to reserve. The `limits` value sets the maximum allowed. Set requests based on typical usage. Set limits at 2x requests to handle spikes without killing pods.
+>
+> Configure health checks immediately. Kubernetes won't know your application is broken without them. Use `livenessProbe` to detect crashed applications (restart the pod). Use `readinessProbe` to detect not-yet-ready applications (don't send traffic).
+>
+> Run multiple replicas. Single-pod deployments mean downtime during updates. Use at least 3 replicas for production services. Spread them across availability zones using pod anti-affinity.
+>
+> Enable pod disruption budgets. Without them, Kubernetes might evict all your pods during node maintenance, causing an outage. The budget ensures minimum availability during disruptions.
+>
+> ```yaml
+> apiVersion: policy/v1
+> kind: PodDisruptionBudget
+> metadata:
+>   name: api-pdb
+> spec:
+>   minAvailable: 2  # Always keep 2 pods running
+>   selector:
+>     matchLabels:
+>       app: api
+> ```
+>
+> These are the non-negotiables. Skip them and you'll learn the hard way. Ask me how I know.
+
+---
+
+## Decision Matrix: Choose Your Tone Profile
+
+Use this matrix to identify appropriate tone based on project characteristics:
+
+| Audience Level | Publisher Type | Recommended Profile | Formality Level |
+|----------------|----------------|---------------------|-----------------|
+| Researchers / PhDs | Academic Press | Academic/Formal | 5 |
+| Senior Engineers (10+ years) | O'Reilly | Authoritative/Technical | 4 |
+| Professional Developers (3-7 years) | Manning, PacktPub | Professional/Conversational | 3 |
+| Junior Developers (0-2 years) | Self-Published, Pragmatic | Casual/Friendly | 2 |
+| Career Switchers / Bootcamp | Self-Published | Encouraging/Supportive | 2-3 |
+| DevOps/SRE Practitioners | Pragmatic Bookshelf | Direct/Pragmatic | 3 |
+
+**Subject Matter Considerations:**
+
+- **Theoretical Computer Science** → Academic/Formal or Authoritative/Technical
+- **System Design / Architecture** → Authoritative/Technical or Professional/Conversational
+- **Tutorial / How-To Guides** → Professional/Conversational or Casual/Friendly
+- **Reference Documentation** → Authoritative/Technical
+- **Beginner Programming** → Casual/Friendly or Encouraging/Supportive
+- **Production Operations** → Direct/Pragmatic or Professional/Conversational
+
+## Publisher-Specific Tone Preferences
+
+### PacktPub
+**Expected Tone:** "Conversational but professional"
+- **Best Match:** Profile 3 (Professional/Conversational)
+- **Formality:** Level 2-3
+- **Key Traits:** Accessible, practical, tutorial-driven
+- **Avoid:** Excessive formality, academic voice
+
+### O'Reilly
+**Expected Tone:** "Authoritative with technical precision"
+- **Best Match:** Profile 2 (Authoritative/Technical)
+- **Formality:** Level 3-4
+- **Key Traits:** Expert voice, comprehensive coverage, technical depth
+- **Avoid:** Overly casual language, hand-waving
+
+### Manning
+**Expected Tone:** "Author voice with personality"
+- **Best Match:** Profile 3 (Professional/Conversational) with author personality
+- **Formality:** Level 2-3 (author preference)
+- **Key Traits:** Personal experience, unique perspective, conversational
+- **Avoid:** Generic corporate voice, suppressing author personality
+
+### Self-Publishing
+**Expected Tone:** Author's choice
+- **Best Match:** Any profile matching target audience
+- **Formality:** 1-5 (author decides)
+- **Key Traits:** Maximum flexibility, audience-driven
+- **Avoid:** Tone-audience mismatches
+
+## Using This Guide When Defining Tone
+
+**Step 1: Identify Your Audience**
+- What's their experience level?
+- What are their expectations?
+- What tone would make them comfortable?
+
+**Step 2: Review Profile Examples**
+- Read all 6 sample passages
+- Which feels right for your book?
+- Which would resonate with your audience?
+
+**Step 3: Consider Publisher Requirements**
+- Does your publisher expect specific tone?
+- Which profile aligns with their preferences?
+
+**Step 4: Define Your Variation**
+- Start with closest profile
+- Adjust for your authentic voice
+- Add your unique personality markers
+
+**Step 5: Document in tone-specification.md**
+- Reference the profile(s) you're drawing from
+- Document your specific adjustments
+- Provide your own example passages
+
+## Common Tone Combinations
+
+**Profile 3 + Profile 5:** Professional/Conversational with Encouragement
+- Use for: Intermediate developers needing confidence building
+- Maintains professionalism while being supportive
+
+**Profile 2 + Profile 6:** Authoritative with Pragmatic Directness
+- Use for: Senior developers valuing expertise and efficiency
+- Technical precision with real-world focus
+
+**Profile 3 + Author Personality:** Professional/Conversational + Unique Voice
+- Use for: Manning books where author voice matters
+- Accessible but personally distinctive
+
+## Red Flags: Tone-Audience Mismatches
+
+**Mismatch 1: Academic Tone for Beginners**
+- ❌ Profile 1 (Academic/Formal) for bootcamp grads
+- Problem: Intimidating, inaccessible
+- Fix: Use Profile 4 or 5 instead
+
+**Mismatch 2: Overly Casual for Experts**
+- ❌ Profile 4 (Casual/Friendly) for senior engineers
+- Problem: Condescending, wastes time
+- Fix: Use Profile 2 or 6 instead
+
+**Mismatch 3: Cold Precision for Career Switchers**
+- ❌ Profile 2 (Authoritative) without encouragement for beginners
+- Problem: Discouraging, assumption of knowledge
+- Fix: Add Profile 5 elements or use Profile 3
+
+## Related Resources
+
+- **define-book-tone.md** - Use this guide to inform tone definition
+- **tone-specification-tmpl.yaml** - Create specification using these profiles as reference
+- **tone-consistency-checklist.md** - Validate against chosen profile
+- **publisher-guidelines.md** - Publisher-specific requirements
+
+## Contributing Additional Profiles
+
+This guide can expand with additional tone profiles for:
+- Humor-forward technical writing
+- Interview-style conversational books
+- Code cookbook formats
+- Comparison-focused reference guides
+
+Contact maintainer to suggest additional profiles with example passages.
+==================== END: .bmad-technical-writing/data/writing-voice-guides.md ====================
+
+==================== START: .bmad-technical-writing/data/publisher-specific-ai-patterns.md ====================
+# Publisher-Specific AI Patterns
+
+Publisher-specific guidance for identifying and removing AI-generated content patterns. Different publishers have varying sensitivities to AI patterns and distinct editorial expectations. This knowledge base provides publisher-focused humanization guidance with real examples.
+
+**Audience**: Technical book authors, tutorial architects, technical editors
+
+**Purpose**: Understand publisher-specific AI pattern concerns and expectations
+
+**Use With**: humanize-ai-drafted-chapter.md task, publisher formatting workflows
+
+---
+
+## Overview: Publisher Sensitivities Differ
+
+While all publishers value authentic human expertise, each has specific AI pattern sensitivities based on their editorial philosophy, brand identity, and documented reader feedback.
+
+**Key Principle**: Humanize content with your target publisher's expectations in mind.
+
+**Integration**: Humanization should occur BEFORE publisher-specific formatting tasks.
+
+---
+
+## PacktPub AI Patterns and Guidelines
+
+### Official Documentation
+
+**Source**: Generative_AI_Author_Guidelines.md (PacktPub Author Bundle - Official Publisher Document)
+
+**PacktPub Stance**:
+> "At Packt, we focus on publishing expert, human voices... Your unique insights, expertise, and experience matters. That is what the Packt brand stands for and the value readers want from you and the Packt brand."
+
+### Declaration Requirement
+
+**CRITICAL**: PacktPub requires authors to **declare any AI use** during book development.
+
+**Declaration Process**:
+1. If AI tools used at any point: notify PacktPub editor immediately
+2. Specify how and where AI was used
+3. PacktPub will include disclaimer in published book
+4. Transparency is non-negotiable
+
+**Why It Matters**: "We consider transparency around the use of generative AI essential."
+
+### Known Problematic Patterns (Documented Cases)
+
+PacktPub has documented specific AI patterns that led to negative reader reviews:
+
+#### Pattern 1: "sophisticated" Overload
+
+**Documented Case**: "sophisticated" appeared **36 times in one chapter**
+
+**Reader Impact**: Readers notice repetition immediately, flag as AI-generated
+
+**PacktPub Threshold**: Maximum 1-2 occurrences per chapter acceptable
+
+**Fix Strategy**:
+- Search chapter for "sophisticated"
+- If >2 occurrences, replace with varied alternatives
+- Prefer simpler words: advanced, complex, well-designed, effective
+
+---
+
+#### Pattern 2: Flowery, Verbose Descriptions
+
+**Documented Example** (from PacktPub guidelines):
+> "The profound efficacy of strategic planning in the domain of data analytics is most compellingly exemplified through narratives drawn from the empirical realm."
+
+**PacktPub Feedback**: "Use of fancy, polysyllabic words when simple ones would be better."
+
+**Reader Impact**: Sounds pretentious, not expert guidance
+
+**PacktPub Expectation**: Conversational but professional tone (Level 2-3 formality)
+
+**Fix Strategy**:
+- Remove flowery introductions
+- Replace polysyllabic words with simple alternatives
+- Direct, clear phrasing preferred
+- "Profound efficacy" → "works well"
+
+**Before (Flowery):**
+```markdown
+The profound efficacy of caching strategies in the empirical realm of
+production deployments is compellingly exemplified through robust
+implementations.
+```
+
+**After (PacktPub Style):**
+```markdown
+Caching works well in production. Let me show you how to implement it
+effectively.
+```
+
+---
+
+#### Pattern 3: Generic Uncited Examples
+
+**Documented Example** (from PacktPub guidelines):
+> "For example, a financial institution implemented an AI-driven data loss prevention system..."
+
+**PacktPub Feedback**: "This is so generic it's not useful to the reader. There is no citation or analysis."
+
+**Reader Impact**: Readers suspect fabrication, lose trust
+
+**PacktPub Expectation**: Specific, cited examples or author's own projects
+
+**Fix Strategy**:
+- Replace "a financial institution" with real company name + citation
+- Use author's own project experiences with specific details
+- If hypothetical scenario, make it detailed and realistic
+
+**Before (Generic):**
+```markdown
+A financial institution implemented this security pattern and saw improvements.
+```
+
+**After (PacktPub Style - Real Example):**
+```markdown
+JPMorgan Chase implemented multi-factor authentication for their mobile
+banking app, reducing account compromise incidents by 78% in the first
+year (Source: JPMorgan Chase 2023 Security Report).
+```
+
+**After (PacktPub Style - Personal Project):**
+```markdown
+In a fintech API I built for a banking client, implementing rate limiting
+reduced DDoS attempts by 92%. We set thresholds at 100 requests/minute
+per IP, with exponential backoff for repeat offenders.
+```
+
+---
+
+#### Pattern 4: Metaphor Overuse and Nonsense
+
+**Documented Case**: "Four metaphors in a single paragraph makes content particularly difficult to read."
+
+**PacktPub Feedback**:
+- Problem 1: Overuse (4+ metaphors in paragraph)
+- Problem 2: Nonsense metaphors that confuse rather than clarify
+
+**Reader Impact**: Confusion, distraction, feels AI-generated
+
+**PacktPub Expectation**: Minimal metaphors (1-2 per section max), only when they genuinely clarify
+
+**Fix Strategy**:
+- Count metaphors per paragraph/section
+- Remove all but 1-2 most helpful
+- Verify each metaphor makes logical sense
+- Strengthen technical explanation (should stand alone without metaphor)
+
+---
+
+#### Pattern 5: Rigid, Repetitive Structure
+
+**Documented Reader Complaint** (from reviews):
+> "Strict structure that AI can follow if used in every chapter"
+
+**Reader Impact**: Monotonous, predictable, feels template-generated
+
+**PacktPub Expectation**: Natural variation, organic structure based on content needs
+
+**Fix Strategy**:
+- Vary section openings (not all "In this section...")
+- Different chapter structures (not rigid template every chapter)
+- Natural flow based on content, not formulaic patterns
+
+---
+
+#### Pattern 6: Filler and Repetitive Content
+
+**Documented Issue**: "Similar content scattered across the chapter"
+
+**PacktPub Feedback**: "Readers want practical, focused content from expert authors. They are spending hard-earned money on your book."
+
+**Reader Impact**: Feels like padding to meet word count, wastes reader's time
+
+**PacktPub Expectation**: Every paragraph adds value, no repetition
+
+**Fix Strategy**:
+- Remove paragraphs that could be deleted without loss
+- Eliminate repetitive explanations across sections
+- Reference earlier content rather than rehash
+- Increase value density (actionable insights, not filler)
+
+---
+
+#### Pattern 7: Impersonal, Documentation-Style Voice
+
+**PacktPub Requirement**: "Ensure your voice and experience shines"
+
+**PacktPub Feedback**: "AI-generated text is impersonal. Readers will be interested in your expertise, real-life experiences, and insights. Only you can provide that."
+
+**Reader Expectation**: Expert author sharing personal insights and experiences
+
+**PacktPub Expectation**: Second-person ("you") with author personality evident
+
+**Fix Strategy**:
+- Add first-person perspective ("I've found that...")
+- Include real experiences and anecdotes
+- Share lessons learned, mistakes made
+- Personal opinions on architectural choices
+- War stories from production incidents
+
+**Before (Impersonal):**
+```markdown
+Error handling is important in production environments. Proper logging
+should be implemented.
+```
+
+**After (PacktPub Style - Personal Voice):**
+```markdown
+I learned the hard way that error handling is critical—after a 2 AM
+production crash with zero useful logs. Now I implement structured
+logging from day one. You'll thank yourself later when debugging at
+3 AM.
+```
+
+---
+
+### PacktPub Reader Reviews (Actual Documented Feedback)
+
+**Reader Sentiment**: Readers NOTICE and COMPLAIN about AI-like content
+
+**Documented Review Quotes** (from PacktPub guidelines):
+
+1. **Strict structure**: "Strict structure that AI can follow if used in every chapter"
+2. **AI habits**: "Common generative AI habits" visible in writing
+3. **Confusing text**: "Confusing text leads to suspicions of AI use"
+4. **Unnecessary content**: "Unnecessary content leads the reader to suspect AI"
+5. **Not engaging**: "Reading AI-like content is not engaging"
+6. **Not useful**: "If it's AI-like, it's not useful or readable"
+7. **Unacceptable**: AI-like writing is "not acceptable"
+
+**Impact**: Negative reviews reduce sales, damage author reputation, erode PacktPub brand trust
+
+---
+
+### PacktPub Top 5 Patterns to Fix
+
+Based on documented cases and official guidelines:
+
+| Priority | Pattern | Detection | Fix Target |
+|----------|---------|-----------|-----------|
+| **1 - CRITICAL** | "sophisticated" overuse | Search chapter | ≤2 occurrences total |
+| **2 - CRITICAL** | Generic uncited examples | "financial institution", "company X" | 0 generic, all specific + cited |
+| **3 - HIGH** | Flowery verbose language | "profound efficacy", polysyllabic | Simple, conversational language |
+| **4 - HIGH** | Impersonal voice | No "I", no experiences | Personal perspective throughout |
+| **5 - HIGH** | Rigid repetitive structure | All sections identical pattern | Varied organic structure |
+
+**Additional Concerns**: Metaphor overuse (4+ in paragraph), filler content, repetitive material across sections
+
+---
+
+### PacktPub Integration with Humanization Workflow
+
+**Timing**: Humanize BEFORE format-for-packtpub.md task
+
+**Workflow Integration**:
+1. Draft chapter (with or without AI assistance)
+2. **Execute humanize-ai-drafted-chapter.md** (if AI-assisted)
+3. Validate with humanization-checklist.md
+4. Then proceed to format-for-packtpub.md
+5. Copy-edit includes final AI pattern check (Step 10)
+
+**PacktPub-Specific Checklist Items** (additional focus):
+- [ ] "sophisticated" ≤2 occurrences
+- [ ] No "financial institution" or "company X" examples
+- [ ] Conversational tone (Level 2-3 formality)
+- [ ] Author voice and personality evident
+- [ ] Real-world examples cited or from personal experience
+- [ ] No flowery overblown introductions
+
+---
+
+## O'Reilly Media AI Patterns and Expectations
+
+### O'Reilly Editorial Philosophy
+
+**Brand Identity**: Authoritative technical precision from expert practitioners
+
+**O'Reilly Expectation**: "Write for the practical practitioner... authoritative voice appropriate"
+
+**Key Distinction**: O'Reilly values deep technical detail but expects author expertise to shine through, not generic AI explanations
+
+### Problematic Patterns for O'Reilly
+
+#### Pattern 1: Generic Technical Tone Without Authority
+
+**Problem**: AI generates technically correct but generic explanations that lack expert insight
+
+**Reader Expectation**: O'Reilly readers want authoritative expert guidance, not basic documentation
+
+**O'Reilly Voice**: Expert demonstrating deep knowledge and real-world wisdom
+
+**Before (Generic AI):**
+```markdown
+Authentication can be implemented using various methods. Tokens and
+sessions are common approaches. Each has advantages and disadvantages.
+```
+
+**After (O'Reilly Authoritative Voice):**
+```markdown
+Token-based authentication with JWTs has become the de facto standard
+for modern APIs, but sessions still have their place. I implement tokens
+for stateless microservices architectures and sessions for monolithic
+web apps where server-side session storage is already available. The
+key architectural decision: can you tolerate the inability to immediately
+invalidate JWTs, or do you need instant revocation capability?
+```
+
+**Changes**: Expert opinion, architectural reasoning, real-world tradeoff analysis
+
+---
+
+#### Pattern 2: Robotic Precision Without Personality
+
+**Problem**: AI can be technically accurate but reads like documentation, not expert guidance
+
+**O'Reilly Expectation**: Technical precision + conversational expert voice
+
+**Fix Strategy**:
+- Maintain technical accuracy
+- Add expert insights and reasoning
+- Include architectural decision rationale
+- Personal opinions on best practices
+
+**Before (Robotic):**
+```markdown
+Database indexes improve query performance. B-tree indexes are commonly
+used for equality and range queries. Hash indexes are used for equality
+lookups only.
+```
+
+**After (O'Reilly Expert Voice):**
+```markdown
+Database indexes are your first line of defense against slow queries,
+but they're not magic. I've seen developers add indexes blindly, hoping
+for speed improvements, only to slow down writes by 40%. Here's my
+approach: start with B-tree indexes for most queries (equality and
+ranges), use hash indexes only when you're certain you need equality
+lookups exclusively, and always measure impact on both read AND write
+performance before deploying to production.
+```
+
+**Changes**: Expert judgment, real-world warning, specific guidance, measurement emphasis
+
+---
+
+#### Pattern 3: Missing Expert Insights and "Why"
+
+**Problem**: AI explains "what" and "how" but not "why" (expert reasoning)
+
+**O'Reilly Value**: Deep understanding of WHY technical choices matter
+
+**Fix Strategy**:
+- Explain architectural reasoning
+- Share decision-making process
+- Discuss tradeoffs explicitly
+- Include production lessons learned
+
+---
+
+#### Pattern 4: Lack of Production Context
+
+**Problem**: AI generates tutorial examples without real-world production context
+
+**O'Reilly Expectation**: Real-world scenarios, production considerations, battle-tested patterns
+
+**Fix Strategy**:
+- Include production deployment notes
+- Discuss scalability and performance implications
+- Share what breaks at scale
+- Real metrics and benchmarks
+
+**Before (Tutorial Only):**
+```markdown
+Here's how to implement caching:
+
+```python
+cache = {}
+def get_data(key):
+    if key in cache:
+        return cache[key]
+    data = fetch_from_db(key)
+    cache[key] = data
+    return data
+```
+```
+
+**After (O'Reilly Production Context):**
+```markdown
+Here's a basic caching implementation, but don't use this in production—
+you'll run out of memory fast. In production, I use Redis with LRU
+eviction policies. For a system serving 10K requests/second, we cache
+the top 1000 most-accessed items (covering 80% of traffic) with 5-minute
+TTLs. This reduced our database load from 9,500 queries/second to 2,000.
+
+```python
+import redis
+cache = redis.Redis(host='localhost', port=6379)
+
+def get_data(key):
+    cached = cache.get(key)
+    if cached:
+        return json.loads(cached)
+    data = fetch_from_db(key)
+    cache.setex(key, 300, json.dumps(data))  # 5 min TTL
+    return data
+```
+
+Monitor your cache hit rate—if it drops below 70%, either increase
+cache size or reduce TTL.
+```
+
+**Changes**: Production warning, real system scale, metrics, monitoring guidance, battle-tested advice
+
+---
+
+### O'Reilly Top 5 Patterns to Fix
+
+| Priority | Pattern | Fix Target |
+|----------|---------|-----------|
+| **1** | Generic technical tone | Authoritative expert voice with reasoning |
+| **2** | Missing "why" and tradeoffs | Explicit architectural decision rationale |
+| **3** | No production context | Real-world scale, metrics, deployment notes |
+| **4** | Robotic precision | Technical accuracy + conversational expertise |
+| **5** | Basic tutorial examples | Production-ready code with caveats and monitoring |
+
+---
+
+## Manning Publications AI Patterns and Expectations
+
+### Manning Editorial Philosophy
+
+**Brand Identity**: Author personality and voice front and center
+
+**Manning Expectation**: "Author voice encouraged... Conversational but professional tone"
+
+**Key Distinction**: Manning strongly emphasizes author personality—AI's impersonal tone is antithetical to Manning's brand
+
+### Problematic Patterns for Manning
+
+#### Pattern 1: Impersonal Corporate-Speak
+
+**Problem**: AI generates neutral, impersonal prose. Manning expects author personality to shine.
+
+**Manning Voice**: Conversational, personal, approachable expert
+
+**Before (Impersonal AI):**
+```markdown
+This chapter covers deployment strategies. Various approaches will be
+presented. Best practices will be discussed.
+```
+
+**After (Manning Personality-Forward):**
+```markdown
+Let's talk about deployment—where theory meets reality and things get
+interesting. I've deployed apps every which way: manual FTP uploads at
+2 AM (never again), half-baked shell scripts that worked "most of the
+time," and finally, automated CI/CD pipelines that actually let me
+sleep at night. I'll share what I've learned the hard way.
+```
+
+**Changes**: Personal tone, humor, real experiences, conversational style, personality evident
+
+---
+
+#### Pattern 2: Missing Humor and Warmth
+
+**Problem**: AI is serious and formal. Manning values appropriate humor and author warmth.
+
+**Manning Expectation**: Author personality includes humor where appropriate
+
+**Fix Strategy**:
+- Add personal anecdotes with light humor
+- Self-deprecating humor about mistakes
+- Conversational asides
+- Warmth and encouragement
+
+**Before (Generic Serious):**
+```markdown
+Debugging can be challenging. Systematic approaches improve efficiency.
+```
+
+**After (Manning with Humor):**
+```markdown
+Debugging is where we all become detectives—except instead of solving
+murders, we're hunting down why the button turned purple on Tuesdays.
+I've stared at code for hours only to discover the bug was a missing
+semicolon. We've all been there. Here's how to debug systematically
+instead of randomly changing things and hoping.
+```
+
+**Changes**: Humor, relatability, warmth, conversational tone
+
+---
+
+#### Pattern 3: No Personal Opinions or Preferences
+
+**Problem**: AI avoids strong opinions. Manning wants author's authentic perspective.
+
+**Manning Expectation**: Author states preferences and explains reasoning
+
+**Fix Strategy**:
+- State your preferences explicitly
+- Explain why you prefer certain approaches
+- Share what you avoid and why
+- Authentic expert opinions
+
+**Before (Neutral AI):**
+```markdown
+Both REST and GraphQL are viable API approaches. Each has use cases.
+```
+
+**After (Manning Personal Opinion):**
+```markdown
+I'm a REST fan for most projects. Sure, GraphQL is clever with its
+flexible queries, but I've seen teams spend weeks designing the perfect
+schema when a few REST endpoints would've shipped the feature in days.
+Unless you're building an API for multiple clients with wildly different
+data needs (think Facebook-scale), stick with REST. It's simpler, more
+developers understand it, and you'll thank yourself during debugging.
+```
+
+**Changes**: Clear preference, reasoning, pragmatic advice, authentic voice
+
+---
+
+#### Pattern 4: Generic Third-Person Throughout
+
+**Problem**: AI defaults to third-person. Manning expects first and second person.
+
+**Manning Voice**: "I" and "you" throughout, conversational direct address
+
+**Fix Strategy**:
+- Use "I" for personal experiences and opinions
+- Use "you" to engage reader directly
+- Conversational tone as if explaining to friend
+- Avoid impersonal "one must" or "developers should"
+
+---
+
+### Manning Top 5 Patterns to Fix
+
+| Priority | Pattern | Fix Target |
+|----------|---------|-----------|
+| **1 - CRITICAL** | Impersonal voice | First/second person, personality evident |
+| **2 - CRITICAL** | Missing author personality | Humor, warmth, authentic voice |
+| **3 - HIGH** | No personal opinions | Clear preferences and reasoning |
+| **4 - HIGH** | Generic corporate tone | Conversational expert voice |
+| **5 - MEDIUM** | Serious throughout | Appropriate humor and warmth |
+
+---
+
+## Self-Publishing Considerations
+
+### No Editorial Safety Net
+
+**Critical Difference**: Traditional publishers provide editors to catch AI patterns. Self-published authors have no safety net.
+
+**Implications**:
+- Must self-humanize rigorously
+- No editor to catch AI patterns before publication
+- Reputation damage is direct and immediate
+- Amazon reviews impact sales directly
+
+### Amazon Reader Sensitivity
+
+**Evidence**: Amazon reviews mention AI detection
+
+**Reader Impact**:
+- Negative reviews for "AI-like" content
+- Sales drop when reviews cite AI generation
+- Reader trust difficult to rebuild
+
+**Self-Publishing Standard**: Apply STRICTEST humanization standards (all publishers' patterns combined)
+
+### Reputation Risk
+
+**Problem**: Self-published authors build reputation book-by-book
+
+**AI Pattern Impact**: Single book with AI patterns can damage author brand long-term
+
+**Fix Strategy**:
+- Apply ≥95% humanization-checklist pass rate (not just 80%)
+- Beta readers to validate authentic voice
+- Multiple humanization passes if needed
+- Professional editor review (invest in quality)
+
+---
+
+## Publisher Comparison Summary
+
+| Publisher | Top Priority Pattern | Voice Expectation | Formality Level | Key Differentiator |
+|-----------|---------------------|-------------------|-----------------|-------------------|
+| **PacktPub** | "sophisticated" overuse, generic examples | Conversational professional | 2-3 | Documented specific cases (36x sophisticated) |
+| **O'Reilly** | Generic technical tone, missing production context | Authoritative expert | 3-4 | Deep technical detail + expert reasoning |
+| **Manning** | Impersonal voice, missing personality | Conversational with personality | 2-3 | Humor, warmth, author personality front |
+| **Self-Pub** | ALL patterns (no editorial net) | Author's authentic brand | Varies | Highest scrutiny, direct reputation impact |
+
+---
+
+## Integration with Humanization Workflow
+
+### Timing
+
+**When to Use Publisher-Specific Guidance**:
+1. During humanization (target publisher expectations)
+2. Before publisher-specific formatting tasks
+3. During copy-edit final AI pattern check (Step 10)
+
+### Workflow Integration
+
+```
+Draft Chapter
+    ↓
+Humanize (use publisher-specific patterns as reference)
+    ↓
+Validate with humanization-checklist.md
+    ↓
+Format for Publisher (format-for-packtpub.md, etc.)
+    ↓
+Copy-Edit (Step 10: final AI pattern check with publisher expectations)
+    ↓
+Ready for Submission
+```
+
+### Publisher-Specific Humanization Focus
+
+**PacktPub Projects**:
+- Extra attention to "sophisticated" (search, count, reduce to ≤2)
+- Replace ALL generic examples with citations
+- Conversational Level 2-3 tone
+- Personal voice present
+
+**O'Reilly Projects**:
+- Add production context and metrics
+- Include expert reasoning (WHY)
+- Authoritative but conversational
+- Deep technical detail with personality
+
+**Manning Projects**:
+- Inject personality and humor
+- Strong first/second person voice
+- Personal opinions and preferences
+- Warmth and approachability
+
+**Self-Publishing Projects**:
+- Apply all publisher standards combined
+- ≥95% humanization pass rate
+- Beta reader validation
+- Professional editor review
+
+---
+
+## Cross-References
+
+### Related Files
+
+- **humanize-ai-drafted-chapter.md**: Main humanization task (references this guide for publisher context)
+- **ai-pattern-removal-guide.md**: General pattern removal guide (publisher-agnostic)
+- **humanization-checklist.md**: Validation checklist (applies to all publishers)
+- **Generative_AI_Author_Guidelines.md**: PacktPub official document (authoritative source)
+- **format-for-packtpub.md**: PacktPub formatting task (executes after humanization)
+
+### Integration Points
+
+**This guide is used by:**
+- tutorial-architect agent (during humanization for specific publisher)
+- technical-editor agent (during copy-edit Step 10 publisher validation)
+- humanize-ai-drafted-chapter.md task (Step 7: publisher-specific notes reference)
+
+---
+
+## Quick Reference: Publisher-Specific Red Flags
+
+### PacktPub Red Flags
+- [ ] "sophisticated" appears >2 times
+- [ ] Any "financial institution" or "company X" examples
+- [ ] Flowery overblown introductions
+- [ ] No personal voice or experiences
+- [ ] Rigid identical structure across chapters
+
+### O'Reilly Red Flags
+- [ ] Generic technical explanations without expert insight
+- [ ] No production context or real-world scale
+- [ ] Missing "why" and architectural reasoning
+- [ ] Basic tutorial examples without caveats
+- [ ] Robotic precision without conversational warmth
+
+### Manning Red Flags
+- [ ] Impersonal third-person throughout
+- [ ] No author personality or humor
+- [ ] Generic neutral opinions
+- [ ] Corporate-speak or formal language
+- [ ] Serious tone without warmth
+
+### Self-Publishing Red Flags
+- [ ] ANY of the above publisher red flags
+- [ ] <95% humanization-checklist pass rate
+- [ ] No beta reader feedback obtained
+- [ ] No professional editor review
+
+---
+
+## Notes
+
+**Publisher Guidelines Evolve**:
+- PacktPub guidelines documented as of 2023-2024
+- O'Reilly and Manning expectations based on editorial practices
+- Monitor publisher updates and editor feedback
+
+**Humanization is Publisher-Agnostic Foundation**:
+- Core humanization applies to all publishers
+- Publisher-specific guidance adds targeted focus
+- All publishers value authentic human expertise
+
+**When in Doubt**:
+- Ask your publisher editor
+- Err on side of more humanization, not less
+- Beta readers can validate authentic voice
+- Professional editors catch publisher-specific issues
+==================== END: .bmad-technical-writing/data/publisher-specific-ai-patterns.md ====================
