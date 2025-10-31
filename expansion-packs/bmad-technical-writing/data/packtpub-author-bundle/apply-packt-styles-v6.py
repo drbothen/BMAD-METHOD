@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
-Apply PacktPub [PACKT] Styles to Pandoc-Converted Word Documents v6
+Apply PacktPub [PACKT] Styles to Pandoc-Converted Word Documents v7
+
+NEW in v7:
+- Strict caption detection: only "Figure X.Y:" or "Table X.Y:" patterns (prevents false positives)
+- Explicit check to prevent list items from being treated as captions
 
 NEW in v6:
 - Detects and applies "Figure Caption [PACKT]" style to image captions
@@ -8,7 +12,7 @@ NEW in v6:
 FIXED:
 - Correctly distinguishes bullet lists from numbered lists by checking numFmt attribute
 - Splits multi-line code blocks into separate paragraphs with Code End [PACKT] on last line
-- Identifies image captions (paragraphs containing images or Pandoc's alt text)
+- Identifies image captions (paragraphs containing images or explicit Figure/Table patterns)
 
 PacktPub Style System:
 - Headings use standard "Heading 1-6" (NO [PACKT] suffix)
@@ -103,63 +107,38 @@ def is_figure_caption(paragraph):
 
     PacktPub uses "Figure Caption [PACKT]" for both figures AND tables.
 
-    Pandoc converts markdown image alt text ![Caption](path) to a paragraph with "Normal" style.
-    The paragraph contains just the caption text (no image inline in same paragraph in Pandoc's output).
+    STRICT DETECTION RULES (v7):
+    - Must contain an embedded image, OR
+    - Must start with "Figure X.Y:" or "Table X.Y:" pattern
 
-    Table captions typically follow format: "Table X.Y: Description"
-
-    Heuristics:
-    - Contains an image (though Pandoc usually puts caption text in separate para)
-    - Text is standalone descriptive phrase
-    - Starts with "Table X.Y:" pattern
-    - Contains common caption keywords (Diagram, Flow, Architecture, etc.)
-    - NOT part of a full sentence (no verbs like "is", "shows", "the following")
+    This prevents false positives from heuristic-based detection.
     """
     text = paragraph.text.strip()
 
-    # Check if has embedded image
+    # CRITICAL: Never treat list items as captions
+    if has_numbering(paragraph):
+        return False
+
+    # Empty text cannot be a caption
+    if len(text) == 0:
+        return False
+
+    # Rule 1: Paragraph contains an embedded image
     if has_image(paragraph):
         return True
 
-    # Caption text should be short-ish and NOT empty
-    if len(text) == 0 or len(text) > 120:  # Increased for table captions
-        return False
-
-    # Check for table caption pattern: "Table X.Y: Description"
+    # Rule 2: Text explicitly starts with "Figure X.Y:" pattern
     import re
+    figure_pattern = re.compile(r'^Figure\s+\d+\.\d+:', re.IGNORECASE)
+    if figure_pattern.match(text):
+        return True
+
+    # Rule 3: Text explicitly starts with "Table X.Y:" pattern
     table_pattern = re.compile(r'^Table\s+\d+\.\d+:', re.IGNORECASE)
     if table_pattern.match(text):
         return True
 
-    # Exclude common false positives (full sentences with verbs)
-    # But allow colons for "Table X.Y:" format
-    false_positive_patterns = [
-        "here's", "here is", "this is", "the following", "as shown",
-        "you can", "we can", "let's", "will", "shows", "demonstrates",
-        "example:", "note:", "tip:", "warning:"
-    ]
-
-    text_lower = text.lower()
-    for pattern in false_positive_patterns:
-        if pattern in text_lower:
-            return False
-
-    # Check for definitive caption patterns (standalone noun phrases)
-    # These are typical of Pandoc's alt text output
-    caption_patterns = [
-        ' Diagram', ' Flow', ' Architecture', ' Structure',
-        ' Chart', ' Graph', ' Screenshot', ' Interface',
-        ' Layout', ' Schema', ' Model', ' Output'
-    ]
-
-    for pattern in caption_patterns:
-        if pattern.lower() in text_lower:
-            # Must be a standalone phrase, not embedded in a sentence
-            # Check that it's primarily a noun phrase (no sentence structure)
-            word_count = len(text.split())
-            if word_count >= 2 and word_count <= 15:  # Typical caption length
-                return True
-
+    # No other heuristics - must match one of the above explicit rules
     return False
 
 def is_numbered_list(paragraph, doc):
