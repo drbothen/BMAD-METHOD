@@ -59,6 +59,8 @@ Before starting this task:
 
 ## Workflow Steps
 
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
+
 ### 1. Select Representative Chapters
 
 Choose chapters that best represent the book's typical voice:
@@ -611,7 +613,7 @@ Compile analysis into structured document:
 
 **Save Location:**
 
-Save as `extracted-tone-patterns.md` in project documentation directory (typically `docs/` or `manuscript/planning/`)
+Save as `extracted-tone-patterns.md` in project documentation directory (typically `docs/` or `{{config.manuscript.planning}}/`)
 
 ### 9. Validate Extraction Quality
 

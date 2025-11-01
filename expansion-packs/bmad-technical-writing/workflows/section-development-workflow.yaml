@@ -10,27 +10,27 @@ workflow:
     - technical-documentation
   sequence:
     - agent: code-curator
-      creates: section-code-examples/
+      creates: section-{{config.codeExamples.root}}/
       requires: section-plan.md
       notes: "Develop all code examples identified in section plan. Use *create-example for each code example. Test code thoroughly - all examples must run correctly. Follow coding best practices, include error handling, and add inline comments. SAVE OUTPUT: Create code examples in chapter-{{chapter_number}}/section-{{section_number}}/ with tests."
 
     - agent: code-curator
-      tests: section-code-examples/
-      requires: section-code-examples/
+      tests: section-{{config.codeExamples.root}}/
+      requires: section-{{config.codeExamples.root}}/
       notes: "Test all code examples. Verify correct output, edge cases handled, error messages clear. Run linting and security checks. Document test results. Ensure examples demonstrate concepts clearly. SAVE OUTPUT: Test results and any bug fixes committed to repository."
 
     - agent: tutorial-architect
       creates: section-draft.md
       requires:
         - section-plan.md
-        - section-code-examples/
+        - section-{{config.codeExamples.root}}/
         - chapter-outline.md
-      notes: "Write section content (2-5 pages). Follow section plan learning objectives and content plan. Include concept explanation, tutorial walkthrough with code examples inline, and practical applications. Address prerequisites and connect to previous sections. SAVE OUTPUT: Create manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-draft.md"
+      notes: "Write section content (2-5 pages). Follow section plan learning objectives and content plan. Include concept explanation, tutorial walkthrough with code examples inline, and practical applications. Address prerequisites and connect to previous sections. SAVE OUTPUT: Create {{config.manuscript.sections}}/chapter-{{chapter_number}}/section-{{section_number}}-draft.md"
 
     - agent: tutorial-architect
       creates: section-humanized.md
       requires: section-draft.md
-      notes: "HUMANIZATION STEP (if AI-assisted drafting used): If AI tools assisted with section drafting, execute humanize-ai-drafted-chapter.md task (adapted for sections) to remove AI patterns. Systematic pattern removal: AI vocabulary, metaphors, generic examples, impersonal voice, sentence uniformity, etc. Validate with humanization-checklist.md (target: ≥80% pass, <20% AI patterns). SAVE OUTPUT: manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-humanized.md. SKIP: If section is fully human-written without AI assistance. TIME ESTIMATE: 30-60 minutes per section."
+      notes: "HUMANIZATION STEP (if AI-assisted drafting used): If AI tools assisted with section drafting, execute humanize-ai-drafted-chapter.md task (adapted for sections) to remove AI patterns. Systematic pattern removal: AI vocabulary, metaphors, generic examples, impersonal voice, sentence uniformity, etc. Validate with humanization-checklist.md (target: ≥80% pass, <20% AI patterns). SAVE OUTPUT: {{config.manuscript.sections}}/chapter-{{chapter_number}}/section-{{section_number}}-humanized.md. SKIP: If section is fully human-written without AI assistance. TIME ESTIMATE: 30-60 minutes per section."
 
     - agent: technical-reviewer
       reviews: section-draft.md
@@ -45,7 +45,7 @@ workflow:
     - agent: tutorial-architect
       finalizes: section-final.md
       requires: revised-section-draft.md
-      notes: "Verify section meets all success criteria from section plan. Execute section-completeness-checklist.md using execute-checklist task to validate length, structure, learning objectives, code integration, tutorial quality, transitions, technical accuracy, and readability. Mark section status as DONE only when checklist passes. SAVE OUTPUT: Create manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-final.md and mark in section list as complete."
+      notes: "Verify section meets all success criteria from section plan. Execute section-completeness-checklist.md using execute-checklist task to validate length, structure, learning objectives, code integration, tutorial quality, transitions, technical accuracy, and readability. Mark section status as DONE only when checklist passes. SAVE OUTPUT: Create {{config.manuscript.sections}}/chapter-{{chapter_number}}/section-{{section_number}}-final.md and mark in section list as complete."
 
   flow_diagram: |
     ```mermaid

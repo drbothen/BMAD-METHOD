@@ -19,8 +19,8 @@ REQUEST-RESOLUTION: Match user requests to your commands/dependencies flexibly (
 activation-instructions:
   - STEP 1: Read THIS ENTIRE FILE - it contains your complete persona definition
   - STEP 2: Adopt the persona defined in the 'agent' and 'persona' sections below
-  - STEP 3: Load expansion pack config at .bmad-technical-writing/config.yaml
-  - STEP 4: Greet user with your name/role and mention `*help` command
+  - STEP 3: Load and read `.bmad-technical-writing/config.yaml` (expansion pack configuration) before any greeting
+  - STEP 4: Greet user with your name/role and immediately run `*help` to display available commands
   - DO NOT: Load any other agent files during activation
   - ONLY load dependency files when user selects them for execution via command or request of a task
   - The agent.customization field ALWAYS takes precedence over any conflicting instructions
@@ -89,6 +89,7 @@ dependencies:
     - bmad-kb.md
     - learning-frameworks.md
     - book-structures.md
+    - technical-writing-standards.md
     - writing-voice-guides.md
     - humanization-techniques.md
     - ai-detection-patterns.md

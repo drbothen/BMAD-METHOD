@@ -12,7 +12,7 @@ persona_default: tutorial-architect
 inputs:
 
 - section-plan.md (learning objectives, prerequisites, content plan)
-- section-code-examples/ (tested code with outputs)
+- section-{{config.codeExamples.root}}/ (tested code with outputs)
 - chapter-outline.md (chapter context and positioning)
   steps:
 - Review section plan learning objectives and content plan
@@ -26,7 +26,7 @@ inputs:
 - Verify learning objectives addressed
 - Check length (2-5 pages) and pedagogical quality
 - Reference tutorial-section-tmpl.yaml for structure guidance
-  output: manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-draft.md
+  output: "{{config.manuscript.sections}}/chapter-{{chapter_number}}/section-{{section_number}}-draft.md"
 
 ---
 
@@ -46,6 +46,12 @@ Before starting this task:
 - **Previous section complete** (if not first) - For transition references
 
 ## Workflow Steps
+
+### 0. Load Configuration
+
+- Read `.bmad-technical-writing/config.yaml` to resolve directory paths
+- Extract: `config.manuscript.sections`, `config.manuscript.chapters`, `config.codeExamples.root`
+- If config not found, use defaults: `manuscript/sections`, `manuscript/chapters`, `code-examples`
 
 ### 1. Review and Prepare
 
@@ -85,7 +91,7 @@ Write naturally from the start to produce human-sounding content:
 
 **Study Code Examples:**
 
-- Review all code files in section-code-examples/
+- Review all code files in section-{{config.codeExamples.root}}/
 - Understand what each example demonstrates
 - Note expected inputs and outputs
 - Identify key concepts each example teaches
@@ -599,7 +605,7 @@ Complete these checks before marking section complete:
 
 **Ready for Review:**
 
-- [ ] Section saved to manuscript/sections/chapter-{{chapter_number}}/
+- [ ] Section saved to {{config.manuscript.sections}}/chapter-{{chapter_number}}/
 - [ ] Filename: section-{{section_number}}-draft.md
 - [ ] Ready for technical review
 
@@ -608,7 +614,7 @@ Complete these checks before marking section complete:
 The completed section draft should be:
 
 - **Format:** Markdown (.md file)
-- **Location:** manuscript/sections/chapter-{{chapter_number}}/section-{{section_number}}-draft.md
+- **Location:** {{config.manuscript.sections}}/chapter-{{chapter_number}}/section-{{section_number}}-draft.md
 - **Length:** 2-5 pages
 - **Code Examples:** Integrated inline (reference separate files in code-curator if needed)
 - **Status:** Ready for technical review
@@ -788,7 +794,7 @@ This task is **Step 3** in the section-development-workflow:
 **Inputs from Previous Steps:**
 
 - section-plan.md (from Step 1)
-- section-code-examples/ (from Step 2)
+- section-{{config.codeExamples.root}}/ (from Step 2)
 - chapter-outline.md (from chapter planning)
 
 **Output to Next Steps:**
@@ -799,7 +805,7 @@ This task is **Step 3** in the section-development-workflow:
 
 After completing the section draft:
 
-1. Save section draft to manuscript/sections/chapter-{{chapter_number}}/
+1. Save section draft to {{config.manuscript.sections}}/chapter-{{chapter_number}}/
 2. Commit to version control
 3. Mark section as "Ready for Technical Review"
 4. Proceed to technical-review-section.md task
@@ -821,6 +827,6 @@ After completing the section draft:
 - **Workflow:** section-development-workflow.yaml - Overall process
 - **Task:** create-doc.md - Use with template if helpful
 - **Task:** create-code-example.md - For developing code examples
-- **Task:** test-code-examples.md - For validating code
+- **Task:** test-{{config.codeExamples.root}}.md - For validating code
 - **Checklist:** section-quality-checklist.md - Quality validation
 - **Knowledge Base:** technical-writing-standards.md - Writing guidelines

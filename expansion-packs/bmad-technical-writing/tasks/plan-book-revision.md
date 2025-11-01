@@ -28,7 +28,7 @@ inputs:
 - Use template revision-plan-tmpl.yaml with create-doc.md task
 - Run execute-checklist.md with revision-completeness-checklist.md
 - Generate comprehensive revision plan
-  output: manuscript/planning/{{book_title}}-revision-plan.md
+  output: {{config.manuscript.planning}}/{{book_title}}-revision-plan.md
 
 ---
 
@@ -47,6 +47,8 @@ Before starting this task:
 - Access to stakeholders for scope decisions
 
 ## Workflow Steps
+
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
 
 ### 1. Review Book Analysis Report
 

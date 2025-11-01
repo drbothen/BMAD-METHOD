@@ -130,7 +130,7 @@ Best for: Books with clear part divisions (400-800 pages)
 **Structure:**
 
 ```
-manuscript/
+{{config.manuscript.root}}/
 ├── book-outline-index.md
 ├── book-level-info.md
 ├── part-1-foundations/
@@ -171,7 +171,7 @@ Best for: Most technical books (300-800 pages)
 **Structure:**
 
 ```
-manuscript/
+{{config.manuscript.root}}/
 ├── book-outline-index.md
 ├── book-level-info.md
 ├── chapters/
@@ -192,7 +192,7 @@ manuscript/
 │   ├── chapter-01-outline.md
 │   ├── chapter-02-outline.md
 │   └── ...
-├── code-examples/                     # Organized by chapter
+├── {{config.codeExamples.root}}/                     # Organized by chapter
 │   ├── chapter-03/
 │   ├── chapter-04/
 │   └── ...
@@ -220,7 +220,7 @@ Best for: Massive reference guides (1000+ pages)
 **Structure:**
 
 ```
-manuscript/
+{{config.manuscript.root}}/
 ├── reference-index.md
 ├── 01-getting-started/
 │   ├── installation.md
@@ -264,7 +264,7 @@ Best for: Complex projects with varied content types
 **Structure:**
 
 ```
-manuscript/
+{{config.manuscript.root}}/
 ├── book-info/
 │   ├── book-level-info.md
 │   ├── book-outline-index.md
@@ -283,7 +283,7 @@ manuscript/
 ├── exercises-and-solutions/
 │   ├── chapter-01-exercises.md
 │   └── ...
-├── code-examples/
+├── {{config.codeExamples.root}}/
 └── back-matter/
     ├── appendix-a.md
     └── index.md
@@ -317,7 +317,7 @@ git add chapters/chapter-*.md
 git commit -m "feat: complete Part 2 draft (chapters 6-10)"
 
 # Commit code examples separately
-git add code-examples/chapter-07/
+git add {{config.codeExamples.root}}/chapter-07/
 git commit -m "code(ch7): add window function examples"
 ```
 
@@ -543,7 +543,7 @@ For reference guides with many independent sections:
 
 1. Technical review: `technical-review-chapter.md`
 2. Copy edit: `copy-edit-chapter.md`
-3. Code testing: `test-code-examples.md`
+3. Code testing: `test-{{config.codeExamples.root}}.md`
 4. Cross-reference check: `validate-cross-references.md`
 
 **Benefits:**
@@ -702,8 +702,8 @@ For reference guides with many independent sections:
 
    ```bash
    # Find inconsistent usage
-   grep -r "relation" manuscript/
-   grep -r "table" manuscript/
+   grep -r "relation" {{config.manuscript.root}}/
+   grep -r "table" {{config.manuscript.root}}/
    # Standardize to one term
    ```
 
@@ -739,7 +739,7 @@ For reference guides with many independent sections:
 
    ```bash
    # Script to extract and validate all cross-references
-   ./scripts/validate-cross-refs.sh manuscript/chapters/
+   ./scripts/validate-cross-refs.sh {{config.manuscript.chapters}}/
    ```
 
 4. **Use shard index for dependencies:**
@@ -869,13 +869,13 @@ npm run validate:refs
 
 ```
 project/
-├── manuscript/
+├── {{config.manuscript.root}}/
 │   ├── book-outline-index.md
 │   ├── chapters/
 │   │   ├── chapter-01.md
 │   │   └── ...
 │   └── assets/
-├── code-examples/
+├── {{config.codeExamples.root}}/
 ├── docs/
 │   ├── style-guide.md
 │   └── glossary.md
@@ -886,7 +886,7 @@ project/
 
 ```
 project/
-├── manuscript/
+├── {{config.manuscript.root}}/
 │   ├── book-info/
 │   │   ├── book-level-info.md
 │   │   ├── book-outline-index.md
@@ -896,7 +896,7 @@ project/
 │   ├── part-2/
 │   ├── part-3/
 │   └── assembled/          # Assembled parts for review
-├── code-examples/
+├── {{config.codeExamples.root}}/
 │   ├── chapter-01/
 │   └── ...
 ├── assets/

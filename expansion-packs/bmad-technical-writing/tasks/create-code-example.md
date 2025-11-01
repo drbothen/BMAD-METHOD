@@ -28,7 +28,7 @@ inputs:
 - Run execute-checklist.md with code-quality-checklist.md
 - Run execute-checklist.md with code-testing-checklist.md
 - Run execute-checklist.md with version-compatibility-checklist.md
-  output: docs/code-examples/{{example-name}}-example.md
+  output: docs/{{config.codeExamples.root}}/{{example-name}}-example.md
 
 ---
 
@@ -46,6 +46,12 @@ Before starting this task:
 - Ability to test code on target platform(s)
 
 ## Workflow Steps
+
+### 0. Load Configuration
+
+- Read `.bmad-technical-writing/config.yaml` to resolve directory paths
+- Extract: `config.codeExamples.root`
+- If config not found, use default: `code-examples`
 
 ### 1. Identify Learning Objective
 

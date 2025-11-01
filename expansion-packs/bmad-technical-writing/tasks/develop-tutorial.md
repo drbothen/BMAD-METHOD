@@ -55,6 +55,8 @@ Write tutorial instructions in natural, conversational language:
 
 ## Workflow Steps
 
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
+
 ### 1. Identify Learning Objective
 
 Define what students will accomplish:
@@ -196,7 +198,7 @@ Develop working code for every step:
 - Maintain working state after each step
 - Avoid breaking changes mid-tutorial
 
-**Use:** create-code-example.md and test-code-examples.md tasks
+**Use:** create-code-example.md and test-{{config.codeExamples.root}}.md tasks
 
 ### 6. Document Expected Outputs
 

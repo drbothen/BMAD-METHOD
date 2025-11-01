@@ -27,7 +27,7 @@ workflow:
     - agent: code-curator
       tests: critical_fixes
       requires: critical fixes complete
-      notes: "Test all critical code fixes comprehensively using *test-code command (test-code-examples.md task). Verify fixed examples now run correctly, check outputs match updated text, run regression tests to ensure other examples unaffected. All tests must pass before proceeding. SAVE OUTPUT: Append test results to critical-fixes-log.md"
+      notes: "Test all critical code fixes comprehensively using *test-code command (test-{{config.codeExamples.root}}.md task). Verify fixed examples now run correctly, check outputs match updated text, run regression tests to ensure other examples unaffected. All tests must pass before proceeding. SAVE OUTPUT: Append test results to critical-fixes-log.md"
 
     - agent: technical-reviewer
       validates: critical_fixes

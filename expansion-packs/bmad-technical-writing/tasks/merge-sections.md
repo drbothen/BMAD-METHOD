@@ -25,8 +25,8 @@ inputs:
 - Ensure code formatting consistency
 - Unify terminology and naming conventions
 - Validate no content lost during merge
-- Create manuscript/chapters/chapter-{{chapter_number}}-integrated.md
-  output: manuscript/chapters/chapter-{{chapter_number}}-integrated.md
+- Create {{config.manuscript.chapters}}/chapter-{{chapter_number}}-integrated.md
+  output: {{config.manuscript.chapters}}/chapter-{{chapter_number}}-integrated.md
 
 ---
 
@@ -43,6 +43,12 @@ Merge all completed sections into a single cohesive chapter file while preservin
 
 ## Workflow Steps
 
+### 0. Load Configuration
+
+- Read `.bmad-technical-writing/config.yaml` to resolve directory paths
+- Extract: `config.manuscript.sections`, `config.manuscript.chapters`
+- If config not found, use defaults: `manuscript/sections`, `manuscript/chapters`
+
 ### 1. Preparation - Gather All Section Files
 
 Collect and verify section files are ready:
@@ -52,7 +58,7 @@ Collect and verify section files are ready:
 - Find all completed section files for this chapter
 - Typical naming: `section-{chapter}.{section}-final.md`
 - Example: `section-3.1-final.md`, `section-3.2-final.md`
-- Check manuscript/sections/ directory
+- Check {{config.manuscript.sections}}/ directory
 
 **Verify Completeness:**
 
@@ -129,7 +135,7 @@ Combine sections into single chapter file:
 
 **Create Chapter File:**
 
-- File: `manuscript/chapters/chapter-{{chapter_number}}-integrated.md`
+- File: `{{config.manuscript.chapters}}/chapter-{{chapter_number}}-integrated.md`
 - Start with chapter title as H1
 - Add chapter metadata if using
 
@@ -419,7 +425,7 @@ Before considering merge complete, verify:
 
 **File Output:**
 
-- ✓ Saved as manuscript/chapters/chapter-{{chapter_number}}-integrated.md
+- ✓ Saved as {{config.manuscript.chapters}}/chapter-{{chapter_number}}-integrated.md
 - ✓ File is valid markdown
 - ✓ Images paths are correct
 - ✓ Ready for next step (transitions enhancement)
@@ -473,7 +479,7 @@ Merged chapter file containing:
 - Chapter summary with key concepts and skills
 - Unified terminology and formatting
 
-**File Location:** `manuscript/chapters/chapter-{{chapter_number}}-integrated.md`
+**File Location:** `{{config.manuscript.chapters}}/chapter-{{chapter_number}}-integrated.md`
 
 **Status:** Ready for transitions enhancement (next workflow step)
 

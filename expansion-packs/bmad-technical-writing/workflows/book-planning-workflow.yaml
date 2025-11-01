@@ -14,32 +14,32 @@ workflow:
         - book_topic
         - target_audience
         - publisher (optional)
-      notes: "Draft comprehensive book proposal using *create-proposal command. Include market analysis, competitive titles, target audience profile, unique value proposition, chapter list (high-level), author platform, and timeline. Use templates/book-proposal-tmpl.yaml. SAVE OUTPUT: Copy final proposal to manuscript/planning/book-proposal.md"
+      notes: "Draft comprehensive book proposal using *create-proposal command. Include market analysis, competitive titles, target audience profile, unique value proposition, chapter list (high-level), author platform, and timeline. Use templates/book-proposal-tmpl.yaml. SAVE OUTPUT: Copy final proposal to {{config.manuscript.planning}}/book-proposal.md"
 
     - agent: instructional-designer
       creates: book-outline.md
       requires: book-proposal.md
-      notes: "Create detailed book outline using *design-outline command. Define learning progression across chapters, prerequisites for each chapter, main topics and subtopics, exercise strategy, and difficulty curve. Use templates/book-outline-tmpl.yaml. Ensure pedagogical soundness and logical skill building. SAVE OUTPUT: Copy outline to manuscript/planning/book-outline.md"
+      notes: "Create detailed book outline using *design-outline command. Define learning progression across chapters, prerequisites for each chapter, main topics and subtopics, exercise strategy, and difficulty curve. Use templates/book-outline-tmpl.yaml. Ensure pedagogical soundness and logical skill building. SAVE OUTPUT: Copy outline to {{config.manuscript.planning}}/book-outline.md"
 
     - agent: instructional-designer
       creates: tone-specification.md
       requires: book-outline.md
-      notes: "Define book's tone and voice using define-book-tone.md task. This MUST be completed BEFORE any chapter drafting begins. Elicit tone preferences from author including: target audience tone expectations, formality level (1-5 scale), 5 key tone characteristics (encouraging/authoritative/friendly/etc), publisher alignment (PacktPub/O'Reilly/Manning/Self-Publishing). Create example passages demonstrating target tone using actual book content. Document excluded tones/anti-patterns. Use templates/tone-specification-tmpl.yaml with create-doc task. This provides critical guidance for AI-assisted chapter drafting and ensures consistent voice across 400+ page manuscripts. SAVE OUTPUT: Copy tone-specification.md to manuscript/planning/tone-specification.md. TIME ESTIMATE: 2-3 hours for comprehensive tone definition."
+      notes: "Define book's tone and voice using define-book-tone.md task. This MUST be completed BEFORE any chapter drafting begins. Elicit tone preferences from author including: target audience tone expectations, formality level (1-5 scale), 5 key tone characteristics (encouraging/authoritative/friendly/etc), publisher alignment (PacktPub/O'Reilly/Manning/Self-Publishing). Create example passages demonstrating target tone using actual book content. Document excluded tones/anti-patterns. Use templates/tone-specification-tmpl.yaml with create-doc task. This provides critical guidance for AI-assisted chapter drafting and ensures consistent voice across 400+ page manuscripts. SAVE OUTPUT: Copy tone-specification.md to {{config.manuscript.planning}}/tone-specification.md. TIME ESTIMATE: 2-3 hours for comprehensive tone definition."
 
     - agent: instructional-designer
       validates: book-outline.md
       requires: book-outline.md
-      notes: "Validate learning progression and difficulty curve using validate-learning-flow.md task. Check prerequisite flow ensures no knowledge gaps, concepts build logically chapter by chapter, exercises progress from basic to advanced, reader can complete book successfully with stated prerequisites. Execute book-outline-checklist.md using execute-checklist task to validate scope, structure, learning flow, and chapter balance. Also use learning-objectives-checklist.md and prerequisite-clarity-checklist.md. SAVE OUTPUT: Create validation report at manuscript/planning/learning-path-validation.md"
+      notes: "Validate learning progression and difficulty curve using validate-learning-flow.md task. Check prerequisite flow ensures no knowledge gaps, concepts build logically chapter by chapter, exercises progress from basic to advanced, reader can complete book successfully with stated prerequisites. Execute book-outline-checklist.md using execute-checklist task to validate scope, structure, learning flow, and chapter balance. Also use learning-objectives-checklist.md and prerequisite-clarity-checklist.md. SAVE OUTPUT: Create validation report at {{config.manuscript.planning}}/learning-path-validation.md"
 
     - agent: technical-editor
       reviews: book-outline.md
       requires: validated outline
-      notes: "Review outline for clarity, consistency, and professional quality using *review-outline command. Check chapter titles are clear and compelling, topics avoid duplication, terminology is consistent, structure follows publisher best practices, accessibility considerations addressed. SAVE OUTPUT: Return polished outline with editorial notes at manuscript/planning/book-outline-edited.md"
+      notes: "Review outline for clarity, consistency, and professional quality using *review-outline command. Check chapter titles are clear and compelling, topics avoid duplication, terminology is consistent, structure follows publisher best practices, accessibility considerations addressed. SAVE OUTPUT: Return polished outline with editorial notes at {{config.manuscript.planning}}/book-outline-edited.md"
 
     - agent: book-publisher
       finalizes: book-outline.md
       requires: polished outline
-      notes: "Verify publisher requirements and format compliance. Check outline matches publisher chapter count guidelines, technical depth appropriate for series/imprint, format follows publisher template, timeline is realistic for publication schedule. Use publisher-specific checklist (packtpub-submission-checklist.md, oreilly-format-checklist.md, or manning-meap-checklist.md). SAVE OUTPUT: Copy final approved outline to manuscript/planning/book-outline-final.md and set status to 'Ready for Chapter Development'"
+      notes: "Verify publisher requirements and format compliance. Check outline matches publisher chapter count guidelines, technical depth appropriate for series/imprint, format follows publisher template, timeline is realistic for publication schedule. Use publisher-specific checklist (packtpub-submission-checklist.md, oreilly-format-checklist.md, or manning-meap-checklist.md). SAVE OUTPUT: Copy final approved outline to {{config.manuscript.planning}}/book-outline-final.md and set status to 'Ready for Chapter Development'"
 
   flow_diagram: |
     ```mermaid
@@ -143,7 +143,7 @@ workflow:
     tone_to_validation: "Tone specification complete. Book voice defined. Validating prerequisite flow and difficulty curve across {{chapter_count}} chapters."
     validation_to_editorial: "Learning path validated successfully. Ready for editorial review to ensure clarity and consistency."
     editorial_to_publisher: "Editorial review complete. Checking outline against {{publisher}} format requirements and submission guidelines."
-    publisher_to_final: "Publisher requirements verified. Book outline approved and ready for chapter development. Save to manuscript/planning/book-outline-final.md."
+    publisher_to_final: "Publisher requirements verified. Book outline approved and ready for chapter development. Save to {{config.manuscript.planning}}/book-outline-final.md."
 
   time_estimates:
     draft_proposal: "4-8 hours"

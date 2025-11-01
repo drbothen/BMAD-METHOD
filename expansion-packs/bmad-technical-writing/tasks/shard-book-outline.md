@@ -54,6 +54,8 @@ Before sharding the outline:
 
 ## Workflow Steps
 
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
+
 ### 1. Analyze Book Outline
 
 Understand the outline's structure:
@@ -209,7 +211,7 @@ This book is organized into 5 parts with 25 chapters:
 - Publication: 2026-03
 ```
 
-**Save location:** `manuscript/book-level-info.md`
+**Save location:** `{{config.manuscript.root}}/book-level-info.md`
 
 ### 3. Extract Per-Chapter Outlines
 
@@ -556,9 +558,9 @@ Must be developed in order:
 
 ## File Locations
 
-**Chapter Outlines**: `manuscript/outlines/chapter-{N}-outline.md`
-**Book-Level Info**: `manuscript/book-level-info.md`
-**This Index**: `manuscript/book-outline-index.md`
+**Chapter Outlines**: `{{config.manuscript.outlines}}/chapter-{N}-outline.md`
+**Book-Level Info**: `{{config.manuscript.root}}/book-level-info.md`
+**This Index**: `{{config.manuscript.root}}/book-outline-index.md`
 
 ## Status Tracking
 
@@ -690,7 +692,7 @@ The sharded book outline produces:
 **Individual chapter outline files:**
 
 - Format: Markdown (.md)
-- Location: `manuscript/outlines/`
+- Location: `{{config.manuscript.outlines}}/`
 - Naming: `chapter-{N}-outline.md`
 - Count: One per chapter (e.g., 25 files)
 - Content: Complete chapter outline with metadata
@@ -698,13 +700,13 @@ The sharded book outline produces:
 **Master index file:**
 
 - Filename: `book-outline-index.md`
-- Location: `manuscript/`
+- Location: `{{config.manuscript.root}}/`
 - Content: Full book structure, dependencies, navigation
 
 **Book-level information:**
 
 - Filename: `book-level-info.md`
-- Location: `manuscript/`
+- Location: `{{config.manuscript.root}}/`
 - Content: Book objectives, audience, structure, timeline
 
 ## Quality Standards

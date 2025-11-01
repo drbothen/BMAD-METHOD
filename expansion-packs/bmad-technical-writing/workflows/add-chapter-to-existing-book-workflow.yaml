@@ -40,7 +40,7 @@ workflow:
       requires:
         - new-chapter-draft.md
         - chapter-addition-style-guide.md (code patterns)
-      notes: "Develop code examples following extracted patterns using *create-code-examples command. Follow import organization patterns, use consistent naming conventions, match comment styles, follow error handling patterns, match code structure patterns, use consistent formatting. Test all code on target versions. SAVE OUTPUT: Code examples integrated into new-chapter-draft.md"
+      notes: "Develop code examples following extracted patterns using *create-{{config.codeExamples.root}} command. Follow import organization patterns, use consistent naming conventions, match comment styles, follow error handling patterns, match code structure patterns, use consistent formatting. Test all code on target versions. SAVE OUTPUT: Code examples integrated into new-chapter-draft.md"
 
     - agent: technical-reviewer
       reviews: new_chapter

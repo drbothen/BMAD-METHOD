@@ -32,7 +32,7 @@ workflow:
     - agent: tutorial-architect
       finalizes: section-list-final.md
       requires: section-flow-validation.md
-      notes: "Incorporate instructional designer feedback. Adjust section order, prerequisites, or granularity if needed. Create final prioritized section list with dependencies mapped. Number sections sequentially. Mark any sections that can be developed in parallel. SAVE OUTPUT: Create manuscript/sections/chapter-{{chapter_number}}-section-list.md as authoritative section plan."
+      notes: "Incorporate instructional designer feedback. Adjust section order, prerequisites, or granularity if needed. Create final prioritized section list with dependencies mapped. Number sections sequentially. Mark any sections that can be developed in parallel. SAVE OUTPUT: Create {{config.manuscript.sections}}/chapter-{{chapter_number}}-section-list.md as authoritative section plan."
 
   flow_diagram: |
     ```mermaid
@@ -100,7 +100,7 @@ workflow:
     analysis_to_sections: "Chapter analysis complete. Identified {{section_count}} natural section boundaries. Create detailed section plans for each unit."
     sections_to_designer: "{{section_count}} section plans created. Each section 2-5 pages with clear objectives. Please validate learning flow and scaffolding."
     designer_to_architect: "Learning flow validated. {{issue_count}} adjustments recommended. Sections scaffold properly with dependencies mapped."
-    architect_final: "Section list finalized. {{section_count}} sections ready for development. {{parallel_count}} sections can be developed in parallel. Section list saved to manuscript/sections/chapter-{{chapter_number}}-section-list.md"
+    architect_final: "Section list finalized. {{section_count}} sections ready for development. {{parallel_count}} sections can be developed in parallel. Section list saved to {{config.manuscript.sections}}/chapter-{{chapter_number}}-section-list.md"
 
   time_estimates:
     analyze_chapter: "1-2 hours"

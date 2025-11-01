@@ -27,7 +27,7 @@ inputs:
 - Validate against book-level learning path
 - Use template chapter-outline-tmpl.yaml with create-doc.md task
 - Run execute-checklist.md with prerequisite-clarity-checklist.md
-  output: manuscript/outlines/chapter-{{chapter_number}}-outline.md
+  output: {{config.manuscript.outlines}}/chapter-{{chapter_number}}-outline.md
 
 ---
 
@@ -45,6 +45,12 @@ Before starting this task:
 - Understanding of target audience
 
 ## Workflow Steps
+
+### 0. Load Configuration
+
+- Read `.bmad-technical-writing/config.yaml` to resolve directory paths
+- Extract: `config.manuscript.outlines`, `config.manuscript.planning`
+- If config not found, use defaults: `manuscript/outlines`, `manuscript/planning`
 
 ### 1. Review Book Outline Context
 
@@ -302,4 +308,4 @@ After completing chapter outline:
 3. Begin drafting chapter content
 4. Create code examples (create-code-example.md)
 5. Develop exercises and solutions
-6. Test all code examples (test-code-examples.md)
+6. Test all code examples (test-{{config.codeExamples.root}}.md)

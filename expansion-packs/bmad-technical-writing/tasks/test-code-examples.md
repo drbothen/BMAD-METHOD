@@ -5,7 +5,7 @@
 ---
 
 task:
-id: test-code-examples
+id: test-{{config.codeExamples.root}}
 name: Test Code Examples
 description: Run automated tests on all code examples in chapter or book
 persona_default: code-curator
@@ -42,6 +42,12 @@ Before starting this task:
 - code-testing-checklist.md available
 
 ## Workflow Steps
+
+### 0. Load Configuration
+
+- Read `.bmad-technical-writing/config.yaml` to resolve directory paths
+- Extract: `config.codeExamples.root`
+- If config not found, use default: `code-examples`
 
 ### 1. Identify Code Examples
 

@@ -35,6 +35,8 @@ Prepare a complete, properly formatted manuscript package that meets publisher s
 
 ## Workflow Steps
 
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
+
 ### 1. Publisher-Specific Requirements
 
 **Manning:**
@@ -81,7 +83,7 @@ submission-package/
 │   ├── chapter-02/
 │   └── ...
 ├── code/
-│   └── code-examples.zip
+│   └── {{config.codeExamples.root}}.zip
 ├── metadata.txt
 └── README.txt
 ```
@@ -102,7 +104,7 @@ Final packaging:
 
 ```
 book-title-author-submission.zip
-├── manuscript/
+├── {{config.manuscript.root}}/
 ├── images/
 ├── code/
 ├── metadata.txt

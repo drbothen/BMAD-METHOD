@@ -29,6 +29,23 @@ description: >-
   and self-publishing platforms (Leanpub/KDP/Gumroad).
 author: Wes
 slashPrefix: bmad-tw
+
+# Manuscript directory structure configuration
+# These paths can be customized for different project structures or publisher requirements
+manuscript:
+  root: manuscript
+  planning: manuscript/planning
+  outlines: manuscript/outlines
+  sections: manuscript/sections
+  chapters: manuscript/chapters
+  reviews: manuscript/reviews
+  research: manuscript/research
+
+# Code examples directory for technical books
+codeExamples:
+  root: code-examples
+
+# Research configuration
 manuscriptResearch:
   researchLocation: manuscript/research
   reportFilenamePattern: "{{topic-slug}}-research-report.md"

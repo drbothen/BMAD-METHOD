@@ -53,6 +53,8 @@ Before merging:
 
 ## Workflow Steps
 
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
+
 ### 1. Read Shard Index
 
 Load and parse the shard index file:
@@ -352,7 +354,7 @@ cp chapter-7-advanced-queries.md chapter-7-advanced-queries.md.backup-2025-10-26
 
 Write to original filename:
 
-- Location: `manuscript/chapters/chapter-7-advanced-queries.md`
+- Location: `{{config.manuscript.chapters}}/chapter-7-advanced-queries.md`
 - Format: UTF-8 Markdown
 - Line endings: LF (Unix-style)
 - Final newline: Yes
@@ -376,7 +378,7 @@ Add note at bottom of merged file (optional):
 Option 1 - Archive shards:
 
 ```
-manuscript/chapters/
+{{config.manuscript.chapters}}/
 ├── chapter-7-advanced-queries.md           # Merged
 ├── chapter-7-advanced-queries.md.backup    # Original backup
 └── chapter-7-shards/                       # Archive (keep for reference)
@@ -388,7 +390,7 @@ manuscript/chapters/
 Option 2 - Remove shards (if confident):
 
 ```
-manuscript/chapters/
+{{config.manuscript.chapters}}/
 ├── chapter-7-advanced-queries.md           # Merged
 └── chapter-7-advanced-queries.md.backup    # Original backup
 ```
@@ -404,13 +406,13 @@ Provide summary of merge operation:
 
 **Source:**
 
-- Shard Directory: manuscript/chapters/chapter-7-shards/
+- Shard Directory: {{config.manuscript.chapters}}/chapter-7-shards/
 - Shard Count: 6
 - Shards Merged: chapter-7-shard-1.md through chapter-7-shard-6.md
 
 **Output:**
 
-- Merged File: manuscript/chapters/chapter-7-advanced-queries.md
+- Merged File: {{config.manuscript.chapters}}/chapter-7-advanced-queries.md
 - Total Pages: ~32 (estimated)
 - Total Sections: 8 major sections
 - Total Code Blocks: 12

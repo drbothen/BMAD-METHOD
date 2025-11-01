@@ -23,7 +23,7 @@ inputs:
 
 - target-versions
 - target-platforms
-- code-examples-location
+- {{config.codeExamples.root}}-location
   steps:
 - Define target versions for testing
 - Define target platforms (Windows/macOS/Linux as applicable)

@@ -24,7 +24,7 @@ inputs:
 - Apply transition patterns for natural flow
 - Ensure transitions feel natural, not formulaic
 - Update chapter-integrated.md with improvements
-  output: Updated manuscript/chapters/chapter-{{chapter_number}}-integrated.md with improved transitions
+  output: Updated {{config.manuscript.chapters}}/chapter-{{chapter_number}}-integrated.md with improved transitions
 
 ---
 
@@ -41,6 +41,8 @@ Transform a mechanically merged chapter into a cohesive narrative by adding effe
 - Familiarity with content being connected
 
 ## Workflow Steps
+
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
 
 ### 1. Read Integrated Chapter Completely
 
@@ -749,7 +751,7 @@ Enhanced chapter with improved transitions:
 - Natural, non-formulaic language
 - Maintains author voice and pacing
 
-**File Location:** Updated `manuscript/chapters/chapter-{{chapter_number}}-integrated.md`
+**File Location:** Updated `{{config.manuscript.chapters}}/chapter-{{chapter_number}}-integrated.md`
 
 **Status:** Ready for learning flow validation (next workflow step)
 

@@ -69,7 +69,7 @@ workflow:
         K --> M[Tutorial Ready for Students]
 
         B -.-> B1[Optional: *analyze-difficulty-curve]
-        D -.-> D1[Optional: *test-code-examples]
+        D -.-> D1[Optional: *test-{{config.codeExamples.root}}]
         F -.-> F1[Optional: Fresh environment test]
         I -.-> I1[Optional: *assess-learning-objectives]
 

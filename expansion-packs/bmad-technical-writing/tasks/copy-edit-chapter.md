@@ -46,6 +46,8 @@ Transform technically accurate content into professionally polished, publication
 
 ## Workflow Steps
 
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
+
 ### 1. Review Grammar and Spelling
 
 Perform comprehensive language check:
@@ -276,7 +278,7 @@ Identify which tone document applies to this project:
 
 **Tone Reference:**
 - File: [tone-specification.md OR extracted-tone-patterns.md]
-- Location: [docs/ OR manuscript/planning/]
+- Location: [docs/ OR {{config.manuscript.planning}}/]
 
 **Key Tone Characteristics to Validate:**
 1. [Characteristic 1 from specification]

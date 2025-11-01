@@ -12,7 +12,7 @@ Use this checklist when integrating a code repository with a book chapter for Ma
 
 - [ ] Chapter code in dedicated folder with consistent naming (e.g., `chapter-05/`, `ch05/`, `05-chapter-name/`)
 - [ ] Folder naming consistent with book's chapter numbering scheme
-- [ ] Source code separated from manuscript/book files
+- [ ] Source code separated from {{config.manuscript.root}}/book files
 - [ ] Code examples organized by section (if chapter has multiple major sections)
 - [ ] No build artifacts committed (`node_modules/`, `__pycache__/`, `*.class`, `target/`, `dist/`, etc.)
 - [ ] No IDE-specific files committed (`.vscode/`, `.idea/`, `.vs/`, etc.)

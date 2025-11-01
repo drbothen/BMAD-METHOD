@@ -59,6 +59,8 @@ Transform AI-assisted or AI-generated chapter drafts into authentic, human-sound
 
 ## Workflow Steps
 
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
+
 ### Step 1: Execute Pattern Detection Baseline
 
 Establish AI pattern baseline before humanization:
@@ -117,7 +119,7 @@ Run `execute-checklist.md` with `generative-ai-compliance-checklist.md`
 Prepare materials for humanization:
 
 **Load Files:**
-1. Chapter draft: `manuscript/chapters/chapter-{{chapter_number}}-draft.md`
+1. Chapter draft: `{{config.manuscript.chapters}}/chapter-{{chapter_number}}-draft.md`
 2. Compliance report from Step 1
 3. Reference: `ai-pattern-removal-guide.md` (how to fix each pattern)
 4. Reference: `publisher-specific-ai-patterns.md` (if targeting specific publisher)
@@ -813,7 +815,7 @@ Create comprehensive record of humanization transformations:
 
 Humanized chapter with:
 
-1. **Updated Chapter File**: `manuscript/chapters/chapter-{{chapter_number}}-humanized.md`
+1. **Updated Chapter File**: `{{config.manuscript.chapters}}/chapter-{{chapter_number}}-humanized.md`
 2. **Change Log**: Comprehensive record of all humanization changes
 3. **Validation Report**: Before/after metrics from humanization-checklist.md
 4. **Status Update**: Ready for technical-review or copy-edit-chapter

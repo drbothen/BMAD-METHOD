@@ -26,7 +26,7 @@ inputs:
 - Verify all learning objectives are addressed
 - Run execute-checklist.md with chapter-completeness-checklist.md
 - Use template chapter-draft-tmpl.yaml with create-doc.md task
-  output: manuscript/chapters/chapter-{{chapter_number}}-draft.md
+  output: {{config.manuscript.chapters}}/chapter-{{chapter_number}}-draft.md
 
 ---
 
@@ -45,6 +45,12 @@ Before starting this task:
 - Understanding of target audience skill level
 
 ## Workflow Steps
+
+### 0. Load Configuration
+
+- Read `.bmad-technical-writing/config.yaml` to resolve directory paths
+- Extract: `config.manuscript.chapters`, `config.manuscript.sections`, `config.codeExamples.root`
+- If config not found, use defaults: `manuscript/chapters`, `manuscript/sections`, `code-examples`
 
 ### 1. Review Chapter Outline
 
@@ -339,7 +345,7 @@ Final quality check before review:
 The completed chapter draft should be:
 
 - **Format:** Markdown (.md file)
-- **Location:** manuscript/chapters/chapter-{{chapter_number}}-draft.md
+- **Location:** {{config.manuscript.chapters}}/chapter-{{chapter_number}}-draft.md
 - **Code Examples:** In separate repository folder with clear organization
 - **Length:** Typically 15-30 pages (adjust based on topic complexity)
 - **Status:** Ready for technical review

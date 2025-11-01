@@ -52,6 +52,8 @@ Before sharding:
 
 ## Workflow Steps
 
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
+
 ### 1. Analyze Chapter Structure
 
 Understand the chapter's organization:
@@ -350,7 +352,7 @@ List major cross-references:
 Create organized directory structure:
 
 ```
-manuscript/chapters/
+{{config.manuscript.chapters}}/
 ├── chapter-7-advanced-queries.md           # Original (keep as backup)
 ├── chapter-7-shards/
 │   ├── chapter-7-shards-index.md           # Index/navigation
@@ -377,7 +379,7 @@ The completed sharding produces:
 **Shard files:**
 
 - Format: Markdown (.md)
-- Location: `manuscript/chapters/{chapter-name}-shards/`
+- Location: `{{config.manuscript.chapters}}/{chapter-name}-shards/`
 - Naming: `{chapter-name}-shard-{n}.md`
 - Count: Based on chapter size and strategy
 - Size: 5-10 pages per shard (target)

@@ -280,7 +280,7 @@ Create `package.json`:
 
 ```json
 {
-  "name": "book-code-examples",
+  "name": "book-{{config.codeExamples.root}}",
   "version": "1.0.0",
   "description": "Code examples for [Book Title]",
   "scripts": {

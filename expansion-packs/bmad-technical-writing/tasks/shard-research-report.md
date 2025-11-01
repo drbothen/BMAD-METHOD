@@ -56,6 +56,8 @@ Before sharding:
 
 ## Workflow Steps
 
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
+
 ### 1. Analyze Research Report Structure
 
 Understand the research report's organization:
@@ -436,7 +438,7 @@ List major cross-references in the "Cross-References" section:
 Create organized directory structure following expansion pack conventions:
 
 ```
-manuscript/research/
+{{config.manuscript.research}}/
 ├── react-hooks-research-report.md           # Original (keep as backup)
 └── react-hooks-shards/
     ├── research-shards-index.md             # Index/navigation/cross-refs
@@ -454,7 +456,7 @@ manuscript/research/
 - Put all shards in dedicated subdirectory named `{topic}-shards/`
 - Include comprehensive index file for navigation and cross-references
 - Use consistent naming convention
-- Follow expansion pack directory structure (`manuscript/research/`)
+- Follow expansion pack directory structure (`{{config.manuscript.research}}/`)
 
 ## Output
 
@@ -463,7 +465,7 @@ The completed sharding produces:
 **Shard files:**
 
 - Format: Markdown (.md)
-- Location: `manuscript/research/{topic}-shards/`
+- Location: `{{config.manuscript.research}}/{topic}-shards/`
 - Naming: `{topic-slug}-shard-{n}.md`
 - Count: Based on research report size and strategy
 - Size: 5-10 pages per shard (target)
