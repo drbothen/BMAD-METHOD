@@ -111,6 +111,8 @@ dependencies:
     - humanization-examples.md
     - humanization-techniques.md
     - ai-detection-patterns.md
+    - formatting-humanization-patterns.md
+    - heading-humanization-patterns.md
 ```
 
 ## Startup Context

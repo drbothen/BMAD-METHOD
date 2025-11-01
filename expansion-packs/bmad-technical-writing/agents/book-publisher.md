@@ -87,6 +87,10 @@ dependencies:
     - bmad-kb.md
     - publisher-guidelines.md
     - publisher-specific-ai-patterns.md
+    - humanization-techniques.md
+    - ai-detection-patterns.md
+    - formatting-humanization-patterns.md
+    - heading-humanization-patterns.md
 ```
 
 ## Startup Context
