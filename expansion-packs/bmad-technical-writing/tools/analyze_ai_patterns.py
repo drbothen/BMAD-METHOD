@@ -1,26 +1,47 @@
 #!/usr/bin/env python3
 """
-AI Pattern Analysis Tool for Technical Writing
+AI Pattern Analysis Tool for Technical Writing - ENHANCED EDITION
 
-Analyzes manuscripts for AI-generated content patterns across multiple dimensions:
-- Perplexity (vocabulary patterns)
+Analyzes manuscripts for AI-generated content patterns across 8+ dimensions:
+
+CORE DIMENSIONS (Always Available):
+- Perplexity (vocabulary patterns, AI-characteristic words)
 - Burstiness (sentence length variation)
 - Structure (transitions, lists, headings)
-- Voice (authenticity markers)
-- Technical depth (expertise indicators)
+- Voice (authenticity markers, contractions)
+- Technical depth (domain expertise indicators)
 - Formatting (em-dashes, bold, italics)
-- Lexical diversity (vocabulary richness)
-- Readability metrics
+- Lexical diversity (Type-Token Ratio)
+
+ENHANCED DIMENSIONS (Optional NLP Libraries):
+- NLTK: Enhanced lexical diversity (MTLD), stemmed diversity
+- VADER: Sentiment variation across paragraphs (detects flatness)
+- spaCy: Syntactic pattern repetition, POS diversity, dependency depth
+- Textacy: Stylometric analysis, automated readability
+- Transformers: True perplexity calculation using GPT-2 model
+
+All enhanced features use graceful degradation - script works without optional dependencies.
 
 Based on research from:
 - ai-detection-patterns.md
 - formatting-humanization-patterns.md
 - heading-humanization-patterns.md
 - humanization-techniques.md
+- Academic NLP research (GPTZero, Originality.AI methodologies)
 
 Usage:
-    python analyze_ai_patterns.py <file_path> [options]
-    python analyze_ai_patterns.py --batch <directory> [options]
+    # Basic analysis (no libraries required)
+    python analyze_ai_patterns.py <file_path>
+
+    # Enhanced analysis with all NLP features
+    pip install -r requirements.txt
+    python analyze_ai_patterns.py <file_path>
+
+    # Detailed mode with line numbers and suggestions
+    python analyze_ai_patterns.py <file_path> --detailed
+
+    # Batch analyze directory
+    python analyze_ai_patterns.py --batch <directory> --format tsv > results.tsv
 """
 
 import re
@@ -41,6 +62,84 @@ except ImportError:
     HAS_TEXTSTAT = False
     print("Warning: textstat not installed. Readability metrics will be unavailable.", file=sys.stderr)
     print("Install with: pip install textstat", file=sys.stderr)
+
+try:
+    import nltk
+    from nltk.tokenize import sent_tokenize, word_tokenize
+    from nltk.stem import PorterStemmer
+    try:
+        # Check if required NLTK data is available
+        nltk.data.find('tokenizers/punkt')
+        nltk.data.find('tokenizers/punkt_tab')
+    except LookupError:
+        print("Downloading required NLTK data...", file=sys.stderr)
+        nltk.download('punkt', quiet=True)
+        nltk.download('punkt_tab', quiet=True)
+    HAS_NLTK = True
+except (ImportError, ValueError) as e:
+    HAS_NLTK = False
+    if isinstance(e, ValueError):
+        print(f"Warning: NLTK dependency conflict ({str(e)[:80]}...). Enhanced lexical diversity unavailable.", file=sys.stderr)
+    else:
+        print("Warning: nltk not installed. Enhanced lexical diversity unavailable.", file=sys.stderr)
+        print("Install with: pip install nltk", file=sys.stderr)
+
+try:
+    if not HAS_NLTK:
+        raise ImportError("NLTK not available")
+    from nltk.sentiment import SentimentIntensityAnalyzer
+    try:
+        nltk.data.find('sentiment/vader_lexicon.zip')
+    except LookupError:
+        print("Downloading VADER lexicon...", file=sys.stderr)
+        nltk.download('vader_lexicon', quiet=True)
+    HAS_VADER = True
+except (ImportError, ValueError):
+    HAS_VADER = False
+    # Don't print warning if NLTK already failed
+
+try:
+    from textblob import TextBlob
+    HAS_TEXTBLOB = True
+except (ImportError, ValueError):
+    HAS_TEXTBLOB = False
+    # Don't print warning - TextBlob not critical
+
+try:
+    import spacy
+    # Try to load small English model
+    try:
+        nlp_spacy = spacy.load("en_core_web_sm")
+        HAS_SPACY = True
+    except OSError:
+        print("Warning: spaCy model not found. Run: python -m spacy download en_core_web_sm", file=sys.stderr)
+        HAS_SPACY = False
+        nlp_spacy = None
+except (ImportError, ValueError):
+    HAS_SPACY = False
+    nlp_spacy = None
+    # Don't print warning - optional
+
+try:
+    if not HAS_SPACY:
+        raise ImportError("spaCy not available")
+    import textacy
+    import textacy.extract
+    HAS_TEXTACY = True
+except (ImportError, ValueError, AttributeError):
+    HAS_TEXTACY = False
+    # Don't print warning - optional
+
+try:
+    import torch
+    from transformers import GPT2LMHeadModel, GPT2TokenizerFast
+    HAS_TRANSFORMERS = True
+    # Initialize model and tokenizer (will be loaded lazily if needed)
+    _transformer_model = None
+    _transformer_tokenizer = None
+except (ImportError, ValueError):
+    HAS_TRANSFORMERS = False
+    # Don't print warning - optional and heavy
 
 
 # Detailed mode dataclasses
@@ -180,6 +279,27 @@ class AnalysisResults:
     gunning_fog: Optional[float] = None
     smog_index: Optional[float] = None
 
+    # Enhanced lexical metrics (optional - requires NLTK)
+    mtld_score: Optional[float] = None  # Moving Average Type-Token Ratio
+    stemmed_diversity: Optional[float] = None  # Diversity after stemming
+
+    # Sentiment metrics (optional - requires VADER/TextBlob)
+    sentiment_variance: Optional[float] = None  # Paragraph sentiment variation
+    sentiment_mean: Optional[float] = None  # Average sentiment
+    sentiment_flatness_score: Optional[str] = None  # HIGH/MEDIUM/LOW
+
+    # Syntactic metrics (optional - requires spaCy)
+    syntactic_repetition_score: Optional[float] = None  # 0-1, higher = more repetitive
+    pos_diversity: Optional[float] = None  # Part-of-speech tag diversity
+    avg_dependency_depth: Optional[float] = None  # Syntactic complexity
+
+    # Stylometric metrics (optional - requires Textacy)
+    automated_readability: Optional[float] = None
+    textacy_diversity: Optional[float] = None
+
+    # True perplexity (optional - requires Transformers)
+    gpt2_perplexity: Optional[float] = None  # Lower = more predictable (AI-like)
+
     # Dimension scores (calculated)
     perplexity_score: str = ""  # HIGH/MEDIUM/LOW/VERY LOW
     burstiness_score: str = ""
@@ -187,6 +307,8 @@ class AnalysisResults:
     voice_score: str = ""
     technical_score: str = ""
     formatting_score: str = ""
+    syntactic_score: str = ""  # NEW: Syntactic naturalness
+    sentiment_score: str = ""  # NEW: Sentiment variation
     overall_assessment: str = ""
 
 
@@ -570,6 +692,13 @@ class AIPatternAnalyzer:
         formatting = self._analyze_formatting(text)
         readability = self._calculate_readability(text) if HAS_TEXTSTAT else {}
 
+        # Enhanced analyses (optional libraries)
+        nltk_lexical = self._analyze_nltk_lexical(text) if HAS_NLTK else {}
+        sentiment = self._analyze_sentiment_variation(text) if HAS_VADER else {}
+        syntactic = self._analyze_syntactic_patterns(text) if HAS_SPACY else {}
+        textacy_metrics = self._analyze_textacy_metrics(text) if HAS_TEXTACY and HAS_SPACY else {}
+        transformer_ppl = self._calculate_transformer_perplexity(text) if HAS_TRANSFORMERS else {}
+
         # Calculate pages (estimate: 500-1000 tokens per page, use 750 average)
         estimated_pages = max(1, word_count / 750)
 
@@ -629,7 +758,12 @@ class AIPatternAnalyzer:
             bold_markdown_count=formatting['bold'],
             italic_markdown_count=formatting['italics'],
 
-            **readability
+            **readability,
+            **nltk_lexical,
+            **sentiment,
+            **syntactic,
+            **textacy_metrics,
+            **transformer_ppl
         )
 
         # Calculate dimension scores
@@ -639,6 +773,8 @@ class AIPatternAnalyzer:
         results.voice_score = self._score_voice(results)
         results.technical_score = self._score_technical(results)
         results.formatting_score = self._score_formatting(results)
+        results.syntactic_score = self._score_syntactic(results)
+        results.sentiment_score = self._score_sentiment(results)
         results.overall_assessment = self._assess_overall(results)
 
         return results
@@ -784,6 +920,265 @@ class AIPatternAnalyzer:
             'unique': unique,
             'diversity': round(diversity, 3)
         }
+
+    def _analyze_nltk_lexical(self, text: str) -> Dict:
+        """Enhanced lexical diversity using NLTK"""
+        if not HAS_NLTK:
+            return {}
+
+        try:
+            # Remove code blocks
+            text = re.sub(r'```[\s\S]*?```', '', text)
+
+            # Tokenize
+            words = word_tokenize(text.lower())
+            words = [w for w in words if w.isalnum()]  # Keep only alphanumeric
+
+            if not words:
+                return {}
+
+            # Calculate MTLD (Moving Average Type-Token Ratio)
+            # This is more accurate than simple TTR for longer texts
+            mtld = self._calculate_mtld(words)
+
+            # Calculate stemmed diversity (catches word variants)
+            stemmer = PorterStemmer()
+            stemmed = [stemmer.stem(w) for w in words]
+            stemmed_unique = len(set(stemmed))
+            stemmed_diversity = stemmed_unique / len(stemmed) if stemmed else 0
+
+            return {
+                'mtld_score': round(mtld, 2),
+                'stemmed_diversity': round(stemmed_diversity, 3)
+            }
+        except Exception as e:
+            print(f"Warning: NLTK lexical analysis failed: {e}", file=sys.stderr)
+            return {}
+
+    def _calculate_mtld(self, words: List[str], threshold: float = 0.72) -> float:
+        """Calculate Moving Average Type-Token Ratio (MTLD)"""
+        if len(words) < 50:
+            return len(set(words)) / len(words) * 100  # Fallback to TTR
+
+        def _mtld_direction(words_list):
+            factor = 0
+            factor_lengths = []
+            types_seen = set()
+            tokens = 0
+
+            for word in words_list:
+                tokens += 1
+                types_seen.add(word)
+                if len(types_seen) / tokens < threshold:
+                    factor += 1
+                    factor_lengths.append(tokens)
+                    types_seen = set()
+                    tokens = 0
+
+            # Add partial factor
+            if tokens > 0:
+                factor += (1 - (len(types_seen) / tokens)) / (1 - threshold)
+
+            return (len(words_list) / factor) if factor > 0 else len(words_list)
+
+        # Calculate in both directions and average
+        forward = _mtld_direction(words)
+        backward = _mtld_direction(words[::-1])
+
+        return (forward + backward) / 2
+
+    def _analyze_sentiment_variation(self, text: str) -> Dict:
+        """Analyze sentiment variation across paragraphs (detects flatness)"""
+        if not HAS_VADER:
+            return {}
+
+        try:
+            sia = SentimentIntensityAnalyzer()
+
+            # Split into paragraphs
+            paragraphs = [p.strip() for p in re.split(r'\n\s*\n', text) if p.strip()]
+            paragraphs = [p for p in paragraphs if not p.startswith('#') and '```' not in p]
+
+            if len(paragraphs) < 3:
+                return {}
+
+            # Get sentiment for each paragraph
+            sentiments = []
+            for para in paragraphs:
+                scores = sia.polarity_scores(para)
+                sentiments.append(scores['compound'])  # -1 to 1 scale
+
+            # Calculate variance
+            variance = statistics.variance(sentiments) if len(sentiments) > 1 else 0
+            mean_sentiment = statistics.mean(sentiments)
+
+            # Score flatness
+            if variance < 0.01:
+                flatness = "VERY LOW"  # Too flat, AI-like
+            elif variance < 0.05:
+                flatness = "LOW"
+            elif variance < 0.15:
+                flatness = "MEDIUM"
+            else:
+                flatness = "HIGH"  # Good variation
+
+            return {
+                'sentiment_variance': round(variance, 3),
+                'sentiment_mean': round(mean_sentiment, 3),
+                'sentiment_flatness_score': flatness
+            }
+        except Exception as e:
+            print(f"Warning: Sentiment analysis failed: {e}", file=sys.stderr)
+            return {}
+
+    def _analyze_syntactic_patterns(self, text: str) -> Dict:
+        """Detect syntactic repetition using spaCy"""
+        if not HAS_SPACY:
+            return {}
+
+        try:
+            # Remove code blocks
+            text = re.sub(r'```[\s\S]*?```', '', text)
+
+            # Process with spaCy (limit to first 100k chars for performance)
+            doc = nlp_spacy(text[:100000])
+
+            # Extract sentence structures (POS patterns)
+            sentence_structures = []
+            pos_tags = []
+            dependency_depths = []
+
+            for sent in doc.sents:
+                # Get POS pattern
+                pos_pattern = ' '.join([token.pos_ for token in sent])
+                sentence_structures.append(pos_pattern)
+
+                # Collect POS tags
+                pos_tags.extend([token.pos_ for token in sent])
+
+                # Calculate dependency depth
+                max_depth = 0
+                for token in sent:
+                    depth = len(list(token.ancestors))
+                    max_depth = max(max_depth, depth)
+                dependency_depths.append(max_depth)
+
+            if not sentence_structures:
+                return {}
+
+            # Calculate syntactic repetition (how many unique patterns)
+            unique_structures = len(set(sentence_structures))
+            total_structures = len(sentence_structures)
+            repetition_score = 1 - (unique_structures / total_structures) if total_structures > 0 else 0
+
+            # Calculate POS diversity
+            unique_pos = len(set(pos_tags))
+            total_pos = len(pos_tags)
+            pos_diversity = unique_pos / total_pos if total_pos > 0 else 0
+
+            # Average dependency depth (complexity)
+            avg_depth = statistics.mean(dependency_depths) if dependency_depths else 0
+
+            return {
+                'syntactic_repetition_score': round(repetition_score, 3),
+                'pos_diversity': round(pos_diversity, 3),
+                'avg_dependency_depth': round(avg_depth, 2)
+            }
+        except Exception as e:
+            print(f"Warning: Syntactic analysis failed: {e}", file=sys.stderr)
+            return {}
+
+    def _analyze_textacy_metrics(self, text: str) -> Dict:
+        """Advanced stylometric analysis using Textacy"""
+        if not HAS_TEXTACY or not HAS_SPACY:
+            return {}
+
+        try:
+            # Remove code blocks
+            text = re.sub(r'```[\s\S]*?```', '', text)
+
+            # Create textacy Doc
+            doc = textacy.make_spacy_doc(text[:100000], lang=nlp_spacy)
+
+            # Calculate automated readability index
+            # ARI = 4.71 * (chars/words) + 0.5 * (words/sentences) - 21.43
+            stats = textacy.extract.basics.words(doc)
+            word_list = list(stats)
+
+            if not word_list:
+                return {}
+
+            total_chars = sum(len(str(token)) for token in word_list)
+            total_words = len(word_list)
+            sentences = list(doc.sents)
+            total_sents = len(sentences) if sentences else 1
+
+            ari = 4.71 * (total_chars / total_words) + 0.5 * (total_words / total_sents) - 21.43
+
+            # Textacy's lexical diversity (different calculation)
+            unique_words = len(set(str(token).lower() for token in word_list))
+            textacy_div = unique_words / total_words if total_words > 0 else 0
+
+            return {
+                'automated_readability': round(ari, 2),
+                'textacy_diversity': round(textacy_div, 3)
+            }
+        except Exception as e:
+            print(f"Warning: Textacy analysis failed: {e}", file=sys.stderr)
+            return {}
+
+    def _calculate_transformer_perplexity(self, text: str) -> Dict:
+        """Calculate true perplexity using GPT-2 model"""
+        if not HAS_TRANSFORMERS:
+            return {}
+
+        try:
+            global _transformer_model, _transformer_tokenizer
+
+            # Lazy load model (heavy operation)
+            if _transformer_model is None:
+                print("Loading GPT-2 model for perplexity calculation (one-time setup)...", file=sys.stderr)
+                _transformer_model = GPT2LMHeadModel.from_pretrained('gpt2')
+                _transformer_tokenizer = GPT2TokenizerFast.from_pretrained('gpt2')
+                _transformer_model.eval()
+
+            # Remove code blocks
+            text = re.sub(r'```[\s\S]*?```', '', text)
+
+            # Limit text length (transformers are slow)
+            text = text[:5000]  # First 5000 chars
+
+            # Tokenize
+            encodings = _transformer_tokenizer(text, return_tensors='pt')
+
+            # Calculate perplexity
+            max_length = _transformer_model.config.n_positions
+            stride = 512
+
+            nlls = []
+            for i in range(0, encodings.input_ids.size(1), stride):
+                begin_loc = max(i + stride - max_length, 0)
+                end_loc = min(i + stride, encodings.input_ids.size(1))
+                trg_len = end_loc - i
+
+                input_ids = encodings.input_ids[:, begin_loc:end_loc]
+                target_ids = input_ids.clone()
+                target_ids[:, :-trg_len] = -100
+
+                with torch.no_grad():
+                    outputs = _transformer_model(input_ids, labels=target_ids)
+                    neg_log_likelihood = outputs.loss * trg_len
+
+                nlls.append(neg_log_likelihood)
+
+            ppl = torch.exp(torch.stack(nlls).sum() / end_loc)
+
+            return {
+                'gpt2_perplexity': round(ppl.item(), 2)
+            }
+        except Exception as e:
+            print(f"Warning: Transformer perplexity calculation failed: {e}", file=sys.stderr)
+            return {}
 
     def _analyze_structure(self, text: str) -> Dict:
         """Analyze structural patterns (lists)"""
@@ -1081,18 +1476,55 @@ class AIPatternAnalyzer:
         else:
             return "VERY LOW"  # AI-like (ChatGPT dash problem)
 
+    def _score_syntactic(self, r: AnalysisResults) -> str:
+        """Score syntactic dimension based on structural repetition"""
+        if r.syntactic_repetition_score is None:
+            return "UNKNOWN"
+
+        # Lower repetition = more varied (better)
+        repetition = r.syntactic_repetition_score
+
+        if repetition <= 0.3:
+            return "HIGH"  # Varied structures
+        elif repetition <= 0.5:
+            return "MEDIUM"
+        elif repetition <= 0.7:
+            return "LOW"
+        else:
+            return "VERY LOW"  # Mechanical repetition (AI-like)
+
+    def _score_sentiment(self, r: AnalysisResults) -> str:
+        """Score sentiment dimension based on variation"""
+        if r.sentiment_flatness_score is None:
+            return "UNKNOWN"
+
+        # sentiment_flatness_score is already scored in analysis
+        return r.sentiment_flatness_score
+
     def _assess_overall(self, r: AnalysisResults) -> str:
         """Provide overall humanization assessment"""
         score_map = {"HIGH": 4, "MEDIUM": 3, "LOW": 2, "VERY LOW": 1, "UNKNOWN": 2.5}
 
+        # Base dimensions (always present)
         scores = [
-            score_map[r.perplexity_score] * 0.20,  # 20% weight
-            score_map[r.burstiness_score] * 0.25,  # 25% weight
-            score_map[r.structure_score] * 0.20,   # 20% weight
-            score_map[r.voice_score] * 0.20,       # 20% weight
-            score_map[r.technical_score] * 0.10,   # 10% weight
+            score_map[r.perplexity_score] * 0.18,  # 18% weight
+            score_map[r.burstiness_score] * 0.22,  # 22% weight
+            score_map[r.structure_score] * 0.18,   # 18% weight
+            score_map[r.voice_score] * 0.18,       # 18% weight
+            score_map[r.technical_score] * 0.09,   # 9% weight
             score_map[r.formatting_score] * 0.05,  # 5% weight
         ]
+
+        # Enhanced dimensions (if available)
+        if r.syntactic_score and r.syntactic_score != "UNKNOWN":
+            scores.append(score_map[r.syntactic_score] * 0.05)  # 5% weight
+        else:
+            scores.append(score_map["UNKNOWN"] * 0.05)
+
+        if r.sentiment_score and r.sentiment_score != "UNKNOWN":
+            scores.append(score_map[r.sentiment_score] * 0.05)  # 5% weight
+        else:
+            scores.append(score_map["UNKNOWN"] * 0.05)
 
         weighted_avg = sum(scores)
 
@@ -1431,7 +1863,18 @@ Burstiness (Sentence Var):  {r.burstiness_score:12s}  (μ={r.sentence_mean_lengt
 Structure (Organization):   {r.structure_score:12s}  (Formulaic: {r.formulaic_transitions_count}, H-depth: {r.heading_depth})
 Voice (Authenticity):       {r.voice_score:12s}  (1st-person: {r.first_person_count}, You: {r.direct_address_count})
 Technical (Expertise):      {r.technical_score:12s}  (Domain terms: {r.domain_terms_count})
-Formatting (Em-dashes):     {r.formatting_score:12s}  ({r.em_dashes_per_page:.1f} per page)
+Formatting (Em-dashes):     {r.formatting_score:12s}  ({r.em_dashes_per_page:.1f} per page)"""
+
+        # Add enhanced dimensions if available
+        if r.syntactic_score and r.syntactic_score != "UNKNOWN":
+            report += f"""
+Syntactic (Naturalness):    {r.syntactic_score:12s}  (Repetition: {r.syntactic_repetition_score:.2f}, POS div: {r.pos_diversity:.2f})"""
+
+        if r.sentiment_score and r.sentiment_score != "UNKNOWN":
+            report += f"""
+Sentiment (Variation):      {r.sentiment_score:12s}  (Variance: {r.sentiment_variance:.3f}, Mean: {r.sentiment_mean:.2f})"""
+
+        report += f"""
 
 OVERALL ASSESSMENT: {r.overall_assessment}
 
@@ -1468,6 +1911,57 @@ FORMATTING PATTERNS:
   Bold (markdown): {r.bold_markdown_count}
   Italic (markdown): {r.italic_markdown_count}
 """
+
+        # Enhanced metrics section
+        enhanced_sections = []
+
+        if r.mtld_score is not None or r.stemmed_diversity is not None:
+            section = "\nENHANCED LEXICAL DIVERSITY (NLTK):"
+            if r.mtld_score is not None:
+                section += f"\n  MTLD Score: {r.mtld_score:.2f} (Moving Average TTR, higher = more diverse)"
+            if r.stemmed_diversity is not None:
+                section += f"\n  Stemmed Diversity: {r.stemmed_diversity:.3f} (Diversity after stemming)"
+            enhanced_sections.append(section)
+
+        if r.sentiment_variance is not None:
+            section = f"""
+SENTIMENT VARIATION (VADER):
+  Variance: {r.sentiment_variance:.3f} (Higher = more emotional variation)
+  Mean Sentiment: {r.sentiment_mean:.2f} (-1 negative, +1 positive)
+  Flatness Score: {r.sentiment_flatness_score}"""
+            enhanced_sections.append(section)
+
+        if r.syntactic_repetition_score is not None:
+            section = f"""
+SYNTACTIC PATTERNS (spaCy):
+  Structural Repetition: {r.syntactic_repetition_score:.3f} (Lower = more varied)
+  POS Tag Diversity: {r.pos_diversity:.3f} (Part-of-speech variation)
+  Avg Dependency Depth: {r.avg_dependency_depth:.2f} (Syntactic complexity)"""
+            enhanced_sections.append(section)
+
+        if r.automated_readability is not None or r.textacy_diversity is not None:
+            section = "\nSTYLOMETRIC ANALYSIS (Textacy):"
+            if r.automated_readability is not None:
+                section += f"\n  Automated Readability Index: {r.automated_readability:.2f}"
+            if r.textacy_diversity is not None:
+                section += f"\n  Textacy Diversity: {r.textacy_diversity:.3f}"
+            enhanced_sections.append(section)
+
+        if r.gpt2_perplexity is not None:
+            section = f"""
+TRUE PERPLEXITY (GPT-2 Transformer):
+  Perplexity Score: {r.gpt2_perplexity:.2f} (Lower = more predictable/AI-like)
+  Interpretation: <50 = AI-like, 50-150 = Mixed, >150 = Human-like"""
+            enhanced_sections.append(section)
+
+        if enhanced_sections:
+            report += """
+{'─' * 80}
+ENHANCED NLP ANALYSIS
+{'─' * 80}
+"""
+            for section in enhanced_sections:
+                report += section + "\n"
 
         if HAS_TEXTSTAT and r.flesch_reading_ease is not None:
             report += f"""

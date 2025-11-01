@@ -15,18 +15,50 @@ Comprehensive Python script for analyzing manuscripts to detect AI-generated con
 
 ## Installation
 
+### Quick Start (Automated - Recommended)
+
+For **full enhanced features** with all 6 NLP libraries:
+
 ```bash
-# Install optional dependencies for readability metrics
+# Run the automated setup script
+./setup.sh
+```
+
+This creates a clean virtual environment with:
+- ✅ NLTK (enhanced lexical diversity)
+- ✅ VADER (sentiment analysis)
+- ✅ TextBlob (alternative sentiment)
+- ✅ spaCy (syntactic patterns)
+- ✅ Textacy (stylometric analysis)
+- ✅ Transformers (GPT-2 perplexity)
+
+**Why a separate environment?** Your anaconda environment has numpy version conflicts with 50+ existing packages. A dedicated venv avoids breaking other tools. See `SETUP-GUIDE.md` for details.
+
+### Manual Installation
+
+#### Option 1: Basic (Core Features Only - No Dependencies)
+```bash
+# No installation needed - works with Python stdlib
+python analyze_ai_patterns.py chapter.md
+```
+
+#### Option 2: Enhanced (All NLP Features - Manual Setup)
+```bash
+# Create clean virtual environment
+python3 -m venv nlp-env
+source nlp-env/bin/activate
+
+# Install all dependencies
 pip install -r requirements.txt
 
-# Or minimal installation (textstat is optional)
-pip install textstat
+# Download required models
+python -m nltk.downloader punkt punkt_tab vader_lexicon
+python -m spacy download en_core_web_sm
 ```
 
 **Requirements:**
-- Python 3.7+
-- textstat 0.7.3+ (optional, for readability metrics)
-- Standard library: re, statistics, argparse, pathlib, dataclasses, json, typing
+- Python 3.7+ (3.9+ recommended for full compatibility)
+- See `requirements.txt` for complete list of optional dependencies
 
 ## Usage
 

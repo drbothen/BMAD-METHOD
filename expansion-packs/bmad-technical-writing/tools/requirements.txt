@@ -3,12 +3,70 @@
 # Core dependencies for analyze_ai_patterns.py
 #
 # This script analyzes manuscripts for AI-generated content patterns
-# across 6 dimensions: perplexity, burstiness, structure, voice,
-# technical depth, and formatting.
+# across 8 dimensions: perplexity, burstiness, structure, voice,
+# technical depth, formatting, syntactic patterns, and sentiment variation.
+
+# ============================================================================
+# BASIC INSTALLATION (Minimal Dependencies)
+# ============================================================================
 
 # Optional: Advanced readability metrics (Flesch Reading Ease, Flesch-Kincaid Grade, etc.)
 # If not installed, script will skip readability analysis
 textstat>=0.7.3
+
+# ============================================================================
+# ENHANCED INSTALLATION (All NLP Libraries)
+# ============================================================================
+
+# NLTK - Enhanced lexical diversity (MTLD) and sentiment analysis (VADER)
+# Provides: Moving Average Type-Token Ratio, stemming, sentiment flatness detection
+nltk>=3.8.0
+
+# TextBlob - Simplified sentiment analysis and n-gram extraction
+# Provides: Alternative sentiment analysis, n-gram patterns
+textblob>=0.17.1
+
+# spaCy - Syntactic pattern detection and POS tagging
+# Provides: Detects mechanical sentence structures, dependency parsing
+spacy>=3.7.0
+
+# Textacy - Advanced stylometric analysis
+# Provides: Automated readability index, additional diversity metrics
+# Requires spaCy to be installed first
+textacy>=0.13.0
+
+# Transformers - True perplexity calculation using GPT-2
+# Provides: Language model perplexity scores (detects predictable AI patterns)
+# WARNING: Large download (~500MB), requires PyTorch
+torch>=2.0.0
+transformers>=4.30.0
+
+# ============================================================================
+# POST-INSTALLATION SETUP
+# ============================================================================
+
+# After installation, download required models:
+# python -m nltk.downloader punkt punkt_tab vader_lexicon
+# python -m spacy download en_core_web_sm
+# python -m textblob.download_corpora
+
+# ============================================================================
+# INSTALLATION OPTIONS
+# ============================================================================
+
+# Option 1: Minimal (basic analysis only)
+# pip install textstat
+
+# Option 2: Enhanced (all NLP features)
+# pip install -r requirements.txt
+# python -m nltk.downloader punkt punkt_tab vader_lexicon
+# python -m spacy download en_core_web_sm
+
+# Option 3: Maximum (including Transformers for true perplexity)
+# pip install -r requirements.txt
+# python -m nltk.downloader punkt punkt_tab vader_lexicon
+# python -m spacy download en_core_web_sm
+# Note: Transformers will auto-download GPT-2 model on first use (~500MB)
 
 # Standard library dependencies (included with Python 3.7+):
 # - re (regex pattern matching)
@@ -18,11 +76,7 @@ textstat>=0.7.3
 # - dataclasses (structured data containers)
 # - json (JSON output format)
 # - typing (type hints)
-
-# Installation:
-# pip install -r requirements.txt
-#
-# Or for minimal installation (textstat optional):
-# pip install textstat
+# - collections (Counter for frequency analysis)
 
 # Python version requirement: 3.7+
+# Recommended: Python 3.9+ for best compatibility with all libraries
