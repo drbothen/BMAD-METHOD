@@ -1,0 +1,438 @@
+# Task: Post-Generation Humanization Editing
+
+<!-- Powered by BMAD™ Core -->
+
+## Purpose
+
+Transform AI-generated technical content into natural, human-sounding writing through systematic editing workflows that improve perplexity, burstiness, voice consistency, and emotional resonance while preserving technical accuracy.
+
+## When to Use This Task
+
+- **After AI has generated initial content** that needs humanization
+- When content feels robotic, formulaic, or obviously AI-generated
+- When preparing AI-assisted drafts for publication
+- When quality assurance flags AI detection concerns
+- When reader feedback indicates content lacks human authenticity
+
+## Prerequisites
+
+- AI-generated content that needs humanization
+- Clear understanding of target audience and voice requirements
+- Time budget for editing (15-60 minutes per 1,000 words depending on quality)
+- Access to the content in editable format
+
+## Process Overview
+
+This task follows a **multi-pass editing workflow** where each pass addresses specific dimensions of humanization. Do NOT try to fix everything at once—systematic passes produce better results with less cognitive load.
+
+---
+
+## Pass 1: Structural Analysis and Pattern Detection (5-10 minutes)
+
+### Step 1.1: Sentence Length Analysis
+
+1. **Select a representative paragraph** (about 150-200 words)
+2. **Count the word length of each sentence**
+3. **Calculate statistics**:
+   - Mean sentence length
+   - Range (shortest to longest)
+   - Standard deviation (if easily available)
+
+**Red Flags**:
+- Most sentences within 15-25 word range = Low burstiness (AI-typical)
+- All sentences similar length = Needs variation
+- No sentences under 10 words or over 30 words = Problematic uniformity
+
+**Target Pattern for Human-Like Writing**:
+- Mix of 5-10 word sentences (20-30% of total)
+- 15-25 word sentences (40-50% of total)
+- 30-45 word sentences (20-30% of total)
+- Occasional strategic fragments or very long constructions
+
+### Step 1.2: AI Vocabulary Detection
+
+Search the document for common AI-characteristic words:
+
+**High-Priority Removals**:
+- delve / delving
+- robust / robustness
+- leverage / leveraging
+- facilitate / facilitates
+- underscore / underscores
+- harness / harnessing
+- pivotal
+- seamless / seamlessly
+- holistic / holistically
+- optimize / optimization (overused)
+
+**Document each occurrence** for systematic replacement in Pass 2.
+
+### Step 1.3: Formulaic Pattern Detection
+
+Search for these AI-typical patterns:
+
+**Transition Phrases**:
+- "Furthermore," "Moreover," "Additionally," "In addition,"
+- "It is important to note that"
+- "It is worth mentioning that"
+- "One of the key aspects of"
+- "When it comes to"
+
+**Paragraph Openings**:
+- Count how many paragraphs start with "The [noun]..."
+- Count how many start with topic sentences stating facts
+
+**List Structures**:
+- Count numbered or bulleted lists
+- Check if AI defaulted to list format where prose would be better
+
+### Step 1.4: Document Findings
+
+Create a quick assessment:
+```
+Humanization Assessment:
+- Sentence variation: [Low/Medium/High]
+- AI vocabulary count: [number] instances
+- Formulaic transitions: [number] instances
+- List overuse: [Yes/No]
+- Priority level: [High/Medium/Low need for humanization]
+```
+
+---
+
+## Pass 2: Vocabulary and Language Humanization (15-20 minutes)
+
+### Step 2.1: Replace AI-Characteristic Vocabulary
+
+For each flagged word, choose contextually appropriate replacements:
+
+**Replacement Guide**:
+
+| AI Word | Better Alternatives |
+|---------|---------------------|
+| delve into | explore, examine, investigate, look at, dig into |
+| robust | reliable, powerful, solid, effective, well-designed |
+| leverage | use, apply, take advantage of, employ |
+| facilitate | enable, help, make easier, allow, support |
+| underscore | show, highlight, emphasize, demonstrate, reveal |
+| harness | use, utilize, apply, employ |
+| pivotal | key, important, critical, essential, crucial |
+| seamlessly | smoothly, easily, without issues, naturally |
+| holistic | complete, comprehensive, full, thorough |
+| optimize | improve, enhance, fine-tune, make better |
+
+**Important**: Choose replacements based on context, not mechanically. Sometimes the AI word is actually appropriate—replace only when a more natural alternative exists.
+
+### Step 2.2: Introduce Contractions
+
+Search and replace (where appropriate for your tone):
+
+- it is → it's
+- you are → you're
+- we are → we're
+- that is → that's
+- do not → don't
+- cannot → can't
+- will not → won't
+- should not → shouldn't
+
+**Guidelines**:
+- More contractions = more conversational (good for tutorials, blogs)
+- Fewer contractions = more formal (appropriate for some documentation)
+- Never in code examples or technical specifications
+- Inconsistency is OK (humans mix contracted and expanded forms)
+
+### Step 2.3: Strengthen Verbs, Eliminate Adverbs
+
+Find weak verb + adverb combinations and replace with stronger verbs:
+
+- "runs quickly" → "sprints" or "races"
+- "said loudly" → "shouted" or "exclaimed"
+- "very important" → "critical" or "essential"
+- "extremely difficult" → "challenging" or "formidable"
+- "highly effective" → "powerful" or "potent"
+
+**Search for**: "very," "really," "quite," "extremely," "highly," "ly" patterns
+
+---
+
+## Pass 3: Sentence Structure and Burstiness Enhancement (20-30 minutes)
+
+### Step 3.1: Create Sentence Variation Deliberately
+
+Work paragraph by paragraph:
+
+**For paragraphs with uniform sentence lengths**:
+
+1. **Identify 2-3 adjacent sentences** that could be combined or split
+2. **Combine short sentences** into more complex constructions:
+   - Before: "Docker uses containers. Containers isolate applications. This provides consistency."
+   - After: "Docker uses containers to isolate applications, providing consistency across environments."
+
+3. **Split long sentences** into shorter punchy statements:
+   - Before: "The algorithm processes data in real-time, identifying patterns that humans might miss, and revealing important insights about customer behavior that lead to better business decisions."
+   - After: "The algorithm processes data in real-time, identifying patterns humans might miss. These insights reveal critical customer behaviors. Better decisions follow."
+
+4. **Introduce strategic fragments** for emphasis:
+   - "Authentication is critical. But implementing it correctly takes careful planning. Very careful planning."
+   - "The solution? Microservices."
+
+### Step 3.2: Vary Sentence Openings
+
+**Audit sentence starters in each paragraph**:
+- If 3+ sentences start with "The [noun]..." → Vary them
+- If 3+ sentences start with same subject → Rewrite for variety
+
+**Variation Techniques**:
+- Start with adverbs: "Typically, developers..."
+- Start with transitions: "However, this approach..."
+- Start with dependent clauses: "When working with React, you'll..."
+- Start with -ing verbs: "Understanding this concept..."
+
+### Step 3.3: Replace Formulaic Transitions
+
+**Instead of** "Furthermore," → **Use** "What's more," "Beyond that," "And here's the thing,"
+**Instead of** "Moreover," → **Use** "Plus," "On top of that," "Better yet,"
+**Instead of** "Additionally," → **Use** "Also," "And," or often nothing at all
+**Instead of** "In conclusion," → **Use** "So what does this mean?" "The bottom line?" "Here's the takeaway,"
+
+**Pro Tip**: Often the best transition is no explicit transition—just let ideas flow naturally.
+
+### Step 3.4: Break Up Lists Into Prose
+
+**Convert rigid lists to flowing narrative** where appropriate:
+
+Before (AI-typical):
+```
+Docker provides three main benefits:
+1. Consistency across environments
+2. Improved resource efficiency
+3. Simplified deployment processes
+```
+
+After (humanized):
+```
+Docker solves several practical problems. Your application runs identically on your laptop, your colleague's machine, and production servers—no more "works on my machine" headaches. It uses system resources more efficiently than virtual machines, letting you run more applications on the same hardware. And deployment becomes dramatically simpler since you're shipping a complete, tested environment rather than hoping dependencies align.
+```
+
+---
+
+## Pass 4: Voice and Tone Refinement (10-15 minutes)
+
+### Step 4.1: Inject Appropriate Personal Perspective
+
+**For conversational technical writing**, add strategic perspective markers:
+
+- "In my experience..."
+- "I've found that..."
+- "Here's what typically happens..."
+- "This is where things get interesting..."
+- "Watch out for this gotcha..."
+
+**For more formal writing**, use professional collective voice:
+
+- "Our research shows..."
+- "We observe that..."
+- "The data suggests..."
+- "Industry practice indicates..."
+
+**Balance**: 1-2 perspective markers per 500 words (don't overdo it)
+
+### Step 4.2: Add Conversational Connectors
+
+**Replace formal connectors** with conversational equivalents:
+
+| Formal (AI-typical) | Conversational |
+|---------------------|----------------|
+| In order to | To |
+| It is important to note that | Note that / Remember |
+| One must consider | You should consider |
+| This allows us to | This lets us |
+| It is possible to | You can |
+
+### Step 4.3: Introduce Appropriate Hedging or Confidence
+
+**AI tends toward absolute certainty**. Humanize by acknowledging nuance:
+
+- "This typically works well when..."
+- "In most cases, you'll find..."
+- "This depends on your specific requirements..."
+- "While there's no universal answer, a good starting point is..."
+
+**Conversely, when AI hedges too much**, be more direct:
+
+- Replace "may potentially" with "might" or "can"
+- Replace "generally tends to" with "usually" or "often"
+
+---
+
+## Pass 5: Emotional Depth and Authenticity (10-15 minutes)
+
+### Step 5.1: Add Strategic Examples and Anecdotes
+
+**Identify abstract statements** that would benefit from concrete grounding:
+
+Before: "Regular testing improves code quality."
+
+After: "I learned this lesson the hard way. After shipping a feature that crashed for 30% of users because I skipped testing, I became religious about test coverage. That outage taught me what 'code quality' really means."
+
+**Guidelines**:
+- 1-2 specific examples per major section
+- Use realistic scenarios, not textbook cases
+- Include actual numbers, tools, versions when possible
+- Ground abstract concepts in concrete experience
+
+### Step 5.2: Acknowledge Reader Challenges
+
+**Show empathy for learning difficulties**:
+
+- "This concept confused me for weeks when I first learned it..."
+- "The error message doesn't help—let's decode what it actually means..."
+- "I know this seems backwards, but here's why it works this way..."
+- "This is the tricky part that trips up most beginners..."
+
+### Step 5.3: Express Appropriate Enthusiasm
+
+**For genuinely interesting technical points**:
+
+- "This is where it gets clever..."
+- "Here's the elegant part..."
+- "I love this solution because..."
+- "This blew my mind when I first discovered it..."
+
+**Balance**: Authentic enthusiasm, not hyperbole. Only for truly noteworthy aspects.
+
+---
+
+## Pass 6: Quality Assurance Check (5-10 minutes)
+
+### Step 6.1: Read Aloud Test
+
+**Read 2-3 paragraphs aloud** (this is critical):
+- Does it sound natural when spoken?
+- Do you stumble over awkward phrasings?
+- Does the rhythm feel human?
+
+**Fix anything that sounds robotic when spoken.**
+
+### Step 6.2: Verify Technical Accuracy
+
+**Critical**: Ensure no technical errors were introduced:
+- Verify code examples still work
+- Check that technical terminology remains correct
+- Confirm facts and statements are accurate
+- Test any procedures or commands described
+
+**If accuracy was compromised, revert and humanize more carefully.**
+
+### Step 6.3: Final Metrics Check
+
+**Quick assessment**:
+- [ ] Sentence lengths vary significantly (measure 2-3 paragraphs)
+- [ ] AI vocabulary removed or replaced
+- [ ] Voice feels consistent and authentic
+- [ ] At least some contractions present (if appropriate)
+- [ ] Examples or personal touches included
+- [ ] Technical accuracy preserved 100%
+
+---
+
+## Time-Efficient Variant (15-Minute Quick Humanization)
+
+When time is limited, focus on **highest-impact changes**:
+
+**Priority 1 (5 minutes)**:
+1. Replace the 10 most obvious AI words
+2. Add 3-5 contractions
+3. Vary sentence length in most problematic paragraphs
+
+**Priority 2 (5 minutes)**:
+4. Replace formulaic transitions (Furthermore, Moreover, etc.)
+5. Add 1-2 specific examples or personal touches
+6. Fix any robotic-sounding sentences you notice
+
+**Priority 3 (5 minutes)**:
+7. Read aloud test on key sections
+8. Verify technical accuracy not compromised
+9. Fix anything that sounds obviously wrong
+
+**This achieves ~60-70% of full humanization impact in 20% of the time.**
+
+---
+
+## Output Deliverable
+
+**Primary**: Humanized content with natural flow, varied structure, authentic voice
+**Secondary**: Notes on what needed the most work (informs future prompt engineering)
+
+## Success Criteria
+
+✅ Content reads naturally when read aloud
+✅ Sentence length variation creates natural rhythm
+✅ AI-characteristic vocabulary eliminated or minimized
+✅ Voice feels consistent and appropriately personal
+✅ Technical accuracy completely preserved
+✅ Examples and authenticity markers added where appropriate
+
+## Common Pitfalls to Avoid
+
+❌ Changing technical terminology in pursuit of "variety"
+❌ Over-editing until content becomes convoluted
+❌ Adding personal anecdotes that aren't genuine or relevant
+❌ Sacrificing clarity for style
+❌ Forgetting to verify code examples after editing
+
+## Related Tasks
+
+- `humanize-pre-generation.md` - Better to humanize during creation than after
+- `analyze-ai-patterns.md` - For systematic diagnosis before editing
+- `humanization-qa-check.md` - For verification after humanization
+
+## Example: Before and After
+
+### Before (AI-Generated)
+
+```
+Docker is a robust platform that facilitates the creation and deployment
+of containerized applications. It leverages operating system-level
+virtualization to deliver software in packages called containers.
+Containers are lightweight and include everything needed to run an
+application. Furthermore, Docker provides numerous benefits for modern
+development workflows. Moreover, it enables developers to build, ship,
+and run applications consistently across different environments.
+Additionally, Docker containers start quickly and use system resources
+efficiently.
+```
+
+**Analysis**: Low burstiness (all sentences 12-18 words), AI vocabulary (robust, facilitates, leverages), formulaic transitions (Furthermore, Moreover, Additionally)
+
+### After (Humanized)
+
+```
+Docker solves a problem every developer faces: applications that work
+perfectly on your machine but crash in production. The culprit? Different
+environments with different dependencies, libraries, and configurations.
+
+Here's how Docker addresses this. It packages your application with
+everything it needs—code, runtime, libraries, dependencies—into a
+standardized unit called a container. These containers are lightweight.
+They share the host system's kernel rather than requiring separate
+operating systems like traditional virtual machines. This means they
+start in seconds instead of minutes and use a fraction of the memory.
+
+The practical benefit? Your application runs identically everywhere—your
+laptop, your colleague's machine, staging servers, production. No more
+"works on my machine" excuses. You're deploying the exact environment
+you tested, complete with specific library versions and configurations.
+```
+
+**Improvements**: Varied sentence lengths (4 words to 30+ words), personal language ("you," "your"), problem-focused framing, removed AI vocabulary, natural transitions, specific benefits with concrete details
+
+---
+
+## Notes
+
+- Budget 70-80% of total content creation time for humanization, not generation
+- The fastest humanization is good pre-generation prompting (prevents problems)
+- Perfect is the enemy of done—aim for "noticeably human" not "perfectly undetectable"
+- Different content types need different levels of humanization (tutorials > API docs)

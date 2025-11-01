@@ -1,0 +1,366 @@
+workflow:
+  id: content-humanization-workflow
+  name: AI Content Humanization
+  description: Systematic workflow for transforming AI-generated technical content into natural, human-sounding writing. Guides content humanizers through pre-generation prompt engineering, AI pattern analysis, post-generation editing, and quality verification. Ensures content maintains technical accuracy while improving perplexity, burstiness, voice consistency, and emotional resonance.
+  type: content-humanization
+  project_types:
+    - technical-book
+    - tutorial-series
+    - blog-content
+    - documentation
+    - training-materials
+    - technical-articles
+
+  sequence:
+    - agent: content-humanizer
+      analyzes: content-draft.md
+      requires: draft_content
+      notes: "Analyze AI-generated content for characteristic patterns using *analyze command and analyze-ai-patterns.md task. Measure perplexity (vocabulary predictability), burstiness (sentence variation), structural patterns (transitions, lists), voice authenticity (personal markers, specifics), and technical depth (expertise signals). Use ai-pattern-detection-checklist.md to systematically identify issues. SAVE OUTPUT: Create analysis report at humanization/{{content_name}}/ai-pattern-analysis.md with dimension scores (HIGH/MEDIUM/LOW/VERY LOW) and priority recommendations"
+
+    - agent: content-humanizer
+      develops: humanization-plan.md
+      requires:
+        - ai_pattern_analysis
+        - content_draft
+      notes: "Create targeted humanization plan based on analysis findings using humanization-techniques.md reference. Prioritize techniques by impact and effort (sentence variation editing, AI vocabulary replacement, transition smoothing are typically highest ROI). Identify which humanization approach: time-constrained (15-min), standard quality (30-45 min), or premium quality (60+ min). Select appropriate techniques from pre/during/post-generation categories. SAVE OUTPUT: Create detailed plan at humanization/{{content_name}}/humanization-plan.md with specific techniques to apply and estimated time"
+
+    - agent: content-humanizer
+      executes: humanization-editing.md
+      requires:
+        - humanization_plan
+        - content_draft
+      notes: "Execute systematic humanization editing using *post-edit command and humanize-post-generation.md task. Follow multi-pass workflow: Pass 1 (structural analysis), Pass 2 (vocabulary humanization), Pass 3 (sentence structure enhancement), Pass 4 (voice refinement), Pass 5 (emotional depth), Pass 6 (quality assurance). Apply techniques from humanization plan with focus on high-impact changes. Reference humanization-techniques.md for specific methods. Track changes to understand what needed most work. SAVE OUTPUT: Create humanized draft at humanization/{{content_name}}/humanized-draft.md and editing notes at humanization/{{content_name}}/editing-notes.md documenting changes made"
+
+    - agent: technical-reviewer
+      verifies: humanized-draft.md
+      requires:
+        - humanized_draft
+        - original_draft
+      notes: "Verify technical accuracy was preserved during humanization using verify-accuracy.md task. Compare humanized version against original to ensure: all technical statements remain accurate, code examples unchanged (unless bugs fixed), terminology used correctly, no simplifications that create misconceptions, facts and claims still verifiable, version information correct. Use technical-accuracy-preservation-checklist.md for systematic verification. Test any code that was modified. SAVE OUTPUT: Create accuracy verification report at humanization/{{content_name}}/accuracy-verification.md with any issues found requiring correction"
+
+    - agent: content-humanizer
+      assesses: humanization-quality.md
+      requires:
+        - humanized_draft
+        - accuracy_verification
+      notes: "Assess humanization quality using *qa-check command and humanization-quality-checklist.md. Verify: AI vocabulary removed (0-1 instances acceptable), sentence variation achieved (varied lengths in sample paragraphs), voice feels authentic and consistent, technical accuracy 100% preserved (critical requirement), readability appropriate for audience, natural imperfections present (not mechanically uniform). Perform read-aloud test on sample sections. Run content through AI detection tool (optional, for assessment only). SAVE OUTPUT: Create quality assessment at humanization/{{content_name}}/quality-assessment.md with dimension scores and final approval status"
+
+    - agent: content-humanizer
+      finalizes: humanized-content.md
+      requires:
+        - quality_assessment
+        - humanized_draft
+      notes: "Finalize humanized content for publication. If quality assessment identified issues, apply targeted corrections. Incorporate any required technical accuracy fixes from verification. Perform final read-through for flow and clarity. Ensure all checklists completed and quality gates met. Create final polished version. Document lessons learned for future prompt engineering improvements. SAVE OUTPUT: Create publication-ready content at {{content_output_path}} and lessons learned at humanization/{{content_name}}/lessons-learned.md for improving future humanization prompts"
+
+  flow_diagram: |
+    ```mermaid
+    graph TD
+        A[Start: AI-Generated Draft] --> B[content-humanizer: Analyze AI Patterns]
+
+        B --> C{Assessment}
+        C -->|Minimal Issues| D[Light Touch Workflow]
+        C -->|Substantial Issues| E[Full Humanization Workflow]
+        C -->|Extensive Issues| F{Decision}
+        F -->|Edit| E
+        F -->|Regenerate| G[Create Humanization Prompt]
+
+        G --> H[Regenerate with Prompt]
+        H --> B
+
+        D --> I[content-humanizer: Quick Polish]
+        I --> I1[15-min humanization]
+
+        E --> J[content-humanizer: Develop Plan]
+        J --> K[content-humanizer: Execute Multi-Pass Edit]
+
+        K --> K1[Pass 1: Structure]
+        K1 --> K2[Pass 2: Vocabulary]
+        K2 --> K3[Pass 3: Sentences]
+        K3 --> K4[Pass 4: Voice]
+        K4 --> K5[Pass 5: Emotion]
+        K5 --> K6[Pass 6: QA]
+
+        I1 --> L[technical-reviewer: Verify Accuracy]
+        K6 --> L
+
+        L --> M{Accuracy OK?}
+        M -->|No| N[Fix Technical Issues]
+        N --> L
+        M -->|Yes| O[content-humanizer: Quality Assessment]
+
+        O --> P{Quality Gates Met?}
+        P -->|No| Q{Critical Issues?}
+        Q -->|Yes| R[Additional Editing Required]
+        R --> K
+        Q -->|Minor| S[Light Touch-ups]
+        S --> O
+
+        P -->|Yes| T[content-humanizer: Finalize Content]
+        T --> U[Publication-Ready Content]
+
+        B -.-> B1[Optional: AI Detection Test]
+        K -.-> K7[Optional: Peer Review]
+        O -.-> O1[Optional: Target Audience Test]
+
+        style U fill:#90EE90
+        style B fill:#FFE4B5
+        style J fill:#FFE4B5
+        style K fill:#FFE4B5
+        style L fill:#ADD8E6
+        style O fill:#ADD8E6
+        style T fill:#98FB98
+        style G fill:#DDA0DD
+        style F fill:#FFD700
+        style R fill:#F08080
+    ```
+
+  decision_guidance:
+    when_to_use:
+      - AI-generated content needs to sound more natural and human
+      - Content feels robotic, formulaic, or obviously AI-generated
+      - Preparing AI-assisted content for publication
+      - Quality standards require human-like writing quality
+      - Detection concerns or authenticity requirements
+      - Content has uniform sentence patterns or AI vocabulary markers
+
+    when_not_to_use:
+      - Content not yet generated (use pre-generation humanization prompt instead)
+      - Technical accuracy is questionable (fix accuracy first, humanize second)
+      - Content needs complete restructuring (rewrite rather than humanize)
+      - Purely technical specifications or API docs (minimal humanization needed)
+
+    regenerate_vs_edit:
+      regenerate_if:
+        - Multiple critical AI pattern issues across all dimensions
+        - Content too generic/abstract throughout
+        - Would take longer to edit than regenerate with better prompt
+        - Structure needs complete rethinking
+
+      edit_if:
+        - Technical accuracy is solid
+        - Overall structure is sound
+        - Issues primarily vocabulary/style patterns
+        - Word count and depth appropriate
+
+  quality_gates:
+    pattern_analysis_complete:
+      - All five dimensions assessed (perplexity, burstiness, structure, voice, technical)
+      - Specific evidence documented for each score
+      - Clear priorities identified for humanization
+      - Realistic effort estimate provided
+      - Actionable recommendations given
+      - Checklist: ai-pattern-detection-checklist.md
+
+    humanization_plan_developed:
+      - Analysis findings translated to specific techniques
+      - Priority order established (highest impact first)
+      - Time budget allocated appropriately
+      - Approach selected (time-constrained/standard/premium)
+      - Success criteria defined
+      - Reference: humanization-techniques.md
+
+    humanization_editing_complete:
+      - Multi-pass workflow executed systematically
+      - High-priority techniques applied (sentence variation, vocabulary)
+      - Medium-priority techniques applied (voice, transitions)
+      - Read-aloud test performed on sample sections
+      - Natural rhythm and flow achieved
+      - Task: humanize-post-generation.md
+
+    technical_accuracy_verified:
+      - All code examples tested and working
+      - Technical claims verified against sources
+      - Terminology reviewed for correctness
+      - No inaccuracies introduced during humanization
+      - Procedures validated where applicable
+      - Checklist: technical-accuracy-preservation-checklist.md
+
+    quality_assessment_passed:
+      - AI vocabulary removed (0-1 instances acceptable)
+      - Sentence variation achieved (measured in samples)
+      - Voice authentic and consistent throughout
+      - Technical accuracy 100% preserved (critical)
+      - Readability appropriate for audience
+      - Overall quality meets publication standards
+      - Checklist: humanization-quality-checklist.md
+
+    content_finalized:
+      - All quality gates met
+      - Any required corrections applied
+      - Final read-through completed
+      - Lessons learned documented
+      - Publication-ready version created
+
+  humanization_approach_definitions:
+    time_constrained:
+      duration: "15-30 minutes per 1000 words"
+      description: "Quick humanization hitting highest-impact issues"
+      techniques:
+        - AI vocabulary replacement (5 min)
+        - Most obvious sentence variation fixes (5 min)
+        - Transition smoothing (3 min)
+        - Add contractions if appropriate (2 min)
+      expected_improvement: "~60-70% improvement in naturalness"
+      when_to_use:
+        - Tight deadlines
+        - Internal documentation
+        - Content already moderately good
+        - Time-sensitive publication needs
+
+    standard_quality:
+      duration: "30-60 minutes per 1000 words"
+      description: "Comprehensive humanization across all major dimensions"
+      techniques:
+        - Full sentence variation editing (15 min)
+        - AI vocabulary replacement (10 min)
+        - Transition smoothing (5 min)
+        - Personal voice injection (10 min)
+        - Contractions and conversational elements (5 min)
+      expected_improvement: "~85% improvement in naturalness"
+      when_to_use:
+        - Standard blog posts
+        - Tutorial content
+        - Technical articles
+        - Professional documentation
+        - Most typical use cases
+
+    premium_quality:
+      duration: "60-90+ minutes per 1000 words"
+      description: "Meticulous humanization producing publication-grade content"
+      techniques:
+        - Comprehensive sentence variation editing (20 min)
+        - Complete AI vocabulary replacement (15 min)
+        - Transition smoothing and flow refinement (10 min)
+        - Deep personal voice injection (15 min)
+        - List-to-prose conversion (10 min)
+        - Read-aloud editing (10 min)
+        - Final polish pass (10 min)
+      expected_improvement: "~95% improvement, difficult to detect as AI-assisted"
+      when_to_use:
+        - Book chapters
+        - High-profile publications
+        - Client-facing materials
+        - Brand-critical content
+        - Premium products
+
+  severity_definitions:
+    critical:
+      description: "AI patterns so obvious they immediately signal machine generation"
+      examples:
+        - High-priority AI words (delve, leverage, robust, harness) appear frequently
+        - Extreme sentence uniformity (all 15-20 words with < 3-word variation)
+        - Formulaic transitions in every paragraph
+        - Complete absence of voice or personal markers
+        - Technical inaccuracies from humanization attempts
+      action: "Must address before publication—significant humanization required"
+
+    major:
+      description: "Noticeable AI patterns affecting naturalness and engagement"
+      examples:
+        - Moderate AI vocabulary (3-5 instances per 1000 words)
+        - Some sentence uniformity but not extreme
+        - Several formulaic transitions present
+        - Minimal voice or authentic perspective
+        - Overly abstract without specific grounding
+      action: "Should address through systematic humanization workflow"
+
+    minor:
+      description: "Subtle AI patterns that could be improved but don't critically harm quality"
+      examples:
+        - Occasional AI vocabulary (1-2 instances)
+        - Mostly varied sentences with some uniform sections
+        - One or two formulaic transitions
+        - Some voice present but could be stronger
+        - Mix of specific and generic examples
+      action: "Address if time permits, especially for premium content"
+
+  handoff_prompts:
+    start_to_analysis: "Beginning AI pattern analysis of {{content_name}}. Will assess perplexity, burstiness, structure, voice, and technical depth to create targeted humanization plan."
+    analysis_to_plan: "Analysis complete. Found {{ai_vocab_count}} AI vocabulary instances, {{burstiness_score}} burstiness, {{voice_score}} voice markers. Creating humanization plan focusing on {{top_priority}} as highest priority."
+    plan_to_editing: "Humanization plan ready. Executing {{approach_type}} workflow with estimated {{time_estimate}} duration. Starting multi-pass editing focused on {{key_techniques}}."
+    editing_to_verification: "Humanization editing complete. Humanized {{word_count}} words with {{passes_completed}} passes. Requesting technical accuracy verification before quality assessment."
+    verification_to_assessment: "Technical accuracy verified—{{accuracy_status}}. {{issues_found}} issues found and corrected. Proceeding to comprehensive quality assessment."
+    assessment_to_finalization: "Quality assessment complete. {{dimensions_passed}}/9 dimensions passed. {{approval_status}}. Finalizing content for publication."
+    finalization_to_complete: "Content humanization complete for {{content_name}}. Publication-ready content available at {{output_path}}. Humanization improved naturalness by estimated {{improvement_percentage}}%."
+
+  time_estimates:
+    pattern_analysis: "10-15 minutes"
+    humanization_plan: "5-10 minutes"
+    time_constrained_editing: "15-30 minutes per 1000 words"
+    standard_editing: "30-60 minutes per 1000 words"
+    premium_editing: "60-90 minutes per 1000 words"
+    accuracy_verification: "15-30 minutes"
+    quality_assessment: "10-20 minutes"
+    finalization: "10-15 minutes"
+    total_standard: "90-120 minutes for 1000-word content"
+
+  best_practices:
+    - Always analyze before editing (don't guess at what needs fixing)
+    - Prioritize high-impact techniques (sentence variation, vocabulary) first
+    - Never sacrifice technical accuracy for naturalness or style
+    - Test all code examples after editing to verify nothing broke
+    - Use read-aloud test to catch unnatural phrasings other checks miss
+    - Track what needed most work to improve future prompts
+    - Budget 70-80% of content creation time for humanization, not generation
+    - Consider regeneration with humanization prompt for extensively poor content
+    - Maintain appropriate formality for domain (tutorials vs. API docs)
+    - Add genuine examples and voice markers, not fake anecdotes
+    - Remember goal is authentic human quality, not just detection evasion
+    - Document lessons learned to prevent same issues in future content
+
+  common_pitfalls:
+    - Changing technical terms to incorrect "synonyms" during vocabulary replacement
+    - Simplifying explanations to point where they become technically wrong
+    - Adding specific details that seem realistic but are actually inaccurate
+    - Removing important qualifiers or caveats during sentence restructuring
+    - Over-editing until content becomes convoluted rather than clear
+    - Forgetting to verify code examples after making surrounding text more natural
+    - Applying generic humanization to specialized content requiring domain precision
+    - Mechanically applying rules without using judgment and context
+    - Aiming for perfection rather than "noticeably human and engaging"
+    - Skipping read-aloud test (catches issues other methods miss)
+
+  success_metrics:
+    perplexity:
+      metric: "AI vocabulary count"
+      target: "< 3 AI-typical words per 1000 words"
+      measurement: "Search and count Tier 1 AI words in final content"
+
+    burstiness:
+      metric: "Sentence length variation"
+      target: "Mix of 5-10, 15-25, and 30-45 word sentences in sample paragraphs"
+      measurement: "Measure word counts in 3 random paragraphs, verify variety"
+
+    readability:
+      metric: "Flesch Reading Ease score"
+      target: "60-70 for general audience, 50-60 for technical, 70-80 for beginner"
+      measurement: "Calculate score using readability tool"
+
+    voice_consistency:
+      metric: "Personal markers per section"
+      target: "2-4 voice markers per 500 words (for conversational content)"
+      measurement: "Count first-person, specific examples, personal insights"
+
+    technical_accuracy:
+      metric: "Technical errors introduced"
+      target: "Zero technical errors from humanization"
+      measurement: "Code testing, fact verification, expert review"
+
+  output_artifacts:
+    required:
+      - ai-pattern-analysis.md (analysis report with dimension scores)
+      - humanization-plan.md (targeted improvement plan)
+      - humanized-draft.md (edited content)
+      - accuracy-verification.md (technical accuracy check)
+      - quality-assessment.md (final quality evaluation)
+      - {{content_output_path}} (publication-ready final version)
+
+    recommended:
+      - editing-notes.md (document changes made during editing)
+      - lessons-learned.md (insights for future prompt engineering)
+      - before-after-comparison.md (show improvement achieved)
+
+    optional:
+      - detection-test-results.md (AI detector results for assessment)
+      - peer-review-feedback.md (fresh-eyes quality check)
+      - readability-metrics.md (calculated readability scores)

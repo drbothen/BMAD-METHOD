@@ -2,7 +2,7 @@
 bundle:
   name: Technical Book Writing Team
   icon: 📚
-  description: Complete technical writing team for programming books, tutorials, and training materials with all 9 specialized agents
+  description: Complete technical writing team for programming books, tutorials, and training materials with all 10 specialized agents including content humanization
 agents:
   - instructional-designer
   - tutorial-architect
@@ -13,12 +13,14 @@ agents:
   - api-documenter
   - screenshot-specialist
   - exercise-creator
+  - content-humanizer
 workflows:
   - book-planning-workflow
   - chapter-development-workflow
   - tutorial-creation-workflow
   - code-example-workflow
   - technical-review-workflow
+  - content-humanization-workflow
   - section-planning-workflow
   - section-development-workflow
   - chapter-assembly-workflow
