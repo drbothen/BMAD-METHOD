@@ -56,6 +56,7 @@ AI systems demonstrate strong preferences for specific formal vocabulary that ap
 - **Pattern:** These terms create artificial elevation where simpler language would be more appropriate
 
 **Example:**
+
 - AI: "Let's delve into how we can harness these insights to underscore the importance of..."
 - Human: "Let's explore how we can use these insights to show why..."
 
@@ -68,6 +69,7 @@ AI-generated text uses hedging expressions at elevated rates to avoid making abs
 - **Impact:** Creates tentative voice that rarely commits to definitive positions
 
 **Conversely, AI uses confident language less:**
+
 - Words like "clearly," "definitely," "of course," "obviously" appear far less in AI text
 
 #### 3. **Low Burstiness (Uniform Sentence Structure)**
@@ -101,6 +103,7 @@ AI paragraphs follow remarkably consistent patterns:
 - **Problem:** While technically correct, uniform application creates mechanically assembled prose
 
 **Common AI paragraph openings:**
+
 - "When it comes to X, it's important to consider Y"
 - "A key factor in X is Y"
 - "One of the biggest challenges with X is Y"
@@ -142,6 +145,7 @@ AI text contains **1.5 to 2 times more nominalizations** than human writing:
 #### 10. **Uniform Emotional Tone Without Natural Variation**
 
 AI demonstrates either:
+
 - **Inappropriately consistent emotional tone** across diverse content, OR
 - **Abrupt, unexplained shifts** in tone lacking motivational grounding
 
@@ -156,16 +160,19 @@ Humans naturally adjust emotional tone based on content while maintaining approp
 #### 1. **Perplexity Analysis**
 
 **How it works:**
+
 - Measures how well a language model predicts a given sequence of text
 - Quantifies how "surprised" a model is when encountering the text
 - Lower perplexity = more predictable = likely AI-generated
 
 **Performance:**
+
 - 91% AUROC for detecting AI-generated C/C++ code
 - 88% AUROC for large-scale code samples
 - Variable effectiveness across content types
 
 **Limitations:**
+
 - Reduced effectiveness on high-level programming languages
 - Poor performance on short text snippets (<50 tokens)
 - Domain-dependent reliability
@@ -173,11 +180,13 @@ Humans naturally adjust emotional tone based on content while maintaining approp
 #### 2. **Burstiness Measurement**
 
 **How it works:**
+
 - Examines variation in sentence length, structure, and word choice
 - Measures homogeneity vs. heterogeneity across text
 - Lower burstiness = more uniform = likely AI-generated
 
 **What it captures:**
+
 - Temporal patterns in predictability
 - Natural rhythm variations
 - Structural diversity
@@ -185,23 +194,27 @@ Humans naturally adjust emotional tone based on content while maintaining approp
 #### 3. **Token Probability Distribution Analysis**
 
 **How it works:**
+
 - Analyzes the probability distributions language models assign to each token
 - Examines concentration of probability mass
 - AI text shows sharply peaked distributions; human text shows broader distributions
 
 **Advanced approaches:**
+
 - **Intrinsic dimensionality:** Human text exhibits higher intrinsic dimensionality (~9 for English) vs. AI (~7.5)
 - **Stability:** Metric remains consistent across domains and models
 
 #### 4. **DetectGPT and Probability Curvature**
 
 **How it works:**
+
 - Examines curvature of model's log-probability function
 - AI-sampled text occupies regions of negative curvature
 - Uses random perturbations to measure probability changes
 - **Zero-shot method:** Requires no training data or labeled examples
 
 **Performance:**
+
 - 0.95 AUROC detecting GPT-generated fake news
 - Substantial improvements over baseline methods
 
@@ -210,6 +223,7 @@ Humans naturally adjust emotional tone based on content while maintaining approp
 #### 5. **Stylometric Features (31 Distinct Features)**
 
 **Key features with highest detection value:**
+
 - **Unique word count:** Measures non-repetitive vocabulary
 - **Type-token ratio (TTR):** Lexical diversity measurement
 - **Stop word count:** Common function words maintaining language flow
@@ -217,17 +231,20 @@ Humans naturally adjust emotional tone based on content while maintaining approp
 - **Readability indices:** Flesch Reading Ease, Flesch-Kincaid Grade Level
 
 **Performance:**
+
 - 81% accuracy using Random Forest classifier
 - Combines multiple linguistic dimensions
 
 #### 6. **Syntactic Template Analysis**
 
 **How it works:**
+
 - Examines sequences of parts-of-speech (noun, verb, adjective patterns)
 - Identifies repeated structural patterns
 - Traces patterns to training data
 
 **Findings:**
+
 - ~75% of AI syntactic templates traceable to training data
 - Each model has distinctive syntactic signatures
 - Domain-dependent effectiveness (less effective on structured writing like biomedical text)
@@ -237,10 +254,12 @@ Humans naturally adjust emotional tone based on content while maintaining approp
 **Characteristic AI vocabulary identified by GPTZero (3.3 million texts analyzed):**
 
 High-frequency AI phrases:
+
 - "delve into," "underscore," "pivotal," "realm," "harness," "illuminate"
 - Hedging phrases: "generally speaking," "typically," "tends to," "arguably"
 
 **Detection approach:**
+
 - Statistical frequency analysis compared to baseline human writing
 - Contextual appropriateness evaluation
 
@@ -249,11 +268,13 @@ High-frequency AI phrases:
 #### 8. **Transformer-Based Classifiers (BERT, RoBERTa)**
 
 **Performance:**
+
 - **Fine-tuned RoBERTa:** 98% accuracy detecting AI-generated news
 - **BERT:** 87% accuracy on same task
 - Substantially outperforms LSTM, CNN, BiLSTM approaches
 
 **How it works:**
+
 - Attention mechanisms consider relationships between all tokens simultaneously
 - Transfer learning from pre-trained models
 - Fine-tuning on labeled AI/human text datasets
@@ -261,11 +282,13 @@ High-frequency AI phrases:
 #### 9. **SeqXGPT (Sentence-Level Detection)**
 
 **Architecture:**
+
 - Perplexity extraction and alignment
 - Feature encoding (convolutional networks + self-attention)
 - Linear classification
 
 **Performance:**
+
 - 95.7% macro-F1 score on binary detection
 - 95.7% on multi-model scenarios
 - Provides sentence-level granularity (not just document-level)
@@ -273,11 +296,13 @@ High-frequency AI phrases:
 #### 10. **FDLLM (Fingerprint Detection for Model Attribution)**
 
 **Capability:**
+
 - Identifies which specific model generated text
 - 100% accuracy for individual models with only 100 samples
 - 91.1% macro F1 score across 20 different LLMs
 
 **How it works:**
+
 - Learns distinctive fingerprints of different models
 - Examines first-token generation preferences
 - Robust to post-training and quantization
@@ -287,27 +312,32 @@ High-frequency AI phrases:
 #### 11. **Watermarking**
 
 **How it works:**
+
 - Embeds detectable signals during generation
 - Partitions vocabulary into "green" (encouraged) and "red" (discouraged) tokens
 - Creates statistical bias detectable by automated systems
 
 **CurveMark approach:**
+
 - Combines watermark signals with probability curvature
 - 95.4% detection accuracy
 - Minimal quality degradation
 
 **Limitations:**
+
 - Requires knowledge of watermarking protocol
 - Only works on text generated through compatible systems
 
 #### 12. **Linguistic Fingerprints (LIFE Method)**
 
 **How it works:**
+
 - Reconstructs word-level probability distributions
 - Identifies prompt-induced patterns
 - Examines distributional divergence
 
 **Performance:**
+
 - State-of-the-art on AI-generated fake news detection
 - Maintains high performance on human-written fake news
 
@@ -316,23 +346,27 @@ High-frequency AI phrases:
 #### Leading Platforms and Their Performance
 
 **Scribbr AI Detector:**
+
 - Unlimited checks on submissions up to 1,200 words
 - Paragraph-level feedback
 - Multilingual support (English, German, French, Spanish)
 - Explicitly acknowledges no 100% accuracy guarantee
 
 **GPTZero:**
+
 - Claims 99% accuracy on human vs. AI writing
 - 96.5% accuracy on mixed documents
 - 1% false positive rate for ESL writing (after de-biasing)
 - Trained on GPT-4.1, Gemini 2.5, Claude Sonnet 4, and others
 
 **Independent Benchmarking Results:**
+
 - Premium tools: 84% accuracy (best)
 - Free tools: 68% accuracy (best)
 - Significant variation across content types and languages
 
 **False Positive Rates (Human-Written Academic Articles):**
+
 - Corrector: 30.4% (76 of 250 articles)
 - ZeroGPT: 16% (40 of 250 articles)
 - GPTZero: 0% (0 of 250 articles)
@@ -348,6 +382,7 @@ High-frequency AI phrases:
 **Paradox:** AI often shows higher Type-Token Ratio (TTR) but lacks contextual appropriateness
 
 **Human patterns:**
+
 - ChatGPT TTR: 0.69 vs. Human: 0.61
 - But humans make contextually appropriate choices
 - Vocabulary reflects actual linguistic repertoire
@@ -358,12 +393,14 @@ High-frequency AI phrases:
 #### 2. **Syntactic Surprises and Creative Structure**
 
 **Human characteristics:**
+
 - Unusual word orders for emphasis
 - Sentence inversions
 - Unconventional structural choices
 - Natural departures from expected patterns
 
 **AI characteristics:**
+
 - Remarkable regularity in syntactic choice
 - Gravitates toward probabilistically optimal arrangements
 - Predictable rhythm despite surface correctness
@@ -371,12 +408,14 @@ High-frequency AI phrases:
 #### 3. **Natural Burstiness and Rhythm Variation**
 
 **Human writing rhythm:**
+
 - Mix of 8-12 word sentences with 25-35 word sentences
 - Short, punchy sentences for emphasis
 - Long, complex constructions for depth
 - Natural pacing that maintains engagement
 
 **Measurements:**
+
 - Mean Length of T-Unit (MLT): Human 23.61 words vs. AI 15.91 words
 - But AI shows higher Dependent Clauses per T-Unit: 0.75 vs. 0.57
 - Reveals AI preference for connecting simple phrases through dependent clauses
@@ -386,12 +425,14 @@ High-frequency AI phrases:
 **Key finding:** Negative correlation between discourse marker frequency and coherence ratings
 
 **Human strategy:**
+
 - Coherence through implicit relationships
 - Sophisticated use of pronouns and references
 - Lexical cohesion through related terminology
 - Strategic deployment where markers meaningfully contribute
 
 **AI strategy:**
+
 - Rigid structural organization with minimal connective tissue
 - Formulaic discourse marker application
 - Creates impression of mechanical writing
@@ -399,6 +440,7 @@ High-frequency AI phrases:
 #### 5. **Personal Voice and Authentic Perspective**
 
 **Voice components:**
+
 - Distinctive word choices
 - Characteristic sentence structures
 - Tonal qualities
@@ -406,6 +448,7 @@ High-frequency AI phrases:
 - Recognizable individual imprint
 
 **Functions:**
+
 - Helps readers follow arguments
 - Demonstrates engagement with subject
 - Shows relationship to audience
@@ -416,6 +459,7 @@ High-frequency AI phrases:
 #### 6. **Emotional Authenticity and Vulnerability**
 
 **Human emotional writing:**
+
 - Specificity from lived experience
 - Particular sensory details
 - Specific memories
@@ -423,6 +467,7 @@ High-frequency AI phrases:
 - Vulnerability and genuine felt experience
 
 **AI emotional writing:**
+
 - Generic emotional statements
 - Formulaic application across situations
 - Lack of concrete particularity
@@ -433,12 +478,14 @@ High-frequency AI phrases:
 #### 7. **Contextual Appropriateness and Audience Awareness**
 
 **Human calibration:**
+
 - Sophisticated awareness of context and audience
 - Natural adjustment of formality based on purpose
 - Fluid tone calibration for different relationships
 - Register appropriate to specific rhetorical situations
 
 **AI limitations:**
+
 - Can accept explicit instructions for register
 - Demonstrates less fluid contextual adjustment
 - Processes communicative elements more discretely
@@ -447,6 +494,7 @@ High-frequency AI phrases:
 #### 8. **Humor, Irony, and Sophisticated Rhetorical Devices**
 
 **Human capabilities:**
+
 - Understanding beyond literal language
 - Grasping social convention
 - Unexpected juxtaposition
@@ -454,6 +502,7 @@ High-frequency AI phrases:
 - Nuanced deployment with audience awareness
 
 **AI limitations:**
+
 - Awkwardly explicit humor attempts
 - Technically competent but emotionally flat irony
 - Difficulty with genuine humor
@@ -464,18 +513,21 @@ High-frequency AI phrases:
 **Counterintuitive finding:** AI text often scores as MORE difficult to read despite grammatical correctness
 
 **Explanation:**
+
 - AI employs syntactically complex constructions
 - Uses sophisticated vocabulary consistently
 - Maintains formal register relentlessly
 - Creates cognitive load through consistency
 
 **Human approach:**
+
 - Incorporates simpler constructions
 - Uses colloquial elements
 - Varies register naturally
 - Enhances accessibility despite potentially lower readability scores
 
 **Measured difference:**
+
 - AI: Higher Automatic Readability Index (17.306 vs. 11.651)
 - AI: Lower passive voice percentage (11.055% vs. 33.593%)
 - Human: More natural rhythm despite complexity metrics
@@ -492,6 +544,7 @@ High-frequency AI phrases:
 Provide explicit information about yourself when formulating requests.
 
 **Example transformation:**
+
 - **Generic:** "Write an email to [contact] welcoming them to the company."
 - **Persona-enhanced:** "I am an HR manager with 10 years of experience who values creating warm, personalized connections with new hires. Write an email to [contact] welcoming them to the company. Invite them to schedule a meeting with me on [date]."
 
@@ -515,6 +568,7 @@ Upload your best work for AI to analyze and create a writing style guide.
 **Research finding:** Providing existing copy as training examples significantly outperforms using single tone words ("formal," "happy").
 
 **Process:**
+
 1. Provide 2-3 samples of your best writing
 2. Ask AI to analyze your voice and create a style guide
 3. Edit the guide to add what AI missed
@@ -530,6 +584,7 @@ Engage AI in multiple cycles of generation and refinement rather than accepting 
 **Research finding:** Higher-performing writers showcase strategic and dynamic interaction with AI, seamlessly shifting between sequential and concurrent strategies.
 
 **Process:**
+
 1. Generate initial draft
 2. Evaluate results
 3. Make specific refinement requests
@@ -546,6 +601,7 @@ Engage AI in multiple cycles of generation and refinement rather than accepting 
 Strategically vary sentence structure by combining short and long constructions.
 
 **Specific actions:**
+
 - **Combine short sentences:** "The sun rose. It was a beautiful morning." → "As the sun rose, it revealed a beautiful morning."
 - **Break long sentences:** "The product is good and saves time and many use it." → "Our product saves you hours each week. Customers love the freedom it brings."
 - **Mix complexity:** Alternate between 5-10 word sentences and 25-40 word sentences
@@ -558,12 +614,14 @@ Strategically vary sentence structure by combining short and long constructions.
 Vocally read every paragraph to identify unnatural phrasing.
 
 **Why it works:** Sentences that sound clunky when spoken will read that way to audiences. Oral reading immediately identifies:
+
 - Mechanical language patterns
 - Overly structured paragraphs
 - Unnatural transitions
 - Forced constructions
 
 **Process:**
+
 1. Read aloud slowly
 2. Note any stumbling or awkward phrasing
 3. Rewrite for natural speech rhythm
@@ -575,11 +633,13 @@ Vocally read every paragraph to identify unnatural phrasing.
 Systematically eliminate characteristic AI vocabulary.
 
 **High-priority removals:**
+
 - "revolutionize," "innovative," "cutting-edge," "game-changing," "transformative"
 - "delve into," "underscore," "pivotal"
 - Replace with specific, concrete language
 
 **Replacement strategy:**
+
 - Instead of "innovative," describe specifically what's new
 - Instead of "leverage," use "use" or "apply"
 - Instead of "facilitate," use "help" or "enable"
@@ -590,6 +650,7 @@ Systematically eliminate characteristic AI vocabulary.
 Replace formal constructions with natural contractions.
 
 **Transformations:**
+
 - "it is" → "it's"
 - "do not" → "don't"
 - "we are" → "we're"
@@ -603,6 +664,7 @@ Replace formal constructions with natural contractions.
 Add similes, metaphors, idioms, and analogies to create vivid mental imagery.
 
 **Example transformation:**
+
 - **Literal (AI):** "Consistency in blog posting will help your website gain better engagement."
 - **Figurative (Human):** "Consistency in blog publishing is like watering a plant; if you're not seeing faster results, your growth is certain over time."
 
@@ -614,6 +676,7 @@ Add similes, metaphors, idioms, and analogies to create vivid mental imagery.
 Replace AI's mismatched word pairings with natural collocations familiar to native speakers.
 
 **Examples:**
+
 - **Incorrect:** "make the dishes" → **Correct:** "do the dishes"
 - **Incorrect:** "He'll revert back to me" → **Correct:** "He'll get back to me"
 - **Incorrect:** "highly advanced" (overused) → **Correct:** "sophisticated"
@@ -628,6 +691,7 @@ Replace AI's mismatched word pairings with natural collocations familiar to nati
 Embed specific stories or relatable experiences from actual events.
 
 **Structure:**
+
 1. Identify key message
 2. Recall relevant personal experience
 3. Include specific details (times, places, sensory information)
@@ -645,15 +709,18 @@ Personal: "At 2:47 PM on a Wednesday last month, I realized I'd spent six hours 
 Craft narratives evoking specific emotions through concrete details.
 
 **Emotional categories to target:**
+
 - Joy, empathy, curiosity, productive anxiety, relief, inspiration
 
 **Technique:**
+
 - Use sensory details (sight, sound, smell, touch, taste)
 - Describe specific moments rather than general states
 - Show emotional consequences through action/reaction
 - Ground feelings in particular circumstances
 
 **Example:**
+
 - **Generic (AI):** "This tool improves productivity."
 - **Emotional (Human):** "I watched Sarah close her laptop at 4 PM—something she hadn't done in three years. The tool gave her back evenings with her kids."
 
@@ -663,6 +730,7 @@ Craft narratives evoking specific emotions through concrete details.
 Write as if speaking directly to reader in natural dialogue.
 
 **Specific techniques:**
+
 - Address reader as "you"
 - Ask rhetorical questions
 - Use colloquial phrases
@@ -670,6 +738,7 @@ Write as if speaking directly to reader in natural dialogue.
 - Mirror natural speech patterns
 
 **Example transformation:**
+
 - **Formal (AI):** "It is important to consider the implications of this approach."
 - **Conversational (Human):** "Here's what this really means for you..."
 
@@ -679,6 +748,7 @@ Write as if speaking directly to reader in natural dialogue.
 Pose questions not for factual answers but to engage readers emotionally or prompt reflection.
 
 **Effective patterns:**
+
 - "Ever felt overwhelmed by...?"
 - "What if you could...?"
 - "Isn't it time we looked at this differently?"
@@ -692,6 +762,7 @@ Pose questions not for factual answers but to engage readers emotionally or prom
 Review language for warmth and relatability.
 
 **Specific substitutions:**
+
 - "users" → "people"
 - "consumers" → "customers" or "readers"
 - "implement" → "start using"
@@ -708,6 +779,7 @@ Review language for warmth and relatability.
 Strategically alternate between sophisticated and simple vocabulary.
 
 **Pattern:**
+
 - Baseline: Use accessible, clear language
 - Emphasis points: Employ sophisticated vocabulary
 - Technical accuracy: Use precise terminology
@@ -721,6 +793,7 @@ Strategically alternate between sophisticated and simple vocabulary.
 Replace or eliminate adverbs ending in "-ly" with stronger verbs.
 
 **Transformations:**
+
 - "ran very quickly" → "sprinted"
 - "said loudly" → "shouted"
 - "extremely important" → "critical"
@@ -733,6 +806,7 @@ Replace or eliminate adverbs ending in "-ly" with stronger verbs.
 Replace robotic transitions with conversational segues.
 
 **Stock phrases to replace:**
+
 - "Furthermore," → "What's more,"
 - "Moreover," → "And here's the thing,"
 - "In conclusion," → "So what does this all mean?"
@@ -759,6 +833,7 @@ Deliberately add elements that characterize human writing:
 Include specific terminology, context, and examples unique to a particular field.
 
 **Why it works multiple ways:**
+
 1. Demonstrates authentic expertise
 2. Throws off AI detection systems
 3. Builds credibility with knowledgeable readers
@@ -827,6 +902,7 @@ Include specific terminology, context, and examples unique to a particular field
 **Research finding:** Higher-performing writers demonstrate strategic and dynamic interaction with AI tools, not passive acceptance of outputs.
 
 **Implementation:**
+
 - Use AI for targeted assistance, not wholesale generation
 - Maintain ultimate creative authority
 - Iterate and refine rather than accept first output
@@ -837,6 +913,7 @@ Include specific terminology, context, and examples unique to a particular field
 **Determine which stages benefit from AI assistance:**
 
 **High-value AI applications:**
+
 - Brainstorming and ideation
 - Research compilation and summarization
 - Structural feedback on drafts
@@ -845,6 +922,7 @@ Include specific terminology, context, and examples unique to a particular field
 - Grammar and clarity checking
 
 **Reserve for human engagement:**
+
 - Initial prose generation (write fresh, not revise AI text)
 - Final editing for voice
 - Creative direction and vision
@@ -857,6 +935,7 @@ Include specific terminology, context, and examples unique to a particular field
 #### Principle 3: Maintain Transparency and Disclosure
 
 **Ethical framework:**
+
 - Disclose AI use when required by institutional policies
 - Be transparent about AI's role in the process
 - Emphasize human oversight and expertise
@@ -865,18 +944,21 @@ Include specific terminology, context, and examples unique to a particular field
 **Disclosure approaches:**
 
 **Academic contexts:**
+
 - Disclose AI use in methodology sections
 - Properly cite AI assistance
 - Upload full AI outputs as supplemental material (when required)
 - Maintain accountability for accuracy and integrity
 
 **Professional contexts:**
+
 - High-level transparency about AI supporting creative/analytical process
 - Emphasize human subject-matter experts refined all content
 - Clarify human judgment maintained throughout
 - Note: Internal tool use may not require disclosure, but client-facing AI does
 
 **Creative contexts:**
+
 - Transparent about AI role in ideation/research
 - Clear about human authorship of final prose
 - Acknowledge when AI contributed specific elements
@@ -887,6 +969,7 @@ Include specific terminology, context, and examples unique to a particular field
 Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 
 **Case study pattern:**
+
 1. Record rough thinking via speech-to-text (8 minutes)
 2. Use ChatGPT for grammar cleanup of transcript
 3. Engage in multiple cycles for stylistic improvements
@@ -902,6 +985,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Concept:** AI involvement exists on separate axes, not single scale.
 
 **Dimensions:**
+
 1. **Content generation axis:** None → Minimal → Substantial
 2. **Structural assistance axis:** None → Feedback → Organization
 3. **Creative input axis:** None → Ideation → Development
@@ -910,6 +994,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Application:** Writers may use AI extensively on one axis while minimally on others.
 
 **Example:**
+
 - High structural assistance (AI identifies organizational gaps)
 - Minimal content generation (writer generates prose)
 - High analytical contribution (AI summarizes research)
@@ -920,6 +1005,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Concept:** Deliberately analyze specific elements comprising unique voice, then use analysis to guide AI behavior.
 
 **Process:**
+
 1. **Analyze your voice:**
    - Preferred punctuation patterns
    - Typical sentence length
@@ -935,6 +1021,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
    Incorporate these elements as explicit instructions
 
 **Example style guide elements:**
+
 - "I prefer em-dashes over semicolons for interrupted thoughts"
 - "I use sentence fragments strategically for emphasis, averaging one per 3-4 paragraphs"
 - "I favor practical examples over abstract explanations"
@@ -945,6 +1032,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Concept:** Create distance between AI assistance and final revision.
 
 **Implementation:**
+
 1. Generate AI-assisted draft
 2. Wait 24 hours (or minimum 4 hours)
 3. Review with fresh perspective
@@ -952,6 +1040,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 5. Revise substantially if needed
 
 **Why it works:**
+
 - Prevents passive acceptance of AI suggestions
 - Fresh perspective detects artificial patterns
 - Fatigue doesn't compromise judgment
@@ -962,6 +1051,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Concept:** Humans actively engage at key decision points rather than AI operating autonomously.
 
 **Structure:**
+
 1. **Human:** Define objectives and parameters
 2. **AI:** Generate initial content
 3. **Human:** Evaluate and provide specific feedback
@@ -978,12 +1068,14 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 #### Academic and Scientific Writing
 
 **Appropriate AI use:**
+
 - Research compilation and literature review summarization
 - Structural feedback identifying gaps in logic
 - Citation formatting assistance
 - Data organization and preliminary analysis
 
 **Maintain human control:**
+
 - Generate original prose yourself
 - Interpret findings personally
 - Draw conclusions through your analysis
@@ -991,6 +1083,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 - Ensure arguments reflect your understanding
 
 **Critical requirements:**
+
 - Disclose AI use per journal/institution requirements
 - Never use AI-generated text without verification
 - Check for hallucinated references (fabricated citations)
@@ -1001,6 +1094,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 #### Creative Writing (Fiction, Narrative Nonfiction)
 
 **Appropriate AI use:**
+
 - Character background exploration
 - Plot possibility testing
 - World-building detail development
@@ -1008,6 +1102,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 - Research material organization
 
 **Maintain human control:**
+
 - Write all prose yourself
 - Make all creative choices
 - Develop authentic character voices
@@ -1015,6 +1110,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 - Preserve sense of discovery and ownership
 
 **Award-winning author practices:**
+
 - J.F. Penn uses AI extensively for research, character development planning, structural brainstorming
 - Maintains strict control over actual prose composition
 - Reports tools enhance rather than diminish creative process
@@ -1024,6 +1120,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 #### Professional and Business Writing
 
 **Appropriate AI use:**
+
 - Rapid generation of initial drafts (routine communications, proposals)
 - Brand voice consistency checking
 - Data compilation and synthesis
@@ -1031,6 +1128,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 - Multilingual translation drafts
 
 **Maintain human control:**
+
 - Subject-matter experts refine all content
 - Strategic messaging decisions
 - Brand voice final calibration
@@ -1038,6 +1136,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 - Tone appropriateness for audience
 
 **Workflow:**
+
 1. AI generates initial draft
 2. Human subject-matter expert reviews
 3. Refine for brand voice
@@ -1051,6 +1150,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 #### Technical and Documentation Writing
 
 **Appropriate AI use:**
+
 - Documentation drafts from code comments
 - Specification organization
 - Consistency checking across documents
@@ -1058,6 +1158,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 - Initial translation drafts
 
 **Maintain human control:**
+
 - Ensure clarity for target audience
 - Verify accuracy of technical details
 - Adjust technical depth appropriately
@@ -1069,6 +1170,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 #### Journalistic and Editorial Writing
 
 **Appropriate AI use:**
+
 - Research compilation
 - Interview transcription and summarization
 - Fact-checking assistance
@@ -1076,6 +1178,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 - Graphics generation
 
 **Maintain human control:**
+
 - Original reporting
 - Source verification
 - Editorial judgment
@@ -1091,6 +1194,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Problem:** Treating AI as autonomous generator rather than collaborative tool
 
 **Solution:**
+
 - Always plan for multiple iterations
 - Evaluate critically before accepting
 - Provide specific refinement requests
@@ -1101,6 +1205,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Problem:** Students/writers who routinely use AI for core tasks fail to develop essential skills
 
 **Solution:**
+
 - Use AI after foundational skills develop
 - Engage in direct writing regularly
 - Treat AI as enhancement, not replacement
@@ -1111,12 +1216,14 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Problem:** AI systems confidently generate false information (hallucinations)
 
 **Solution:**
+
 - Verify ALL factual claims
 - Check every citation for existence and relevance
 - Cross-reference statistics with original sources
 - Never publish without human verification
 
 **Critical examples:**
+
 - New York attorney used ChatGPT for legal research; citations existed only in AI's imagination
 - Academic papers with fabricated references
 - Technical documentation with incorrect procedures
@@ -1126,6 +1233,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Problem:** Casual reliance on AI-assisted components gradually erodes distinctive voice
 
 **Solution:**
+
 - Regularly write without AI assistance
 - Analyze your voice explicitly and document it
 - Compare AI-assisted work to your unassisted writing
@@ -1136,6 +1244,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Problem:** Failure to disclose AI use leading to ethical breaches and reputational damage
 
 **Solution:**
+
 - Know your institution's/industry's disclosure requirements
 - Err on side of transparency when unclear
 - Document your process
@@ -1148,11 +1257,13 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 ### Technical Writing
 
 **AI patterns more pronounced:**
+
 - Higher accuracy required makes detection easier
 - Domain-specific terminology usage reveals AI limitations
 - Procedural accuracy critical
 
 **Naturalization priorities:**
+
 1. Verify all technical accuracy first
 2. Add domain-specific implementation details
 3. Include practical troubleshooting insights
@@ -1164,11 +1275,13 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 ### Academic Writing
 
 **AI patterns more pronounced:**
+
 - Formal register overlaps with AI preferences
 - Structured organization matches AI defaults
 - Citation patterns can reveal AI generation
 
 **Naturalization priorities:**
+
 1. Verify all citations exist and are relevant
 2. Ensure arguments reflect genuine analysis
 3. Add discipline-specific theoretical framing
@@ -1180,11 +1293,13 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 ### Business Writing
 
 **AI patterns less pronounced:**
+
 - Variety of business contexts reduces formulaic detection
 - Shorter format helps avoid statistical detection
 - Brand voice variation expected
 
 **Naturalization priorities:**
+
 1. Ensure brand voice consistency
 2. Add industry-specific insights
 3. Include strategic context
@@ -1196,11 +1311,13 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 ### Creative Writing
 
 **AI patterns most detectable:**
+
 - Creativity requires unpredictability AI struggles with
 - Emotional authenticity critical and AI-lacking
 - Original voice essential to literary value
 
 **Naturalization priorities:**
+
 1. Write all prose yourself (use AI only for planning)
 2. Develop authentic character voices
 3. Include unexpected metaphors and descriptions
@@ -1214,6 +1331,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Challenge:** ESL writing naturally resembles AI patterns
 
 **Why:**
+
 - More formulaic language structures
 - Conservative vocabulary choices
 - Repeated phrases for precision
@@ -1222,12 +1340,14 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Result:** Higher false positive rates for non-native speakers
 
 **Solutions:**
+
 - GPTZero implemented specific de-biasing for ESL writing (1% false positive rate)
 - Other tools may not account for this bias
 - ESL writers should be aware of heightened scrutiny
 - Institutions should use multiple verification methods beyond detection tools
 
 **Language-specific detection:**
+
 - Detection accuracy varies by language
 - Korean, Chinese, Japanese require specialized approaches
 - Less common languages show 70-80% detection accuracy vs. 95-97% for English
@@ -1241,143 +1361,80 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Time investment:** 90 minutes total
 
 **Phase 1: Planning (15 minutes)**
+
 1. Identify topic and target audience
 2. Use AI for initial research compilation
 3. Review AI-generated outline
 4. Restructure based on your strategic vision
 
-**Phase 2: Content Generation (20 minutes)**
-5. Use engineered prompt with persona, context, audience psychology
-6. Generate initial draft
-7. Do NOT read yet—proceed to break
+**Phase 2: Content Generation (20 minutes)** 5. Use engineered prompt with persona, context, audience psychology 6. Generate initial draft 7. Do NOT read yet—proceed to break
 
-**Phase 3: Initial Review (15 minutes)**
-8. Return with fresh eyes
-9. Read aloud entire piece
-10. Mark awkward sections
-11. Note missing personal elements
+**Phase 3: Initial Review (15 minutes)** 8. Return with fresh eyes 9. Read aloud entire piece 10. Mark awkward sections 11. Note missing personal elements
 
-**Phase 4: Structural Refinement (20 minutes)**
-12. Vary sentence lengths deliberately
-13. Remove formulaic transitions
-14. Add figurative language
-15. Incorporate personal anecdotes
+**Phase 4: Structural Refinement (20 minutes)** 12. Vary sentence lengths deliberately 13. Remove formulaic transitions 14. Add figurative language 15. Incorporate personal anecdotes
 
-**Phase 5: Voice Calibration (15 minutes)**
-16. Remove AI buzzwords
-17. Add contractions
-18. Insert rhetorical questions
-19. Ensure emotional resonance
+**Phase 5: Voice Calibration (15 minutes)** 16. Remove AI buzzwords 17. Add contractions 18. Insert rhetorical questions 19. Ensure emotional resonance
 
-**Phase 6: Final Polish (5 minutes)**
-20. Read aloud one final time
-21. Check for natural flow
-22. Verify accuracy of any facts
-23. Publish
+**Phase 6: Final Polish (5 minutes)** 20. Read aloud one final time 21. Check for natural flow 22. Verify accuracy of any facts 23. Publish
 
 ### Workflow 2: Academic Paper Section (2,000-4,000 words)
 
 **Time investment:** 4-6 hours total
 
 **Phase 1: Research (60-90 minutes)**
+
 1. Use AI to compile and summarize literature
 2. Verify all sources exist and are relevant
 3. Read key papers yourself
 4. Identify gaps AI missed
 
-**Phase 2: Outlining (30 minutes)**
-5. Use AI for structural feedback on planned outline
-6. Restructure based on disciplinary norms
-7. Ensure logical flow
+**Phase 2: Outlining (30 minutes)** 5. Use AI for structural feedback on planned outline 6. Restructure based on disciplinary norms 7. Ensure logical flow
 
-**Phase 3: Writing (120-180 minutes)**
-8. Write first draft YOURSELF (do not use AI for prose generation)
-9. Focus on your analysis and interpretation
-10. Include your voice and perspective
+**Phase 3: Writing (120-180 minutes)** 8. Write first draft YOURSELF (do not use AI for prose generation) 9. Focus on your analysis and interpretation 10. Include your voice and perspective
 
-**Phase 4: Refinement (45 minutes)**
-11. Use AI for clarity and grammar feedback
-12. Review suggestions critically
-13. Accept only what preserves your voice
-14. Verify academic tone appropriate to field
+**Phase 4: Refinement (45 minutes)** 11. Use AI for clarity and grammar feedback 12. Review suggestions critically 13. Accept only what preserves your voice 14. Verify academic tone appropriate to field
 
-**Phase 5: Citation Verification (30 minutes)**
-15. Check every citation for existence
-16. Verify relevance to your claims
-17. Ensure proper formatting
-18. Cross-reference with original sources
+**Phase 5: Citation Verification (30 minutes)** 15. Check every citation for existence 16. Verify relevance to your claims 17. Ensure proper formatting 18. Cross-reference with original sources
 
-**Phase 6: Disclosure (15 minutes)**
-19. Document AI use per institutional requirements
-20. Prepare disclosure statement if required
-21. Upload supplemental materials if required
+**Phase 6: Disclosure (15 minutes)** 19. Document AI use per institutional requirements 20. Prepare disclosure statement if required 21. Upload supplemental materials if required
 
 ### Workflow 3: Marketing Copy (300-500 words)
 
 **Time investment:** 45 minutes total
 
 **Phase 1: Strategic Planning (10 minutes)**
+
 1. Define target audience psychology
 2. Identify desired emotional outcome
 3. Clarify brand voice requirements
 4. Determine key messages
 
-**Phase 2: Generation (5 minutes)**
-5. Use highly detailed prompt with brand voice examples
-6. Generate 2-3 variations
-7. Select strongest elements from each
+**Phase 2: Generation (5 minutes)** 5. Use highly detailed prompt with brand voice examples 6. Generate 2-3 variations 7. Select strongest elements from each
 
-**Phase 3: Brand Voice Calibration (15 minutes)**
-8. Refine for brand voice consistency
-9. Add brand-specific terminology
-10. Ensure tone matches brand personality
-11. Verify messaging alignment
+**Phase 3: Brand Voice Calibration (15 minutes)** 8. Refine for brand voice consistency 9. Add brand-specific terminology 10. Ensure tone matches brand personality 11. Verify messaging alignment
 
-**Phase 4: Emotional Enhancement (10 minutes)**
-12. Add sensory details
-13. Include customer success specifics
-14. Inject appropriate urgency or calm
-15. Ensure authentic connection
+**Phase 4: Emotional Enhancement (10 minutes)** 12. Add sensory details 13. Include customer success specifics 14. Inject appropriate urgency or calm 15. Ensure authentic connection
 
-**Phase 5: Final Review (5 minutes)**
-16. Read aloud
-17. Check for natural flow
-18. Verify factual accuracy of claims
-19. Approve for publication
+**Phase 5: Final Review (5 minutes)** 16. Read aloud 17. Check for natural flow 18. Verify factual accuracy of claims 19. Approve for publication
 
 ### Workflow 4: Technical Documentation (500-1,000 words)
 
 **Time investment:** 60-75 minutes total
 
 **Phase 1: Content Organization (15 minutes)**
+
 1. Use AI to organize code comments into documentation structure
 2. Review outline for completeness
 3. Identify missing sections
 4. Plan examples to add
 
-**Phase 2: Generation and Accuracy Check (20 minutes)**
-5. Generate initial draft from structured outline
-6. Immediately verify all technical accuracy
-7. Test any code examples provided
-8. Check for security implications
+**Phase 2: Generation and Accuracy Check (20 minutes)** 5. Generate initial draft from structured outline 6. Immediately verify all technical accuracy 7. Test any code examples provided 8. Check for security implications
 
-**Phase 3: Audience Calibration (15 minutes)**
-9. Adjust technical depth for target audience
-10. Add practical troubleshooting insights
-11. Include real-world implementation notes
-12. Provide context for why, not just how
+**Phase 3: Audience Calibration (15 minutes)** 9. Adjust technical depth for target audience 10. Add practical troubleshooting insights 11. Include real-world implementation notes 12. Provide context for why, not just how
 
-**Phase 4: Clarity Enhancement (10 minutes)**
-13. Remove unnecessary jargon
-14. Add explanatory examples
-15. Ensure logical progression
-16. Check for ambiguous instructions
+**Phase 4: Clarity Enhancement (10 minutes)** 13. Remove unnecessary jargon 14. Add explanatory examples 15. Ensure logical progression 16. Check for ambiguous instructions
 
-**Phase 5: Final Verification (10 minutes)**
-17. Have colleague review for clarity
-18. Test instructions end-to-end
-19. Verify all links/references work
-20. Publish with version tracking
+**Phase 5: Final Verification (10 minutes)** 17. Have colleague review for clarity 18. Test instructions end-to-end 19. Verify all links/references work 20. Publish with version tracking
 
 ---
 
@@ -1388,11 +1445,13 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 #### 1. Detection Reliability Variance
 
 **Current state:**
+
 - Premium tools: 84% accuracy (best)
 - Free tools: 68% accuracy (best)
 - No tool achieves 100% reliability
 
 **Factors affecting accuracy:**
+
 - Content type (formal vs. creative)
 - Text length (poor on <50 tokens)
 - Language (95-97% for English, 70-80% for others)
@@ -1402,11 +1461,13 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 #### 2. False Positive Problem
 
 **Scale:**
+
 - 30.4% false positive rate (Corrector on human academic papers)
 - 16% false positive rate (ZeroGPT)
 - 0% false positive rate (GPTZero after de-biasing)
 
 **Consequences:**
+
 - Career damage from false accusations
 - Academic integrity violations for innocent writers
 - Disproportionate impact on ESL writers
@@ -1415,6 +1476,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 #### 3. Adversarial Vulnerability
 
 **Evasion effectiveness:**
+
 - Simple paraphrasing reduces detection significantly
 - DIPPER paraphrase model dropped DetectGPT accuracy from 70.3% to 4.6%
 - Recursive paraphrasing maintains semantic similarity while evading detection
@@ -1427,11 +1489,13 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Problem:** Statistical methods require sufficient material for reliable analysis
 
 **Minimum thresholds:**
+
 - Perplexity-based methods need 50+ tokens
 - Stylometric approaches need 100+ words
 - Burstiness measurement needs multiple sentences
 
 **Vulnerable contexts:**
+
 - Social media posts
 - Email communications
 - Peer review comments
@@ -1444,6 +1508,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Risk:** Students who routinely use AI for core tasks fail to develop essential capabilities
 
 **Affected skills:**
+
 - Critical thinking through writing
 - Argument construction
 - Information synthesis
@@ -1451,6 +1516,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 - Creative problem-solving
 
 **Mitigation:**
+
 - Ensure foundational skills develop before AI augmentation
 - Maintain regular non-AI writing practice
 - Use AI for enhancement, not replacement
@@ -1461,12 +1527,14 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Problem:** Widespread use of same AI tools produces convergence toward similar styles
 
 **Effects:**
+
 - Digital spaces fill with similarly-sounding content
 - Lack of individual character and distinction
 - Reduced diversity of voices and perspectives
 - "Blandness" readers can identify (63% accuracy in studies)
 
 **Mitigation:**
+
 - Invest in extensive voice customization
 - Revise substantially to restore individuality
 - Use AI selectively, not uniformly
@@ -1477,6 +1545,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Problem:** AI systems confidently generate false information
 
 **Common hallucinations:**
+
 - Fabricated citations and references
 - Nonexistent case law or precedents
 - Invented statistics and data
@@ -1484,6 +1553,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 - Incorrect technical procedures
 
 **Mitigation:**
+
 - Verify ALL factual claims without exception
 - Check every citation for existence and relevance
 - Cross-reference statistics with original sources
@@ -1495,12 +1565,14 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Problem:** Detection and naturalization effectiveness varies dramatically across contexts
 
 **High detection accuracy:**
+
 - Formal academic writing
 - Technical documentation
 - Structured business reports
 - English-language content
 
 **Low detection accuracy:**
+
 - Creative writing
 - Heavily edited content
 - Mixed human-AI collaboration
@@ -1514,12 +1586,14 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 #### 9. Transparency and Disclosure Complexity
 
 **Challenges:**
+
 - Lack of consensus standards across institutions
 - Unclear boundaries of "acceptable" AI use
 - Difficulty defining degrees of AI involvement
 - Tension between disclosure and evasion concerns
 
 **Policy variations:**
+
 - Some institutions ban AI use entirely
 - Others require disclosure but permit use
 - Still others encourage strategic AI integration
@@ -1528,12 +1602,14 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 #### 10. Fairness and Bias Issues
 
 **Documented biases:**
+
 - ESL writers flagged at higher rates
 - Neurodivergent writers face higher false positives
 - Non-native speakers penalized for natural patterns
 - Formal writing styles trigger detection
 
 **Solutions in progress:**
+
 - Explicit de-biasing in training (GPTZero: 1% FP for ESL)
 - Awareness training for educators
 - Multiple verification methods beyond detection
@@ -1542,6 +1618,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 #### 11. Privacy and Security Concerns
 
 **Risks:**
+
 - AI platforms may retain submitted content
 - Proprietary information exposure
 - Inadequate FERPA compliance (education)
@@ -1549,6 +1626,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 - Ambiguous privacy policies
 
 **Mitigation:**
+
 - Evaluate AI tools for security compliance
 - Use on-premise or private instances when available
 - Avoid inputting confidential information
@@ -1561,6 +1639,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Challenge:** As AI models improve, distributions of human and AI text may converge
 
 **Implications:**
+
 - Reliable statistical distinction becomes increasingly difficult
 - Detection approaches designed for current models may fail on future models
 - Perfect detection may be theoretically impossible
@@ -1573,6 +1652,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Challenge:** Spectrum from AI-assisted to AI-generated creates definitional ambiguity
 
 **Questions:**
+
 - What percentage of AI involvement makes text "AI-generated"?
 - Does extensive human revision of AI draft count as human writing?
 - How do we classify content where AI organized but human wrote?
@@ -1591,6 +1671,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Development:** AI systems fine-tuned to individual writers' voices and patterns
 
 **Capabilities:**
+
 - Deep customization through personal writing samples
 - Models that closely approximate individual style
 - Adaptive learning from ongoing collaboration
@@ -1603,6 +1684,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Development:** AI writing assistants incorporating visual, audio, interactive elements alongside text
 
 **Applications:**
+
 - Documentation with integrated code examples and visualizations
 - Marketing content with coordinated multimedia
 - Educational materials with adaptive presentations
@@ -1615,6 +1697,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Development:** AI trained specifically on discipline/industry corpora
 
 **Examples:**
+
 - Legal AI trained on precedents and legal writing conventions
 - Medical AI trained on clinical literature and regulatory requirements
 - Academic AI trained on peer-reviewed publications by field
@@ -1627,6 +1710,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Development:** AI that continuously optimizes based on actual audience engagement
 
 **Capability:**
+
 - Content automatically adjusts based on engagement patterns
 - Dynamic modification of length, complexity, tone
 - Maximizes impact for particular audiences
@@ -1641,6 +1725,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Development:** Industry-wide protocols for embedded detection signals
 
 **Components:**
+
 - Cryptographic watermarks during generation
 - Verifiable digital certificates of model generations
 - Content authentication chains
@@ -1653,6 +1738,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Development:** Sophisticated regulatory frameworks providing clear guidance
 
 **Potential standards:**
+
 - Specific disclosure language requirements
 - Graduated levels based on AI involvement degree
 - Domain-specific standards (academic vs. business)
@@ -1667,6 +1753,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Development:** Detection methods designed specifically to withstand evasion
 
 **Approaches:**
+
 - Multiple independent signals that can't all be disrupted simultaneously
 - Ensemble methods combining different detection mechanisms
 - Focus on features fundamentally difficult to modify
@@ -1679,6 +1766,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Development:** Interactive systems combining AI detection with human expertise
 
 **Design:**
+
 - AI provides evidence and preliminary assessment
 - Human reviewers evaluate with contextual knowledge
 - System learns from human judgments
@@ -1693,6 +1781,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Need:** Track how output characteristics change across successive generations
 
 **Questions:**
+
 - Do improving models produce more human-like text?
 - Do distinctive signatures strengthen or weaken?
 - Are theoretical detection limits permanent or temporary?
@@ -1705,6 +1794,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 **Need:** Understand which detection features work universally vs. domain-specifically
 
 **Focus:**
+
 - Identify robust signals across all writing types
 - Characterize domain-dependent features
 - Develop domain adaptation techniques
@@ -1744,35 +1834,35 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 
 ### Detection Tool Reliability (Quick Reference)
 
-| Tool | Claimed Accuracy | Independent Tests | False Positive Rate |
-|------|------------------|-------------------|---------------------|
-| GPTZero | 99% | ~70-95% | ~0-1% (after de-biasing) |
-| Scribbr | Not disclosed | ~75-90% | ~5-15% |
-| Originality.ai | ~96% | ~80-95% | ~5-10% |
-| Turnitin | ~98% | ~60-90% | ~10-20% |
-| ZeroGPT | ~98% | ~70-85% | ~16% |
+| Tool           | Claimed Accuracy | Independent Tests | False Positive Rate      |
+| -------------- | ---------------- | ----------------- | ------------------------ |
+| GPTZero        | 99%              | ~70-95%           | ~0-1% (after de-biasing) |
+| Scribbr        | Not disclosed    | ~75-90%           | ~5-15%                   |
+| Originality.ai | ~96%             | ~80-95%           | ~5-10%                   |
+| Turnitin       | ~98%             | ~60-90%           | ~10-20%                  |
+| ZeroGPT        | ~98%             | ~70-85%           | ~16%                     |
 
 **Key insight:** No tool is 100% reliable; use multiple verification methods.
 
 ### Domain-Specific Cheat Sheet
 
-| Domain | Detection Risk | Naturalization Priority | Time Investment |
-|--------|---------------|------------------------|----------------|
-| Academic | HIGH (formal structure) | Verify citations, add analysis | 4-6 hours for 2,000 words |
-| Creative | MEDIUM (emotion lacking) | Write prose yourself, AI for planning | Full human writing time |
-| Business | LOW (variety helps) | Brand voice, strategic insights | 45-90 min for 500 words |
-| Technical | HIGH (accuracy critical) | Domain expertise, practical details | 60-75 min for 1,000 words |
-| Social Media | LOW (short format) | Personal voice, authentic reaction | 15-20 min per post |
+| Domain       | Detection Risk           | Naturalization Priority               | Time Investment           |
+| ------------ | ------------------------ | ------------------------------------- | ------------------------- |
+| Academic     | HIGH (formal structure)  | Verify citations, add analysis        | 4-6 hours for 2,000 words |
+| Creative     | MEDIUM (emotion lacking) | Write prose yourself, AI for planning | Full human writing time   |
+| Business     | LOW (variety helps)      | Brand voice, strategic insights       | 45-90 min for 500 words   |
+| Technical    | HIGH (accuracy critical) | Domain expertise, practical details   | 60-75 min for 1,000 words |
+| Social Media | LOW (short format)       | Personal voice, authentic reaction    | 15-20 min per post        |
 
 ### Workflow Time Estimates
 
-| Content Type | Length | AI Draft | Humanization | Total Time |
-|-------------|--------|----------|--------------|------------|
-| Blog post | 1,000-2,000 words | 20 min | 70 min | 90 min |
-| Academic paper | 2,000-4,000 words | 90 min | 150-270 min | 4-6 hours |
-| Marketing copy | 300-500 words | 5 min | 40 min | 45 min |
-| Technical docs | 500-1,000 words | 20 min | 40-55 min | 60-75 min |
-| Social media | 100-300 words | 2 min | 13-18 min | 15-20 min |
+| Content Type   | Length            | AI Draft | Humanization | Total Time |
+| -------------- | ----------------- | -------- | ------------ | ---------- |
+| Blog post      | 1,000-2,000 words | 20 min   | 70 min       | 90 min     |
+| Academic paper | 2,000-4,000 words | 90 min   | 150-270 min  | 4-6 hours  |
+| Marketing copy | 300-500 words     | 5 min    | 40 min       | 45 min     |
+| Technical docs | 500-1,000 words   | 20 min   | 40-55 min    | 60-75 min  |
+| Social media   | 100-300 words     | 2 min    | 13-18 min    | 15-20 min  |
 
 **Key insight:** Budget 70-80% of time for humanization, not generation.
 
@@ -1801,6 +1891,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 ### Red Flag Phrases (Remove These)
 
 **Immediate removals:**
+
 - "delve into" → "explore"
 - "underscore" → "show" or "highlight"
 - "leverage" → "use"
@@ -1817,6 +1908,7 @@ Engage in 24-hour+ processes of refinement, not 5-minute outputs.
 ### Contraction Quick List
 
 **Formal → Conversational:**
+
 - it is → it's
 - do not → don't
 - we are → we're
@@ -1894,4 +1986,4 @@ Key academic sources included papers from Carnegie Mellon University, Stanford U
 
 ---
 
-*This research report is intended for educational and professional development purposes. Techniques described should be applied ethically and with appropriate disclosure per institutional and professional requirements.*
+_This research report is intended for educational and professional development purposes. Techniques described should be applied ethically and with appropriate disclosure per institutional and professional requirements._

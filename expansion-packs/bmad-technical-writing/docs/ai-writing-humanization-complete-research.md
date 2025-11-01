@@ -115,6 +115,7 @@ The fundamental insight: AI models generate text matching patterns in their trai
 **Structure**: Context, Objective, Style, Tone, Audience, Response
 
 **Implementation**:
+
 ```
 Context: You're writing a technical tutorial for intermediate Python developers
 learning asynchronous programming for the first time.
@@ -146,6 +147,7 @@ common confusions and address them directly.
 **Structure**: Capacity & Role, Insight, Statement, Personality, Experiment
 
 **Implementation**:
+
 ```
 Capacity & Role: You are Dr. Sarah Chen, a systems architect with 12 years of
 experience designing microservices architectures. You've migrated 30+ monolithic
@@ -179,6 +181,7 @@ example from a project you worked on (make it detailed and authentic).
 **Structure**: Problem state before, desired state after, bridging explanation
 
 **Implementation**:
+
 ```
 Before: Your AI-generated technical content reads like documentation written by
 a committee—formal, stiff, filled with passive voice and generic transitions like
@@ -224,11 +227,13 @@ Not every list needs to be perfectly parallel."
 Research demonstrates that specifying detailed author personas produces significantly more natural output than generic "write professionally" instructions.
 
 **Ineffective Generic Prompt**:
+
 ```
 Write a professional blog post about Kubernetes deployment strategies.
 ```
 
 **Effective Persona-Based Prompt**:
+
 ```
 You are Marcus Rodriguez, a DevOps engineer who's been running Kubernetes in
 production for 6 years. You've managed clusters ranging from 10 nodes to 500+ nodes
@@ -253,6 +258,7 @@ the same structure.
 ```
 
 **Impact**: Persona-based prompts increase:
+
 - Perplexity scores by ~35% (more unpredictable, human-like word choices)
 - Burstiness scores by ~60% (greater sentence variation)
 - Voice authenticity ratings by ~80% (stronger sense of real author)
@@ -264,6 +270,7 @@ the same structure.
 The most effective voice specification provides actual samples of the desired writing style.
 
 **Implementation**:
+
 ```
 Write in the style demonstrated by these examples:
 
@@ -290,6 +297,7 @@ Your writing should feel like it came from the same author as these examples.
 Research shows AI models respond effectively to explicit sentence structure instructions.
 
 **High-Impact Burstiness Prompt**:
+
 ```
 Sentence structure requirements:
 
@@ -335,6 +343,7 @@ won't tell you: most teams overcomplicate their first Kubernetes deployment. [16
 Research confirms that explicitly banning AI-characteristic vocabulary significantly reduces detection signatures.
 
 **AI Vocabulary Ban List (Tier 1 - Critical)**:
+
 ```
 NEVER use these words under any circumstances:
 - delve / delving / delves
@@ -358,6 +367,7 @@ Find natural alternatives:
 ```
 
 **Formulaic Transition Ban List**:
+
 ```
 Avoid these formulaic transitions:
 - Furthermore,
@@ -384,6 +394,7 @@ Use natural alternatives:
 AI models generate better content when provided rich context about audience, purpose, and constraints.
 
 **Effective Context Structure**:
+
 ```
 Audience Analysis:
 - Primary audience: [specific description with experience level]
@@ -420,6 +431,7 @@ After reading, the audience should be able to:
 Incorporating style guide requirements directly into prompts ensures consistency with organizational standards.
 
 **Example Style Integration**:
+
 ```
 Follow these style requirements:
 
@@ -457,17 +469,17 @@ Follow these style requirements:
 
 ### Effectiveness Summary: Pre-Generation Techniques
 
-| Technique | Impact on Perplexity | Impact on Burstiness | Editing Time Reduction | Implementation Difficulty |
-|-----------|---------------------|---------------------|----------------------|--------------------------|
-| COSTAR Framework | +35-40% | +30-35% | 40-50% | Medium |
-| CRISPE Framework | +40-45% | +35-40% | 50-60% | Medium |
-| BAB Framework | +30-35% | +40-45% | 45-55% | Low |
-| Persona-Based Prompting | +45-50% | +55-65% | 60-70% | Medium |
-| Voice Specification with Examples | +50-55% | +40-50% | 65-75% | High |
-| Explicit Burstiness Instructions | +25-30% | +70-85% | 35-45% | Low |
-| Anti-Pattern Vocabulary Ban | +40-45% (detection evasion) | +5-10% | 25-35% | Low |
-| Rich Context Provision | +35-40% | +25-30% | 50-60% | Medium |
-| Style Guide Integration | +25-30% | +20-25% | 50-60% | Medium |
+| Technique                         | Impact on Perplexity        | Impact on Burstiness | Editing Time Reduction | Implementation Difficulty |
+| --------------------------------- | --------------------------- | -------------------- | ---------------------- | ------------------------- |
+| COSTAR Framework                  | +35-40%                     | +30-35%              | 40-50%                 | Medium                    |
+| CRISPE Framework                  | +40-45%                     | +35-40%              | 50-60%                 | Medium                    |
+| BAB Framework                     | +30-35%                     | +40-45%              | 45-55%                 | Low                       |
+| Persona-Based Prompting           | +45-50%                     | +55-65%              | 60-70%                 | Medium                    |
+| Voice Specification with Examples | +50-55%                     | +40-50%              | 65-75%                 | High                      |
+| Explicit Burstiness Instructions  | +25-30%                     | +70-85%              | 35-45%                 | Low                       |
+| Anti-Pattern Vocabulary Ban       | +40-45% (detection evasion) | +5-10%               | 25-35%                 | Low                       |
+| Rich Context Provision            | +35-40%                     | +25-30%              | 50-60%                 | Medium                    |
+| Style Guide Integration           | +25-30%                     | +20-25%              | 50-60%                 | Medium                    |
 
 **Key Insight**: Combining multiple techniques produces multiplicative effects. A prompt employing CRISPE framework + persona + burstiness instructions + vocabulary bans achieves 85-92% human-like quality scores, compared to 40-55% for simple instruction prompts.
 
@@ -486,6 +498,7 @@ During-generation humanization encompasses all parameter settings and real-time 
 Temperature controls the randomness of token selection by scaling the logit values before applying softmax normalization. Lower temperatures make high-probability tokens even more likely (deterministic output), while higher temperatures flatten the distribution (more random, creative output).
 
 **Mathematical Impact**:
+
 - Temperature = 0.1-0.3: Highly deterministic, repetitive, AI-typical patterns
 - Temperature = 0.5-0.7: Balanced predictability and variation
 - Temperature = 0.8-1.0: Creative, varied, human-like unpredictability
@@ -493,15 +506,16 @@ Temperature controls the randomness of token selection by scaling the logit valu
 
 #### Optimal Temperature Ranges by Content Type
 
-| Content Type | Recommended Temperature | Rationale |
-|--------------|------------------------|-----------|
-| Technical Documentation | 0.3-0.5 | Precision and consistency prioritized |
-| Tutorial/Explanatory | 0.5-0.7 | Balance clarity with natural tone |
-| Blog Posts/Articles | 0.7-0.9 | Engaging, conversational, varied |
-| Creative Writing | 0.8-1.2 | Maximum creativity and unpredictability |
-| Marketing Copy | 0.6-0.8 | Engaging but on-message |
+| Content Type            | Recommended Temperature | Rationale                               |
+| ----------------------- | ----------------------- | --------------------------------------- |
+| Technical Documentation | 0.3-0.5                 | Precision and consistency prioritized   |
+| Tutorial/Explanatory    | 0.5-0.7                 | Balance clarity with natural tone       |
+| Blog Posts/Articles     | 0.7-0.9                 | Engaging, conversational, varied        |
+| Creative Writing        | 0.8-1.2                 | Maximum creativity and unpredictability |
+| Marketing Copy          | 0.6-0.8                 | Engaging but on-message                 |
 
 **Implementation Example (OpenAI API)**:
+
 ```python
 response = openai.ChatCompletion.create(
     model="gpt-4",
@@ -520,6 +534,7 @@ response = openai.ChatCompletion.create(
 Top-p sampling (nucleus sampling) selects tokens from the smallest set of tokens whose cumulative probability exceeds threshold `p`. This dynamic cutoff means the model considers more alternatives when uncertainty is high, fewer when a token is clearly appropriate.
 
 **Impact**:
+
 - Top-p = 0.5-0.7: Conservative, considers only highest-probability tokens
 - Top-p = 0.8-0.9: Balanced, considers reasonable alternatives (OPTIMAL for humanization)
 - Top-p = 0.95-1.0: Considers long-tail low-probability tokens (increases creativity but risks incoherence)
@@ -527,6 +542,7 @@ Top-p sampling (nucleus sampling) selects tokens from the smallest set of tokens
 **Comparison to Temperature**: Top-p provides more stable quality than temperature alone because it adapts to context. Temperature applied uniformly may introduce excessive randomness where inappropriate.
 
 **Recommended Combined Settings**:
+
 ```python
 # Optimal humanization balance
 temperature=0.8,
@@ -542,6 +558,7 @@ top_p=0.9
 Top-k sampling restricts consideration to the top `k` most probable tokens at each step, regardless of cumulative probability.
 
 **Impact**:
+
 - Top-k = 10-20: Very conservative (AI-typical uniformity)
 - Top-k = 40-60: Balanced (moderate variability)
 - Top-k = 80-100: High variability (approaching human unpredictability)
@@ -549,6 +566,7 @@ Top-k sampling restricts consideration to the top `k` most probable tokens at ea
 **Limitation**: Top-k applies fixed cutoff regardless of probability distribution shape. When a single token has 95% probability, considering top-40 adds minimal value. When probability is distributed across many tokens, top-40 may exclude reasonable alternatives.
 
 **Best Practice**: Use top-p instead of top-k for humanization, or use both together with top-k as safety bound:
+
 ```python
 temperature=0.8,
 top_p=0.9,
@@ -564,6 +582,7 @@ Min-p sampling (minimum probability sampling) excludes tokens with probability b
 **Advantage**: When the model is highly confident about next token (high top probability), min-p allows considering fewer alternatives. When uncertain (flat distribution), min-p considers more alternatives.
 
 **Typical Values**:
+
 - Min-p = 0.05-0.10: Conservative, similar to top-p = 0.9-0.95
 - Min-p = 0.02-0.05: Balanced variability
 - Min-p = 0.01-0.02: High variability, maximum unpredictability
@@ -577,6 +596,7 @@ Min-p sampling (minimum probability sampling) excludes tokens with probability b
 Reduces probability of tokens proportional to how many times they've already appeared in the generated text. Higher frequency penalty discourages repetition.
 
 **Scale**: -2.0 to +2.0
+
 - 0.0: No penalty (default)
 - 0.3-0.6: Mild repetition reduction (recommended for humanization)
 - 0.7-1.0: Moderate repetition reduction
@@ -593,6 +613,7 @@ frequency_penalty=0.4  # Mild repetition discouragement
 Reduces probability of any token that has appeared at least once, regardless of frequency. Encourages introducing new topics and vocabulary.
 
 **Scale**: -2.0 to +2.0
+
 - 0.0: No penalty
 - 0.3-0.6: Mild vocabulary diversification (recommended)
 - 0.7-1.0: Moderate diversification
@@ -613,6 +634,7 @@ presence_penalty=0.5  # Encourage vocabulary diversity
 Chain-of-thought prompting instructs the model to show reasoning process before final answer, producing more thoughtful, human-like explanations.
 
 **Basic Implementation**:
+
 ```
 Question: [user question]
 
@@ -625,6 +647,7 @@ Provide your complete answer with reasoning visible.
 ```
 
 **Advanced Implementation for Humanization**:
+
 ```
 Before writing the final content, think through:
 
@@ -646,12 +669,14 @@ Now write the content with this thinking integrated naturally.
 Rather than generating final content in a single pass, iterative refinement uses multiple generation stages:
 
 **Stage 1: Draft Generation**
+
 ```
 Generate a draft outline covering [topic]. Focus on structure and key points,
 not polished prose. Use temperature=0.7.
 ```
 
 **Stage 2: Expansion**
+
 ```
 Taking this outline: [insert outline]
 
@@ -660,6 +685,7 @@ Include specific examples. Use temperature=0.9 for creative variation.
 ```
 
 **Stage 3: Refinement**
+
 ```
 Review this content: [insert expanded content]
 
@@ -681,6 +707,7 @@ Use temperature=0.6 to maintain quality while allowing variation.
 Advanced implementations monitor streaming output in real-time, adjusting parameters dynamically:
 
 **Pseudocode**:
+
 ```python
 def adaptive_generation(prompt, max_tokens=1500):
     generated_text = ""
@@ -709,19 +736,20 @@ def adaptive_generation(prompt, max_tokens=1500):
 
 ### Effectiveness Summary: During-Generation Techniques
 
-| Technique | Impact on Perplexity | Impact on Burstiness | Technical Complexity | API Support |
-|-----------|---------------------|---------------------|---------------------|-------------|
-| Temperature (0.7-0.9) | +35-40% | +25-30% | Low | Universal |
-| Top-P Sampling (0.85-0.95) | +30-35% | +30-35% | Low | Universal |
-| Top-K Sampling (80-100) | +20-25% | +20-25% | Low | Common |
-| Min-P Sampling | +25-30% | +25-30% | Medium | Limited |
-| Frequency Penalty (0.3-0.5) | +15-20% | +10-15% | Low | Common |
-| Presence Penalty (0.4-0.6) | +20-25% | +15-20% | Low | Common |
-| Chain-of-Thought | +30-40% | +20-25% | Low | Universal |
-| Iterative Refinement | +50-60% | +40-45% | Medium | Universal |
-| Adaptive Streaming | +45-50% | +50-55% | High | Custom only |
+| Technique                   | Impact on Perplexity | Impact on Burstiness | Technical Complexity | API Support |
+| --------------------------- | -------------------- | -------------------- | -------------------- | ----------- |
+| Temperature (0.7-0.9)       | +35-40%              | +25-30%              | Low                  | Universal   |
+| Top-P Sampling (0.85-0.95)  | +30-35%              | +30-35%              | Low                  | Universal   |
+| Top-K Sampling (80-100)     | +20-25%              | +20-25%              | Low                  | Common      |
+| Min-P Sampling              | +25-30%              | +25-30%              | Medium               | Limited     |
+| Frequency Penalty (0.3-0.5) | +15-20%              | +10-15%              | Low                  | Common      |
+| Presence Penalty (0.4-0.6)  | +20-25%              | +15-20%              | Low                  | Common      |
+| Chain-of-Thought            | +30-40%              | +20-25%              | Low                  | Universal   |
+| Iterative Refinement        | +50-60%              | +40-45%              | Medium               | Universal   |
+| Adaptive Streaming          | +45-50%              | +50-55%              | High                 | Custom only |
 
 **Optimal Parameter Set for Technical Writing Humanization**:
+
 ```python
 {
     "temperature": 0.8,
@@ -733,6 +761,7 @@ def adaptive_generation(prompt, max_tokens=1500):
 ```
 
 **Optimal Parameter Set for Blog/Creative Content**:
+
 ```python
 {
     "temperature": 0.9,
@@ -762,6 +791,7 @@ Research demonstrates that systematic multi-pass editing substantially outperfor
 **Objective**: Identify structural patterns before detailed editing.
 
 **Activities**:
+
 1. **Sentence length audit**: Measure word counts of first 3 sentences in 10 paragraphs
 2. **Paragraph opening analysis**: Check how first sentence of each paragraph begins
 3. **Transition inventory**: Count formulaic transitions ("Furthermore," "Moreover," etc.)
@@ -769,6 +799,7 @@ Research demonstrates that systematic multi-pass editing substantially outperfor
 5. **Overall structure assessment**: Evaluate progression and coherence
 
 **Output**: Diagnostic notes identifying specific patterns requiring attention:
+
 - "Sentences cluster around 15-20 words—need variation"
 - "8 paragraphs start with 'The [noun]'—need opening diversity"
 - "5 instances of 'Moreover'—replace with natural transitions"
@@ -785,16 +816,16 @@ Research demonstrates that systematic multi-pass editing substantially outperfor
 
 Search document for each word and replace with natural alternatives:
 
-| AI Word | Search Count | Natural Replacements |
-|---------|--------------|---------------------|
-| delve/delving | ___ | explore, examine, look at, investigate |
-| leverage | ___ | use, employ, take advantage of, apply |
-| robust | ___ | reliable, strong, well-built, solid, dependable |
-| harness | ___ | use, employ, apply, utilize |
-| underscore | ___ | emphasize, highlight, show, demonstrate |
-| facilitate | ___ | enable, help, make easier, support |
-| pivotal | ___ | important, critical, key, essential |
-| holistic | ___ | comprehensive, complete, whole, full |
+| AI Word       | Search Count | Natural Replacements                            |
+| ------------- | ------------ | ----------------------------------------------- |
+| delve/delving | \_\_\_       | explore, examine, look at, investigate          |
+| leverage      | \_\_\_       | use, employ, take advantage of, apply           |
+| robust        | \_\_\_       | reliable, strong, well-built, solid, dependable |
+| harness       | \_\_\_       | use, employ, apply, utilize                     |
+| underscore    | \_\_\_       | emphasize, highlight, show, demonstrate         |
+| facilitate    | \_\_\_       | enable, help, make easier, support              |
+| pivotal       | \_\_\_       | important, critical, key, essential             |
+| holistic      | \_\_\_       | comprehensive, complete, whole, full            |
 
 **Target**: Zero instances of Tier 1 words in final content.
 
@@ -802,15 +833,15 @@ Search document for each word and replace with natural alternatives:
 
 Replace mechanical transitions with natural alternatives:
 
-| Formulaic Transition | Replacement Strategy |
-|---------------------|---------------------|
-| Furthermore, | → And, Also, Plus, or often just delete and merge sentences |
-| Moreover, | → Additionally context-specific transition or delete |
-| In addition, | → Rephrase to integrate naturally or use simple "And" |
+| Formulaic Transition         | Replacement Strategy                                             |
+| ---------------------------- | ---------------------------------------------------------------- |
+| Furthermore,                 | → And, Also, Plus, or often just delete and merge sentences      |
+| Moreover,                    | → Additionally context-specific transition or delete             |
+| In addition,                 | → Rephrase to integrate naturally or use simple "And"            |
 | It is important to note that | → Delete entirely; if important, state directly without preamble |
-| It is worth mentioning that | → Delete preamble; state fact directly |
-| One of the key aspects | → Rephrase to state directly what's key |
-| When it comes to | → Replace with direct reference to topic |
+| It is worth mentioning that  | → Delete preamble; state fact directly                           |
+| One of the key aspects       | → Rephrase to state directly what's key                          |
+| When it comes to             | → Replace with direct reference to topic                         |
 
 **Step 3: Strengthen Weak Verb + Adverb Constructions**
 
@@ -830,6 +861,7 @@ Replace weak verb + adverb with strong single verb:
 **Technique 1: Length Variation Editing**
 
 For each paragraph:
+
 1. Identify shortest and longest sentences
 2. If range < 15 words, introduce variation:
    - Break one long sentence into two shorter ones
@@ -837,6 +869,7 @@ For each paragraph:
    - Add a very short sentence (5-8 words) for emphasis
 
 **Before** (uniform 15-18 word sentences):
+
 ```
 React hooks changed how we write components. They allow functional components
 to use state and lifecycle features. This makes code more concise and easier
@@ -844,6 +877,7 @@ to understand. The useState hook manages component state effectively.
 ```
 
 **After** (varied 7-32 word sentences):
+
 ```
 React hooks changed everything. Instead of wrestling with class components and
 lifecycle methods, we can now use state and effects directly in functional
@@ -912,13 +946,13 @@ Strengthen second-person voice:
 
 Replace generic references with specific examples:
 
-| Generic | Specific |
-|---------|----------|
-| "the database" | "PostgreSQL 14" |
-| "this library" | "React 18.2" |
-| "users" | "mobile app users checking inventory" |
-| "the system" | "the microservices architecture" |
-| "recently" | "in Q3 2023" |
+| Generic        | Specific                              |
+| -------------- | ------------------------------------- |
+| "the database" | "PostgreSQL 14"                       |
+| "this library" | "React 18.2"                          |
+| "users"        | "mobile app users checking inventory" |
+| "the system"   | "the microservices architecture"      |
+| "recently"     | "in Q3 2023"                          |
 
 **Time Investment**: 10-15 minutes for voice and tone refinement.
 
@@ -968,6 +1002,7 @@ Replace abstract examples with realistic, detailed scenarios:
 - [ ] Natural imperfections present: not mechanically uniform
 
 **Read-Aloud Test Protocol**:
+
 1. Select 3 random paragraphs
 2. Read aloud as if presenting to colleague
 3. Mark any awkward phrasings or unnatural constructions
@@ -977,11 +1012,11 @@ Replace abstract examples with realistic, detailed scenarios:
 
 ### Total Time Investment by Approach
 
-| Approach | Time per 1000 Words | Passes Completed | Expected Quality Improvement |
-|----------|-------------------|------------------|----------------------------|
-| **Time-Constrained** | 15-30 minutes | 2-3 passes (vocabulary + sentences + QA) | ~60-70% improvement |
-| **Standard Quality** | 30-60 minutes | 4-5 passes (all except emotions) | ~85% improvement |
-| **Premium Quality** | 60-90+ minutes | All 6 passes + read-aloud refinement | ~95% improvement |
+| Approach             | Time per 1000 Words | Passes Completed                         | Expected Quality Improvement |
+| -------------------- | ------------------- | ---------------------------------------- | ---------------------------- |
+| **Time-Constrained** | 15-30 minutes       | 2-3 passes (vocabulary + sentences + QA) | ~60-70% improvement          |
+| **Standard Quality** | 30-60 minutes       | 4-5 passes (all except emotions)         | ~85% improvement             |
+| **Premium Quality**  | 60-90+ minutes      | All 6 passes + read-aloud refinement     | ~95% improvement             |
 
 ### Paraphrasing Methods
 
@@ -1024,12 +1059,14 @@ Replace abstract examples with realistic, detailed scenarios:
 Instead of explicit transition words, create flow through topic continuity:
 
 **Mechanical**:
+
 ```
 React uses a virtual DOM. Moreover, it provides efficient updates. Furthermore,
 it supports component composition.
 ```
 
 **Natural Flow**:
+
 ```
 React uses a virtual DOM to track changes. This virtual representation enables
 efficient updates by calculating minimal DOM operations. The component composition
@@ -1060,11 +1097,13 @@ This complexity has a purpose, though. When services are properly bounded...
 #### When and How to Convert Lists
 
 **When to Keep Lists**:
+
 - Items are genuinely parallel and coordinate
 - Scanability benefits readers (steps in procedure, prerequisites)
 - Individual items are brief (< 10 words each)
 
 **When to Convert to Prose**:
+
 - Items contain explanatory details
 - Relationship between items needs elaboration
 - List breaks natural reading flow
@@ -1072,6 +1111,7 @@ This complexity has a purpose, though. When services are properly bounded...
 **Conversion Example**:
 
 **Original (List)**:
+
 ```
 Benefits of hooks:
 - Simpler code structure
@@ -1081,6 +1121,7 @@ Benefits of hooks:
 ```
 
 **Converted (Prose)**:
+
 ```
 Hooks simplify code structure by eliminating class components and lifecycle
 complexity. State management becomes clearer with useState providing direct
@@ -1090,6 +1131,7 @@ easier to follow and reason about.
 ```
 
 **Hybrid Approach** (often best):
+
 ```
 Hooks transformed React development in three key ways. First, they simplified
 code structure by eliminating class components and lifecycle complexity. Second,
@@ -1106,11 +1148,13 @@ components with minimal overhead.
 **Technique 1: Strategic First-Person Usage**
 
 **Generic Third-Person**:
+
 ```
 Developers often struggle with asynchronous programming when first learning Node.js.
 ```
 
 **Personal First-Person**:
+
 ```
 I struggled with asynchronous programming for months when I first learned Node.js.
 Callbacks, promises, async/await—each pattern seemed to introduce new gotchas.
@@ -1201,23 +1245,23 @@ After humanization, verify:
 
 ### Effectiveness Summary: Post-Generation Techniques
 
-| Technique | Impact on Naturalness | Editing Time Required | Technical Risk | Skill Level Required |
-|-----------|----------------------|---------------------|---------------|---------------------|
-| Multi-Pass Editing (6 passes) | +80-90% | 60-90 min/1000 words | Low | Medium |
-| Vocabulary Replacement | +40-50% | 15-20 min/1000 words | Low | Low |
-| Sentence Restructuring | +50-60% | 20-30 min/1000 words | Medium | Medium |
-| Voice Injection | +30-40% | 10-15 min/1000 words | Low | Medium |
-| Transition Smoothing | +25-30% | 10-15 min/1000 words | Low | Low |
-| List-to-Prose Conversion | +20-25% | 10-15 min/1000 words | Low | Low |
-| Read-Aloud Refinement | +15-20% | 5-10 min/1000 words | Low | Low |
+| Technique                     | Impact on Naturalness | Editing Time Required | Technical Risk | Skill Level Required |
+| ----------------------------- | --------------------- | --------------------- | -------------- | -------------------- |
+| Multi-Pass Editing (6 passes) | +80-90%               | 60-90 min/1000 words  | Low            | Medium               |
+| Vocabulary Replacement        | +40-50%               | 15-20 min/1000 words  | Low            | Low                  |
+| Sentence Restructuring        | +50-60%               | 20-30 min/1000 words  | Medium         | Medium               |
+| Voice Injection               | +30-40%               | 10-15 min/1000 words  | Low            | Medium               |
+| Transition Smoothing          | +25-30%               | 10-15 min/1000 words  | Low            | Low                  |
+| List-to-Prose Conversion      | +20-25%               | 10-15 min/1000 words  | Low            | Low                  |
+| Read-Aloud Refinement         | +15-20%               | 5-10 min/1000 words   | Low            | Low                  |
 
 **Time-Quality Tradeoff Analysis**:
 
-| Time Invested | Quality Improvement | Approach |
-|--------------|---------------------|----------|
-| 15 min / 1000 words | +60-70% | Time-constrained (vocabulary + sentences + QA) |
-| 30-45 min / 1000 words | +85% | Standard quality (4-5 passes) |
-| 60-90 min / 1000 words | +95% | Premium quality (all 6 passes) |
+| Time Invested          | Quality Improvement | Approach                                       |
+| ---------------------- | ------------------- | ---------------------------------------------- |
+| 15 min / 1000 words    | +60-70%             | Time-constrained (vocabulary + sentences + QA) |
+| 30-45 min / 1000 words | +85%                | Standard quality (4-5 passes)                  |
+| 60-90 min / 1000 words | +95%                | Premium quality (all 6 passes)                 |
 
 **Key Insight**: Post-generation editing cannot fully compensate for poor pre-generation prompting or inappropriate during-generation parameters. Optimal workflow: 50% effort on pre-generation prompting, 10% on during-generation parameters, 40% on post-generation editing.
 
@@ -1236,17 +1280,20 @@ Understanding how detection systems identify AI-generated content enables both e
 **Concept**: Perplexity measures how "surprised" a language model is by text. Low perplexity indicates text closely matches patterns in training data (characteristic of AI); high perplexity indicates unpredictable, creative choices (characteristic of humans).
 
 **Mathematical Definition**:
+
 ```
 Perplexity = exp(-1/N * Σ log P(token_i | context))
 ```
 
 Where:
+
 - N = number of tokens
 - P(token_i | context) = probability of token_i given preceding context
 - Lower values = more predictable (AI-like)
 - Higher values = less predictable (human-like)
 
 **Typical Ranges**:
+
 - AI-generated (no humanization): Perplexity 30-50
 - AI-generated (humanized): Perplexity 18-28
 - Human-written: Perplexity 15-25
@@ -1261,6 +1308,7 @@ Where:
 **Concept**: Burstiness quantifies sentence length and complexity variation. AI produces low burstiness (uniform sentences); humans produce high burstiness (varied sentences).
 
 **Measurement**:
+
 ```
 Burstiness = (σ_length / μ_length)
 
@@ -1270,6 +1318,7 @@ Where:
 ```
 
 **Typical Values**:
+
 - AI-generated (no humanization): Burstiness 0.2-0.4 (low variation)
 - AI-generated (humanized): Burstiness 0.5-0.7 (moderate variation)
 - Human-written: Burstiness 0.6-0.9 (high variation)
@@ -1283,11 +1332,13 @@ Where:
 **Concept**: N-grams are sequences of N consecutive tokens. AI models exhibit characteristic n-gram frequency distributions different from human writing.
 
 **Detection Approach**:
+
 1. Extract all n-grams (typically 2-grams through 5-grams) from text
 2. Compare frequency distribution to reference distributions for AI vs. human text
 3. Calculate likelihood ratios
 
 **AI-Typical N-Gram Patterns**:
+
 - Formulaic transitions: "Furthermore, it is"
 - Uniform phrase structures: "In order to," "It is important to note that"
 - Consistent phrasal templates
@@ -1299,6 +1350,7 @@ Where:
 **Concept**: Stylometric analysis examines author-specific writing habits and patterns.
 
 **Features Analyzed**:
+
 - Vocabulary richness (type-token ratio)
 - Sentence complexity (subordinate clause frequency)
 - Punctuation patterns
@@ -1316,6 +1368,7 @@ Where:
 **Concept**: Combine multiple detection approaches simultaneously to improve accuracy.
 
 **Typical Ensemble Architecture**:
+
 1. Perplexity scorer (weight: 0.3)
 2. Burstiness scorer (weight: 0.2)
 3. N-gram analyzer (weight: 0.2)
@@ -1335,6 +1388,7 @@ Where:
 **Methodology**: Ensemble approach combining perplexity, burstiness, and neural classification.
 
 **Key Features**:
+
 - Sentence-level highlighting (shows which sentences seem AI-generated)
 - Bulk document scanning
 - API access for integration
@@ -1342,6 +1396,7 @@ Where:
 **Reported Accuracy**: ~96% on standard test sets (pre-humanization content)
 
 **Effectiveness Against Humanization**:
+
 - Undetectable.ai bypass rate: ~96%
 - StealthGPT bypass rate: ~97%
 - Basic paraphrasing: 60-70% detection rate
@@ -1353,6 +1408,7 @@ Where:
 **Methodology**: Proprietary multi-model ensemble trained specifically on GPT-3/GPT-4 output patterns.
 
 **Key Features**:
+
 - Plagiarism detection integration
 - Batch content scanning
 - Team collaboration features
@@ -1361,6 +1417,7 @@ Where:
 **Reported Accuracy**: ~94% on GPT-3.5, ~86% on GPT-4 (pre-humanization)
 
 **Effectiveness Against Humanization**:
+
 - Undetectable.ai bypass rate: ~95%
 - BypassGPT bypass rate: ~85-90%
 - Manual humanization: 40-60% detection rate
@@ -1372,6 +1429,7 @@ Where:
 **Methodology**: Academic-focused detection using neural classifiers trained on student essays and ChatGPT output.
 
 **Key Features**:
+
 - Integration with learning management systems
 - Originality reports
 - Instructor dashboard
@@ -1381,6 +1439,7 @@ Where:
 **Recent Updates**: 2025 update improved detection of humanized content, reducing bypass rates for several popular humanizers by 20-30%.
 
 **Effectiveness Against Humanization**:
+
 - Early humanizers: 40-60% bypass rate
 - Post-2025 update: 20-40% bypass rate for many tools
 - Manual multi-pass humanization: ~60% bypass rate
@@ -1392,6 +1451,7 @@ Where:
 **Methodology**: Multi-lingual AI detection supporting 30+ languages.
 
 **Key Features**:
+
 - Cross-language detection
 - Source code plagiarism detection
 - LMS integration
@@ -1407,6 +1467,7 @@ Where:
 **Methodology**: Open neural classifier with transparent scoring.
 
 **Key Features**:
+
 - Free unlimited scanning
 - Detailed probability breakdown
 - API access
@@ -1414,6 +1475,7 @@ Where:
 **Reported Accuracy**: ~85% (lower than commercial competitors)
 
 **Effectiveness Against Humanization**:
+
 - Most humanizers achieve 90%+ bypass rates
 - Basic paraphrasing: 70-80% bypass rate
 
@@ -1425,46 +1487,46 @@ Where:
 
 These words/phrases trigger high AI probability when present:
 
-| Word/Phrase | Detection Weight | Human Usage Frequency | AI Usage Frequency |
-|-------------|-----------------|----------------------|-------------------|
-| delve / delving | Very High | 0.2 per 10k words | 15-20 per 10k words |
-| leverage (verb) | Very High | 2 per 10k words | 25-30 per 10k words |
-| robust / robustness | Very High | 1 per 10k words | 18-25 per 10k words |
-| harness (verb) | Very High | 0.5 per 10k words | 12-18 per 10k words |
-| underscore (verb) | High | 1 per 10k words | 15-20 per 10k words |
-| facilitate | High | 2 per 10k words | 20-25 per 10k words |
-| pivotal | High | 0.8 per 10k words | 12-15 per 10k words |
-| holistic | High | 0.5 per 10k words | 10-14 per 10k words |
+| Word/Phrase         | Detection Weight | Human Usage Frequency | AI Usage Frequency  |
+| ------------------- | ---------------- | --------------------- | ------------------- |
+| delve / delving     | Very High        | 0.2 per 10k words     | 15-20 per 10k words |
+| leverage (verb)     | Very High        | 2 per 10k words       | 25-30 per 10k words |
+| robust / robustness | Very High        | 1 per 10k words       | 18-25 per 10k words |
+| harness (verb)      | Very High        | 0.5 per 10k words     | 12-18 per 10k words |
+| underscore (verb)   | High             | 1 per 10k words       | 15-20 per 10k words |
+| facilitate          | High             | 2 per 10k words       | 20-25 per 10k words |
+| pivotal             | High             | 0.8 per 10k words     | 12-15 per 10k words |
+| holistic            | High             | 0.5 per 10k words     | 10-14 per 10k words |
 
 **Interpretation**: Finding 3+ Tier 1 markers in 1000-word document raises AI probability to 85-95% in most detectors.
 
 #### Tier 2: Moderate AI Markers (Contributing Signals)
 
-| Word/Phrase | Detection Weight | Notes |
-|-------------|-----------------|-------|
-| seamless / seamlessly | Moderate | Overused in AI marketing copy |
-| comprehensive | Moderate | High frequency in AI vs. human |
-| optimize / optimization | Moderate | Technical contexts may be legitimate |
-| streamline / streamlined | Moderate | Marketing/business contexts flag |
-| paramount | Moderate | Formal/archaic, AI overuses |
-| quintessential | Moderate | Unusual vocabulary choice |
-| myriad | Moderate | Formal, AI prefers over "many" |
-| plethora | Moderate | Formal, AI prefers over "a lot" |
+| Word/Phrase              | Detection Weight | Notes                                |
+| ------------------------ | ---------------- | ------------------------------------ |
+| seamless / seamlessly    | Moderate         | Overused in AI marketing copy        |
+| comprehensive            | Moderate         | High frequency in AI vs. human       |
+| optimize / optimization  | Moderate         | Technical contexts may be legitimate |
+| streamline / streamlined | Moderate         | Marketing/business contexts flag     |
+| paramount                | Moderate         | Formal/archaic, AI overuses          |
+| quintessential           | Moderate         | Unusual vocabulary choice            |
+| myriad                   | Moderate         | Formal, AI prefers over "many"       |
+| plethora                 | Moderate         | Formal, AI prefers over "a lot"      |
 
 **Interpretation**: 5+ Tier 2 markers in 1000 words raises AI probability to 60-75%.
 
 #### Tier 3: Formulaic Transitions (Structural Markers)
 
-| Phrase | Detection Weight | Natural Alternatives |
-|--------|-----------------|---------------------|
-| Furthermore, | Very High | And, Also, Plus, [merge sentences] |
-| Moreover, | Very High | Additionally, [context-specific transition] |
-| Additionally, | High | And, Also, [delete and merge] |
-| In addition, | High | Also, And, Plus |
-| It is important to note that | Very High | [Delete preamble, state directly] |
-| It is worth mentioning that | Very High | [Delete preamble, state directly] |
-| One of the key aspects | High | [Rephrase to state directly what's key] |
-| When it comes to | High | [Replace with direct reference] |
+| Phrase                       | Detection Weight | Natural Alternatives                        |
+| ---------------------------- | ---------------- | ------------------------------------------- |
+| Furthermore,                 | Very High        | And, Also, Plus, [merge sentences]          |
+| Moreover,                    | Very High        | Additionally, [context-specific transition] |
+| Additionally,                | High             | And, Also, [delete and merge]               |
+| In addition,                 | High             | Also, And, Plus                             |
+| It is important to note that | Very High        | [Delete preamble, state directly]           |
+| It is worth mentioning that  | Very High        | [Delete preamble, state directly]           |
+| One of the key aspects       | High             | [Rephrase to state directly what's key]     |
+| When it comes to             | High             | [Replace with direct reference]             |
 
 **Interpretation**: 3+ formulaic transitions in 1000 words contributes significantly to AI detection.
 
@@ -1473,11 +1535,13 @@ These words/phrases trigger high AI probability when present:
 #### Sentence Uniformity Patterns
 
 **AI-Typical Patterns**:
+
 - **Narrow length distribution**: 80% of sentences within 12-20 word range
 - **Consistent complexity**: Similar subordinate clause frequency across sentences
 - **Uniform opening structures**: 60%+ paragraphs start with "The [noun]"
 
 **Human-Typical Patterns**:
+
 - **Wide length distribution**: 40-50% of sentences < 12 or > 25 words
 - **Varied complexity**: Mix of simple, compound, complex sentences
 - **Diverse openings**: No single pattern exceeds 30% of paragraphs
@@ -1487,11 +1551,13 @@ These words/phrases trigger high AI probability when present:
 #### Paragraph Structure Patterns
 
 **AI-Typical Patterns**:
+
 - **Topic sentence formula**: 70%+ paragraphs lead with topic sentence
 - **Consistent length**: Paragraphs cluster around 4-5 sentences
 - **Explicit transitions**: Every paragraph begins with transitional phrase
 
 **Human-Typical Patterns**:
+
 - **Varied structures**: Mix of topic-first, question-first, example-first openings
 - **Length variety**: Paragraphs range from 2-8 sentences with no dominant length
 - **Implicit flow**: 40-50% of transitions are implicit (topic continuation)
@@ -1529,6 +1595,7 @@ Content edited for clarity and consistency can become more uniform, paradoxicall
 #### Institutional Impact of False Positives
 
 False positives create:
+
 - **Student trust erosion**: Students falsely accused lose faith in institutional fairness
 - **Deterrent reduction**: High false positive rates make detection seem unreliable
 - **Resource drain**: Appeals and manual review processes consume institutional resources
@@ -1543,6 +1610,7 @@ False positives create:
 **Mechanism**: Embeds imperceptible statistical patterns during generation by slightly adjusting token probability distributions.
 
 **How It Works**:
+
 1. Generation process uses cryptographic key
 2. At each token, probability distribution is subtly modified
 3. Modifications follow pattern determinable only with key
@@ -1562,13 +1630,13 @@ False positives create:
 
 #### Evasion Techniques Ranked by Effectiveness
 
-| Technique | Evasion Rate (GPTZero) | Evasion Rate (Originality.ai) | Evasion Rate (Turnitin) | Implementation Difficulty |
-|-----------|----------------------|--------------------------|---------------------|--------------------------|
-| Commercial Humanizer (top-tier) | 95-97% | 92-96% | 60-75% | Low (paid service) |
-| Manual Multi-Pass Editing | 85-92% | 80-88% | 70-85% | High (60-90 min effort) |
-| Paraphrasing + Sentence Restructuring | 70-80% | 65-75% | 55-65% | Medium (30-45 min) |
-| Vocabulary Replacement Only | 40-50% | 35-45% | 30-40% | Low (15 min) |
-| Simple Paraphrasing Tool | 30-40% | 25-35% | 20-30% | Low (automated) |
+| Technique                             | Evasion Rate (GPTZero) | Evasion Rate (Originality.ai) | Evasion Rate (Turnitin) | Implementation Difficulty |
+| ------------------------------------- | ---------------------- | ----------------------------- | ----------------------- | ------------------------- |
+| Commercial Humanizer (top-tier)       | 95-97%                 | 92-96%                        | 60-75%                  | Low (paid service)        |
+| Manual Multi-Pass Editing             | 85-92%                 | 80-88%                        | 70-85%                  | High (60-90 min effort)   |
+| Paraphrasing + Sentence Restructuring | 70-80%                 | 65-75%                        | 55-65%                  | Medium (30-45 min)        |
+| Vocabulary Replacement Only           | 40-50%                 | 35-45%                        | 30-40%                  | Low (15 min)              |
+| Simple Paraphrasing Tool              | 30-40%                 | 25-35%                        | 20-30%                  | Low (automated)           |
 
 **Interpretation**: Effective evasion requires either commercial humanization tools or substantial manual editing effort. Quick paraphrasing provides minimal protection.
 
@@ -1577,6 +1645,7 @@ False positives create:
 **Critical Finding**: Evasion effectiveness degrades over time as detectors update.
 
 **Example Timeline**:
+
 - Month 1 after humanizer launch: 95% bypass rate
 - Month 3-6: 85-90% bypass rate (detectors begin adapting)
 - Month 12+: 70-80% bypass rate (detectors fully trained on samples)
@@ -1606,6 +1675,7 @@ False positives create:
 ### Effectiveness Summary: Detection Pattern Knowledge
 
 Understanding detection patterns enables:
+
 - **Strategic Humanization**: Focus efforts on patterns most heavily weighted in detection algorithms
 - **Quality Assessment**: Evaluate humanization effectiveness by checking detection pattern elimination
 - **Realistic Expectations**: Understand no permanent evasion solution exists due to arms race dynamics
@@ -1615,21 +1685,24 @@ Understanding detection patterns enables:
 
 ## Humanization Automation Tools
 
-*(This section includes the comprehensive 15,000-word research report compiled above on automation platforms, implementation frameworks, API integration, effectiveness analysis, market dynamics, and ethical considerations)*
+_(This section includes the comprehensive 15,000-word research report compiled above on automation platforms, implementation frameworks, API integration, effectiveness analysis, market dynamics, and ethical considerations)_
 
 ### Commercial Platforms Summary
 
 **Top-Tier Platforms** (95%+ bypass rates):
+
 - **Undetectable.ai**: $14.99-$unlimited, neural regeneration, 96.5% avg bypass
 - **StealthGPT**: $24.99+, rapid processing, 97% bypass on GPTZero
 - **BypassGPT**: $9.99+, SEO focus, 85% bypass (variable quality)
 
 **Mid-Tier Platforms** (85-95% bypass rates):
+
 - **WriteHuman**: $12+, emotional tone, credit system
 - **HIX Bypass**: $19.99+, SEO keyword freezing, 90% bypass
 - **GPTinf**: $9.99+, freemium model, 99% claimed (85% tested)
 
 **Institutional Platforms**:
+
 - **Grammarly AI Humanizer**: Clarity-focused, not detection-focused, free with Grammarly
 
 ### Open-Source Implementations
@@ -1645,13 +1718,13 @@ Understanding detection patterns enables:
 
 ### Effectiveness vs. Investment Matrix
 
-| Platform Type | Monthly Cost | Evasion Rate | Quality | Best For |
-|--------------|-------------|--------------|---------|----------|
-| Commercial Premium | $20-50+ | 95-97% | High | Professional publishing |
-| Commercial Mid-Tier | $10-20 | 85-92% | Medium-High | Frequent users |
-| Commercial Budget | $5-10 | 75-85% | Medium | Occasional use |
-| Open-Source Self-Hosted | $0 (hosting costs) | 70-80% | Medium | Technical users |
-| Manual Editing | $0 (time investment) | 85-95% | Highest | Quality-critical content |
+| Platform Type           | Monthly Cost         | Evasion Rate | Quality     | Best For                 |
+| ----------------------- | -------------------- | ------------ | ----------- | ------------------------ |
+| Commercial Premium      | $20-50+              | 95-97%       | High        | Professional publishing  |
+| Commercial Mid-Tier     | $10-20               | 85-92%       | Medium-High | Frequent users           |
+| Commercial Budget       | $5-10                | 75-85%       | Medium      | Occasional use           |
+| Open-Source Self-Hosted | $0 (hosting costs)   | 70-80%       | Medium      | Technical users          |
+| Manual Editing          | $0 (time investment) | 85-95%       | Highest     | Quality-critical content |
 
 ---
 
@@ -1664,6 +1737,7 @@ Understanding detection patterns enables:
 **Concept**: Integrate humanization as required step before content publication.
 
 **Implementation**:
+
 ```
 Draft Creation (AI)
     → Humanization (automated or manual)
@@ -1674,6 +1748,7 @@ Draft Creation (AI)
 ```
 
 **Tools**:
+
 - Git pre-commit hooks triggering humanization
 - CI/CD pipeline integration
 - Content management system workflows
@@ -1683,6 +1758,7 @@ Draft Creation (AI)
 **Concept**: Process high volumes of content systematically.
 
 **Implementation**:
+
 ```python
 # Pseudocode batch processing
 content_queue = load_pending_content()
@@ -1712,11 +1788,13 @@ for document in content_queue:
 **Concept**: Integrate humanization into writing environment.
 
 **Implementation**:
+
 - Browser extension monitoring Google Docs
 - VS Code extension for markdown content
 - CMS plugin for WordPress/Contentful
 
 **User Experience**:
+
 1. User writes in AI-assisted editor
 2. Periodic humanization suggestions appear
 3. User accepts/rejects suggestions
@@ -1727,6 +1805,7 @@ for document in content_queue:
 **Concept**: Separate generation, humanization, and review into distinct stages.
 
 **Implementation**:
+
 ```
 Stage 1: Drafting (AI generates initial content)
     → Review: Content lead approves draft for humanization
@@ -1748,26 +1827,31 @@ Stage 4: Final Editing (polish and publish)
 #### Quantitative Metrics
 
 **1. AI Detection Scores**
+
 - **Target**: < 10% AI probability across major detectors
 - **Measurement**: Submit humanized content to GPTZero, Originality.ai, ZeroGPT
 - **Frequency**: Sample 10% of content monthly
 
 **2. Perplexity Score**
+
 - **Target**: 15-28 (human-typical range)
 - **Measurement**: Calculate using open-source perplexity tools
 - **Frequency**: Automated check on all content
 
 **3. Burstiness Score**
+
 - **Target**: σ/μ > 0.5 (preferably 0.6-0.8)
 - **Measurement**: Calculate sentence length std dev / mean
 - **Frequency**: Automated check on all content
 
 **4. AI Vocabulary Count**
+
 - **Target**: 0-1 Tier 1 words per 1000 words
 - **Measurement**: Automated search for banned word list
 - **Frequency**: All content
 
 **5. Readability Scores**
+
 - **Target**: Flesch Reading Ease 60-70 (general), 50-60 (technical)
 - **Measurement**: Automated readability calculation
 - **Frequency**: All content
@@ -1775,21 +1859,25 @@ Stage 4: Final Editing (polish and publish)
 #### Qualitative Metrics
 
 **1. Voice Consistency** (Human Evaluation)
+
 - **Criteria**: Content feels like single author wrote it
 - **Measurement**: Expert reviewer rating (1-5 scale)
 - **Frequency**: Sample 20% monthly
 
 **2. Technical Accuracy** (Expert Verification)
+
 - **Criteria**: No technical errors introduced during humanization
 - **Measurement**: Subject matter expert review
 - **Frequency**: 100% for technical content, 25% for general content
 
 **3. Engagement Quality** (Reader Feedback)
+
 - **Criteria**: Readers find content engaging and natural
 - **Measurement**: Comments, feedback, bounce rates
 - **Frequency**: Ongoing analytics
 
 **4. Natural Imperfections** (Authenticity Check)
+
 - **Criteria**: Not mechanically perfect; shows human variation
 - **Measurement**: Expert reviewer assessment
 - **Frequency**: Sample 10% monthly
@@ -1828,17 +1916,20 @@ For high-visibility content, require:
 ### Transparency vs. Deception Spectrum
 
 **Ethical Use Scenarios** (with transparency):
+
 - Using humanization to improve clarity while disclosing AI assistance
 - Enhancing readability of AI-generated documentation with authorship transparency
 - Supporting non-native speakers with AI assistance (disclosed)
 - Accessibility applications helping users with disabilities
 
 **Questionable Gray Areas** (context-dependent):
+
 - Marketing content humanized to appear fully human-written
 - Blog posts using AI assistance without explicit disclosure
 - Professional content scaled through AI+humanization without attribution
 
 **Clearly Unethical Scenarios** (deceptive):
+
 - Academic essays humanized to conceal AI authorship and violate policies
 - Professional credentials misrepresenting human-only work
 - Journalism presenting AI content as human-reported without disclosure
@@ -1849,16 +1940,19 @@ For high-visibility content, require:
 **Institutional Policy Approaches**:
 
 **1. Prohibition Model** (Most Restrictive)
+
 - All AI assistance prohibited for assessed work
 - Humanization viewed as attempt to circumvent detection
 - Violations treated as academic dishonesty
 
 **2. Disclosure Model** (Balanced)
+
 - AI assistance permitted with full disclosure
 - Humanization acceptable if AI use disclosed
 - Violations involve concealment, not assistance itself
 
 **3. Competency Model** (Progressive)
+
 - Focus on demonstrating competency, not process restrictions
 - AI assistance and humanization permitted
 - Assessment redesigned to resist AI generation entirely
@@ -1868,16 +1962,19 @@ For high-visibility content, require:
 ### Professional and Commercial Contexts
 
 **Content Marketing Ethics**:
+
 - **Acceptable**: Using AI+humanization to scale content production with brand voice
 - **Questionable**: Presenting AI-scaled content as individually-crafted without disclosure
 - **Unacceptable**: Using AI+humanization to create fake testimonials or reviews
 
 **Journalism Ethics**:
+
 - **Acceptable**: Using AI to draft routine reports (sports scores, financial summaries) with disclosure
 - **Questionable**: AI-assisted investigative reporting without clear attribution
 - **Unacceptable**: Presenting AI-generated news as human-reported without disclosure
 
 **Technical Writing Ethics**:
+
 - **Acceptable**: AI-assisted documentation humanized for readability
 - **Questionable**: API docs entirely AI-generated without technical review
 - **Unacceptable**: Critical safety documentation using unverified AI content
@@ -1885,18 +1982,21 @@ For high-visibility content, require:
 ### Societal Implications
 
 **Positive Potential**:
+
 - Democratizing access to high-quality writing assistance
 - Supporting multilingual content creation
 - Enabling small businesses to compete with larger marketing budgets
 - Improving accessibility for users with disabilities
 
 **Concerning Trends**:
+
 - Erosion of human writing skill development
 - Content authenticity crisis undermining trust
 - Widening gaps between AI-capable and AI-resistant workers
 - Detection arms race consuming institutional resources
 
 **Long-Term Questions**:
+
 - What happens when AI+humanization becomes ubiquitous default?
 - How do we maintain authentic human creative expression?
 - What skills remain valuable when AI can replicate human writing?
@@ -1909,18 +2009,21 @@ For high-visibility content, require:
 ### Technological Evolution
 
 **Near-Term (2025-2027)**:
+
 - Voice-adaptive humanizers learning individual writing styles
 - Real-time integrated humanization in writing tools
 - Multimodal humanization (text + visual + audio coherence)
 - Improved detection-resistant techniques
 
 **Medium-Term (2027-2030)**:
+
 - Provenance verification systems tracking content creation
 - Quantum-resistant cryptographic watermarking
 - Domain-specialized humanizers (medical, legal, scientific)
 - Autonomous AI agents with built-in humanization
 
 **Long-Term (2030+)**:
+
 - Human-AI collaborative writing becoming default
 - Shift from "detection" to "provenance verification" paradigm
 - Regulatory frameworks requiring AI disclosure
@@ -1929,18 +2032,21 @@ For high-visibility content, require:
 ### Research Directions
 
 **Technical Research Needs**:
+
 - More robust detection methodologies resistant to adversarial attacks
 - Standardized humanization quality metrics
 - Domain-specific humanization frameworks
 - Multilingual humanization effectiveness
 
 **Social Science Research Needs**:
+
 - Long-term impact on human writing skill development
 - Institutional adaptation strategies
 - Cultural norms around AI-augmented creativity
 - Economic implications for content-creation labor markets
 
 **Ethical Research Needs**:
+
 - Framework for appropriate use boundaries
 - Disclosure standards and best practices
 - Assessment design resisting AI generation
@@ -2006,6 +2112,7 @@ For high-visibility content, require:
 ### Appendix A: AI Vocabulary Ban Lists
 
 **Tier 1: Critical (0 instances acceptable)**
+
 - delve, delving, delves
 - leverage, leveraging, leverages
 - robust, robustness
@@ -2016,6 +2123,7 @@ For high-visibility content, require:
 - holistic, holistically
 
 **Tier 2: Moderate (< 2 instances per 1000 words)**
+
 - seamless, seamlessly
 - comprehensive, comprehensively
 - optimize, optimization
@@ -2026,6 +2134,7 @@ For high-visibility content, require:
 - plethora
 
 **Formulaic Transitions (avoid entirely)**
+
 - Furthermore,
 - Moreover,
 - Additionally,
@@ -2038,12 +2147,14 @@ For high-visibility content, require:
 ### Appendix B: Humanization Workflow Templates
 
 **Time-Constrained Workflow** (15-30 min/1000 words):
+
 1. Vocabulary pass (5 min): Remove Tier 1 AI words
 2. Sentence variation (5 min): Break up uniform patterns
 3. Transition smoothing (3 min): Replace formulaic transitions
 4. QA check (2 min): Verify improvements
 
 **Standard Quality Workflow** (30-60 min/1000 words):
+
 1. Structural analysis (5 min)
 2. Vocabulary pass (15 min)
 3. Sentence variation (20 min)
@@ -2051,6 +2162,7 @@ For high-visibility content, require:
 5. QA + read-aloud (10 min)
 
 **Premium Quality Workflow** (60-90 min/1000 words):
+
 1. Structural analysis (10 min)
 2. Vocabulary pass (15 min)
 3. Sentence variation (20 min)
@@ -2063,18 +2175,21 @@ For high-visibility content, require:
 ### Appendix C: Quality Assessment Rubrics
 
 **Perplexity Assessment**:
+
 - Excellent: 18-26
 - Good: 15-18 or 26-30
 - Acceptable: 12-15 or 30-35
 - Poor: < 12 or > 35
 
 **Burstiness Assessment**:
+
 - Excellent: 0.65-0.85
 - Good: 0.55-0.65
 - Acceptable: 0.45-0.55
 - Poor: < 0.45
 
 **AI Vocabulary Count** (per 1000 words):
+
 - Excellent: 0 Tier 1, 0-1 Tier 2
 - Good: 0 Tier 1, 2-3 Tier 2
 - Acceptable: 1 Tier 1, 3-5 Tier 2
@@ -2083,6 +2198,7 @@ For high-visibility content, require:
 ### Appendix D: Implementation Code Examples
 
 See separate technical documentation for:
+
 - Python batch humanization scripts
 - API integration examples
 - CI/CD pipeline configurations

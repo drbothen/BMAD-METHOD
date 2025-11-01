@@ -2,9 +2,9 @@
 ---
 template:
   id: humanization-analysis-report
-  name: Humanization Analysis Report
-  version: 1.0
-  description: Structured report documenting AI pattern analysis results for manuscript content, guiding humanization priorities and validating publication readiness
+  name: Humanization Analysis Report (Dual Scoring)
+  version: 2.0
+  description: Structured report documenting AI pattern analysis results using dual scoring system (Quality Score + Detection Risk) across 14 dimensions. Provides path-to-target recommendations, historical trend tracking, and publication readiness assessment for manuscript content
   output:
     format: markdown
     filename: "humanization-analysis-{{file_id}}.md"
@@ -38,79 +38,231 @@ sections:
     instruction: |
       Provide high-level assessment suitable for quick review:
 
-      **Overall Assessment:** [MINIMAL / LIGHT / MODERATE / SUBSTANTIAL / EXTENSIVE] humanization needed
+      **Dual Scores:**
+      - **Quality Score:** [Number] / 100 ([EXCEPTIONAL / EXCELLENT / GOOD / MIXED / AI-LIKE])
+      - **Detection Risk:** [Number] / 100 ([VERY LOW / LOW / MEDIUM / HIGH / VERY HIGH])
 
-      **AI Pattern Density:** [Estimated percentage: <5% / 5-10% / 10-20% / 20-40% / >40%]
+      **Targets:**
+      - **Quality Target:** ≥[85 / 90 / 75] (adjust by content type)
+      - **Detection Target:** ≤[30 / 20 / 40] (adjust by content type)
+      - **Gap to Target:** Quality needs [±X] pts, Detection needs [±X] pts
+
+      **Effort Required:** [MINIMAL / LIGHT / MODERATE / SUBSTANTIAL / EXTENSIVE]
 
       **Publication Readiness:** [PASS / CONDITIONAL PASS / FAIL]
 
-      **Key Findings (1-3 sentences):**
-      [Summarize the most significant issues or successes found in analysis]
+      **Key Findings (2-3 sentences):**
+      [Summarize the most significant issues or successes found in analysis, focusing on dimensions with largest gaps]
 
       **Recommended Action:**
-      - [ ] Proceed to technical review (if MINIMAL/LIGHT)
-      - [ ] Apply targeted humanization (if MODERATE with specific issues)
-      - [ ] Apply comprehensive humanization workflow (if SUBSTANTIAL/EXTENSIVE)
-      - [ ] Consider regenerating with better prompts (if EXTENSIVE)
+      - [ ] Proceed to technical review (if Quality ≥85, Detection ≤30)
+      - [ ] Apply single-pass humanization (if Quality 70-84, clear path-to-target)
+      - [ ] Apply iterative optimization (if Quality <70 OR high-stakes content)
+      - [ ] Consider regenerating with better prompts (if Quality <50)
 
       **Estimated Humanization Time:** [15-30 / 30-60 / 60-90 / 90-120 / 120+] minutes per 1,000 words
+
+      **Top Priority Dimensions (from path-to-target):**
+      1. [Dimension name] - Effort: [LOW/MEDIUM/HIGH], Gain: [+X pts]
+      2. [Dimension name] - Effort: [LOW/MEDIUM/HIGH], Gain: [+X pts]
+      3. [Dimension name] - Effort: [LOW/MEDIUM/HIGH], Gain: [+X pts]
     elicit: false
 
   - id: dimension_scores
-    title: Dimension Scores
+    title: 14-Dimension Score Breakdown
     instruction: |
-      Document quantitative scores across all 6 analysis dimensions:
+      Document quantitative scores across all 14 dimensions in 3 tiers:
 
-      **Perplexity (Vocabulary)**:
-      - **Score:** [HIGH / MEDIUM / LOW / VERY LOW]
-      - **AI Words Count:** [Number] instances
-      - **AI Words per 1k:** [Ratio] per 1,000 words
-      - **Examples Found:** [List 5-10 most frequent AI vocabulary instances, e.g., "robust (4x), leverage (3x), facilitate (2x)"]
-      - **Assessment:** [1-2 sentence interpretation of score]
+      ## TIER 1: Advanced Detection (40 points) - Highest Accuracy Signals
 
-      **Burstiness (Sentence Variation)**:
-      - **Score:** [HIGH / MEDIUM / LOW / VERY LOW]
+      **1. GLTR Token Ranking** (/12 pts):
+      - **Score:** [Number] / 12 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥9)
+      - **Top-10 Token Ratio:** [Percentage]%
+      - **Assessment:** [1-2 sentences on predictability issues]
+
+      **2. Advanced Lexical Diversity** (/8 pts):
+      - **Score:** [Number] / 8 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥6)
+      - **HDD (HD-D):** [Number: 0.0-1.0] (Target: >0.65)
+      - **Yule's K:** [Number] (Target: >100)
+      - **Assessment:** [1-2 sentences on vocabulary sophistication]
+
+      **3. AI Detection Ensemble** (/10 pts):
+      - **Score:** [Number] / 10 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥7)
+      - **Sentiment Variance:** [Number: 0.0-1.0] (Target: >0.15)
+      - **DetectGPT Indicator:** [Detection level]
+      - **Assessment:** [1-2 sentences on emotional variation and detectability]
+
+      **4. Stylometric Markers** (/6 pts):
+      - **Score:** [Number] / 6 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥4)
+      - **Statistical Patterns:** [Brief description of findings]
+      - **Assessment:** [1-2 sentences on writing fingerprint variability]
+
+      **5. Syntactic Complexity** (/4 pts):
+      - **Score:** [Number] / 4 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥3)
+      - **Avg Dependency Depth:** [Number]
+      - **POS Pattern Diversity:** [Description]
+      - **Assessment:** [1-2 sentences on sentence structure variety]
+
+      **Tier 1 Total:** [Number] / 40 ([Percentage]%)
+
+      ## TIER 2: Core Patterns (35 points) - Strong AI Signals
+
+      **6. Burstiness (Sentence Variation)** (/12 pts):
+      - **Score:** [Number] / 12 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥9)
       - **Mean Sentence Length:** [Number] words
-      - **Standard Deviation:** [Number]
+      - **Standard Deviation:** [Number] (Target: ≥6, Ideal: ≥10)
       - **Range:** [Min]-[Max] words
       - **Distribution:** Short (≤10w): [%], Medium (11-25w): [%], Long (≥30w): [%]
-      - **Assessment:** [1-2 sentence interpretation of score]
+      - **Assessment:** [1-2 sentences on rhythm and variation]
 
-      **Structure (Organization)**:
-      - **Score:** [HIGH / MEDIUM / LOW / VERY LOW]
-      - **Formulaic Transitions:** [Number] instances
-      - **Transition Examples:** [List specific transitions found, e.g., "Furthermore (3x), Moreover (2x)"]
-      - **Heading Count:** [Total headings] ([number] per page)
-      - **Heading Depth:** [Max depth: H1-H6]
-      - **Heading Parallelism:** [Score: 0.0-1.0] (0=varied, 1=mechanical)
+      **7. Perplexity (Vocabulary)** (/10 pts):
+      - **Score:** [Number] / 10 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥7)
+      - **AI Words Count:** [Number] instances
+      - **AI Words per 1k:** [Number] per 1,000 words (Target: <5)
+      - **Top AI Words:** [List 5-10 most frequent, e.g., "robust (4x), leverage (3x)"]
+      - **Assessment:** [1-2 sentences on vocabulary predictability]
+
+      **8. Formatting Patterns** (/8 pts):
+      - **Score:** [Number] / 8 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥6)
+      - **Em-Dashes:** [Number] total ([number] per page) (Target: ≤2/page)
+      - **Bold Percentage:** [Number]% (Target: 2-5%)
+      - **Italic Usage:** [Description of patterns]
+      - **Distribution Variance:** [High / Medium / Low asymmetry]
+      - **Assessment:** [1-2 sentences on formatting naturalness]
+
+      **9. Heading Hierarchy** (/5 pts):
+      - **Score:** [Number] / 5 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥3)
+      - **Max Heading Depth:** [Number] levels (H1-H[X]) (Target: ≤3)
+      - **Parallelism Score:** [Number: 0.0-1.0] (0=varied, 1=mechanical)
+      - **Subsection Density:** [Description of H2/H3 distribution]
       - **Verbose Headings:** [Number] headings >8 words
-      - **Assessment:** [1-2 sentence interpretation of score]
+      - **Assessment:** [1-2 sentences on heading naturalness]
 
-      **Voice (Authenticity)**:
-      - **Score:** [HIGH / MEDIUM / LOW / VERY LOW]
+      **Tier 2 Total:** [Number] / 35 ([Percentage]%)
+
+      ## TIER 3: Supporting Signals (25 points) - Contextual Indicators
+
+      **10. Voice & Authenticity** (/8 pts):
+      - **Score:** [Number] / 8 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥5)
       - **First-Person Markers:** [Number] instances
       - **Direct Address (you/your):** [Number] instances
       - **Contractions:** [Number] instances
-      - **Assessment:** [1-2 sentence interpretation of score]
+      - **Hedging Language:** [Present / Absent]
+      - **Assessment:** [1-2 sentences on authentic voice presence]
 
-      **Technical (Expertise)**:
-      - **Score:** [HIGH / MEDIUM / LOW / VERY LOW]
+      **11. Structure & Organization** (/7 pts):
+      - **Score:** [Number] / 7 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥5)
+      - **Formulaic Transitions:** [Number] instances
+      - **Transition Examples:** [List specific transitions, e.g., "Furthermore (3x)"]
+      - **List Density:** [Number] lists per 1k words
+      - **Paragraph Uniformity:** [High / Medium / Low]
+      - **Assessment:** [1-2 sentences on organizational naturalness]
+
+      **12. Emotional Depth** (/6 pts):
+      - **Score:** [Number] / 6 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥4)
+      - **Sentiment Range:** [Min to Max sentiment scores]
+      - **Emotional Markers:** [Count of enthusiasm/empathy/examples]
+      - **Reader Acknowledgment:** [Present / Absent]
+      - **Assessment:** [1-2 sentences on emotional engagement]
+
+      **13. Technical Depth** (/4 pts):
+      - **Score:** [Number] / 4 ([Percentage]%)
+      - **Gap to Target:** [Number] pts (Target: ≥2)
       - **Domain Terms:** [Number] instances
-      - **Domain Terms per 1k:** [Ratio] per 1,000 words
-      - **Assessment:** [1-2 sentence interpretation of score]
+      - **Domain Terms per 1k:** [Number] per 1,000 words
+      - **Specific Examples:** [Count of version numbers, specific tools, etc.]
+      - **Assessment:** [1-2 sentences on technical authenticity]
 
-      **Formatting (Distribution)**:
-      - **Score:** [HIGH / MEDIUM / LOW / VERY LOW]
-      - **Em-Dashes:** [Number] total ([number] per page)
-      - **Bold Elements:** [Number or percentage estimate]
-      - **Italic Elements:** [Number or percentage estimate]
-      - **Assessment:** [1-2 sentence interpretation of score]
+      **Tier 3 Total:** [Number] / 25 ([Percentage]%)
 
-      **Lexical Diversity (Type-Token Ratio)**:
-      - **Ratio:** [Number: 0.0-1.0]
-      - **Unique Words:** [Number]
-      - **Total Words:** [Number]
-      - **Assessment:** [Human range: 0.55-0.70, AI range: 0.40-0.50]
+      **OVERALL TOTAL:** [Number] / 100 (Quality Score)
+    elicit: false
+
+  - id: path_to_target
+    title: Path-to-Target Recommendations
+    instruction: |
+      Document ROI-sorted actionable recommendations to reach quality targets:
+
+      **Path to Target ([X] actions needed to reach Quality ≥[85]):**
+
+      **1. [Dimension Name]** (Effort: [LOW / MEDIUM / HIGH]):
+      - **Current Score:** [Number] / [Max]
+      - **Potential Gain:** +[Number] pts
+      - **Cumulative Quality Score:** [Number] (after completing this action)
+      - **Specific Action:** [Detailed description of what to do]
+      - **Time Estimate:** [15-30 / 30-45 / 45-90] minutes
+      - **ROI Justification:** [Why this is high priority]
+
+      **2. [Dimension Name]** (Effort: [LOW / MEDIUM / HIGH]):
+      - **Current Score:** [Number] / [Max]
+      - **Potential Gain:** +[Number] pts
+      - **Cumulative Quality Score:** [Number] (after completing this action)
+      - **Specific Action:** [Detailed description of what to do]
+      - **Time Estimate:** [15-30 / 30-45 / 45-90] minutes
+      - **ROI Justification:** [Why this is high priority]
+
+      **3. [Dimension Name]** (Effort: [LOW / MEDIUM / HIGH]):
+      - **Current Score:** [Number] / [Max]
+      - **Potential Gain:** +[Number] pts
+      - **Cumulative Quality Score:** [Number] (after completing this action)
+      - **Specific Action:** [Detailed description of what to do]
+      - **Time Estimate:** [15-30 / 30-45 / 45-90] minutes
+      - **ROI Justification:** [Why this is medium priority]
+
+      **4. [Additional dimensions if needed]** ...
+
+      **Total Estimated Effort:** [Sum of time estimates] minutes
+
+      **Optimization Strategy:**
+      - [ ] **Focus on top 2-3 actions** for single-pass editing (humanize-post-generation.md)
+      - [ ] **Use iterative optimization** if Quality < 70 or high-stakes content (iterative-humanization-optimization.md)
+      - [ ] **Address all actions** for premium quality (book chapters, publications)
+
+      **Additional Improvements (Optional - for exceeding targets):**
+      [List any dimensions that could be improved further even if targets are met, with effort level and potential gain]
+    elicit: false
+
+  - id: historical_trend
+    title: Historical Trend Analysis
+    instruction: |
+      Document score progression over time (if multiple analyses exist):
+
+      **Analysis History:** [Initial / Iteration 1 / Iteration 2 / etc.]
+
+      **Score Progression:**
+
+      | Analysis Date | Quality Score | Detection Risk | Trend |
+      |---------------|---------------|----------------|-------|
+      | [Date 1] | [Score 1] | [Risk 1] | Baseline |
+      | [Date 2] | [Score 2] | [Risk 2] | [+/-X pts] |
+      | [Date 3] | [Score 3] | [Risk 3] | [+/-X pts] |
+
+      **Trend Interpretation:**
+      - **Quality Trend:** [IMPROVING / STABLE / WORSENING]
+      - **Quality Change:** [+/-X] points from baseline
+      - **Detection Trend:** [IMPROVING / STABLE / WORSENING]
+      - **Detection Change:** [+/-X] points from baseline
+
+      **Iteration Effectiveness:**
+      - **Best Iteration:** [Which iteration had largest improvement]
+      - **Actions That Worked:** [List most effective humanization techniques applied]
+      - **Diminishing Returns:** [Yes / No - Are improvements slowing?]
+      - **Plateau Detected:** [Yes / No - Should we stop iterating?]
+
+      **Lessons Learned:**
+      [Document insights for future humanization work - what worked well, what didn't, what to try next time]
     elicit: false
 
   - id: critical_signals
@@ -202,39 +354,52 @@ sections:
     instruction: |
       If this is a re-analysis after humanization, compare metrics:
 
-      **Analysis Type:** [Initial Baseline / Post-Humanization Validation / N/A]
+      **Analysis Type:** [Initial Baseline / Post-Humanization Iteration [N] / N/A]
 
-      **Metric Improvements:**
+      **Dual Score Improvements:**
+
+      | Metric | Before | After | Change | Target Met? |
+      |--------|--------|-------|--------|-------------|
+      | Quality Score | [num]/100 | [num]/100 | [+/-X pts] | [Yes/No] |
+      | Detection Risk | [num]/100 | [num]/100 | [+/-X pts] | [Yes/No] |
+
+      **Critical Metrics:**
 
       | Metric | Before | After | Change | Target Met? |
       |--------|--------|-------|--------|-------------|
       | AI Vocab/1k | [num] | [num] | [±X%] | [Yes/No] |
-      | Sentence StdDev | [num] | [num] | [±X%] | [Yes/No] |
-      | Em-dashes/page | [num] | [num] | [±X%] | [Yes/No] |
-      | Heading Depth | [num] | [num] | [±X] | [Yes/No] |
-      | Formulaic Transitions | [num] | [num] | [±X%] | [Yes/No] |
-      | Contractions | [num] | [num] | [±X%] | [Yes/No] |
+      | Sentence StdDev | [num] | [num] | [±X pts] | [Yes/No] |
+      | Em-dashes/page | [num] | [num] | [±X] | [Yes/No] |
+      | Heading Depth | H[num] | H[num] | [±X levels] | [Yes/No] |
 
-      **Dimension Score Changes:**
+      **Dimension Score Changes (14 Dimensions):**
 
-      | Dimension | Before | After | Improvement |
-      |-----------|--------|-------|-------------|
-      | Perplexity | [SCORE] | [SCORE] | [✅ / ⚠️ / ❌] |
-      | Burstiness | [SCORE] | [SCORE] | [✅ / ⚠️ / ❌] |
-      | Structure | [SCORE] | [SCORE] | [✅ / ⚠️ / ❌] |
-      | Voice | [SCORE] | [SCORE] | [✅ / ⚠️ / ❌] |
-      | Technical | [SCORE] | [SCORE] | [✅ / ⚠️ / ❌] |
-      | Formatting | [SCORE] | [SCORE] | [✅ / ⚠️ / ❌] |
+      | Tier | Dimension | Before (/Max) | After (/Max) | Change | Status |
+      |------|-----------|---------------|--------------|--------|--------|
+      | **T1** | GLTR Token Ranking | [X]/12 | [X]/12 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T1** | Advanced Lexical | [X]/8 | [X]/8 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T1** | AI Detection Ensemble | [X]/10 | [X]/10 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T1** | Stylometric | [X]/6 | [X]/6 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T1** | Syntactic | [X]/4 | [X]/4 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T2** | Burstiness | [X]/12 | [X]/12 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T2** | Perplexity | [X]/10 | [X]/10 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T2** | Formatting | [X]/8 | [X]/8 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T2** | Headings | [X]/5 | [X]/5 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T3** | Voice | [X]/8 | [X]/8 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T3** | Structure | [X]/7 | [X]/7 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T3** | Emotional Depth | [X]/6 | [X]/6 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | **T3** | Technical Depth | [X]/4 | [X]/4 | [+/-X] | [✅ / ⚠️ / ❌] |
+      | | **TOTAL** | **[X]/100** | **[X]/100** | **[+/-X]** | |
 
-      **Overall Assessment Change:**
-      - **Before:** [ASSESSMENT]
-      - **After:** [ASSESSMENT]
-      - **Improvement Level:** [Substantial / Moderate / Minimal / None / Regression]
+      **Historical Trend:**
+      - **Quality Trend:** [IMPROVING / STABLE / WORSENING] ([+/-X] pts overall)
+      - **Detection Trend:** [IMPROVING / STABLE / WORSENING] ([+/-X] pts overall)
 
       **Humanization Effectiveness:**
-      - **Expected improvement:** [1-2 dimension levels, 50-80% AI vocab reduction]
-      - **Actual improvement:** [Describe actual results]
-      - **Assessment:** [Meets expectations / Below expectations / Exceeds expectations]
+      - **Expected improvement:** Quality +10-15 pts per iteration, Detection -10-15 pts
+      - **Actual improvement:** Quality [+/-X] pts, Detection [+/-X] pts
+      - **Assessment:** [Exceeds expectations / Meets expectations / Below expectations]
+      - **ROI Analysis:** [Were highest-ROI actions effective? Did they deliver expected gains?]
     elicit: false
 
   - id: humanization_priorities
@@ -274,44 +439,61 @@ sections:
   - id: publication_readiness
     title: Publication Readiness Assessment
     instruction: |
-      Final determination for publication suitability:
+      Final determination for publication suitability using dual score criteria:
 
       **Readiness Decision:** [PASS / CONDITIONAL PASS / FAIL]
 
       **PASS Criteria (all must be met):**
-      - [ ] Overall assessment: MINIMAL or LIGHT
-      - [ ] All dimensions: MEDIUM or higher
-      - [ ] Em-dashes: ≤2 per page
-      - [ ] Heading depth: ≤3 levels
-      - [ ] AI vocabulary: ≤5 per 1k words
-      - [ ] Sentence StdDev: ≥6
+      - [ ] Quality Score: ≥[85 / 90 / 75] (based on content type)
+      - [ ] Detection Risk: ≤[30 / 20 / 40] (based on content type)
+      - [ ] Historical Trend: IMPROVING or STABLE (not WORSENING)
+      - [ ] All 14 dimensions: No scores <50% of maximum
+      - [ ] Critical AI signals:
+        - [ ] Em-dashes: ≤2 per page
+        - [ ] Heading depth: ≤3 levels (H1, H2, H3)
+        - [ ] AI vocabulary: ≤5 per 1k words
+        - [ ] Sentence StdDev: ≥6
       - [ ] Read-aloud test: Sounds natural
       - [ ] Technical accuracy: 100% preserved
 
       **CONDITIONAL PASS Criteria (specific issues documented):**
-      - [ ] Overall assessment: MODERATE
-      - [ ] No VERY LOW dimension scores
-      - [ ] Specific issues identified and acceptable for context
+      - [ ] Quality Score: Within 5 points of target (e.g., 80-84 for target 85)
+      - [ ] Detection Risk: Within 5 points of target
+      - [ ] Path-to-target: Only LOW effort actions remaining
+      - [ ] No critical failures in em-dashes, heading depth, or AI vocab
       - [ ] Publisher review planned to validate acceptability
+      - [ ] Acceptable for context: [Explain why conditional pass is appropriate]
 
       **FAIL Criteria (any trigger):**
-      - [ ] Overall assessment: SUBSTANTIAL or EXTENSIVE
-      - [ ] Any dimension: VERY LOW
-      - [ ] Em-dashes: >3 per page
-      - [ ] Heading depth: >4 levels
-      - [ ] AI vocabulary: >10 per 1k words
-      - [ ] Technical accuracy: Compromised
+      - [ ] Quality Score: <Target by >5 points
+      - [ ] Detection Risk: >Target by >5 points
+      - [ ] Historical Trend: WORSENING (scores decreasing over iterations)
+      - [ ] Any critical AI signals failing:
+        - [ ] Em-dashes: >3 per page
+        - [ ] Heading depth: >4 levels
+        - [ ] AI vocabulary: >10 per 1k words
+        - [ ] Sentence StdDev: <3
+      - [ ] Technical accuracy: Compromised in any way
+
+      **Content Type Targets:**
+
+      | Content Type | Quality Target | Detection Target | Strictness |
+      |--------------|----------------|------------------|------------|
+      | Book Chapters | ≥90 | ≤20 | HIGH |
+      | Blog Posts/Articles | ≥85 | ≤30 | STANDARD |
+      | Documentation | ≥80 | ≤35 | MODERATE |
+      | Internal Docs/Drafts | ≥75 | ≤40 | RELAXED |
 
       **Publication Venue Considerations:**
       - **Target Publisher:** [PacktPub / O'Reilly / Manning / Self-Publishing / Other]
-      - **Publisher AI Policy:** [Known requirements or "Unknown"]
+      - **Publisher AI Policy:** [Known requirements or "Unknown - verify before submission"]
       - **Compliance Status:** [Compliant / Uncertain / Non-compliant]
       - **Additional Requirements:** [List any publisher-specific tone/style requirements]
 
       **Risk Assessment:**
-      - **AI Detection Risk:** [LOW / MEDIUM / HIGH]
-      - **Rationale:** [Why this risk level based on scores]
-      - **Mitigation:** [Steps to reduce risk if MEDIUM/HIGH]
+      - **AI Detection Risk:** [VERY LOW / LOW / MEDIUM / HIGH / VERY HIGH] ([Number]/100)
+      - **Rationale:** [Why this risk level based on Detection Risk score and dimension analysis]
+      - **Mitigation:** [If MEDIUM+ risk, list specific actions from path-to-target to reduce]
 
       **Reviewer Recommendations:**
       - **Technical Review:** [Ready / Not ready / Conditional]
@@ -320,6 +502,9 @@ sections:
 
       **Next Steps:**
       [Specific actions based on readiness decision]
+      - If PASS: [Proceed to technical review, etc.]
+      - If CONDITIONAL PASS: [Address remaining LOW effort items, then...]
+      - If FAIL: [Use iterative-humanization-optimization.md to systematically improve, focusing on path-to-target top 3 priorities]
     elicit: false
 
   - id: metadata

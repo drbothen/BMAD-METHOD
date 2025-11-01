@@ -5,6 +5,7 @@ Reference guide with tone profile examples to help technical authors define and 
 ## Purpose
 
 This guide provides concrete examples of different tone approaches for technical writing, helping authors:
+
 - Recognize and define their desired tone
 - Understand how tone affects reader experience
 - Choose appropriate tone for target audience and publisher
@@ -20,6 +21,7 @@ This guide provides concrete examples of different tone approaches for technical
 ## Tone Profile Examples
 
 Each profile includes:
+
 - **Definition:** What characterizes this tone
 - **Best For:** Ideal audience and use cases
 - **Characteristics:** Key traits
@@ -33,12 +35,14 @@ Each profile includes:
 **Definition:** Scholarly, precise, objective tone emphasizing technical rigor and formal language conventions.
 
 **Best For:**
+
 - Research-oriented audiences (PhD students, researchers)
 - Theoretical computer science texts
 - Academic journal articles converted to book format
 - Audiences expecting peer-reviewed precision
 
 **Characteristics:**
+
 - Formality Level: 5 (Very Formal)
 - No contractions
 - Passive voice acceptable for objectivity
@@ -65,12 +69,14 @@ Each profile includes:
 **Definition:** Expert voice demonstrating deep technical knowledge with precise, confident explanations. Direct but not academic.
 
 **Best For:**
+
 - O'Reilly-style technical references
 - Professional developer audiences (5+ years experience)
 - System design and architecture books
 - Enterprise technology implementations
 
 **Characteristics:**
+
 - Formality Level: 4 (Formal/Professional)
 - Minimal contractions
 - Strong, declarative statements
@@ -102,15 +108,15 @@ Each profile includes:
 >     matchLabels:
 >       app: postgres
 >   policyTypes:
->   - Ingress
+>     - Ingress
 >   ingress:
->   - from:
->     - podSelector:
->         matchLabels:
->           role: api-server
->     ports:
->     - protocol: TCP
->       port: 5432
+>     - from:
+>         - podSelector:
+>             matchLabels:
+>               role: api-server
+>       ports:
+>         - protocol: TCP
+>           port: 5432
 > ```
 >
 > This policy permits traffic only from pods labeled `role: api-server` on port 5432. All other ingress traffic to the database pod is denied. Egress remains unrestricted because the policy specifies only `Ingress` in `policyTypes`.
@@ -122,12 +128,14 @@ Each profile includes:
 **Definition:** Balanced approach combining professional standards with accessible, friendly explanations. Most common for modern technical books.
 
 **Best For:**
+
 - Manning, PacktPub, Pragmatic Bookshelf style
 - Intermediate developers (2-5 years experience)
 - Tutorial and practical guide books
 - Mainstream technical publishing
 
 **Characteristics:**
+
 - Formality Level: 3 (Professional/Conversational)
 - Moderate contractions
 - Active voice dominant
@@ -156,12 +164,12 @@ Each profile includes:
 >   const payload = {
 >     userId: user.id,
 >     email: user.email,
->     role: user.role
+>     role: user.role,
 >   };
 >
 >   // Sign token with secret key, expires in 1 hour
 >   return jwt.sign(payload, process.env.JWT_SECRET, {
->     expiresIn: '1h'
+>     expiresIn: '1h',
 >   });
 > }
 > ```
@@ -175,12 +183,14 @@ Each profile includes:
 **Definition:** Approachable, conversational tone emphasizing accessibility and reader comfort. More personal and relaxed.
 
 **Best For:**
+
 - Beginner-focused books
 - Bootcamp-style learning materials
 - Blog post collections
 - Self-published accessible guides
 
 **Characteristics:**
+
 - Formality Level: 2 (Casual/Friendly)
 - Frequent contractions
 - Colloquial language
@@ -213,10 +223,10 @@ Each profile includes:
 >   return jwt.sign(
 >     {
 >       id: user.id,
->       email: user.email
+>       email: user.email,
 >     },
->     'your-secret-key',  // Keep this secret!
->     { expiresIn: '1h' }  // Token expires after an hour
+>     'your-secret-key', // Keep this secret!
+>     { expiresIn: '1h' }, // Token expires after an hour
 >   );
 > }
 > ```
@@ -230,12 +240,14 @@ Each profile includes:
 **Definition:** Motivational tone emphasizing reader capability and progress, with explicit positive reinforcement.
 
 **Best For:**
+
 - Career transition books (bootcamp grads, career switchers)
 - Confidence-building materials
 - First programming book experiences
 - Self-paced learning contexts
 
 **Characteristics:**
+
 - Formality Level: 2-3 (Varies)
 - Acknowledges difficulty
 - Celebrates progress
@@ -277,12 +289,14 @@ Each profile includes:
 **Definition:** No-nonsense, action-oriented tone focused on practical results and real-world applicability.
 
 **Best For:**
+
 - Experienced developers
 - DevOps and SRE audiences
 - Problem-solving focused books
 - "Get stuff done" contexts
 
 **Characteristics:**
+
 - Formality Level: 3
 - Gets to the point quickly
 - Minimal fluff
@@ -303,11 +317,11 @@ Each profile includes:
 > ```yaml
 > resources:
 >   requests:
->     memory: "256Mi"
->     cpu: "250m"
+>     memory: '256Mi'
+>     cpu: '250m'
 >   limits:
->     memory: "512Mi"
->     cpu: "500m"
+>     memory: '512Mi'
+>     cpu: '500m'
 > ```
 >
 > The `requests` value tells Kubernetes how much to reserve. The `limits` value sets the maximum allowed. Set requests based on typical usage. Set limits at 2x requests to handle spikes without killing pods.
@@ -324,7 +338,7 @@ Each profile includes:
 > metadata:
 >   name: api-pdb
 > spec:
->   minAvailable: 2  # Always keep 2 pods running
+>   minAvailable: 2 # Always keep 2 pods running
 >   selector:
 >     matchLabels:
 >       app: api
@@ -338,14 +352,14 @@ Each profile includes:
 
 Use this matrix to identify appropriate tone based on project characteristics:
 
-| Audience Level | Publisher Type | Recommended Profile | Formality Level |
-|----------------|----------------|---------------------|-----------------|
-| Researchers / PhDs | Academic Press | Academic/Formal | 5 |
-| Senior Engineers (10+ years) | O'Reilly | Authoritative/Technical | 4 |
-| Professional Developers (3-7 years) | Manning, PacktPub | Professional/Conversational | 3 |
-| Junior Developers (0-2 years) | Self-Published, Pragmatic | Casual/Friendly | 2 |
-| Career Switchers / Bootcamp | Self-Published | Encouraging/Supportive | 2-3 |
-| DevOps/SRE Practitioners | Pragmatic Bookshelf | Direct/Pragmatic | 3 |
+| Audience Level                      | Publisher Type            | Recommended Profile         | Formality Level |
+| ----------------------------------- | ------------------------- | --------------------------- | --------------- |
+| Researchers / PhDs                  | Academic Press            | Academic/Formal             | 5               |
+| Senior Engineers (10+ years)        | O'Reilly                  | Authoritative/Technical     | 4               |
+| Professional Developers (3-7 years) | Manning, PacktPub         | Professional/Conversational | 3               |
+| Junior Developers (0-2 years)       | Self-Published, Pragmatic | Casual/Friendly             | 2               |
+| Career Switchers / Bootcamp         | Self-Published            | Encouraging/Supportive      | 2-3             |
+| DevOps/SRE Practitioners            | Pragmatic Bookshelf       | Direct/Pragmatic            | 3               |
 
 **Subject Matter Considerations:**
 
@@ -359,28 +373,36 @@ Use this matrix to identify appropriate tone based on project characteristics:
 ## Publisher-Specific Tone Preferences
 
 ### PacktPub
+
 **Expected Tone:** "Conversational but professional"
+
 - **Best Match:** Profile 3 (Professional/Conversational)
 - **Formality:** Level 2-3
 - **Key Traits:** Accessible, practical, tutorial-driven
 - **Avoid:** Excessive formality, academic voice
 
 ### O'Reilly
+
 **Expected Tone:** "Authoritative with technical precision"
+
 - **Best Match:** Profile 2 (Authoritative/Technical)
 - **Formality:** Level 3-4
 - **Key Traits:** Expert voice, comprehensive coverage, technical depth
 - **Avoid:** Overly casual language, hand-waving
 
 ### Manning
+
 **Expected Tone:** "Author voice with personality"
+
 - **Best Match:** Profile 3 (Professional/Conversational) with author personality
 - **Formality:** Level 2-3 (author preference)
 - **Key Traits:** Personal experience, unique perspective, conversational
 - **Avoid:** Generic corporate voice, suppressing author personality
 
 ### Self-Publishing
+
 **Expected Tone:** Author's choice
+
 - **Best Match:** Any profile matching target audience
 - **Formality:** 1-5 (author decides)
 - **Key Traits:** Maximum flexibility, audience-driven
@@ -389,25 +411,30 @@ Use this matrix to identify appropriate tone based on project characteristics:
 ## Using This Guide When Defining Tone
 
 **Step 1: Identify Your Audience**
+
 - What's their experience level?
 - What are their expectations?
 - What tone would make them comfortable?
 
 **Step 2: Review Profile Examples**
+
 - Read all 6 sample passages
 - Which feels right for your book?
 - Which would resonate with your audience?
 
 **Step 3: Consider Publisher Requirements**
+
 - Does your publisher expect specific tone?
 - Which profile aligns with their preferences?
 
 **Step 4: Define Your Variation**
+
 - Start with closest profile
 - Adjust for your authentic voice
 - Add your unique personality markers
 
 **Step 5: Document in tone-specification.md**
+
 - Reference the profile(s) you're drawing from
 - Document your specific adjustments
 - Provide your own example passages
@@ -415,30 +442,36 @@ Use this matrix to identify appropriate tone based on project characteristics:
 ## Common Tone Combinations
 
 **Profile 3 + Profile 5:** Professional/Conversational with Encouragement
+
 - Use for: Intermediate developers needing confidence building
 - Maintains professionalism while being supportive
 
 **Profile 2 + Profile 6:** Authoritative with Pragmatic Directness
+
 - Use for: Senior developers valuing expertise and efficiency
 - Technical precision with real-world focus
 
 **Profile 3 + Author Personality:** Professional/Conversational + Unique Voice
+
 - Use for: Manning books where author voice matters
 - Accessible but personally distinctive
 
 ## Red Flags: Tone-Audience Mismatches
 
 **Mismatch 1: Academic Tone for Beginners**
+
 - ❌ Profile 1 (Academic/Formal) for bootcamp grads
 - Problem: Intimidating, inaccessible
 - Fix: Use Profile 4 or 5 instead
 
 **Mismatch 2: Overly Casual for Experts**
+
 - ❌ Profile 4 (Casual/Friendly) for senior engineers
 - Problem: Condescending, wastes time
 - Fix: Use Profile 2 or 6 instead
 
 **Mismatch 3: Cold Precision for Career Switchers**
+
 - ❌ Profile 2 (Authoritative) without encouragement for beginners
 - Problem: Discouraging, assumption of knowledge
 - Fix: Add Profile 5 elements or use Profile 3
@@ -453,6 +486,7 @@ Use this matrix to identify appropriate tone based on project characteristics:
 ## Contributing Additional Profiles
 
 This guide can expand with additional tone profiles for:
+
 - Humor-forward technical writing
 - Interview-style conversational books
 - Code cookbook formats

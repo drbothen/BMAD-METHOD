@@ -1,0 +1,391 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: optimization-summary
+  name: Iterative Humanization Optimization Summary
+  version: 1.0
+  description: Comprehensive report documenting complete iterative optimization journey using dual scoring system. Tracks all iterations, before/after metrics, path-to-target progression, and lessons learned for systematic content improvement
+  output:
+    format: markdown
+    filename: "optimization-summary-{{file_id}}.md"
+
+workflow:
+  elicitation: false
+  allow_skip: false
+
+sections:
+  - id: header
+    title: Optimization Summary Header
+    instruction: |
+      Provide identifying information for the optimization session:
+
+      **Optimization Session Information:**
+      - **File:** [Full path to optimized file]
+      - **Content Type:** [Book Chapter / Blog Post / Documentation / Tutorial / Other]
+      - **Word Count:** [Total words]
+      - **Optimization Start Date:** [Date started]
+      - **Optimization End Date:** [Date completed]
+      - **Total Time Investment:** [Hours/minutes spent across all iterations]
+      - **Iterations Completed:** [Number] iterations
+      - **Optimized By:** [Person/agent name]
+
+      **Target Scores:**
+      - **Quality Target:** ≥[85 / 90 / 75] (adjust by content type)
+      - **Detection Target:** ≤[30 / 20 / 40] (adjust by content type)
+      - **Target Met:** [Yes / No / Partially]
+    elicit: false
+
+  - id: executive_summary
+    title: Executive Summary
+    instruction: |
+      Provide high-level overview of optimization results:
+
+      **Final Achievement:**
+      - **Starting Quality Score:** [Number] / 100 ([Interpretation])
+      - **Final Quality Score:** [Number] / 100 ([Interpretation])
+      - **Quality Improvement:** [+X] points ([X%] improvement)
+      - **Starting Detection Risk:** [Number] / 100 ([Interpretation])
+      - **Final Detection Risk:** [Number] / 100 ([Interpretation])
+      - **Detection Improvement:** [-X] points ([X%] reduction)
+
+      **Targets Achieved:**
+      - [ ] Quality Score ≥Target ([Yes/No] - Gap: [±X] pts)
+      - [ ] Detection Risk ≤Target ([Yes/No] - Gap: [±X] pts)
+
+      **Optimization Verdict:** [SUCCESS / PARTIAL SUCCESS / PLATEAU REACHED / FAILED]
+
+      **Key Outcomes (2-3 sentences):**
+      [Summarize most significant improvements and any remaining challenges]
+
+      **Publication Readiness:** [PASS / CONDITIONAL PASS / FAIL]
+    elicit: false
+
+  - id: iteration_timeline
+    title: Iteration Timeline
+    instruction: |
+      Document complete optimization journey iteration by iteration:
+
+      ## Iteration 0: Baseline Analysis
+
+      **Date:** [Date]
+      **Duration:** [Minutes spent]
+
+      **Scores:**
+      - Quality: [Number] / 100 ([Interpretation])
+      - Detection: [Number] / 100 ([Interpretation])
+
+      **Assessment:** [MINIMAL / LIGHT / MODERATE / SUBSTANTIAL / EXTENSIVE] humanization needed
+
+      **Key Issues Identified:**
+      - [Issue 1 - Dimension affected]
+      - [Issue 2 - Dimension affected]
+      - [Issue 3 - Dimension affected]
+
+      **Path-to-Target Actions Recommended:**
+      1. [Dimension] - Effort: [LOW/MED/HIGH], Gain: [+X pts]
+      2. [Dimension] - Effort: [LOW/MED/HIGH], Gain: [+X pts]
+      3. [Dimension] - Effort: [LOW/MED/HIGH], Gain: [+X pts]
+
+      ---
+
+      ## Iteration 1: [Descriptive Title]
+
+      **Date:** [Date]
+      **Duration:** [Minutes spent]
+
+      **Actions Taken:**
+      - [Action 1 - from path-to-target]
+      - [Action 2 - from path-to-target]
+      - [Action 3 - additional actions if any]
+
+      **Scores:**
+      - Quality: [Number] / 100 ([Change: +/-X pts from previous])
+      - Detection: [Number] / 100 ([Change: +/-X pts from previous])
+
+      **Dimension Improvements:**
+      - [Dimension 1]: [Before]/[Max] → [After]/[Max] ([+/-X pts])
+      - [Dimension 2]: [Before]/[Max] → [After]/[Max] ([+/-X pts])
+      - [Dimension 3]: [Before]/[Max] → [After]/[Max] ([+/-X pts])
+
+      **Trend:** [IMPROVING / STABLE / WORSENING]
+
+      **Effectiveness Assessment:**
+      - Expected gain: [+X pts]
+      - Actual gain: [+X pts]
+      - ROI: [Exceeds / Meets / Below expectations]
+
+      **Path-to-Target Update:**
+      [Updated recommendations for next iteration if targets not yet met]
+
+      ---
+
+      ## Iteration 2: [Descriptive Title]
+
+      [Repeat structure from Iteration 1]
+
+      ---
+
+      ## Iteration N: [Continue for all iterations]
+
+      ---
+
+      **Termination Reason:** [Targets Met / Plateau Detected / Maximum Iterations / Time Budget Exhausted / Other]
+    elicit: false
+
+  - id: score_progression
+    title: Score Progression Visualization
+    instruction: |
+      Tabular and narrative view of score evolution:
+
+      **Complete Score History:**
+
+      | Iteration | Quality Score | Change | Detection Risk | Change | Duration | Cumulative Time |
+      |-----------|---------------|--------|----------------|--------|----------|-----------------|
+      | 0 (Baseline) | [X]/100 | - | [X]/100 | - | [X min] | [X min] |
+      | 1 | [X]/100 | [+/-X] | [X]/100 | [+/-X] | [X min] | [X min] |
+      | 2 | [X]/100 | [+/-X] | [X]/100 | [+/-X] | [X min] | [X min] |
+      | 3 | [X]/100 | [+/-X] | [X]/100 | [+/-X] | [X min] | [X min] |
+      | ... | ... | ... | ... | ... | ... | ... |
+      | FINAL | **[X]/100** | **[+/-X total]** | **[X]/100** | **[+/-X total]** | - | **[X min total]** |
+
+      **Target Achievement Progress:**
+
+      | Iteration | Quality Gap to Target | Detection Gap to Target | Both Targets Met? |
+      |-----------|----------------------|-------------------------|-------------------|
+      | 0 | [X pts] | [X pts] | ❌ |
+      | 1 | [X pts] | [X pts] | ❌ |
+      | 2 | [X pts] | [X pts] | ❌ |
+      | FINAL | **[X pts]** | **[X pts]** | **[✅ / ❌]** |
+
+      **Trend Analysis:**
+      - **Quality Trend:** [IMPROVING / STABLE / WORSENING]
+      - **Average Quality Gain per Iteration:** [+X] points
+      - **Best Iteration for Quality:** Iteration [N] ([+X pts])
+      - **Detection Trend:** [IMPROVING / STABLE / WORSENING]
+      - **Average Detection Reduction per Iteration:** [-X] points
+      - **Best Iteration for Detection:** Iteration [N] ([-X pts])
+
+      **Efficiency Metrics:**
+      - **Quality Points Gained per Hour:** [X pts/hr]
+      - **Detection Points Reduced per Hour:** [X pts/hr]
+      - **Total ROI:** [Excellent / Good / Fair / Poor]
+    elicit: false
+
+  - id: dimension_analysis
+    title: 14-Dimension Improvement Analysis
+    instruction: |
+      Detailed breakdown of improvements across all dimensions:
+
+      **Tier 1: Advanced Detection (40 points)**
+
+      | Dimension | Baseline | Final | Change | Target Met? | Key Actions |
+      |-----------|----------|-------|--------|-------------|-------------|
+      | GLTR Token Ranking (/12) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+      | Advanced Lexical (/8) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+      | AI Detection Ensemble (/10) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+      | Stylometric Markers (/6) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+      | Syntactic Complexity (/4) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+
+      **Tier 1 Total:** [Baseline]/40 → [Final]/40 ([+/-X] pts)
+
+      **Tier 2: Core Patterns (35 points)**
+
+      | Dimension | Baseline | Final | Change | Target Met? | Key Actions |
+      |-----------|----------|-------|--------|-------------|-------------|
+      | Burstiness (/12) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+      | Perplexity (/10) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+      | Formatting Patterns (/8) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+      | Heading Hierarchy (/5) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+
+      **Tier 2 Total:** [Baseline]/35 → [Final]/35 ([+/-X] pts)
+
+      **Tier 3: Supporting Signals (25 points)**
+
+      | Dimension | Baseline | Final | Change | Target Met? | Key Actions |
+      |-----------|----------|-------|--------|-------------|-------------|
+      | Voice & Authenticity (/8) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+      | Structure & Organization (/7) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+      | Emotional Depth (/6) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+      | Technical Depth (/4) | [X] | [X] | [+/-X] | [✅/❌] | [Brief description] |
+
+      **Tier 3 Total:** [Baseline]/25 → [Final]/25 ([+/-X] pts)
+
+      **Most Improved Dimensions:**
+      1. [Dimension name]: [+X pts] ([X%] improvement)
+      2. [Dimension name]: [+X pts] ([X%] improvement)
+      3. [Dimension name]: [+X pts] ([X%] improvement)
+
+      **Stubborn Dimensions (least improvement):**
+      1. [Dimension name]: [+/-X pts] ([Reason why difficult to improve])
+      2. [Dimension name]: [+/-X pts] ([Reason why difficult to improve])
+    elicit: false
+
+  - id: techniques_applied
+    title: Humanization Techniques Applied
+    instruction: |
+      Catalog of specific techniques used and their effectiveness:
+
+      **Iteration 1 Techniques:**
+
+      1. **[Technique Name]** (Effort: [LOW/MED/HIGH], Time: [X min])
+         - **Target Dimension:** [Dimension name]
+         - **Expected Gain:** [+X pts]
+         - **Actual Gain:** [+X pts]
+         - **Effectiveness:** [Excellent / Good / Fair / Poor]
+         - **Description:** [What was done specifically]
+         - **Example:** [Before → After example if applicable]
+
+      2. **[Technique Name]** ...
+
+      **Iteration 2 Techniques:**
+
+      [Continue for all iterations]
+
+      **Most Effective Techniques (by actual gain):**
+      1. [Technique name] - [+X pts] in [X min] ([X pts/min])
+      2. [Technique name] - [+X pts] in [X min] ([X pts/min])
+      3. [Technique name] - [+X pts] in [X min] ([X pts/min])
+
+      **Least Effective Techniques (learn from these):**
+      1. [Technique name] - [+X pts] in [X min] (Expected [+Y pts])
+         - Lesson: [Why it underperformed]
+
+      **Technique Categories Applied:**
+      - [ ] Sentence Variation Editing ([X techniques, +Y total pts])
+      - [ ] AI Vocabulary Replacement ([X techniques, +Y total pts])
+      - [ ] Formatting Humanization ([X techniques, +Y total pts])
+      - [ ] Heading Hierarchy Flattening ([X techniques, +Y total pts])
+      - [ ] Voice & Authenticity Injection ([X techniques, +Y total pts])
+      - [ ] Transition Smoothing ([X techniques, +Y total pts])
+      - [ ] Emotional Depth Enhancement ([X techniques, +Y total pts])
+      - [ ] Other: [Category] ([X techniques, +Y total pts])
+    elicit: false
+
+  - id: lessons_learned
+    title: Lessons Learned & Best Practices
+    instruction: |
+      Insights for improving future humanization work:
+
+      **What Worked Well:**
+      - [Insight 1 - Specific technique or approach that was highly effective]
+      - [Insight 2]
+      - [Insight 3]
+
+      **What Didn't Work:**
+      - [Insight 1 - Technique or approach that underperformed]
+      - [Insight 2]
+      - [Insight 3]
+
+      **Surprises & Unexpected Results:**
+      - [Observation 1 - Something that defied expectations]
+      - [Observation 2]
+
+      **Optimal Iteration Strategy for This Content Type:**
+      - **Recommended Starting Point:** [Which techniques to try first]
+      - **High-ROI Actions:** [Which dimensions to prioritize for this type of content]
+      - **Avoid:** [What not to focus on or techniques that wasted time]
+
+      **Time/Effort Optimization:**
+      - **Most Time-Efficient Gains:** [Which actions gave best ROI]
+      - **Time Sinks:** [Where time was spent without proportional gain]
+      - **Recommended Time Budget:** [For similar content in future]
+
+      **For Future Content Generation:**
+      - **Prompt Engineering Insights:** [What to include in generation prompts to avoid these issues]
+      - **Pre-generation Humanization:** [Specific techniques to bake into prompts]
+      - **Content Template Adjustments:** [Changes to make to content generation templates]
+
+      **Tool Usage Observations:**
+      - **Analysis Tool Accuracy:** [How well did path-to-target predictions match reality?]
+      - **Recommended Analysis Frequency:** [How often to re-analyze during optimization]
+      - **Domain Terms:** [Did providing domain-specific terms help? Which ones?]
+
+      **Publication Context:**
+      - **Publisher Requirements:** [Specific requirements learned or confirmed]
+      - **Quality Thresholds:** [Were targets appropriate or should they be adjusted?]
+      - **Review Feedback:** [If content was reviewed, what was the response?]
+    elicit: false
+
+  - id: final_status
+    title: Final Status & Next Steps
+    instruction: |
+      Current state and recommended actions:
+
+      **Final Scores:**
+      - **Quality Score:** [Number] / 100 ([Interpretation])
+      - **Detection Risk:** [Number] / 100 ([Interpretation])
+
+      **Publication Readiness:** [PASS / CONDITIONAL PASS / FAIL]
+
+      **If PASS:**
+      - [ ] Technical accuracy verified (100%)
+      - [ ] Read-aloud test passed
+      - [ ] Ready for technical review
+      - [ ] Ready for editorial review
+      - [ ] Ready for publisher submission
+
+      **If CONDITIONAL PASS:**
+      - **Remaining Issues:**
+        - [Issue 1 with severity]
+        - [Issue 2 with severity]
+      - **Recommended Actions:**
+        - [Specific action 1]
+        - [Specific action 2]
+      - **Estimated Additional Time:** [X minutes]
+
+      **If FAIL:**
+      - **Critical Gaps:**
+        - Quality Score: [X pts below target]
+        - Detection Risk: [X pts above target]
+      - **Recommended Path Forward:**
+        - [ ] Continue iterative optimization (if improvements still occurring)
+        - [ ] Regenerate with better humanization prompt (if plateau reached)
+        - [ ] Adjust targets (if overly strict for content type)
+
+      **Disposition:**
+      - **File Location:** [Path to optimized file]
+      - **Backup Versions:** [Paths to iteration backups if saved]
+      - **Analysis Reports:** [Paths to all iteration analysis reports]
+      - **Ready for Next Phase:** [Yes / No / Conditional]
+
+      **Follow-Up Actions:**
+      - [ ] [Action 1 with responsible party]
+      - [ ] [Action 2 with responsible party]
+      - [ ] [Action 3 with responsible party]
+    elicit: false
+
+  - id: metadata
+    title: Optimization Metadata
+    instruction: |
+      Version control and tracking information:
+
+      **Report Information:**
+      - **Report Version:** 1.0
+      - **Created Date:** [Date]
+      - **Created By:** [Person/agent name]
+      - **Tool Version:** analyze_ai_patterns.py [version if applicable]
+
+      **Associated Files:**
+      - **Optimized Content:** [File path to final version]
+      - **Original Content:** [File path to baseline version]
+      - **Iteration Backups:** [Paths to saved iteration versions]
+      - **Analysis Reports:**
+        - Iteration 0: [Path]
+        - Iteration 1: [Path]
+        - Iteration N: [Path]
+      - **Score History:** [Path to .score-history/*.history.json file]
+
+      **Version Control:**
+      - **Git Commit (if applicable):** [Commit hash for optimized version]
+      - **Branch:** [Branch name]
+      - **Tags:** [Any tags applied]
+
+      **Quality Assurance:**
+      - **QA Check Completed:** [Yes / No / Pending]
+      - **QA Report:** [Path if completed]
+      - **Technical Review:** [Completed / Pending / Not Required]
+      - **Editorial Review:** [Completed / Pending / Not Required]
+
+      **Session Notes:**
+      [Any additional context, observations, or notes about the optimization session]
+    elicit: false

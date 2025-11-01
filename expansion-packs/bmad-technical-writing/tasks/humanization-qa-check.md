@@ -355,6 +355,7 @@ Next Steps:
 - Before/after comparison metrics
 - Targeted work plan for failed dimensions (if FAIL)
 - Updated manuscript status documentation
+- Structured analysis report using `create-doc.md` task with `humanization-analysis-report-tmpl.yaml` template (for dual scoring analysis)
 
 ## Success Criteria
 

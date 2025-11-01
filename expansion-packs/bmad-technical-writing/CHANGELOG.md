@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Complete AI pattern detection and removal system for transforming AI-assisted content into authentic human-written expert guidance:
 
 **Core Humanization Tasks:**
+
 - **humanize-ai-drafted-chapter.md** - 11-step systematic workflow for removing AI patterns from AI-assisted content
   - Baseline detection with generative-ai-compliance-checklist.md
   - Pattern-specific removal for 8 AI pattern types (vocabulary, metaphors, generic examples, impersonal voice, sentence uniformity, flowery language, repetitive content, rigid structure)
@@ -24,6 +25,7 @@ Complete AI pattern detection and removal system for transforming AI-assisted co
   - Time estimate: 2-4 hours per chapter
 
 **Quality Assurance:**
+
 - **humanization-checklist.md** - 45-item validation checklist across 7 categories
   - Validates AI pattern removal effectiveness (not detection)
   - Scoring system: (Items Passed / 45) × 100 = Pass Rate
@@ -32,6 +34,7 @@ Complete AI pattern detection and removal system for transforming AI-assisted co
   - Distinction from generative-ai-compliance-checklist clarified (detection vs validation)
 
 **Knowledge Bases:**
+
 - **ai-pattern-removal-guide.md** - Comprehensive guide to identifying and fixing 8 AI pattern types
   - 3-4 examples per pattern type (24+ total examples)
   - Each pattern includes: description, detection method, why it matters, replacement strategies, before/after examples, contextual notes
@@ -50,6 +53,7 @@ Complete AI pattern detection and removal system for transforming AI-assisted co
   - Real metrics (60-95% AI score reductions typical)
 
 **Workflow Integration:**
+
 - **chapter-development-workflow.yaml** - Added humanization step after drafting, before technical review
   - New sequence step: tutorial-architect creates chapter-humanized.md (if AI-assisted)
   - Decision nodes in Mermaid flow diagram (AI-Assisted? branches for both section-driven and traditional approaches)
@@ -81,8 +85,9 @@ Complete AI pattern detection and removal system for transforming AI-assisted co
   - EXCELLENT (<5%), ACCEPTABLE (5-10%), NEEDS REWORK (>10%) thresholds
 
 **Agent Awareness:**
+
 - **tutorial-architect** agent updated:
-  - Added *humanize command (executes humanize-ai-drafted-chapter.md)
+  - Added \*humanize command (executes humanize-ai-drafted-chapter.md)
   - Dependencies: humanize-ai-drafted-chapter.md task, humanization-checklist.md, ai-pattern-removal-guide.md, humanization-examples.md
   - Startup context: AI Content Humanization guidance added
 
@@ -99,11 +104,13 @@ Complete AI pattern detection and removal system for transforming AI-assisted co
   - "Always consider" list: AI disclosure and humanization validation added
 
 **Documentation Updates:**
+
 - **README.md**: Updated counts (37 tasks, 33 checklists, 10 knowledge bases), added AI humanization to key features, added note about AI-assisted writing support
 - **task-reference.md**: Added humanize-ai-drafted-chapter.md entry, updated copy-edit-chapter.md entry with Step 10 reference, updated task counts (68 tasks total, 13 chapter development tasks)
 - **checklist-reference.md**: Added humanization-checklist.md entry with comprehensive details, updated checklist counts (35 total, 7 drafting phase)
 
 **Impact:**
+
 - Complete AI content humanization workflow from detection to validation
 - Publisher compliance (PacktPub AI disclosure requirements)
 - Reader trust (prevents "AI-generated feel" negative reviews)
@@ -115,6 +122,7 @@ Complete AI pattern detection and removal system for transforming AI-assisted co
 ### Added
 
 **Section-Writing Enhancements:**
+
 - Added `*write-section` command to tutorial-architect agent for direct access to write-section-draft.md task
   - Enables section-driven workflow (incremental chapter development)
   - Provides 2-5 page granular writing capability
@@ -123,6 +131,7 @@ Complete AI pattern detection and removal system for transforming AI-assisted co
 ### Enhanced
 
 **Tone Awareness for Section Writing:**
+
 - **write-section-draft.md** - Added comprehensive tone specification guidance
   - Prerequisites now require tone-specification.md review
   - Step 1 includes "Review Tone Specification" subsection with formality level, characteristics, example passages
@@ -130,12 +139,14 @@ Complete AI pattern detection and removal system for transforming AI-assisted co
   - Quality standards updated to include tone matching
 
 **tutorial-architect Agent:**
+
 - Added write-section-draft.md to task dependencies
 - Updated startup context with section-driven workflow guidance
 - Enhanced "Think in terms of" and "Always consider" lists to include tone awareness
 - Clarified that tone definition applies to both chapters and sections
 
 **Impact:**
+
 - Complete tone coverage across all writing workflows (chapter-level, section-level, and AI-assisted)
 - Consistent voice enforcement from first sentence in section-driven development
 - Tutorial-architect now supports both monolithic (chapter) and incremental (section) writing approaches
@@ -149,6 +160,7 @@ Complete AI pattern detection and removal system for transforming AI-assisted co
 Complete tone and voice management system for maintaining consistent writing style throughout technical books:
 
 **Core Tasks (Greenfield):**
+
 - **define-book-tone.md** - 8-step elicitation workflow for defining book tone before writing begins
   - Formality level definition (1-5 scale with examples)
   - 5 tone characteristics selection (encouraging, authoritative, practical, etc.)
@@ -157,6 +169,7 @@ Complete tone and voice management system for maintaining consistent writing sty
   - Excluded tones/anti-patterns documentation
 
 **Brownfield Tasks (Editions/Updates):**
+
 - **extract-tone-patterns.md** - Extract voice and tone patterns from existing book chapters
   - 9-step workflow analyzing 3-5 existing chapters
   - Voice profile extraction (perspective, active/passive, formality)
@@ -172,6 +185,7 @@ Complete tone and voice management system for maintaining consistent writing sty
   - Tone adjustment logging
 
 **Template:**
+
 - **tone-specification-tmpl.yaml** - Structured 12-section template for tone documentation
   - Elicitation-enabled for interactive completion
   - Book overview, tone personality, voice characteristics
@@ -179,6 +193,7 @@ Complete tone and voice management system for maintaining consistent writing sty
   - Example passages, consistency rules, excluded tones
 
 **Checklist:**
+
 - **tone-consistency-checklist.md** - Comprehensive tone validation (10 categories, 15+ items)
   - Voice consistency, formality level, publisher alignment
   - Code comment style, transition patterns
@@ -186,6 +201,7 @@ Complete tone and voice management system for maintaining consistent writing sty
   - Red flags and remediation process
 
 **Knowledge Base:**
+
 - **writing-voice-guides.md** - Reference guide with 6 tone profile examples
   - Academic/Formal, Authoritative/Technical, Professional/Conversational
   - Casual/Friendly, Encouraging/Supportive, Direct/Pragmatic
@@ -194,6 +210,7 @@ Complete tone and voice management system for maintaining consistent writing sty
   - Publisher-specific tone preferences
 
 **Workflow Integration:**
+
 - **book-planning-workflow.yaml** - Added tone definition step after outline, before validation
   - Updated Mermaid flow diagram with tone definition node
   - New quality gate: `tone_specification_complete`
@@ -201,6 +218,7 @@ Complete tone and voice management system for maintaining consistent writing sty
   - Time estimate: 2-3 hours for tone definition
 
 **Task Enhancements:**
+
 - **expand-outline-to-draft.md** - Enhanced with Step 1: Review Tone Specification (MANDATORY)
   - Tone application examples comparing formality levels
   - Error handling for missing tone-specification.md
@@ -213,16 +231,19 @@ Complete tone and voice management system for maintaining consistent writing sty
   - Verify author voice authenticity
 
 **Agent Updates:**
+
 - **instructional-designer.md** - Added `*define-tone` command, tone awareness in startup context
 - **tutorial-architect.md** - Added `*define-tone` command, tone reminder in startup context
 - **technical-editor.md** - Added `*validate-tone` command, tone validation responsibility
 
 **Use Cases:**
+
 - **Greenfield**: Define tone → Generate specification → Apply during drafting → Validate during editing
 - **Brownfield**: Extract patterns → Apply to new chapters → Validate consistency
 - **Multi-author**: Shared tone specification ensures unified voice across contributors
 
 **Impact:**
+
 - Prevents tone drift in 400+ page manuscripts
 - Enables consistent AI-assisted chapter drafting
 - Maintains author voice across editions

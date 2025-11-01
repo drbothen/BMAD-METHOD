@@ -93,6 +93,7 @@ dependencies:
   templates:
     - humanization-prompt-tmpl.yaml
     - humanization-analysis-report-tmpl.yaml
+    - optimization-summary-tmpl.yaml
   data:
     - bmad-kb.md
     - humanization-techniques.md

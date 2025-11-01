@@ -548,14 +548,15 @@ Estimated time: [TIME] minutes
 - Humanization work plan with prioritized issues
 - Estimated time budget for humanization
 - Before/after comparison (if validating humanization)
+- Structured analysis report using `create-doc.md` task with `humanization-analysis-report-tmpl.yaml` template (for dual scoring mode)
 
 ## Success Criteria
 
 ✅ Analysis completed successfully (no errors)
-✅ All 6 dimensions scored and understood
+✅ All dimensions scored and understood (14 for dual scoring mode, 6 for standard mode)
 ✅ Specific problematic patterns identified (AI words, em-dashes, heading depth, etc.)
-✅ Overall assessment understood and accepted
-✅ Humanization priorities established based on data
+✅ Overall assessment understood and accepted (or dual scores interpreted for dual scoring mode)
+✅ Humanization priorities established based on data (or path-to-target reviewed for dual scoring mode)
 ✅ Estimated time budget for humanization determined
 
 ## Common Pitfalls to Avoid

@@ -17,6 +17,7 @@ This reference document provides research-backed techniques for transforming AI-
 **What it does**: Establishes a specific authorial identity that shapes how AI conceptualizes and executes the writing task.
 
 **How to apply**:
+
 ```
 You are an experienced [ROLE] with [X] years of hands-on experience in [DOMAIN].
 Write this [CONTENT_TYPE] as if explaining to a [AUDIENCE_LEVEL] [AUDIENCE_TYPE].
@@ -28,6 +29,7 @@ Voice characteristics:
 ```
 
 **Example**:
+
 ```
 You are an experienced DevOps engineer with 10+ years managing production
 Kubernetes clusters. Write this troubleshooting guide as if explaining to a
@@ -50,6 +52,7 @@ Voice characteristics:
 **What it does**: Explicitly instructs AI to vary sentence length, creating natural rhythm instead of uniform structure.
 
 **How to apply**:
+
 ```
 Vary sentence length deliberately throughout:
 - Short sentences for emphasis (5-10 words): [percentage]%
@@ -64,6 +67,7 @@ clauses and connects multiple ideas together]. [Fragment for punch.]"
 ```
 
 **Example**:
+
 ```
 Create natural sentence rhythm:
 - 20-30% short sentences (5-10 words)
@@ -86,6 +90,7 @@ production. No more 'works on my machine' headaches. See how?"
 **What it does**: Explicitly prohibits AI-characteristic words that immediately signal machine generation.
 
 **How to apply**:
+
 ```
 NEVER use these AI-typical words:
 - delve, delving
@@ -103,6 +108,7 @@ Instead use natural alternatives appropriate to context.
 ```
 
 **Example**:
+
 ```
 VOCABULARY RESTRICTIONS:
 Avoid: delve → Use: explore, examine, look at
@@ -122,6 +128,7 @@ Avoid: seamlessly → Use: smoothly, easily, without issues
 **What it does**: Forces AI to ground abstract concepts in concrete, specific examples.
 
 **How to apply**:
+
 ```
 Requirements:
 - Include at least [N] specific examples with real details
@@ -132,6 +139,7 @@ Requirements:
 ```
 
 **Example**:
+
 ```
 Example requirements:
 - Minimum 3 specific examples per major section
@@ -153,6 +161,7 @@ Example requirements:
 **What it does**: Shifts AI from formal academic register to approachable conversational style.
 
 **How to apply**:
+
 ```
 Tone requirements:
 - Use "you" to address reader directly
@@ -173,6 +182,7 @@ Tone requirements:
 **What it does**: Adds appropriate emotional resonance and acknowledges reader experience.
 
 **How to apply**:
+
 ```
 Emotional engagement:
 - Express genuine enthusiasm for interesting solutions: "This is elegant..."
@@ -196,6 +206,7 @@ Emotional engagement:
 **What it does**: Controls randomness/creativity in AI output, balancing coherence with variation.
 
 **Recommended settings by content type**:
+
 - **Academic/Technical Documentation**: 0.3-0.5 (conservative)
 - **Tutorials/How-to Guides**: 0.6-0.8 (balanced)
 - **Blog Posts/Articles**: 0.7-0.9 (creative)
@@ -213,6 +224,7 @@ Emotional engagement:
 **What it does**: Limits token selection to most probable options while adapting to context.
 
 **Recommended settings**:
+
 - **General use**: 0.9-0.95 (balanced)
 - **High precision needed**: 0.8-0.85 (conservative)
 - **Creative content**: 0.95-1.0 (exploratory)
@@ -229,6 +241,7 @@ Emotional engagement:
 **What it does**: Generates content in multiple passes, improving with each iteration.
 
 **How to apply**:
+
 ```
 Pass 1: Generate initial draft with standard settings
 Pass 2: Prompt AI to "Revise for more conversational tone and varied sentence structure"
@@ -249,6 +262,7 @@ Pass 3: Prompt AI to "Add specific examples and remove any AI-typical vocabulary
 **What it does**: Manually restructures sentences to create natural rhythm and eliminate uniform patterns.
 
 **How to apply**:
+
 1. Measure sentence lengths in problematic paragraphs
 2. Identify uniform patterns (e.g., all 15-22 words)
 3. Deliberately restructure:
@@ -258,6 +272,7 @@ Pass 3: Prompt AI to "Add specific examples and remove any AI-typical vocabulary
    - Create rhythm: short-medium-long-short pattern
 
 **Example transformation**:
+
 ```
 BEFORE (uniform):
 Docker uses containers. Containers isolate applications. This isolation
@@ -280,11 +295,13 @@ reliable.
 **What it does**: Systematically replaces characteristic AI words with natural alternatives.
 
 **How to apply**:
+
 1. Search document for AI-typical words (use find function)
 2. For each occurrence, choose contextually appropriate replacement
 3. Don't replace mechanically—consider what sounds most natural
 
 **Quick replacement guide**:
+
 - delve → explore, examine, investigate, look at
 - robust → reliable, effective, solid, powerful
 - leverage → use, employ, apply, take advantage of
@@ -304,6 +321,7 @@ reliable.
 **What it does**: Replaces formulaic AI transitions with natural conversational flow.
 
 **How to apply**:
+
 1. Search for formulaic transitions:
    - "Furthermore," "Moreover," "Additionally," "In addition,"
    - "It is important to note that"
@@ -317,6 +335,7 @@ reliable.
    - It is important to note that → Note that, Remember, [remove]
 
 **Example**:
+
 ```
 BEFORE:
 Docker improves consistency. Furthermore, it enhances portability.
@@ -340,6 +359,7 @@ And deployment? Much simpler.
 
 **How to apply**:
 Search and replace (where appropriate):
+
 - it is → it's
 - you are → you're
 - we are → we're
@@ -350,6 +370,7 @@ Search and replace (where appropriate):
 - should not → shouldn't
 
 **Guidelines**:
+
 - More contractions = more conversational
 - Fewer contractions = more formal
 - Don't contract in code examples or technical specifications
@@ -365,6 +386,7 @@ Search and replace (where appropriate):
 **What it does**: Adds authentic authorial perspective and specific examples.
 
 **How to apply**:
+
 1. Identify abstract statements that need grounding
 2. Add strategic perspective markers:
    - "In my experience..."
@@ -389,11 +411,13 @@ Search and replace (where appropriate):
 **What it does**: Transforms rigid numbered/bulleted lists into flowing narrative.
 
 **How to apply**:
+
 1. Identify lists that could be prose
 2. Integrate points into flowing sentences
 3. Use natural connectors instead of numbers
 
 **Example**:
+
 ```
 BEFORE (list):
 Docker provides three benefits:
@@ -418,6 +442,7 @@ dramatically simpler since you're shipping a complete environment.
 **What it does**: Catches unnatural phrasing that looks OK but sounds robotic.
 
 **How to apply**:
+
 1. Read 2-3 representative paragraphs aloud
 2. Note anywhere you stumble or it sounds awkward
 3. Rewrite those sections for natural speech rhythm
@@ -437,11 +462,13 @@ dramatically simpler since you're shipping a complete environment.
 **What it does**: Ensures technical precision while humanizing surrounding prose.
 
 **How to apply**:
+
 1. Identify technical terms that must remain exact
 2. Flag these as "untouchable" during humanization
 3. Humanize only the explanatory text around them
 
 **Example**:
+
 ```
 Keep precise: "useState hook", "async/await", "Docker Compose"
 Humanize: explanations, transitions, examples around these terms
@@ -460,24 +487,28 @@ Humanize: explanations, transitions, examples around these terms
 **Domain-specific guidelines**:
 
 **Academic/Research**:
+
 - Maintain scholarly register while reducing formality slightly
 - Keep citations formal
 - Humanize primarily in introduction/discussion sections
 - Preserve methodology precision
 
 **API Documentation**:
+
 - Keep technical specs exact
 - Humanize examples and "Getting Started" sections
 - Maintain consistent parameter descriptions
 - Add conversational notes/tips
 
 **Tutorials/How-To**:
+
 - Maximum humanization appropriate
 - Strong conversational tone
 - Personal examples encouraged
 - Acknowledgment of difficulties welcomed
 
 **Business/Marketing**:
+
 - Balance professionalism with approachability
 - Can be most conversational
 - Personal voice highly appropriate
@@ -489,30 +520,30 @@ Humanize: explanations, transitions, examples around these terms
 
 ### Highest ROI (Do First)
 
-| Technique | Effort | Impact | When to Use |
-|-----------|--------|--------|-------------|
-| Sentence variation editing | Medium | Very High | Always—most detectable pattern |
-| AI vocabulary replacement | Low | High | Always—quick wins |
-| Transition smoothing | Low | High | When formulaic patterns present |
-| Burstiness prompting (pre-gen) | Low | Very High | Before generation |
+| Technique                      | Effort | Impact    | When to Use                     |
+| ------------------------------ | ------ | --------- | ------------------------------- |
+| Sentence variation editing     | Medium | Very High | Always—most detectable pattern  |
+| AI vocabulary replacement      | Low    | High      | Always—quick wins               |
+| Transition smoothing           | Low    | High      | When formulaic patterns present |
+| Burstiness prompting (pre-gen) | Low    | Very High | Before generation               |
 
 ### Good ROI (Do Second)
 
-| Technique | Effort | Impact | When to Use |
-|-----------|--------|--------|-------------|
-| Personal voice injection | Medium | High | When authenticity critical |
-| Persona framework (pre-gen) | Low | High | Before generation |
-| Contraction introduction | Low | Medium-High | Conversational content |
-| Example-rich prompting (pre-gen) | Low | High | Before generation |
+| Technique                        | Effort | Impact      | When to Use                |
+| -------------------------------- | ------ | ----------- | -------------------------- |
+| Personal voice injection         | Medium | High        | When authenticity critical |
+| Persona framework (pre-gen)      | Low    | High        | Before generation          |
+| Contraction introduction         | Low    | Medium-High | Conversational content     |
+| Example-rich prompting (pre-gen) | Low    | High        | Before generation          |
 
 ### Situational Use
 
-| Technique | Effort | Impact | When to Use |
-|-----------|--------|--------|-------------|
-| List-to-prose conversion | Medium | Medium | When lists excessive |
-| Read-aloud editing | Medium | Medium-High | Final quality check |
-| Temperature optimization | Very Low | Medium | During generation |
-| Iterative refinement | High | High | When quality justifies time |
+| Technique                | Effort   | Impact      | When to Use                 |
+| ------------------------ | -------- | ----------- | --------------------------- |
+| List-to-prose conversion | Medium   | Medium      | When lists excessive        |
+| Read-aloud editing       | Medium   | Medium-High | Final quality check         |
+| Temperature optimization | Very Low | Medium      | During generation           |
+| Iterative refinement     | High     | High        | When quality justifies time |
 
 ---
 
@@ -521,6 +552,7 @@ Humanize: explanations, transitions, examples around these terms
 ### For Time-Constrained Scenarios (15-minute humanization)
 
 **Apply in order**:
+
 1. AI vocabulary replacement (5 min)
 2. Most obvious sentence variation fixes (5 min)
 3. Transition smoothing (3 min)
@@ -533,6 +565,7 @@ Humanize: explanations, transitions, examples around these terms
 ### For Standard Quality (30-45 minute humanization)
 
 **Apply in order**:
+
 1. Full sentence variation editing (15 min)
 2. AI vocabulary replacement (10 min)
 3. Transition smoothing (5 min)
@@ -546,6 +579,7 @@ Humanize: explanations, transitions, examples around these terms
 ### For Premium Quality (60+ minute humanization)
 
 **Apply all techniques**:
+
 1. Sentence variation editing (20 min)
 2. AI vocabulary replacement (15 min)
 3. Transition smoothing (10 min)
@@ -573,26 +607,31 @@ Humanize: explanations, transitions, examples around these terms
 ## Success Metrics
 
 ### Perplexity (Word Choice Unpredictability)
+
 - **Target**: Higher is better
 - **Measure**: AI vocabulary count (lower is better)
 - **Goal**: <3 AI-typical words per 1000 words
 
 ### Burstiness (Sentence Variation)
+
 - **Target**: High variation in sentence length
 - **Measure**: Standard deviation of sentence lengths
 - **Goal**: Mix of 5-10, 15-25, and 30-45 word sentences
 
 ### Readability
+
 - **Target**: Appropriate to audience
 - **Measure**: Flesch Reading Ease
 - **Goal**: 60-70 for general audience, 50-60 for technical
 
 ### Voice Consistency
+
 - **Target**: Recognizable authorial presence
 - **Measure**: Personal markers per section
 - **Goal**: 2-4 voice markers per 500 words
 
 ### Technical Accuracy
+
 - **Target**: 100% preservation
 - **Measure**: Fact-checking, code testing
 - **Goal**: Zero technical errors introduced
@@ -604,6 +643,7 @@ Humanize: explanations, transitions, examples around these terms
 ### Learning from Results
 
 After each humanization effort:
+
 1. **Document what worked**: Which techniques had biggest impact?
 2. **Note time spent**: Which techniques justified their effort?
 3. **Record patterns**: What AI patterns appear most frequently?

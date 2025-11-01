@@ -30,17 +30,20 @@ Research shows that AI models (especially ChatGPT, Claude, and others) exhibit d
 **Research Finding**: ChatGPT uses aggressive bolding (10x more than humans)
 
 **Metrics Added**:
+
 - `bold_per_1k_words` - Bold density (Human: 1-5, AI: 10-50 per 1k words)
 - `italic_per_1k_words` - Italic density
 - `formatting_consistency_score` - Mechanical consistency (0-1, higher = more AI-like)
 
 **Scoring**:
+
 - HIGH: <5 bold per 1k, varied usage
 - MEDIUM: 5-10 per 1k
 - LOW: 10-20 per 1k
 - VERY LOW: >20 per 1k (strong AI marker)
 
 **Detection Method**:
+
 - Counts markdown bold/italic instances
 - Analyzes distribution across paragraphs
 - Detects mechanical spacing patterns
@@ -52,6 +55,7 @@ Research shows that AI models (especially ChatGPT, Claude, and others) exhibit d
 **Research Finding**: AI uses lists in 78% of responses, with heavy bias toward unordered lists (61% unordered, only 12% ordered)
 
 **Metrics Added**:
+
 - `total_list_items` - Total items in all lists
 - `ordered_list_items` - Items in numbered lists
 - `unordered_list_items` - Items in bullet lists
@@ -60,12 +64,14 @@ Research shows that AI models (especially ChatGPT, Claude, and others) exhibit d
 - `list_item_length_variance` - Uniformity of item lengths
 
 **Scoring**:
+
 - HIGH: Strategic list use, balanced ordered/unordered
 - MEDIUM: Moderate list usage
 - LOW: Heavy list usage, AI-typical ratios
 - VERY LOW: >40% content in lists, 0.15-0.25 O/U ratio
 
 **Detection Method**:
+
 - Regex detection of ordered (`1. `, `2) `) and unordered (`- `, `* `, `+ `) lists
 - Calculates word count in lists vs paragraphs
 - Analyzes list item length uniformity
@@ -77,6 +83,7 @@ Research shows that AI models (especially ChatGPT, Claude, and others) exhibit d
 **Research Finding**: Em-dash cascading is a **powerful AI detection signal** - AI shows declining frequency across paragraphs
 
 **Metrics Added**:
+
 - `em_dash_positions` - Paragraph positions of each em-dash
 - `em_dash_cascading_score` - Declining pattern detection (0-1)
 - `oxford_comma_count` - "a, b, and c" pattern
@@ -86,12 +93,14 @@ Research shows that AI models (especially ChatGPT, Claude, and others) exhibit d
 - `semicolon_per_1k_words` - Semicolon density
 
 **Scoring**:
+
 - HIGH: No cascading, varied comma usage
 - MEDIUM: Some patterns
 - LOW: Moderate cascading (0.5-0.7)
 - VERY LOW: Strong cascading (>0.7), always Oxford comma
 
 **Detection Method**:
+
 - Tracks em-dash frequency per paragraph
 - Detects front-loaded pattern (high in early paragraphs, declining later)
 - Regex patterns for Oxford vs non-Oxford comma usage
@@ -104,6 +113,7 @@ Research shows that AI models (especially ChatGPT, Claude, and others) exhibit d
 **Research Finding**: Humans vary paragraph length for pacing/emphasis; AI produces uniform paragraphs
 
 **Metrics Added**:
+
 - `paragraph_length_variance` - Variance in paragraph word counts
 - `paragraph_uniformity_score` - Coefficient of variation (0-1)
 - `blank_lines_count` - Total blank lines
@@ -111,12 +121,14 @@ Research shows that AI models (especially ChatGPT, Claude, and others) exhibit d
 - `text_density` - Characters per non-blank line
 
 **Scoring**:
+
 - HIGH: High variance (< 0.3 uniformity), varied paragraph lengths
 - MEDIUM: Moderate variance (0.3-0.5)
 - LOW: Low variance (0.5-0.7)
 - VERY LOW: Uniform paragraphs (>0.7 uniformity)
 
 **Detection Method**:
+
 - Calculates paragraph word counts
 - Computes coefficient of variation (CV = σ/μ)
 - Analyzes blank line spacing patterns
@@ -128,18 +140,21 @@ Research shows that AI models (especially ChatGPT, Claude, and others) exhibit d
 **Research Finding**: AI always specifies language, maintains uniform comment density
 
 **Metrics Added**:
+
 - `code_block_count` - Total code blocks
 - `code_blocks_with_lang` - Blocks with language specification
 - `code_lang_consistency` - 1.0 = always specified (AI-like)
 - `avg_code_comment_density` - Average comments per line
 
 **Scoring**:
+
 - HIGH: Varied language specification, varied comment density
 - MEDIUM: Mostly specified
 - LOW: High consistency (>0.8)
 - VERY LOW: Perfect consistency (1.0) with 3+ blocks
 
 **Detection Method**:
+
 - Regex extraction of markdown code blocks (` ``` `)
 - Language specification detection
 - Comment line counting (handles `//`, `#`, `/*`)
@@ -151,16 +166,19 @@ Research shows that AI models (especially ChatGPT, Claude, and others) exhibit d
 **Research Finding**: AI never skips heading levels (strict H1→H2→H3); humans occasionally do
 
 **Metrics Added**:
+
 - `heading_hierarchy_skips` - Count of skipped levels
 - `heading_strict_adherence` - 1.0 = never skips (AI-like)
 - `heading_length_variance` - Variation in heading word counts
 
 **Scoring**:
+
 - HIGH: Some skips or flexibility (0.7-0.9 adherence)
 - MEDIUM: Few skips (0.9-1.0 adherence)
 - LOW: Perfect adherence with 5+ headings (AI marker)
 
 **Detection Method**:
+
 - Parses markdown headings (`#`, `##`, `###`)
 - Detects level jumps (e.g., H1 → H3 without H2)
 - Calculates adherence score (1.0 - skips/headings)
@@ -174,6 +192,7 @@ The new structural dimensions are integrated into the overall humanization score
 ### Updated Weighting (Total: 100%)
 
 **Core Dimensions** (adjusted from original):
+
 - Perplexity: 15% (was 18%)
 - Burstiness: 18% (was 22%)
 - Structure: 15% (was 18%)
@@ -182,10 +201,12 @@ The new structural dimensions are integrated into the overall humanization score
 - Formatting: 4% (was 5%)
 
 **Enhanced NLP Dimensions** (optional):
+
 - Syntactic: 4% (was 5%)
 - Sentiment: 4% (was 5%)
 
 **NEW: Structural Dimensions** (always present):
+
 - Bold/Italic Patterns: 5% - **High value** (ChatGPT bold overuse)
 - List Usage: 4% - **High value** (78% of AI responses)
 - Punctuation Clustering: 5% - **Very high value** (em-dash cascading)
@@ -202,6 +223,7 @@ The new structural dimensions are integrated into the overall humanization score
 ### Test File: Docker Container Management (165 → 265 words)
 
 #### BEFORE Humanization:
+
 ```
 Bold/Italic Patterns:       MEDIUM    (Bold: 0.0/1k, Consistency: 1.00)
 List Usage:                 HIGH      (Items: 0, Ratio O/U: 0.00)
@@ -213,6 +235,7 @@ OVERALL: SUBSTANTIAL humanization required
 ```
 
 #### AFTER Humanization:
+
 ```
 Bold/Italic Patterns:       MEDIUM    (Bold: 0.0/1k, Consistency: 1.00)
 List Usage:                 HIGH      (Items: 0, Ratio O/U: 0.00)
@@ -224,6 +247,7 @@ OVERALL: LIGHT humanization recommended ✅
 ```
 
 **Key Finding**: While our test files didn't exhibit heavy bold usage or list patterns (because they were relatively short technical examples), the framework successfully:
+
 - Detected structural patterns
 - Scored them appropriately
 - Integrated them into overall assessment
@@ -234,17 +258,20 @@ OVERALL: LIGHT humanization recommended ✅
 ## Usage Examples
 
 ### Basic Analysis (All Features Automatically Enabled)
+
 ```bash
 source nlp-env/bin/activate
 python analyze_ai_patterns.py your-file.md
 ```
 
 ### JSON Output (Programmatic Access)
+
 ```bash
 python analyze_ai_patterns.py your-file.md --format json
 ```
 
 **New Fields Available**:
+
 ```json
 {
   "bold_per_1k_words": 15.3,
@@ -267,12 +294,14 @@ python analyze_ai_patterns.py your-file.md --format json
 ## Research-Backed Detection Thresholds
 
 ### Bold/Italic Formatting
+
 - **Human baseline**: 1-5 bold per 1k words
 - **AI typical**: 10-50 bold per 1k words
 - **ChatGPT**: Can exceed 50 per 1k words
 - **Detection threshold**: >10 per 1k = AI marker
 
 ### List Usage
+
 - **Human**: Strategic use, semantic appropriateness
 - **AI typical**: 78% of responses contain lists
 - **Ordered/Unordered ratio**:
@@ -281,18 +310,21 @@ python analyze_ai_patterns.py your-file.md --format json
 - **Detection threshold**: >25% content in lists + 0.15-0.25 ratio = AI marker
 
 ### Em-Dash Cascading
+
 - **Human**: Consistent or context-driven usage
 - **AI typical**: High in early paragraphs, declining later
 - **Pattern**: Paragraph 1-2: 2-3 dashes, Paragraph 3+: 0-1 dashes
 - **Detection threshold**: >0.7 cascading score = strong AI marker
 
 ### Oxford Comma
+
 - **Human**: Varies by style guide, personal preference, discipline
 - **AI typical**: Strongly prefers Oxford comma (trained on formal texts)
 - **Consistency**: AI approaches 1.0, humans vary 0.4-0.8
 - **Detection threshold**: >0.9 consistency with 3+ instances = AI marker
 
 ### Paragraph Uniformity
+
 - **Human**: High variance (short for emphasis, long for detail)
 - **AI typical**: Uniform lengths across similar content types
 - **Uniformity score**:
@@ -301,6 +333,7 @@ python analyze_ai_patterns.py your-file.md --format json
 - **Detection threshold**: >0.7 uniformity = AI marker
 
 ### Heading Hierarchy
+
 - **Human**: Occasionally skips levels for organizational needs
 - **AI typical**: Perfect adherence (never skips H1→H2→H3)
 - **Adherence score**:
@@ -313,15 +346,19 @@ python analyze_ai_patterns.py your-file.md --format json
 ## Implementation Notes
 
 ### Graceful Degradation
+
 All structural analysis features work **without any dependencies** - they use only Python stdlib (re, statistics). This is unlike the enhanced NLP features (NLTK, spaCy, etc.) which are optional.
 
 ### Performance
+
 - **Analysis time**: <1 second for typical documents (1000-5000 words)
 - **Memory**: Minimal (no large models loaded)
 - **Compatibility**: Works with Python 3.7+
 
 ### Accuracy
+
 Based on research:
+
 - **Bold/Italic patterns**: 90%+ accuracy for ChatGPT detection
 - **List usage**: 85%+ accuracy when combined with ratios
 - **Em-dash cascading**: 95%+ accuracy (strongest single marker)
@@ -330,6 +367,7 @@ Based on research:
 - **Heading hierarchy**: 85%+ accuracy (5+ headings needed)
 
 ### False Positives
+
 - **Technical documentation** may legitimately have high list usage
 - **Academic writing** may prefer Oxford comma by style guide
 - **Well-edited content** may have perfect heading hierarchies
@@ -353,6 +391,7 @@ Potential additions based on ongoing research:
 ## References
 
 Research sources:
+
 1. Perplexity AI deep research (November 2025)
 2. GPTZero methodology - Perplexity & burstiness
 3. Originality.AI - Pattern recognition
@@ -361,6 +400,7 @@ Research sources:
 6. MIT/Northeastern research on syntactic templates
 
 Data files used:
+
 - `data/ai-detection-patterns.md`
 - `data/formatting-humanization-patterns.md`
 - `data/heading-humanization-patterns.md`

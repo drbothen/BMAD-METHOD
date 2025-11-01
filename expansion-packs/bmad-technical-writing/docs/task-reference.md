@@ -370,10 +370,12 @@ This comprehensive reference documents all 68 tasks organized by phase, with:
 **When to Use**: After drafting with AI assistance (expand-outline-to-draft, ChatGPT, Claude, etc.), before technical review
 
 **Prerequisites**:
+
 - Chapter draft complete (AI-assisted or AI-generated)
 - generative-ai-compliance-checklist.md executed (baseline AI patterns identified)
 
 **Outputs**:
+
 - `chapter-{n}-humanized.md` with AI patterns removed
 - Change log documenting all humanization changes
 - humanization-checklist.md validation report with <20% AI patterns remaining

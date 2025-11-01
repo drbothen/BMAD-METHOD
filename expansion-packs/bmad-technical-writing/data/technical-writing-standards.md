@@ -557,6 +557,7 @@ Understanding page count metrics is essential for planning, estimating, and trac
 **Standard Estimation: 500 words per page**
 
 Use this baseline when:
+
 - Planning book outlines and chapter structures
 - Estimating manuscript length for proposals
 - Setting writing targets and milestones
@@ -575,6 +576,7 @@ Example:
 **Realistic Published: 300-400 words per page**
 
 Actual published technical books typically contain:
+
 - Body text: 250-350 words per page
 - Code examples: Reduce word count per page
 - Diagrams and screenshots: Reduce word count per page
@@ -594,24 +596,28 @@ Example Published Chapter:
 Adjust estimates based on content type:
 
 **Code-Heavy Chapters:**
+
 - Tutorials with extensive code examples
 - API reference chapters
 - Implementation guides
 - Estimate: 250-350 words per page
 
 **Concept-Heavy Chapters:**
+
 - Theory and architecture
 - Planning and design chapters
 - Conceptual overviews
 - Estimate: 400-500 words per page
 
 **Balanced Chapters:**
+
 - Mix of explanation and code
 - Standard tutorial format
 - Most technical book chapters
 - Estimate: 350-450 words per page
 
 **Diagram-Heavy Chapters:**
+
 - Architecture diagrams
 - Workflow visualizations
 - Annotated screenshots
@@ -631,6 +637,7 @@ Token estimation guidelines:
 ```
 
 **Use cases:**
+
 - Calculating when to shard large chapters (shard-large-chapter.md)
 - Estimating context window usage for AI tools
 - Planning document processing batches

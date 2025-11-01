@@ -379,6 +379,7 @@ cat {{file_parent}}/.score-history/{{filename}}.history.json
 - Technical accuracy verification report
 - Read-aloud test notes
 - Side-by-side before/after comparison
+- Structured optimization summary using `create-doc.md` task with `optimization-summary-tmpl.yaml` template
 
 ## Success Criteria
 

@@ -26,6 +26,7 @@ I've just finished comprehensive deep research on AI writing patterns, detection
 ### Key Deliverables Created:
 
 **Comprehensive Report Includes:**
+
 - Top 10 AI Writing "Tells" with examples
 - Top 10 Naturalization Techniques (evidence-based)
 - 12 Detection Methodologies explained
@@ -37,6 +38,7 @@ I've just finished comprehensive deep research on AI writing patterns, detection
 - Challenges, limitations, and future directions
 
 **Report Structure:**
+
 1. AI Writing Patterns and Signatures
 2. Detection Methodologies
 3. Characteristics of Natural Human Writing
@@ -57,6 +59,7 @@ I'm working with **Mary (Business Analyst)** from the BMAD-METHOD™ framework. 
 Please help me with the next phase of this project. Options include:
 
 ### Option A: Create Additional Artifacts
+
 - Executive summary (2-3 pages)
 - Training materials or presentation slides
 - Domain-specific quick guides
@@ -64,28 +67,33 @@ Please help me with the next phase of this project. Options include:
 - Integration with BMAD framework documentation
 
 ### Option B: Apply the Research
+
 - Review specific writing samples using the research findings
 - Create detection/naturalization tools or scripts
 - Develop writer training programs
 - Build assessment frameworks
 
 ### Option C: Extend the Research
+
 - Investigate specific domains more deeply
 - Create industry-specific applications
 - Develop testing methodologies
 - Build case studies
 
 ### Option D: Something Else
+
 - Tell me what you'd like to do with this research
 
 ## Files to Review
 
 Before we begin, please review this file to understand what we've created:
+
 - `/Users/jmagady/Dev/BMAD-METHOD/docs/ai-writing-research-comprehensive-report.md`
 
 ## Quick Summary of Key Findings
 
 **Top AI Writing Red Flags:**
+
 1. Overused vocabulary: "delve," "underscore," "harness," "leverage," "facilitate"
 2. Excessive hedging: "arguably," "generally speaking," "tends to"
 3. Low burstiness: uniform sentence lengths
@@ -93,6 +101,7 @@ Before we begin, please review this file to understand what we've created:
 5. Generic emotional statements without specific details
 
 **Top Naturalization Quick Fixes:**
+
 1. Read aloud (catches 80% of issues)
 2. Vary sentence structure (mix 5-10 word with 25-40 word sentences)
 3. Add personal anecdotes with specific details

@@ -9,6 +9,7 @@ This document provides evidence-based guidance for identifying and correcting AI
 **Target Audience**: Technical editors, content humanizers, book authors using AI assistance
 
 **Use Cases**:
+
 - Post-generation editing of AI-assisted book chapters
 - Pre-generation prompt engineering for natural heading structures
 - Quality assurance for technical documentation
@@ -23,6 +24,7 @@ This document provides evidence-based guidance for identifying and correcting AI
 AI writing systems demonstrate predictable patterns in heading usage that differ significantly from human technical writers:
 
 **AI Heading Characteristics (Red Flags)**:
+
 - Excessive hierarchy depth: 4-6 levels vs human 3-4 levels
 - Mechanical parallelism: All headings at same level use identical grammatical structure
 - Uniform heading density: Every section subdivided regardless of complexity
@@ -30,6 +32,7 @@ AI writing systems demonstrate predictable patterns in heading usage that differ
 - Structural rigidity: Same heading pattern applied to all content types
 
 **Human Heading Characteristics (Green Flags)**:
+
 - Optimal density: 2-4 headings per page in technical documentation
 - Contextual flexibility: More headings for complex sections, fewer for simple
 - Natural variation: Heading frequency varies based on content needs
@@ -38,13 +41,13 @@ AI writing systems demonstrate predictable patterns in heading usage that differ
 
 ### Key Targets for Humanization
 
-| Element | AI Pattern | Human Target |
-|---------|-----------|--------------|
-| Hierarchy Depth | 4-6 levels | 3-4 levels maximum |
-| Heading Density | Uniform across sections | 2-4 headings/page, variable |
-| Parallelism | Mechanical (all H2s identical structure) | Natural variation |
-| Heading Length | Verbose (10+ words) | Concise (3-7 words typical) |
-| Distribution | Predictable rhythm | Contextual variation |
+| Element         | AI Pattern                               | Human Target                |
+| --------------- | ---------------------------------------- | --------------------------- |
+| Hierarchy Depth | 4-6 levels                               | 3-4 levels maximum          |
+| Heading Density | Uniform across sections                  | 2-4 headings/page, variable |
+| Parallelism     | Mechanical (all H2s identical structure) | Natural variation           |
+| Heading Length  | Verbose (10+ words)                      | Concise (3-7 words typical) |
+| Distribution    | Predictable rhythm                       | Contextual variation        |
 
 ---
 
@@ -53,6 +56,7 @@ AI writing systems demonstrate predictable patterns in heading usage that differ
 ### Study Context
 
 This guidance synthesizes research on:
+
 - Human vs AI heading patterns in technical documentation
 - Book chapter heading best practices (O'Reilly, Packt, Manning standards)
 - Cognitive science of heading hierarchies and reader navigation
@@ -67,17 +71,20 @@ This guidance synthesizes research on:
 AI systems frequently create 4-6 heading levels within a single chapter, regardless of chapter length or complexity.
 
 **Human Practice**:
+
 - 15-20 page chapters: 3 levels (H1, H2, H3) maximum
 - 5-10 page chapters: 2 levels (H1, H2) typical
 - 30+ page chapters: 4 levels acceptable but rare
 
 **Why It Matters**:
+
 - Deep hierarchies overwhelm readers with structural complexity
 - Navigation becomes difficult with excessive nesting
 - Table of contents becomes cluttered and unhelpful
 - Cognitive load increases as readers track multiple levels
 
 **Humanization Strategy**:
+
 - Limit chapters to 3 heading levels (H1 chapter title, H2 major sections, H3 subsections)
 - Use 4th level (H4) only for truly complex chapters with clear justification
 - Flatten hierarchy by promoting content to body text or merging subsections
@@ -88,22 +95,26 @@ AI systems frequently create 4-6 heading levels within a single chapter, regardl
 All headings at the same level follow identical grammatical structure.
 
 Examples:
+
 - All H2s: "Understanding X", "Understanding Y", "Understanding Z"
 - All H3s: "How to Configure X", "How to Configure Y", "How to Configure Z"
 - All H2s: "X Overview", "Y Overview", "Z Overview"
 
 **Human Practice**:
+
 - Natural variation in heading structure based on content type
 - Descriptive headings that reflect actual content purpose
 - Mix of structures: imperatives ("Configure the Server"), gerunds ("Configuring Advanced Options"), nouns ("Configuration Best Practices"), questions ("What Is Configuration?")
 
 **Why It Matters**:
+
 - Mechanical parallelism signals automated generation
 - Reduces heading informativeness (all headings sound the same)
 - Creates monotonous reading experience
 - Fails to highlight different content types appropriately
 
 **Humanization Strategy**:
+
 - Vary heading structures intentionally across the chapter
 - Match heading structure to content purpose (imperative for tasks, noun phrase for concepts)
 - Break parallelism deliberately where it creates monotony
@@ -115,6 +126,7 @@ Examples:
 Same number of subheadings under every major section, regardless of content complexity.
 
 Example (AI-generated):
+
 ```
 ## Section A (simple concept)
 ### Subsection A1
@@ -128,18 +140,21 @@ Example (AI-generated):
 ```
 
 **Human Practice**:
+
 - Heading density reflects conceptual complexity
 - Simple sections: Fewer headings, more continuous prose
 - Complex sections: More headings for navigation and cognitive breaks
 - Natural asymmetry: 0-1 subsections in simple sections, 4-6 in complex sections
 
 **Why It Matters**:
+
 - Uniform density creates artificial structure
 - Over-subdivides simple content (making it harder to read)
 - Under-subdivides complex content (reducing navigability)
 - Signals mechanical generation rather than thoughtful organization
 
 **Humanization Strategy**:
+
 - Create **argumentative asymmetry**: More headings where content is difficult
 - Simple sections: Often no H3 subheadings needed
 - Complex sections: Use H3 liberally for reader support
@@ -151,27 +166,32 @@ Example (AI-generated):
 Headings contain complete thoughts or summarize entire section content.
 
 Examples:
+
 - "Understanding the Fundamental Differences Between Synchronous and Asynchronous Processing Models"
 - "How to Configure Your Development Environment for Optimal Performance and Debugging Capabilities"
 - "Best Practices for Managing State in Complex React Applications with Multiple Data Sources"
 
 **Human Practice**:
+
 - Concise headings: 3-7 words typical for H2/H3
 - Headings preview, don't summarize
 - Specific but not exhaustive
 
 Human equivalents:
+
 - "Synchronous vs Asynchronous Processing"
 - "Development Environment Setup"
 - "Managing State in React"
 
 **Why It Matters**:
+
 - Long headings reduce scannability
 - Information density in headings signals AI generation
 - Readers use headings for navigation, not complete information
 - Table of contents becomes unwieldy with verbose headings
 
 **Humanization Strategy**:
+
 - Target 3-7 words for H2/H3 headings
 - Remove redundant words ("Understanding", "How to", "A Guide to")
 - Use specificity, not verbosity, for clarity
@@ -183,17 +203,20 @@ Human equivalents:
 Same heading structure applied to all content types (conceptual, procedural, reference).
 
 **Human Practice**:
+
 - Conceptual sections: Fewer headings, flowing narrative
 - Procedural sections: More headings for step separation
 - Reference sections: Structured headings for lookup
 - Tutorial sections: Task-oriented headings
 
 **Why It Matters**:
+
 - Different content types serve different reader needs
 - One-size-fits-all structure reduces effectiveness
 - Natural writing adapts structure to purpose
 
 **Humanization Strategy**:
+
 - Match heading density to content type
 - Tutorials: More headings (task boundaries)
 - Explanations: Fewer headings (flow)
@@ -208,6 +231,7 @@ Same heading structure applied to all content types (conceptual, procedural, ref
 #### For 15-20 Page Chapters (Typical Technical Book Length)
 
 **Recommended Structure**:
+
 ```
 # Chapter Title (H1)
   ## Major Section 1 (H2)
@@ -222,12 +246,14 @@ Same heading structure applied to all content types (conceptual, procedural, ref
 ```
 
 **Guidelines**:
+
 - **H1**: Chapter title only (one per chapter)
 - **H2**: Major sections (4-7 per chapter typical)
 - **H3**: Subsections where needed (0-6 per H2 section)
 - **H4**: Rarely needed; use only for truly complex sections
 
 **Heading Density**:
+
 - Target: 2-4 headings per page on average
 - Simple chapters: 1-2 headings per page acceptable
 - Complex chapters: 5-6 headings per page acceptable
@@ -236,12 +262,14 @@ Same heading structure applied to all content types (conceptual, procedural, ref
 #### Never Skip Heading Levels
 
 **Anti-Pattern** (AI-generated):
+
 ```
 # Chapter Title (H1)
   ### Subsection (H3) ❌ Skipped H2
 ```
 
 **Correct Pattern**:
+
 ```
 # Chapter Title (H1)
   ## Section (H2)
@@ -253,6 +281,7 @@ Same heading structure applied to all content types (conceptual, procedural, ref
 #### Avoid Lone Headings
 
 **Anti-Pattern**:
+
 ```
 ## Major Section
   ### Only Subsection ❌ Lone H3
@@ -260,6 +289,7 @@ Same heading structure applied to all content types (conceptual, procedural, ref
 ```
 
 **Fix Options**:
+
 1. Add sibling subsection (if content warrants)
 2. Remove heading and integrate into parent section
 3. Promote content to body text under H2
@@ -269,6 +299,7 @@ Same heading structure applied to all content types (conceptual, procedural, ref
 #### Avoid Stacked Headings
 
 **Anti-Pattern**:
+
 ```
 ## Configuration
 ### Advanced Settings ❌ No body text between
@@ -276,6 +307,7 @@ Same heading structure applied to all content types (conceptual, procedural, ref
 ```
 
 **Correct Pattern**:
+
 ```
 ## Configuration
 Brief introduction to configuration section.
@@ -293,12 +325,14 @@ Description of advanced settings section.
 #### Descriptive vs Functional Headings
 
 **Functional Headings** (less effective):
+
 - "Introduction"
 - "Overview"
 - "Summary"
 - "Conclusion"
 
 **Descriptive Headings** (preferred):
+
 - "Getting Started with Docker Containers"
 - "Authentication Flow in OAuth 2.0"
 - "Performance Optimization Strategies"
@@ -308,28 +342,31 @@ Description of advanced settings section.
 
 #### Heading Length Guidelines
 
-| Heading Level | Typical Length | Maximum Length |
-|--------------|----------------|----------------|
-| H1 (Chapter) | 3-6 words | 10 words |
-| H2 (Section) | 3-5 words | 8 words |
-| H3 (Subsection) | 3-7 words | 10 words |
-| H4 (Rarely used) | 2-5 words | 8 words |
+| Heading Level    | Typical Length | Maximum Length |
+| ---------------- | -------------- | -------------- |
+| H1 (Chapter)     | 3-6 words      | 10 words       |
+| H2 (Section)     | 3-5 words      | 8 words        |
+| H3 (Subsection)  | 3-7 words      | 10 words       |
+| H4 (Rarely used) | 2-5 words      | 8 words        |
 
 **Exceptions**: API reference documentation, technical specifications may use longer headings for precision.
 
 #### Heading Structure Patterns
 
 **Conceptual Content**:
+
 - Noun phrases: "Container Networking"
 - Questions: "What Is a Docker Image?"
 - Gerunds: "Understanding State Management"
 
 **Procedural Content**:
+
 - Imperatives: "Install the CLI"
 - Gerunds: "Installing Dependencies"
 - Task-oriented: "First Deployment"
 
 **Reference Content**:
+
 - Noun phrases: "Configuration Options"
 - API names: "`useEffect` Hook"
 - Structured: "Parameters and Return Values"
@@ -343,26 +380,31 @@ Description of advanced settings section.
 Use this checklist to identify AI-generated heading patterns:
 
 #### Hierarchy Depth
+
 - [ ] **4+ heading levels in a single chapter** (H1, H2, H3, H4+)
 - [ ] **Deep nesting in short chapters** (H4 in 10-page chapter)
 - [ ] **Uniform depth across all sections** (every H2 has H3, every H3 has H4)
 
 #### Mechanical Parallelism
+
 - [ ] **All H2 headings start with same word** ("Understanding X", "Understanding Y", "Understanding Z")
 - [ ] **All H3 headings follow identical grammar** ("How to X", "How to Y", "How to Z")
 - [ ] **Predictable patterns regardless of content type** (same structure for concepts and procedures)
 
 #### Heading Density
+
 - [ ] **Uniform subsection counts** (every H2 has exactly 3 H3s)
 - [ ] **Every section subdivided** (no H2 without H3 subsections)
 - [ ] **Predictable heading rhythm** (heading every 2 paragraphs consistently)
 
 #### Heading Verbosity
+
 - [ ] **Headings exceed 10 words frequently**
 - [ ] **Headings contain complete sentences or thoughts**
 - [ ] **Headings include redundant phrases** ("An Introduction to", "A Guide to", "Everything You Need to Know About")
 
 #### Structural Rigidity
+
 - [ ] **Same heading structure for all content types**
 - [ ] **No variation in heading density across chapter**
 - [ ] **Headings don't adapt to content complexity**
@@ -372,26 +414,31 @@ Use this checklist to identify AI-generated heading patterns:
 Human-generated heading patterns demonstrate:
 
 #### Natural Hierarchy
+
 - [ ] **3 heading levels maximum** in most chapters (H1, H2, H3)
 - [ ] **Appropriate depth for chapter length** (2 levels for short, 3 for typical, 4 for complex)
 - [ ] **No skipped levels** (H1 → H2 → H3, never H1 → H3)
 
 #### Purposeful Variation
+
 - [ ] **Varied heading structures** across the chapter
 - [ ] **Structural adaptation to content type** (more headings for procedures, fewer for concepts)
 - [ ] **Natural parallelism only where comparison is intended**
 
 #### Contextual Density
+
 - [ ] **Asymmetric subsection counts** (some H2s have 0 H3s, others have 4-6)
 - [ ] **Heading density reflects complexity** (more headings for difficult content)
 - [ ] **2-4 headings per page on average** with natural variation
 
 #### Concise Headings
+
 - [ ] **3-7 words typical for H2/H3 headings**
 - [ ] **Descriptive but not exhaustive**
 - [ ] **Scannable in table of contents**
 
 #### Thoughtful Structure
+
 - [ ] **Headings match outline/specification hierarchy**
 - [ ] **Each heading has body text below it** (no stacked headings)
 - [ ] **No lone headings** (each level has sibling)
@@ -405,6 +452,7 @@ Human-generated heading patterns demonstrate:
 **When to Apply**: Chapter has 4+ heading levels
 
 **Process**:
+
 1. Identify deepest heading level (H4, H5, H6)
 2. Evaluate necessity: Does this subdivision serve reader navigation?
 3. Apply one of:
@@ -415,6 +463,7 @@ Human-generated heading patterns demonstrate:
 **Example Transformation**:
 
 **Before (AI-generated, 5 levels)**:
+
 ```
 ## Authentication (H2)
 ### OAuth 2.0 Flow (H3)
@@ -424,6 +473,7 @@ Human-generated heading patterns demonstrate:
 ```
 
 **After (Humanized, 3 levels)**:
+
 ```
 ## Authentication (H2)
 ### OAuth 2.0 Authorization Flow (H3)
@@ -443,6 +493,7 @@ to different application architectures. The two most common are:
 **When to Apply**: All headings at same level use identical structure
 
 **Process**:
+
 1. Identify heading level with mechanical parallelism
 2. Categorize content types (conceptual, procedural, reference)
 3. Rewrite headings to match content purpose
@@ -451,6 +502,7 @@ to different application architectures. The two most common are:
 **Example Transformation**:
 
 **Before (Mechanical Parallelism)**:
+
 ```
 ## Understanding Containers (H2)
 ## Understanding Images (H2)
@@ -459,6 +511,7 @@ to different application architectures. The two most common are:
 ```
 
 **After (Natural Variation)**:
+
 ```
 ## Container Basics (H2)
 ## Working with Images (H2)
@@ -473,6 +526,7 @@ to different application architectures. The two most common are:
 **When to Apply**: All sections have uniform subsection counts
 
 **Process**:
+
 1. Assess complexity of each major section (H2)
 2. Simple sections: Remove subsections or reduce to 1-2
 3. Complex sections: Add subsections for reader support (4-6 acceptable)
@@ -481,6 +535,7 @@ to different application architectures. The two most common are:
 **Example Transformation**:
 
 **Before (Uniform Density)**:
+
 ```
 ## Introduction to Docker (H2)
 ### What Is Docker (H3)
@@ -494,6 +549,7 @@ to different application architectures. The two most common are:
 ```
 
 **After (Argumentative Asymmetry)**:
+
 ```
 ## Introduction to Docker (H2)
 Docker is a containerization platform that packages applications
@@ -515,6 +571,7 @@ with their dependencies... [flows without subsections for simple intro]
 **When to Apply**: Headings exceed 8 words or contain complete thoughts
 
 **Process**:
+
 1. Identify headings over 8 words
 2. Remove redundant phrases ("Understanding", "A Guide to", "How to")
 3. Focus on specific topic, not complete summary
@@ -522,12 +579,12 @@ with their dependencies... [flows without subsections for simple intro]
 
 **Example Transformations**:
 
-| Before (Verbose) | After (Concise) |
-|-----------------|----------------|
-| Understanding the Fundamental Principles of Asynchronous JavaScript Programming | Asynchronous JavaScript Fundamentals |
-| A Comprehensive Guide to Configuring Your Development Environment for Optimal Performance | Development Environment Setup |
-| How to Implement Secure Authentication Using OAuth 2.0 and JSON Web Tokens | Implementing OAuth 2.0 Authentication |
-| Everything You Need to Know About Managing Application State in Modern React Applications | State Management in React |
+| Before (Verbose)                                                                          | After (Concise)                       |
+| ----------------------------------------------------------------------------------------- | ------------------------------------- |
+| Understanding the Fundamental Principles of Asynchronous JavaScript Programming           | Asynchronous JavaScript Fundamentals  |
+| A Comprehensive Guide to Configuring Your Development Environment for Optimal Performance | Development Environment Setup         |
+| How to Implement Secure Authentication Using OAuth 2.0 and JSON Web Tokens                | Implementing OAuth 2.0 Authentication |
+| Everything You Need to Know About Managing Application State in Modern React Applications | State Management in React             |
 
 **Result**: Headings become scannable while retaining specificity.
 
@@ -536,6 +593,7 @@ with their dependencies... [flows without subsections for simple intro]
 **When to Apply**: Same heading structure used for all content types
 
 **Process**:
+
 1. Identify content type for each section (conceptual, procedural, reference, tutorial)
 2. Adjust heading density appropriately:
    - **Conceptual**: Fewer headings, flowing narrative
@@ -546,6 +604,7 @@ with their dependencies... [flows without subsections for simple intro]
 **Example Structure Adaptation**:
 
 **Conceptual Section** (fewer headings):
+
 ```
 ## How Docker Works (H2)
 Docker uses containerization technology to isolate applications...
@@ -553,6 +612,7 @@ Docker uses containerization technology to isolate applications...
 ```
 
 **Procedural Section** (more headings):
+
 ```
 ## Building Your First Container (H2)
 ### Creating a Dockerfile (H3)
@@ -573,11 +633,13 @@ Docker uses containerization technology to isolate applications...
 **Heading Responsibility**: Defines H1 (chapter titles) and preliminary H2 (major sections)
 
 **Humanization Focus**:
+
 - Ensure chapter titles are descriptive (not "Chapter 1: Introduction")
 - Verify 4-7 major sections per chapter planned
 - Check that major sections reflect natural content organization
 
 **Validation Questions**:
+
 - Do chapter titles preview content clearly?
 - Are major sections balanced in scope?
 - Is there natural variation in section count across chapters?
@@ -587,12 +649,14 @@ Docker uses containerization technology to isolate applications...
 **Heading Responsibility**: Refines H2 (major sections) and defines H3 (subsections)
 
 **Humanization Focus**:
+
 - Create asymmetric subsection distribution (simple sections have fewer H3s)
 - Break mechanical parallelism in H2/H3 headings
 - Limit hierarchy to 3 levels (H1, H2, H3)
 - Target 2-4 headings per page on average
 
 **Validation Questions**:
+
 - Does heading density reflect content complexity?
 - Are all H2 headings using the same grammatical structure? (If yes, break parallelism)
 - Are there any H4 headings? (If yes, flatten to H3 or body text)
@@ -603,12 +667,14 @@ Docker uses containerization technology to isolate applications...
 **Heading Responsibility**: Finalizes H3 (subsections) and determines if H4 is needed (rarely)
 
 **Humanization Focus**:
+
 - Shorten verbose headings to 3-7 words
 - Ensure no skipped heading levels
 - Remove lone headings (single H3 under H2)
 - Verify each heading has body text below it
 
 **Validation Questions**:
+
 - Are any headings over 8 words? (Shorten)
 - Are there lone headings? (Add sibling or remove)
 - Are headings stacked without body text? (Add introductory text)
@@ -619,12 +685,14 @@ Docker uses containerization technology to isolate applications...
 **Heading Responsibility**: Implement specified heading structure
 
 **Humanization Focus**:
+
 - Follow heading structure from Section Spec
 - Write concise, descriptive headings
 - Ensure body text appears below each heading before next heading
 - Adapt heading density to content flow naturally
 
 **Validation Questions**:
+
 - Does heading structure match Section Spec?
 - Are headings scannable in isolation?
 - Is there body text below each heading?
@@ -635,12 +703,14 @@ Docker uses containerization technology to isolate applications...
 **Heading Responsibility**: Final validation of complete chapter heading hierarchy
 
 **Humanization Focus**:
+
 - Verify hierarchy depth (3 levels maximum preferred)
 - Check heading density across chapter (2-4 per page average)
 - Validate no AI red flags (mechanical parallelism, uniform density)
 - Test table of contents readability
 
 **Validation Questions**:
+
 - Does table of contents feel natural or mechanical?
 - Is there variation in heading density across chapter?
 - Are headings concise and descriptive?
@@ -653,12 +723,14 @@ Docker uses containerization technology to isolate applications...
 ### Heading Humanization Workflow
 
 **Step 1: Generate Heading Inventory** (5 minutes)
+
 1. Extract all headings from document
 2. Count total headings by level (H1, H2, H3, H4+)
 3. Calculate headings per page
 4. Note deepest hierarchy level
 
 **Step 2: Detect AI Patterns** (10 minutes)
+
 1. Check for mechanical parallelism (all H2s same structure)
 2. Identify uniform density (all H2s have same H3 count)
 3. Find verbose headings (8+ words)
@@ -666,6 +738,7 @@ Docker uses containerization technology to isolate applications...
 5. Mark hierarchy depth issues (4+ levels)
 
 **Step 3: Apply Humanization Strategies** (30-60 minutes)
+
 1. **Flatten hierarchy**: Reduce to 3 levels where possible
 2. **Break parallelism**: Vary heading structures intentionally
 3. **Create asymmetry**: Adjust subsection counts to content complexity
@@ -673,6 +746,7 @@ Docker uses containerization technology to isolate applications...
 5. **Adapt structure**: Match heading density to content type
 
 **Step 4: Validate Quality** (10 minutes)
+
 1. Verify no skipped heading levels
 2. Check for lone headings (remove or add siblings)
 3. Ensure body text below each heading
@@ -686,6 +760,7 @@ Docker uses containerization technology to isolate applications...
 **When to Apply**: During post-generation editing (Step 10 of copy-edit-chapter.md)
 
 **Process**:
+
 1. After content editing, before final QA
 2. Use heading-humanization-checklist.md systematically
 3. Focus on high-impact changes (hierarchy flattening, parallelism breaking)
@@ -697,6 +772,7 @@ Docker uses containerization technology to isolate applications...
 **When to Apply**: During humanization prompt engineering
 
 **Guidance to Include**:
+
 ```
 HEADING STRUCTURE:
 - Use 3 heading levels maximum (H1 chapter, H2 sections, H3 subsections)
@@ -722,18 +798,19 @@ HEADING PATTERNS TO AVOID:
 
 Calculate authenticity score based on these factors:
 
-| Factor | Weight | AI Pattern (0 pts) | Human Pattern (10 pts) | Score |
-|--------|--------|-------------------|----------------------|-------|
-| Hierarchy Depth | 25% | 4+ levels | 3 levels | ___ |
-| Parallelism | 20% | Mechanical (all same) | Natural variation | ___ |
-| Density Variation | 20% | Uniform | Asymmetric | ___ |
-| Heading Length | 15% | 10+ words average | 3-7 words average | ___ |
-| Structural Adaptation | 10% | Rigid formula | Content-adapted | ___ |
-| Best Practices | 10% | Multiple violations | All followed | ___ |
+| Factor                | Weight | AI Pattern (0 pts)    | Human Pattern (10 pts) | Score  |
+| --------------------- | ------ | --------------------- | ---------------------- | ------ |
+| Hierarchy Depth       | 25%    | 4+ levels             | 3 levels               | \_\_\_ |
+| Parallelism           | 20%    | Mechanical (all same) | Natural variation      | \_\_\_ |
+| Density Variation     | 20%    | Uniform               | Asymmetric             | \_\_\_ |
+| Heading Length        | 15%    | 10+ words average     | 3-7 words average      | \_\_\_ |
+| Structural Adaptation | 10%    | Rigid formula         | Content-adapted        | \_\_\_ |
+| Best Practices        | 10%    | Multiple violations   | All followed           | \_\_\_ |
 
 **Target Score**: 7.0+ for publication-ready quality
 
 **Interpretation**:
+
 - **8.0-10.0**: Excellent, authentically human heading structure
 - **6.0-7.9**: Good, minor AI patterns remain
 - **4.0-5.9**: Fair, noticeable AI patterns need correction
@@ -742,6 +819,7 @@ Calculate authenticity score based on these factors:
 ### Red Flag Density
 
 **Count Red Flags**:
+
 - [ ] Hierarchy depth 4+ levels: +2 red flags
 - [ ] Mechanical parallelism in H2s: +3 red flags
 - [ ] Mechanical parallelism in H3s: +2 red flags
@@ -762,6 +840,7 @@ Calculate authenticity score based on these factors:
 **Context**: 18-page chapter on "Microservices Architecture" with 5 heading levels
 
 **Before (AI-generated)**:
+
 ```
 # Microservices Architecture (H1)
   ## Understanding Microservices (H2)
@@ -775,11 +854,13 @@ Calculate authenticity score based on these factors:
 ```
 
 **Problems**:
+
 - 5 heading levels in 18-page chapter (excessive)
 - Mechanical parallelism at H5 level
 - Over-subdivision of simple concepts
 
 **After (Humanized)**:
+
 ```
 # Microservices Architecture (H1)
   ## Core Principles (H2)
@@ -803,6 +884,7 @@ Calculate authenticity score based on these factors:
 ```
 
 **Changes**:
+
 - Reduced from 5 levels to 3 levels (H1, H2, H3)
 - Promoted "Core Principles" to H2 (removed "Understanding Microservices" wrapper)
 - Converted H4/H5 to body text with bold labels
@@ -816,6 +898,7 @@ Calculate authenticity score based on these factors:
 **Context**: Chapter on "React Hooks" with identical heading structures
 
 **Before (AI-generated)**:
+
 ```
 ## Understanding useState (H2)
 ## Understanding useEffect (H2)
@@ -826,11 +909,13 @@ Calculate authenticity score based on these factors:
 ```
 
 **Problems**:
+
 - All H2 headings start with "Understanding"
 - Mechanical pattern signals AI generation
 - Headings don't differentiate content types
 
 **After (Humanized)**:
+
 ```
 ## Managing State with useState (H2)
 ## Side Effects and useEffect (H2)
@@ -840,6 +925,7 @@ Calculate authenticity score based on these factors:
 ```
 
 **Changes**:
+
 - Removed "Understanding" prefix from all headings
 - Varied grammatical structures (gerunds, nouns, colons)
 - Combined related hooks (useCallback/useMemo) to reduce redundancy
@@ -852,6 +938,7 @@ Calculate authenticity score based on these factors:
 **Context**: Chapter on "API Design" with uniform subsection counts
 
 **Before (AI-generated)**:
+
 ```
 ## RESTful Principles (H2) [Simple conceptual content]
   ### Statelessness (H3)
@@ -870,12 +957,14 @@ Calculate authenticity score based on these factors:
 ```
 
 **Problems**:
+
 - All H2 sections have exactly 3 H3 subsections (uniform density)
 - Complex authentication content under-subdivided
 - Simple principles over-subdivided
 - Structure doesn't reflect content complexity
 
 **After (Humanized)**:
+
 ```
 ## RESTful Principles (H2)
 
@@ -899,6 +988,7 @@ URLs, and standard HTTP methods. [Flows without subsections - simple content]
 ```
 
 **Changes**:
+
 - Simple "RESTful Principles": Removed subsections entirely (flows as prose)
 - Complex "Authentication": Increased to 5 H3s, added selective H4 for OAuth/JWT details
 - "Error Handling": Reduced to 2 H3s (combined retry logic into format section)
@@ -913,6 +1003,7 @@ URLs, and standard HTTP methods. [Flows without subsections - simple content]
 ### Red Flags Summary
 
 **Immediate Red Flags** (fix these first):
+
 1. **4+ heading levels** in a chapter
 2. **All headings at same level use identical structure** ("Understanding X", "Understanding Y")
 3. **Every major section has same subsection count** (all H2s have 3 H3s)
@@ -922,6 +1013,7 @@ URLs, and standard HTTP methods. [Flows without subsections - simple content]
 ### Green Flags Summary
 
 **Target Patterns** (aim for these):
+
 1. **3 heading levels maximum** (H1, H2, H3)
 2. **Natural variation in heading structure**
 3. **Asymmetric subsection counts** (0-6 H3s per H2)
@@ -930,14 +1022,14 @@ URLs, and standard HTTP methods. [Flows without subsections - simple content]
 
 ### Quick Fixes
 
-| Problem | Quick Fix |
-|---------|-----------|
-| 4+ levels | Promote or flatten deepest level to H3 or body text |
-| Mechanical parallelism | Rewrite 50% of headings with different structure |
-| Uniform density | Remove subsections from simplest section, add to most complex |
-| Verbose headings | Remove "Understanding", "A Guide to", "How to" |
-| Lone heading | Add sibling or remove heading entirely |
-| Stacked headings | Add introductory sentence below each heading |
+| Problem                | Quick Fix                                                     |
+| ---------------------- | ------------------------------------------------------------- |
+| 4+ levels              | Promote or flatten deepest level to H3 or body text           |
+| Mechanical parallelism | Rewrite 50% of headings with different structure              |
+| Uniform density        | Remove subsections from simplest section, add to most complex |
+| Verbose headings       | Remove "Understanding", "A Guide to", "How to"                |
+| Lone heading           | Add sibling or remove heading entirely                        |
+| Stacked headings       | Add introductory sentence below each heading                  |
 
 ---
 
@@ -946,20 +1038,24 @@ URLs, and standard HTTP methods. [Flows without subsections - simple content]
 ### BMAD Technical Writing Expansion Pack
 
 **Tasks**:
+
 - `copy-edit-chapter.md` - Comprehensive chapter editing workflow
 - `humanize-post-generation.md` - Post-generation humanization editing
 - `humanize-pre-generation.md` - Pre-generation prompt engineering
 
 **Checklists**:
+
 - `heading-humanization-checklist.md` - Systematic heading pattern detection and correction
 - `humanization-checklist.md` - Overall AI pattern detection
 - `formatting-humanization-checklist.md` - Em-dash, bold, italic humanization
 
 **Agents**:
+
 - `technical-editor.md` - Technical communication expert with heading expertise
 - `content-humanizer.md` - AI content humanization specialist
 
 **Data**:
+
 - `formatting-humanization-patterns.md` - Em-dash, bold, italic patterns
 - `ai-detection-patterns.md` - Perplexity and burstiness patterns
 - `technical-writing-standards.md` - Overall writing quality standards

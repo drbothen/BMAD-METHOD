@@ -34,6 +34,7 @@ pip install -r requirements.txt
 ```
 
 This will install:
+
 - ✅ textstat (readability metrics)
 - ✅ nltk (enhanced lexical diversity, VADER)
 - ✅ textblob (sentiment analysis)
@@ -194,22 +195,24 @@ The tool limits text to 5000 chars for GPT-2 analysis. If still getting errors:
 
 ### Analysis Speed (on 5000-word document):
 
-| Feature | Time | Memory |
-|---------|------|--------|
-| Core analysis | <1 sec | ~50MB |
-| + NLTK/spaCy | ~2-3 sec | ~200MB |
-| + Transformers | ~10-30 sec | ~2GB |
+| Feature        | Time       | Memory |
+| -------------- | ---------- | ------ |
+| Core analysis  | <1 sec     | ~50MB  |
+| + NLTK/spaCy   | ~2-3 sec   | ~200MB |
+| + Transformers | ~10-30 sec | ~2GB   |
 
 **Recommendation for large batches**: Skip Transformers (`HAS_TRANSFORMERS=False`) for 10x speedup.
 
 ## Why a Separate Environment?
 
 Your anaconda environment is **production environment** with many packages:
+
 - vllm, streamlit, opencv, astropy, etc.
 - All compiled against specific numpy/pandas versions
 - Upgrading breaks other tools
 
 The dedicated NLP environment:
+
 - ✅ Clean slate - only what we need
 - ✅ Latest compatible versions
 - ✅ No conflicts with other tools
@@ -256,9 +259,9 @@ Save as `setup.sh`, run `chmod +x setup.sh`, then `./setup.sh`.
 
 ## Summary
 
-| Approach | Pros | Cons |
-|----------|------|------|
-| Fix anaconda | - Use existing environment | - Breaks other tools<br>- Impossible to resolve all conflicts |
-| **Dedicated venv** | - **Clean, works perfectly**<br>- Isolated<br>- Easy to recreate | - Need to activate first<br>- Extra disk space (~2.5GB) |
+| Approach           | Pros                                                             | Cons                                                          |
+| ------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------- |
+| Fix anaconda       | - Use existing environment                                       | - Breaks other tools<br>- Impossible to resolve all conflicts |
+| **Dedicated venv** | - **Clean, works perfectly**<br>- Isolated<br>- Easy to recreate | - Need to activate first<br>- Extra disk space (~2.5GB)       |
 
 **Recommendation**: Use the dedicated venv approach. It's the standard Python practice for isolated tools.

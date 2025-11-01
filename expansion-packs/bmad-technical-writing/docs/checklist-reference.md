@@ -260,6 +260,7 @@ This comprehensive reference documents all 35 checklists organized by phase, wit
 - **Structural Variation**: Section openings vary, natural topic transitions, no repetitive patterns
 
 **Pass Criteria**:
+
 - Humanization step: ≥80% items pass (≤20% AI patterns remaining)
 - Copy-edit final check: ≥95% items pass (<5% AI patterns remaining)
 - AI pattern score reduction ≥50% from baseline
