@@ -273,6 +273,46 @@ class AnalysisResults:
     bold_markdown_count: int
     italic_markdown_count: int
 
+    # NEW: Enhanced formatting pattern analysis
+    bold_per_1k_words: float = 0.0  # Bold density
+    italic_per_1k_words: float = 0.0  # Italic density
+    formatting_consistency_score: float = 0.0  # 0-1, higher = more mechanical
+
+    # NEW: List usage analysis
+    total_list_items: int = 0  # Total items in all lists
+    ordered_list_items: int = 0  # Items in numbered lists
+    unordered_list_items: int = 0  # Items in bullet lists
+    list_to_text_ratio: float = 0.0  # Proportion of content in lists
+    ordered_to_unordered_ratio: float = 0.0  # AI tends toward ~0.2 (61% unordered, 12% ordered)
+    list_item_length_variance: float = 0.0  # Uniformity of list item lengths
+
+    # NEW: Punctuation clustering analysis
+    em_dash_positions: List[int] = field(default_factory=list)  # Paragraph positions
+    em_dash_cascading_score: float = 0.0  # Detects declining pattern (AI marker)
+    oxford_comma_count: int = 0  # "a, b, and c" pattern
+    non_oxford_comma_count: int = 0  # "a, b and c" pattern
+    oxford_comma_consistency: float = 0.0  # 1.0 = always Oxford (AI-like)
+    semicolon_count: int = 0
+    semicolon_per_1k_words: float = 0.0
+
+    # NEW: Whitespace and paragraph structure analysis
+    paragraph_length_variance: float = 0.0  # Higher variance = more human
+    paragraph_uniformity_score: float = 0.0  # 0-1, higher = more uniform (AI-like)
+    blank_lines_count: int = 0
+    blank_lines_variance: float = 0.0  # Spacing pattern consistency
+    text_density: float = 0.0  # Characters per line (lower = more whitespace)
+
+    # NEW: Code block analysis (for technical writing)
+    code_block_count: int = 0
+    code_blocks_with_lang: int = 0  # Properly specified language
+    code_lang_consistency: float = 0.0  # 1.0 = all specified (AI-like)
+    avg_code_comment_density: float = 0.0  # Comments per line of code
+
+    # NEW: Enhanced heading hierarchy analysis
+    heading_hierarchy_skips: int = 0  # Count of skipped levels (humans do this, AI doesn't)
+    heading_strict_adherence: float = 0.0  # 1.0 = never skips (AI-like)
+    heading_length_variance: float = 0.0  # Variation in heading lengths
+
     # Readability (optional - requires textstat)
     flesch_reading_ease: Optional[float] = None
     flesch_kincaid_grade: Optional[float] = None
@@ -307,8 +347,17 @@ class AnalysisResults:
     voice_score: str = ""
     technical_score: str = ""
     formatting_score: str = ""
-    syntactic_score: str = ""  # NEW: Syntactic naturalness
-    sentiment_score: str = ""  # NEW: Sentiment variation
+    syntactic_score: str = ""  # Syntactic naturalness
+    sentiment_score: str = ""  # Sentiment variation
+
+    # NEW: Enhanced structural dimension scores
+    bold_italic_score: str = ""  # Bold/italic formatting patterns
+    list_usage_score: str = ""  # List structure and distribution
+    punctuation_score: str = ""  # Punctuation clustering patterns
+    whitespace_score: str = ""  # Paragraph/whitespace distribution
+    code_structure_score: str = ""  # Code block patterns (if applicable)
+    heading_hierarchy_score: str = ""  # Heading level adherence
+
     overall_assessment: str = ""
 
 
@@ -699,6 +748,14 @@ class AIPatternAnalyzer:
         textacy_metrics = self._analyze_textacy_metrics(text) if HAS_TEXTACY and HAS_SPACY else {}
         transformer_ppl = self._calculate_transformer_perplexity(text) if HAS_TRANSFORMERS else {}
 
+        # NEW: Enhanced structural analyses (always available)
+        bold_italic = self._analyze_bold_italic_patterns(text)
+        list_usage = self._analyze_list_usage(text)
+        punctuation = self._analyze_punctuation_clustering(text)
+        whitespace = self._analyze_whitespace_patterns(text)
+        code_blocks = self._analyze_code_blocks(text)
+        heading_hierarchy = self._analyze_heading_hierarchy_enhanced(text)
+
         # Calculate pages (estimate: 500-1000 tokens per page, use 750 average)
         estimated_pages = max(1, word_count / 750)
 
@@ -758,6 +815,46 @@ class AIPatternAnalyzer:
             bold_markdown_count=formatting['bold'],
             italic_markdown_count=formatting['italics'],
 
+            # NEW: Enhanced formatting patterns
+            bold_per_1k_words=bold_italic['bold_per_1k'],
+            italic_per_1k_words=bold_italic['italic_per_1k'],
+            formatting_consistency_score=bold_italic['formatting_consistency'],
+
+            # NEW: List usage patterns
+            total_list_items=list_usage['total_list_items'],
+            ordered_list_items=list_usage['ordered_items'],
+            unordered_list_items=list_usage['unordered_items'],
+            list_to_text_ratio=list_usage['list_to_text_ratio'],
+            ordered_to_unordered_ratio=list_usage['ordered_to_unordered_ratio'],
+            list_item_length_variance=list_usage['list_item_variance'],
+
+            # NEW: Punctuation clustering
+            em_dash_positions=punctuation['em_dash_positions'],
+            em_dash_cascading_score=punctuation['em_dash_cascading'],
+            oxford_comma_count=punctuation['oxford_comma_count'],
+            non_oxford_comma_count=punctuation['non_oxford_comma_count'],
+            oxford_comma_consistency=punctuation['oxford_consistency'],
+            semicolon_count=punctuation['semicolon_count'],
+            semicolon_per_1k_words=punctuation['semicolon_per_1k'],
+
+            # NEW: Whitespace patterns
+            paragraph_length_variance=whitespace['paragraph_variance'],
+            paragraph_uniformity_score=whitespace['paragraph_uniformity'],
+            blank_lines_count=whitespace['blank_lines'],
+            blank_lines_variance=whitespace['blank_line_variance'],
+            text_density=whitespace['text_density'],
+
+            # NEW: Code block patterns
+            code_block_count=code_blocks['code_blocks'],
+            code_blocks_with_lang=code_blocks['code_with_lang'],
+            code_lang_consistency=code_blocks['code_lang_consistency'],
+            avg_code_comment_density=code_blocks['code_comment_density'],
+
+            # NEW: Enhanced heading hierarchy
+            heading_hierarchy_skips=heading_hierarchy['hierarchy_skips'],
+            heading_strict_adherence=heading_hierarchy['hierarchy_adherence'],
+            heading_length_variance=heading_hierarchy['heading_length_variance'],
+
             **readability,
             **nltk_lexical,
             **sentiment,
@@ -775,6 +872,15 @@ class AIPatternAnalyzer:
         results.formatting_score = self._score_formatting(results)
         results.syntactic_score = self._score_syntactic(results)
         results.sentiment_score = self._score_sentiment(results)
+
+        # NEW: Enhanced structural dimension scores
+        results.bold_italic_score = self._score_bold_italic(results)
+        results.list_usage_score = self._score_list_usage(results)
+        results.punctuation_score = self._score_punctuation(results)
+        results.whitespace_score = self._score_whitespace(results)
+        results.code_structure_score = self._score_code_structure(results)
+        results.heading_hierarchy_score = self._score_heading_hierarchy(results)
+
         results.overall_assessment = self._assess_overall(results)
 
         return results
@@ -1338,6 +1444,289 @@ class AIPatternAnalyzer:
             'italics': italic
         }
 
+    def _analyze_bold_italic_patterns(self, text: str) -> Dict:
+        """
+        Analyze bold/italic formatting distribution patterns.
+        AI models (especially ChatGPT) use 10x more bold than humans.
+        """
+        word_count = self._count_words(text)
+
+        # Bold (markdown **text** or __text__)
+        bold_instances = re.findall(r'\*\*[^*]+\*\*|__[^_]+__', text)
+        bold_count = len(bold_instances)
+        bold_per_1k = (bold_count / word_count * 1000) if word_count > 0 else 0
+
+        # Italic (markdown *text* or _text_)
+        italic_instances = re.findall(r'\*[^*]+\*|_[^_]+_', text)
+        italic_count = len(italic_instances)
+        italic_per_1k = (italic_count / word_count * 1000) if word_count > 0 else 0
+
+        # Calculate formatting consistency (spacing between bold/italic)
+        # AI tends to use formatting at regular intervals
+        paragraphs = [p.strip() for p in re.split(r'\n\s*\n', text) if p.strip()]
+        formatting_per_para = []
+        for para in paragraphs:
+            para_bold = len(re.findall(r'\*\*[^*]+\*\*|__[^_]+__', para))
+            para_italic = len(re.findall(r'\*[^*]+\*|_[^_]+_', para))
+            formatting_per_para.append(para_bold + para_italic)
+
+        # Low variance = high consistency (AI-like)
+        if len(formatting_per_para) > 1:
+            consistency = 1.0 - min(1.0, statistics.stdev(formatting_per_para) / (statistics.mean(formatting_per_para) + 1))
+        else:
+            consistency = 0.0
+
+        return {
+            'bold_per_1k': round(bold_per_1k, 2),
+            'italic_per_1k': round(italic_per_1k, 2),
+            'formatting_consistency': round(consistency, 3)
+        }
+
+    def _analyze_list_usage(self, text: str) -> Dict:
+        """
+        Analyze list structure and distribution.
+        Research shows AI uses lists in 78% of responses, with 61% unordered vs 12% ordered.
+        """
+        lines = text.split('\n')
+
+        ordered_items = []
+        unordered_items = []
+
+        # Detect list items
+        for line in lines:
+            stripped = line.strip()
+            # Ordered list: "1. ", "2) ", "a. ", etc.
+            if re.match(r'^(\d+|[a-z])[.)]\s+\S', stripped):
+                # Extract item text
+                item_text = re.sub(r'^(\d+|[a-z])[.)]\s+', '', stripped)
+                ordered_items.append(item_text)
+            # Unordered list: "- ", "* ", "+ "
+            elif re.match(r'^[-*+]\s+\S', stripped):
+                item_text = re.sub(r'^[-*+]\s+', '', stripped)
+                unordered_items.append(item_text)
+
+        total_items = len(ordered_items) + len(unordered_items)
+
+        # Calculate list-to-text ratio (proportion of content in lists)
+        word_count = self._count_words(text)
+        list_words = sum(len(item.split()) for item in ordered_items + unordered_items)
+        list_ratio = list_words / word_count if word_count > 0 else 0
+
+        # Calculate ordered/unordered ratio (AI tends ~0.2, humans more balanced)
+        if len(unordered_items) > 0:
+            ordered_ratio = len(ordered_items) / len(unordered_items)
+        elif len(ordered_items) > 0:
+            ordered_ratio = 999  # All ordered (unusual)
+        else:
+            ordered_ratio = 0  # No lists
+
+        # Calculate list item length variance (AI more uniform)
+        item_lengths = [len(item.split()) for item in ordered_items + unordered_items]
+        if len(item_lengths) > 1:
+            item_variance = statistics.variance(item_lengths)
+        else:
+            item_variance = 0.0
+
+        return {
+            'total_list_items': total_items,
+            'ordered_items': len(ordered_items),
+            'unordered_items': len(unordered_items),
+            'list_to_text_ratio': round(list_ratio, 3),
+            'ordered_to_unordered_ratio': round(ordered_ratio, 3),
+            'list_item_variance': round(item_variance, 2)
+        }
+
+    def _analyze_punctuation_clustering(self, text: str) -> Dict:
+        """
+        Analyze punctuation patterns that distinguish AI from human writing.
+        Key markers: em-dash cascading, Oxford comma consistency, semicolon usage.
+        """
+        word_count = self._count_words(text)
+        paragraphs = [p.strip() for p in re.split(r'\n\s*\n', text) if p.strip()]
+
+        # Em-dash cascading analysis (AI shows declining frequency pattern)
+        em_dash_positions = []
+        for i, para in enumerate(paragraphs):
+            dash_count = len(re.findall(r'—|--', para))
+            if dash_count > 0:
+                em_dash_positions.extend([i] * dash_count)
+
+        # Calculate cascading score (correlation between position and frequency)
+        # Negative correlation = cascading pattern (AI marker)
+        if len(em_dash_positions) > 3:
+            para_nums = list(range(len(em_dash_positions)))
+            # Count dashes per paragraph position
+            dash_per_para = [em_dash_positions.count(i) for i in range(len(paragraphs))]
+            # Calculate if early paragraphs have more dashes (AI pattern)
+            if sum(dash_per_para[:len(dash_per_para)//2]) > sum(dash_per_para[len(dash_per_para)//2:]):
+                cascading = 0.7 + (len(em_dash_positions) / (len(paragraphs) + 1)) * 0.3
+            else:
+                cascading = 0.3
+        else:
+            cascading = 0.0
+
+        # Oxford comma analysis (AI strongly prefers Oxford comma)
+        # Pattern: "word, word, and word" vs "word, word and word"
+        oxford_pattern = r'\b\w+,\s+\w+,\s+(and|or)\s+\w+\b'
+        non_oxford_pattern = r'\b\w+,\s+\w+\s+(and|or)\s+\w+\b'
+
+        oxford_count = len(re.findall(oxford_pattern, text, re.IGNORECASE))
+        non_oxford_count = len(re.findall(non_oxford_pattern, text, re.IGNORECASE))
+
+        total_comma_lists = oxford_count + non_oxford_count
+        if total_comma_lists > 0:
+            oxford_consistency = oxford_count / total_comma_lists
+        else:
+            oxford_consistency = 0.5  # Neutral if no lists found
+
+        # Semicolon analysis
+        semicolons = len(re.findall(r';', text))
+        semicolon_per_1k = (semicolons / word_count * 1000) if word_count > 0 else 0
+
+        return {
+            'em_dash_positions': em_dash_positions[:20],  # Limit for dataclass
+            'em_dash_cascading': round(cascading, 3),
+            'oxford_comma_count': oxford_count,
+            'non_oxford_comma_count': non_oxford_count,
+            'oxford_consistency': round(oxford_consistency, 3),
+            'semicolon_count': semicolons,
+            'semicolon_per_1k': round(semicolon_per_1k, 2)
+        }
+
+    def _analyze_whitespace_patterns(self, text: str) -> Dict:
+        """
+        Analyze whitespace and paragraph structure patterns.
+        Humans vary paragraph length for pacing; AI produces uniform paragraphs.
+        """
+        paragraphs = [p.strip() for p in re.split(r'\n\s*\n', text) if p.strip()]
+
+        # Paragraph length variance (higher = more human)
+        para_lengths = [len(p.split()) for p in paragraphs]
+        if len(para_lengths) > 1:
+            para_variance = statistics.variance(para_lengths)
+            para_mean = statistics.mean(para_lengths)
+            # Coefficient of variation as uniformity score (lower CV = more uniform = AI)
+            cv = statistics.stdev(para_lengths) / para_mean if para_mean > 0 else 0
+            uniformity = 1.0 - min(1.0, cv / 1.0)  # Normalize to 0-1
+        else:
+            para_variance = 0.0
+            uniformity = 1.0  # Single paragraph = perfectly uniform
+
+        # Blank line analysis
+        lines = text.split('\n')
+        blank_lines = [i for i, line in enumerate(lines) if not line.strip()]
+        blank_count = len(blank_lines)
+
+        # Calculate spacing between blank lines (consistency)
+        if len(blank_lines) > 1:
+            spacings = [blank_lines[i+1] - blank_lines[i] for i in range(len(blank_lines)-1)]
+            blank_variance = statistics.variance(spacings) if len(spacings) > 1 else 0.0
+        else:
+            blank_variance = 0.0
+
+        # Text density (characters per non-blank line)
+        non_blank_lines = [line for line in lines if line.strip()]
+        if non_blank_lines:
+            avg_line_length = sum(len(line) for line in non_blank_lines) / len(non_blank_lines)
+        else:
+            avg_line_length = 0.0
+
+        return {
+            'paragraph_variance': round(para_variance, 2),
+            'paragraph_uniformity': round(uniformity, 3),
+            'blank_lines': blank_count,
+            'blank_line_variance': round(blank_variance, 2),
+            'text_density': round(avg_line_length, 1)
+        }
+
+    def _analyze_code_blocks(self, text: str) -> Dict:
+        """
+        Analyze code block patterns in technical writing.
+        AI generates complete code with consistent language specs; humans use snippets.
+        """
+        # Find code blocks (markdown triple backticks)
+        code_blocks = re.findall(r'```(\w+)?\s*\n(.*?)\n```', text, re.DOTALL)
+        total_blocks = len(code_blocks)
+
+        # Count blocks with language specification
+        blocks_with_lang = sum(1 for lang, _ in code_blocks if lang)
+
+        # Language consistency (AI = 1.0, always specifies)
+        lang_consistency = blocks_with_lang / total_blocks if total_blocks > 0 else 0.0
+
+        # Comment density in code blocks
+        comment_densities = []
+        for lang, code in code_blocks:
+            lines = code.strip().split('\n')
+            if len(lines) == 0:
+                continue
+
+            # Count comment lines (simple heuristics for common languages)
+            comment_lines = 0
+            for line in lines:
+                stripped = line.strip()
+                if stripped.startswith('//') or stripped.startswith('#') or stripped.startswith('/*'):
+                    comment_lines += 1
+
+            density = comment_lines / len(lines) if len(lines) > 0 else 0
+            comment_densities.append(density)
+
+        avg_comment_density = statistics.mean(comment_densities) if comment_densities else 0.0
+
+        return {
+            'code_blocks': total_blocks,
+            'code_with_lang': blocks_with_lang,
+            'code_lang_consistency': round(lang_consistency, 3),
+            'code_comment_density': round(avg_comment_density, 3)
+        }
+
+    def _analyze_heading_hierarchy_enhanced(self, text: str) -> Dict:
+        """
+        Enhanced heading hierarchy analysis.
+        AI never skips levels (strict H1→H2→H3); humans occasionally do.
+        """
+        # Extract all headings with levels
+        headings = []
+        for line in text.split('\n'):
+            match = re.match(r'^(#{1,6})\s+(.+)$', line.strip())
+            if match:
+                level = len(match.group(1))
+                title = match.group(2).strip()
+                headings.append((level, title))
+
+        if len(headings) < 2:
+            return {
+                'hierarchy_skips': 0,
+                'hierarchy_adherence': 1.0,  # Perfect adherence (trivial)
+                'heading_length_variance': 0.0
+            }
+
+        # Check for hierarchy skips (e.g., H1 directly to H3)
+        skips = 0
+        for i in range(len(headings) - 1):
+            curr_level, _ = headings[i]
+            next_level, _ = headings[i + 1]
+
+            # Skip detected if level jumps by more than 1 downward
+            if next_level > curr_level + 1:
+                skips += 1
+
+        # Strict adherence score (1.0 = never skips = AI-like)
+        adherence = 1.0 - (skips / len(headings)) if len(headings) > 0 else 1.0
+
+        # Heading length variance (AI tends toward uniform verbose headings)
+        heading_lengths = [len(title.split()) for _, title in headings]
+        if len(heading_lengths) > 1:
+            length_variance = statistics.variance(heading_lengths)
+        else:
+            length_variance = 0.0
+
+        return {
+            'hierarchy_skips': skips,
+            'hierarchy_adherence': round(adherence, 3),
+            'heading_length_variance': round(length_variance, 2)
+        }
+
     def _calculate_readability(self, text: str) -> Dict:
         """Calculate readability metrics using textstat"""
         if not HAS_TEXTSTAT:
@@ -1501,30 +1890,217 @@ class AIPatternAnalyzer:
         # sentiment_flatness_score is already scored in analysis
         return r.sentiment_flatness_score
 
-    def _assess_overall(self, r: AnalysisResults) -> str:
-        """Provide overall humanization assessment"""
-        score_map = {"HIGH": 4, "MEDIUM": 3, "LOW": 2, "VERY LOW": 1, "UNKNOWN": 2.5}
+    def _score_bold_italic(self, r: AnalysisResults) -> str:
+        """
+        Score bold/italic formatting patterns.
+        AI (especially ChatGPT) uses 10x more bold than humans.
+        Research: Humans ~1-5 bold per 1k words, AI ~10-50 per 1k words
+        """
+        bold_density = r.bold_per_1k_words
+        consistency = r.formatting_consistency_score
 
-        # Base dimensions (always present)
+        issues = 0
+
+        # Bold density (higher = more AI-like)
+        if bold_density > 20:
+            issues += 3  # Extreme AI marker
+        elif bold_density > 10:
+            issues += 2
+        elif bold_density > 5:
+            issues += 1
+
+        # Formatting consistency (higher = more mechanical = AI-like)
+        if consistency > 0.7:
+            issues += 2
+        elif consistency > 0.5:
+            issues += 1
+
+        if issues == 0:
+            return "HIGH"  # Human-like
+        elif issues <= 2:
+            return "MEDIUM"
+        elif issues <= 4:
+            return "LOW"
+        else:
+            return "VERY LOW"  # AI-like
+
+    def _score_list_usage(self, r: AnalysisResults) -> str:
+        """
+        Score list usage patterns.
+        Research: AI uses lists in 78% of responses, with 61% unordered vs 12% ordered.
+        """
+        list_ratio = r.list_to_text_ratio
+        ordered_unordered = r.ordered_to_unordered_ratio
+        has_lists = r.total_list_items > 0
+
+        issues = 0
+
+        # List density (AI uses lots of lists)
+        if list_ratio > 0.4:  # >40% of content in lists
+            issues += 2
+        elif list_ratio > 0.25:
+            issues += 1
+
+        # Ordered/unordered ratio (AI strongly prefers unordered ~ 0.2 ratio)
+        if has_lists:
+            # AI pattern: 0.15-0.25 (61% unordered, 12% ordered ≈ 0.20 ratio)
+            if 0.15 <= ordered_unordered <= 0.25:
+                issues += 2  # Matches AI pattern
+            elif 0.1 <= ordered_unordered <= 0.35:
+                issues += 1
+
+        # List item uniformity (AI more uniform)
+        if r.list_item_length_variance < 5 and has_lists:
+            issues += 1
+
+        if issues == 0:
+            return "HIGH"  # Human-like
+        elif issues <= 2:
+            return "MEDIUM"
+        elif issues <= 3:
+            return "LOW"
+        else:
+            return "VERY LOW"  # AI-like
+
+    def _score_punctuation(self, r: AnalysisResults) -> str:
+        """
+        Score punctuation clustering patterns.
+        Key markers: em-dash cascading, Oxford comma consistency.
+        """
+        cascading = r.em_dash_cascading_score
+        oxford = r.oxford_comma_consistency
+
+        issues = 0
+
+        # Em-dash cascading (AI shows declining pattern)
+        if cascading > 0.7:
+            issues += 3  # Strong AI marker
+        elif cascading > 0.5:
+            issues += 2
+        elif cascading > 0.3:
+            issues += 1
+
+        # Oxford comma consistency (AI always uses it, consistency → 1.0)
+        total_comma_lists = r.oxford_comma_count + r.non_oxford_comma_count
+        if total_comma_lists >= 3:  # Only score if enough data
+            if oxford > 0.9:
+                issues += 2  # Always Oxford = AI-like
+            elif oxford > 0.75:
+                issues += 1
+
+        if issues == 0:
+            return "HIGH"  # Human-like
+        elif issues <= 2:
+            return "MEDIUM"
+        elif issues <= 4:
+            return "LOW"
+        else:
+            return "VERY LOW"  # AI-like
+
+    def _score_whitespace(self, r: AnalysisResults) -> str:
+        """
+        Score whitespace and paragraph structure patterns.
+        Humans vary paragraph length for pacing; AI produces uniform paragraphs.
+        """
+        uniformity = r.paragraph_uniformity_score
+
+        # Lower uniformity = higher variance = more human-like
+        if uniformity < 0.3:
+            return "HIGH"  # Highly varied (human-like)
+        elif uniformity < 0.5:
+            return "MEDIUM"
+        elif uniformity < 0.7:
+            return "LOW"
+        else:
+            return "VERY LOW"  # Uniform (AI-like)
+
+    def _score_code_structure(self, r: AnalysisResults) -> str:
+        """
+        Score code block patterns (for technical writing).
+        AI always specifies language, has uniform comment density.
+        """
+        if r.code_block_count == 0:
+            return "N/A"  # No code blocks
+
+        lang_consistency = r.code_lang_consistency
+
+        issues = 0
+
+        # Language specification consistency (AI = 1.0, always specifies)
+        if lang_consistency == 1.0 and r.code_block_count >= 3:
+            issues += 2  # Perfect consistency with multiple blocks = AI-like
+        elif lang_consistency > 0.8:
+            issues += 1
+
+        # Comment density uniformity (would require per-block variance - simplified here)
+        # AI tends toward ~0.2-0.3 comment density consistently
+        if 0.15 <= r.avg_code_comment_density <= 0.35:
+            issues += 1
+
+        if issues == 0:
+            return "HIGH"  # Human-like
+        elif issues <= 1:
+            return "MEDIUM"
+        elif issues <= 2:
+            return "LOW"
+        else:
+            return "VERY LOW"  # AI-like
+
+    def _score_heading_hierarchy(self, r: AnalysisResults) -> str:
+        """
+        Score heading hierarchy adherence.
+        AI never skips levels (strict H1→H2→H3); humans occasionally do.
+        """
+        if r.total_headings < 3:
+            return "N/A"  # Too few headings to assess
+
+        adherence = r.heading_strict_adherence
+
+        # Perfect adherence (1.0) = AI-like; humans occasionally skip levels
+        if adherence == 1.0 and r.total_headings >= 5:
+            return "LOW"  # Perfect adherence with many headings = AI-like
+        elif adherence >= 0.9:
+            return "MEDIUM"
+        elif adherence >= 0.7:
+            return "HIGH"  # Some flexibility = human-like
+        else:
+            return "HIGH"  # Lots of hierarchy deviation = human-like
+
+    def _assess_overall(self, r: AnalysisResults) -> str:
+        """Provide overall humanization assessment with enhanced structural analysis"""
+        score_map = {"HIGH": 4, "MEDIUM": 3, "LOW": 2, "VERY LOW": 1, "UNKNOWN": 2.5, "N/A": 2.5}
+
+        # Base dimensions (always present) - adjusted weights to accommodate new dimensions
         scores = [
-            score_map[r.perplexity_score] * 0.18,  # 18% weight
-            score_map[r.burstiness_score] * 0.22,  # 22% weight
-            score_map[r.structure_score] * 0.18,   # 18% weight
-            score_map[r.voice_score] * 0.18,       # 18% weight
-            score_map[r.technical_score] * 0.09,   # 9% weight
-            score_map[r.formatting_score] * 0.05,  # 5% weight
+            score_map[r.perplexity_score] * 0.15,  # 15% weight (was 18%)
+            score_map[r.burstiness_score] * 0.18,  # 18% weight (was 22%)
+            score_map[r.structure_score] * 0.15,   # 15% weight (was 18%)
+            score_map[r.voice_score] * 0.15,       # 15% weight (was 18%)
+            score_map[r.technical_score] * 0.07,   # 7% weight (was 9%)
+            score_map[r.formatting_score] * 0.04,  # 4% weight (was 5%)
         ]
 
-        # Enhanced dimensions (if available)
+        # Enhanced NLP dimensions (if available)
         if r.syntactic_score and r.syntactic_score != "UNKNOWN":
-            scores.append(score_map[r.syntactic_score] * 0.05)  # 5% weight
+            scores.append(score_map[r.syntactic_score] * 0.04)  # 4% weight
         else:
-            scores.append(score_map["UNKNOWN"] * 0.05)
+            scores.append(score_map["UNKNOWN"] * 0.04)
 
         if r.sentiment_score and r.sentiment_score != "UNKNOWN":
-            scores.append(score_map[r.sentiment_score] * 0.05)  # 5% weight
+            scores.append(score_map[r.sentiment_score] * 0.04)  # 4% weight
         else:
-            scores.append(score_map["UNKNOWN"] * 0.05)
+            scores.append(score_map["UNKNOWN"] * 0.04)
+
+        # NEW: Enhanced structural dimensions (always present)
+        # These are research-backed AI detection signals from Perplexity analysis
+        scores.extend([
+            score_map[r.bold_italic_score] * 0.05,  # 5% - High value (ChatGPT uses 10x more bold)
+            score_map[r.list_usage_score] * 0.04,   # 4% - High value (AI uses lists 78% of time)
+            score_map[r.punctuation_score] * 0.05,  # 5% - Very high value (em-dash cascading is strong marker)
+            score_map[r.whitespace_score] * 0.02,   # 2% - Medium value
+            score_map.get(r.code_structure_score, score_map["N/A"]) * 0.01,  # 1% - Conditional
+            score_map.get(r.heading_hierarchy_score, score_map["N/A"]) * 0.01,  # 1% - Conditional
+        ])
 
         weighted_avg = sum(scores)
 
@@ -1874,6 +2450,26 @@ Syntactic (Naturalness):    {r.syntactic_score:12s}  (Repetition: {r.syntactic_r
             report += f"""
 Sentiment (Variation):      {r.sentiment_score:12s}  (Variance: {r.sentiment_variance:.3f}, Mean: {r.sentiment_mean:.2f})"""
 
+        # NEW: Enhanced structural dimensions (always present)
+        report += f"""
+
+{'─' * 80}
+ENHANCED STRUCTURAL ANALYSIS (NEW)
+{'─' * 80}
+
+Bold/Italic Patterns:       {r.bold_italic_score:12s}  (Bold: {r.bold_per_1k_words:.1f}/1k, Consistency: {r.formatting_consistency_score:.2f})
+List Usage:                 {r.list_usage_score:12s}  (Items: {r.total_list_items}, Ratio O/U: {r.ordered_to_unordered_ratio:.2f})
+Punctuation Clustering:     {r.punctuation_score:12s}  (Em-dash cascade: {r.em_dash_cascading_score:.2f}, Oxford: {r.oxford_comma_consistency:.2f})
+Whitespace Patterns:        {r.whitespace_score:12s}  (Para uniformity: {r.paragraph_uniformity_score:.2f}, Variance: {r.paragraph_length_variance:.0f})"""
+
+        if r.code_block_count > 0:
+            report += f"""
+Code Structure:             {r.code_structure_score:12s}  (Blocks: {r.code_block_count}, Lang consistency: {r.code_lang_consistency:.2f})"""
+
+        if r.total_headings >= 3:
+            report += f"""
+Heading Hierarchy:          {r.heading_hierarchy_score:12s}  (Skips: {r.heading_hierarchy_skips}, Adherence: {r.heading_strict_adherence:.2f})"""
+
         report += f"""
 
 OVERALL ASSESSMENT: {r.overall_assessment}
@@ -1972,7 +2568,60 @@ READABILITY METRICS:
   SMOG Index: {r.smog_index:.1f} (years of education needed)
 """
 
+        # NEW: Enhanced structural analysis details
         report += f"""
+{'─' * 80}
+ENHANCED STRUCTURAL ANALYSIS DETAILS
+{'─' * 80}
+
+BOLD/ITALIC FORMATTING PATTERNS:
+  Bold Density: {r.bold_per_1k_words:.1f} per 1k words (Human: 1-5, AI: 10-50)
+  Italic Density: {r.italic_per_1k_words:.1f} per 1k words
+  Formatting Consistency: {r.formatting_consistency_score:.3f} (Lower = more varied = human-like)
+  Score: {r.bold_italic_score} ({'✓ Human-like' if r.bold_italic_score in ['HIGH', 'MEDIUM'] else '⚠ AI-like'})
+
+LIST USAGE PATTERNS:
+  Total List Items: {r.total_list_items} (Ordered: {r.ordered_list_items}, Unordered: {r.unordered_list_items})
+  List-to-Text Ratio: {r.list_to_text_ratio:.1%} (AI tends >25%)
+  Ordered/Unordered Ratio: {r.ordered_to_unordered_ratio:.2f} (AI typical: 0.15-0.25)
+  Item Length Variance: {r.list_item_length_variance:.1f} (Higher = more human-like)
+  Score: {r.list_usage_score} ({'✓ Human-like' if r.list_usage_score in ['HIGH', 'MEDIUM'] else '⚠ AI-like'})
+
+PUNCTUATION CLUSTERING:
+  Em-dash Cascading: {r.em_dash_cascading_score:.3f} (>0.7 = AI declining pattern)
+  Oxford Comma Usage: {r.oxford_comma_count} (vs non-Oxford: {r.non_oxford_comma_count})
+  Oxford Consistency: {r.oxford_comma_consistency:.3f} (1.0 = always Oxford = AI-like)
+  Semicolons: {r.semicolon_count} ({r.semicolon_per_1k_words:.1f} per 1k words)
+  Score: {r.punctuation_score} ({'✓ Human-like' if r.punctuation_score in ['HIGH', 'MEDIUM'] else '⚠ AI-like'})
+
+WHITESPACE & PARAGRAPH STRUCTURE:
+  Paragraph Variance: {r.paragraph_length_variance:.0f} words² (Higher = more human-like)
+  Paragraph Uniformity: {r.paragraph_uniformity_score:.3f} (Lower = more varied = human-like)
+  Blank Lines: {r.blank_lines_count}
+  Text Density: {r.text_density:.1f} chars/line
+  Score: {r.whitespace_score} ({'✓ Human-like' if r.whitespace_score in ['HIGH', 'MEDIUM'] else '⚠ AI-like'})"""
+
+        if r.code_block_count > 0:
+            report += f"""
+
+CODE BLOCK PATTERNS:
+  Total Blocks: {r.code_block_count}
+  With Language Spec: {r.code_blocks_with_lang} ({r.code_lang_consistency:.0%})
+  Language Consistency: {r.code_lang_consistency:.3f} (1.0 = always specified = AI-like)
+  Avg Comment Density: {r.avg_code_comment_density:.3f}
+  Score: {r.code_structure_score} ({'✓ Human-like' if r.code_structure_score in ['HIGH', 'MEDIUM'] else '⚠ AI-like' if r.code_structure_score not in ['N/A'] else 'N/A'})"""
+
+        if r.total_headings >= 3:
+            report += f"""
+
+HEADING HIERARCHY ANALYSIS:
+  Hierarchy Skips: {r.heading_hierarchy_skips} (Humans occasionally skip; AI never does)
+  Hierarchy Adherence: {r.heading_strict_adherence:.3f} (1.0 = perfect = AI-like)
+  Heading Length Variance: {r.heading_length_variance:.1f} (Higher = more varied)
+  Score: {r.heading_hierarchy_score} ({'✓ Human-like' if r.heading_hierarchy_score in ['HIGH', 'MEDIUM'] else '⚠ AI-like' if r.heading_hierarchy_score not in ['N/A'] else 'N/A'})"""
+
+        report += f"""
+
 {'=' * 80}
 RECOMMENDATIONS
 {'=' * 80}
