@@ -17,8 +17,9 @@ Validate that humanization efforts have successfully removed AI patterns and tha
 ## Prerequisites
 
 - Content that has undergone humanization editing
-- Python 3.7+ installed for quantitative analysis
+- Python 3.7+ installed (Python 3.9+ recommended) for quantitative analysis
 - AI Pattern Analysis Tool (`{{config.root}}/tools/analyze_ai_patterns.py`)
+- Python virtual environment set up with required dependencies (see analyze-ai-patterns.md task for setup)
 - Before-humanization baseline metrics (recommended for comparison)
 - 20-30 minutes for comprehensive QA check
 
@@ -32,20 +33,35 @@ Validate that humanization efforts have successfully removed AI patterns and tha
 
 ### 1. Run Quantitative Analysis
 
+**IMPORTANT**: If this is your first time using the tool, complete the Python environment setup from `analyze-ai-patterns.md` task Step 0.
+
 **Execute AI pattern analysis on humanized content**:
 
 ```bash
 cd {{config.root}}/tools
-python3 analyze_ai_patterns.py PATH_TO_HUMANIZED_FILE \
+
+# Activate virtual environment (REQUIRED every time)
+source nlp-env/bin/activate  # macOS/Linux
+# OR nlp-env\Scripts\activate  # Windows
+
+# Run analysis
+python analyze_ai_patterns.py PATH_TO_HUMANIZED_FILE \
   --domain-terms "Domain,Specific,Terms" \
   > humanization-qa-report.txt
 ```
 
 **Example**:
 ```bash
-python3 analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
+# Activate environment first
+source nlp-env/bin/activate
+
+# Run analysis
+python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
   --domain-terms "Docker,Kubernetes,PostgreSQL" \
   > chapter-03-qa-report.txt
+
+# Deactivate when done
+deactivate
 ```
 
 **Review the output**: Check all 6 dimension scores and overall assessment.
@@ -225,10 +241,10 @@ Publisher compliance:     [PASS/FAIL]
 
 BEFORE/AFTER (if available):
 ----------------------------
-AI vocabulary:     [before] í [after] ([X%] reduction)
-Em-dashes/page:    [before] í [after]
-Sentence StdDev:   [before] í [after]
-Overall:           [before] í [after]
+AI vocabulary:     [before] ÔøΩ [after] ([X%] reduction)
+Em-dashes/page:    [before] ÔøΩ [after]
+Sentence StdDev:   [before] ÔøΩ [after]
+Overall:           [before] ÔøΩ [after]
 
 PUBLICATION READINESS:
 ----------------------
@@ -257,11 +273,11 @@ Next Steps:
 **If FAIL**:
 - Create targeted work plan for failed dimensions
 - Re-apply specific humanization passes:
-  - VERY LOW Perplexity í Pass 2 (vocabulary humanization)
-  - VERY LOW Burstiness í Pass 3 (sentence variation)
-  - VERY LOW Structure í Pass 3.3 (transitions) + Pass 6 (headings)
-  - VERY LOW Voice í Pass 4 (voice refinement)
-  - VERY LOW Formatting í Pass 5 (formatting humanization)
+  - VERY LOW Perplexity ÔøΩ Pass 2 (vocabulary humanization)
+  - VERY LOW Burstiness ÔøΩ Pass 3 (sentence variation)
+  - VERY LOW Structure ÔøΩ Pass 3.3 (transitions) + Pass 6 (headings)
+  - VERY LOW Voice ÔøΩ Pass 4 (voice refinement)
+  - VERY LOW Formatting ÔøΩ Pass 5 (formatting humanization)
 - Re-run QA check after additional editing
 
 ## Output Deliverable
@@ -301,9 +317,9 @@ L Proceeding to publication with any VERY LOW dimension scores
 **Standard workflow**:
 1. `analyze-ai-patterns.md` (establish baseline)
 2. `humanize-post-generation.md` (apply systematic editing)
-3. `humanization-qa-check.md` ê **YOU ARE HERE** (validate results)
-4. If PASS í `copy-edit-chapter.md` (final editorial polish)
-5. If FAIL í Return to step 2, apply targeted edits
+3. `humanization-qa-check.md` ÔøΩ **YOU ARE HERE** (validate results)
+4. If PASS ÔøΩ `copy-edit-chapter.md` (final editorial polish)
+5. If FAIL ÔøΩ Return to step 2, apply targeted edits
 
 **Iterative refinement** (if needed):
 1. Run QA check
@@ -337,13 +353,13 @@ L Proceeding to publication with any VERY LOW dimension scores
 
 **5-Minute Fast Check** (if time-constrained):
 - [ ] Run analysis tool, check overall assessment
-- [ ] Overall: MINIMAL or LIGHT? í PASS
-- [ ] Overall: MODERATE with no VERY LOW? í CONDITIONAL PASS
-- [ ] Overall: SUBSTANTIAL/EXTENSIVE or any VERY LOW? í FAIL
-- [ ] Read 2 paragraphs aloud í Sounds natural?
-- [ ] Check em-dashes í d2 per page?
-- [ ] If all yes í PASS, proceed
-- [ ] If any no í FAIL, apply targeted edits
+- [ ] Overall: MINIMAL or LIGHT? ÔøΩ PASS
+- [ ] Overall: MODERATE with no VERY LOW? ÔøΩ CONDITIONAL PASS
+- [ ] Overall: SUBSTANTIAL/EXTENSIVE or any VERY LOW? ÔøΩ FAIL
+- [ ] Read 2 paragraphs aloud ÔøΩ Sounds natural?
+- [ ] Check em-dashes ÔøΩ d2 per page?
+- [ ] If all yes ÔøΩ PASS, proceed
+- [ ] If any no ÔøΩ FAIL, apply targeted edits
 
 ## Notes
 

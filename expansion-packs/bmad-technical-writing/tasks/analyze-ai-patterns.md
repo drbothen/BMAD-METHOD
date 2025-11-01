@@ -16,20 +16,76 @@ Systematically analyze manuscript files for AI-generated content patterns using 
 
 ## Prerequisites
 
-- Python 3.7+ installed
+- Python 3.7+ installed (Python 3.9+ recommended)
 - AI Pattern Analysis Tool available at `{{config.root}}/tools/analyze_ai_patterns.py`
 - Markdown files to analyze (chapters, sections, or entire manuscript)
-- Optional: `textstat` library for readability metrics (`pip install textstat`)
+- Python virtual environment set up with required dependencies (see setup below)
 
 ## Workflow Steps
 
-### 0. Load Configuration
+### 0. Python Environment Setup (First Time Only)
+
+**CRITICAL**: The AI Pattern Analysis Tool requires Python dependencies. Set up a virtual environment ONCE before first use.
+
+**Navigate to tools directory**:
+```bash
+cd {{config.root}}/tools
+```
+
+**Create virtual environment** (one-time setup):
+```bash
+# Create virtual environment
+python3 -m venv nlp-env
+
+# Activate it (macOS/Linux)
+source nlp-env/bin/activate
+
+# OR activate it (Windows)
+nlp-env\Scripts\activate
+```
+
+**Install dependencies**:
+```bash
+# Install all required libraries
+pip install -r requirements.txt
+
+# Download NLTK models
+python -m nltk.downloader punkt punkt_tab vader_lexicon
+
+# Download spaCy language model
+python -m spacy download en_core_web_sm
+
+# Download TextBlob corpora (optional, for additional sentiment analysis)
+python -m textblob.download_corpora
+```
+
+**Verify installation**:
+```bash
+# Test the script
+python analyze_ai_patterns.py --help
+```
+
+**Expected output**: Help text showing all available options.
+
+**IMPORTANT**:
+- **First-time setup takes 5-10 minutes** (downloading models ~500MB-1GB total)
+- **Subsequent uses**: Just activate the environment (`source nlp-env/bin/activate`)
+- **When done**: Deactivate with `deactivate` command
+- **Virtual environment location**: `{{config.root}}/tools/nlp-env/` (gitignored)
+
+**Troubleshooting**:
+- If `python3` not found, try `python`
+- If numpy conflicts occur, upgrade pip: `pip install --upgrade pip`
+- For M1/M2 Macs, you may need: `pip install --upgrade numpy`
+- GPT-2 model auto-downloads on first analysis run (~500MB)
+
+### 1. Load Configuration
 
 - Read `.bmad-technical-writing/config.yaml` to resolve paths
 - Extract: `config.manuscript.root`, `config.manuscript.sections`, `config.manuscript.chapters`
 - If config not found, use defaults: `manuscript/`, `manuscript/sections`, `manuscript/chapters`
 
-### 1. Identify Target File(s)
+### 2. Identify Target File(s)
 
 **For single file analysis**:
 - Locate the specific file to analyze (chapter, section, or draft)
@@ -40,7 +96,7 @@ Systematically analyze manuscript files for AI-generated content patterns using 
 - Decide scope: single chapter's sections, all chapters, specific subset
 - Note the directory path (e.g., `{{config.manuscript.sections}}/chapter-03/`)
 
-### 2. Determine Domain-Specific Terms (Optional but Recommended)
+### 3. Determine Domain-Specific Terms (Optional but Recommended)
 
 **Identify technical vocabulary specific to the book's subject matter**:
 - Programming languages: "Python", "JavaScript", "Rust"
@@ -52,17 +108,23 @@ Systematically analyze manuscript files for AI-generated content patterns using 
 
 **Format**: Comma-separated list (e.g., "Docker,Kubernetes,PostgreSQL,Redis")
 
-### 3. Run Single File Analysis
+### 4. Run Single File Analysis
+
+**IMPORTANT**: Activate the virtual environment first (every time you use the tool):
+```bash
+cd {{config.root}}/tools
+source nlp-env/bin/activate  # macOS/Linux
+# OR nlp-env\Scripts\activate  # Windows
+```
 
 **Command**:
 ```bash
-cd {{config.root}}/tools
-python3 analyze_ai_patterns.py PATH_TO_FILE [--domain-terms "term1,term2,term3"]
+python analyze_ai_patterns.py PATH_TO_FILE [--domain-terms "term1,term2,term3"]
 ```
 
 **Example**:
 ```bash
-python3 analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
+python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
   --domain-terms "Docker,Kubernetes,PostgreSQL,Redis,GraphQL"
 ```
 
@@ -73,7 +135,7 @@ python3 analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
 - Detailed metrics breakdown
 - Specific recommendations
 
-### 4. Interpret Results
+### 5. Interpret Results
 
 **Review each dimension score**:
 
@@ -116,7 +178,7 @@ python3 analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
 - SUBSTANTIAL humanization required: Major rewrite (20-40% AI patterns)
 - EXTENSIVE humanization required: Likely AI-generated (>40% AI patterns)
 
-### 5. Document Specific Issues
+### 6. Document Specific Issues
 
 **Extract actionable data from the report**:
 
@@ -139,19 +201,24 @@ python3 analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
 - Note em-dashes per page (target 1-2)
 - Note bold/italic usage patterns
 
-### 6. Run Batch Analysis (Optional)
+### 7. Run Batch Analysis (Optional)
 
 **When analyzing multiple files** (all sections in a chapter, all chapters in manuscript):
 
-**Command**:
+**IMPORTANT**: Activate virtual environment first:
 ```bash
 cd {{config.root}}/tools
-python3 analyze_ai_patterns.py --batch DIRECTORY_PATH --format tsv > analysis-report.tsv
+source nlp-env/bin/activate  # macOS/Linux
+```
+
+**Command**:
+```bash
+python analyze_ai_patterns.py --batch DIRECTORY_PATH --format tsv > analysis-report.tsv
 ```
 
 **Example**:
 ```bash
-python3 analyze_ai_patterns.py --batch ../{{config.manuscript.sections}}/chapter-03 \
+python analyze_ai_patterns.py --batch ../{{config.manuscript.sections}}/chapter-03 \
   --format tsv > chapter-03-section-analysis.tsv
 ```
 
@@ -168,7 +235,7 @@ python3 analyze_ai_patterns.py --batch ../{{config.manuscript.sections}}/chapter
 - lexical_diversity, headings, h_depth, h_parallel, em_dashes_pg
 - perplexity, burstiness, structure, voice, technical, formatting, overall
 
-### 7. Generate JSON Output (Optional - For Automation)
+### 8. Generate JSON Output (Optional - For Automation)
 
 **For programmatic processing or integration with other tools**:
 
@@ -189,7 +256,7 @@ python3 analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
 - Programmatic tracking of metrics over time
 - Dashboard visualizations
 
-### 8. Create Humanization Work Plan
+### 9. Create Humanization Work Plan
 
 **Based on analysis results, prioritize humanization efforts**:
 
@@ -230,20 +297,21 @@ Priority 3 (Nice to Have):
 Estimated time: [TIME] minutes
 ```
 
-### 9. Optional: Compare Before/After
+### 10. Optional: Compare Before/After
 
 **To validate humanization effectiveness**:
 
-1. **Run analysis BEFORE humanization**, save output:
+1. **Activate environment and run analysis BEFORE humanization**, save output:
    ```bash
-   python3 analyze_ai_patterns.py chapter-03.md > before-analysis.txt
+   source nlp-env/bin/activate  # Don't forget this!
+   python analyze_ai_patterns.py chapter-03.md > before-analysis.txt
    ```
 
 2. **Apply humanization edits** using `humanize-post-generation.md` task
 
 3. **Run analysis AFTER humanization**, save output:
    ```bash
-   python3 analyze_ai_patterns.py chapter-03.md > after-analysis.txt
+   python analyze_ai_patterns.py chapter-03.md > after-analysis.txt
    ```
 
 4. **Compare metrics**:
@@ -313,25 +381,35 @@ Estimated time: [TIME] minutes
 **Documentation**: `{{config.root}}/tools/README.md`
 **Requirements**: `{{config.root}}/tools/requirements.txt`
 
-**Installation** (optional readability metrics):
+**Installation** (see Step 0 above for full setup):
 ```bash
 cd {{config.root}}/tools
+python3 -m venv nlp-env
+source nlp-env/bin/activate
 pip install -r requirements.txt
+python -m nltk.downloader punkt punkt_tab vader_lexicon
+python -m spacy download en_core_web_sm
 ```
 
-**Usage**:
+**Usage** (always activate environment first):
 ```bash
+# Activate environment first
+source nlp-env/bin/activate  # macOS/Linux
+
 # Single file, text report
-python3 analyze_ai_patterns.py FILE.md
+python analyze_ai_patterns.py FILE.md
 
 # Single file with domain terms
-python3 analyze_ai_patterns.py FILE.md --domain-terms "Term1,Term2,Term3"
+python analyze_ai_patterns.py FILE.md --domain-terms "Term1,Term2,Term3"
 
 # Batch analysis, TSV output
-python3 analyze_ai_patterns.py --batch DIRECTORY --format tsv > report.tsv
+python analyze_ai_patterns.py --batch DIRECTORY --format tsv > report.tsv
 
 # JSON output for automation
-python3 analyze_ai_patterns.py FILE.md --format json > report.json
+python analyze_ai_patterns.py FILE.md --format json > report.json
+
+# Deactivate when done
+deactivate
 ```
 
 ## Example Workflow
@@ -342,14 +420,20 @@ python3 analyze_ai_patterns.py FILE.md --format json > report.json
 # Navigate to tools directory
 cd /Users/author/manuscript-project/.bmad-technical-writing/tools
 
+# Activate virtual environment
+source nlp-env/bin/activate
+
 # Run analysis with domain terms
-python3 analyze_ai_patterns.py \
+python analyze_ai_patterns.py \
   ../manuscript/chapters/chapter-03.md \
   --domain-terms "Docker,Kubernetes,PostgreSQL,Redis,Nginx" \
   > chapter-03-baseline-analysis.txt
 
 # Review report
 cat chapter-03-baseline-analysis.txt
+
+# Deactivate when done
+deactivate
 ```
 
 **Output interpretation**:
