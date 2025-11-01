@@ -1,0 +1,28 @@
+# AI Pattern Analysis Script Requirements
+#
+# Core dependencies for analyze_ai_patterns.py
+#
+# This script analyzes manuscripts for AI-generated content patterns
+# across 6 dimensions: perplexity, burstiness, structure, voice,
+# technical depth, and formatting.
+
+# Optional: Advanced readability metrics (Flesch Reading Ease, Flesch-Kincaid Grade, etc.)
+# If not installed, script will skip readability analysis
+textstat>=0.7.3
+
+# Standard library dependencies (included with Python 3.7+):
+# - re (regex pattern matching)
+# - statistics (mean, stdev calculations)
+# - argparse (CLI interface)
+# - pathlib (file path operations)
+# - dataclasses (structured data containers)
+# - json (JSON output format)
+# - typing (type hints)
+
+# Installation:
+# pip install -r requirements.txt
+#
+# Or for minimal installation (textstat optional):
+# pip install textstat
+
+# Python version requirement: 3.7+
