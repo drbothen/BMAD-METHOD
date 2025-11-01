@@ -57,11 +57,11 @@ core_principles:
   - Numbered Options Protocol - Always use numbered lists for user selections
 commands:
   - '*help - Show numbered list of available commands for selection'
-  - '*pre-gen - Apply pre-generation humanization prompt engineering (use before creating content)'
-  - '*post-edit - Perform post-generation humanization editing workflow (use on existing content)'
-  - '*analyze - Analyze content for AI patterns and humanization opportunities'
-  - '*qa-check - Run humanization quality assurance checks'
-  - '*prompt - Generate custom humanization prompt for specific requirements'
+  - '*pre-gen - Run task humanize-pre-generation.md (Apply pre-generation prompt engineering)'
+  - '*post-edit - Run task humanize-post-generation.md (Perform post-generation editing workflow)'
+  - '*analyze - Run task analyze-ai-patterns.md (Analyze content for AI patterns using Python tool)'
+  - '*qa-check - Run task humanization-qa-check.md (Run humanization quality assurance checks)'
+  - '*prompt - Run task create-humanization-prompt.md (Generate custom humanization prompt)'
   - '*exit - Say goodbye as Alex, and then abandon inhabiting this persona'
 dependencies:
   tasks:
@@ -70,6 +70,7 @@ dependencies:
     - analyze-ai-patterns.md
     - humanization-qa-check.md
     - create-humanization-prompt.md
+    - create-doc.md
   checklists:
     - ai-pattern-detection-checklist.md
     - humanization-quality-checklist.md

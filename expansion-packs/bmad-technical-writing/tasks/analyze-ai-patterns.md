@@ -1,458 +1,383 @@
-# Task: Analyze AI Patterns in Content
+# Task: Analyze AI Patterns in Manuscript
 
 <!-- Powered by BMAD™ Core -->
 
 ## Purpose
 
-Systematically identify AI-characteristic patterns in content to diagnose humanization needs and prioritize editing efforts for maximum impact.
+Systematically analyze manuscript files for AI-generated content patterns using the AI Pattern Analysis Tool. Provides quantitative assessment across 6 dimensions (perplexity, burstiness, structure, voice, technical depth, formatting) to guide humanization efforts.
 
 ## When to Use This Task
 
-- Before beginning post-generation humanization editing
-- When assessing content quality and naturalness
-- When troubleshooting why content "feels" AI-generated
-- When training team members to recognize AI patterns
-- When evaluating humanization effectiveness (before/after comparison)
+- **Before humanization** to establish baseline metrics and identify specific issues
+- **After humanization** to validate improvement and measure success
+- **During quality assurance** to ensure content meets publication standards
+- When content feels AI-generated but you need specific diagnostic data
+- For batch analysis of entire manuscript sections or chapters
 
 ## Prerequisites
 
-- Content to analyze (AI-generated or suspected AI content)
-- Text editor or analysis tool
-- 10-15 minutes for thorough analysis
+- Python 3.7+ installed
+- AI Pattern Analysis Tool available at `{{config.root}}/tools/analyze_ai_patterns.py`
+- Markdown files to analyze (chapters, sections, or entire manuscript)
+- Optional: `textstat` library for readability metrics (`pip install textstat`)
 
-## Analysis Framework
+## Workflow Steps
 
-This task produces a scored assessment across five key dimensions that distinguish AI from human writing.
+### 0. Load Configuration
 
----
+- Read `.bmad-technical-writing/config.yaml` to resolve paths
+- Extract: `config.manuscript.root`, `config.manuscript.sections`, `config.manuscript.chapters`
+- If config not found, use defaults: `manuscript/`, `manuscript/sections`, `manuscript/chapters`
 
-## Dimension 1: Perplexity Analysis (Vocabulary Predictability)
+### 1. Identify Target File(s)
 
-### What to Analyze
+**For single file analysis**:
+- Locate the specific file to analyze (chapter, section, or draft)
+- Note the file path (e.g., `{{config.manuscript.chapters}}/chapter-03.md`)
 
-Perplexity measures how predictable word choices are. AI systems favor statistically common words, creating low perplexity. Human writing includes unexpected vocabulary choices, creating higher perplexity.
+**For batch analysis**:
+- Identify the directory containing files to analyze
+- Decide scope: single chapter's sections, all chapters, specific subset
+- Note the directory path (e.g., `{{config.manuscript.sections}}/chapter-03/`)
 
-### How to Assess
+### 2. Determine Domain-Specific Terms (Optional but Recommended)
 
-#### 1.1 AI-Characteristic Vocabulary Count
+**Identify technical vocabulary specific to the book's subject matter**:
+- Programming languages: "Python", "JavaScript", "Rust"
+- Frameworks/libraries: "React", "Django", "Kubernetes"
+- Domain concepts: "OAuth", "GraphQL", "Docker"
+- Tools: "Git", "npm", "PostgreSQL"
 
-Search the content for these common AI words and count occurrences:
+**Why this matters**: The technical depth score measures domain term density. Providing domain terms improves accuracy of this dimension.
 
-**Tier 1 (Most Obvious AI Markers)**:
-- delve / delving / delves
-- robust / robustness
-- leverage / leveraging / leverages
-- facilitate / facilitates / facilitating
-- underscore / underscores / underscoring
-- harness / harnesses / harnessing
-- pivotal
-- holistic
+**Format**: Comma-separated list (e.g., "Docker,Kubernetes,PostgreSQL,Redis")
 
-**Tier 2 (Overused by AI)**:
-- seamless / seamlessly
-- comprehensive / comprehensively
-- optimize / optimization / optimizing
-- streamline / streamlined
-- paramount
-- quintessential
-- myriad
-- plethora
+### 3. Run Single File Analysis
 
-**Tier 3 (Context-Dependent)**:
-- innovative (unless discussing actual innovation)
-- cutting-edge (unless it genuinely is)
-- revolutionary (almost never appropriate)
-- game-changing (marketing cliché)
-
-#### 1.2 Scoring
-
-| AI Words Found | Perplexity Score | Assessment |
-|----------------|------------------|------------|
-| 0-2 per 1000 words | HIGH (Good) | Minimal AI vocabulary |
-| 3-5 per 1000 words | MEDIUM | Noticeable AI patterns |
-| 6-10 per 1000 words | LOW | Significant AI vocabulary |
-| 11+ per 1000 words | VERY LOW | Obviously AI-generated |
-
-**Record**: `Perplexity Score: [HIGH/MEDIUM/LOW/VERY LOW]`
-
----
-
-## Dimension 2: Burstiness Analysis (Sentence Variation)
-
-### What to Analyze
-
-Burstiness measures variation in sentence length and structure. Humans naturally vary between short and long sentences. AI tends toward uniform lengths.
-
-### How to Assess
-
-#### 2.1 Sample Selection
-
-Choose 3 representative paragraphs (about 150-200 words each) from different sections.
-
-#### 2.2 Measure Sentence Lengths
-
-For each paragraph:
-1. Count words in each sentence
-2. Record: [Sentence 1: X words, Sentence 2: Y words, etc.]
-
-#### 2.3 Calculate Statistics
-
-For each paragraph:
-- **Mean length**: Average words per sentence
-- **Range**: Shortest to longest sentence
-- **Variation**: How much lengths differ
-
-#### 2.4 Pattern Analysis
-
-**Red Flags (Low Burstiness - AI-typical)**:
-- Most sentences within narrow range (e.g., 15-25 words)
-- No sentences shorter than 10 words
-- No sentences longer than 30 words
-- Consistent pattern across multiple paragraphs
-
-**Green Flags (High Burstiness - Human-like)**:
-- Mix of short (5-10), medium (15-25), and long (30-45+) sentences
-- Occasional fragments (1-4 words)
-- Unpredictable variation
-- Pattern differs between paragraphs
-
-#### 2.5 Scoring
-
-| Pattern | Burstiness Score | Assessment |
-|---------|------------------|------------|
-| Wide variation, unpredictable | HIGH (Good) | Human-like rhythm |
-| Some variation, but patterns visible | MEDIUM | Moderate variation |
-| Narrow range, most sentences similar | LOW | Uniform AI pattern |
-| Nearly identical lengths | VERY LOW | Obviously algorithmic |
-
-**Record**: `Burstiness Score: [HIGH/MEDIUM/LOW/VERY LOW]`
-
-**Example Calculation**:
-```
-Paragraph Sample: 5 sentences
-Lengths: 12, 18, 15, 19, 16 words
-Mean: 16 words
-Range: 12-19 (only 7-word spread)
-Assessment: LOW burstiness (narrow range, no variety)
+**Command**:
+```bash
+cd {{config.root}}/tools
+python3 analyze_ai_patterns.py PATH_TO_FILE [--domain-terms "term1,term2,term3"]
 ```
 
----
+**Example**:
+```bash
+python3 analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
+  --domain-terms "Docker,Kubernetes,PostgreSQL,Redis,GraphQL"
+```
 
-## Dimension 3: Structural Pattern Analysis
+**Expected output**: Detailed text report with:
+- Summary header (words, sentences, paragraphs)
+- Dimension scores (HIGH/MEDIUM/LOW/VERY LOW)
+- Overall assessment
+- Detailed metrics breakdown
+- Specific recommendations
 
-### What to Analyze
+### 4. Interpret Results
 
-AI systems fall into predictable structural patterns: formulaic transitions, rigid paragraph structures, list overuse, and repetitive opening patterns.
+**Review each dimension score**:
 
-### How to Assess
+**Perplexity (Vocabulary)**:
+- HIGH (≤2 AI words per 1k): Natural vocabulary
+- MEDIUM (2-5 per 1k): Acceptable
+- LOW (5-10 per 1k): Needs improvement
+- VERY LOW (>10 per 1k): Heavily AI-generated
 
-#### 3.1 Transition Word Analysis
+**Burstiness (Sentence Variation)**:
+- HIGH (StdDev ≥10): Strong variation
+- MEDIUM (StdDev 6-10): Moderate variation
+- LOW (StdDev 3-6): Weak variation
+- VERY LOW (StdDev <3): Uniform, AI-like
 
-Count occurrences of formulaic transitions:
+**Structure (Organization)**:
+- Check formulaic transitions count (target <3 per page)
+- Check heading depth (target 3 levels max)
+- Check heading parallelism score (0=varied, 1=mechanical)
 
-**Primary Markers**:
-- "Furthermore," → Count: ___
-- "Moreover," → Count: ___
-- "Additionally," → Count: ___
-- "In addition," → Count: ___
-- "It is important to note that" → Count: ___
-- "It is worth mentioning that" → Count: ___
-- "When it comes to" → Count: ___
-- "One of the key aspects" → Count: ___
+**Voice (Authenticity)**:
+- Count first-person markers
+- Count direct address ("you/your")
+- Count contractions
+- Higher = more authentic voice
 
-**Total formulaic transitions**: ___
+**Technical (Expertise)**:
+- Check domain terms per 1k words
+- HIGH (>20 per 1k): Strong technical content
+- LOW (<5 per 1k): Generic content
 
-#### 3.2 Paragraph Opening Analysis
-
-Examine the first sentence of 10 paragraphs:
-
-- How many start with "The [noun]..."? Count: ___
-- How many start with identical subjects? Count: ___
-- How many use topic sentence formula (direct fact statement)? Count: ___
-
-#### 3.3 List Structure Analysis
-
-Count instances where AI defaulted to list format:
-- Numbered lists: ___
-- Bulleted lists: ___
-- Lists that could be prose: ___
-
-#### 3.4 Scoring
-
-| Issue | Count | Impact |
-|-------|-------|--------|
-| Formulaic transitions | 0-1 = Low, 2-4 = Medium, 5+ = High | |
-| Repetitive openings | 0-2 = Low, 3-5 = Medium, 6+ = High | |
-| Excessive lists | 0-1 = Low, 2-3 = Medium, 4+ = High | |
-
-**Overall Structural Score**:
-- All Low impacts = HIGH (Good)
-- Mix of Low/Medium = MEDIUM
-- Any High impact = LOW
-- Multiple High impacts = VERY LOW
-
-**Record**: `Structural Score: [HIGH/MEDIUM/LOW/VERY LOW]`
-
----
-
-## Dimension 4: Voice and Authenticity Analysis
-
-### What to Analyze
-
-AI-generated content often lacks personal voice, authentic perspective, specific examples, and emotional connection.
-
-### How to Assess
-
-#### 4.1 Personal Voice Markers
-
-Count presence of authentic voice indicators:
-
-**Perspective Markers**:
-- First person usage ("I," "we," "my," "our"): Yes/No, Count: ___
-- Direct address ("you," "your"): Yes/No, Count: ___
-- Personal insights ("In my experience," "I've found"): Count: ___
-
-**Specificity Markers**:
-- Specific examples with details (names, numbers, versions): Count: ___
-- Real-world scenarios vs. generic examples: ___/___
-- Concrete anecdotes vs. abstract statements: ___/___
-
-**Emotional Engagement**:
-- Expressions of enthusiasm, concern, or other appropriate emotions: Count: ___
-- Acknowledgment of reader challenges: Count: ___
-- Conversational asides or parenthetical thoughts: Count: ___
-
-#### 4.2 Authenticity Red Flags
-
-**Check for**:
-- [ ] Content maintains uniform formality throughout (no tone variation)
-- [ ] No acknowledgment of complexity or trade-offs
-- [ ] Everything presented with absolute certainty (no hedging)
-- [ ] Generic statements without supporting specifics
-- [ ] No evidence of authorial expertise or perspective
-
-#### 4.3 Scoring
-
-| Authenticity Indicators | Count | Voice Score |
-|-------------------------|-------|-------------|
-| Multiple voice markers + specific examples + emotion | 10+ | HIGH (Good) |
-| Some voice markers + occasional specifics | 5-9 | MEDIUM |
-| Minimal voice markers + mostly generic | 2-4 | LOW |
-| No voice markers + completely generic | 0-1 | VERY LOW |
-
-**Record**: `Voice Score: [HIGH/MEDIUM/LOW/VERY LOW]`
-
----
-
-## Dimension 5: Technical Content Analysis
-
-### What to Analyze
-
-For technical writing specifically, assess whether content demonstrates genuine expertise or relies on AI-typical abstractions.
-
-### How to Assess
-
-#### 5.1 Technical Depth Markers
-
-**Positive Indicators** (count occurrences):
-- Specific version numbers mentioned: ___
-- Concrete error messages or outputs shown: ___
-- Trade-offs or context-dependencies acknowledged: ___
-- Implementation details beyond basic API usage: ___
-- Gotchas or edge cases mentioned: ___
-
-**Negative Indicators** (count occurrences):
-- Vague technical claims without specifics: ___
-- Surface-level coverage without depth: ___
-- Missing prerequisite or version information: ___
-- Code examples that are too generic (foo/bar naming): ___
-
-#### 5.2 Practical Expertise Signals
-
-**Check for**:
-- [ ] References to real tools or libraries (not hypothetical)
-- [ ] Mentions of practical workflows or commands
-- [ ] Discussion of when approach does/doesn't work
-- [ ] Evidence of hands-on experience vs. documentation paraphrasing
-
-#### 5.3 Scoring
-
-| Pattern | Technical Authenticity Score |
-|---------|------------------------------|
-| Multiple positive indicators, few negative | HIGH (Good) |
-| Mix of positive and negative indicators | MEDIUM |
-| More negative than positive indicators | LOW |
-| Mostly vague abstractions, no specifics | VERY LOW |
-
-**Record**: `Technical Score: [HIGH/MEDIUM/LOW/VERY LOW]`
-
----
-
-## Comprehensive Assessment
-
-### Overall AI Pattern Score
-
-Combine all dimension scores:
-
-| Dimension | Score | Weight |
-|-----------|-------|--------|
-| Perplexity | [HIGH/MEDIUM/LOW/VERY LOW] | 20% |
-| Burstiness | [HIGH/MEDIUM/LOW/VERY LOW] | 25% |
-| Structure | [HIGH/MEDIUM/LOW/VERY LOW] | 20% |
-| Voice | [HIGH/MEDIUM/LOW/VERY LOW] | 20% |
-| Technical | [HIGH/MEDIUM/LOW/VERY LOW] | 15% |
-
-### Interpretation
+**Formatting (Distribution)**:
+- Check em-dashes per page (target 1-2 max)
+- 3+ per page = strong AI signal
 
 **Overall Assessment**:
-- All/Most HIGH scores = **MINIMAL HUMANIZATION NEEDED** (content is already natural)
-- Mix of HIGH/MEDIUM scores = **LIGHT HUMANIZATION NEEDED** (polish and refine)
-- Multiple MEDIUM/LOW scores = **SUBSTANTIAL HUMANIZATION NEEDED** (systematic editing required)
-- Multiple LOW/VERY LOW scores = **EXTENSIVE HUMANIZATION NEEDED** (may need regeneration with better prompts)
+- MINIMAL humanization needed: Publication-ready (<5% AI patterns)
+- LIGHT humanization needed: Minor edits (5-10% AI patterns)
+- MODERATE humanization needed: Systematic editing (10-20% AI patterns)
+- SUBSTANTIAL humanization required: Major rewrite (20-40% AI patterns)
+- EXTENSIVE humanization required: Likely AI-generated (>40% AI patterns)
 
-### Priority Recommendations
+### 5. Document Specific Issues
 
-Based on scores, recommend focus areas:
+**Extract actionable data from the report**:
 
-1. **If Perplexity is LOW**: Priority on vocabulary replacement
-2. **If Burstiness is LOW**: Priority on sentence variation
-3. **If Structure is LOW**: Priority on transition smoothing and pattern breaking
-4. **If Voice is LOW**: Priority on adding authenticity and personal touches
-5. **If Technical is LOW**: Priority on adding specific details and expertise markers
+**AI Vocabulary**:
+- Note the specific words listed (e.g., "delve, robust, leverage, facilitate")
+- Count total instances
+- Calculate per 1k words ratio
 
----
+**Sentence Variation**:
+- Note mean sentence length
+- Note standard deviation
+- Note distribution (short/medium/long percentages)
+
+**Heading Issues**:
+- Note maximum depth (target 3)
+- Note parallelism score (target <0.3)
+- Note verbose heading count (target 0)
+
+**Formatting Problems**:
+- Note em-dashes per page (target 1-2)
+- Note bold/italic usage patterns
+
+### 6. Run Batch Analysis (Optional)
+
+**When analyzing multiple files** (all sections in a chapter, all chapters in manuscript):
+
+**Command**:
+```bash
+cd {{config.root}}/tools
+python3 analyze_ai_patterns.py --batch DIRECTORY_PATH --format tsv > analysis-report.tsv
+```
+
+**Example**:
+```bash
+python3 analyze_ai_patterns.py --batch ../{{config.manuscript.sections}}/chapter-03 \
+  --format tsv > chapter-03-section-analysis.tsv
+```
+
+**Import into spreadsheet** (Excel, Google Sheets, Numbers) to:
+- Compare sections side-by-side
+- Identify outliers (sections with much higher/lower scores)
+- Track improvement over multiple analysis runs
+- Sort by problematic dimensions
+
+**TSV columns**:
+- file, words, sentences, paragraphs
+- ai_words, ai_per_1k, formulaic
+- sent_mean, sent_stdev, sent_min, sent_max, short, medium, long
+- lexical_diversity, headings, h_depth, h_parallel, em_dashes_pg
+- perplexity, burstiness, structure, voice, technical, formatting, overall
+
+### 7. Generate JSON Output (Optional - For Automation)
+
+**For programmatic processing or integration with other tools**:
+
+**Command**:
+```bash
+python3 analyze_ai_patterns.py PATH_TO_FILE --format json > analysis.json
+```
+
+**Example**:
+```bash
+python3 analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
+  --format json > chapter-03-analysis.json
+```
+
+**Use cases**:
+- Automated quality gates in CI/CD pipelines
+- Integration with other analysis tools
+- Programmatic tracking of metrics over time
+- Dashboard visualizations
+
+### 8. Create Humanization Work Plan
+
+**Based on analysis results, prioritize humanization efforts**:
+
+**If Overall Assessment = MINIMAL/LIGHT**:
+- Focus on specific flagged issues only
+- 15-30 minute targeted editing session
+- Priorities: AI vocabulary, em-dash reduction, heading depth
+
+**If Overall Assessment = MODERATE**:
+- Apply systematic humanization workflow (Pass 1-8)
+- 60-90 minute editing session
+- Use `humanize-post-generation.md` task
+- Focus on dimensions scored LOW or VERY LOW
+
+**If Overall Assessment = SUBSTANTIAL/EXTENSIVE**:
+- Consider regenerating with better prompt engineering
+- Or budget 2-3 hours for comprehensive humanization
+- Apply full 8-pass editing workflow
+- May need multiple iterations
+
+**Document priorities**:
+```
+Humanization Work Plan for [FILE_NAME]
+
+Overall Score: [SCORE] - [ASSESSMENT]
+
+Priority 1 (Critical Issues):
+- [ ] Issue from analysis (e.g., "Replace 24 AI vocabulary instances")
+- [ ] Issue from analysis (e.g., "Reduce em-dashes from 8.4 to 1-2 per page")
+
+Priority 2 (Important Issues):
+- [ ] Issue from analysis
+- [ ] Issue from analysis
+
+Priority 3 (Nice to Have):
+- [ ] Issue from analysis
+
+Estimated time: [TIME] minutes
+```
+
+### 9. Optional: Compare Before/After
+
+**To validate humanization effectiveness**:
+
+1. **Run analysis BEFORE humanization**, save output:
+   ```bash
+   python3 analyze_ai_patterns.py chapter-03.md > before-analysis.txt
+   ```
+
+2. **Apply humanization edits** using `humanize-post-generation.md` task
+
+3. **Run analysis AFTER humanization**, save output:
+   ```bash
+   python3 analyze_ai_patterns.py chapter-03.md > after-analysis.txt
+   ```
+
+4. **Compare metrics**:
+   - AI vocabulary per 1k: Should decrease by 50-80%
+   - Sentence StdDev: Should increase (higher burstiness)
+   - Heading depth: Should decrease to 3 or less
+   - Em-dashes per page: Should decrease to 1-2
+   - Overall assessment: Should improve 1-2 levels
+
+**Success indicators**:
+- Perplexity: Improved from LOW → MEDIUM or MEDIUM → HIGH
+- Burstiness: Improved from LOW → MEDIUM or MEDIUM → HIGH
+- Formatting: Improved from LOW → MEDIUM or MEDIUM → HIGH
+- Overall: Moved toward MINIMAL/LIGHT humanization needed
 
 ## Output Deliverable
 
-**Create Analysis Report**:
+**Primary**:
+- Analysis report (text, JSON, or TSV format)
+- Clear understanding of specific AI patterns present
+- Quantitative baseline metrics for each dimension
 
-```
-AI PATTERN ANALYSIS REPORT
-==========================
-
-Content: [Title/Description]
-Word Count: [approximate]
-Analysis Date: [date]
-
-DIMENSION SCORES:
------------------
-Perplexity:  [HIGH/MEDIUM/LOW/VERY LOW]
-  - AI vocabulary count: X instances
-  - Primary issues: [list top 3 AI words found]
-
-Burstiness:  [HIGH/MEDIUM/LOW/VERY LOW]
-  - Sample mean sentence length: X words
-  - Range: X-Y words
-  - Primary issue: [uniform/narrow variation/etc.]
-
-Structure:   [HIGH/MEDIUM/LOW/VERY LOW]
-  - Formulaic transitions: X instances
-  - List overuse: X instances
-  - Primary issue: [specific pattern]
-
-Voice:       [HIGH/MEDIUM/LOW/VERY LOW]
-  - Personal markers: X instances
-  - Specific examples: X instances
-  - Primary issue: [lacks voice/generic/etc.]
-
-Technical:   [HIGH/MEDIUM/LOW/VERY LOW]
-  - Expertise markers: X instances
-  - Primary issue: [surface-level/vague/etc.]
-
-OVERALL ASSESSMENT:
--------------------
-[MINIMAL/LIGHT/SUBSTANTIAL/EXTENSIVE] HUMANIZATION NEEDED
-
-PRIORITY ACTIONS:
------------------
-1. [Highest priority improvement]
-2. [Second priority improvement]
-3. [Third priority improvement]
-
-ESTIMATED EFFORT:
------------------
-[15-30 / 30-60 / 60-90 / 90+] minutes per 1000 words
-
-RECOMMENDATION:
----------------
-[Specific recommendation: edit existing, regenerate with better prompt, etc.]
-```
+**Secondary**:
+- Humanization work plan with prioritized issues
+- Estimated time budget for humanization
+- Before/after comparison (if validating humanization)
 
 ## Success Criteria
 
-✅ All five dimensions systematically assessed
-✅ Specific evidence documented for each score
-✅ Clear priorities identified for humanization
-✅ Realistic effort estimate provided
-✅ Actionable recommendations given
+✅ Analysis completed successfully (no errors)
+✅ All 6 dimensions scored and understood
+✅ Specific problematic patterns identified (AI words, em-dashes, heading depth, etc.)
+✅ Overall assessment understood and accepted
+✅ Humanization priorities established based on data
+✅ Estimated time budget for humanization determined
 
-## Tips for Effective Analysis
+## Common Pitfalls to Avoid
 
-💡 **Be objective**: Score based on evidence, not gut feeling
-💡 **Document examples**: Note specific instances that led to scores
-💡 **Consider audience**: Some AI patterns matter more for certain audiences
-💡 **Use for learning**: Track patterns across multiple analyses to improve prompt engineering
-💡 **Compare before/after**: Re-analyze after humanization to measure improvement
+❌ Running analysis without domain terms (technical depth score will be inaccurate)
+❌ Treating scores as absolute judgments (they're diagnostic, not prescriptive)
+❌ Ignoring context (some technical writing legitimately uses "robust" or "facilitate")
+❌ Over-optimizing for scores instead of readability
+❌ Not documenting specific issues found (analysis without action plan)
+❌ Forgetting to validate improvements with post-humanization analysis
 
-## Related Tasks
+## Integration with Other Tasks
 
-- `humanize-post-generation.md` - Execute humanization based on this analysis
-- `humanization-qa-check.md` - Verify humanization improvements
-- `humanize-pre-generation.md` - Use insights to improve future prompts
+**Pre-humanization workflow**:
+1. `analyze-ai-patterns.md` ← **YOU ARE HERE** (establish baseline)
+2. `humanize-post-generation.md` (apply systematic editing)
+3. `humanization-qa-check.md` (validate results)
 
-## Example: Sample Analysis
+**Post-humanization validation**:
+1. `humanize-post-generation.md` (editing completed)
+2. `analyze-ai-patterns.md` ← **YOU ARE HERE** (measure improvement)
+3. `humanization-qa-check.md` (final validation)
 
+**Quality assurance**:
+1. `write-chapter-draft.md` or `write-section-draft.md` (content creation)
+2. `analyze-ai-patterns.md` ← **YOU ARE HERE** (quality check)
+3. `humanize-post-generation.md` (if needed)
+4. `copy-edit-chapter.md` (final polish)
+
+## Tool Reference
+
+**Script location**: `{{config.root}}/tools/analyze_ai_patterns.py`
+**Documentation**: `{{config.root}}/tools/README.md`
+**Requirements**: `{{config.root}}/tools/requirements.txt`
+
+**Installation** (optional readability metrics):
+```bash
+cd {{config.root}}/tools
+pip install -r requirements.txt
 ```
-AI PATTERN ANALYSIS REPORT
-==========================
 
-Content: "Introduction to Docker Containers"
-Word Count: ~2,500 words
-Analysis Date: 2025-10-31
+**Usage**:
+```bash
+# Single file, text report
+python3 analyze_ai_patterns.py FILE.md
 
-DIMENSION SCORES:
------------------
-Perplexity:  LOW
-  - AI vocabulary count: 18 instances
-  - Primary issues: "robust" (6x), "leverage" (4x), "facilitate" (3x)
+# Single file with domain terms
+python3 analyze_ai_patterns.py FILE.md --domain-terms "Term1,Term2,Term3"
 
-Burstiness:  VERY LOW
-  - Sample mean sentence length: 17 words
-  - Range: 14-21 words across 3 paragraphs
-  - Primary issue: extreme uniformity, no short or long sentences
+# Batch analysis, TSV output
+python3 analyze_ai_patterns.py --batch DIRECTORY --format tsv > report.tsv
 
-Structure:   LOW
-  - Formulaic transitions: 12 instances ("Furthermore" 5x, "Moreover" 4x)
-  - List overuse: 8 numbered/bulleted lists
-  - Primary issue: rigid transitions and excessive lists
-
-Voice:       VERY LOW
-  - Personal markers: 0 instances
-  - Specific examples: 2 instances (both generic)
-  - Primary issue: completely impersonal, no authentic voice
-
-Technical:   MEDIUM
-  - Expertise markers: 5 instances (version numbers, specific commands)
-  - Primary issue: surface-level but technically accurate
-
-OVERALL ASSESSMENT:
--------------------
-EXTENSIVE HUMANIZATION NEEDED
-
-PRIORITY ACTIONS:
------------------
-1. URGENT: Introduce sentence variation (currently uniform)
-2. HIGH: Replace 18 AI vocabulary instances
-3. HIGH: Convert lists to prose, smooth transitions
-4. MEDIUM: Add voice through examples and perspective
-
-ESTIMATED EFFORT:
------------------
-60-90 minutes for full humanization
-
-RECOMMENDATION:
----------------
-Consider regenerating with humanization prompt to save editing time.
-If editing: Focus first on burstiness (mechanical rhythm most obvious issue),
-then vocabulary, then voice. Technical content is adequate and can stay.
+# JSON output for automation
+python3 analyze_ai_patterns.py FILE.md --format json > report.json
 ```
+
+## Example Workflow
+
+**Scenario**: Analyzing Chapter 3 before humanization
+
+```bash
+# Navigate to tools directory
+cd /Users/author/manuscript-project/.bmad-technical-writing/tools
+
+# Run analysis with domain terms
+python3 analyze_ai_patterns.py \
+  ../manuscript/chapters/chapter-03.md \
+  --domain-terms "Docker,Kubernetes,PostgreSQL,Redis,Nginx" \
+  > chapter-03-baseline-analysis.txt
+
+# Review report
+cat chapter-03-baseline-analysis.txt
+```
+
+**Output interpretation**:
+```
+Perplexity:    LOW       (8.2 AI words per 1k)
+Burstiness:    MEDIUM    (StdDev 7.3)
+Structure:     LOW       (H-depth: 5, Formulaic: 12)
+Voice:         LOW       (1st-person: 2, Contractions: 3)
+Technical:     HIGH      (Domain terms: 34)
+Formatting:    VERY LOW  (Em-dashes: 6.8 per page)
+
+OVERALL: SUBSTANTIAL humanization required
+```
+
+**Action**: Create work plan focusing on:
+1. Replace 37 AI vocabulary instances (Priority 1)
+2. Reduce em-dashes from 6.8 to 1-2 per page (Priority 1)
+3. Flatten heading hierarchy from 5 to 3 levels (Priority 2)
+4. Add more contractions and first-person voice (Priority 2)
+5. Replace 12 formulaic transitions (Priority 3)
+
+**Estimated time**: 90-120 minutes for comprehensive humanization
+
+## Notes
+
+- This task is **diagnostic**, not prescriptive—scores guide but don't dictate edits
+- Technical writing may legitimately score lower on some dimensions (less personal voice acceptable)
+- Domain-appropriate writing sometimes uses AI-flagged vocabulary (context matters)
+- Always prioritize readability and accuracy over score optimization
+- Use batch analysis for comparative insights across multiple files
+- Re-analyze after humanization to validate improvement quantitatively
