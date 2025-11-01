@@ -392,7 +392,7 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 - Include actual numbers, tools, versions when possible
 - Ground abstract concepts in concrete experience
 
-### Step 6.2: Acknowledge Reader Challenges
+### Step 5.2: Acknowledge Reader Challenges
 
 **Show empathy for learning difficulties**:
 
@@ -401,7 +401,7 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 - "I know this seems backwards, but here's why it works this way..."
 - "This is the tricky part that trips up most beginners..."
 
-### Step 6.3: Express Appropriate Enthusiasm
+### Step 5.3: Express Appropriate Enthusiasm
 
 **For genuinely interesting technical points**:
 
@@ -414,9 +414,9 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 
 ---
 
-## Pass 7: Quality Assurance Check (5-10 minutes)
+## Pass 6: Quality Assurance Check (5-10 minutes)
 
-### Step 7.1: Read Aloud Test
+### Step 6.1: Read Aloud Test
 
 **Read 2-3 paragraphs aloud** (this is critical):
 - Does it sound natural when spoken?
@@ -425,7 +425,7 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 
 **Fix anything that sounds robotic when spoken.**
 
-### Step 7.2: Verify Technical Accuracy
+### Step 6.2: Verify Technical Accuracy
 
 **Critical**: Ensure no technical errors were introduced:
 - Verify code examples still work
@@ -435,7 +435,7 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 
 **If accuracy was compromised, revert and humanize more carefully.**
 
-### Step 7.3: Final Metrics Check
+### Step 6.3: Final Metrics Check
 
 **Quick assessment**:
 - [ ] Sentence lengths vary significantly (measure 2-3 paragraphs)
@@ -443,10 +443,6 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 - [ ] Voice feels consistent and authentic
 - [ ] At least some contractions present (if appropriate)
 - [ ] Examples or personal touches included
-- [ ] **Em-dashes: 1-2 per page maximum** (strongest AI signal removed)
-- [ ] **Bold text: 2-5% of content** (purposeful, not mechanical)
-- [ ] **Italics: Functional categories only** (consistent application)
-- [ ] **Formatting variation** across sections (burstiness maintained)
 - [ ] Technical accuracy preserved 100%
 
 ---

@@ -77,6 +77,12 @@ AVOID AI PATTERNS:
 - Don't maintain uniform sentence lengths
 - Don't present everything with absolute certainty—acknowledge nuance
 
+FORMATTING RESTRAINT (Critical - Avoid "ChatGPT Dash"):
+- **Em-dashes**: Use sparingly (1-2 per page maximum). Prefer periods, commas, or semicolons
+- **Bold text**: Reserve for truly critical elements only (2-5% of content maximum)
+- **Italics**: Use functionally (titles, defined terms, subtle emphasis) not decoratively
+- **Formatting variation**: Vary density across sections (more for complex topics, less for simple)
+
 STRUCTURE:
 [Insert specific structural requirements]
 ```
@@ -175,7 +181,7 @@ Enhance the selected framework with domain-specific elements:
 
 ### Step 4: Incorporate Burstiness Instructions
 
-Add explicit guidance for sentence variation:
+Add explicit guidance for sentence variation and formatting restraint:
 
 ```
 SENTENCE VARIATION REQUIREMENTS:
@@ -185,11 +191,19 @@ SENTENCE VARIATION REQUIREMENTS:
 - Strategic fragments for impact
 - Rhetorical questions for engagement
 
+FORMATTING RESTRAINT (Critical - Avoid AI Tells):
+- **Em-dashes**: Maximum 1-2 per page. Test each: could a period, comma, or semicolon work better?
+- **Bold text**: Only for genuinely critical elements (UI elements, warnings, key terms first use). Target 2-5% of content.
+- **Italics**: Functional categories only (publication titles, terms being defined, subtle emphasis). No decorative italics.
+- **Distribution**: Vary formatting density—more for complex sections, minimal for simple sections.
+
 EXAMPLE PATTERN (copy this rhythm):
 "Authentication is critical. But implementing it correctly takes thought and
-planning that goes beyond just adding a library—you need to understand the
+planning that goes beyond just adding a library. You need to understand the
 security implications, user experience considerations, and maintenance overhead
 of whatever approach you choose. Let's break this down."
+
+(Note: Em-dash removed from example, replaced with period for better flow)
 ```
 
 ### Step 5: Add Perplexity-Boosting Guidelines
