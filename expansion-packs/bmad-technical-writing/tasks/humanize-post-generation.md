@@ -39,11 +39,13 @@ This task follows a **multi-pass editing workflow** where each pass addresses sp
    - Standard deviation (if easily available)
 
 **Red Flags**:
+
 - Most sentences within 15-25 word range = Low burstiness (AI-typical)
 - All sentences similar length = Needs variation
 - No sentences under 10 words or over 30 words = Problematic uniformity
 
 **Target Pattern for Human-Like Writing**:
+
 - Mix of 5-10 word sentences (20-30% of total)
 - 15-25 word sentences (40-50% of total)
 - 30-45 word sentences (20-30% of total)
@@ -54,6 +56,7 @@ This task follows a **multi-pass editing workflow** where each pass addresses sp
 Search the document for common AI-characteristic words:
 
 **High-Priority Removals**:
+
 - delve / delving
 - robust / robustness
 - leverage / leveraging
@@ -72,6 +75,7 @@ Search the document for common AI-characteristic words:
 Search for these AI-typical patterns:
 
 **Transition Phrases**:
+
 - "Furthermore," "Moreover," "Additionally," "In addition,"
 - "It is important to note that"
 - "It is worth mentioning that"
@@ -79,16 +83,19 @@ Search for these AI-typical patterns:
 - "When it comes to"
 
 **Paragraph Openings**:
+
 - Count how many paragraphs start with "The [noun]..."
 - Count how many start with topic sentences stating facts
 
 **List Structures**:
+
 - Count numbered or bulleted lists
 - Check if AI defaulted to list format where prose would be better
 
 ### Step 1.4: Document Findings
 
 Create a quick assessment:
+
 ```
 Humanization Assessment:
 - Sentence variation: [Low/Medium/High]
@@ -108,18 +115,18 @@ For each flagged word, choose contextually appropriate replacements:
 
 **Replacement Guide**:
 
-| AI Word | Better Alternatives |
-|---------|---------------------|
-| delve into | explore, examine, investigate, look at, dig into |
-| robust | reliable, powerful, solid, effective, well-designed |
-| leverage | use, apply, take advantage of, employ |
-| facilitate | enable, help, make easier, allow, support |
-| underscore | show, highlight, emphasize, demonstrate, reveal |
-| harness | use, utilize, apply, employ |
-| pivotal | key, important, critical, essential, crucial |
-| seamlessly | smoothly, easily, without issues, naturally |
-| holistic | complete, comprehensive, full, thorough |
-| optimize | improve, enhance, fine-tune, make better |
+| AI Word    | Better Alternatives                                 |
+| ---------- | --------------------------------------------------- |
+| delve into | explore, examine, investigate, look at, dig into    |
+| robust     | reliable, powerful, solid, effective, well-designed |
+| leverage   | use, apply, take advantage of, employ               |
+| facilitate | enable, help, make easier, allow, support           |
+| underscore | show, highlight, emphasize, demonstrate, reveal     |
+| harness    | use, utilize, apply, employ                         |
+| pivotal    | key, important, critical, essential, crucial        |
+| seamlessly | smoothly, easily, without issues, naturally         |
+| holistic   | complete, comprehensive, full, thorough             |
+| optimize   | improve, enhance, fine-tune, make better            |
 
 **Important**: Choose replacements based on context, not mechanically. Sometimes the AI word is actually appropriate—replace only when a more natural alternative exists.
 
@@ -137,6 +144,7 @@ Search and replace (where appropriate for your tone):
 - should not → shouldn't
 
 **Guidelines**:
+
 - More contractions = more conversational (good for tutorials, blogs)
 - Fewer contractions = more formal (appropriate for some documentation)
 - Never in code examples or technical specifications
@@ -180,10 +188,12 @@ Work paragraph by paragraph:
 ### Step 3.2: Vary Sentence Openings
 
 **Audit sentence starters in each paragraph**:
+
 - If 3+ sentences start with "The [noun]..." → Vary them
 - If 3+ sentences start with same subject → Rewrite for variety
 
 **Variation Techniques**:
+
 - Start with adverbs: "Typically, developers..."
 - Start with transitions: "However, this approach..."
 - Start with dependent clauses: "When working with React, you'll..."
@@ -203,6 +213,7 @@ Work paragraph by paragraph:
 **Convert rigid lists to flowing narrative** where appropriate:
 
 Before (AI-typical):
+
 ```
 Docker provides three main benefits:
 1. Consistency across environments
@@ -211,6 +222,7 @@ Docker provides three main benefits:
 ```
 
 After (humanized):
+
 ```
 Docker solves several practical problems. Your application runs identically on your laptop, your colleague's machine, and production servers—no more "works on my machine" headaches. It uses system resources more efficiently than virtual machines, letting you run more applications on the same hardware. And deployment becomes dramatically simpler since you're shipping a complete, tested environment rather than hoping dependencies align.
 ```
@@ -242,13 +254,13 @@ Docker solves several practical problems. Your application runs identically on y
 
 **Replace formal connectors** with conversational equivalents:
 
-| Formal (AI-typical) | Conversational |
-|---------------------|----------------|
-| In order to | To |
+| Formal (AI-typical)          | Conversational       |
+| ---------------------------- | -------------------- |
+| In order to                  | To                   |
 | It is important to note that | Note that / Remember |
-| One must consider | You should consider |
-| This allows us to | This lets us |
-| It is possible to | You can |
+| One must consider            | You should consider  |
+| This allows us to            | This lets us         |
+| It is possible to            | You can              |
 
 ### Step 4.3: Introduce Appropriate Hedging or Confidence
 
@@ -273,6 +285,7 @@ Docker solves several practical problems. Your application runs identically on y
 **The "ChatGPT Dash" problem**: AI systems (especially GPT-4) use em-dashes approximately **10x more frequently** than human writers.
 
 **Count Em-Dashes**:
+
 1. Use Find (Ctrl+F / Cmd+F) to search for "—" (em-dash)
 2. Count total occurrences
 3. Divide by page count
@@ -287,12 +300,14 @@ For **each em-dash**, ask: "Could a period, semicolon, or comma work as well or 
 - **Comma**: Works for simpler connections
 
 **Reduction Strategy**:
+
 - Replace 80-90% of em-dashes with alternative punctuation
 - Restructure sentences to eliminate need for em-dashes
 - Break compound sentences into simpler ones
 - Use colons for introducing examples/explanations
 
 **Only retain em-dash if**:
+
 - Marks abrupt change in thought
 - Introduces crucial explanation/example
 - Creates intentional emphasis through interruption
@@ -302,6 +317,7 @@ For **each em-dash**, ask: "Could a period, semicolon, or comma work as well or 
 **AI Pattern**: Mechanical consistency, excessive bolding creating visual noise
 
 **Count Bold Elements**:
+
 1. Estimate percentage of content that is bolded
 2. **Target**: 2-5% of content maximum
 3. **Red Flag**: 10%+ indicates AI pattern
@@ -310,12 +326,14 @@ For **each em-dash**, ask: "Could a period, semicolon, or comma work as well or 
 For **each bolded element**, ask: "Does THIS need visual emphasis HERE?"
 
 **Keep bolding for**:
+
 - UI elements (button names, menu items)
 - Critical warnings (safety, errors, important notices)
 - Key terms (first use only when being defined)
 - Essential information readers MUST notice
 
 **Remove bolding for**:
+
 - Decorative emphasis
 - Repetitive patterns (e.g., every function name)
 - Generic emphasis
@@ -327,12 +345,14 @@ For **each bolded element**, ask: "Does THIS need visual emphasis HERE?"
 **AI Pattern**: Scattered italics appearing with predictable frequency
 
 **Define 2-4 Functional Categories**:
+
 - Publication titles (books, software names)
 - Terms being defined (first use only)
 - Subtle emphasis (specific words requiring attention)
 - Foreign expressions
 
 **Actions**:
+
 - Remove casual/decorative italics
 - Remove italics from extended passages (3+ sentences)
 - Apply italics **only** to defined functional categories
@@ -345,12 +365,14 @@ For **each bolded element**, ask: "Does THIS need visual emphasis HERE?"
 **Human Pattern**: Natural variation (burstiness)
 
 **Section Analysis**:
+
 1. Identify complex sections (difficult concepts)
 2. Identify simple sections (straightforward content)
 3. **Complex sections**: Should have MORE formatting (emphasis where readers need guidance)
 4. **Simple sections**: Should have LESS formatting (minimal where content is clear)
 
 **Actions**:
+
 - Create deliberate variation in formatting density
 - More em-dashes/bold/italics for complex explanations
 - Minimal formatting for straightforward content
@@ -359,6 +381,7 @@ For **each bolded element**, ask: "Does THIS need visual emphasis HERE?"
 ### Step 5.5: Quick Formatting Assessment
 
 **Red Flags to Remove** (AI patterns):
+
 - [ ] 3+ em-dashes per page
 - [ ] Uniform bolding pattern (every similar element bolded)
 - [ ] Predictable formatting rhythm
@@ -366,6 +389,7 @@ For **each bolded element**, ask: "Does THIS need visual emphasis HERE?"
 - [ ] Consistent formatting depth across all sections
 
 **Green Flags to Maintain** (human patterns):
+
 - [ ] Em-dash restraint (1-2 per page or fewer)
 - [ ] Purposeful bold inconsistency (similar elements treated differently based on context)
 - [ ] Functional italic categories
@@ -383,6 +407,7 @@ For **each bolded element**, ask: "Does THIS need visual emphasis HERE?"
 **The Deep Hierarchy Problem**: AI systems create 4-6 heading levels; human writers use 3-4 maximum.
 
 **Count Heading Levels**:
+
 1. Extract all headings (H1 through H6)
 2. Identify deepest level used
 3. **Target**: 3 levels maximum (H1, H2, H3) for 15-20 page chapters
@@ -390,6 +415,7 @@ For **each bolded element**, ask: "Does THIS need visual emphasis HERE?"
 
 **Flattening Strategy**:
 For each H4+ heading:
+
 - **Promote to H3**: If content is substantial
 - **Convert to bold body text**: If content is minor detail
 - **Merge with parent section**: If brief
@@ -398,6 +424,7 @@ For each H4+ heading:
 **Example Transformation**:
 
 Before (5 levels - AI pattern):
+
 ```
 ## Authentication (H2)
 ### OAuth 2.0 Flow (H3)
@@ -406,6 +433,7 @@ Before (5 levels - AI pattern):
 ```
 
 After (3 levels - humanized):
+
 ```
 ## Authentication (H2)
 ### OAuth 2.0 Authorization Flow (H3)
@@ -420,12 +448,14 @@ OAuth 2.0 supports multiple grant types. The most common:
 **The Parallelism Problem**: AI uses identical grammatical structure for all headings at same level.
 
 **Detect Parallelism**:
+
 - Count how many H2 headings start with same word/structure
 - Check if all H3s follow identical pattern
 - **Red Flag**: 80%+ use same structure ("Understanding X", "Understanding Y")
 
 **Breaking Strategy**:
 Rewrite 50%+ of headings with varied structures:
+
 - **Imperatives**: "Configure the Server"
 - **Gerunds**: "Configuring Options"
 - **Noun phrases**: "Configuration Best Practices"
@@ -434,6 +464,7 @@ Rewrite 50%+ of headings with varied structures:
 **Example Transformation**:
 
 Before (mechanical parallelism):
+
 ```
 ## Understanding Containers (H2)
 ## Understanding Images (H2)
@@ -442,6 +473,7 @@ Before (mechanical parallelism):
 ```
 
 After (natural variation):
+
 ```
 ## Container Basics (H2)
 ## Working with Images (H2)
@@ -454,11 +486,13 @@ After (natural variation):
 **The Uniform Density Problem**: AI gives every section same number of subsections.
 
 **Assess Current Density**:
+
 1. Count H3 subsections under each H2 section
 2. **Red Flag**: All sections have same count (e.g., all have 3 subsections)
 3. **Red Flag**: Every H2 has subsections (none have 0)
 
 **Asymmetry Strategy**:
+
 - **Simple sections**: 0-2 subsections (let content flow)
 - **Moderate sections**: 2-4 subsections (standard structure)
 - **Complex sections**: 4-6 subsections (aid navigation)
@@ -466,6 +500,7 @@ After (natural variation):
 **Example Distribution**:
 
 Before (uniform - AI pattern):
+
 ```
 Section A: 3 subsections
 Section B: 3 subsections
@@ -474,6 +509,7 @@ Section D: 3 subsections
 ```
 
 After (asymmetric - human pattern):
+
 ```
 Section A: 0 subsections (simple intro, flows naturally)
 Section B: 2 subsections (moderate complexity)
@@ -486,38 +522,43 @@ Section D: 1 subsection (brief reference)
 **The Verbosity Problem**: AI creates 10+ word headings with complete thoughts.
 
 **Identify Long Headings**:
+
 1. Find headings with 8+ words
 2. **Target**: 3-7 words for H2/H3
 3. **Red Flag**: 30%+ of headings exceed 8 words
 
 **Shortening Actions**:
+
 - Remove: "Understanding", "A Guide to", "How to", "Everything You Need to Know"
 - Focus on key concept, not complete summary
 - Preview, don't summarize
 
 **Example Transformations**:
 
-| Before (Verbose) | After (Concise) |
-|-----------------|----------------|
-| Understanding the Fundamental Principles of Asynchronous JavaScript | Asynchronous JavaScript Fundamentals |
-| How to Configure Your Development Environment for Optimal Performance | Development Environment Setup |
-| A Comprehensive Guide to State Management in React Applications | State Management in React |
+| Before (Verbose)                                                      | After (Concise)                      |
+| --------------------------------------------------------------------- | ------------------------------------ |
+| Understanding the Fundamental Principles of Asynchronous JavaScript   | Asynchronous JavaScript Fundamentals |
+| How to Configure Your Development Environment for Optimal Performance | Development Environment Setup        |
+| A Comprehensive Guide to State Management in React Applications       | State Management in React            |
 
 ### Step 6.5: Validate Heading Best Practices
 
 **Check Hierarchy Rules**:
+
 - [ ] No skipped levels (H1 → H2 → H3, never H1 → H3)
 - [ ] No lone headings (each level has sibling, except H1)
 - [ ] No stacked headings (body text appears below each heading)
 - [ ] Descriptive headings (not "Introduction", "Overview", "Summary")
 
 **Content-Type Alignment**:
+
 - [ ] Conceptual sections: Fewer headings (0-2 subsections)
 - [ ] Procedural sections: More headings (3-6 subsections for task boundaries)
 - [ ] Reference sections: Structured headings for lookup
 - [ ] Mixed sections: Variable density based on content needs
 
 **Heading Density Check**:
+
 - [ ] Overall average: 2-4 headings per page
 - [ ] Natural variation exists (not uniform across chapter)
 - [ ] Density reflects content complexity
@@ -537,6 +578,7 @@ Before: "Regular testing improves code quality."
 After: "I learned this lesson the hard way. After shipping a feature that crashed for 30% of users because I skipped testing, I became religious about test coverage. That outage taught me what 'code quality' really means."
 
 **Guidelines**:
+
 - 1-2 specific examples per major section
 - Use realistic scenarios, not textbook cases
 - Include actual numbers, tools, versions when possible
@@ -569,6 +611,7 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 ### Step 8.1: Read Aloud Test
 
 **Read 2-3 paragraphs aloud** (this is critical):
+
 - Does it sound natural when spoken?
 - Do you stumble over awkward phrasings?
 - Does the rhythm feel human?
@@ -578,6 +621,7 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 ### Step 8.2: Verify Technical Accuracy
 
 **Critical**: Ensure no technical errors were introduced:
+
 - Verify code examples still work
 - Check that technical terminology remains correct
 - Confirm facts and statements are accurate
@@ -588,6 +632,7 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 ### Step 8.3: Final Metrics Check
 
 **Quick assessment**:
+
 - [ ] Sentence lengths vary significantly (measure 2-3 paragraphs)
 - [ ] AI vocabulary removed or replaced
 - [ ] Voice feels consistent and authentic
@@ -610,19 +655,14 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 When time is limited, focus on **highest-impact changes**:
 
 **Priority 1 (5 minutes)**:
+
 1. Replace the 10 most obvious AI words
 2. Add 3-5 contractions
 3. Vary sentence length in most problematic paragraphs
 
-**Priority 2 (5 minutes)**:
-4. Replace formulaic transitions (Furthermore, Moreover, etc.)
-5. Add 1-2 specific examples or personal touches
-6. Fix any robotic-sounding sentences you notice
+**Priority 2 (5 minutes)**: 4. Replace formulaic transitions (Furthermore, Moreover, etc.) 5. Add 1-2 specific examples or personal touches 6. Fix any robotic-sounding sentences you notice
 
-**Priority 3 (5 minutes)**:
-7. Read aloud test on key sections
-8. Verify technical accuracy not compromised
-9. Fix anything that sounds obviously wrong
+**Priority 3 (5 minutes)**: 7. Read aloud test on key sections 8. Verify technical accuracy not compromised 9. Fix anything that sounds obviously wrong
 
 **This achieves ~60-70% of full humanization impact in 20% of the time.**
 

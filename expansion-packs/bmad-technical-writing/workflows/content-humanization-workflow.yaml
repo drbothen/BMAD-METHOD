@@ -1,7 +1,7 @@
 workflow:
   id: content-humanization-workflow
   name: AI Content Humanization
-  description: Systematic workflow for transforming AI-generated technical content into natural, human-sounding writing. Guides content humanizers through pre-generation prompt engineering, AI pattern analysis, post-generation editing, and quality verification. Ensures content maintains technical accuracy while improving perplexity, burstiness, voice consistency, and emotional resonance.
+  description: Systematic workflow for transforming AI-generated technical content into natural, human-sounding writing using dual score optimization (Quality Score + Detection Risk). Guides content humanizers through pre-generation prompt engineering, AI pattern analysis across 14 dimensions, post-generation editing, iterative optimization until targets met, and quality verification. Ensures content maintains technical accuracy while improving perplexity, burstiness, voice consistency, formatting patterns, heading hierarchy, and emotional resonance.
   type: content-humanization
   project_types:
     - technical-book
@@ -15,7 +15,7 @@ workflow:
     - agent: content-humanizer
       analyzes: content-draft.md
       requires: draft_content
-      notes: "Analyze AI-generated content for characteristic patterns using *analyze command and analyze-ai-patterns.md task. Measure perplexity (vocabulary predictability), burstiness (sentence variation), structural patterns (transitions, lists), voice authenticity (personal markers, specifics), and technical depth (expertise signals). Use ai-pattern-detection-checklist.md to systematically identify issues. SAVE OUTPUT: Create analysis report at humanization/{{content_name}}/ai-pattern-analysis.md with dimension scores (HIGH/MEDIUM/LOW/VERY LOW) and priority recommendations"
+      notes: "Analyze AI-generated content using *analyze command with dual score analysis (--show-scores). Produces Quality Score (0-100, higher=better) and Detection Risk (0-100, lower=better) across 14 dimensions in 3 tiers: Advanced Detection (GLTR, lexical diversity, AI detection, stylometric, syntactic), Core Patterns (burstiness, perplexity, formatting, headings), and Supporting Signals (voice, structure, emotional depth, technical). Provides path-to-target recommendations sorted by ROI with effort estimation (LOW/MEDIUM/HIGH). Use ai-pattern-detection-checklist.md for supplementary manual inspection. SAVE OUTPUT: Create analysis report at humanization/{{content_name}}/ai-pattern-analysis.txt with dual scores, dimension breakdown, and prioritized action plan"
 
     - agent: content-humanizer
       develops: humanization-plan.md
@@ -29,7 +29,14 @@ workflow:
       requires:
         - humanization_plan
         - content_draft
-      notes: "Execute systematic humanization editing using *post-edit command and humanize-post-generation.md task. Follow multi-pass workflow: Pass 1 (structural analysis), Pass 2 (vocabulary humanization), Pass 3 (sentence structure enhancement), Pass 4 (voice refinement), Pass 5 (emotional depth), Pass 6 (quality assurance). Apply techniques from humanization plan with focus on high-impact changes. Reference humanization-techniques.md for specific methods. Track changes to understand what needed most work. SAVE OUTPUT: Create humanized draft at humanization/{{content_name}}/humanized-draft.md and editing notes at humanization/{{content_name}}/editing-notes.md documenting changes made"
+      notes: "Execute systematic humanization editing using *post-edit command and humanize-post-generation.md task. Follow multi-pass workflow: Pass 1 (structural analysis), Pass 2 (vocabulary humanization), Pass 3 (sentence structure enhancement), Pass 4 (voice refinement), Pass 5 (formatting humanization), Pass 6 (heading humanization), Pass 7 (emotional depth), Pass 8 (quality assurance). Apply techniques from humanization plan with focus on high-impact changes per path-to-target. Reference humanization-techniques.md for specific methods. Track changes to understand what needed most work. SAVE OUTPUT: Create humanized draft at humanization/{{content_name}}/humanized-draft.md and editing notes at humanization/{{content_name}}/editing-notes.md documenting changes made"
+
+    - agent: content-humanizer
+      optimizes: iterative-improvement.md
+      requires:
+        - humanized_draft
+        - quality_targets
+      notes: "OPTIONAL: For high-stakes content (book chapters, publications), use *optimize command for iterative optimization via iterative-humanization-optimization.md task. Re-analyze with dual scoring after each editing pass to measure improvement. Review path-to-target recommendations and apply next highest-ROI actions. Continue iteration loop until Quality Score ≥85 and Detection Risk ≤30 (adjustable targets: book chapters 90/20, blog posts 85/30, drafts 75/40). Track historical trend (IMPROVING/STABLE/WORSENING) across iterations. Stop when targets met or plateau detected. Maximum 5 iterations recommended. SAVE OUTPUT: Create iteration reports at humanization/{{content_name}}/iteration-N-analysis.txt and optimization summary at humanization/{{content_name}}/optimization-summary.md with before/after metrics"
 
     - agent: technical-reviewer
       verifies: humanized-draft.md
@@ -43,7 +50,7 @@ workflow:
       requires:
         - humanized_draft
         - accuracy_verification
-      notes: "Assess humanization quality using *qa-check command and humanization-quality-checklist.md. Verify: AI vocabulary removed (0-1 instances acceptable), sentence variation achieved (varied lengths in sample paragraphs), voice feels authentic and consistent, technical accuracy 100% preserved (critical requirement), readability appropriate for audience, natural imperfections present (not mechanically uniform). Perform read-aloud test on sample sections. Run content through AI detection tool (optional, for assessment only). SAVE OUTPUT: Create quality assessment at humanization/{{content_name}}/quality-assessment.md with dimension scores and final approval status"
+      notes: "Assess humanization quality using *qa-check command with dual score validation. Run final analysis with --show-scores to verify Quality Score ≥85 and Detection Risk ≤30 (adjust targets by content type). Check historical trend shows IMPROVING or STABLE. Verify no critical AI signals remain (em-dashes ≤2 per page, heading depth ≤3 levels, AI vocab ≤5 per 1k, sentence StdDev ≥6). Perform read-aloud test on sample sections. Use humanization-quality-checklist.md for comprehensive validation. Verify technical accuracy 100% preserved (critical requirement). SAVE OUTPUT: Create quality assessment at humanization/{{content_name}}/quality-assessment.md with dual scores, dimension breakdown, PASS/CONDITIONAL/FAIL decision, and any remaining issues"
 
     - agent: content-humanizer
       finalizes: humanized-content.md
@@ -55,12 +62,12 @@ workflow:
   flow_diagram: |
     ```mermaid
     graph TD
-        A[Start: AI-Generated Draft] --> B[content-humanizer: Analyze AI Patterns]
+        A[Start: AI-Generated Draft] --> B[content-humanizer: Analyze AI Patterns<br/>Dual Score Analysis]
 
-        B --> C{Assessment}
-        C -->|Minimal Issues| D[Light Touch Workflow]
-        C -->|Substantial Issues| E[Full Humanization Workflow]
-        C -->|Extensive Issues| F{Decision}
+        B --> C{Quality Score<br/>Assessment}
+        C -->|≥85 Score| D[Light Touch Workflow]
+        C -->|70-84 Score| E[Full Humanization Workflow]
+        C -->|<70 Score| F{Decision}
         F -->|Edit| E
         F -->|Regenerate| G[Create Humanization Prompt]
 
@@ -70,25 +77,39 @@ workflow:
         D --> I[content-humanizer: Quick Polish]
         I --> I1[15-min humanization]
 
-        E --> J[content-humanizer: Develop Plan]
+        E --> J[content-humanizer: Develop Plan<br/>Path-to-Target]
         J --> K[content-humanizer: Execute Multi-Pass Edit]
 
-        K --> K1[Pass 1: Structure]
+        K --> K1[Pass 1: Analysis]
         K1 --> K2[Pass 2: Vocabulary]
         K2 --> K3[Pass 3: Sentences]
         K3 --> K4[Pass 4: Voice]
-        K4 --> K5[Pass 5: Emotion]
-        K5 --> K6[Pass 6: QA]
+        K4 --> K5[Pass 5: Formatting]
+        K5 --> K6[Pass 6: Headings]
+        K6 --> K7[Pass 7: Emotion]
+        K7 --> K8[Pass 8: QA]
 
-        I1 --> L[technical-reviewer: Verify Accuracy]
-        K6 --> L
+        I1 --> K9{High-Stakes<br/>Content?}
+        K8 --> K9
+
+        K9 -->|Yes| K10[content-humanizer: Iterative Optimization<br/>*optimize command]
+        K9 -->|No| L[technical-reviewer: Verify Accuracy]
+
+        K10 --> K11[Re-analyze with<br/>Dual Scoring]
+        K11 --> K12{Targets Met?<br/>Quality ≥85<br/>Detection ≤30}
+        K12 -->|No| K13{Iteration < 5?<br/>Still Improving?}
+        K13 -->|Yes| K14[Apply Next<br/>Path-to-Target Actions]
+        K14 --> K11
+        K13 -->|No/Plateau| K15[Stop: Document Results]
+        K12 -->|Yes| K15
+        K15 --> L
 
         L --> M{Accuracy OK?}
         M -->|No| N[Fix Technical Issues]
         N --> L
-        M -->|Yes| O[content-humanizer: Quality Assessment]
+        M -->|Yes| O[content-humanizer: Quality Assessment<br/>Dual Score Validation]
 
-        O --> P{Quality Gates Met?}
+        O --> P{Quality Gates Met?<br/>Quality ≥85<br/>Detection ≤30}
         P -->|No| Q{Critical Issues?}
         Q -->|Yes| R[Additional Editing Required]
         R --> K
@@ -98,14 +119,15 @@ workflow:
         P -->|Yes| T[content-humanizer: Finalize Content]
         T --> U[Publication-Ready Content]
 
-        B -.-> B1[Optional: AI Detection Test]
-        K -.-> K7[Optional: Peer Review]
-        O -.-> O1[Optional: Target Audience Test]
+        B -.-> B1[Optional: Historical<br/>Trend Analysis]
+        K10 -.-> K16[Optional: Track<br/>Score History]
 
         style U fill:#90EE90
         style B fill:#FFE4B5
         style J fill:#FFE4B5
         style K fill:#FFE4B5
+        style K10 fill:#DDA0DD
+        style K11 fill:#DDA0DD
         style L fill:#ADD8E6
         style O fill:#ADD8E6
         style T fill:#98FB98
@@ -144,11 +166,12 @@ workflow:
 
   quality_gates:
     pattern_analysis_complete:
-      - All five dimensions assessed (perplexity, burstiness, structure, voice, technical)
-      - Specific evidence documented for each score
-      - Clear priorities identified for humanization
-      - Realistic effort estimate provided
-      - Actionable recommendations given
+      - Dual score analysis complete (Quality Score and Detection Risk calculated)
+      - All 14 dimensions assessed across 3 tiers (Advanced Detection, Core Patterns, Supporting Signals)
+      - Path-to-target recommendations generated with ROI sorting
+      - Effort levels estimated (LOW/MEDIUM/HIGH) for each action
+      - Historical baseline established for tracking improvement
+      - Diagnostic decision made (Minimal/Light/Substantial/Regeneration)
       - Checklist: ai-pattern-detection-checklist.md
 
     humanization_plan_developed:
@@ -160,12 +183,25 @@ workflow:
       - Reference: humanization-techniques.md
 
     humanization_editing_complete:
-      - Multi-pass workflow executed systematically
-      - High-priority techniques applied (sentence variation, vocabulary)
-      - Medium-priority techniques applied (voice, transitions)
+      - Multi-pass workflow executed systematically (8 passes)
+      - High-priority path-to-target actions applied
+      - Medium-priority techniques applied as time permits
+      - Formatting humanization applied (em-dashes, bold, italics)
+      - Heading hierarchy humanization applied (flatten to 3 levels, break parallelism)
       - Read-aloud test performed on sample sections
       - Natural rhythm and flow achieved
       - Task: humanize-post-generation.md
+
+    iterative_optimization_complete:
+      - OPTIONAL: For high-stakes content only
+      - Dual score targets met (Quality ≥85, Detection ≤30) OR plateau reached
+      - Multiple iterations completed with re-analysis between each
+      - Historical trend shows IMPROVING or STABLE (not WORSENING)
+      - Path-to-target actions applied systematically by ROI
+      - Iteration reports documented for all passes
+      - Optimization summary created with before/after metrics
+      - Maximum 5 iterations respected (diminishing returns)
+      - Task: iterative-humanization-optimization.md
 
     technical_accuracy_verified:
       - All code examples tested and working
@@ -176,12 +212,13 @@ workflow:
       - Checklist: technical-accuracy-preservation-checklist.md
 
     quality_assessment_passed:
-      - AI vocabulary removed (0-1 instances acceptable)
-      - Sentence variation achieved (measured in samples)
-      - Voice authentic and consistent throughout
-      - Technical accuracy 100% preserved (critical)
-      - Readability appropriate for audience
-      - Overall quality meets publication standards
+      - Dual score targets met (Quality ≥85, Detection ≤30 for standard content)
+      - Historical trend IMPROVING or STABLE (if multiple analyses run)
+      - No critical AI signals present (em-dashes ≤2/page, heading depth ≤3, AI vocab ≤5/1k)
+      - All 14 dimensions scored acceptably (no VERY LOW scores)
+      - Technical accuracy 100% preserved (critical requirement)
+      - Read-aloud test passed (natural flow and rhythm)
+      - Publication readiness decision: PASS or CONDITIONAL PASS
       - Checklist: humanization-quality-checklist.md
 
     content_finalized:
@@ -321,46 +358,66 @@ workflow:
     - Skipping read-aloud test (catches issues other methods miss)
 
   success_metrics:
+    dual_score_quality:
+      metric: "Quality Score (0-100, higher=better)"
+      target: "≥85 for standard content (≥90 for book chapters, ≥75 for drafts)"
+      measurement: "Run analyze_ai_patterns.py with --show-scores"
+      interpretation: "95-100=EXCEPTIONAL, 85-94=EXCELLENT, 70-84=GOOD, 50-69=MIXED, <50=AI-LIKE"
+
+    dual_score_detection:
+      metric: "Detection Risk (0-100, lower=better)"
+      target: "≤30 for standard content (≤20 for book chapters, ≤40 for drafts)"
+      measurement: "Run analyze_ai_patterns.py with --show-scores"
+      interpretation: "0-14=VERY LOW, 15-29=LOW, 30-49=MEDIUM, 50-69=HIGH, 70-100=VERY HIGH"
+
     perplexity:
       metric: "AI vocabulary count"
-      target: "< 3 AI-typical words per 1000 words"
-      measurement: "Search and count Tier 1 AI words in final content"
+      target: "< 5 AI-typical words per 1000 words (tier 1+2 combined)"
+      measurement: "Automated via Perplexity dimension in dual score analysis"
 
     burstiness:
-      metric: "Sentence length variation"
-      target: "Mix of 5-10, 15-25, and 30-45 word sentences in sample paragraphs"
-      measurement: "Measure word counts in 3 random paragraphs, verify variety"
+      metric: "Sentence length variation (standard deviation)"
+      target: "StdDev ≥6 words (aim for ≥10 for excellent variation)"
+      measurement: "Automated via Burstiness dimension in dual score analysis"
 
-    readability:
-      metric: "Flesch Reading Ease score"
-      target: "60-70 for general audience, 50-60 for technical, 70-80 for beginner"
-      measurement: "Calculate score using readability tool"
+    formatting_patterns:
+      metric: "Em-dashes per page, bold percentage"
+      target: "≤2 em-dashes per page, 2-5% bold text maximum"
+      measurement: "Automated via Formatting Patterns dimension in dual score analysis"
 
-    voice_consistency:
-      metric: "Personal markers per section"
-      target: "2-4 voice markers per 500 words (for conversational content)"
-      measurement: "Count first-person, specific examples, personal insights"
+    heading_hierarchy:
+      metric: "Maximum heading depth levels"
+      target: "≤3 levels (H1, H2, H3 only), no parallel structures"
+      measurement: "Automated via Heading Hierarchy dimension in dual score analysis"
+
+    voice_authenticity:
+      metric: "Personal markers and contractions"
+      target: "≥4 voice markers per 500 words for conversational content"
+      measurement: "Automated via Voice & Authenticity dimension in dual score analysis"
 
     technical_accuracy:
       metric: "Technical errors introduced"
-      target: "Zero technical errors from humanization"
-      measurement: "Code testing, fact verification, expert review"
+      target: "Zero technical errors from humanization (critical requirement)"
+      measurement: "Manual code testing, fact verification, expert review"
 
   output_artifacts:
     required:
-      - ai-pattern-analysis.md (analysis report with dimension scores)
-      - humanization-plan.md (targeted improvement plan)
-      - humanized-draft.md (edited content)
-      - accuracy-verification.md (technical accuracy check)
-      - quality-assessment.md (final quality evaluation)
-      - {{content_output_path}} (publication-ready final version)
+      - "ai-pattern-analysis.txt (dual score analysis with 14-dimension breakdown)"
+      - "humanization-plan.md (targeted improvement plan based on path-to-target)"
+      - "humanized-draft.md (edited content)"
+      - "accuracy-verification.md (technical accuracy check)"
+      - "quality-assessment.md (final dual score validation with PASS/FAIL decision)"
+      - "{{content_output_path}} (publication-ready final version)"
 
     recommended:
-      - editing-notes.md (document changes made during editing)
-      - lessons-learned.md (insights for future prompt engineering)
-      - before-after-comparison.md (show improvement achieved)
+      - "editing-notes.md (document changes made during editing)"
+      - "lessons-learned.md (insights for future prompt engineering)"
+      - "before-after-comparison.md (show improvement achieved with dual score deltas)"
 
     optional:
-      - detection-test-results.md (AI detector results for assessment)
-      - peer-review-feedback.md (fresh-eyes quality check)
-      - readability-metrics.md (calculated readability scores)
+      - "iteration-0-baseline.txt (initial dual score analysis for baseline)"
+      - "iteration-N-analysis.txt (dual score analysis after each iteration)"
+      - "optimization-summary.md (complete before/after with all iterations tracked)"
+      - "score-history.json (automatic historical tracking in .score-history/ directory)"
+      - "detection-test-results.md (AI detector results for external validation)"
+      - "peer-review-feedback.md (fresh-eyes quality check)"

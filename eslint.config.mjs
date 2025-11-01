@@ -7,7 +7,12 @@ import yml from 'eslint-plugin-yml';
 export default [
   // Global ignores for files/folders that should not be linted
   {
-    ignores: ['dist/**', 'coverage/**', '**/*.min.js'],
+    ignores: [
+      'dist/**',
+      'coverage/**',
+      '**/*.min.js',
+      'expansion-packs/bmad-technical-writing/tools/nlp-env/**',
+    ],
   },
 
   // Base JavaScript recommended rules
@@ -30,14 +35,8 @@ export default [
     rules: {
       // Allow console for CLI tools in this repo
       'no-console': 'off',
-      // Enforce .yaml file extension for consistency
-      'yml/file-extension': [
-        'error',
-        {
-          extension: 'yaml',
-          caseSensitive: true,
-        },
-      ],
+      // Allow both .yaml and .yml extensions since both are commonly used
+      'yml/file-extension': 'off',
       // Prefer double quotes in YAML wherever quoting is used, but allow the other to avoid escapes
       'yml/quotes': [
         'error',

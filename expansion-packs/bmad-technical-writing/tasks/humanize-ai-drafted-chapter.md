@@ -5,27 +5,13 @@
 ---
 
 task:
-  id: humanize-ai-drafted-chapter
-  name: Humanize AI-Drafted Chapter
-  description: Systematic removal of AI-generated patterns to create authentic, human-sounding technical content that passes publisher scrutiny and reader expectations
-  persona_default: tutorial-architect
-  inputs:
-    - chapter-draft
-    - chapter-number
-    - ai-pattern-compliance-report
-  steps:
-    - Execute generative-ai-compliance-checklist.md to identify AI patterns
-    - Load chapter draft and pattern detection report
-    - Remove AI vocabulary patterns (overused words)
-    - Fix metaphor problems (overuse, nonsense, mixed metaphors)
-    - Introduce sentence rhythm variation
-    - Add personal voice and author perspective
-    - Replace generic examples with specific citations
-    - Remove filler content and increase value depth
-    - Break rigid structural patterns
-    - Execute humanization-checklist.md to validate removal
-    - Document all changes in change log
-  output: Humanized chapter file with comprehensive change log and validation report
+id: humanize-ai-drafted-chapter
+name: Humanize AI-Drafted Chapter
+description: Systematic removal of AI-generated patterns to create authentic, human-sounding technical content that passes publisher scrutiny and reader expectations
+persona_default: tutorial-architect
+inputs: - chapter-draft - chapter-number - ai-pattern-compliance-report
+steps: - Execute generative-ai-compliance-checklist.md to identify AI patterns - Load chapter draft and pattern detection report - Remove AI vocabulary patterns (overused words) - Fix metaphor problems (overuse, nonsense, mixed metaphors) - Introduce sentence rhythm variation - Add personal voice and author perspective - Replace generic examples with specific citations - Remove filler content and increase value depth - Break rigid structural patterns - Execute humanization-checklist.md to validate removal - Document all changes in change log
+output: Humanized chapter file with comprehensive change log and validation report
 
 ---
 
@@ -38,12 +24,14 @@ Transform AI-assisted or AI-generated chapter drafts into authentic, human-sound
 ## When to Use
 
 **Required When:**
+
 - expand-outline-to-draft.md used with AI assistance flagged
 - Any chapter drafted with AI tools (ChatGPT, Claude, Gemini, etc.)
 - generative-ai-compliance-checklist.md detects AI patterns (score >20%)
 - Technical editor or QA flags content as "AI-like"
 
 **Integration Point:**
+
 - **After**: chapter-draft.md or expand-outline-to-draft.md completed
 - **Before**: technical-review.md or copy-edit-chapter.md
 
@@ -81,6 +69,7 @@ Run `execute-checklist.md` with `generative-ai-compliance-checklist.md`
 ### Pattern Categories Detected
 
 **Word Choice and Phrasing:**
+
 - "sophisticated": {{count}} occurrences
 - "delve": {{count}} occurrences
 - "leverage": {{count}} occurrences
@@ -89,23 +78,27 @@ Run `execute-checklist.md` with `generative-ai-compliance-checklist.md`
 - Other AI vocabulary: {{list}}
 
 **Metaphor Issues:**
+
 - Total metaphors: {{count}}
 - Metaphors per section: {{average}}
 - Nonsense metaphors identified: {{count}}
 - Mixed metaphors: {{count}}
 
 **Sentence Structure:**
+
 - Sentence length variance: {{standard_deviation}}
 - Repetitive patterns: {{yes/no}}
 - Uniform structure score: {{1-10}}
 
 **Voice and Examples:**
+
 - First-person usage: {{count}} instances
 - Generic examples: {{count}}
 - Specific citations: {{count}}
 - Personal anecdotes: {{count}}
 
 **Content Depth:**
+
 - Filler paragraphs identified: {{count}}
 - Repetitive sections: {{list}}
 ```
@@ -119,12 +112,14 @@ Run `execute-checklist.md` with `generative-ai-compliance-checklist.md`
 Prepare materials for humanization:
 
 **Load Files:**
+
 1. Chapter draft: `{{config.manuscript.chapters}}/chapter-{{chapter_number}}-draft.md`
 2. Compliance report from Step 1
 3. Reference: `ai-pattern-removal-guide.md` (how to fix each pattern)
 4. Reference: `publisher-specific-ai-patterns.md` (if targeting specific publisher)
 
 **Review Compliance Report:**
+
 - Identify top 5 most severe AI patterns
 - Note sections with highest AI pattern density
 - Flag specific examples of each pattern type
@@ -141,6 +136,7 @@ Systematically replace overused AI words with varied alternatives:
 **AI Vocabulary Patterns** (Reference: `ai-pattern-removal-guide.md` Pattern 1):
 
 Common AI words to reduce/replace:
+
 - sophisticated, delve, leverage, robust, seamless
 - groundbreaking, revolutionary, cutting-edge, compelling, profound
 - meticulous, paradigm, synergy, facilitate, utilize, optimize
@@ -154,6 +150,7 @@ Common AI words to reduce/replace:
 **Example Transformations:**
 
 **Before (AI Vocabulary):**
+
 ```markdown
 This sophisticated approach leverages robust algorithms to facilitate
 seamless data processing. The cutting-edge solution demonstrates profound
@@ -161,6 +158,7 @@ efficacy in optimizing performance.
 ```
 
 **After (Humanized):**
+
 ```markdown
 This approach uses efficient algorithms for smooth data processing.
 The solution works well and improves performance significantly.
@@ -178,6 +176,7 @@ The solution works well and improves performance significantly.
 - "optimize" → improve, enhance, speed up, refine
 
 **Quality Check:**
+
 - [ ] Each AI word reduced to ≤2 occurrences
 - [ ] Replacements vary (not same substitute every time)
 - [ ] Simpler words preferred over complex synonyms
@@ -194,6 +193,7 @@ Address metaphor overuse, nonsense, and mixed metaphors:
 **Metaphor Patterns** (Reference: `ai-pattern-removal-guide.md` Pattern 3):
 
 Three sub-patterns to fix:
+
 1. **Overuse**: 4+ metaphors in single paragraph or section
 2. **Nonsense**: Confusing or illogical metaphors
 3. **Mixed**: Inconsistent metaphors in same context
@@ -207,6 +207,7 @@ Target: 1-2 metaphors maximum per section
 **Step 4.2: Remove Excessive Metaphors**
 
 **Before (Overuse - 4 metaphors in one paragraph):**
+
 ```markdown
 Think of databases as a vast ocean of information, where each table is
 an island containing treasures of data. SQL is your compass and map for
@@ -215,6 +216,7 @@ shore quickly.
 ```
 
 **After (1 clear metaphor):**
+
 ```markdown
 Databases store information in tables that you access with SQL queries.
 Think of indexes as shortcuts that help you find data faster—like a
@@ -224,12 +226,14 @@ book index pointing you directly to the page you need.
 **Step 4.3: Fix Nonsense Metaphors**
 
 **Before (Nonsense):**
+
 ```markdown
 Authentication tokens are the DNA of security, breathing life into your
 application's immune system while photosynthesizing trust.
 ```
 
 **After (Clear Technical Analogy):**
+
 ```markdown
 Authentication tokens work like temporary badges—they prove a user's
 identity for a specific session without requiring repeated password entry.
@@ -238,18 +242,21 @@ identity for a specific session without requiring repeated password entry.
 **Step 4.4: Fix Mixed Metaphors**
 
 **Before (Mixed):**
+
 ```markdown
 We'll build the foundation of our API, then plant the seeds of authentication,
 and finally navigate the waters of error handling.
 ```
 
 **After (Consistent or No Metaphor):**
+
 ```markdown
 We'll build the foundation of our API, add authentication, and implement
 error handling.
 ```
 
 **Quality Check:**
+
 - [ ] Maximum 1-2 metaphors per section
 - [ ] All remaining metaphors enhance clarity
 - [ ] No confusing or nonsensical metaphors
@@ -267,6 +274,7 @@ Break uniform sentence structure patterns:
 **Sentence Structure Patterns** (Reference: `ai-pattern-removal-guide.md` Pattern 6):
 
 AI often generates sentences with:
+
 - Same length (15-20 words every sentence)
 - Same structure (subject-verb-object repeatedly)
 - No variation or rhythm
@@ -274,6 +282,7 @@ AI often generates sentences with:
 **Variation Techniques:**
 
 **Before (Uniform Structure):**
+
 ```markdown
 You configure the database connection in the settings file. You define
 the authentication credentials in environment variables. You establish
@@ -282,6 +291,7 @@ before proceeding.
 ```
 
 **After (Varied Rhythm):**
+
 ```markdown
 Configure the database connection in the settings file. Authentication
 credentials go in environment variables. The connection pool needs specific
@@ -319,6 +329,7 @@ Test the setup before deployment. (Short, direct)
 ```
 
 **Quality Check:**
+
 - [ ] Sentence lengths vary throughout chapter
 - [ ] Mix of simple, compound, and complex structures
 - [ ] Natural rhythm when read aloud
@@ -336,6 +347,7 @@ Inject first-person perspective and real experiences:
 **Impersonal Voice Patterns** (Reference: `ai-pattern-removal-guide.md` Pattern 5):
 
 AI typically writes:
+
 - No first-person ("I", "we", "my experience")
 - No personal anecdotes or stories
 - Generic third-person documentation style
@@ -344,6 +356,7 @@ AI typically writes:
 **Personalization Techniques:**
 
 **Before (Impersonal):**
+
 ```markdown
 Error handling is critical in production applications. Proper logging
 helps identify issues. Best practices recommend comprehensive exception
@@ -351,6 +364,7 @@ management.
 ```
 
 **After (Personal Perspective):**
+
 ```markdown
 I learned the importance of error handling the hard way—after a production
 crash at 2 AM with no useful logs. Now I implement comprehensive exception
@@ -366,17 +380,20 @@ management from day one, logging everything that could help debug issues.
    - "The biggest mistake I made was..."
 
 2. **Personal Anecdotes:**
+
    ```markdown
    When I first deployed this pattern to production at [Company], we
    discovered an edge case the team hadn't anticipated...
    ```
 
 3. **Lessons Learned:**
+
    ```markdown
    After three years using this approach, I've learned that...
    ```
 
 4. **Expert Opinions:**
+
    ```markdown
    I prefer [Option A] over [Option B] because...
    ```
@@ -394,6 +411,7 @@ management from day one, logging everything that could help debug issues.
 - Personal voice in chapter introduction and summary
 
 **Quality Check:**
+
 - [ ] First-person perspective present throughout
 - [ ] Real experiences and anecdotes included
 - [ ] Author expertise evident
@@ -411,6 +429,7 @@ Eliminate vague, uncited examples:
 **Generic Example Patterns** (Reference: `ai-pattern-removal-guide.md` Pattern 4):
 
 AI commonly uses:
+
 - "a company", "a financial institution", "company X"
 - Vague "case studies" without attribution
 - Uncited statistics or claims
@@ -419,6 +438,7 @@ AI commonly uses:
 **Replacement Process:**
 
 **Before (Generic):**
+
 ```markdown
 A large financial institution implemented this caching strategy and saw
 significant performance improvements. Company X reduced response times
@@ -426,6 +446,7 @@ by optimizing their database queries.
 ```
 
 **After (Specific with Citations):**
+
 ```markdown
 JPMorgan Chase implemented Redis caching for their fraud detection system,
 reducing average response time from 800ms to 120ms (Source: AWS Case Studies,
@@ -441,6 +462,7 @@ pooling, handling 10,000 requests/second during peak hours (Netflix Tech Blog).
    - Include specific metrics when available
 
 2. **Your Own Projects:**
+
    ```markdown
    In a React dashboard I built for a healthcare client, implementing
    memoization reduced re-renders by 60%, improving interaction responsiveness
@@ -448,6 +470,7 @@ pooling, handling 10,000 requests/second during peak hours (Netflix Tech Blog).
    ```
 
 3. **Open Source Projects:**
+
    ```markdown
    The Django REST Framework handles authentication with token-based sessions,
    as seen in their official authentication classes (django-rest-framework.org).
@@ -461,11 +484,13 @@ pooling, handling 10,000 requests/second during peak hours (Netflix Tech Blog).
 **When Specificity Not Possible:**
 
 If you must use generic example:
+
 ```markdown
 For example, consider an e-commerce site managing user sessions...
 ```
 
 Make it detailed and realistic:
+
 ```markdown
 For example, imagine an e-commerce site like Amazon-scale platforms:
 millions of concurrent users, shopping carts persisted across sessions,
@@ -474,6 +499,7 @@ management handles...
 ```
 
 **Quality Check:**
+
 - [ ] No "company X" or "financial institution" vague examples
 - [ ] All case studies cited with sources
 - [ ] Statistics attributed to specific sources
@@ -491,6 +517,7 @@ Eliminate low-value content and add actionable insights:
 **Filler Patterns** (Reference: `ai-pattern-removal-guide.md`):
 
 AI often generates:
+
 - Paragraphs that restate obvious points
 - Generic introductions without substance
 - Repetitive explanations across sections
@@ -501,12 +528,14 @@ AI often generates:
 **Step 8.1: Identify Filler**
 
 Questions to ask:
+
 - Does this paragraph teach something new?
 - Would removing it reduce reader understanding?
 - Is this just rephrasing what was already said?
 - Does it add actionable value?
 
 **Before (Filler):**
+
 ```markdown
 Introduction to Authentication
 
@@ -516,6 +545,7 @@ Understanding authentication is essential for developers.
 ```
 
 **After (Value-Added):**
+
 ```markdown
 Introduction to Authentication
 
@@ -529,12 +559,14 @@ with production-ready code examples you can implement today.
 Replace generic statements with specific guidance:
 
 **Before (Generic):**
+
 ```markdown
 Error handling is important for production applications.
 ```
 
 **After (Actionable):**
-```markdown
+
+````markdown
 Implement structured logging with correlation IDs—when errors occur, you'll
 be able to trace the entire request lifecycle across microservices. Here's
 the logging pattern I use in production:
@@ -549,7 +581,9 @@ def process_request(request):
     logger.info(f"[{correlation_id}] Processing request: {request.path}")
     # ... rest of implementation
 ```
-```
+````
+
+````
 
 **Step 8.3: Remove Repetitive Content**
 
@@ -593,19 +627,23 @@ In this section, we'll explore dictionaries...
 
 ## Section 3.3: Sets
 In this section, we'll learn about sets...
-```
+````
 
 **After (Varied Openings):**
+
 ```markdown
 ## Section 3.1: Lists
+
 Python lists store ordered collections. Think of them as arrays that can
 grow and shrink...
 
 ## Section 3.2: Dictionaries
+
 Need to look up data by name instead of position? Dictionaries map keys
 to values...
 
 ## Section 3.3: Sets
+
 When you only care about whether an item exists—not how many times or
 where—use a set...
 ```
@@ -630,6 +668,7 @@ where—use a set...
    - Avoid formulaic "now we'll..." repeatedly
 
 **Quality Check:**
+
 - [ ] Section openings vary in style
 - [ ] Chapter structure feels natural, not templated
 - [ ] Section lengths vary based on content needs
@@ -658,14 +697,14 @@ Run `execute-checklist.md` with `humanization-checklist.md`
 
 ### Before/After AI Pattern Score
 
-| Metric | Baseline | After Humanization | Improvement |
-|--------|----------|-------------------|-------------|
-| AI Pattern Score | {{baseline_score}}/100 | {{after_score}}/100 | {{improvement}}% |
-| AI Vocabulary Count | {{before}} | {{after}} | -{{reduction}} |
-| Metaphor Density | {{before}}/section | {{after}}/section | -{{reduction}} |
-| First-Person Usage | {{before}} | {{after}} | +{{increase}} |
-| Generic Examples | {{before}} | {{after}} | -{{reduction}} |
-| Filler Paragraphs | {{before}} | {{after}} | -{{reduction}} |
+| Metric              | Baseline               | After Humanization  | Improvement      |
+| ------------------- | ---------------------- | ------------------- | ---------------- |
+| AI Pattern Score    | {{baseline_score}}/100 | {{after_score}}/100 | {{improvement}}% |
+| AI Vocabulary Count | {{before}}             | {{after}}           | -{{reduction}}   |
+| Metaphor Density    | {{before}}/section     | {{after}}/section   | -{{reduction}}   |
+| First-Person Usage  | {{before}}             | {{after}}           | +{{increase}}    |
+| Generic Examples    | {{before}}             | {{after}}           | -{{reduction}}   |
+| Filler Paragraphs   | {{before}}             | {{after}}           | -{{reduction}}   |
 
 ### Humanization Checklist Results
 
@@ -681,11 +720,13 @@ Run `execute-checklist.md` with `humanization-checklist.md`
 ```
 
 **Pass Criteria:**
+
 - Humanization checklist ≥80% pass rate
 - AI pattern score <20 (significant improvement from baseline)
 - No critical AI patterns remaining (generic examples, impersonal voice)
 
 **If Failed:**
+
 - Return to steps with remaining issues
 - Focus on top 3 problematic patterns
 - Re-execute validation after fixes
@@ -712,12 +753,14 @@ Create comprehensive record of humanization transformations:
 ## AI Vocabulary Removed (Pattern 1)
 
 ### "sophisticated" (15 occurrences → 1)
+
 - Line 45: "sophisticated algorithm" → "efficient algorithm"
 - Line 89: "sophisticated approach" → "well-designed approach"
 - Line 123: "sophisticated system" → "advanced system"
 - [... remaining 12 instances]
 
 ### "leverage" (8 occurrences → 0)
+
 - Line 67: "leverage this pattern" → "use this pattern"
 - Line 134: "leverage caching" → "apply caching"
 - [... remaining 6 instances]
@@ -727,11 +770,13 @@ Create comprehensive record of humanization transformations:
 ## Metaphor Fixes (Pattern 3)
 
 ### Section 3.2: Reduced from 5 metaphors to 1
+
 - **Removed**: "ocean of data", "navigating waters", "lighthouse of indexes"
 - **Kept**: "database index like book index" (clear, helpful analogy)
 - **Lines**: 145-167
 
 ### Section 3.4: Fixed nonsense metaphor
+
 - **Before**: "Authentication tokens breathe life into security DNA"
 - **After**: "Authentication tokens work like temporary security badges"
 - **Line**: 234
@@ -739,6 +784,7 @@ Create comprehensive record of humanization transformations:
 ## Sentence Rhythm Variation (Pattern 6)
 
 ### Section 3.1: Introduced varied sentence lengths
+
 - **Before**: All sentences 15-18 words, uniform structure
 - **After**: Mix of 6-word, 12-word, and 24-word sentences
 - **Lines**: 78-95
@@ -746,12 +792,14 @@ Create comprehensive record of humanization transformations:
 ## Personal Voice Added (Pattern 5)
 
 ### Added 4 personal anecdotes:
+
 1. **Line 56**: Production error story from healthcare project
 2. **Line 189**: Lesson learned from performance optimization
 3. **Line 267**: Real-world debugging experience
 4. **Line 345**: Expert opinion on architecture choice
 
 ### Added first-person perspective:
+
 - 12 instances of "I've found that..."
 - 8 instances of "In my experience..."
 - 6 instances of "When I built..."
@@ -759,6 +807,7 @@ Create comprehensive record of humanization transformations:
 ## Generic Examples Replaced (Pattern 4)
 
 ### Replaced 5 generic examples with specific citations:
+
 1. **Line 123**: "a company" → "Spotify's personalization engine (Tech Blog 2023)"
 2. **Line 201**: "financial institution" → "JPMorgan Chase fraud detection (AWS Case Study)"
 3. **Line 278**: Uncited case study → Author's own React dashboard project with metrics
@@ -768,10 +817,12 @@ Create comprehensive record of humanization transformations:
 ## Filler Removed / Depth Added (Pattern 8)
 
 ### Removed filler paragraphs:
+
 - **Lines 45-52**: Generic introduction, no value added (DELETED)
 - **Lines 167-173**: Repetitive restatement of earlier content (DELETED)
 
 ### Enhanced content depth:
+
 - **Lines 89-105**: Added actionable code example with correlation IDs
 - **Lines 234-256**: Added production-ready error handling pattern
 - **Lines 312-330**: Added specific performance metrics from real project
@@ -779,6 +830,7 @@ Create comprehensive record of humanization transformations:
 ## Structural Variation (Pattern 9)
 
 ### Varied section openings:
+
 - Section 3.1: Statement opening (was "In this section...")
 - Section 3.2: Question opening (was "In this section...")
 - Section 3.3: Example opening (was "In this section...")
@@ -866,6 +918,7 @@ This task integrates with:
 ### Example 1: AI Vocabulary Removal
 
 **Before (AI Vocabulary Overload):**
+
 ```markdown
 This sophisticated approach leverages robust algorithms to facilitate
 seamless integration. The cutting-edge solution demonstrates profound
@@ -873,6 +926,7 @@ efficacy in optimizing performance through meticulous implementation.
 ```
 
 **After (Humanized):**
+
 ```markdown
 This approach uses efficient algorithms for smooth integration. The
 solution works well and significantly improves performance through
@@ -886,6 +940,7 @@ careful implementation.
 ### Example 2: Metaphor Overuse → Single Clear Metaphor
 
 **Before (4 Metaphors in One Paragraph):**
+
 ```markdown
 Think of APIs as bridges connecting islands of functionality, where each
 endpoint is a doorway into a treasure chest of data. Your requests navigate
@@ -894,6 +949,7 @@ your journey home.
 ```
 
 **After (1 Clear Metaphor):**
+
 ```markdown
 APIs expose endpoints that return data in specific formats. Think of an
 endpoint as a function you call over HTTP—you send parameters, receive
@@ -907,6 +963,7 @@ JSON responses. The schema defines what structure to expect.
 ### Example 3: Impersonal → Personal Voice
 
 **Before (Impersonal Documentation Style):**
+
 ```markdown
 Error handling is critical in production applications. Proper logging
 helps identify issues. Best practices recommend comprehensive exception
@@ -914,6 +971,7 @@ management.
 ```
 
 **After (Personal Expert Perspective):**
+
 ```markdown
 I learned the importance of error handling the hard way—after a production
 crash at 2 AM with no useful logs. Now I implement comprehensive exception
@@ -929,12 +987,14 @@ ID linking it to the user action that triggered it.
 ### Example 4: Generic → Specific Example
 
 **Before (Generic Uncited Example):**
+
 ```markdown
 A large financial institution implemented this caching strategy and saw
 significant performance improvements.
 ```
 
 **After (Specific Cited Example):**
+
 ```markdown
 JPMorgan Chase implemented Redis caching for their fraud detection system,
 reducing average response time from 800ms to 120ms (Source: AWS Case
@@ -948,6 +1008,7 @@ Studies, 2023).
 ### Example 5: Sentence Uniformity → Varied Rhythm
 
 **Before (All Same Length and Structure):**
+
 ```markdown
 You configure the database connection in the settings file. You define
 the authentication credentials in environment variables. You establish
@@ -956,6 +1017,7 @@ before proceeding with queries.
 ```
 
 **After (Varied Lengths and Structures):**
+
 ```markdown
 Configure the database connection in the settings file. Auth credentials?
 Those go in environment variables—never hardcode them. The connection pool
@@ -970,6 +1032,7 @@ verify everything connects properly.
 ### Example 6: Flowery Language → Simple Direct
 
 **Before (Overblown Prose):**
+
 ```markdown
 The profound efficacy of this pattern is compellingly exemplified through
 its manifestation in the empirical realm of production deployments, where
@@ -977,6 +1040,7 @@ its sophisticated architecture facilitates seamless scalability.
 ```
 
 **After (Clear Technical Writing):**
+
 ```markdown
 This pattern works well in production environments. It scales easily
 because of its well-designed architecture.
@@ -989,28 +1053,36 @@ because of its well-designed architecture.
 ### Example 7: Rigid Structure → Varied Openings
 
 **Before (Formulaic Section Openings):**
+
 ```markdown
 ## Section 3.1: Authentication
+
 In this section, we'll cover authentication...
 
 ## Section 3.2: Authorization
+
 In this section, we'll explore authorization...
 
 ## Section 3.3: Session Management
+
 In this section, we'll learn about sessions...
 ```
 
 **After (Varied Natural Openings):**
+
 ```markdown
 ## Section 3.1: Authentication
+
 Authentication answers one question: Who are you? Let's implement three
 strategies...
 
 ## Section 3.2: Authorization
+
 You've authenticated the user—now determine what they can access.
 Authorization controls permissions...
 
 ## Section 3.3: Session Management
+
 Keeping users logged in across requests requires session management.
 Here's how it works...
 ```
@@ -1022,6 +1094,7 @@ Here's how it works...
 ### Example 8: Filler → Value-Added Content
 
 **Before (Filler Introduction):**
+
 ```markdown
 ## Introduction to Databases
 
@@ -1031,6 +1104,7 @@ developers. Databases come in different types.
 ```
 
 **After (Value-Added Introduction):**
+
 ```markdown
 ## Introduction to Databases
 
@@ -1068,6 +1142,7 @@ After humanization:
 **PacktPub Compliance:**
 
 This task ensures compliance with PacktPub's Generative AI Author Guidelines:
+
 - AI use documented transparently
 - Content reads as authentically human
 - Patterns readers complain about removed

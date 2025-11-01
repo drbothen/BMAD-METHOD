@@ -16,6 +16,148 @@ Verify that humanized content meets quality standards across all critical dimens
 
 ---
 
+## PRIMARY QUALITY GATE: Dual Score Validation
+
+**RECOMMENDED FIRST STEP**: Run dual score analysis before manual checklist review.
+
+### Run Dual Score Analysis
+
+```bash
+cd {{config.root}}/tools
+source nlp-env/bin/activate  # Activate Python environment
+python analyze_ai_patterns.py PATH_TO_FILE \
+  --show-scores \
+  --quality-target 85 \
+  --detection-target 30 \
+  --domain-terms "Domain,Specific,Terms"
+```
+
+### Quality Score Validation
+
+**Target**: Quality Score ≥85 (EXCELLENT - Minimal AI signatures)
+
+- [ ] **Quality Score ≥85** (publication-ready standard)
+  - 95-100: EXCEPTIONAL - Indistinguishable from human
+  - 85-94: EXCELLENT - Minimal AI signatures ✅ TARGET
+  - 70-84: GOOD - Natural with minor tells (needs light editing)
+  - 50-69: MIXED - Needs moderate work (additional humanization required)
+  - <50: AI-LIKE - Substantial work needed
+
+**Adjust targets by content type**:
+
+- [ ] Book chapters: Quality ≥90 (stricter)
+- [ ] Blog posts/articles: Quality ≥85 (standard)
+- [ ] Documentation: Quality ≥80 (moderate)
+- [ ] Internal docs: Quality ≥75 (relaxed)
+
+### Detection Risk Validation
+
+**Target**: Detection Risk ≤30 (MEDIUM or better - May be flagged by some detectors)
+
+- [ ] **Detection Risk ≤30** (publication-ready standard)
+  - 0-14: VERY LOW - Safe ✅ IDEAL
+  - 15-29: LOW - Unlikely flagged ✅ GOOD
+  - 30-49: MEDIUM - May be flagged ✅ TARGET
+  - 50-69: HIGH - Likely flagged (needs work)
+  - 70-100: VERY HIGH - Will be flagged (critical issues)
+
+**Adjust targets by requirements**:
+
+- [ ] Book chapters: Detection ≤20 (stricter)
+- [ ] Blog posts/articles: Detection ≤30 (standard)
+- [ ] Documentation: Detection ≤35 (moderate)
+- [ ] Internal docs: Detection ≤40 (relaxed)
+
+### Score Breakdown Analysis
+
+**Review 14 dimensions across 3 tiers**:
+
+**TIER 1: Advanced Detection (40 points)**:
+
+- [ ] GLTR Token Ranking score acceptable (target ≥9/12)
+- [ ] Advanced Lexical Diversity acceptable (target ≥6/8)
+- [ ] AI Detection Ensemble acceptable (target ≥7/10)
+- [ ] Stylometric Markers acceptable (target ≥4/6)
+- [ ] Syntactic Complexity acceptable (target ≥3/4)
+
+**TIER 2: Core Patterns (35 points)**:
+
+- [ ] Burstiness (Sentence Variation) acceptable (target ≥9/12)
+- [ ] Perplexity (Vocabulary) acceptable (target ≥7/10)
+- [ ] Formatting Patterns acceptable (target ≥6/8)
+- [ ] Heading Hierarchy acceptable (target ≥3/5)
+
+**TIER 3: Supporting Signals (25 points)**:
+
+- [ ] Voice & Authenticity acceptable (target ≥5/8)
+- [ ] Structure & Organization acceptable (target ≥5/7)
+- [ ] Emotional Depth acceptable (target ≥4/6)
+- [ ] Technical Depth acceptable (target ≥2/4)
+
+### Path-to-Target Review
+
+If targets not met, review path-to-target recommendations:
+
+- [ ] **LOW effort actions** identified and prioritized (15-30 min each)
+- [ ] **MEDIUM effort actions** identified (30-45 min each)
+- [ ] **HIGH effort actions** identified (45-90 min each)
+- [ ] Actions sorted by ROI (potential gain × effort multiplier)
+- [ ] Estimated effort to reach targets: **\*\***\_\_\_\_**\*\***
+
+**Next Steps if Below Target**:
+
+- [ ] Focus on top 2-3 path-to-target actions (highest ROI)
+- [ ] Apply targeted humanization techniques
+- [ ] Re-analyze after changes
+- [ ] Check historical trend (should show IMPROVING)
+
+### Historical Trend Validation
+
+**If multiple analyses run** (post-humanization check):
+
+- [ ] **Quality trend**: IMPROVING or STABLE (not WORSENING)
+- [ ] **Detection trend**: IMPROVING or STABLE (not WORSENING)
+- [ ] Quality change: +**\_** points (should be positive or zero)
+- [ ] Detection change: **\_** points (should be negative or zero)
+
+**Trend Interpretation**:
+
+- IMPROVING: Good progress, continue approach ✅
+- STABLE (at target): Targets met, ready for publication ✅
+- STABLE (below target): Try different techniques or regenerate ⚠️
+- WORSENING: Over-editing or technical errors, investigate ❌
+
+### Dual Score Decision
+
+**PASS - Publication Ready**:
+
+- [ ] Quality ≥ Target ✅
+- [ ] Detection ≤ Target ✅
+- [ ] Historical trend IMPROVING or STABLE ✅
+- [ ] Proceed to supplementary manual checks below
+
+**CONDITIONAL PASS - Minor Touch-ups**:
+
+- [ ] Quality within 5 points of target (e.g., 80-84 for target 85) ⚠️
+- [ ] Detection within 5 points of target ⚠️
+- [ ] Only LOW effort actions remain
+- [ ] Apply quick fixes, then re-analyze
+
+**FAIL - Additional Humanization Required**:
+
+- [ ] Quality < Target by >5 points ❌
+- [ ] OR Detection > Target by >5 points ❌
+- [ ] OR Historical trend WORSENING ❌
+- [ ] Use iterative-humanization-optimization.md task for systematic improvement
+
+---
+
+## SUPPLEMENTARY MANUAL CHECKS
+
+**Use the sections below for additional validation after dual scores pass, or for granular issue identification.**
+
+---
+
 ## Section 1: Vocabulary Quality
 
 ### AI Vocabulary Removal
@@ -47,6 +189,7 @@ Verify that humanized content meets quality standards across all critical dimens
 - [ ] No "When it comes to" phrases
 
 **Natural Alternatives Used**:
+
 - [ ] Uses conversational connectors: "And," "But," "So," "Now,"
 - [ ] Uses context-appropriate transitions
 - [ ] Often no explicit transition (natural flow)
@@ -61,6 +204,7 @@ Verify that humanized content meets quality standards across all critical dimens
 - [ ] Concrete language preferred over abstract
 
 **Spot Check**: Read 2-3 paragraphs aloud
+
 - [ ] Word choices sound natural when spoken
 - [ ] No awkward or stilted phrasings
 - [ ] Rhythm flows smoothly
@@ -74,18 +218,21 @@ Verify that humanized content meets quality standards across all critical dimens
 Select 3 random paragraphs and verify:
 
 **Paragraph 1**:
+
 - [ ] Contains at least one short sentence (< 10 words)
 - [ ] Contains at least one long sentence (> 30 words)
 - [ ] Sentence lengths vary noticeably
 - [ ] No uniform pattern (all sentences similar length)
 
 **Paragraph 2**:
+
 - [ ] Contains at least one short sentence (< 10 words)
 - [ ] Contains at least one long sentence (> 30 words)
 - [ ] Sentence lengths vary noticeably
 - [ ] No uniform pattern (all sentences similar length)
 
 **Paragraph 3**:
+
 - [ ] Contains at least one short sentence (< 10 words)
 - [ ] Contains at least one long sentence (> 30 words)
 - [ ] Sentence lengths vary noticeably
@@ -112,6 +259,7 @@ Check 10 consecutive paragraphs:
 - [ ] Sentence structures create natural rhythm
 
 **Read Aloud Test**:
+
 - [ ] Rhythm sounds natural when read aloud
 - [ ] No monotonous pattern emerges
 - [ ] Emphasis falls in appropriate places
@@ -125,18 +273,21 @@ Check 10 consecutive paragraphs:
 **Voice Markers** (verify appropriate level for content type):
 
 For conversational/tutorial content (should be present):
+
 - [ ] Uses "you" to address reader directly
 - [ ] Includes some first-person perspective (I, we, my, our)
 - [ ] Contains personal insights or experience markers
 - [ ] Shows authorial personality appropriately
 
 For formal/documentation (may be minimal):
+
 - [ ] Professional tone maintained consistently
 - [ ] Appropriate level of formality for domain
 - [ ] Voice present but subtle
 - [ ] Authoritative without being cold
 
 **Consistency Check**:
+
 - [ ] Voice remains consistent throughout document
 - [ ] Tone appropriate for subject matter
 - [ ] No jarring shifts in formality or style
@@ -153,6 +304,7 @@ For formal/documentation (may be minimal):
 - [ ] Maintains professional authenticity (no forced emotion)
 
 **Balance Check**:
+
 - [ ] Emotion level appropriate for content type
 - [ ] Not emotionally flat or robotic
 - [ ] Not overly effusive or hyperbolic
@@ -169,6 +321,7 @@ For formal/documentation (may be minimal):
 - [ ] Sounds like human explaining to another human
 
 **Formality Calibration**:
+
 - [ ] Formality level matches content type
 - [ ] Consistency maintained within sections
 - [ ] Professional without being stiff
@@ -189,6 +342,7 @@ For formal/documentation (may be minimal):
 - [ ] Numbers, metrics, or data points provided
 
 **Example Quality**:
+
 - [ ] Examples are specific and realistic
 - [ ] Code examples use meaningful names (not foo/bar)
 - [ ] Scenarios feel authentic, not textbook
@@ -205,6 +359,7 @@ For formal/documentation (may be minimal):
 - [ ] Shows practical experience, not just theory
 
 **Practitioner Signals**:
+
 - [ ] References real-world workflows
 - [ ] Mentions specific commands or procedures
 - [ ] Discusses implementation details
@@ -226,18 +381,21 @@ For formal/documentation (may be minimal):
 ### Organization Naturalness
 
 **List Usage**:
+
 - [ ] Lists used appropriately (not excessively)
 - [ ] Some list content converted to flowing prose
 - [ ] Lists that remain are genuinely clearer as lists
 - [ ] List formatting is clean and consistent
 
 **Paragraph Structure**:
+
 - [ ] Paragraphs vary in structure (not all topic-sentence-first)
 - [ ] Some paragraphs use questions, fragments, or varied openings
 - [ ] Paragraph length varies appropriately
 - [ ] Transitions between paragraphs feel natural
 
 **Section Flow**:
+
 - [ ] Sections build logically on each other
 - [ ] Content has narrative arc or clear progression
 - [ ] Ideas reference and build on previous content
@@ -246,11 +404,13 @@ For formal/documentation (may be minimal):
 ### Coherence Quality
 
 **Local Coherence**:
+
 - [ ] Sentences connect smoothly within paragraphs
 - [ ] Ideas flow naturally from one to next
 - [ ] Transitions are smooth and logical
 
 **Global Coherence**:
+
 - [ ] Document tells coherent story overall
 - [ ] Sections couldn't be randomly reordered without impact
 - [ ] Reader understanding builds progressively
@@ -272,6 +432,7 @@ For formal/documentation (may be minimal):
 - [ ] Best practices reflect current standards
 
 **Verification Method**:
+
 - [ ] Code examples compiled/run successfully
 - [ ] Technical claims verified against documentation
 - [ ] Procedures tested if possible
@@ -299,11 +460,13 @@ For formal/documentation (may be minimal):
 ### Reading Ease
 
 **Flesch Reading Ease Score** (if measurable):
+
 - Target for general technical audience: 60-70
 - Target for expert audience: 50-60
 - Target for beginner audience: 70-80
 
 **Subjective Assessment**:
+
 - [ ] Content reads smoothly without struggle
 - [ ] Sentences are clear and understandable
 - [ ] Complex ideas broken down appropriately
@@ -319,12 +482,14 @@ For formal/documentation (may be minimal):
 ### Engagement
 
 **Read Aloud Test**:
+
 - [ ] Sounds natural when read aloud
 - [ ] Maintains reader attention
 - [ ] Rhythm keeps reader engaged
 - [ ] No sections that drag or bore
 
 **Reader Perspective**:
+
 - [ ] Content answers likely reader questions
 - [ ] Anticipates and addresses confusions
 - [ ] Provides value throughout (not filler)
@@ -344,6 +509,7 @@ For formal/documentation (may be minimal):
 - [ ] Not perfectly uniform or mechanical
 
 **Balance Check**:
+
 - [ ] Imperfections are subtle (don't harm quality)
 - [ ] Still maintains professional standards
 - [ ] Natural variation without being messy
@@ -352,12 +518,14 @@ For formal/documentation (may be minimal):
 ### Detection Pattern Absence
 
 **Statistical Patterns** (spot check):
+
 - [ ] Sentence lengths vary significantly
 - [ ] No AI vocabulary markers remain
 - [ ] Transitions feel natural
 - [ ] Structure isn't formulaic
 
 **Voice Patterns**:
+
 - [ ] Personal presence appropriate for content type
 - [ ] Not emotionally flat or neutral
 - [ ] Specific rather than abstract where possible
@@ -378,6 +546,7 @@ For formal/documentation (may be minimal):
 - [ ] Addresses audience's actual needs/questions
 
 **Accessibility**:
+
 - [ ] New concepts introduced clearly
 - [ ] Jargon explained when first used
 - [ ] Complex ideas scaffolded appropriately
@@ -430,6 +599,7 @@ For formal/documentation (may be minimal):
 - [ ] Humanization goals achieved
 
 **Status**:
+
 - [ ] ✅ **APPROVED** - Ready for publication
 - [ ] ⚠️ **APPROVED WITH MINOR REVISIONS** - Publish after small fixes
 - [ ] ❌ **NOT APPROVED** - Needs additional humanization work
@@ -442,26 +612,28 @@ For formal/documentation (may be minimal):
 
 Rate each dimension (✅ Excellent, ⚠️ Acceptable, ❌ Needs Work):
 
-| Dimension | Score | Notes |
-|-----------|-------|-------|
-| Vocabulary Quality | ✅ ⚠️ ❌ | |
-| Sentence Structure | ✅ ⚠️ ❌ | |
-| Voice & Tone | ✅ ⚠️ ❌ | |
-| Content Depth | ✅ ⚠️ ❌ | |
-| Structural Quality | ✅ ⚠️ ❌ | |
-| Technical Accuracy | ✅ ⚠️ ❌ | (MUST be ✅) |
-| Readability | ✅ ⚠️ ❌ | |
-| Humanization Success | ✅ ⚠️ ❌ | |
-| Audience Fit | ✅ ⚠️ ❌ | |
+| Dimension            | Score    | Notes        |
+| -------------------- | -------- | ------------ |
+| Vocabulary Quality   | ✅ ⚠️ ❌ |              |
+| Sentence Structure   | ✅ ⚠️ ❌ |              |
+| Voice & Tone         | ✅ ⚠️ ❌ |              |
+| Content Depth        | ✅ ⚠️ ❌ |              |
+| Structural Quality   | ✅ ⚠️ ❌ |              |
+| Technical Accuracy   | ✅ ⚠️ ❌ | (MUST be ✅) |
+| Readability          | ✅ ⚠️ ❌ |              |
+| Humanization Success | ✅ ⚠️ ❌ |              |
+| Audience Fit         | ✅ ⚠️ ❌ |              |
 
 ### Quality Threshold
 
 **Minimum for Publication**:
+
 - Technical Accuracy: MUST be ✅
 - All other dimensions: At least ⚠️
 - Majority of dimensions: Should be ✅
 
 **Recommended Standard**:
+
 - 8-9 dimensions: ✅
 - 0-1 dimensions: ⚠️
 - 0 dimensions: ❌
@@ -475,14 +647,16 @@ Rate each dimension (✅ Excellent, ⚠️ Acceptable, ❌ Needs Work):
 List any issues requiring attention:
 
 **Critical Issues** (must fix before publication):
-1. _____________________________________
-2. _____________________________________
-3. _____________________________________
+
+1. ***
+2. ***
+3. ***
 
 **Minor Issues** (nice to fix):
-1. _____________________________________
-2. _____________________________________
-3. _____________________________________
+
+1. ***
+2. ***
+3. ***
 
 ### Follow-Up Actions
 

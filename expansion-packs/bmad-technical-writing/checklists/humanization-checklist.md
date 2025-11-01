@@ -5,6 +5,7 @@ Use this checklist to validate that AI pattern removal was successful and chapte
 **Purpose**: Confirm humanization task effectiveness after executing humanize-ai-drafted-chapter.md
 
 **Distinction from Other Checklists**:
+
 - **generative-ai-compliance-checklist.md**: DETECTS AI patterns (use before humanization)
 - **humanization-checklist.md** (THIS): VALIDATES REMOVAL (use after humanization)
 - **tone-consistency-checklist.md**: Validates tone specification compliance (different concern)
@@ -23,11 +24,13 @@ Before using this checklist:
 **Calculation**: (Items Passed / Total Items) × 100 = Humanization Pass Rate
 
 **Thresholds**:
+
 - **≥80%**: PASS - Ready for technical review
 - **60-79%**: REVIEW - Some patterns remain, additional humanization recommended
 - **<60%**: FAIL - Significant AI patterns remain, rework required
 
 **AI Pattern Remaining Score**: Inverse of pass rate
+
 - Pass rate 90% = 10% AI patterns remaining (excellent)
 - Pass rate 80% = 20% AI patterns remaining (acceptable)
 - Pass rate 60% = 40% AI patterns remaining (needs work)
@@ -61,6 +64,7 @@ Validates AI vocabulary patterns have been removed.
 - [ ] **Natural word choices** (words you'd use in conversation with colleague)
 
 **Example Check**:
+
 - ✓ "use this pattern" not "utilize this methodology"
 - ✓ "help developers" not "facilitate developer enablement"
 - ✓ "improves performance" not "optimizes operational efficiency"
@@ -98,6 +102,7 @@ Validates metaphor problems (overuse, nonsense, mixed) have been fixed.
 - [ ] **Metaphors enhance understanding** (each metaphor clarifies concept, not confuses)
 
 **Example Check**:
+
 - ✗ "Authentication tokens breathe life into security DNA" (nonsense)
 - ✓ "Authentication tokens work like temporary security badges" (clear)
 
@@ -126,6 +131,7 @@ Validates sentence structure uniformity has been broken.
 **Validation Method**: Sample 3 random paragraphs, measure sentence lengths, verify variation
 
 **Example Check**:
+
 - ✗ All sentences: 15, 16, 14, 17, 15, 16 words (uniform)
 - ✓ Sentences: 8, 22, 12, 6, 19, 14 words (varied)
 
@@ -138,6 +144,7 @@ Validates sentence structure uniformity has been broken.
 - [ ] **Natural rhythm when read aloud** (sounds conversational, not robotic)
 
 **Example Check**:
+
 - ✗ "You configure X. You define Y. You establish Z. You verify W." (repetitive)
 - ✓ "Configure X. Auth credentials go in Y. The connection pool needs Z—especially for production. Before proceeding, verify W." (varied)
 
@@ -177,6 +184,7 @@ Validates personal perspective and author expertise are evident.
 - [ ] **"War stories" or debugging experiences** (real scenarios from author's work)
 
 **Example Check**:
+
 - ✗ "Error handling is important" (generic, no expertise)
 - ✓ "I learned the importance of error handling after a 2 AM production crash with no logs" (personal experience)
 
@@ -214,6 +222,7 @@ Validates generic examples have been replaced with specific, cited examples.
 - [ ] **Author's own projects referenced** (personal work examples with specifics)
 
 **Example Check**:
+
 - ✗ "A company implemented caching and improved performance" (generic)
 - ✓ "Netflix implemented Redis caching for their recommendation engine, reducing response time from 800ms to 120ms (Netflix Tech Blog, 2023)" (specific, cited)
 
@@ -250,6 +259,7 @@ Validates filler has been removed and actionable insights added.
 - [ ] **Specific recommendations** (clear guidance, not vague advice)
 
 **Example Check**:
+
 - ✗ "Error handling is important for production applications" (filler, no action)
 - ✓ "Implement structured logging with correlation IDs—here's the pattern I use: [code example]" (actionable)
 
@@ -278,6 +288,7 @@ Validates rigid, templated structure has been broken.
 **Validation Method**: Check first sentence of each H2 section, verify no repeated pattern
 
 **Example Check**:
+
 - ✗ All sections start "In this section, we'll..." (rigid template)
 - ✓ Mix: question opening, statement, example, problem (varied)
 
@@ -316,15 +327,15 @@ After completing all sections, calculate final scores:
 
 ### Category Scores
 
-| Category | Passed | Total | Pass Rate |
-|----------|--------|-------|-----------|
-| Word Choice Validation | {{passed}} | 9 | {{percent}}% |
-| Metaphor Quality | {{passed}} | 6 | {{percent}}% |
-| Sentence Rhythm | {{passed}} | 6 | {{percent}}% |
-| Voice Authenticity | {{passed}} | 6 | {{percent}}% |
-| Example Specificity | {{passed}} | 6 | {{percent}}% |
-| Content Depth | {{passed}} | 6 | {{percent}}% |
-| Structural Variation | {{passed}} | 6 | {{percent}}% |
+| Category               | Passed     | Total | Pass Rate    |
+| ---------------------- | ---------- | ----- | ------------ |
+| Word Choice Validation | {{passed}} | 9     | {{percent}}% |
+| Metaphor Quality       | {{passed}} | 6     | {{percent}}% |
+| Sentence Rhythm        | {{passed}} | 6     | {{percent}}% |
+| Voice Authenticity     | {{passed}} | 6     | {{percent}}% |
+| Example Specificity    | {{passed}} | 6     | {{percent}}% |
+| Content Depth          | {{passed}} | 6     | {{percent}}% |
+| Structural Variation   | {{passed}} | 6     | {{percent}}% |
 
 ### Overall Results
 
@@ -333,6 +344,7 @@ After completing all sections, calculate final scores:
 **AI Pattern Remaining Score**: {{100 - percent}}%
 
 **Status**:
+
 - [ ] ✅ PASS (≥80% pass rate, ≤20% AI patterns) - Ready for technical review
 - [ ] ⚠️ REVIEW (60-79% pass rate, 21-40% AI patterns) - Additional humanization recommended
 - [ ] ❌ FAIL (<60% pass rate, >40% AI patterns) - Rework required
@@ -344,6 +356,7 @@ After completing all sections, calculate final scores:
 **Improvement**: {{improvement}}% ({{baseline - current}})
 
 **Target Achieved**:
+
 - [ ] YES - AI score reduced by ≥50%
 - [ ] NO - Additional humanization iteration needed
 ```
@@ -351,17 +364,20 @@ After completing all sections, calculate final scores:
 ### Next Steps Based on Results
 
 **If PASS (≥80%):**
+
 1. Proceed to technical-review.md
 2. Document humanization completion in chapter metadata
 3. Note: Final AI pattern check will occur at copy-edit (Step 10)
 
 **If REVIEW (60-79%):**
+
 1. Identify top 3 failing categories
 2. Return to relevant humanize-ai-drafted-chapter steps
 3. Focus on critical issues (generic examples, impersonal voice)
 4. Re-execute this checklist after fixes
 
 **If FAIL (<60%):**
+
 1. Review humanize-ai-drafted-chapter task completely
 2. May need different humanization approach
 3. Consider consulting with human editor
@@ -428,20 +444,20 @@ This checklist is used by:
 
 **This Checklist (Humanization) vs Compliance Checklist**:
 
-| Aspect | generative-ai-compliance | humanization-checklist |
-|--------|------------------------|----------------------|
-| **Purpose** | DETECT AI patterns | VALIDATE REMOVAL |
-| **When** | Before humanization | After humanization |
-| **Output** | List of problems found | Pass/fail for each category |
-| **Use** | Baseline measurement | Improvement validation |
+| Aspect      | generative-ai-compliance | humanization-checklist      |
+| ----------- | ------------------------ | --------------------------- |
+| **Purpose** | DETECT AI patterns       | VALIDATE REMOVAL            |
+| **When**    | Before humanization      | After humanization          |
+| **Output**  | List of problems found   | Pass/fail for each category |
+| **Use**     | Baseline measurement     | Improvement validation      |
 
 **This Checklist vs Tone Consistency Checklist**:
 
-| Aspect | Tone Consistency | Humanization |
-|--------|-----------------|--------------|
-| **Purpose** | Validate tone specification | Remove AI artifacts |
-| **Focus** | Formality, voice consistency | Pattern elimination |
-| **Question** | "Does tone match spec?" | "Does this sound AI-generated?" |
+| Aspect       | Tone Consistency             | Humanization                    |
+| ------------ | ---------------------------- | ------------------------------- |
+| **Purpose**  | Validate tone specification  | Remove AI artifacts             |
+| **Focus**    | Formality, voice consistency | Pattern elimination             |
+| **Question** | "Does tone match spec?"      | "Does this sound AI-generated?" |
 
 ### Best Practices
 
@@ -480,6 +496,7 @@ A: Rare exceptions acceptable with justification. Document why certain patterns 
 **Goal**: Authentic human expertise, not just passing a checklist.
 
 **Success Criteria**:
+
 - Reader can't tell AI was used in drafting
 - Author's expertise and personality evident
 - Content provides unique value beyond AI-generated tutorials

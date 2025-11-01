@@ -52,9 +52,11 @@ Document the following information:
 Choose the appropriate framework based on content type:
 
 #### Framework A: Conversational Technical Expert
+
 **Best for**: Tutorials, how-to guides, explanatory documentation
 
 **Base Template**:
+
 ```
 You are an experienced [SPECIFIC_ROLE] with [X] years of hands-on experience
 writing about [TECHNOLOGY/DOMAIN]. Write this [CONTENT_TYPE] as if explaining
@@ -88,9 +90,11 @@ STRUCTURE:
 ```
 
 #### Framework B: Narrative-Driven Technical Writing
+
 **Best for**: Book chapters, in-depth articles, case studies
 
 **Base Template**:
+
 ```
 You are writing [CONTENT_TYPE] for [AUDIENCE] who wants to deeply understand
 [TOPIC]. Write in a narrative style that takes readers on a learning journey,
@@ -118,9 +122,11 @@ SENTENCE RHYTHM:
 ```
 
 #### Framework C: Problem-Solving Practitioner
+
 **Best for**: Troubleshooting guides, best practices, technical analysis
 
 **Base Template**:
+
 ```
 You are a practitioner sharing hard-won insights about [TOPIC] with peers
 who face real-world challenges. Write from experience, not theory.
@@ -151,6 +157,7 @@ STRUCTURAL VARIETY:
 Enhance the selected framework with domain-specific elements:
 
 1. **Technical Terminology Handling**
+
    ```
    TERMINOLOGY APPROACH:
    - Introduce new terms with brief inline explanations first time used
@@ -161,6 +168,7 @@ Enhance the selected framework with domain-specific elements:
    ```
 
 2. **Code Example Integration**
+
    ```
    CODE EXAMPLES:
    - Integrate code naturally into narrative flow, not as isolated blocks

@@ -104,7 +104,7 @@ Define 2-4 functional categories that should receive italics:
 - [ ] **Terms being defined**: (first use only)
 - [ ] **Subtle emphasis**: (specific words requiring attention)
 - [ ] **Foreign expressions**: (non-English terms)
-- [ ] Other category: ________________
+- [ ] Other category: **\*\***\_\_\_\_**\*\***
 
 ### Italic Reduction Actions
 
@@ -220,30 +220,35 @@ Check for these human characteristics (should be PRESENT):
 ## Success Criteria
 
 ### Em-Dashes
+
 ✅ **1-2 per page maximum**
 ✅ Each serves specific structural purpose
 ✅ Substitution test passed for all instances
 ✅ Natural distribution (not clustered or patterned)
 
 ### Bold Text
+
 ✅ **2-5% of content or less**
 ✅ Only genuinely critical elements bolded
 ✅ Purposeful inconsistency (similar elements treated contextually)
 ✅ Creates visual anchors without noise
 
 ### Italics
+
 ✅ **Functional categories only** (2-4 defined categories)
 ✅ Category consistency maintained
 ✅ No extended passages italicized
 ✅ No casual/decorative italics
 
 ### Distribution
+
 ✅ **Natural variation** across sections
 ✅ More formatting for complex content
 ✅ Less formatting for simple content
 ✅ No mechanical patterns detected
 
 ### Overall
+
 ✅ **Formatting invisible** - supports without distracting
 ✅ All AI red flags removed
 ✅ Human pattern indicators present
@@ -256,21 +261,21 @@ Check for these human characteristics (should be PRESENT):
 
 ### 🚩 Red Flags (AI Patterns - Remove These)
 
-| Element | AI Pattern | Remove |
-|---------|-----------|--------|
-| Em-dashes | 3+ per page, clustered | ✂️ Reduce to 1-2/page |
-| Bold | 10%+ of content, mechanical pattern | ✂️ Cut 50-70% |
-| Italics | Scattered, decorative, extended passages | ✂️ Define categories |
-| Distribution | Uniform density across sections | ✂️ Create variation |
+| Element      | AI Pattern                               | Remove                |
+| ------------ | ---------------------------------------- | --------------------- |
+| Em-dashes    | 3+ per page, clustered                   | ✂️ Reduce to 1-2/page |
+| Bold         | 10%+ of content, mechanical pattern      | ✂️ Cut 50-70%         |
+| Italics      | Scattered, decorative, extended passages | ✂️ Define categories  |
+| Distribution | Uniform density across sections          | ✂️ Create variation   |
 
 ### ✅ Green Flags (Human Patterns - Keep These)
 
-| Element | Human Pattern | Maintain |
-|---------|--------------|----------|
-| Em-dashes | 1-2 per page, purposeful | ✓ Keep restraint |
-| Bold | 2-5%, contextual selection | ✓ Keep selectivity |
-| Italics | Functional categories, consistent | ✓ Keep purpose |
-| Distribution | Variable density, asymmetric | ✓ Keep variation |
+| Element      | Human Pattern                     | Maintain           |
+| ------------ | --------------------------------- | ------------------ |
+| Em-dashes    | 1-2 per page, purposeful          | ✓ Keep restraint   |
+| Bold         | 2-5%, contextual selection        | ✓ Keep selectivity |
+| Italics      | Functional categories, consistent | ✓ Keep purpose     |
+| Distribution | Variable density, asymmetric      | ✓ Keep variation   |
 
 ---
 

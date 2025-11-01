@@ -277,10 +277,12 @@ Identify which tone document applies to this project:
 **Project Type:** [Greenfield / Brownfield]
 
 **Tone Reference:**
+
 - File: [tone-specification.md OR extracted-tone-patterns.md]
 - Location: [docs/ OR {{config.manuscript.planning}}/]
 
 **Key Tone Characteristics to Validate:**
+
 1. [Characteristic 1 from specification]
 2. [Characteristic 2 from specification]
 3. [Characteristic 3 from specification]
@@ -298,6 +300,7 @@ Run the comprehensive tone validation checklist:
 **Execute:** Use execute-checklist.md task with tone-consistency-checklist.md
 
 This checklist validates:
+
 - Voice consistency (perspective, active/passive)
 - Formality level alignment
 - Publisher-specific requirements
@@ -318,6 +321,7 @@ Reviewer: [Name]
 **Violations Found:** [Number]
 
 **Category Breakdown:**
+
 - Voice consistency: [Number] issues
 - Formality level: [Number] issues
 - Publisher alignment: [Number] issues
@@ -336,6 +340,7 @@ List specific tone issues discovered:
 **Tone Violations Log:**
 
 **Violation 1: Formality Level Inconsistency**
+
 - Location: Lines 145-167
 - Issue: Level 5 formality (no contractions, passive voice)
 - Expected: Level 3 (moderate contractions, active voice)
@@ -343,6 +348,7 @@ List specific tone issues discovered:
 - Correction needed: "You'll need to configure the service before deployment"
 
 **Violation 2: Missing Tone Characteristic**
+
 - Location: Section 3.4 (Lines 200-250)
 - Issue: "Encouraging" characteristic absent
 - Expected: Matter-of-fact encouragement at milestones
@@ -350,6 +356,7 @@ List specific tone issues discovered:
 - Correction needed: Add milestone encouragement per specification
 
 **Violation 3: Code Comment Tone Mismatch**
+
 - Location: Code block, lines 300-325
 - Issue: Comments too formal for Level 3 prose
 - Expected: Comments match prose formality
@@ -373,16 +380,19 @@ Systematically fix documented violations:
 **Example Corrections:**
 
 **Before (Violation):**
+
 ```markdown
 One must ensure that the authentication mechanism has been properly configured prior to initiating the deployment sequence. The configuration file should be edited to include the necessary credentials.
 ```
 
 **After (Corrected to Level 3, Second Person, Active Voice):**
+
 ```markdown
 You'll need to configure authentication before deploying. Edit the configuration file to include your credentials.
 ```
 
 **Before (Missing Encouragement):**
+
 ```markdown
 Section 3.4 Summary
 
@@ -390,6 +400,7 @@ This section covered JWT structure, signature validation, and token expiration h
 ```
 
 **After (Added Encouragement Pattern):**
+
 ```markdown
 Section 3.4 Summary
 
@@ -456,11 +467,13 @@ Validate that all AI-generated content patterns have been removed (final quality
 **Purpose**: This is the FINAL validation that humanization was successful. More stringent than humanization step (target: <5% vs <20%).
 
 **When to Execute**:
+
 - ALL chapters, regardless of whether AI was used (defensive check)
 - After all other copy-editing steps complete
 - Before chapter marked "Ready for Publication"
 
 **Critical Context**:
+
 - If chapter was AI-assisted: humanize-ai-drafted-chapter.md should have been executed earlier
 - This step validates humanization was effective
 - Catches any residual AI patterns missed during humanization
@@ -516,6 +529,7 @@ Date: {{date}}
    - No formulaic language
 
 **Calculate Pass Rate:**
+
 - (Items Passed / 45 Total Items) × 100 = Pass Rate %
 - AI Pattern Score = 100 - Pass Rate
 
@@ -524,6 +538,7 @@ Date: {{date}}
 **Copy-Edit Target**: <5% AI patterns remaining (more stringent than humanization target of <20%)
 
 **Scoring:**
+
 ```markdown
 **Final AI Pattern Check Results:**
 
@@ -532,6 +547,7 @@ Pass Rate: {{percentage}}%
 AI Pattern Score: {{100 - percentage}}%
 
 **Status:**
+
 - [ ] ✅ EXCELLENT (<5% AI patterns) - Publication ready
 - [ ] ⚠️ ACCEPTABLE (5-10% AI patterns) - Minor patterns acceptable, document justification
 - [ ] ❌ NEEDS REWORK (>10% AI patterns) - Return to humanization step
@@ -540,12 +556,14 @@ AI Pattern Score: {{100 - percentage}}%
 ```
 
 **If >10% AI Patterns:**
+
 - HALT - Do not proceed to finalization
 - Return chapter to tutorial-architect for additional humanization
 - Re-execute humanize-ai-drafted-chapter.md focusing on failing categories
 - Do not finalize until <10% threshold met
 
 **If 5-10% AI Patterns:**
+
 - Document specific residual patterns with justification
 - Example: "Residual 'robust testing framework' (1 occurrence) is industry-standard term, acceptable"
 - Obtain author approval for residual patterns
@@ -558,6 +576,7 @@ Beyond checklist scoring, validate specific critical patterns:
 **AI Vocabulary Spot Check:**
 
 Search and count:
+
 - "sophisticated": {{count}} (target: ≤1)
 - "delve": {{count}} (target: 0)
 - "leverage": {{count}} (target: ≤1)
@@ -569,6 +588,7 @@ Search and count:
 **Generic Example Check:**
 
 Search for:
+
 - "company X" or "a company": 0 allowed
 - "financial institution": 0 allowed (use specific company names)
 - Uncited case studies: All examples must be cited or author's own
@@ -578,6 +598,7 @@ Search for:
 **First-Person Perspective Check:**
 
 Count instances per section:
+
 - Sections with 0 first-person: Acceptable if technical reference material
 - Sections with 0 first-person + no author voice: Flag for voice injection
 - Target: ≥1 personal insight per major section (H2)
@@ -587,24 +608,28 @@ Count instances per section:
 Apply additional scrutiny based on target publisher:
 
 **PacktPub Chapters:**
+
 - Extra attention to "sophisticated" (documented 36x case)
 - All examples specific and cited (no "financial institution")
 - Conversational tone (Level 2-3) maintained
 - Personal voice evident throughout
 
 **O'Reilly Chapters:**
+
 - Authoritative expert voice present
 - Production context and real-world scale included
 - Architectural reasoning ("why") explained
 - No generic technical explanations
 
 **Manning Chapters:**
+
 - Author personality and humor present
 - Strong first/second person voice
 - Personal opinions stated clearly
 - Not impersonal corporate-speak
 
 **Self-Publishing:**
+
 - All publisher patterns combined
 - ≥95% pass rate recommended (higher standard)
 - Beta reader feedback validation
@@ -619,12 +644,14 @@ Apply additional scrutiny based on target publisher:
 ## Final AI Pattern Check (Step 10)
 
 **Humanization Checklist Results:**
+
 - Pass Rate: {{percentage}}% ({{passed}}/45 items)
 - AI Pattern Score: {{ai_score}}% (target: <5%)
 
 **Status**: {{EXCELLENT / ACCEPTABLE / NEEDS REWORK}}
 
 **AI Vocabulary Counts:**
+
 - sophisticated: {{count}}
 - delve: {{count}}
 - leverage: {{count}}
@@ -632,14 +659,17 @@ Apply additional scrutiny based on target publisher:
 - seamless: {{count}}
 
 **Critical Validations:**
+
 - Generic examples: {{count}} (target: 0)
 - First-person perspective: {{sections_with_personal_voice}}/{{total_sections}} sections
 - Metaphor density: {{average_per_section}} per section (target: ≤2)
 
 **Residual Patterns (if any):**
+
 - [List any patterns >threshold with justification for acceptance]
 
 **Publisher-Specific Notes:**
+
 - [Any publisher-specific pattern concerns or validations]
 
 **Recommendation**: {{APPROVE FOR PUBLICATION / RETURN FOR ADDITIONAL HUMANIZATION}}
@@ -648,17 +678,20 @@ Apply additional scrutiny based on target publisher:
 #### Step 10.6: Handle Results
 
 **If EXCELLENT (<5% AI patterns):**
+
 - Proceed to Step 11 (Create Summary of Changes)
 - Chapter ready for finalization
 - Document validation in chapter metadata
 
 **If ACCEPTABLE (5-10% AI patterns):**
+
 - Document residual patterns with clear justification
 - Obtain author approval for exceptions
 - May proceed to finalization with documented acceptance
 - Note residual patterns in change summary
 
 **If NEEDS REWORK (>10% AI patterns):**
+
 - HALT finalization process
 - Document failing categories in detail
 - Return to tutorial-architect with specific rework guidance

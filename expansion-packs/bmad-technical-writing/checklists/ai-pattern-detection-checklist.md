@@ -16,6 +16,223 @@ Systematically identify AI-characteristic patterns in content to diagnose humani
 
 ---
 
+## PRIMARY DIAGNOSTIC: Dual Score Analysis
+
+**RECOMMENDED FIRST STEP**: Run automated dual score analysis for comprehensive AI pattern detection across 14 dimensions.
+
+### Run AI Pattern Analysis Tool
+
+```bash
+cd {{config.root}}/tools
+
+# Activate Python environment (required first time - see analyze-ai-patterns.md for setup)
+source nlp-env/bin/activate  # macOS/Linux
+# OR nlp-env\Scripts\activate  # Windows
+
+# Run dual score diagnostic analysis
+python analyze_ai_patterns.py PATH_TO_FILE \
+  --show-scores \
+  --quality-target 85 \
+  --detection-target 30 \
+  --domain-terms "Domain,Specific,Terms"
+
+# Deactivate when done
+deactivate
+```
+
+**Example**:
+
+```bash
+source nlp-env/bin/activate
+python analyze_ai_patterns.py ../manuscript/chapters/chapter-03.md \
+  --show-scores \
+  --domain-terms "Docker,Kubernetes,PostgreSQL"
+deactivate
+```
+
+### Interpret Diagnostic Scores
+
+**Quality Score (0-100, higher=better)**:
+
+- [ ] **95-100**: EXCEPTIONAL - Already reads like authentic human writing ✅
+- [ ] **85-94**: EXCELLENT - Minimal AI signatures, light polish only ✅
+- [ ] **70-84**: GOOD - Natural with minor tells, needs light humanization ⚠️
+- [ ] **50-69**: MIXED - Moderate AI patterns, systematic editing required ⚠️
+- [ ] **<50**: AI-LIKE - Substantial work needed or regenerate ❌
+
+**Detection Risk (0-100, lower=better)**:
+
+- [ ] **0-14**: VERY LOW - Safe from detection ✅
+- [ ] **15-29**: LOW - Unlikely to be flagged ✅
+- [ ] **30-49**: MEDIUM - May be flagged by some detectors ⚠️
+- [ ] **50-69**: HIGH - Likely to be flagged ❌
+- [ ] **70-100**: VERY HIGH - Will be flagged ❌
+
+### Review 14-Dimension Breakdown
+
+The tool analyzes across **3 tiers** (14 dimensions total):
+
+**TIER 1: Advanced Detection (40 points) - Highest Accuracy Signals**:
+
+- [ ] **GLTR Token Ranking** (/12 pts) - Token predictability analysis
+  - Target: ≥9 pts (75% of max)
+  - If low: Content has high token predictability (strong AI signature)
+
+- [ ] **Advanced Lexical Diversity** (/8 pts) - HDD/Yule's K metrics
+  - Target: ≥6 pts (75% of max)
+  - If low: Vocabulary is repetitive, lacks sophisticated variation
+
+- [ ] **AI Detection Ensemble** (/10 pts) - RoBERTa sentiment + DetectGPT
+  - Target: ≥7 pts (70% of max)
+  - If low: Emotional flatness, high detectability via perturbation
+
+- [ ] **Stylometric Markers** (/6 pts) - Statistical writing fingerprints
+  - Target: ≥4 pts (67% of max)
+  - If low: Writing shows mechanical patterns, lacks human variability
+
+- [ ] **Syntactic Complexity** (/4 pts) - Dependency depth, POS patterns
+  - Target: ≥3 pts (75% of max)
+  - If low: Sentence structures too uniform, lacks natural complexity variation
+
+**TIER 2: Core Patterns (35 points) - Strong AI Signals**:
+
+- [ ] **Burstiness (Sentence Variation)** (/12 pts) - Sentence length variation
+  - Target: ≥9 pts (75% of max)
+  - If low: Uniform sentence lengths (15-25 words), lacks rhythm variation
+
+- [ ] **Perplexity (Vocabulary)** (/10 pts) - AI-typical word choices
+  - Target: ≥7 pts (70% of max)
+  - If low: High density of AI words (delve, leverage, robust, harness, etc.)
+
+- [ ] **Formatting Patterns** (/8 pts) - Em-dashes, bold, italics distribution
+  - Target: ≥6 pts (75% of max)
+  - If low: Excessive em-dashes (>3 per page), over-bolding (>5%), uniform italics
+
+- [ ] **Heading Hierarchy** (/5 pts) - Depth, parallelism, density
+  - Target: ≥3 pts (60% of max)
+  - If low: 4+ heading levels, parallel structures, uniform subsection counts
+
+**TIER 3: Supporting Signals (25 points) - Contextual Indicators**:
+
+- [ ] **Voice & Authenticity** (/8 pts) - Personal perspective, contractions
+  - Target: ≥5 pts (63% of max)
+  - If low: Lacks personal markers, overly formal, no contractions
+
+- [ ] **Structure & Organization** (/7 pts) - Transitions, list usage
+  - Target: ≥5 pts (71% of max)
+  - If low: Formulaic transitions, excessive lists, rigid paragraph structure
+
+- [ ] **Emotional Depth** (/6 pts) - Sentiment variation, empathy
+  - Target: ≥4 pts (67% of max)
+  - If low: Emotionally flat, no reader acknowledgment, no enthusiasm
+
+- [ ] **Technical Depth** (/4 pts) - Domain terminology, practitioner signals
+  - Target: ≥2 pts (50% of max)
+  - If low: Generic examples, missing version numbers, surface-level only
+
+### Path-to-Target Action Plan
+
+The tool provides **ROI-sorted recommendations** showing exactly what to improve:
+
+**Review path-to-target output**:
+
+- [ ] **HIGH-ROI actions identified** (largest score gain per effort)
+- [ ] **Effort levels noted** (LOW: 15-30 min, MEDIUM: 30-45 min, HIGH: 45-90 min)
+- [ ] **Cumulative score projections** (estimated score after each action)
+- [ ] **Priority actions selected** (focus on top 1-3 recommendations)
+
+**Example path-to-target**:
+
+```
+PATH TO TARGET (4 actions, sorted by ROI)
+────────────────────────────────────────────────────────────────────────────────
+
+1. GLTR Token Ranking (Effort: HIGH)
+   Current: 3.0/12.0 → Gain: +9.0 pts → Cumulative: 76.8
+   Action: Rewrite high-predictability segments (>70% top-10 tokens)
+
+2. Burstiness (Sentence Variation) (Effort: MEDIUM)
+   Current: 9.0/12.0 → Gain: +3.0 pts → Cumulative: 79.8
+   Action: Improve Burstiness (Sentence Variation)
+
+3. Formatting Patterns (Effort: LOW)
+   Current: 2.5/8.0 → Gain: +5.5 pts → Cumulative: 85.3
+   Action: Reduce em-dash density to 1-2 per page, normalize bolding to 2-5%
+```
+
+### Diagnostic Decision
+
+**Minimal Humanization Needed** (Quality ≥85, Detection ≤30):
+
+- [ ] Content already publication-ready ✅
+- [ ] Light polish only (15-30 min per 1000 words)
+- [ ] Proceed to technical review
+
+**Light Humanization Needed** (Quality 70-84, Detection 30-49):
+
+- [ ] Systematic editing required ⚠️
+- [ ] Focus on path-to-target priorities
+- [ ] Estimated effort: 30-60 min per 1000 words
+- [ ] Use humanize-post-generation.md workflow
+
+**Substantial Humanization Needed** (Quality 50-69, Detection 50-69):
+
+- [ ] Comprehensive editing workflow required ❌
+- [ ] Address all flagged dimensions systematically
+- [ ] Estimated effort: 60-90 min per 1000 words
+- [ ] Use iterative-humanization-optimization.md for systematic improvement
+
+**Regeneration Recommended** (Quality <50, Detection ≥70):
+
+- [ ] Too many AI patterns for efficient editing ❌
+- [ ] Consider regenerating with humanization prompt
+- [ ] If editing: Multi-pass workflow essential, 90+ min per 1000 words
+- [ ] Use humanize-pre-generation.md for prompt engineering approach
+
+### Create Targeted Improvement Plan
+
+Based on dual score analysis, document top priorities:
+
+**Priority 1** (Highest ROI from path-to-target): **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+
+- Dimension: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+- Current score: **\_** / **\_** points
+- Target score: **\_** points
+- Effort level: LOW / MEDIUM / HIGH
+- Specific action: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+
+**Priority 2**: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+
+- Dimension: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+- Current score: **\_** / **\_** points
+- Target score: **\_** points
+- Effort level: LOW / MEDIUM / HIGH
+- Specific action: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+
+**Priority 3**: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+
+- Dimension: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+- Current score: **\_** / **\_** points
+- Target score: **\_** points
+- Effort level: LOW / MEDIUM / HIGH
+- Specific action: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+
+**Total estimated effort**: **\_** minutes
+
+**Recommended workflow**:
+
+- [ ] Single-pass editing (humanize-post-generation.md)
+- [ ] Iterative optimization (iterative-humanization-optimization.md)
+- [ ] Regeneration with humanization prompt (humanize-pre-generation.md)
+
+---
+
+## SUPPLEMENTARY MANUAL CHECKS
+
+**Use the sections below for granular manual inspection when needed, or when dual score analysis is unavailable.**
+
+---
+
 ## Section 1: Vocabulary Patterns
 
 ### High-Priority AI Words (Tier 1)
@@ -31,9 +248,10 @@ Search document for these words and mark any occurrences:
 - [ ] **pivotal**
 - [ ] **holistic** / holistically
 
-**Count**: _____ occurrences
+**Count**: **\_** occurrences
 
 **Assessment**:
+
 - 0-2 occurrences per 1000 words = ✅ Good
 - 3-5 occurrences per 1000 words = ⚠️ Needs attention
 - 6+ occurrences per 1000 words = ❌ Critical issue
@@ -51,9 +269,10 @@ Check for overuse of these words:
 - [ ] myriad
 - [ ] plethora
 
-**Count**: _____ occurrences
+**Count**: **\_** occurrences
 
 **Assessment**:
+
 - 0-3 per 1000 words = ✅ Acceptable
 - 4-7 per 1000 words = ⚠️ Reduce usage
 - 8+ per 1000 words = ❌ Significant problem
@@ -62,18 +281,19 @@ Check for overuse of these words:
 
 Count occurrences of each:
 
-- [ ] "Furthermore," - Count: _____
-- [ ] "Moreover," - Count: _____
-- [ ] "Additionally," - Count: _____
-- [ ] "In addition," - Count: _____
-- [ ] "It is important to note that" - Count: _____
-- [ ] "It is worth mentioning that" - Count: _____
-- [ ] "One of the key aspects" - Count: _____
-- [ ] "When it comes to" - Count: _____
+- [ ] "Furthermore," - Count: **\_**
+- [ ] "Moreover," - Count: **\_**
+- [ ] "Additionally," - Count: **\_**
+- [ ] "In addition," - Count: **\_**
+- [ ] "It is important to note that" - Count: **\_**
+- [ ] "It is worth mentioning that" - Count: **\_**
+- [ ] "One of the key aspects" - Count: **\_**
+- [ ] "When it comes to" - Count: **\_**
 
-**Total formulaic transitions**: _____
+**Total formulaic transitions**: **\_**
 
 **Assessment**:
+
 - 0-1 = ✅ Good
 - 2-4 = ⚠️ Needs smoothing
 - 5+ = ❌ Priority fix required
@@ -87,41 +307,45 @@ Count occurrences of each:
 Select 3 representative paragraphs and measure sentence word counts:
 
 **Paragraph 1**:
-- Sentence 1: _____ words
-- Sentence 2: _____ words
-- Sentence 3: _____ words
-- Sentence 4: _____ words
-- Sentence 5: _____ words
-- Sentence 6: _____ words
 
-Mean length: _____ words
-Range: _____ to _____ words (spread: _____ words)
+- Sentence 1: **\_** words
+- Sentence 2: **\_** words
+- Sentence 3: **\_** words
+- Sentence 4: **\_** words
+- Sentence 5: **\_** words
+- Sentence 6: **\_** words
+
+Mean length: **\_** words
+Range: **\_** to **\_** words (spread: **\_** words)
 
 **Paragraph 2**:
-- Sentence 1: _____ words
-- Sentence 2: _____ words
-- Sentence 3: _____ words
-- Sentence 4: _____ words
-- Sentence 5: _____ words
-- Sentence 6: _____ words
 
-Mean length: _____ words
-Range: _____ to _____ words (spread: _____ words)
+- Sentence 1: **\_** words
+- Sentence 2: **\_** words
+- Sentence 3: **\_** words
+- Sentence 4: **\_** words
+- Sentence 5: **\_** words
+- Sentence 6: **\_** words
+
+Mean length: **\_** words
+Range: **\_** to **\_** words (spread: **\_** words)
 
 **Paragraph 3**:
-- Sentence 1: _____ words
-- Sentence 2: _____ words
-- Sentence 3: _____ words
-- Sentence 4: _____ words
-- Sentence 5: _____ words
-- Sentence 6: _____ words
 
-Mean length: _____ words
-Range: _____ to _____ words (spread: _____ words)
+- Sentence 1: **\_** words
+- Sentence 2: **\_** words
+- Sentence 3: **\_** words
+- Sentence 4: **\_** words
+- Sentence 5: **\_** words
+- Sentence 6: **\_** words
+
+Mean length: **\_** words
+Range: **\_** to **\_** words (spread: **\_** words)
 
 **Overall Assessment**:
 
 Check all that apply:
+
 - [ ] Most sentences fall within 12-25 word range
 - [ ] No sentences shorter than 8 words
 - [ ] No sentences longer than 35 words
@@ -129,6 +353,7 @@ Check all that apply:
 - [ ] Lengths are highly uniform across paragraphs
 
 **Burstiness Score**:
+
 - 0-1 boxes checked = ✅ Good variation (High Burstiness)
 - 2-3 boxes checked = ⚠️ Some uniformity (Medium Burstiness)
 - 4-5 boxes checked = ❌ Critical uniformity (Low Burstiness)
@@ -137,23 +362,25 @@ Check all that apply:
 
 Examine the first sentence of 10 consecutive paragraphs:
 
-- [ ] Paragraph 1 starts with: _____________________
-- [ ] Paragraph 2 starts with: _____________________
-- [ ] Paragraph 3 starts with: _____________________
-- [ ] Paragraph 4 starts with: _____________________
-- [ ] Paragraph 5 starts with: _____________________
-- [ ] Paragraph 6 starts with: _____________________
-- [ ] Paragraph 7 starts with: _____________________
-- [ ] Paragraph 8 starts with: _____________________
-- [ ] Paragraph 9 starts with: _____________________
-- [ ] Paragraph 10 starts with: _____________________
+- [ ] Paragraph 1 starts with: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Paragraph 2 starts with: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Paragraph 3 starts with: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Paragraph 4 starts with: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Paragraph 5 starts with: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Paragraph 6 starts with: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Paragraph 7 starts with: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Paragraph 8 starts with: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Paragraph 9 starts with: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Paragraph 10 starts with: \***\*\*\*\*\***\_\***\*\*\*\*\***
 
 **Pattern Analysis**:
-- How many start with "The [noun]..."? _____
-- How many start with identical subject? _____
-- How many use topic sentence formula? _____
+
+- How many start with "The [noun]..."? **\_**
+- How many start with identical subject? **\_**
+- How many use topic sentence formula? **\_**
 
 **Assessment**:
+
 - 0-2 repetitive openings = ✅ Good variety
 - 3-5 repetitive openings = ⚠️ Some monotony
 - 6+ repetitive openings = ❌ Critical monotony
@@ -166,11 +393,12 @@ Examine the first sentence of 10 consecutive paragraphs:
 
 Count instances:
 
-- [ ] Numbered lists: _____ total
-- [ ] Bulleted lists: _____ total
-- [ ] Lists that could be prose: _____ (subjective assessment)
+- [ ] Numbered lists: **\_** total
+- [ ] Bulleted lists: **\_** total
+- [ ] Lists that could be prose: **\_** (subjective assessment)
 
 **Assessment** (per 1000 words):
+
 - 0-2 lists = ✅ Appropriate use
 - 3-4 lists = ⚠️ Moderate overuse
 - 5+ lists = ❌ Excessive list reliance
@@ -185,6 +413,7 @@ Check paragraph organization:
 - [ ] Every paragraph has formal conclusion sentence
 
 **Score**:
+
 - 0-1 boxes checked = ✅ Natural variation
 - 2-3 boxes checked = ⚠️ Some rigidity
 - 4 boxes checked = ❌ Formulaic structure
@@ -193,19 +422,21 @@ Check paragraph organization:
 
 Analyze 5-10 section headings:
 
-- [ ] Heading 1: _____________________
-- [ ] Heading 2: _____________________
-- [ ] Heading 3: _____________________
-- [ ] Heading 4: _____________________
-- [ ] Heading 5: _____________________
+- [ ] Heading 1: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Heading 2: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Heading 3: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Heading 4: \***\*\*\*\*\***\_\***\*\*\*\*\***
+- [ ] Heading 5: \***\*\*\*\*\***\_\***\*\*\*\*\***
 
 **Pattern Check**:
+
 - [ ] All headings use parallel grammatical structure
 - [ ] Multiple headings use "Understanding [X]" or "Exploring [Y]" format
 - [ ] Multiple headings are generic ("Benefits," "Challenges," "Considerations")
 - [ ] All headings are questions OR all headings are statements (no mix)
 
 **Assessment**:
+
 - 0-1 boxes checked = ✅ Natural heading variety
 - 2-3 boxes checked = ⚠️ Some formulaic patterns
 - 4 boxes checked = ❌ Rigid heading structure
@@ -219,19 +450,22 @@ Analyze 5-10 section headings:
 Count occurrences of authentic voice indicators:
 
 **First-Person Perspective**:
-- [ ] Uses "I" or "my" - Count: _____
-- [ ] Uses "we" or "our" - Count: _____
-- [ ] Uses "you" or "your" - Count: _____
+
+- [ ] Uses "I" or "my" - Count: **\_**
+- [ ] Uses "we" or "our" - Count: **\_**
+- [ ] Uses "you" or "your" - Count: **\_**
 
 **Personal Insights**:
-- [ ] "In my experience..." - Count: _____
-- [ ] "I've found that..." - Count: _____
-- [ ] "From what I've seen..." - Count: _____
-- [ ] Similar perspective markers - Count: _____
 
-**Total personal voice markers**: _____
+- [ ] "In my experience..." - Count: **\_**
+- [ ] "I've found that..." - Count: **\_**
+- [ ] "From what I've seen..." - Count: **\_**
+- [ ] Similar perspective markers - Count: **\_**
+
+**Total personal voice markers**: **\_**
 
 **Assessment** (per 1000 words):
+
 - 8+ markers = ✅ Strong personal voice
 - 4-7 markers = ⚠️ Some voice present
 - 0-3 markers = ❌ Impersonal/detached
@@ -239,17 +473,20 @@ Count occurrences of authentic voice indicators:
 ### Specificity vs. Abstraction
 
 **Specific Examples Check**:
-- [ ] Number of specific examples with details: _____
-- [ ] Number of generic examples (user, application, system): _____
-- [ ] Ratio: Specific / Generic = _____
+
+- [ ] Number of specific examples with details: **\_**
+- [ ] Number of generic examples (user, application, system): **\_**
+- [ ] Ratio: Specific / Generic = **\_**
 
 **Specific Details Check**:
-- [ ] Version numbers mentioned: Yes / No - Count: _____
-- [ ] Specific tool/product names: Yes / No - Count: _____
-- [ ] Error messages or outputs shown: Yes / No - Count: _____
-- [ ] Real-world scenarios (not textbook): Yes / No - Count: _____
+
+- [ ] Version numbers mentioned: Yes / No - Count: **\_**
+- [ ] Specific tool/product names: Yes / No - Count: **\_**
+- [ ] Error messages or outputs shown: Yes / No - Count: **\_**
+- [ ] Real-world scenarios (not textbook): Yes / No - Count: **\_**
 
 **Assessment**:
+
 - 6+ specific details = ✅ Well-grounded
 - 3-5 specific details = ⚠️ Somewhat abstract
 - 0-2 specific details = ❌ Too generic
@@ -264,9 +501,10 @@ Check for emotional resonance markers:
 - [ ] Celebrates reader progress
 - [ ] Includes conversational asides or humor
 
-**Count emotional engagement instances**: _____
+**Count emotional engagement instances**: **\_**
 
 **Assessment** (for full document):
+
 - 4+ instances = ✅ Emotionally engaging
 - 2-3 instances = ⚠️ Somewhat neutral
 - 0-1 instances = ❌ Emotionally flat
@@ -279,25 +517,26 @@ Check for emotional resonance markers:
 
 **Positive Indicators** (count each):
 
-- [ ] Specific version numbers - Count: _____
-- [ ] Concrete error messages/outputs - Count: _____
-- [ ] Trade-offs acknowledged - Count: _____
-- [ ] Implementation details beyond basics - Count: _____
-- [ ] Gotchas or edge cases mentioned - Count: _____
-- [ ] "In practice..." or similar practitioner language - Count: _____
+- [ ] Specific version numbers - Count: **\_**
+- [ ] Concrete error messages/outputs - Count: **\_**
+- [ ] Trade-offs acknowledged - Count: **\_**
+- [ ] Implementation details beyond basics - Count: **\_**
+- [ ] Gotchas or edge cases mentioned - Count: **\_**
+- [ ] "In practice..." or similar practitioner language - Count: **\_**
 
-**Total positive markers**: _____
+**Total positive markers**: **\_**
 
 **Negative Indicators** (count each):
 
-- [ ] Vague technical claims without specifics - Count: _____
-- [ ] Surface-level coverage only - Count: _____
-- [ ] Missing prerequisite information - Count: _____
-- [ ] Generic code examples (foo/bar naming) - Count: _____
+- [ ] Vague technical claims without specifics - Count: **\_**
+- [ ] Surface-level coverage only - Count: **\_**
+- [ ] Missing prerequisite information - Count: **\_**
+- [ ] Generic code examples (foo/bar naming) - Count: **\_**
 
-**Total negative markers**: _____
+**Total negative markers**: **\_**
 
 **Assessment**:
+
 - More positive than negative by 3:1 ratio = ✅ Authentic expertise
 - Balanced or slight positive advantage = ⚠️ Mixed signals
 - More negative than positive = ❌ Shallow/generic
@@ -310,9 +549,10 @@ Check for emotional resonance markers:
 - [ ] Shows hands-on experience vs. documentation paraphrasing
 - [ ] Includes lessons from mistakes or "learned the hard way"
 
-**Boxes checked**: _____
+**Boxes checked**: **\_**
 
 **Assessment**:
+
 - 4-5 boxes = ✅ Strong practitioner voice
 - 2-3 boxes = ⚠️ Some expertise signals
 - 0-1 boxes = ❌ Lacks authenticity
@@ -329,6 +569,7 @@ Check for emotional resonance markers:
 - [ ] Document has narrative arc or clear conceptual journey
 
 **Assessment**:
+
 - Strong progressive build = ✅ Good coherence
 - Some connection but weak progression = ⚠️ Moderate coherence
 - Standalone sections with little connection = ❌ Weak coherence
@@ -340,9 +581,10 @@ Check for emotional resonance markers:
 - [ ] Lacks forward/backward references within document
 - [ ] Doesn't build on prior knowledge established earlier
 
-**Boxes checked**: _____
+**Boxes checked**: **\_**
 
 **Assessment**:
+
 - 0 boxes = ✅ Good contextual awareness
 - 1-2 boxes = ⚠️ Some repetition
 - 3-4 boxes = ❌ Poor context tracking
@@ -355,14 +597,14 @@ Check for emotional resonance markers:
 
 Transfer scores from each section:
 
-| Dimension | Score | Notes |
-|-----------|-------|-------|
-| **Vocabulary** (Sec 1) | ✅ ⚠️ ❌ | AI words: _____, Transitions: _____ |
-| **Sentence Structure** (Sec 2) | ✅ ⚠️ ❌ | Burstiness: _____, Openings: _____ |
-| **Organization** (Sec 3) | ✅ ⚠️ ❌ | Lists: _____, Structure: _____ |
-| **Voice/Authenticity** (Sec 4) | ✅ ⚠️ ❌ | Voice markers: _____, Specifics: _____ |
-| **Technical Depth** (Sec 5) | ✅ ⚠️ ❌ | Pos markers: _____, Neg markers: _____ |
-| **Coherence** (Sec 6) | ✅ ⚠️ ❌ | Global: _____, Context: _____ |
+| Dimension                      | Score    | Notes                                    |
+| ------------------------------ | -------- | ---------------------------------------- |
+| **Vocabulary** (Sec 1)         | ✅ ⚠️ ❌ | AI words: **\_**, Transitions: **\_**    |
+| **Sentence Structure** (Sec 2) | ✅ ⚠️ ❌ | Burstiness: **\_**, Openings: **\_**     |
+| **Organization** (Sec 3)       | ✅ ⚠️ ❌ | Lists: **\_**, Structure: **\_**         |
+| **Voice/Authenticity** (Sec 4) | ✅ ⚠️ ❌ | Voice markers: **\_**, Specifics: **\_** |
+| **Technical Depth** (Sec 5)    | ✅ ⚠️ ❌ | Pos markers: **\_**, Neg markers: **\_** |
+| **Coherence** (Sec 6)          | ✅ ⚠️ ❌ | Global: **\_**, Context: **\_**          |
 
 ### Overall Assessment
 
@@ -394,17 +636,20 @@ Transfer scores from each section:
 
 Based on your assessment, identify top 3 priorities:
 
-**Priority 1** (Most Critical): _____________________________________
-- Specific issue: _____________________________________
-- Recommended technique: _____________________________________
+**Priority 1** (Most Critical): **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
 
-**Priority 2**: _____________________________________
-- Specific issue: _____________________________________
-- Recommended technique: _____________________________________
+- Specific issue: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+- Recommended technique: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
 
-**Priority 3**: _____________________________________
-- Specific issue: _____________________________________
-- Recommended technique: _____________________________________
+**Priority 2**: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+
+- Specific issue: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+- Recommended technique: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+
+**Priority 3**: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+
+- Specific issue: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
+- Recommended technique: **\*\*\*\***\*\***\*\*\*\***\_**\*\*\*\***\*\***\*\*\*\***
 
 ---
 
@@ -413,12 +658,14 @@ Based on your assessment, identify top 3 priorities:
 ### Should I Edit or Regenerate?
 
 **Edit the existing content if**:
+
 - ✅ Technical accuracy is solid
 - ✅ Overall structure is sound
 - ✅ Issues are primarily vocabulary/style
 - ✅ Word count is appropriate
 
 **Regenerate with humanization prompt if**:
+
 - ❌ Multiple critical issues across all dimensions
 - ❌ Content is too generic/abstract throughout
 - ❌ Would take longer to fix than to regenerate
@@ -428,7 +675,7 @@ Based on your assessment, identify top 3 priorities:
 
 ## Related Resources
 
-- **Tasks**: humanize-post-generation.md, humanize-pre-generation.md, analyze-ai-patterns.md
+- **Tasks**: analyze-ai-patterns.md, iterative-humanization-optimization.md, humanize-post-generation.md, humanize-pre-generation.md
 - **Data**: ai-detection-patterns.md, humanization-techniques.md
 - **Checklists**: humanization-quality-checklist.md
 

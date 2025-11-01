@@ -389,6 +389,7 @@ The completed sharding produces:
 Each shard file includes metadata at the top and bottom:
 
 **Header metadata:**
+
 - Original filename
 - Shard number (N of M)
 - Page range (X-Y of Total)
@@ -396,6 +397,7 @@ Each shard file includes metadata at the top and bottom:
 - Split date
 
 **Footer metadata:**
+
 - SHARD END marker
 - Continuation pointer to next shard
 

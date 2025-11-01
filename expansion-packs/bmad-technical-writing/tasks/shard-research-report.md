@@ -223,7 +223,7 @@ Add metadata at the top of each shard file:
 
 A: [complete answer with citations...]
 
-*Source: [React Hooks Documentation](https://react.dev/reference/react) (Official Docs) - Accessed 2025-10-25*
+_Source: [React Hooks Documentation](https://react.dev/reference/react) (Official Docs) - Accessed 2025-10-25_
 
 [... more content ...]
 
@@ -303,21 +303,27 @@ This research report has been sharded for easier editing and focused review. Eac
 Documents which shards reference which sources (useful for source verification):
 
 **Official React Documentation**:
+
 - Referenced in: Shards 2, 3, 4
 
 **Dan Abramov Blog Posts**:
+
 - Referenced in: Shards 2, 3, 5
 
 **Kent C. Dodds Articles**:
+
 - Referenced in: Shards 3, 5
 
 **Community Resources (Stack Overflow, GitHub)**:
+
 - Referenced in: Shards 3, 4
 
 **Code Example Repositories**:
+
 - Referenced in: Shard 4
 
 **Additional Reading (not directly cited)**:
+
 - Listed in: Shard 6
 
 ## Reassembly
@@ -418,10 +424,12 @@ List major cross-references in the "Cross-References" section:
 ## Cross-References
 
 ### Content References
+
 - Shard 5 references code example from Shard 4 (Custom useFetch hook)
 - Shard 5 chapter integration builds on findings from Shards 2, 3, 4
 
 ### Citation References
+
 - Shard 3 and Shard 5 both cite Dan Abramov's "Complete Guide to useEffect"
 - Shards 2, 3, 4 all reference official React documentation
 ```
@@ -476,12 +484,14 @@ The completed sharding produces:
 Each shard file includes metadata at the top and bottom:
 
 **Header metadata:**
+
 - Original filename
 - Shard number (N of M)
 - Sections included
 - Split date
 
 **Footer metadata:**
+
 - SHARD END marker
 - Continuation pointer to next shard
 

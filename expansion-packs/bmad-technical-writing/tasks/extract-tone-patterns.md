@@ -5,24 +5,14 @@
 ---
 
 task:
-  id: extract-tone-patterns
-  name: Extract Tone Patterns from Existing Book
-  description: Analyze existing book chapters to extract voice, tone, and style patterns for maintaining consistency in new editions or added chapters
-  persona_default: technical-editor
-  inputs:
-    - existing-chapters (multiple chapters for pattern accuracy)
-    - book-context (title, edition, publisher)
-  steps:
-    - Load multiple existing chapters (minimum 3-5 for accuracy)
-    - Analyze voice characteristics (formal/casual, active/passive, perspective)
-    - Extract common phrase patterns (transitions, introductions, conclusions)
-    - Analyze code comment style and density
-    - Identify formality indicators (contractions, vocabulary, sentence complexity)
-    - Extract author personality markers (humor, encouragement, directness)
-    - Document excluded patterns (what author avoids)
-    - Generate extracted-tone-patterns.md document
-  output: extracted-tone-patterns.md
-  use_case: brownfield
+id: extract-tone-patterns
+name: Extract Tone Patterns from Existing Book
+description: Analyze existing book chapters to extract voice, tone, and style patterns for maintaining consistency in new editions or added chapters
+persona_default: technical-editor
+inputs: - existing-chapters (multiple chapters for pattern accuracy) - book-context (title, edition, publisher)
+steps: - Load multiple existing chapters (minimum 3-5 for accuracy) - Analyze voice characteristics (formal/casual, active/passive, perspective) - Extract common phrase patterns (transitions, introductions, conclusions) - Analyze code comment style and density - Identify formality indicators (contractions, vocabulary, sentence complexity) - Extract author personality markers (humor, encouragement, directness) - Document excluded patterns (what author avoids) - Generate extracted-tone-patterns.md document
+output: extracted-tone-patterns.md
+use_case: brownfield
 
 ---
 
@@ -68,6 +58,7 @@ Choose chapters that best represent the book's typical voice:
 **Selection Criteria:**
 
 **Include (3-5 chapters minimum):**
+
 - Middle chapters (not introduction, not appendix)
 - Teaching chapters (explanations + code + exercises)
 - Chapters you consider "well-written" examples of book's voice
@@ -75,6 +66,7 @@ Choose chapters that best represent the book's typical voice:
 - Chapters representing core book content (not edge cases)
 
 **Avoid:**
+
 - Preface or foreword (often different tone)
 - Highly mathematical/formal sections (may not represent general tone)
 - Appendices or reference sections (usually more terse)
@@ -84,6 +76,7 @@ Choose chapters that best represent the book's typical voice:
 **Example Selection:**
 
 For "Kubernetes in Action, 2nd Edition":
+
 - Chapter 3: "Deploying your first application" (practical teaching)
 - Chapter 7: "Managing pod networking" (technical depth)
 - Chapter 11: "Security best practices" (mixed practical + conceptual)
@@ -109,6 +102,7 @@ Read through chapters and identify:
 
 ```markdown
 **Extracted Perspective Pattern:**
+
 - Primary: Second person ("You'll deploy the application")
 - Secondary: First person plural in collaborative contexts ("Let's troubleshoot this together")
 - Rare: Third person only for general statements ("Most teams prefer...")
@@ -128,6 +122,7 @@ Analyze sentence construction:
 
 ```markdown
 **Voice Construction:**
+
 - Active voice dominant: ~85% of sentences
 - Passive voice for system actions: "The pod is scheduled by Kubernetes"
 - Passive voice avoided for reader actions: NOT "The configuration file should be edited by you"
@@ -149,6 +144,7 @@ Map to 1-5 scale:
 **Formality Level: 3 (Professional/Conversational)**
 
 Evidence:
+
 - Contractions: ~15 per 1000 words ("you'll", "we'll", "it's")
 - Vocabulary: Technical but accessible (not overly academic)
 - Average sentence length: 18 words (moderately complex)
@@ -190,21 +186,25 @@ Extract transition phrases used between sections:
 **Transition Patterns:**
 
 Between related concepts:
+
 - "Building on this..."
 - "Now that you understand [X], let's explore [Y]"
 - "This leads us to..."
 
 From theory to practice:
+
 - "Let's put this into practice"
 - "Time to see this in action"
 - "Let's implement this concept"
 
 From explanation to code:
+
 - "Here's how to implement this:"
 - "The following example demonstrates:"
 - "Let's write the code:"
 
 From problem to solution:
+
 - "Here's how to fix this:"
 - "The solution is straightforward:"
 - "You can resolve this by..."
@@ -267,20 +267,22 @@ Extract actual comment styles from existing code:
 **Comment Style Patterns:**
 
 Style 1 - Explanation (most common):
+
 ```yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: web-service  # Service name used by other pods for discovery
+  name: web-service # Service name used by other pods for discovery
 spec:
   selector:
-    app: web  # Routes traffic to pods with this label
+    app: web # Routes traffic to pods with this label
   ports:
-    - port: 80  # External port clients connect to
-      targetPort: 8080  # Internal port the app listens on
+    - port: 80 # External port clients connect to
+      targetPort: 8080 # Internal port the app listens on
 ```
 
 Style 2 - Warning/Caution:
+
 ```yaml
 # IMPORTANT: Don't change this selector without updating pod labels
 selector:
@@ -288,12 +290,14 @@ selector:
 ```
 
 Style 3 - Context/Rationale:
+
 ```yaml
 # We use ClusterIP here because this service is internal-only
 type: ClusterIP
 ```
 
 Style 4 - Step-by-step for complex logic:
+
 ```python
 # Step 1: Load configuration from environment
 config = load_env_config()
@@ -335,16 +339,19 @@ Chapter 15: 14 contractions
 Average: 12.75 per 1000 words = Moderate use
 
 **Most common:**
+
 - "you'll" (future actions)
 - "we'll" (collaborative actions)
 - "don't" (warnings/cautions)
 - "it's" (explanations)
 
 **Rarely used:**
+
 - "shouldn't" (prefers "avoid" or "don't")
 - "would've" (too casual)
 
 **Never used:**
+
 - "gonna", "wanna" (too informal)
 ```
 
@@ -354,17 +361,20 @@ Average: 12.75 per 1000 words = Moderate use
 **Vocabulary Patterns:**
 
 Technical terms:
+
 - Used directly with brief explanation on first use
 - Example: "Kubernetes uses etcd (a distributed key-value store) for cluster state."
 - No dumbing down: "pod", "ingress", "daemonset" used throughout (not "container group", etc.)
 
 Explanatory style:
+
 - Prefers "Because [reason]" over "due to the fact that"
 - Uses "use" not "utilize"
 - Uses "help" not "facilitate"
 - Practical vocabulary, not academic
 
 Jargon approach:
+
 - Kubernetes-specific terms: Used freely (assumes reader learning K8s)
 - General tech terms: Defined briefly on first use
 - Acronyms: Spelled out once, then abbreviated
@@ -379,6 +389,7 @@ Average sentence length: 16-18 words (moderately simple)
 Average paragraph length: 3-4 sentences
 
 Patterns:
+
 - Short sentences for emphasis: "This is critical."
 - Longer sentences for explanation: "The Service abstraction provides a stable IP address and DNS name for accessing a set of pods, even as individual pods are created and destroyed."
 - Varies length deliberately for readability
@@ -398,11 +409,13 @@ Humor frequency: Occasional (1-2 instances per chapter)
 Humor style: Light technical humor, self-deprecating
 
 Examples extracted:
+
 - "If you're thinking this seems complicated, you're right. Kubernetes doesn't do simple."
 - "After a 3am debugging session, you'll appreciate this logging configuration."
 - "Yes, the acronym TLS actually makes sense. Rare for our industry."
 
 Personality markers:
+
 - Real-world war stories: References "production incidents", "debugging sessions"
 - Empathy: Acknowledges difficulties ("This is confusing at first")
 - Experience: "After deploying hundreds of applications..."
@@ -418,16 +431,19 @@ Frequency: Moderate (2-3 instances per chapter, usually at milestones)
 Style: Confident and matter-of-fact, not cheerleading
 
 Patterns:
+
 - Progress acknowledgment: "You've now deployed a production-ready service."
 - Capability building: "You can now troubleshoot networking issues independently."
 - Forward-looking: "With this foundation, you're ready for advanced topics."
 
 Avoids:
+
 - ❌ "Great job!" or "Awesome!" (too cheerful)
 - ❌ "This is easy!" (dismissive of legitimate difficulty)
 - ❌ "Don't worry!" (patronizing)
 
 Uses:
+
 - ✓ "You've mastered [specific skill]"
 - ✓ "This prepares you for [next challenge]"
 - ✓ "You now understand [complex concept]"
@@ -439,17 +455,20 @@ Uses:
 **Authority Tone:**
 
 Prescriptive language:
+
 - Uses "Don't" frequently: "Don't hard-code credentials"
 - Offers clear guidance: "Use environment variables for configuration"
 - States best practices directly: "Always run security scanning before deployment"
 - Explains rationale: "Use X because Y. Avoid Z because it causes W."
 
 Avoids hedging:
+
 - Rare: "might want to consider possibly"
 - Common: "Use this approach"
 - When uncertain: Explicit: "This depends on your use case. If [condition], choose [option]."
 
 Authority without arrogance:
+
 - Acknowledges complexity: "This is genuinely difficult"
 - Admits limitations: "Kubernetes doesn't handle this well"
 - Shares experience: "I've learned this through painful production issues"
@@ -465,31 +484,37 @@ Identify what the author intentionally AVOIDS:
 **Excluded Tones/Patterns (What Author Doesn't Do):**
 
 ❌ **Overly Academic:**
+
 - Never uses: "herein", "aforementioned", "utilize", "facilitate"
 - Avoids passive academic construction: "It is recommended that..."
 - Skips: "This paper presents", "We propose", "In conclusion"
 
 ❌ **Marketing Hype:**
+
 - Never: "Revolutionary", "game-changing", "amazing", "incredible"
 - Avoids: Exclamation points (except in warnings)
 - Skips: Superlatives without evidence
 
 ❌ **Apologetic/Uncertain:**
+
 - Never: "I think maybe you could possibly..."
 - Avoids: "Sorry for the complexity"
 - Skips: Unnecessary hedging
 
 ❌ **Condescending:**
+
 - Never: "Obviously", "clearly", "simply", "just" (dismissive usage)
 - Avoids: "Even beginners know"
 - Skips: "This is trivial"
 
 ❌ **Overly Casual:**
+
 - Never: "gonna", "wanna", "yeah"
 - Avoids: Excessive exclamation points
 - Skips: Internet slang or memes
 
 ❌ **Excessive Formality:**
+
 - Never: "One must ensure", "It is imperative that"
 - Avoids: Completely eliminating contractions
 - Skips: Latin phrases (except common tech terms like "e.g.")
@@ -518,97 +543,121 @@ Compile analysis into structured document:
 ## Voice Profile
 
 ### Perspective
+
 [First/second/third person patterns]
 
 ### Active vs. Passive Voice
+
 [Ratio, patterns, when each is used]
 
 ### Formality Level
+
 **Level [1-5]: [Description]**
 [Evidence, examples, metrics]
 
 ## Common Phrases and Patterns
 
 ### Chapter Introductions
+
 [Patterns with examples]
 
 ### Section Transitions
+
 [Transition phrases extracted]
 
 ### Chapter Conclusions
+
 [Conclusion patterns]
 
 ### Technical Explanations
+
 [Explanation structure patterns]
 
 ## Code Comment Style
 
 ### Comment Density
+
 [Average comments per code lines]
 
 ### Comment Patterns
+
 [Examples of actual comment styles]
 
 ### Comment Tone
+
 [Formality, characteristics]
 
 ## Formality Indicators
 
 ### Contractions
+
 [Frequency, which ones used, which avoided]
 
 ### Vocabulary
+
 [Technical depth, complexity, style]
 
 ### Sentence Structure
+
 [Length, complexity, variety]
 
 ## Author Personality Markers
 
 ### Humor and Personality
+
 [Examples, frequency, style]
 
 ### Encouragement Approach
+
 [How author motivates readers]
 
 ### Authority and Directness
+
 [How author provides guidance]
 
 ## Excluded Patterns (Anti-Patterns)
 
 ### What Author Avoids
+
 [List of excluded tones with examples]
 
 ## Usage Guidance for New Content
 
 ### When Writing New Chapters
+
 [How to apply these patterns]
 
 ### Matching This Tone
+
 [Specific guidance for consistency]
 
 ### Common Pitfalls to Avoid
+
 [What would break tone consistency]
 
 ## Extracted Examples for Reference
 
 ### Example 1: Typical Chapter Introduction
+
 [Full example]
 
 ### Example 2: Code with Comments
+
 [Full example with commentary]
 
 ### Example 3: Technical Explanation
+
 [Full example]
 
 ### Example 4: Chapter Conclusion
+
 [Full example]
 
 ## Version History
 
-| Date | Analyst | Chapters Added | Notes |
-|------|---------|----------------|-------|
-| [Date] | [Name] | [Chapters] | Initial extraction |
+| Date   | Analyst | Chapters Added | Notes              |
+| ------ | ------- | -------------- | ------------------ |
+| [Date] | [Name]  | [Chapters]     | Initial extraction |
 ```
 
 **Save Location:**
@@ -659,37 +708,44 @@ Can you write a new paragraph on a technical topic using ONLY the guidance in ex
 ## Integration Points
 
 **Output To:**
+
 - **apply-tone-patterns.md** - Uses extracted patterns to guide new chapter writing
 - **copy-edit-chapter.md** - Validates new content against extracted patterns
 - **tone-consistency-checklist.md** - Uses patterns as validation reference
 
 **Complementary With:**
+
 - **analyze-existing-book.md** - Extracts structure and technical patterns (not tone)
 - Together provide complete brownfield book analysis
 
 ## Important Notes
 
 **Accuracy Requires Multiple Chapters:**
+
 - Single chapter may have anomalies or one-off experiments
 - 3 chapters minimum, 5+ ideal for reliable patterns
 - Include chapters from different book sections (early, middle, late)
 
 **Avoid Over-Interpretation:**
+
 - Extract what's actually there, not what you think should be there
 - If author rarely uses humor, document that (don't force humor into patterns)
 - Patterns should be descriptive, not prescriptive improvements
 
 **Edition Updates:**
+
 - Extract from CURRENT edition (not outdated versions)
 - If tone has evolved across editions, note that explicitly
 - New edition may intentionally refine tone (document changes)
 
 **Publisher Context:**
+
 - Publisher may have influenced original tone (O'Reilly, Manning, PacktPub)
 - If staying with same publisher, extracted patterns likely align with expectations
 - If changing publishers, may need to adjust some patterns
 
 **Complementary to define-book-tone.md:**
+
 - Brownfield (extract-tone-patterns.md): Analyze existing → maintain consistency
 - Greenfield (define-book-tone.md): Define from scratch → establish new voice
 - Both create guidance documents for consistent writing

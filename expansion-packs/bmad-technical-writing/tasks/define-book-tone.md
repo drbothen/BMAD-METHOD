@@ -5,24 +5,13 @@
 ---
 
 task:
-  id: define-book-tone
-  name: Define Book Tone
-  description: Create comprehensive tone specification for technical book project to ensure consistent voice throughout
-  persona_default: instructional-designer
-  inputs:
-    - book-proposal.md (recommended)
-    - book-outline.md (recommended)
-    - target-publisher
-  steps:
-    - Understand book context and audience
-    - Elicit tone preferences from author
-    - Define formality level with examples (1-5 scale)
-    - Select tone characteristics (5 key adjectives)
-    - Align with publisher requirements
-    - Create example passages showing target tone
-    - Document excluded tones and anti-patterns
-    - Generate tone-specification.md using create-doc task with tone-specification-tmpl.yaml
-  output: tone-specification.md
+id: define-book-tone
+name: Define Book Tone
+description: Create comprehensive tone specification for technical book project to ensure consistent voice throughout
+persona_default: instructional-designer
+inputs: - book-proposal.md (recommended) - book-outline.md (recommended) - target-publisher
+steps: - Understand book context and audience - Elicit tone preferences from author - Define formality level with examples (1-5 scale) - Select tone characteristics (5 key adjectives) - Align with publisher requirements - Create example passages showing target tone - Document excluded tones and anti-patterns - Generate tone-specification.md using create-doc task with tone-specification-tmpl.yaml
+output: tone-specification.md
 
 ---
 
@@ -58,12 +47,14 @@ Define a comprehensive tone specification for a technical book project BEFORE wr
 Load and review existing project materials:
 
 **Required Context:**
+
 - Book topic and technical domain
 - Target audience (beginners/intermediate/advanced)
 - Learning objectives and scope
 - Publisher (PacktPub, O'Reilly, Manning, Self-Publishing)
 
 **Actions:**
+
 - Load book-proposal.md if available
 - Load book-outline.md to understand chapter structure
 - Review target audience definition
@@ -76,24 +67,29 @@ Load and review existing project materials:
 Ask strategic questions to understand desired tone:
 
 **Target Audience Tone Expectations:**
+
 - How does your target audience expect to be addressed?
 - What tone would make them feel comfortable and engaged?
 - Are they academic researchers, professional practitioners, or hobbyist learners?
 
 **Author Personality vs. Book Personality:**
+
 - Do you want your personal voice to come through, or prefer neutral professional tone?
 - Should the book sound like you're speaking to a colleague, teaching a class, or presenting research?
 - Do you use humor, encouragement, or directness in your communication style?
 
 **Formality Assessment:**
+
 - On a scale of 1-5 (1=very casual, 5=very formal), where should this book fall?
 - Should you use contractions (don't, we'll) or avoid them (do not, we will)?
 - How complex should sentence structures be?
 
 **Tone Characteristics:**
+
 - Which adjectives best describe your desired tone? (Select 5 from: encouraging, authoritative, friendly, technical, conversational, academic, professional, approachable, precise, warm, direct, patient, enthusiastic, pragmatic, etc.)
 
 **Publisher-Specific Questions:**
+
 - Are you aware of your publisher's tone expectations?
 - PacktPub: "Conversational but professional" - does this fit your vision?
 - O'Reilly: "Authoritative precision" - does this align?
@@ -108,22 +104,27 @@ Establish specific formality level (1-5 scale):
 **Formality Scale:**
 
 **Level 1 (Very Casual):**
+
 - Example: "Hey there! Let's dive into JavaScript. You're gonna love this stuff."
 - Contractions frequent, exclamations common, very conversational
 
 **Level 2 (Casual/Friendly):**
+
 - Example: "Let's explore JavaScript together. You'll find these concepts intuitive once you try them."
 - Contractions used, friendly but structured, approachable
 
 **Level 3 (Professional/Conversational):**
+
 - Example: "In this chapter, we'll examine JavaScript fundamentals. You'll apply these concepts through practical examples."
 - Balanced contractions, professional yet warm, standard for most technical books
 
 **Level 4 (Formal/Professional):**
+
 - Example: "This chapter examines JavaScript fundamentals. Readers will apply these concepts through practical examples."
 - Minimal contractions, structured tone, academic-adjacent
 
 **Level 5 (Very Formal/Academic):**
+
 - Example: "This chapter presents an examination of JavaScript fundamentals. The subsequent examples demonstrate practical application of these concepts."
 - No contractions, passive voice acceptable, scholarly tone
 
@@ -134,6 +135,7 @@ Establish specific formality level (1-5 scale):
 Choose 5 key adjectives that define the book's tone personality:
 
 **Selection Process:**
+
 1. Review adjectives discussed during elicitation
 2. Select the 5 most important characteristics
 3. Define what each means in context of THIS book
@@ -142,6 +144,7 @@ Choose 5 key adjectives that define the book's tone personality:
 **Example Tone Profile:**
 
 **For a beginner-friendly web development book:**
+
 1. **Encouraging:** "You've got this! Every developer starts somewhere, and you're already making progress."
 2. **Practical:** "Let's build a real login form, not just discuss theory. You'll deploy this by end of chapter."
 3. **Conversational:** "Think of CSS like decorating a room. You're choosing colors, arranging furniture..."
@@ -155,6 +158,7 @@ Choose 5 key adjectives that define the book's tone personality:
 Ensure tone meets publisher-specific expectations:
 
 **PacktPub Requirements:**
+
 - Tone: "Conversational but professional"
 - Interpretation: Level 2-3 formality, encouraging + practical characteristics
 - Code comments: Clear explanations, conversational style
@@ -162,6 +166,7 @@ Ensure tone meets publisher-specific expectations:
 - Example: "Let's create a function that handles user authentication. We'll keep it simple for now."
 
 **O'Reilly Requirements:**
+
 - Tone: "Authoritative with technical precision"
 - Interpretation: Level 3-4 formality, authoritative + precise characteristics
 - Code comments: Technical accuracy prioritized, detailed explanations
@@ -169,6 +174,7 @@ Ensure tone meets publisher-specific expectations:
 - Example: "The authentication function implements OAuth 2.0 protocol specification. Note the token validation in line 12."
 
 **Manning Requirements:**
+
 - Tone: "Author voice with personality"
 - Interpretation: Level 2-3 formality, author's authentic voice preserved
 - Code comments: Author's natural explanation style
@@ -176,6 +182,7 @@ Ensure tone meets publisher-specific expectations:
 - Example: "I learned this the hard way after a 3am production incident. Here's what actually works..."
 
 **Self-Publishing:**
+
 - Tone: Author's choice, no publisher constraints
 - Interpretation: Any formality level, any characteristics
 - Recommendation: Stay consistent with chosen tone throughout
@@ -188,6 +195,7 @@ Ensure tone meets publisher-specific expectations:
 Write 3-5 sample passages (2-3 paragraphs each) demonstrating target tone:
 
 **Coverage Requirements:**
+
 - Example 1: Chapter introduction (how you'll open chapters)
 - Example 2: Technical explanation (how you'll teach concepts)
 - Example 3: Code example with commentary (how you'll present code)
@@ -195,6 +203,7 @@ Write 3-5 sample passages (2-3 paragraphs each) demonstrating target tone:
 - Example 5 (optional): Chapter summary/conclusion
 
 **Criteria:**
+
 - Use ACTUAL content from your book outline
 - Apply chosen formality level consistently
 - Demonstrate all 5 tone characteristics
@@ -208,12 +217,14 @@ Write 3-5 sample passages (2-3 paragraphs each) demonstrating target tone:
 Define what to AVOID (equally important as what to include):
 
 **Excluded Tones:**
+
 - List tone approaches explicitly rejected for this book
 - Explain WHY each is excluded
 
 **Example Exclusions:**
 
 For a professional developer book:
+
 - ❌ **Overly playful/childish:** "Wheee! Let's make our code go zoom zoom!" (Why: Undermines professional audience)
 - ❌ **Condescending:** "Even a beginner should understand this obvious concept." (Why: Alienates learners)
 - ❌ **Aggressive/preachy:** "You're doing it WRONG if you don't use X framework!" (Why: Discourages exploration)
@@ -221,6 +232,7 @@ For a professional developer book:
 - ❌ **Salesy/marketing:** "This amazing revolutionary technique will change your life!" (Why: Reduces credibility)
 
 **Anti-Patterns to Avoid:**
+
 - Tone inconsistency (formal intro, casual explanations)
 - Shifting formality levels mid-chapter
 - Mixing metaphors excessively
@@ -234,6 +246,7 @@ For a professional developer book:
 Use create-doc task with tone-specification-tmpl.yaml template:
 
 **Execution:**
+
 1. Ensure all above steps completed with documented answers
 2. Run: create-doc task with tone-specification-tmpl.yaml
 3. Populate template sections with gathered information
@@ -241,6 +254,7 @@ Use create-doc task with tone-specification-tmpl.yaml template:
 5. Save as: tone-specification.md in project root or docs/
 
 **Template Sections to Populate:**
+
 - Book overview & audience
 - Tone personality (5 key adjectives with definitions)
 - Voice characteristics (formal/casual, perspective, active/passive)
@@ -253,6 +267,7 @@ Use create-doc task with tone-specification-tmpl.yaml template:
 - Excluded tones/approaches (anti-patterns)
 
 **Validation Before Finalizing:**
+
 - All 5 tone characteristics defined with examples
 - Formality level specified with book-specific examples
 - Publisher requirements addressed (or N/A for self-publishing)
@@ -288,16 +303,19 @@ Use create-doc task with tone-specification-tmpl.yaml template:
 ## Integration Points
 
 **Input From:**
+
 - book-proposal.md (book purpose, audience)
 - book-outline.md (chapter structure, topic coverage)
 - publisher-guidelines.md (publisher tone requirements)
 
 **Output To:**
+
 - expand-outline-to-draft.md (uses tone-specification.md when drafting chapters)
 - copy-edit-chapter.md (validates tone consistency during editing)
 - tone-consistency-checklist.md (references tone-specification.md for validation)
 
 **Workflow Position:**
+
 - Executed AFTER: book outline approved
 - Executed BEFORE: any chapter drafting begins
 - Part of: book-planning-workflow.yaml
@@ -305,31 +323,37 @@ Use create-doc task with tone-specification-tmpl.yaml template:
 ## Important Notes
 
 **Preserve Author Voice:**
+
 - Tone specification should ENHANCE author's natural voice, not replace it
 - If tone feels forced or unnatural, revisit and adjust
 - Author authenticity > rigid formula compliance
 
 **AI-Assisted Drafting Consideration:**
+
 - Specific examples are crucial for AI to apply tone correctly
 - The more detailed your tone-specification.md, the more consistent AI-generated drafts will be
 - Generic descriptions ("friendly tone") produce generic results
 - Specific examples ("Write like THIS passage") produce targeted results
 
 **Flexibility:**
+
 - Tone can evolve slightly as book develops
 - Major tone shifts indicate specification needs update
 - Consistency matters more than perfection
 
 **Multi-Author Projects:**
+
 - All authors must review and approve tone specification
 - Use tone specification as shared reference during writing
 - Appoint "tone guardian" to maintain consistency during editing
 
 **Brownfield Projects:**
+
 - For 2nd/3rd editions or book updates, use extract-tone-patterns.md instead
 - This task is for NEW books defining tone from scratch
 
 **Publisher Feedback:**
+
 - Share tone-specification.md with publisher editor for early validation
 - Adjust based on feedback BEFORE writing chapters
 - Easier to adjust specification than rewrite chapters

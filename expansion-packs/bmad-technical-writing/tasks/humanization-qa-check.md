@@ -31,11 +31,11 @@ Validate that humanization efforts have successfully removed AI patterns and tha
 - Extract: `config.manuscript.root`, `config.manuscript.sections`, `config.manuscript.chapters`
 - If config not found, use defaults: `manuscript/`, `manuscript/sections`, `manuscript/chapters`
 
-### 1. Run Quantitative Analysis
+### 1. Run Dual Score Analysis (Recommended)
 
 **IMPORTANT**: If this is your first time using the tool, complete the Python environment setup from `analyze-ai-patterns.md` task Step 0.
 
-**Execute AI pattern analysis on humanized content**:
+**Execute dual score analysis on humanized content**:
 
 ```bash
 cd {{config.root}}/tools
@@ -44,19 +44,26 @@ cd {{config.root}}/tools
 source nlp-env/bin/activate  # macOS/Linux
 # OR nlp-env\Scripts\activate  # Windows
 
-# Run analysis
+# Run dual score analysis
 python analyze_ai_patterns.py PATH_TO_HUMANIZED_FILE \
+  --show-scores \
+  --quality-target 85 \
+  --detection-target 30 \
   --domain-terms "Domain,Specific,Terms" \
   > humanization-qa-report.txt
 ```
 
 **Example**:
+
 ```bash
 # Activate environment first
 source nlp-env/bin/activate
 
-# Run analysis
+# Run dual score analysis
 python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
+  --show-scores \
+  --quality-target 85 \
+  --detection-target 30 \
   --domain-terms "Docker,Kubernetes,PostgreSQL" \
   > chapter-03-qa-report.txt
 
@@ -64,43 +71,87 @@ python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
 deactivate
 ```
 
-**Review the output**: Check all 6 dimension scores and overall assessment.
+**Review the output**: Check Quality Score, Detection Risk, and historical trend.
 
-### 2. Evaluate Publication Readiness Thresholds
+**Historical Trend Validation**:
+If this is a post-humanization check, the trend should show:
+
+```
+HISTORICAL TREND (2+ scores tracked)
+────────────────────────────────────────────────────────────────────────────────
+
+Quality:   IMPROVING (+X pts)  ← Should be positive
+Detection: IMPROVING (-X pts)  ← Should be negative (decreasing risk)
+```
+
+### 2. Evaluate Publication Readiness Using Dual Scores
 
 **Target scores for publication-ready content**:
 
-| Dimension | Minimum Target | Ideal Target | Red Flag |
-|-----------|----------------|--------------|----------|
-| Perplexity | MEDIUM | HIGH | LOW or VERY LOW |
-| Burstiness | MEDIUM | HIGH | LOW or VERY LOW |
-| Structure | MEDIUM | HIGH | LOW with 4+ heading levels |
-| Voice | MEDIUM | HIGH | VERY LOW (no personal markers) |
-| Technical | MEDIUM | HIGH | Context-dependent |
-| Formatting | MEDIUM | HIGH | VERY LOW (3+ em-dashes/page) |
+| Content Type           | Quality Target | Detection Target |
+| ---------------------- | -------------- | ---------------- |
+| Book Chapters          | ≥90            | ≤20              |
+| Blog Posts / Articles  | ≥85            | ≤30              |
+| Documentation          | ≥80            | ≤35              |
+| Internal Docs / Drafts | ≥75            | ≤40              |
 
-**Overall Assessment**:
-- **PASS**: MINIMAL or LIGHT humanization needed (<10% AI patterns)
-- **CONDITIONAL PASS**: MODERATE humanization needed (10-20% AI patterns, but specific issues identified and acceptable)
-- **FAIL**: SUBSTANTIAL or EXTENSIVE humanization needed (>20% AI patterns)
+**Publication Readiness Decision**:
+
+✅ **PASS - Publication Ready**:
+
+- Quality Score ≥ Target AND
+- Detection Risk ≤ Target AND
+- Historical trend IMPROVING or STABLE (if available) AND
+- No critical AI signals present (see Step 3)
+
+⚠️ **CONDITIONAL PASS - Minor Touch-ups Needed**:
+
+- Quality Score within 5 points of target (e.g., 80-84 for target 85) AND
+- Detection Risk within 5 points of target AND
+- Path-to-target shows only LOW effort actions remaining
+
+❌ **FAIL - Additional Humanization Required**:
+
+- Quality Score < Target by >5 points OR
+- Detection Risk > Target by >5 points OR
+- Historical trend WORSENING OR
+- Critical AI signals present (Step 3)
+
+**Example evaluation**:
+
+```
+Quality: 87.3 / 100  (EXCELLENT - Minimal AI signatures)
+Detection: 24.1 / 100  (LOW - Unlikely flagged)
+Targets: Quality ≥85, Detection ≤30
+
+Gap: Quality EXCEEDS by +2.3 pts ✓
+Gap: Detection SAFE by -5.9 pts ✓
+Trend: IMPROVING (Quality +11.5, Detection -14.7) ✓
+
+Decision: PASS - Publication ready
+```
 
 ### 3. Check Critical AI Signals
 
 **Verify strongest AI detection signals have been addressed**:
 
 **Em-Dash Density** (Strongest Signal):
+
 - [ ] Em-dashes per page: d2 (target: 1-2 max)
 - [ ] If 3+: **FAIL** - Must reduce before publication
 
 **Heading Hierarchy Depth**:
+
 - [ ] Maximum heading depth: d3 levels (H1, H2, H3)
 - [ ] If 4+: **CONDITIONAL FAIL** - Should flatten unless architecturally justified
 
 **AI Vocabulary Density**:
+
 - [ ] AI words per 1k: d5 (target: d2)
 - [ ] If >10: **FAIL** - Must replace obvious AI markers
 
 **Sentence Uniformity**:
+
 - [ ] Standard deviation: e6 (target: e10)
 - [ ] If <3: **FAIL** - Must add sentence variation
 
@@ -109,6 +160,7 @@ deactivate
 **Read 3-5 representative paragraphs aloud**:
 
 **Listen for**:
+
 - [ ] Natural flow and rhythm (sounds like human speech)
 - [ ] No awkward phrasings that cause stumbling
 - [ ] Varied sentence rhythm (not monotonous)
@@ -116,6 +168,7 @@ deactivate
 - [ ] Personal voice present (where appropriate)
 
 **Red Flags**:
+
 - Sounds robotic or mechanical when spoken
 - Formulaic transitions stand out ("Furthermore," "Moreover")
 - Uniform rhythm creates monotony
@@ -128,6 +181,7 @@ deactivate
 **Critical check**: Ensure humanization didn't introduce errors.
 
 **Review**:
+
 - [ ] Code examples still functional
 - [ ] Technical terminology remains correct
 - [ ] Version numbers and specifics unchanged
@@ -135,6 +189,7 @@ deactivate
 - [ ] No facts altered during editing
 
 **Test** (if applicable):
+
 - [ ] Run code examples to verify functionality
 - [ ] Validate commands in appropriate environment
 - [ ] Cross-check technical claims against documentation
@@ -146,6 +201,7 @@ deactivate
 **If baseline metrics exist from pre-humanization analysis**:
 
 **Expected improvements**:
+
 - AI vocabulary per 1k: **Decreased 50-80%**
 - Sentence StdDev: **Increased** (higher burstiness)
 - Formulaic transitions: **Decreased to <3**
@@ -154,6 +210,7 @@ deactivate
 - Overall assessment: **Improved 1-2 levels**
 
 **Document improvement**:
+
 ```
 Before Humanization:
 - Perplexity: LOW (12.4 AI words/1k)
@@ -175,12 +232,14 @@ Improvement: 75% reduction in AI patterns 
 **If publisher has AI content policies**:
 
 **Common publisher requirements**:
+
 - Content must sound authentically human-written
 - AI-assisted content must be disclosed (check submission guidelines)
 - Detection software should not flag content as AI-generated
 - Author must certify substantial human authorship
 
 **Validation**:
+
 - [ ] Overall assessment: MINIMAL or LIGHT humanization needed
 - [ ] No dimension scored VERY LOW
 - [ ] Em-dash test passed (d2 per page)
@@ -193,15 +252,15 @@ Improvement: 75% reduction in AI patterns 
 
 **Publication Readiness Decision Matrix**:
 
-| Scenario | Decision | Action |
-|----------|----------|--------|
-| Overall: MINIMAL, all dims eMEDIUM | **PASS - Publication Ready** | Proceed to technical review |
-| Overall: LIGHT, all dims eMEDIUM | **PASS - Publication Ready** | Proceed to technical review |
-| Overall: MODERATE, no VERY LOW | **CONDITIONAL PASS** | Document known issues, proceed with caution |
-| Overall: MODERATE, any VERY LOW | **FAIL - Additional Work Needed** | Apply targeted humanization to VERY LOW dimensions |
-| Overall: SUBSTANTIAL or EXTENSIVE | **FAIL - Major Revisions Needed** | Re-apply full humanization workflow |
-| Technical accuracy compromised | **FAIL - Fix Immediately** | Revert and re-humanize carefully |
-| Em-dashes >3 per page | **FAIL - Critical AI Signal** | Apply Pass 5.1 (em-dash reduction) |
+| Scenario                           | Decision                          | Action                                             |
+| ---------------------------------- | --------------------------------- | -------------------------------------------------- |
+| Overall: MINIMAL, all dims eMEDIUM | **PASS - Publication Ready**      | Proceed to technical review                        |
+| Overall: LIGHT, all dims eMEDIUM   | **PASS - Publication Ready**      | Proceed to technical review                        |
+| Overall: MODERATE, no VERY LOW     | **CONDITIONAL PASS**              | Document known issues, proceed with caution        |
+| Overall: MODERATE, any VERY LOW    | **FAIL - Additional Work Needed** | Apply targeted humanization to VERY LOW dimensions |
+| Overall: SUBSTANTIAL or EXTENSIVE  | **FAIL - Major Revisions Needed** | Re-apply full humanization workflow                |
+| Technical accuracy compromised     | **FAIL - Fix Immediately**        | Revert and re-humanize carefully                   |
+| Em-dashes >3 per page              | **FAIL - Critical AI Signal**     | Apply Pass 5.1 (em-dash reduction)                 |
 
 ### 9. Document QA Results
 
@@ -261,16 +320,19 @@ Next Steps:
 ### 10. Take Action Based on Results
 
 **If PASS**:
+
 - Move content to technical review queue
 - Archive QA report with manuscript
 - Update manuscript status
 
 **If CONDITIONAL PASS**:
+
 - Document known issues and risk acceptance
 - Notify reviewers of specific concerns
 - May require additional editing during review phase
 
 **If FAIL**:
+
 - Create targeted work plan for failed dimensions
 - Re-apply specific humanization passes:
   - VERY LOW Perplexity � Pass 2 (vocabulary humanization)
@@ -283,11 +345,13 @@ Next Steps:
 ## Output Deliverable
 
 **Primary**:
+
 - Humanization QA report documenting all scores and checks
 - Clear PASS/FAIL/CONDITIONAL PASS decision
 - Specific issues identified (if any)
 
 **Secondary**:
+
 - Before/after comparison metrics
 - Targeted work plan for failed dimensions (if FAIL)
 - Updated manuscript status documentation
@@ -315,6 +379,7 @@ L Proceeding to publication with any VERY LOW dimension scores
 ## Integration with Humanization Workflow
 
 **Standard workflow**:
+
 1. `analyze-ai-patterns.md` (establish baseline)
 2. `humanize-post-generation.md` (apply systematic editing)
 3. `humanization-qa-check.md` � **YOU ARE HERE** (validate results)
@@ -322,6 +387,7 @@ L Proceeding to publication with any VERY LOW dimension scores
 5. If FAIL � Return to step 2, apply targeted edits
 
 **Iterative refinement** (if needed):
+
 1. Run QA check
 2. Identify specific failed dimensions
 3. Apply targeted humanization passes for those dimensions
@@ -331,6 +397,7 @@ L Proceeding to publication with any VERY LOW dimension scores
 ## Publication Readiness Guidelines
 
 **For technical books (PacktPub, O'Reilly, Manning, etc.)**:
+
 - Target: MINIMAL or LIGHT overall assessment
 - All dimensions: MEDIUM or higher
 - Em-dashes: d2 per page (strict)
@@ -338,12 +405,14 @@ L Proceeding to publication with any VERY LOW dimension scores
 - Technical accuracy: 100% preserved
 
 **For blog posts or articles**:
+
 - Target: LIGHT or MODERATE acceptable
 - Perplexity and Burstiness: MEDIUM minimum
 - Voice: MEDIUM or higher (more important for blog content)
 - Technical accuracy: 100% preserved
 
 **For internal documentation**:
+
 - Target: MODERATE acceptable
 - Focus on technical accuracy over style
 - Structure and clarity prioritized
@@ -352,6 +421,7 @@ L Proceeding to publication with any VERY LOW dimension scores
 ## Quick QA Checklist
 
 **5-Minute Fast Check** (if time-constrained):
+
 - [ ] Run analysis tool, check overall assessment
 - [ ] Overall: MINIMAL or LIGHT? � PASS
 - [ ] Overall: MODERATE with no VERY LOW? � CONDITIONAL PASS

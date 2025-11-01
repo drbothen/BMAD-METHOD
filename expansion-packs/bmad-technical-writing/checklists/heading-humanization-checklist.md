@@ -160,9 +160,9 @@ For **each major section** (H2), evaluate content complexity:
 - [ ] Count words in each heading
 - [ ] Identify headings with 8+ words
 - [ ] Calculate average heading length by level:
-  - H1 (Chapter title): ____ words average
-  - H2 (Major sections): ____ words average
-  - H3 (Subsections): ____ words average
+  - H1 (Chapter title): \_\_\_\_ words average
+  - H2 (Major sections): \_\_\_\_ words average
+  - H3 (Subsections): \_\_\_\_ words average
 - [ ] **Flag if**: 30%+ of headings exceed 8 words
 - [ ] **Flag if**: Average H2/H3 length exceeds 7 words
 
@@ -333,36 +333,42 @@ Check for these human characteristics (should be PRESENT):
 ## Success Criteria
 
 ### Hierarchy Depth
+
 ✅ **3 heading levels maximum** for 15-20 page chapters (H1, H2, H3)
 ✅ H4 rare or absent (only for exceptionally complex chapters)
 ✅ No skipped levels in hierarchy
 ✅ Each level serves clear navigation purpose
 
 ### Mechanical Parallelism
+
 ✅ **Natural variation** in heading structures (3+ different patterns per level)
 ✅ Headings adapted to content type (conceptual vs procedural)
 ✅ No single pattern dominates (less than 60% same structure)
 ✅ Headings feel natural in table of contents
 
 ### Density Asymmetry
+
 ✅ **Variable subsection counts** (0-6 H3s per H2, based on complexity)
 ✅ Simple sections have fewer subsections (0-2 typical)
 ✅ Complex sections have more subsections (4-6 typical)
 ✅ Average 2-4 headings per page with natural variation
 
 ### Heading Length
+
 ✅ **Concise headings** (3-7 words typical for H2/H3)
 ✅ Redundant prefixes removed ("Understanding", "How to", "A Guide to")
 ✅ Headings preview, don't summarize complete content
 ✅ Average H2: 3-5 words, Average H3: 3-7 words
 
 ### Best Practices
+
 ✅ **No hierarchy violations** (skipped levels, lone headings, stacked headings)
 ✅ Descriptive headings over functional headings
 ✅ Content-type alignment (density matches content purpose)
 ✅ Accessibility-friendly (screen reader navigation supported)
 
 ### Overall
+
 ✅ **Heading structure invisible** - supports without distracting
 ✅ All AI red flags removed
 ✅ Human pattern indicators present
@@ -376,23 +382,23 @@ Check for these human characteristics (should be PRESENT):
 
 ### 🚩 Red Flags (AI Patterns - Remove These)
 
-| Element | AI Pattern | Remove |
-|---------|-----------|--------|
-| Hierarchy | 4-6 levels in chapter | ✂️ Flatten to 3 levels |
-| Parallelism | All H2s: "Understanding X" | ✂️ Vary 50%+ structures |
-| Density | Every H2 has 3 H3s (uniform) | ✂️ Create asymmetry (0, 2, 5, 1) |
-| Length | 10+ words frequently | ✂️ Shorten to 3-7 words |
-| Rhythm | Heading every 2 paragraphs | ✂️ Vary based on content |
+| Element     | AI Pattern                   | Remove                           |
+| ----------- | ---------------------------- | -------------------------------- |
+| Hierarchy   | 4-6 levels in chapter        | ✂️ Flatten to 3 levels           |
+| Parallelism | All H2s: "Understanding X"   | ✂️ Vary 50%+ structures          |
+| Density     | Every H2 has 3 H3s (uniform) | ✂️ Create asymmetry (0, 2, 5, 1) |
+| Length      | 10+ words frequently         | ✂️ Shorten to 3-7 words          |
+| Rhythm      | Heading every 2 paragraphs   | ✂️ Vary based on content         |
 
 ### ✅ Green Flags (Human Patterns - Keep These)
 
-| Element | Human Pattern | Maintain |
-|---------|--------------|----------|
-| Hierarchy | 3 levels (H1, H2, H3) | ✓ Keep restraint |
-| Parallelism | Varied structures (3+ patterns) | ✓ Keep variation |
-| Density | Asymmetric (0, 2, 5, 1, 3) | ✓ Keep flexibility |
-| Length | 3-7 words typical | ✓ Keep conciseness |
-| Rhythm | 2-4 per page avg, variable | ✓ Keep variation |
+| Element     | Human Pattern                   | Maintain           |
+| ----------- | ------------------------------- | ------------------ |
+| Hierarchy   | 3 levels (H1, H2, H3)           | ✓ Keep restraint   |
+| Parallelism | Varied structures (3+ patterns) | ✓ Keep variation   |
+| Density     | Asymmetric (0, 2, 5, 1, 3)      | ✓ Keep flexibility |
+| Length      | 3-7 words typical               | ✓ Keep conciseness |
+| Rhythm      | 2-4 per page avg, variable      | ✓ Keep variation   |
 
 ---
 

@@ -4,15 +4,39 @@
 
 ## Purpose
 
-Systematically analyze manuscript files for AI-generated content patterns using the AI Pattern Analysis Tool. Provides quantitative assessment across 6 dimensions (perplexity, burstiness, structure, voice, technical depth, formatting) to guide humanization efforts.
+Systematically analyze manuscript files for AI-generated content patterns using the AI Pattern Analysis Tool's dual scoring system. Provides **two complementary scores** (Quality Score 0-100 + Detection Risk 0-100) with **path-to-target optimization** across **14 dimensions** organized in **3 tiers** (Advanced Detection, Core Patterns, Supporting Signals) to guide humanization efforts.
+
+## Analysis Modes
+
+The tool supports **three analysis modes**:
+
+1. **Dual Score Analysis** (Recommended) - `--show-scores`
+   - Quality Score (0-100, higher=better) + Detection Risk (0-100, lower=better)
+   - Path-to-target recommendations sorted by ROI
+   - Historical tracking with trend analysis
+   - 14 dimensions across 3 tiers
+   - **Best for**: LLM optimization, iterative improvement, first-time analysis
+
+2. **Standard Analysis** (Legacy) - default behavior
+   - 6 dimension scores (HIGH/MEDIUM/LOW/VERY LOW)
+   - Overall assessment
+   - **Best for**: Quick overview, batch comparison
+
+3. **Detailed Diagnostic** - `--detailed`
+   - Line-by-line issues with context and suggestions
+   - **Best for**: Manual editing, debugging specific problems
+
+**This task covers all three modes, with emphasis on Dual Score Analysis (recommended).**
 
 ## When to Use This Task
 
-- **Before humanization** to establish baseline metrics and identify specific issues
-- **After humanization** to validate improvement and measure success
-- **During quality assurance** to ensure content meets publication standards
+- **Before humanization** to establish baseline metrics and identify specific issues (use `--show-scores`)
+- **After humanization** to validate improvement and measure success (use `--show-scores` for trend)
+- **During iterative optimization** to track progress toward quality targets (use `--show-scores`)
+- **During quality assurance** to ensure content meets publication standards (use `--show-scores`)
 - When content feels AI-generated but you need specific diagnostic data
-- For batch analysis of entire manuscript sections or chapters
+- For batch analysis of entire manuscript sections or chapters (use standard mode)
+- For line-by-line editing guidance (use `--detailed`)
 
 ## Prerequisites
 
@@ -28,11 +52,13 @@ Systematically analyze manuscript files for AI-generated content patterns using 
 **CRITICAL**: The AI Pattern Analysis Tool requires Python dependencies. Set up a virtual environment ONCE before first use.
 
 **Navigate to tools directory**:
+
 ```bash
 cd {{config.root}}/tools
 ```
 
 **Create virtual environment** (one-time setup):
+
 ```bash
 # Create virtual environment
 python3 -m venv nlp-env
@@ -45,6 +71,7 @@ nlp-env\Scripts\activate
 ```
 
 **Install dependencies**:
+
 ```bash
 # Install all required libraries
 pip install -r requirements.txt
@@ -60,6 +87,7 @@ python -m textblob.download_corpora
 ```
 
 **Verify installation**:
+
 ```bash
 # Test the script
 python analyze_ai_patterns.py --help
@@ -68,12 +96,14 @@ python analyze_ai_patterns.py --help
 **Expected output**: Help text showing all available options.
 
 **IMPORTANT**:
+
 - **First-time setup takes 5-10 minutes** (downloading models ~500MB-1GB total)
 - **Subsequent uses**: Just activate the environment (`source nlp-env/bin/activate`)
 - **When done**: Deactivate with `deactivate` command
 - **Virtual environment location**: `{{config.root}}/tools/nlp-env/` (gitignored)
 
 **Troubleshooting**:
+
 - If `python3` not found, try `python`
 - If numpy conflicts occur, upgrade pip: `pip install --upgrade pip`
 - For M1/M2 Macs, you may need: `pip install --upgrade numpy`
@@ -88,10 +118,12 @@ python analyze_ai_patterns.py --help
 ### 2. Identify Target File(s)
 
 **For single file analysis**:
+
 - Locate the specific file to analyze (chapter, section, or draft)
 - Note the file path (e.g., `{{config.manuscript.chapters}}/chapter-03.md`)
 
 **For batch analysis**:
+
 - Identify the directory containing files to analyze
 - Decide scope: single chapter's sections, all chapters, specific subset
 - Note the directory path (e.g., `{{config.manuscript.sections}}/chapter-03/`)
@@ -99,6 +131,7 @@ python analyze_ai_patterns.py --help
 ### 3. Determine Domain-Specific Terms (Optional but Recommended)
 
 **Identify technical vocabulary specific to the book's subject matter**:
+
 - Programming languages: "Python", "JavaScript", "Rust"
 - Frameworks/libraries: "React", "Django", "Kubernetes"
 - Domain concepts: "OAuth", "GraphQL", "Docker"
@@ -108,70 +141,226 @@ python analyze_ai_patterns.py --help
 
 **Format**: Comma-separated list (e.g., "Docker,Kubernetes,PostgreSQL,Redis")
 
-### 4. Run Single File Analysis
+### 4. Run Dual Score Analysis (Recommended)
 
 **IMPORTANT**: Activate the virtual environment first (every time you use the tool):
+
 ```bash
 cd {{config.root}}/tools
 source nlp-env/bin/activate  # macOS/Linux
 # OR nlp-env\Scripts\activate  # Windows
 ```
 
+**Command for dual scoring**:
+
+```bash
+python analyze_ai_patterns.py PATH_TO_FILE \
+  --show-scores \
+  [--quality-target N] \
+  [--detection-target N] \
+  [--domain-terms "term1,term2,term3"]
+```
+
+**Example**:
+
+```bash
+python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
+  --show-scores \
+  --quality-target 85 \
+  --detection-target 30 \
+  --domain-terms "Docker,Kubernetes,PostgreSQL,Redis,GraphQL"
+```
+
+**Expected output**: Dual score optimization report with:
+
+- **Quality Score** (0-100, higher=better) with interpretation
+- **Detection Risk** (0-100, lower=better) with interpretation
+- **Targets and gaps** - How far from quality/detection goals
+- **Score breakdown** - All 14 dimensions across 3 tiers
+- **Path-to-target** - Prioritized actions sorted by ROI
+- **Effort estimation** - MINIMAL/LIGHT/MODERATE/SUBSTANTIAL/EXTENSIVE
+- **Historical trend** - Shows improvement over time (if previous scores exist)
+
+**Example output**:
+
+```
+DUAL SCORES
+────────────────────────────────────────────────────────────────────────────────
+
+Quality Score:       77.0 / 100  GOOD - Natural with minor tells
+Detection Risk:      16.2 / 100  LOW - Unlikely flagged
+
+Targets:            Quality ≥85, Detection ≤30
+Gap to Target:      Quality needs +8.0 pts, Detection needs -0.0 pts
+Effort Required:    MODERATE
+
+HISTORICAL TREND (2 scores tracked)
+────────────────────────────────────────────────────────────────────────────────
+
+Quality:   IMPROVING (+3.2 pts)
+Detection: IMPROVING (-5.1 pts)
+
+PATH TO TARGET (2 actions, sorted by ROI)
+────────────────────────────────────────────────────────────────────────────────
+
+1. Heading Hierarchy (Effort: LOW)
+   Current: 2.5/5.0 → Gain: +2.5 pts → Cumulative: 79.5
+   Action: Flatten to H3 max, break parallelism, create asymmetry
+
+2. Voice & Authenticity (Effort: HIGH)
+   Current: 2.0/8.0 → Gain: +6.0 pts → Cumulative: 85.5
+   Action: Add personal perspective, contractions, hedging
+```
+
+**Target Defaults**:
+
+- Quality Score: ≥85 (EXCELLENT quality)
+- Detection Risk: ≤30 (MEDIUM risk or better)
+
+**Adjust targets based on context**:
+
+- Book chapters: `--quality-target 90 --detection-target 20` (stricter)
+- Blog posts: `--quality-target 85 --detection-target 30` (standard)
+- Internal docs: `--quality-target 75 --detection-target 40` (relaxed)
+
+### 4a. Run Standard Analysis (Legacy Mode)
+
+**For quick overview or batch comparison**:
+
 **Command**:
+
 ```bash
 python analyze_ai_patterns.py PATH_TO_FILE [--domain-terms "term1,term2,term3"]
 ```
 
 **Example**:
+
 ```bash
 python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
   --domain-terms "Docker,Kubernetes,PostgreSQL,Redis,GraphQL"
 ```
 
 **Expected output**: Detailed text report with:
+
 - Summary header (words, sentences, paragraphs)
-- Dimension scores (HIGH/MEDIUM/LOW/VERY LOW)
+- 6 dimension scores (HIGH/MEDIUM/LOW/VERY LOW)
 - Overall assessment
 - Detailed metrics breakdown
 - Specific recommendations
 
-### 5. Interpret Results
+### 5. Interpret Dual Score Results (If Using --show-scores)
+
+**Understand the two complementary scores**:
+
+**Quality Score (0-100, higher=better)**:
+| Score | Interpretation | Action |
+|-------|----------------|--------|
+| 95-100 | EXCEPTIONAL - Indistinguishable from human | Publication-ready, minimal refinement |
+| 85-94 | EXCELLENT - Minimal AI signatures | Publication-ready, meets standards |
+| 70-84 | GOOD - Natural with minor tells | Light editing needed |
+| 50-69 | MIXED - Needs moderate work | Systematic editing required |
+| 30-49 | AI-LIKE - Substantial work needed | Major rewrite needed |
+| 0-29 | OBVIOUS AI - Complete rewrite | Regenerate with humanization prompt |
+
+**Detection Risk (0-100, lower=better)**:
+| Score | Interpretation | Risk Level |
+|-------|----------------|------------|
+| 70-100 | VERY HIGH - Will be flagged | Critical issues, must fix |
+| 50-69 | HIGH - Likely flagged | Substantial work needed |
+| 30-49 | MEDIUM - May be flagged | Moderate improvement needed |
+| 15-29 | LOW - Unlikely flagged | Minor refinement |
+| 0-14 | VERY LOW - Safe | Publication-ready |
+
+**Review path-to-target recommendations**:
+
+Each action in path-to-target shows:
+
+- **Dimension name**: Which aspect needs improvement
+- **Effort level**: LOW (15-30 min) / MEDIUM (30-45 min) / HIGH (45-90 min)
+- **Potential gain**: Expected quality points increase
+- **Cumulative score**: Running total if actions completed sequentially
+- **Action**: Specific humanization technique to apply
+
+**Prioritize actions**:
+
+1. **Start with LOW effort, HIGH gain** actions (best ROI)
+2. **Focus on dimensions with ⚠ warning symbols** (HIGH or MEDIUM impact)
+3. **Apply actions until quality target reached** (may not need all actions)
+4. **Use effort levels for time planning** (sum efforts for realistic schedule)
+
+**Example interpretation**:
+
+```
+Quality Score: 67.8 (MIXED - Needs moderate work)
+Gap to Target: +17.2 points needed
+
+Path to Target shows 4 actions totaling +21 points:
+- Action 1: GLTR (HIGH effort, +9 pts) → Most impactful
+- Action 2: Burstiness (MEDIUM effort, +3 pts) → Quick win
+- Action 3: AI Detection (HIGH effort, +5 pts) → Moderate gain
+- Action 4: Lexical (HIGH effort, +4 pts) → Additional improvement
+
+Strategy: Do Actions 1 and 2 first (12 pts gain, ~1 hour)
+→ Would reach 79.8, then reassess if Action 3 needed to reach 85
+```
+
+**Check historical trend** (if running analysis multiple times):
+
+- **IMPROVING**: Quality increasing OR detection decreasing (good progress)
+- **STABLE**: Scores within ±1 point (plateau or target met)
+- **WORSENING**: Quality decreasing OR detection increasing (over-editing or regression)
+
+**Use trend to guide decisions**:
+
+- **IMPROVING**: Continue current approach
+- **STABLE at target**: Stop, targets met
+- **STABLE below target**: Try different techniques, consider regeneration
+- **WORSENING**: Revert recent changes, investigate technical errors
+
+### 5a. Interpret Standard Results (Legacy Mode)
 
 **Review each dimension score**:
 
 **Perplexity (Vocabulary)**:
+
 - HIGH (≤2 AI words per 1k): Natural vocabulary
 - MEDIUM (2-5 per 1k): Acceptable
 - LOW (5-10 per 1k): Needs improvement
 - VERY LOW (>10 per 1k): Heavily AI-generated
 
 **Burstiness (Sentence Variation)**:
+
 - HIGH (StdDev ≥10): Strong variation
 - MEDIUM (StdDev 6-10): Moderate variation
 - LOW (StdDev 3-6): Weak variation
 - VERY LOW (StdDev <3): Uniform, AI-like
 
 **Structure (Organization)**:
+
 - Check formulaic transitions count (target <3 per page)
 - Check heading depth (target 3 levels max)
 - Check heading parallelism score (0=varied, 1=mechanical)
 
 **Voice (Authenticity)**:
+
 - Count first-person markers
 - Count direct address ("you/your")
 - Count contractions
 - Higher = more authentic voice
 
 **Technical (Expertise)**:
+
 - Check domain terms per 1k words
 - HIGH (>20 per 1k): Strong technical content
 - LOW (<5 per 1k): Generic content
 
 **Formatting (Distribution)**:
+
 - Check em-dashes per page (target 1-2 max)
 - 3+ per page = strong AI signal
 
 **Overall Assessment**:
+
 - MINIMAL humanization needed: Publication-ready (<5% AI patterns)
 - LIGHT humanization needed: Minor edits (5-10% AI patterns)
 - MODERATE humanization needed: Systematic editing (10-20% AI patterns)
@@ -183,21 +372,25 @@ python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
 **Extract actionable data from the report**:
 
 **AI Vocabulary**:
+
 - Note the specific words listed (e.g., "delve, robust, leverage, facilitate")
 - Count total instances
 - Calculate per 1k words ratio
 
 **Sentence Variation**:
+
 - Note mean sentence length
 - Note standard deviation
 - Note distribution (short/medium/long percentages)
 
 **Heading Issues**:
+
 - Note maximum depth (target 3)
 - Note parallelism score (target <0.3)
 - Note verbose heading count (target 0)
 
 **Formatting Problems**:
+
 - Note em-dashes per page (target 1-2)
 - Note bold/italic usage patterns
 
@@ -206,29 +399,34 @@ python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
 **When analyzing multiple files** (all sections in a chapter, all chapters in manuscript):
 
 **IMPORTANT**: Activate virtual environment first:
+
 ```bash
 cd {{config.root}}/tools
 source nlp-env/bin/activate  # macOS/Linux
 ```
 
 **Command**:
+
 ```bash
 python analyze_ai_patterns.py --batch DIRECTORY_PATH --format tsv > analysis-report.tsv
 ```
 
 **Example**:
+
 ```bash
 python analyze_ai_patterns.py --batch ../{{config.manuscript.sections}}/chapter-03 \
   --format tsv > chapter-03-section-analysis.tsv
 ```
 
 **Import into spreadsheet** (Excel, Google Sheets, Numbers) to:
+
 - Compare sections side-by-side
 - Identify outliers (sections with much higher/lower scores)
 - Track improvement over multiple analysis runs
 - Sort by problematic dimensions
 
 **TSV columns**:
+
 - file, words, sentences, paragraphs
 - ai_words, ai_per_1k, formulaic
 - sent_mean, sent_stdev, sent_min, sent_max, short, medium, long
@@ -240,17 +438,20 @@ python analyze_ai_patterns.py --batch ../{{config.manuscript.sections}}/chapter-
 **For programmatic processing or integration with other tools**:
 
 **Command**:
+
 ```bash
 python3 analyze_ai_patterns.py PATH_TO_FILE --format json > analysis.json
 ```
 
 **Example**:
+
 ```bash
 python3 analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
   --format json > chapter-03-analysis.json
 ```
 
 **Use cases**:
+
 - Automated quality gates in CI/CD pipelines
 - Integration with other analysis tools
 - Programmatic tracking of metrics over time
@@ -261,23 +462,27 @@ python3 analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
 **Based on analysis results, prioritize humanization efforts**:
 
 **If Overall Assessment = MINIMAL/LIGHT**:
+
 - Focus on specific flagged issues only
 - 15-30 minute targeted editing session
 - Priorities: AI vocabulary, em-dash reduction, heading depth
 
 **If Overall Assessment = MODERATE**:
+
 - Apply systematic humanization workflow (Pass 1-8)
 - 60-90 minute editing session
 - Use `humanize-post-generation.md` task
 - Focus on dimensions scored LOW or VERY LOW
 
 **If Overall Assessment = SUBSTANTIAL/EXTENSIVE**:
+
 - Consider regenerating with better prompt engineering
 - Or budget 2-3 hours for comprehensive humanization
 - Apply full 8-pass editing workflow
 - May need multiple iterations
 
 **Document priorities**:
+
 ```
 Humanization Work Plan for [FILE_NAME]
 
@@ -302,6 +507,7 @@ Estimated time: [TIME] minutes
 **To validate humanization effectiveness**:
 
 1. **Activate environment and run analysis BEFORE humanization**, save output:
+
    ```bash
    source nlp-env/bin/activate  # Don't forget this!
    python analyze_ai_patterns.py chapter-03.md > before-analysis.txt
@@ -310,6 +516,7 @@ Estimated time: [TIME] minutes
 2. **Apply humanization edits** using `humanize-post-generation.md` task
 
 3. **Run analysis AFTER humanization**, save output:
+
    ```bash
    python analyze_ai_patterns.py chapter-03.md > after-analysis.txt
    ```
@@ -322,6 +529,7 @@ Estimated time: [TIME] minutes
    - Overall assessment: Should improve 1-2 levels
 
 **Success indicators**:
+
 - Perplexity: Improved from LOW → MEDIUM or MEDIUM → HIGH
 - Burstiness: Improved from LOW → MEDIUM or MEDIUM → HIGH
 - Formatting: Improved from LOW → MEDIUM or MEDIUM → HIGH
@@ -330,11 +538,13 @@ Estimated time: [TIME] minutes
 ## Output Deliverable
 
 **Primary**:
+
 - Analysis report (text, JSON, or TSV format)
 - Clear understanding of specific AI patterns present
 - Quantitative baseline metrics for each dimension
 
 **Secondary**:
+
 - Humanization work plan with prioritized issues
 - Estimated time budget for humanization
 - Before/after comparison (if validating humanization)
@@ -360,16 +570,19 @@ Estimated time: [TIME] minutes
 ## Integration with Other Tasks
 
 **Pre-humanization workflow**:
+
 1. `analyze-ai-patterns.md` ← **YOU ARE HERE** (establish baseline)
 2. `humanize-post-generation.md` (apply systematic editing)
 3. `humanization-qa-check.md` (validate results)
 
 **Post-humanization validation**:
+
 1. `humanize-post-generation.md` (editing completed)
 2. `analyze-ai-patterns.md` ← **YOU ARE HERE** (measure improvement)
 3. `humanization-qa-check.md` (final validation)
 
 **Quality assurance**:
+
 1. `write-chapter-draft.md` or `write-section-draft.md` (content creation)
 2. `analyze-ai-patterns.md` ← **YOU ARE HERE** (quality check)
 3. `humanize-post-generation.md` (if needed)
@@ -382,6 +595,7 @@ Estimated time: [TIME] minutes
 **Requirements**: `{{config.root}}/tools/requirements.txt`
 
 **Installation** (see Step 0 above for full setup):
+
 ```bash
 cd {{config.root}}/tools
 python3 -m venv nlp-env
@@ -392,6 +606,7 @@ python -m spacy download en_core_web_sm
 ```
 
 **Usage** (always activate environment first):
+
 ```bash
 # Activate environment first
 source nlp-env/bin/activate  # macOS/Linux
@@ -437,6 +652,7 @@ deactivate
 ```
 
 **Output interpretation**:
+
 ```
 Perplexity:    LOW       (8.2 AI words per 1k)
 Burstiness:    MEDIUM    (StdDev 7.3)
@@ -449,6 +665,7 @@ OVERALL: SUBSTANTIAL humanization required
 ```
 
 **Action**: Create work plan focusing on:
+
 1. Replace 37 AI vocabulary instances (Priority 1)
 2. Reduce em-dashes from 6.8 to 1-2 per page (Priority 1)
 3. Flatten heading hierarchy from 5 to 3 levels (Priority 2)

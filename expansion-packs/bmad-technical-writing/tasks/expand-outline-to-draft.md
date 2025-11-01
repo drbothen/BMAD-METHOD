@@ -10,20 +10,21 @@ name: Expand Outline to Draft
 description: Convert bullet outline into initial prose draft for editing
 persona_default: tutorial-architect
 inputs:
-  - outline (bullet-point format from research synthesis or chapter planning)
-  - target-audience
-  - tone-specification.md (REQUIRED - defines book's voice, formality, characteristics)
-steps:
-  - Review tone-specification.md to understand book's voice
-  - Review complete outline and understand structure
-  - Identify target audience and appropriate tone from specification
-  - Expand bullet points into flowing prose using defined tone
-  - Integrate code examples at appropriate points with tone-appropriate comments
-  - Add section introductions and transitions matching tone style
-  - Mark as DRAFT requiring human technical review
-output: Draft prose document (marked for technical review)
-ai_assistance: true
-human_verification_required: true
+
+- outline (bullet-point format from research synthesis or chapter planning)
+- target-audience
+- tone-specification.md (REQUIRED - defines book's voice, formality, characteristics)
+  steps:
+- Review tone-specification.md to understand book's voice
+- Review complete outline and understand structure
+- Identify target audience and appropriate tone from specification
+- Expand bullet points into flowing prose using defined tone
+- Integrate code examples at appropriate points with tone-appropriate comments
+- Add section introductions and transitions matching tone style
+- Mark as DRAFT requiring human technical review
+  output: Draft prose document (marked for technical review)
+  ai_assistance: true
+  human_verification_required: true
 
 ---
 
@@ -70,6 +71,7 @@ This step is MANDATORY. Tone must be applied from the first sentence, not added 
 **Load tone-specification.md:**
 
 If file does not exist:
+
 - ⚠️ **STOP** - Do not proceed with drafting
 - Run define-book-tone.md task first
 - Tone specification must be complete before any chapter drafting
@@ -108,6 +110,7 @@ Based on tone-specification.md, determine:
 Tone Personality: Practical, Encouraging, Conversational, Direct, Experienced
 
 Formality Level: 3 (Professional/Conversational)
+
 - Use: "Let's deploy this application"
 - Avoid: "We shall deploy the application"
 
@@ -115,6 +118,7 @@ Example Passage:
 "Let's deploy your authentication service to AWS. You'll use production-ready Terraform configuration—no toy examples or 'works on my laptop' shortcuts. By the end of this chapter, you'll have a secure, scalable auth service running in the cloud."
 
 **Application Strategy for This Chapter:**
+
 - Open with "Let's [action]" pattern
 - Use contractions moderately ("you'll", "we'll")
 - Emphasize practical production readiness
@@ -123,6 +127,7 @@ Example Passage:
 ```
 
 **Output of This Step:**
+
 - Clear understanding of book's voice
 - Specific tone application strategy for this chapter
 - Reference examples loaded for comparison during drafting
@@ -197,6 +202,7 @@ Convert each bullet point into flowing prose WHILE APPLYING TONE from Step 1:
 **CRITICAL: Tone Application**
 
 Every expansion must reflect the tone-specification.md:
+
 - Use formality level from specification (contractions, sentence structure, vocabulary)
 - Demonstrate tone characteristics (encouraging, authoritative, practical, etc.)
 - Match example passage style
@@ -275,6 +281,7 @@ Same content, different tones based on tone-specification.md:
 
 ```markdown
 **Outline Bullet:**
+
 - JWT has three parts: header, payload, signature
 
 **Formal Tone (Level 4 - Authoritative):**
@@ -287,6 +294,7 @@ A JSON Web Token consists of three parts: the header, the payload, and the signa
 Let's break down a JSON Web Token. It's got three parts: the header, payload, and signature. Think of them as three pieces that snap together with periods (.) to make the complete token you'll use in practice. Once you understand what each part does, JWT authentication will make a lot more sense.
 
 **Key Differences:**
+
 - Formality Level 4: "comprises", "cryptographic purpose", no contractions
 - Formality Level 3: "consists of", "you'll see", moderate contractions, direct but professional
 - Formality Level 2: "let's break down", "it's got", "you'll use", frequent contractions, conversational
@@ -665,7 +673,7 @@ This middleware extracts the token from the Authorization header, then calls `jw
 
 **The critical principle:** Always verify the signature before trusting any claims from the payload. The payload is readable by anyone, but only a valid signature proves it came from your authentication server and hasn't been altered.
 
-```
+````
 
 ## AI-Assisted Drafting & Humanization
 
@@ -700,14 +708,16 @@ tone_specification: {{tone_spec_file}}
 requires_humanization: true
 requires_technical_review: true
 ---
-```
+````
 
 **If AI-Assisted = YES:**
+
 - Humanization workflow is MANDATORY before technical review
 - Next required step: humanize-ai-drafted-chapter.md
 - Do not proceed to technical review without humanization
 
 **If AI-Assisted = NO:**
+
 - Humanization step can be skipped
 - Proceed directly to technical review
 - Note: Even human-written content may benefit from AI pattern checks if generic or formal
@@ -755,6 +765,7 @@ Technical Review (only after humanization)
 ```
 
 **Do NOT skip humanization:**
+
 - Saves technical reviewer time (they review content, not AI artifacts)
 - Prevents publisher rejection
 - Avoids negative reader reviews
@@ -763,10 +774,12 @@ Technical Review (only after humanization)
 ### Humanization Workflow Summary
 
 **Step 1: Baseline Detection**
+
 - Execute generative-ai-compliance-checklist.md
 - Document AI pattern score (baseline for improvement measurement)
 
 **Step 2: Pattern Removal** (humanize-ai-drafted-chapter.md task executes 11 steps):
+
 - Remove AI vocabulary (sophisticated, delve, leverage, etc.)
 - Fix metaphor problems (overuse, nonsense)
 - Introduce sentence rhythm variation
@@ -777,6 +790,7 @@ Technical Review (only after humanization)
 - Document all changes in change log
 
 **Step 3: Validation**
+
 - Execute humanization-checklist.md
 - Target: ≥80% pass rate (≤20% AI patterns remaining)
 - AI score improvement: ≥50% reduction from baseline
@@ -795,6 +809,7 @@ Technical Review (only after humanization)
 4. **Acknowledge accountability** - Author remains accountable for accuracy, originality, integrity
 
 **PacktPub Will:**
+
 - Include AI use disclaimer in published book
 - Work with you to ensure content quality meets standards
 - Require humanization validation
@@ -803,14 +818,15 @@ Technical Review (only after humanization)
 
 **Relationship Between Tone & Humanization:**
 
-| Concern | Tone Specification | Humanization |
-|---------|-------------------|--------------|
-| **Purpose** | Define consistent voice | Remove AI artifacts |
-| **When** | Before writing (proactive) | After AI drafting (reactive) |
-| **Question** | "Should we sound friendly or professional?" | "Does this sound AI-generated?" |
-| **Focus** | Consistency, formality, style | Pattern removal, variation, authenticity |
+| Concern      | Tone Specification                          | Humanization                             |
+| ------------ | ------------------------------------------- | ---------------------------------------- |
+| **Purpose**  | Define consistent voice                     | Remove AI artifacts                      |
+| **When**     | Before writing (proactive)                  | After AI drafting (reactive)             |
+| **Question** | "Should we sound friendly or professional?" | "Does this sound AI-generated?"          |
+| **Focus**    | Consistency, formality, style               | Pattern removal, variation, authenticity |
 
 **Workflow:**
+
 ```
 Define Tone (before writing)
     ↓
@@ -824,6 +840,7 @@ Publish
 ```
 
 **Both are Required:**
+
 - Tone specification ensures consistency
 - Humanization ensures authenticity
 - Together: consistent AND authentically human voice
@@ -831,6 +848,7 @@ Publish
 ### Cautionary Notes
 
 **AI Content Risks:**
+
 - **Accuracy:** AI may hallucinate facts, code, examples (always verify)
 - **Quality:** Generic, superficial, lacks expert depth
 - **Reputation:** Readers detect AI patterns, leave negative reviews
@@ -838,12 +856,14 @@ Publish
 - **Legal/Ethical:** Author accountability for content integrity
 
 **Author Responsibility:**
+
 - YOU are accountable for every word in published book
 - AI is tool for assistance, NOT replacement for expertise
 - Humanization is NOT optional for AI-assisted content
 - Technical verification MANDATORY before publication
 
 **Best Practice:**
+
 - Lead with your real expertise and experience
 - Use AI for structural starting point, not final content
 - Inject personal voice, insights, real-world examples during humanization
@@ -914,4 +934,7 @@ After expanding outline to draft:
 - **write-section-draft.md** - Manual section writing (alternative approach)
 - **generate-explanation-variants.md** - Create multiple explanations for complex concepts
 - **technical-review-section.md** - Review draft for technical accuracy
+
+```
+
 ```
