@@ -1,16 +1,19 @@
-# AI Pattern Analysis Script Requirements
+# AI Pattern Analysis Script Requirements - ENHANCED EDITION
 #
 # Core dependencies for analyze_ai_patterns.py
 #
 # This script analyzes manuscripts for AI-generated content patterns
-# across 8 dimensions: perplexity, burstiness, structure, voice,
-# technical depth, formatting, syntactic patterns, and sentiment variation.
+# across 14 dimensions using state-of-the-art NLP methods:
+#
+# CORE: Perplexity, Burstiness, Structure, Voice, Technical, Formatting
+# ENHANCED: Syntactic, Sentiment, Bold/Italic, Lists, Punctuation, Whitespace, Code, Headings
+# ADVANCED: GLTR token ranking, DetectGPT, RoBERTa AI detection, HDD lexical diversity
 
 # ============================================================================
 # BASIC INSTALLATION (Minimal Dependencies)
 # ============================================================================
 
-# Optional: Advanced readability metrics (Flesch Reading Ease, Flesch-Kincaid Grade, etc.)
+# Advanced readability metrics (Flesch Reading Ease, Flesch-Kincaid Grade, etc.)
 # If not installed, script will skip readability analysis
 textstat>=0.7.3
 
@@ -18,8 +21,8 @@ textstat>=0.7.3
 # ENHANCED INSTALLATION (All NLP Libraries)
 # ============================================================================
 
-# NLTK - Enhanced lexical diversity (MTLD) and sentiment analysis (VADER)
-# Provides: Moving Average Type-Token Ratio, stemming, sentiment flatness detection
+# NLTK - Enhanced lexical diversity (MTLD) and basic sentiment
+# Provides: Moving Average Type-Token Ratio, stemming
 nltk>=3.8.0
 
 # TextBlob - Simplified sentiment analysis and n-gram extraction
@@ -27,7 +30,7 @@ nltk>=3.8.0
 textblob>=0.17.1
 
 # spaCy - Syntactic pattern detection and POS tagging
-# Provides: Detects mechanical sentence structures, dependency parsing
+# Provides: Dependency parsing, morphological analysis, subordination detection
 spacy>=3.7.0
 
 # Textacy - Advanced stylometric analysis
@@ -35,11 +38,21 @@ spacy>=3.7.0
 # Requires spaCy to be installed first
 textacy>=0.13.0
 
-# Transformers - True perplexity calculation using GPT-2
-# Provides: Language model perplexity scores (detects predictable AI patterns)
-# WARNING: Large download (~500MB), requires PyTorch
+# Transformers - Perplexity, GLTR, sentiment, and AI detection
+# Provides: DistilGPT-2 perplexity, RoBERTa sentiment, AI classifiers, GLTR token ranking
+# WARNING: Large download (~500MB+ for models), requires PyTorch
 torch>=2.0.0
-transformers>=4.30.0
+transformers>=4.35.0
+
+# SciPy - Advanced statistical analysis
+# Provides: HDD (Hypergeometric Distribution D) lexical diversity, Yule's K
+# Required for most robust lexical diversity metrics
+scipy>=1.11.0
+
+# Sentence Transformers (Optional) - Semantic embeddings
+# Provides: Sentence-level semantic analysis, clustering
+# Uncomment if needed for advanced semantic detection
+# sentence-transformers>=2.2.0
 
 # ============================================================================
 # POST-INSTALLATION SETUP
@@ -49,6 +62,12 @@ transformers>=4.30.0
 # python -m nltk.downloader punkt punkt_tab vader_lexicon
 # python -m spacy download en_core_web_sm
 # python -m textblob.download_corpora
+
+# Transformers models will auto-download on first use:
+# - distilgpt2 (~260MB) - Perplexity calculation
+# - cardiffnlp/twitter-roberta-base-sentiment (~500MB) - Sentiment analysis
+# - roberta-base (~500MB) - AI detection classifier (if using pretrained)
+# Total: ~1.3GB for all transformer models
 
 # ============================================================================
 # INSTALLATION OPTIONS
