@@ -376,9 +376,159 @@ For **each bolded element**, ask: "Does THIS need visual emphasis HERE?"
 
 ---
 
-## Pass 6: Emotional Depth and Authenticity (10-15 minutes)
+## Pass 6: Heading Humanization (15-25 minutes)
 
-### Step 6.1: Add Strategic Examples and Anecdotes
+### Step 6.1: Heading Hierarchy Depth Analysis
+
+**The Deep Hierarchy Problem**: AI systems create 4-6 heading levels; human writers use 3-4 maximum.
+
+**Count Heading Levels**:
+1. Extract all headings (H1 through H6)
+2. Identify deepest level used
+3. **Target**: 3 levels maximum (H1, H2, H3) for 15-20 page chapters
+4. **Red Flag**: 4+ levels indicates AI structure
+
+**Flattening Strategy**:
+For each H4+ heading:
+- **Promote to H3**: If content is substantial
+- **Convert to bold body text**: If content is minor detail
+- **Merge with parent section**: If brief
+- **Remove entirely**: If adds no navigation value
+
+**Example Transformation**:
+
+Before (5 levels - AI pattern):
+```
+## Authentication (H2)
+### OAuth 2.0 Flow (H3)
+#### Authorization Types (H4)
+##### Authorization Code (H5)
+```
+
+After (3 levels - humanized):
+```
+## Authentication (H2)
+### OAuth 2.0 Authorization Flow (H3)
+
+OAuth 2.0 supports multiple grant types. The most common:
+
+**Authorization Code Grant**: Best for server-side applications...
+```
+
+### Step 6.2: Break Mechanical Parallelism
+
+**The Parallelism Problem**: AI uses identical grammatical structure for all headings at same level.
+
+**Detect Parallelism**:
+- Count how many H2 headings start with same word/structure
+- Check if all H3s follow identical pattern
+- **Red Flag**: 80%+ use same structure ("Understanding X", "Understanding Y")
+
+**Breaking Strategy**:
+Rewrite 50%+ of headings with varied structures:
+- **Imperatives**: "Configure the Server"
+- **Gerunds**: "Configuring Options"
+- **Noun phrases**: "Configuration Best Practices"
+- **Questions**: "What Is Configuration?"
+
+**Example Transformation**:
+
+Before (mechanical parallelism):
+```
+## Understanding Containers (H2)
+## Understanding Images (H2)
+## Understanding Volumes (H2)
+## Understanding Networks (H2)
+```
+
+After (natural variation):
+```
+## Container Basics (H2)
+## Working with Images (H2)
+## Data Persistence with Volumes (H2)
+## How Container Networking Works (H2)
+```
+
+### Step 6.3: Create Argumentative Asymmetry
+
+**The Uniform Density Problem**: AI gives every section same number of subsections.
+
+**Assess Current Density**:
+1. Count H3 subsections under each H2 section
+2. **Red Flag**: All sections have same count (e.g., all have 3 subsections)
+3. **Red Flag**: Every H2 has subsections (none have 0)
+
+**Asymmetry Strategy**:
+- **Simple sections**: 0-2 subsections (let content flow)
+- **Moderate sections**: 2-4 subsections (standard structure)
+- **Complex sections**: 4-6 subsections (aid navigation)
+
+**Example Distribution**:
+
+Before (uniform - AI pattern):
+```
+Section A: 3 subsections
+Section B: 3 subsections
+Section C: 3 subsections
+Section D: 3 subsections
+```
+
+After (asymmetric - human pattern):
+```
+Section A: 0 subsections (simple intro, flows naturally)
+Section B: 2 subsections (moderate complexity)
+Section C: 5 subsections (complex procedural content)
+Section D: 1 subsection (brief reference)
+```
+
+### Step 6.4: Shorten Verbose Headings
+
+**The Verbosity Problem**: AI creates 10+ word headings with complete thoughts.
+
+**Identify Long Headings**:
+1. Find headings with 8+ words
+2. **Target**: 3-7 words for H2/H3
+3. **Red Flag**: 30%+ of headings exceed 8 words
+
+**Shortening Actions**:
+- Remove: "Understanding", "A Guide to", "How to", "Everything You Need to Know"
+- Focus on key concept, not complete summary
+- Preview, don't summarize
+
+**Example Transformations**:
+
+| Before (Verbose) | After (Concise) |
+|-----------------|----------------|
+| Understanding the Fundamental Principles of Asynchronous JavaScript | Asynchronous JavaScript Fundamentals |
+| How to Configure Your Development Environment for Optimal Performance | Development Environment Setup |
+| A Comprehensive Guide to State Management in React Applications | State Management in React |
+
+### Step 6.5: Validate Heading Best Practices
+
+**Check Hierarchy Rules**:
+- [ ] No skipped levels (H1 → H2 → H3, never H1 → H3)
+- [ ] No lone headings (each level has sibling, except H1)
+- [ ] No stacked headings (body text appears below each heading)
+- [ ] Descriptive headings (not "Introduction", "Overview", "Summary")
+
+**Content-Type Alignment**:
+- [ ] Conceptual sections: Fewer headings (0-2 subsections)
+- [ ] Procedural sections: More headings (3-6 subsections for task boundaries)
+- [ ] Reference sections: Structured headings for lookup
+- [ ] Mixed sections: Variable density based on content needs
+
+**Heading Density Check**:
+- [ ] Overall average: 2-4 headings per page
+- [ ] Natural variation exists (not uniform across chapter)
+- [ ] Density reflects content complexity
+
+**Reference**: Use heading-humanization-checklist.md for comprehensive heading audit
+
+---
+
+## Pass 7: Emotional Depth and Authenticity (10-15 minutes)
+
+### Step 7.1: Add Strategic Examples and Anecdotes
 
 **Identify abstract statements** that would benefit from concrete grounding:
 
@@ -392,7 +542,7 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 - Include actual numbers, tools, versions when possible
 - Ground abstract concepts in concrete experience
 
-### Step 6.2: Acknowledge Reader Challenges
+### Step 7.2: Acknowledge Reader Challenges
 
 **Show empathy for learning difficulties**:
 
@@ -401,7 +551,7 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 - "I know this seems backwards, but here's why it works this way..."
 - "This is the tricky part that trips up most beginners..."
 
-### Step 6.3: Express Appropriate Enthusiasm
+### Step 7.3: Express Appropriate Enthusiasm
 
 **For genuinely interesting technical points**:
 
@@ -414,9 +564,9 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 
 ---
 
-## Pass 7: Quality Assurance Check (5-10 minutes)
+## Pass 8: Quality Assurance Check (5-10 minutes)
 
-### Step 7.1: Read Aloud Test
+### Step 8.1: Read Aloud Test
 
 **Read 2-3 paragraphs aloud** (this is critical):
 - Does it sound natural when spoken?
@@ -425,7 +575,7 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 
 **Fix anything that sounds robotic when spoken.**
 
-### Step 7.2: Verify Technical Accuracy
+### Step 8.2: Verify Technical Accuracy
 
 **Critical**: Ensure no technical errors were introduced:
 - Verify code examples still work
@@ -435,7 +585,7 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 
 **If accuracy was compromised, revert and humanize more carefully.**
 
-### Step 7.3: Final Metrics Check
+### Step 8.3: Final Metrics Check
 
 **Quick assessment**:
 - [ ] Sentence lengths vary significantly (measure 2-3 paragraphs)
@@ -447,6 +597,10 @@ After: "I learned this lesson the hard way. After shipping a feature that crashe
 - [ ] **Bold text: 2-5% of content** (purposeful, not mechanical)
 - [ ] **Italics: Functional categories only** (consistent application)
 - [ ] **Formatting variation** across sections (burstiness maintained)
+- [ ] **Heading hierarchy: 3 levels maximum** (H1, H2, H3 for typical chapters)
+- [ ] **Heading parallelism broken** (varied grammatical structures)
+- [ ] **Heading density asymmetric** (0-6 subsections per section based on complexity)
+- [ ] **Heading length concise** (3-7 words typical for H2/H3)
 - [ ] Technical accuracy preserved 100%
 
 ---

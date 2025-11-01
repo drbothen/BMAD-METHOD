@@ -206,7 +206,64 @@ of whatever approach you choose. Let's break this down."
 (Note: Em-dash removed from example, replaced with period for better flow)
 ```
 
-### Step 5: Add Perplexity-Boosting Guidelines
+### Step 5: Add Heading Humanization Guidelines
+
+Add explicit guidance for natural heading hierarchy:
+
+```
+HEADING STRUCTURE (Critical - Avoid AI Hierarchy Patterns):
+- **Hierarchy depth**: Use 3 heading levels maximum (H1, H2, H3) for 15-20 page chapters
+  - H1: Chapter title only
+  - H2: Major sections (4-7 typical)
+  - H3: Subsections where needed (0-6 per H2)
+  - Avoid H4+ unless chapter is exceptionally complex (30+ pages)
+
+- **Break mechanical parallelism**: Vary heading grammatical structures intentionally
+  - DON'T: All H2s start with "Understanding" → "Understanding X", "Understanding Y"
+  - DO: Mix structures → "Container Basics", "Working with Images", "How Networking Works"
+  - Use imperatives ("Configure the Server"), gerunds ("Configuring Options"),
+    noun phrases ("Configuration Best Practices"), questions ("What Is Configuration?")
+  - Target: 3+ different heading patterns at each level
+
+- **Create argumentative asymmetry**: Vary subsection counts based on content complexity
+  - Simple sections: 0-2 subsections (content flows naturally without subdivision)
+  - Moderate sections: 2-4 subsections (standard structure)
+  - Complex sections: 4-6 subsections (aid navigation through difficult material)
+  - DON'T: Give every section 3 subsections uniformly (AI pattern)
+  - DO: Variable distribution → 0, 2, 5, 1, 3, 2 subsections (reflects natural complexity)
+
+- **Heading length**: Keep headings concise (3-7 words typical for H2/H3)
+  - Remove bloat: "Understanding", "A Guide to", "How to", "Everything You Need to Know"
+  - Preview, don't summarize: "Asynchronous JavaScript Fundamentals" not
+    "Understanding the Fundamental Principles of Asynchronous JavaScript Programming"
+
+- **Heading density**: Target 2-4 headings per page average with natural variation
+  - More headings for procedural content (task boundaries clear)
+  - Fewer headings for conceptual content (flowing narrative)
+  - Vary density across chapter (not uniform heading rhythm)
+
+- **Best practices**:
+  - Never skip heading levels (H1 → H2 → H3, never H1 → H3)
+  - Each heading level has siblings (no lone headings except H1 chapter title)
+  - Body text appears below each heading (no stacked headings)
+  - Descriptive headings preferred ("Getting Started with Docker" over "Introduction")
+
+EXAMPLE HEADING STRUCTURE (natural variation):
+## Container Basics (H2) [Simple section - no subsections, flows as prose]
+
+## Working with Docker Images (H2) [Moderate section]
+### Building Custom Images (H3)
+### Image Optimization (H3)
+
+## Container Networking Essentials (H2) [Complex section]
+### Network Types (H3)
+### Creating Custom Networks (H3)
+### DNS and Service Discovery (H3)
+### Network Security (H3)
+### Troubleshooting Connectivity (H3)
+```
+
+### Step 6: Add Perplexity-Boosting Guidelines
 
 Include instructions to increase word choice unpredictability:
 
@@ -228,7 +285,7 @@ PHRASE UNPREDICTABILITY:
 - Instead be direct: "Note that...", "To...", "The key aspect is..."
 ```
 
-### Step 6: Specify Emotional Resonance
+### Step 7: Specify Emotional Resonance
 
 Add guidance for appropriate emotional engagement:
 
@@ -242,7 +299,7 @@ EMOTIONAL ENGAGEMENT (for technical writing):
 - Maintain professional optimism without false promises
 ```
 
-### Step 7: Create Complete Humanization Prompt
+### Step 8: Create Complete Humanization Prompt
 
 Assemble all components into a final prompt:
 
@@ -252,6 +309,8 @@ Assemble all components into a final prompt:
 [Domain-Specific Customization]
 
 [Burstiness Instructions]
+
+[Heading Humanization Guidelines]
 
 [Perplexity Guidelines]
 
@@ -270,13 +329,16 @@ QUALITY STANDARDS:
 Generate: [Specific content request]
 ```
 
-### Step 8: Test and Iterate
+### Step 9: Test and Iterate
 
 1. **Generate sample content** using the prompt
 2. **Analyze the output** for:
    - Sentence length variation (measure actual word counts)
    - AI-typical vocabulary (search for common AI words)
    - Natural transitions between ideas
+   - Heading hierarchy depth (3 levels maximum?)
+   - Heading parallelism (varied structures?)
+   - Heading density asymmetry (variable subsection counts?)
    - Appropriate emotional tone
    - Technical accuracy
 3. **Refine the prompt** based on gaps
@@ -352,6 +414,18 @@ EMOTIONAL ENGAGEMENT:
 - Express genuine enthusiasm: "This is where Docker really shines..."
 - Acknowledge learning challenges: "The networking piece takes time to click"
 - Celebrate progress: "Once you understand images and containers, the rest falls into place"
+
+HEADING STRUCTURE:
+- Use 3 heading levels maximum (H1 tutorial title, H2 major sections, H3 subsections)
+- Create asymmetric subsection counts based on content complexity:
+  - Simple intro section: No H3 subsections (flows naturally)
+  - Core concepts section: 2-3 H3s (images, containers, Dockerfile)
+  - First example section: 4-5 H3s (detailed walkthrough needs more navigation)
+  - Common gotchas section: 2-3 H3s (moderate complexity)
+- Vary heading structures: Mix "Understanding X", imperatives like "Build Your First Image",
+  and questions like "What Are Containers?"
+- Keep headings concise: 3-7 words typical
+- Target 2-4 headings per page average with natural variation
 
 CONTENT STRUCTURE:
 1. Start with the problem containers solve (real scenario)
