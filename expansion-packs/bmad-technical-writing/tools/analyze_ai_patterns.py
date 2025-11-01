@@ -53,6 +53,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass, asdict, field
 from collections import Counter
+from datetime import datetime
 
 # Optional dependencies (graceful degradation)
 try:
@@ -447,6 +448,130 @@ class DetailedAnalysis:
     high_predictability_segments: List[HighPredictabilitySegment] = field(default_factory=list)
 
 
+# ============================================================================
+# DUAL SCORING SYSTEM
+# ============================================================================
+
+@dataclass
+class ScoreDimension:
+    """Individual dimension score"""
+    name: str
+    score: float  # 0-max
+    max_score: float
+    percentage: float  # 0-100
+    impact: str  # 'NONE', 'LOW', 'MEDIUM', 'HIGH'
+    gap: float  # Points below max
+    raw_value: Optional[float] = None  # Original metric value
+    recommendation: Optional[str] = None
+
+
+@dataclass
+class ScoreCategory:
+    """Category score breakdown"""
+    name: str
+    total: float
+    max_total: float
+    percentage: float
+    dimensions: List[ScoreDimension]
+
+
+@dataclass
+class ImprovementAction:
+    """Recommended improvement with impact"""
+    priority: int
+    dimension: str
+    current_score: float
+    max_score: float
+    potential_gain: float
+    impact_level: str
+    action: str
+    effort_level: str  # 'LOW', 'MEDIUM', 'HIGH'
+    line_references: List[int] = field(default_factory=list)
+
+
+@dataclass
+class DualScore:
+    """Dual scoring result with optimization path"""
+    # Main scores
+    detection_risk: float  # 0-100 (lower = better, less detectable)
+    quality_score: float  # 0-100 (higher = better, more human-like)
+
+    # Interpretations
+    detection_interpretation: str
+    quality_interpretation: str
+
+    # Targets
+    detection_target: float
+    quality_target: float
+
+    # Gaps
+    detection_gap: float  # How far above target (negative = under target)
+    quality_gap: float  # How far below target (positive = need improvement)
+
+    # Breakdowns
+    categories: List[ScoreCategory]
+
+    # Optimization
+    improvements: List[ImprovementAction]
+    path_to_target: List[ImprovementAction]  # Sorted by ROI
+    estimated_effort: str  # 'MINIMAL', 'LIGHT', 'MODERATE', 'SUBSTANTIAL', 'EXTENSIVE'
+
+    # Metadata
+    timestamp: str
+    file_path: str
+    total_words: int
+
+
+@dataclass
+class HistoricalScore:
+    """Historical score tracking"""
+    timestamp: str
+    detection_risk: float
+    quality_score: float
+    detection_interpretation: str
+    quality_interpretation: str
+    total_words: int
+    notes: str = ""
+
+
+@dataclass
+class ScoreHistory:
+    """Score history for a document"""
+    file_path: str
+    scores: List[HistoricalScore] = field(default_factory=list)
+
+    def add_score(self, score: DualScore, notes: str = ""):
+        """Add a score to history"""
+        self.scores.append(HistoricalScore(
+            timestamp=score.timestamp,
+            detection_risk=score.detection_risk,
+            quality_score=score.quality_score,
+            detection_interpretation=score.detection_interpretation,
+            quality_interpretation=score.quality_interpretation,
+            total_words=score.total_words,
+            notes=notes
+        ))
+
+    def get_trend(self) -> Dict[str, str]:
+        """Get trend direction"""
+        if len(self.scores) < 2:
+            return {'detection': 'N/A', 'quality': 'N/A'}
+
+        det_change = self.scores[-1].detection_risk - self.scores[-2].detection_risk
+        qual_change = self.scores[-1].quality_score - self.scores[-2].quality_score
+
+        return {
+            'detection': 'IMPROVING' if det_change < -1 else 'WORSENING' if det_change > 1 else 'STABLE',
+            'quality': 'IMPROVING' if qual_change > 1 else 'DECLINING' if qual_change < -1 else 'STABLE',
+            'detection_change': round(det_change, 1),
+            'quality_change': round(qual_change, 1)
+        }
+
+
+# ============================================================================
+# ANALYSIS RESULTS
+# ============================================================================
+
 @dataclass
 class AnalysisResults:
     """Structured container for analysis results"""
@@ -784,6 +909,9 @@ class AIPatternAnalyzer:
         self._italic_pattern = re.compile(r'\*[^*]+\*|_[^_]+_')
         self._em_dash_pattern = re.compile(r'—|--')
 
+        # HTML comment pattern (metadata blocks to ignore)
+        self._html_comment_pattern = re.compile(r'<!--.*?-->', re.DOTALL)
+
         # Text analysis patterns
         self._word_pattern = re.compile(r'\b[a-zA-Z]+\b')
         self._heading_pattern = re.compile(r'^(#{1,6})\s+(.+)$', re.MULTILINE)
@@ -796,6 +924,20 @@ class AIPatternAnalyzer:
         self._first_person_pattern = re.compile(r'\b(I|we|my|our|me|us)\b', re.IGNORECASE)
         self._second_person_pattern = re.compile(r'\b(you|your|yours)\b', re.IGNORECASE)
         self._contraction_pattern = re.compile(r"\b\w+'\w+\b")
+
+    def _strip_html_comments(self, text: str) -> str:
+        """Remove HTML comment blocks (metadata) from text for analysis"""
+        return self._html_comment_pattern.sub('', text)
+
+    def _is_line_in_html_comment(self, line: str) -> bool:
+        """Check if a line is inside or is an HTML comment"""
+        # Line contains complete comment
+        if '<!--' in line and '-->' in line:
+            return True
+        # Line is start or middle of comment
+        if '<!--' in line or '-->' in line:
+            return True
+        return False
 
     def analyze_file_detailed(self, file_path: str) -> DetailedAnalysis:
         """Analyze file with detailed line-by-line diagnostics"""
@@ -869,7 +1011,9 @@ class AIPatternAnalyzer:
         instances = []
 
         for line_num, line in enumerate(self.lines, start=1):
-            # Skip headings and code blocks
+            # Skip HTML comments (metadata), headings, and code blocks
+            if self._is_line_in_html_comment(line):
+                continue
             if line.strip().startswith('#') or line.strip().startswith('```'):
                 continue
 
@@ -900,6 +1044,10 @@ class AIPatternAnalyzer:
         headings_by_level = {}
 
         for line_num, line in enumerate(self.lines, start=1):
+            # Skip HTML comments (metadata)
+            if self._is_line_in_html_comment(line):
+                continue
+
             match = heading_pattern.match(line)
             if not match:
                 continue
@@ -969,7 +1117,9 @@ class AIPatternAnalyzer:
         for line_num, line in enumerate(self.lines, start=1):
             stripped = line.strip()
 
-            # Skip headings and code blocks
+            # Skip HTML comments (metadata), headings, and code blocks
+            if self._is_line_in_html_comment(line):
+                continue
             if stripped.startswith('#') or stripped.startswith('```'):
                 continue
 
@@ -1015,7 +1165,9 @@ class AIPatternAnalyzer:
         instances = []
 
         for line_num, line in enumerate(self.lines, start=1):
-            # Skip code blocks
+            # Skip HTML comments (metadata) and code blocks
+            if self._is_line_in_html_comment(line):
+                continue
             if line.strip().startswith('```'):
                 continue
 
@@ -1038,7 +1190,9 @@ class AIPatternAnalyzer:
         instances = []
 
         for line_num, line in enumerate(self.lines, start=1):
-            # Skip headings
+            # Skip HTML comments (metadata) and headings
+            if self._is_line_in_html_comment(line):
+                continue
             if line.strip().startswith('#'):
                 continue
 
@@ -1078,7 +1232,9 @@ class AIPatternAnalyzer:
         for line_num, line in enumerate(self.lines, start=1):
             stripped = line.strip()
 
-            # Skip headings and code blocks
+            # Skip HTML comments (metadata), headings, and code blocks
+            if self._is_line_in_html_comment(line):
+                continue
             if stripped.startswith('#') or stripped.startswith('```'):
                 continue
 
@@ -1138,7 +1294,9 @@ class AIPatternAnalyzer:
             for line_num, line in enumerate(self.lines, start=1):
                 stripped = line.strip()
 
-                # Skip headings, code blocks, and short lines
+                # Skip HTML comments (metadata), headings, code blocks, and short lines
+                if self._is_line_in_html_comment(line):
+                    continue
                 if not stripped or stripped.startswith('#') or stripped.startswith('```') or len(stripped) < 20:
                     continue
 
@@ -1214,7 +1372,9 @@ class AIPatternAnalyzer:
         for line_num, line in enumerate(self.lines, start=1):
             stripped = line.strip()
 
-            # Skip headings and code blocks
+            # Skip HTML comments (metadata), headings, and code blocks
+            if self._is_line_in_html_comment(line):
+                continue
             if stripped.startswith('#') or stripped.startswith('```'):
                 continue
 
@@ -1270,7 +1430,9 @@ class AIPatternAnalyzer:
         for line_num, line in enumerate(self.lines, start=1):
             stripped = line.strip()
 
-            # Skip headings and code blocks
+            # Skip HTML comments (metadata), headings, and code blocks
+            if self._is_line_in_html_comment(line):
+                continue
             if stripped.startswith('#') or stripped.startswith('```'):
                 continue
 
@@ -1339,7 +1501,9 @@ class AIPatternAnalyzer:
             for line_num, line in enumerate(self.lines, start=1):
                 stripped = line.strip()
 
-                # Skip headings and code blocks
+                # Skip HTML comments (metadata), headings, and code blocks
+                if self._is_line_in_html_comment(line):
+                    continue
                 if stripped.startswith('#') or stripped.startswith('```'):
                     continue
 
@@ -1407,6 +1571,9 @@ class AIPatternAnalyzer:
 
         with open(path, 'r', encoding='utf-8') as f:
             text = f.read()
+
+        # Strip HTML comments (metadata blocks) before analysis
+        text = self._strip_html_comments(text)
 
         # Run all analyses
         word_count = self._count_words(text)
@@ -3517,6 +3684,563 @@ class AIPatternAnalyzer:
         else:
             return "EXTENSIVE humanization required"
 
+    def calculate_dual_score(self, results: AnalysisResults,
+                            detection_target: float = 30.0,
+                            quality_target: float = 85.0) -> DualScore:
+        """
+        Calculate dual scores: Detection Risk (0-100, lower=better) and Quality Score (0-100, higher=better)
+
+        Args:
+            results: AnalysisResults from analysis
+            detection_target: Target detection risk (default 30 = low risk)
+            quality_target: Target quality score (default 85 = excellent)
+
+        Returns:
+            DualScore with comprehensive breakdown and optimization path
+        """
+        timestamp = datetime.now().isoformat()
+
+        # Map score levels to numerical values (0-1 scale)
+        score_map = {"HIGH": 1.0, "MEDIUM": 0.75, "LOW": 0.5, "VERY LOW": 0.25, "UNKNOWN": 0.5, "N/A": 0.5}
+
+        # ============================================================================
+        # TIER 1: ADVANCED DETECTION (40 points) - Highest accuracy
+        # ============================================================================
+
+        # GLTR Token Ranking (12 points) - 95% accuracy on GPT-3/ChatGPT
+        gltr_val = score_map.get(results.gltr_score, 0.5) if results.gltr_score else 0.5
+        gltr_score = ScoreDimension(
+            name="GLTR Token Ranking",
+            score=gltr_val * 12,
+            max_score=12.0,
+            percentage=gltr_val * 100,
+            impact=self._calculate_impact(gltr_val, 12.0),
+            gap=(1.0 - gltr_val) * 12,
+            raw_value=results.gltr_top10_percentage,
+            recommendation="Rewrite high-predictability segments (>70% top-10 tokens)" if gltr_val < 0.75 else None
+        )
+
+        # Advanced Lexical Diversity - HDD/Yule's K (8 points)
+        lexical_val = score_map.get(results.advanced_lexical_score, 0.5) if results.advanced_lexical_score else 0.5
+        lexical_score = ScoreDimension(
+            name="Advanced Lexical (HDD/Yule's K)",
+            score=lexical_val * 8,
+            max_score=8.0,
+            percentage=lexical_val * 100,
+            impact=self._calculate_impact(lexical_val, 8.0),
+            gap=(1.0 - lexical_val) * 8,
+            raw_value=results.hdd_score,
+            recommendation="Increase vocabulary diversity (target HDD > 0.65)" if lexical_val < 0.75 else None
+        )
+
+        # AI Detection Ensemble - DetectGPT/RoBERTa (10 points)
+        ai_detect_val = score_map.get(results.ai_detection_score, 0.5) if results.ai_detection_score else 0.5
+        ai_detect_score = ScoreDimension(
+            name="AI Detection Ensemble",
+            score=ai_detect_val * 10,
+            max_score=10.0,
+            percentage=ai_detect_val * 100,
+            impact=self._calculate_impact(ai_detect_val, 10.0),
+            gap=(1.0 - ai_detect_val) * 10,
+            raw_value=results.roberta_sentiment_variance,
+            recommendation="Increase emotional variation (sentiment variance > 0.15)" if ai_detect_val < 0.75 else None
+        )
+
+        # Stylometric Markers - However/Moreover (6 points)
+        stylo_val = score_map.get(results.stylometric_score, 0.5) if results.stylometric_score else 0.5
+        stylo_score = ScoreDimension(
+            name="Stylometric Markers",
+            score=stylo_val * 6,
+            max_score=6.0,
+            percentage=stylo_val * 100,
+            impact=self._calculate_impact(stylo_val, 6.0),
+            gap=(1.0 - stylo_val) * 6,
+            raw_value=results.however_per_1k,
+            recommendation="Remove AI transitions (however/moreover)" if stylo_val < 0.75 else None
+        )
+
+        # Syntactic Complexity (4 points)
+        syntax_val = score_map.get(results.syntactic_score, 0.5) if results.syntactic_score else 0.5
+        syntax_score = ScoreDimension(
+            name="Syntactic Complexity",
+            score=syntax_val * 4,
+            max_score=4.0,
+            percentage=syntax_val * 100,
+            impact=self._calculate_impact(syntax_val, 4.0),
+            gap=(1.0 - syntax_val) * 4,
+            raw_value=results.subordination_index,
+            recommendation="Add subordinate clauses, vary tree depth" if syntax_val < 0.75 else None
+        )
+
+        advanced_category = ScoreCategory(
+            name="Advanced Detection",
+            total=gltr_score.score + lexical_score.score + ai_detect_score.score + stylo_score.score + syntax_score.score,
+            max_total=40.0,
+            percentage=((gltr_score.score + lexical_score.score + ai_detect_score.score + stylo_score.score + syntax_score.score) / 40.0) * 100,
+            dimensions=[gltr_score, lexical_score, ai_detect_score, stylo_score, syntax_score]
+        )
+
+        # ============================================================================
+        # TIER 2: CORE PATTERNS (35 points) - Proven AI signatures
+        # ============================================================================
+
+        # Burstiness - Sentence Variation (12 points)
+        burst_val = score_map[results.burstiness_score]
+        burst_score = ScoreDimension(
+            name="Burstiness (Sentence Variation)",
+            score=burst_val * 12,
+            max_score=12.0,
+            percentage=burst_val * 100,
+            impact=self._calculate_impact(burst_val, 12.0),
+            gap=(1.0 - burst_val) * 12,
+            raw_value=results.sentence_stdev,
+            recommendation="Vary sentence lengths: short (5-10w), medium (15-25w), long (30-45w)" if burst_val < 0.75 else None
+        )
+
+        # Perplexity - Vocabulary (10 points)
+        perp_val = score_map[results.perplexity_score]
+        perp_score = ScoreDimension(
+            name="Perplexity (Vocabulary)",
+            score=perp_val * 10,
+            max_score=10.0,
+            percentage=perp_val * 100,
+            impact=self._calculate_impact(perp_val, 10.0),
+            gap=(1.0 - perp_val) * 10,
+            raw_value=results.ai_vocabulary_per_1k,
+            recommendation="Replace AI vocabulary: delve, leverage, robust, harness" if perp_val < 0.75 else None
+        )
+
+        # Formatting Patterns (8 points)
+        format_val = score_map[results.formatting_score]
+        format_score = ScoreDimension(
+            name="Formatting Patterns",
+            score=format_val * 8,
+            max_score=8.0,
+            percentage=format_val * 100,
+            impact=self._calculate_impact(format_val, 8.0),
+            gap=(1.0 - format_val) * 8,
+            raw_value=results.em_dashes_per_page,
+            recommendation="Reduce em-dashes to ≤2 per page, reduce bold/italic density" if format_val < 0.75 else None
+        )
+
+        # Heading Hierarchy (5 points)
+        heading_val = score_map.get(results.heading_hierarchy_score, score_map[results.structure_score])
+        heading_score = ScoreDimension(
+            name="Heading Hierarchy",
+            score=heading_val * 5,
+            max_score=5.0,
+            percentage=heading_val * 100,
+            impact=self._calculate_impact(heading_val, 5.0),
+            gap=(1.0 - heading_val) * 5,
+            raw_value=results.heading_depth,
+            recommendation="Flatten to H3 max, break parallelism, create asymmetry" if heading_val < 0.75 else None
+        )
+
+        core_category = ScoreCategory(
+            name="Core Patterns",
+            total=burst_score.score + perp_score.score + format_score.score + heading_score.score,
+            max_total=35.0,
+            percentage=((burst_score.score + perp_score.score + format_score.score + heading_score.score) / 35.0) * 100,
+            dimensions=[burst_score, perp_score, format_score, heading_score]
+        )
+
+        # ============================================================================
+        # TIER 3: SUPPORTING SIGNALS (25 points) - Context indicators
+        # ============================================================================
+
+        # Voice & Authenticity (8 points)
+        voice_val = score_map[results.voice_score]
+        voice_score = ScoreDimension(
+            name="Voice & Authenticity",
+            score=voice_val * 8,
+            max_score=8.0,
+            percentage=voice_val * 100,
+            impact=self._calculate_impact(voice_val, 8.0),
+            gap=(1.0 - voice_val) * 8,
+            raw_value=results.first_person_count,
+            recommendation="Add personal perspective, contractions, hedging" if voice_val < 0.75 else None
+        )
+
+        # Structure & Organization (7 points)
+        struct_val = score_map[results.structure_score]
+        struct_score = ScoreDimension(
+            name="Structure & Organization",
+            score=struct_val * 7,
+            max_score=7.0,
+            percentage=struct_val * 100,
+            impact=self._calculate_impact(struct_val, 7.0),
+            gap=(1.0 - struct_val) * 7,
+            raw_value=results.formulaic_transitions_count,
+            recommendation="Replace formulaic transitions with natural flow" if struct_val < 0.75 else None
+        )
+
+        # Emotional Depth - Sentiment (6 points)
+        sent_val = score_map.get(results.sentiment_score, 0.5) if results.sentiment_score else 0.5
+        sent_score = ScoreDimension(
+            name="Emotional Depth",
+            score=sent_val * 6,
+            max_score=6.0,
+            percentage=sent_val * 100,
+            impact=self._calculate_impact(sent_val, 6.0),
+            gap=(1.0 - sent_val) * 6,
+            raw_value=results.sentiment_variance,
+            recommendation="Add examples, anecdotes, acknowledge challenges" if sent_val < 0.75 else None
+        )
+
+        # Technical Depth (4 points)
+        tech_val = score_map[results.technical_score]
+        tech_score = ScoreDimension(
+            name="Technical Depth",
+            score=tech_val * 4,
+            max_score=4.0,
+            percentage=tech_val * 100,
+            impact=self._calculate_impact(tech_val, 4.0),
+            gap=(1.0 - tech_val) * 4,
+            raw_value=results.domain_terms_count,
+            recommendation="Add domain-specific terminology" if tech_val < 0.75 else None
+        )
+
+        supporting_category = ScoreCategory(
+            name="Supporting Signals",
+            total=voice_score.score + struct_score.score + sent_score.score + tech_score.score,
+            max_total=25.0,
+            percentage=((voice_score.score + struct_score.score + sent_score.score + tech_score.score) / 25.0) * 100,
+            dimensions=[voice_score, struct_score, sent_score, tech_score]
+        )
+
+        # ============================================================================
+        # CALCULATE DUAL SCORES
+        # ============================================================================
+
+        total_quality = advanced_category.total + core_category.total + supporting_category.total
+        quality_score = total_quality  # Already 0-100
+
+        # Detection risk is INVERSE of quality (100 - quality)
+        # But weighted more heavily on advanced detection dimensions
+        detection_components = [
+            (1.0 - gltr_val) * 25,      # GLTR has 25% weight in detection
+            (1.0 - ai_detect_val) * 20, # AI detection 20%
+            (1.0 - lexical_val) * 15,   # Lexical diversity 15%
+            (1.0 - stylo_val) * 15,     # Stylometric 15%
+            (1.0 - burst_val) * 10,     # Burstiness 10%
+            (1.0 - format_val) * 10,    # Formatting 10%
+            (1.0 - perp_val) * 5,       # Perplexity 5%
+        ]
+        detection_risk = sum(detection_components)
+
+        # Interpretations
+        quality_interp = self._interpret_quality(quality_score)
+        detection_interp = self._interpret_detection(detection_risk)
+
+        # Gaps
+        quality_gap = max(0, quality_target - quality_score)
+        detection_gap = max(0, detection_risk - detection_target)
+
+        # ============================================================================
+        # GENERATE IMPROVEMENT ACTIONS
+        # ============================================================================
+
+        all_dimensions = (
+            advanced_category.dimensions +
+            core_category.dimensions +
+            supporting_category.dimensions
+        )
+
+        improvements = []
+        for dim in all_dimensions:
+            if dim.gap > 0.5:  # Only suggest if gap > 0.5 points
+                improvements.append(ImprovementAction(
+                    priority=0,  # Will be set later
+                    dimension=dim.name,
+                    current_score=dim.score,
+                    max_score=dim.max_score,
+                    potential_gain=dim.gap,
+                    impact_level=dim.impact,
+                    action=dim.recommendation or f"Improve {dim.name}",
+                    effort_level=self._estimate_effort(dim.name, dim.gap)
+                ))
+
+        # Sort by ROI (gain / effort)
+        effort_multiplier = {'LOW': 1.0, 'MEDIUM': 0.7, 'HIGH': 0.4}
+        improvements.sort(key=lambda x: x.potential_gain * effort_multiplier[x.effort_level], reverse=True)
+
+        # Set priorities
+        for i, imp in enumerate(improvements, start=1):
+            imp.priority = i
+
+        # Path to target - actions needed to reach quality target
+        path = []
+        cumulative_gain = quality_score
+        for imp in improvements:
+            if cumulative_gain >= quality_target:
+                break
+            path.append(imp)
+            cumulative_gain += imp.potential_gain
+
+        # Estimate overall effort
+        if quality_gap == 0:
+            effort = "MINIMAL"
+        elif quality_gap < 5:
+            effort = "LIGHT"
+        elif quality_gap < 15:
+            effort = "MODERATE"
+        elif quality_gap < 30:
+            effort = "SUBSTANTIAL"
+        else:
+            effort = "EXTENSIVE"
+
+        return DualScore(
+            detection_risk=round(detection_risk, 1),
+            quality_score=round(quality_score, 1),
+            detection_interpretation=detection_interp,
+            quality_interpretation=quality_interp,
+            detection_target=detection_target,
+            quality_target=quality_target,
+            detection_gap=round(detection_gap, 1),
+            quality_gap=round(quality_gap, 1),
+            categories=[advanced_category, core_category, supporting_category],
+            improvements=improvements,
+            path_to_target=path,
+            estimated_effort=effort,
+            timestamp=timestamp,
+            file_path=results.file_path,
+            total_words=results.total_words
+        )
+
+    def _calculate_impact(self, current_val: float, max_points: float) -> str:
+        """Calculate impact level based on gap and point weight"""
+        gap = (1.0 - current_val) * max_points
+        if gap < 1.0:
+            return "NONE"
+        elif gap < 2.0:
+            return "LOW"
+        elif gap < 4.0:
+            return "MEDIUM"
+        else:
+            return "HIGH"
+
+    def _estimate_effort(self, dimension_name: str, gap: float) -> str:
+        """Estimate effort required to close gap"""
+        # Some dimensions are easier to fix than others
+        easy_fixes = ["Formatting Patterns", "Stylometric Markers", "Heading Hierarchy"]
+        medium_fixes = ["Burstiness (Sentence Variation)", "Perplexity (Vocabulary)", "Structure & Organization"]
+        hard_fixes = ["GLTR Token Ranking", "Advanced Lexical (HDD/Yule's K)", "Syntactic Complexity"]
+
+        if dimension_name in easy_fixes:
+            return "LOW" if gap < 3 else "MEDIUM"
+        elif dimension_name in medium_fixes:
+            return "MEDIUM" if gap < 4 else "HIGH"
+        else:  # hard_fixes
+            return "HIGH"
+
+    def _interpret_quality(self, score: float) -> str:
+        """Interpret quality score"""
+        if score >= 95:
+            return "EXCEPTIONAL - Indistinguishable from human"
+        elif score >= 85:
+            return "EXCELLENT - Minimal AI signatures"
+        elif score >= 70:
+            return "GOOD - Natural with minor tells"
+        elif score >= 50:
+            return "MIXED - Needs moderate work"
+        elif score >= 30:
+            return "AI-LIKE - Substantial work needed"
+        else:
+            return "OBVIOUS AI - Complete rewrite"
+
+    def _interpret_detection(self, risk: float) -> str:
+        """Interpret detection risk"""
+        if risk >= 70:
+            return "VERY HIGH - Will be flagged"
+        elif risk >= 50:
+            return "HIGH - Likely flagged"
+        elif risk >= 30:
+            return "MEDIUM - May be flagged"
+        elif risk >= 15:
+            return "LOW - Unlikely flagged"
+        else:
+            return "VERY LOW - Safe"
+
+    # ============================================================================
+    # HISTORICAL TRACKING
+    # ============================================================================
+
+    def _get_history_file_path(self, file_path: str) -> Path:
+        """Get path to history file for a given document"""
+        # Create .score-history directory in same location as analyzed file
+        doc_path = Path(file_path)
+        history_dir = doc_path.parent / '.score-history'
+        history_dir.mkdir(exist_ok=True)
+
+        # History file named after document
+        history_file = history_dir / f"{doc_path.stem}.history.json"
+        return history_file
+
+    def load_score_history(self, file_path: str) -> ScoreHistory:
+        """Load score history for a document"""
+        history_file = self._get_history_file_path(file_path)
+
+        if not history_file.exists():
+            return ScoreHistory(file_path=file_path, scores=[])
+
+        try:
+            with open(history_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+            # Reconstruct ScoreHistory from JSON
+            scores = [HistoricalScore(**score_data) for score_data in data.get('scores', [])]
+            return ScoreHistory(file_path=data.get('file_path', file_path), scores=scores)
+
+        except Exception as e:
+            print(f"Warning: Could not load history from {history_file}: {e}", file=sys.stderr)
+            return ScoreHistory(file_path=file_path, scores=[])
+
+    def save_score_history(self, history: ScoreHistory):
+        """Save score history for a document"""
+        history_file = self._get_history_file_path(history.file_path)
+
+        try:
+            # Convert to dict for JSON serialization
+            data = {
+                'file_path': history.file_path,
+                'scores': [asdict(score) for score in history.scores]
+            }
+
+            with open(history_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2)
+
+        except Exception as e:
+            print(f"Warning: Could not save history to {history_file}: {e}", file=sys.stderr)
+
+
+def format_dual_score_report(dual_score: DualScore, history: Optional[ScoreHistory] = None,
+                             output_format: str = 'text') -> str:
+    """Format dual score report with optimization path"""
+
+    if output_format == 'json':
+        # Convert to dict for JSON serialization
+        data = {
+            'detection_risk': dual_score.detection_risk,
+            'quality_score': dual_score.quality_score,
+            'detection_interpretation': dual_score.detection_interpretation,
+            'quality_interpretation': dual_score.quality_interpretation,
+            'detection_target': dual_score.detection_target,
+            'quality_target': dual_score.quality_target,
+            'detection_gap': dual_score.detection_gap,
+            'quality_gap': dual_score.quality_gap,
+            'categories': [asdict(cat) for cat in dual_score.categories],
+            'improvements': [asdict(imp) for imp in dual_score.improvements],
+            'path_to_target': [asdict(action) for action in dual_score.path_to_target],
+            'estimated_effort': dual_score.estimated_effort,
+            'timestamp': dual_score.timestamp,
+            'file_path': dual_score.file_path,
+            'total_words': dual_score.total_words
+        }
+
+        if history and len(history.scores) > 0:
+            data['history'] = {
+                'trend': history.get_trend(),
+                'score_count': len(history.scores),
+                'first_score': asdict(history.scores[0]),
+                'latest_score': asdict(history.scores[-1])
+            }
+
+        return json.dumps(data, indent=2)
+
+    else:  # text format
+        report = f"""
+{'=' * 80}
+DUAL SCORE ANALYSIS - OPTIMIZATION REPORT
+{'=' * 80}
+
+File: {dual_score.file_path}
+Words: {dual_score.total_words}
+Timestamp: {dual_score.timestamp}
+
+{'─' * 80}
+DUAL SCORES
+{'─' * 80}
+
+Quality Score:      {dual_score.quality_score:5.1f} / 100  {dual_score.quality_interpretation}
+Detection Risk:     {dual_score.detection_risk:5.1f} / 100  {dual_score.detection_interpretation}
+
+Targets:            Quality ≥{dual_score.quality_target:.0f}, Detection ≤{dual_score.detection_target:.0f}
+Gap to Target:      Quality needs +{dual_score.quality_gap:.1f} pts, Detection needs -{dual_score.detection_gap:.1f} pts
+Effort Required:    {dual_score.estimated_effort}
+
+"""
+
+        # Historical trend if available
+        if history and len(history.scores) > 1:
+            trend = history.get_trend()
+            report += f"""{'─' * 80}
+HISTORICAL TREND ({len(history.scores)} scores tracked)
+{'─' * 80}
+
+Quality:   {trend['quality']:10s} ({trend['quality_change']:+.1f} pts)
+Detection: {trend['detection']:10s} ({trend['detection_change']:+.1f} pts)
+
+"""
+
+        # Category breakdown
+        report += f"""{'─' * 80}
+SCORE BREAKDOWN BY CATEGORY
+{'─' * 80}
+
+"""
+        for cat in dual_score.categories:
+            report += f"""{cat.name:25s}  {cat.total:5.1f} / {cat.max_total:4.1f}  ({cat.percentage:5.1f}%)
+"""
+            for dim in cat.dimensions:
+                impact_symbol = '⚠' if dim.impact in ['HIGH', 'MEDIUM'] else ' '
+                report += f"""  {impact_symbol} {dim.name:40s} {dim.score:5.1f} / {dim.max_score:4.1f}  (gap: {dim.gap:4.1f})
+"""
+            report += "\n"
+
+        # Path to target
+        if dual_score.path_to_target:
+            report += f"""{'─' * 80}
+PATH TO TARGET ({len(dual_score.path_to_target)} actions, sorted by ROI)
+{'─' * 80}
+
+"""
+            cumulative = dual_score.quality_score
+            for i, action in enumerate(dual_score.path_to_target, 1):
+                cumulative += action.potential_gain
+                report += f"""{i}. {action.dimension} (Effort: {action.effort_level})
+   Current: {action.current_score:.1f}/{action.max_score:.1f} → Gain: +{action.potential_gain:.1f} pts → Cumulative: {cumulative:.1f}
+   Action: {action.action}
+
+"""
+
+        # Top improvements (beyond path to target)
+        other_improvements = [imp for imp in dual_score.improvements if imp not in dual_score.path_to_target]
+        if other_improvements:
+            report += f"""{'─' * 80}
+ADDITIONAL IMPROVEMENTS (optional, for exceeding targets)
+{'─' * 80}
+
+"""
+            for imp in other_improvements[:5]:  # Show top 5
+                report += f"""• {imp.dimension} ({imp.effort_level} effort, +{imp.potential_gain:.1f} pts)
+  {imp.action}
+
+"""
+
+        report += f"""{'=' * 80}
+OPTIMIZATION SUMMARY
+{'=' * 80}
+
+To reach Quality Score ≥{dual_score.quality_target:.0f}:
+  Complete {len(dual_score.path_to_target)} actions above
+  Estimated effort: {dual_score.estimated_effort}
+  Expected final score: ~{min(100, dual_score.quality_score + sum(a.potential_gain for a in dual_score.path_to_target)):.1f}
+
+{'=' * 80}
+
+"""
+        return report
+
 
 def format_detailed_report(analysis: DetailedAnalysis, output_format: str = 'text') -> str:
     """Format detailed analysis with line numbers and suggestions"""
@@ -4285,14 +5009,20 @@ Examples:
   # Detailed analysis with line numbers and suggestions (for LLM-driven humanization)
   %(prog)s chapter-01.md --detailed
 
+  # Dual score analysis with optimization path (recommended for LLM optimization)
+  %(prog)s chapter-01.md --show-scores
+
+  # Dual score with custom targets
+  %(prog)s chapter-01.md --show-scores --quality-target 90 --detection-target 20
+
+  # Dual score JSON output (for programmatic use)
+  %(prog)s chapter-01.md --show-scores --format json
+
   # Analyze with custom domain terms
   %(prog)s chapter-01.md --domain-terms "Docker,Kubernetes,PostgreSQL"
 
   # Batch analyze directory, output TSV
   %(prog)s --batch manuscript/sections --format tsv > analysis.tsv
-
-  # Detailed JSON output for programmatic use
-  %(prog)s chapter-01.md --detailed --format json
 
   # Save detailed analysis to file
   %(prog)s chapter-01.md --detailed -o humanization-report.txt
@@ -4308,6 +5038,14 @@ Examples:
     parser.add_argument('--domain-terms', metavar='TERMS',
                         help='Comma-separated domain-specific terms to detect (overrides defaults)')
     parser.add_argument('--output', '-o', metavar='FILE', help='Write output to file instead of stdout')
+
+    # Dual scoring options
+    parser.add_argument('--show-scores', action='store_true',
+                        help='Calculate and display dual scores (Detection Risk + Quality Score) with optimization path')
+    parser.add_argument('--detection-target', type=float, default=30.0, metavar='N',
+                        help='Target detection risk score (0-100, lower=better, default: 30.0)')
+    parser.add_argument('--quality-target', type=float, default=85.0, metavar='N',
+                        help='Target quality score (0-100, higher=better, default: 85.0)')
 
     args = parser.parse_args()
 
@@ -4349,6 +5087,46 @@ Examples:
         except Exception as e:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
+
+    elif args.show_scores:
+        # Dual scoring mode (single file only)
+        if args.batch:
+            print("Warning: --show-scores mode not supported for batch analysis. Using standard mode.", file=sys.stderr)
+            args.show_scores = False
+        else:
+            try:
+                # Run standard analysis first
+                result = analyzer.analyze_file(args.file)
+
+                # Calculate dual score
+                dual_score = analyzer.calculate_dual_score(
+                    result,
+                    detection_target=args.detection_target,
+                    quality_target=args.quality_target
+                )
+
+                # Load history
+                history = analyzer.load_score_history(args.file)
+
+                # Add current score to history
+                history.add_score(dual_score, notes="")
+
+                # Save updated history
+                analyzer.save_score_history(history)
+
+                # Format and output
+                output_text = format_dual_score_report(dual_score, history, args.format)
+
+                if args.output:
+                    with open(args.output, 'w', encoding='utf-8') as f:
+                        f.write(output_text)
+                    print(f"Dual score analysis written to {args.output}", file=sys.stderr)
+                else:
+                    print(output_text)
+
+            except Exception as e:
+                print(f"Error: {e}", file=sys.stderr)
+                sys.exit(1)
 
     else:
         # Standard analysis mode
