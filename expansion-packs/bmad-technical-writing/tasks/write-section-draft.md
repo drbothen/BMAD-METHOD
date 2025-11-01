@@ -63,6 +63,17 @@ Before writing any prose, review tone-specification.md to understand:
 
 Apply tone consistently throughout the section from the first sentence.
 
+**Humanization Reminder:**
+
+Write naturally from the start to produce human-sounding content:
+
+- **Sentence variation (burstiness)** - Mix short (5-10 words), medium (15-25 words), and long (30-45 words) sentences deliberately
+- **Avoid AI vocabulary** - Never use: delve, leverage, robust, harness, underscore, facilitate, pivotal, holistic
+- **Natural transitions** - Replace formulaic "Furthermore," "Moreover," "Additionally" with context-specific transitions
+- **Use contractions naturally** - you'll, it's, we're, don't (unless formality level prohibits)
+- **Specific examples** - Use real tool names, actual version numbers, not generic placeholders (foo/bar)
+- **Technical accuracy paramount** - Never sacrifice correctness for stylistic preferences
+
 **Read Section Plan:**
 
 - Learning objectives (1-2 max for a section)
@@ -501,6 +512,11 @@ Validate section meets standards:
 - [ ] Tone matches tone-specification.md (formality level, characteristics)
 - [ ] No unnecessary jargon
 - [ ] Technical terms defined
+- [ ] Natural sentence variation (mix of short, medium, long sentences)
+- [ ] No AI vocabulary markers (delve, leverage, robust, harness, facilitate)
+- [ ] Natural transitions, not formulaic
+- [ ] Contractions used appropriately for tone level
+- [ ] Specific examples with real names/versions, not placeholders
 
 **Structure Quality:**
 

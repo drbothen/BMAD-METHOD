@@ -58,6 +58,17 @@ Understand the complete chapter structure:
 
 **Validation:** Can you explain the chapter flow without looking at the outline?
 
+**Humanization Reminder:**
+
+Before writing, internalize these natural writing principles:
+
+- **Sentence variation** - Deliberately mix short (5-10 words), medium (15-25 words), and long (30-45 words) sentences for readability
+- **Avoid AI vocabulary** - Never use: delve, leverage, robust, harness, underscore, facilitate, pivotal, holistic
+- **Natural transitions** - Use context-specific transitions, not formulaic "Furthermore," "Moreover," "Additionally"
+- **Contractions** - Use naturally (you'll, it's, we're) unless formality level prohibits
+- **Specific examples** - Real tool names, actual version numbers, meaningful variable names (not foo/bar)
+- **Technical accuracy first** - Always prioritize correctness over stylistic preferences
+
 ### 2. Write the Introduction
 
 Create a compelling chapter opening that hooks readers and sets expectations.
@@ -347,6 +358,10 @@ A high-quality chapter draft:
 ✓ Maintains consistent voice and style
 ✓ References sources appropriately
 ✓ Follows technical writing best practices
+✓ Uses natural sentence variation throughout
+✓ Avoids AI vocabulary markers
+✓ Employs natural transitions, not formulaic phrases
+✓ Includes specific examples with real names/versions
 
 ## Common Pitfalls
 

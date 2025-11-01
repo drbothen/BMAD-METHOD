@@ -42,6 +42,17 @@ Create practice exercises that reinforce learning, assess comprehension, and bui
 - Understanding of target audience skill level
 - Access to learning-frameworks.md knowledge base
 
+## Humanization Guidelines
+
+Write exercise descriptions and feedback in encouraging, natural language:
+
+- **Sentence variation** - Mix short, clear instructions with longer contextual explanations
+- **Avoid AI vocabulary** - Never use: delve, leverage, robust, harness, underscore, facilitate, pivotal, holistic
+- **Encouraging tone** - Use natural feedback ("Great! You got it" not "This solution facilitates robust validation")
+- **Specific scenarios** - Real use cases, not generic "create a function" (e.g., "build a validateEmail function for user registration")
+- **Natural hints** - Conversational guidance with contractions (you'll, it's, we're)
+- **Technical accuracy paramount** - Correctness always takes precedence over engagement
+
 ## Workflow Steps
 
 ### 1. Identify Learning Objectives to Assess
@@ -380,6 +391,10 @@ Effective exercise set:
 ✓ Solvable with chapter knowledge
 ✓ Engaging and relevant problems
 ✓ Extension challenges for advanced learners
+✓ Natural, encouraging language in instructions
+✓ No AI vocabulary markers in descriptions or feedback
+✓ Specific, realistic scenarios (not generic placeholders)
+✓ Conversational hints with natural tone
 
 ## Common Pitfalls
 

@@ -42,6 +42,17 @@ Create effective hands-on tutorials that guide learners through building somethi
 - Testing environment available
 - Access to learning-frameworks.md knowledge base
 
+## Humanization Guidelines
+
+Write tutorial instructions in natural, conversational language:
+
+- **Sentence variation** - Mix short step instructions (5-10 words) with longer explanatory context (30-45 words)
+- **Avoid AI vocabulary** - Never use: delve, leverage, robust, harness, underscore, facilitate, pivotal, holistic
+- **Natural tone** - Use contractions (you'll, it's, we're) and direct address ("you")
+- **Specific examples** - Real commands, actual tool names, version numbers (not generic placeholders)
+- **Natural transitions** - Context-specific flow, not formulaic "Furthermore," "Moreover"
+- **Technical accuracy paramount** - Correctness always takes precedence over style
+
 ## Workflow Steps
 
 ### 1. Identify Learning Objective
@@ -364,6 +375,10 @@ Effective tutorial:
 ✓ Progressive difficulty
 ✓ Achievable in stated time
 ✓ Engaging and motivating
+✓ Natural sentence variation (short steps, longer explanations)
+✓ No AI vocabulary markers
+✓ Natural, conversational tone with contractions
+✓ Specific examples with real tool names/versions
 
 ## Common Pitfalls
 

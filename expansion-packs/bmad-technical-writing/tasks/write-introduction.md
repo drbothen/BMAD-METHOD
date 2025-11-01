@@ -43,6 +43,17 @@ Before starting this task:
 - Understand what previous chapters covered
 - Access to book-structures.md knowledge base
 
+## Humanization Guidelines
+
+Write introductions that hook readers with natural, engaging language:
+
+- **Sentence variation** - Mix short, punchy opening sentences with longer explanatory sentences for rhythm
+- **Avoid AI vocabulary** - Never use: delve, leverage, robust, harness, underscore, facilitate, pivotal, holistic
+- **Conversational tone** - Use contractions naturally (you'll, we're, it's) to sound human
+- **Specific hooks** - Real-world problems, actual scenarios, concrete examples (not generic situations)
+- **Natural flow** - Avoid formulaic transitions like "Furthermore," "Moreover," "Additionally"
+- **Technical accuracy first** - Always prioritize correctness over stylistic preferences
+
 ## Workflow Steps
 
 ### 1. Create Compelling Hook
@@ -278,6 +289,11 @@ Validate the introduction:
 - [ ] Is the tone encouraging and accessible?
 - [ ] Does it avoid jargon or define terms?
 - [ ] Is the time estimate realistic?
+- [ ] Natural sentence variation throughout (short and long sentences)
+- [ ] No AI vocabulary markers (delve, leverage, robust, harness, facilitate)
+- [ ] Natural transitions, not formulaic phrases
+- [ ] Contractions used appropriately for engaging tone
+- [ ] Specific, concrete examples (not generic scenarios)
 
 **Tone check:**
 
