@@ -1,17 +1,44 @@
 # AI Pattern Analysis Tool
 
-Comprehensive Python script for analyzing manuscripts to detect AI-generated content patterns across 6 dimensions.
+Comprehensive Python script for analyzing manuscripts to detect AI-generated content patterns with dual scoring system for LLM-driven optimization.
 
 ## Overview
 
-`analyze_ai_patterns.py` analyzes markdown files for AI-generated content patterns using research-backed methodologies from GPTZero, Originality.AI, and academic studies. The tool evaluates 40+ metrics across 6 dimensions:
+`analyze_ai_patterns.py` analyzes markdown files for AI-generated content patterns using research-backed methodologies from GPTZero, Originality.AI, GLTR, and academic studies. The tool evaluates 50+ metrics across **14 dimensions** organized into **3 tiers**:
 
-1. **Perplexity (Vocabulary)** - AI-typical word choices and lexical diversity
-2. **Burstiness (Sentence Variation)** - Sentence length variation and rhythm
-3. **Structure (Organization)** - Transitions, headings, formatting patterns
-4. **Voice (Authenticity)** - Personal perspective, contractions, direct address
-5. **Technical (Expertise)** - Domain-specific terminology density
-6. **Formatting (Distribution)** - Em-dashes, bold, italics usage patterns
+### Tier 1: Advanced Detection (40 points) - Highest Accuracy
+1. **GLTR Token Ranking** - Token predictability analysis (95% accuracy on GPT-3/ChatGPT)
+2. **Advanced Lexical Diversity** - HDD/Yule's K sophisticated vocabulary metrics
+3. **AI Detection Ensemble** - RoBERTa sentiment variance + DetectGPT
+4. **Stylometric Markers** - Statistical writing fingerprints
+5. **Syntactic Complexity** - Dependency depth and POS patterns
+
+### Tier 2: Core Patterns (35 points) - Strong Signals
+6. **Burstiness (Sentence Variation)** - Sentence length variation and rhythm
+7. **Perplexity (Vocabulary)** - AI-typical word choices
+8. **Formatting Patterns** - Em-dashes, bold, italics distribution
+9. **Heading Hierarchy** - Depth, parallelism, density patterns
+
+### Tier 3: Supporting Signals (25 points) - Contextual Indicators
+10. **Voice & Authenticity** - Personal perspective, contractions, direct address
+11. **Structure & Organization** - Transitions, list usage, whitespace patterns
+12. **Emotional Depth** - Sentiment variation and emotional resonance
+13. **Technical Depth** - Domain-specific terminology density
+
+## Dual Scoring System (NEW)
+
+The tool now provides **two complementary scores** designed for LLM-driven optimization:
+
+- **Quality Score** (0-100, higher=better): How human-like the writing is
+- **Detection Risk** (0-100, lower=better): Likelihood of AI detection
+
+### Key Features
+
+✅ **Path-to-Target Optimization** - Shows minimum actions needed to reach quality goals, sorted by ROI
+✅ **Historical Tracking** - Per-document score history with trend analysis
+✅ **Effort Estimation** - LOW/MEDIUM/HIGH effort levels for each improvement
+✅ **Impact Analysis** - Identifies HIGH/MEDIUM/LOW impact dimensions
+✅ **Configurable Targets** - Default quality≥85, detection≤30 (customizable)
 
 ## Installation
 
@@ -60,11 +87,130 @@ python -m spacy download en_core_web_sm
 - Python 3.7+ (3.9+ recommended for full compatibility)
 - See `requirements.txt` for complete list of optional dependencies
 
+## Quick Reference
+
+### Three Analysis Modes
+
+| Mode | Flag | Best For | Output |
+|------|------|----------|--------|
+| **Dual Score** | `--show-scores` | LLM optimization, first-time analysis | Quality Score + Detection Risk + path-to-target |
+| **Standard** | (default) | Quick overview, batch analysis | 6 dimension scores + overall assessment |
+| **Detailed** | `--detailed` | Line-by-line editing, debugging | Line numbers + context + suggestions |
+
+### Quick Start Commands
+
+```bash
+# Recommended: Dual score analysis with optimization path
+python analyze_ai_patterns.py chapter-01.md --show-scores
+
+# Quick batch check across many files
+python analyze_ai_patterns.py --batch manuscript/chapters --format tsv
+
+# Detailed diagnostics for manual editing
+python analyze_ai_patterns.py chapter-01.md --detailed
+
+# Custom targets for dual scoring
+python analyze_ai_patterns.py chapter-01.md --show-scores --quality-target 90
+```
+
+### Target Scores
+
+**Dual Score Defaults:**
+- Quality Score: ≥85 (EXCELLENT)
+- Detection Risk: ≤30 (MEDIUM or better)
+
+**Standard Mode:** All dimensions at MEDIUM or HIGH
+
 ## Usage
 
-### Single File Analysis
+The tool has **three analysis modes**:
 
-Analyze one markdown file with detailed text report:
+1. **Standard Analysis** - Traditional dimension scoring (6 dimensions, quick overview)
+2. **Dual Score Analysis** - Optimization-focused with path-to-target (14 dimensions, LLM-friendly)
+3. **Detailed Diagnostic** - Line-by-line issues with context (for manual/LLM editing)
+
+### Dual Score Analysis (Recommended for LLM Optimization)
+
+Get optimization-focused dual scores with path-to-target recommendations:
+
+```bash
+python analyze_ai_patterns.py chapter-01.md --show-scores
+```
+
+**Output includes:**
+- **Quality Score** (0-100, target ≥85)
+- **Detection Risk** (0-100, target ≤30)
+- **Score breakdown** across 3 tiers and 14 dimensions
+- **Path-to-target** - Prioritized actions sorted by ROI
+- **Historical trend** - Shows improvement over time
+- **Effort estimation** - Total effort required (MINIMAL/LIGHT/MODERATE/SUBSTANTIAL/EXTENSIVE)
+
+**Example output:**
+```
+DUAL SCORES
+────────────────────────────────────────────────────────────────────────────────
+
+Quality Score:       77.0 / 100  GOOD - Natural with minor tells
+Detection Risk:      16.2 / 100  LOW - Unlikely flagged
+
+Targets:            Quality ≥85, Detection ≤30
+Gap to Target:      Quality needs +8.0 pts, Detection needs -0.0 pts
+Effort Required:    MODERATE
+
+PATH TO TARGET (2 actions, sorted by ROI)
+────────────────────────────────────────────────────────────────────────────────
+
+1. Heading Hierarchy (Effort: LOW)
+   Current: 2.5/5.0 → Gain: +2.5 pts → Cumulative: 79.5
+   Action: Flatten to H3 max, break parallelism, create asymmetry
+
+2. Voice & Authenticity (Effort: HIGH)
+   Current: 2.0/8.0 → Gain: +6.0 pts → Cumulative: 85.5
+   Action: Add personal perspective, contractions, hedging
+```
+
+#### Custom Targets
+
+Adjust quality and detection targets:
+
+```bash
+# Stricter targets (higher quality, lower risk)
+python analyze_ai_patterns.py chapter-01.md --show-scores --quality-target 90 --detection-target 20
+
+# Relaxed targets (for drafts)
+python analyze_ai_patterns.py chapter-01.md --show-scores --quality-target 75 --detection-target 40
+```
+
+#### JSON Output for Programmatic Use
+
+```bash
+python analyze_ai_patterns.py chapter-01.md --show-scores --format json > scores.json
+```
+
+JSON includes:
+- All dual score data
+- Complete dimension breakdown with raw values
+- All improvement actions with effort/impact levels
+- Historical trend data if available
+
+#### Historical Tracking
+
+Scores are automatically saved to `.score-history/` directory:
+
+```bash
+# First run creates history
+python analyze_ai_patterns.py chapter-01.md --show-scores
+
+# Subsequent runs show trend
+# Quality:   IMPROVING (+3.2 pts)
+# Detection: IMPROVING (-5.1 pts)
+```
+
+History files: `.score-history/{filename}.history.json`
+
+### Single File Analysis (Standard Mode)
+
+Analyze one markdown file with traditional dimension scoring:
 
 ```bash
 python analyze_ai_patterns.py manuscript/chapters/chapter-01.md
@@ -328,9 +474,54 @@ ch02.md	3891	164	8	2.06	21.1	11.4	MEDIUM	HIGH	MINIMAL humanization needed
 - AI pattern: Excessive, uniform distribution
 - Target: 2-5% bold maximum, functional italics only
 
-## Overall Assessment
+## Score Interpretation
 
-The tool provides weighted overall assessment:
+### Dual Score System (--show-scores)
+
+#### Quality Score (0-100, higher=better)
+
+| Score | Interpretation | Meaning |
+|-------|---------------|---------|
+| 95-100 | EXCEPTIONAL | Indistinguishable from human writing |
+| 85-94 | EXCELLENT | Minimal AI signatures, publication-ready |
+| 70-84 | GOOD | Natural with minor tells, light editing needed |
+| 50-69 | MIXED | Needs moderate work, systematic editing required |
+| 30-49 | AI-LIKE | Substantial work needed, major rewrite |
+| 0-29 | OBVIOUS AI | Complete rewrite recommended |
+
+**Default Target:** ≥85 (EXCELLENT quality)
+
+#### Detection Risk (0-100, lower=better)
+
+| Score | Interpretation | Risk Level |
+|-------|---------------|------------|
+| 70-100 | VERY HIGH | Will be flagged by AI detectors |
+| 50-69 | HIGH | Likely flagged by AI detectors |
+| 30-49 | MEDIUM | May be flagged by some detectors |
+| 15-29 | LOW | Unlikely to be flagged |
+| 0-14 | VERY LOW | Safe from detection |
+
+**Default Target:** ≤30 (MEDIUM risk or better)
+
+#### Scoring Methodology
+
+**Quality Score** is the sum of all dimension scores:
+- Tier 1 (Advanced Detection): 40 points maximum
+- Tier 2 (Core Patterns): 35 points maximum
+- Tier 3 (Supporting Signals): 25 points maximum
+
+**Detection Risk** uses weighted inverse scoring emphasizing advanced detection:
+- GLTR Token Ranking: 25% weight
+- AI Detection Ensemble: 20% weight
+- Advanced Lexical Diversity: 15% weight
+- Stylometric Markers: 15% weight
+- Burstiness: 10% weight
+- Formatting: 10% weight
+- Perplexity: 5% weight
+
+### Standard Mode Overall Assessment
+
+The traditional scoring provides weighted overall assessment (backwards compatible):
 
 | Score | Assessment | Interpretation |
 |-------|-----------|----------------|
@@ -340,7 +531,7 @@ The tool provides weighted overall assessment:
 | 20-39 | SUBSTANTIAL humanization required | Major rewrite needed, 20-40% AI patterns |
 | 0-19 | EXTENSIVE humanization required | Likely AI-generated, >40% AI patterns |
 
-**Weighting:**
+**Standard Mode Weighting:**
 - Perplexity: 20%
 - Burstiness: 25%
 - Structure: 20%
@@ -350,83 +541,193 @@ The tool provides weighted overall assessment:
 
 ## Workflow Integration
 
-### Pre-Publishing Quality Check
+### Which Mode to Use?
 
-```bash
-# Analyze all chapters before submission
-python analyze_ai_patterns.py --batch manuscript/chapters --format tsv > pre-publish-qa.tsv
+| Scenario | Mode | Command |
+|----------|------|---------|
+| LLM-driven iterative optimization | Dual Score | `--show-scores` |
+| Quick quality check across many files | Standard | `--batch` |
+| Manual line-by-line editing | Detailed | `--detailed` |
+| First-time analysis | Dual Score | `--show-scores` |
+| Pre-publication validation | Dual Score | `--show-scores` |
+| Debugging specific issues | Detailed | `--detailed` |
 
-# Review in spreadsheet, target all chapters at HIGH/MEDIUM across dimensions
-```
+### LLM-Driven Optimization Workflow (Recommended)
 
-### Humanization Task Workflow
+Uses dual scoring system for systematic improvement:
 
-#### Manual Editing Workflow
+1. **Get optimization path:**
+   ```bash
+   python analyze_ai_patterns.py chapter-03.md --show-scores
+   ```
+
+2. **Review path-to-target:**
+   - Note the prioritized actions (sorted by ROI)
+   - Review effort estimation for each action
+   - Check current score vs. target gap
+
+3. **Provide to LLM:**
+   ```
+   "Here's the dual score analysis. Focus on the path-to-target actions:
+   1. Heading Hierarchy (LOW effort, +2.5 pts)
+   2. Voice & Authenticity (HIGH effort, +6.0 pts)
+
+   Please implement these improvements to reach Quality Score ≥85."
+   ```
+
+4. **Re-analyze after changes:**
+   ```bash
+   python analyze_ai_patterns.py chapter-03.md --show-scores
+   ```
+
+5. **Review historical trend:**
+   - Check if Quality score improved
+   - Check if Detection Risk decreased
+   - Compare actual vs. expected gains
+
+6. **Iterate if needed:**
+   - Target: Quality Score ≥85, Detection Risk ≤30
+   - Track progress through historical trend
+   - Typical improvement: +10-20 quality points per pass
+
+### Manual Editing Workflow
+
+#### With Dual Scoring (Quick Fixes)
 
 1. **Analyze current state:**
    ```bash
-   python analyze_ai_patterns.py chapter-03.md
+   python analyze_ai_patterns.py chapter-03.md --show-scores
    ```
 
-2. **Note specific issues:**
-   - AI vocabulary instances
-   - Sentence variation problems
-   - Heading hierarchy depth
-   - Formatting patterns
+2. **Focus on path-to-target:**
+   - Start with LOW effort, HIGH gain actions
+   - Address formatting issues first (quick wins)
+   - Then tackle voice and vocabulary
 
-3. **Apply humanization edits** following the recommendations
-
-4. **Re-analyze to validate:**
+3. **Re-analyze to validate:**
    ```bash
-   python analyze_ai_patterns.py chapter-03.md
+   python analyze_ai_patterns.py chapter-03.md --show-scores
    ```
 
-5. **Target:** All dimensions at MEDIUM or HIGH for publication
+#### With Detailed Diagnostics (Precise Fixes)
 
-#### LLM-Driven Humanization Workflow
-
-1. **Get detailed diagnostics:**
+1. **Get line-by-line issues:**
    ```bash
    python analyze_ai_patterns.py chapter-03.md --detailed -o diagnostics.txt
    ```
 
-2. **Provide diagnostics to LLM:**
-   - Pass the detailed report to an LLM (Claude, ChatGPT, etc.)
-   - LLM uses line numbers to locate exact issues
-   - LLM applies suggested replacements and fixes
+2. **Work through issues systematically:**
+   - Use line numbers to locate exact problems
+   - Apply suggested replacements
+   - Fix one category at a time (vocabulary → headings → em-dashes → transitions)
 
-3. **Validate improvements:**
+3. **Validate with dual scoring:**
    ```bash
-   python analyze_ai_patterns.py chapter-03.md --detailed
+   python analyze_ai_patterns.py chapter-03.md --show-scores
    ```
 
-4. **Iterate if needed:**
-   - Compare before/after metrics
-   - Target: 50-80% reduction in AI patterns per pass
-   - Repeat until MINIMAL or LIGHT assessment achieved
+### Pre-Publishing Quality Check
+
+```bash
+# Option 1: Batch analysis for quick overview
+python analyze_ai_patterns.py --batch manuscript/chapters --format tsv > pre-publish-qa.tsv
+
+# Option 2: Dual score analysis for each chapter (recommended)
+for chapter in manuscript/chapters/*.md; do
+  python analyze_ai_patterns.py "$chapter" --show-scores
+done
+
+# Target: All chapters at Quality ≥85, Detection ≤30
+```
 
 ### Content-Humanizer Agent Integration
 
 The `content-humanizer` agent (`agents/content-humanizer.md`) uses this tool for:
 
-1. **`*analyze` command** - Runs analysis and interprets results
-2. **`*qa-check` command** - Validates humanization quality before completion
-3. **Post-generation workflow** - Step 8 of `humanize-post-generation.md` task
+1. **`*analyze` command** - Runs dual score analysis and interprets results
+2. **`*qa-check` command** - Validates humanization quality before completion (uses dual scoring)
+3. **Post-generation workflow** - Step 8 of `humanize-post-generation.md` task (dual score validation)
+
+**Agent workflow:**
+- Initial analysis: `--show-scores` to establish baseline
+- During editing: `--detailed` for specific issues
+- Final validation: `--show-scores` to confirm targets met
+- Historical tracking: Monitors improvement across iterations
+
+### Score History Management
+
+Score history files are stored in `.score-history/` directory:
+
+```bash
+# View history file
+cat manuscript/.score-history/chapter-01.history.json
+
+# Clean up history (start fresh)
+rm -rf manuscript/.score-history/
+
+# Recommended .gitignore entry
+echo '.score-history/' >> .gitignore
+```
+
+**Note:** History files are per-document JSON files tracking all analysis runs with timestamps. Useful for tracking humanization progress over time.
 
 ## Research Foundation
 
-This tool implements methodologies from:
+This tool implements state-of-the-art methodologies from:
 
-1. **GPTZero** - Perplexity and burstiness detection
-2. **Originality.AI** - Pattern recognition and scoring
-3. **Academic Studies** - Type-Token Ratio, lexical diversity
-4. **Publisher Guidelines** - Formatting and structure best practices
+### AI Detection Research
+1. **GLTR (Giant Language model Test for Robustness)** - Token rank analysis, 95% accuracy on GPT-3/ChatGPT
+   - Gehrmann et al., ACL 2019
+   - Top-10 token percentage as AI signature
 
-Data sources:
+2. **DetectGPT** - Perturbation-based detection
+   - Mitchell et al., Stanford 2023
+   - Zero-shot black-box detection
+
+3. **GPTZero** - Perplexity and burstiness detection
+   - Tian, Princeton 2023
+   - Sentence-level variance analysis
+
+4. **Originality.AI** - Pattern recognition and multi-model ensemble
+   - Combined classifier approach
+
+### Linguistic Metrics
+5. **HDD (Hypergeometric Distribution D)** - Advanced lexical diversity
+   - McCarthy & Jarvis, 2010
+   - More robust than simple TTR
+
+6. **Yule's K** - Vocabulary richness independent of text length
+   - Yule, 1944
+   - Statistical stylometry
+
+7. **RoBERTa Sentiment Analysis** - Emotional variation detection
+   - Cardiff NLP, Twitter-tuned model
+   - Variance analysis for authenticity
+
+8. **spaCy Dependency Parsing** - Syntactic complexity
+   - Explosion AI
+   - Dependency depth and POS diversity
+
+### Humanization Research
+9. **Publisher Guidelines** - Formatting and structure best practices
+   - Technical writing standards
+   - Academic style guides
+
+10. **Empirical Analysis** - Real human vs. AI writing patterns
+    - Em-dash frequency analysis (10x AI signature)
+    - Heading hierarchy patterns
+    - Bold/italic distribution analysis
+
+### Data Sources
 - `data/ai-detection-patterns.md` - Vocabulary and transition patterns
-- `data/formatting-humanization-patterns.md` - Em-dash problem, formatting
-- `data/heading-humanization-patterns.md` - Hierarchy and parallelism
+- `data/formatting-humanization-patterns.md` - Em-dash problem, formatting tells
+- `data/heading-humanization-patterns.md` - Hierarchy and parallelism patterns
 - `data/humanization-techniques.md` - Comprehensive technique catalog
+
+### Metadata Filtering
+- Automatically ignores HTML comment blocks (`<!-- -->`) at document start/end
+- Ensures metadata doesn't skew analysis scores
+- Focuses analysis on actual content only
 
 ## Limitations
 
@@ -439,8 +740,80 @@ Data sources:
 
 ## Examples
 
-### High-Quality Technical Writing
+### High-Quality Technical Writing (Dual Score)
 
+```
+Quality Score:       92.3 / 100  EXCELLENT - Minimal AI signatures
+Detection Risk:      12.4 / 100  VERY LOW - Safe
+
+SCORE BREAKDOWN BY CATEGORY:
+
+Advanced Detection          37.5 / 40.0  ( 93.8%)
+  GLTR Token Ranking                        11.5 / 12.0  (gap:  0.5)
+  Advanced Lexical (HDD/Yule's K)            7.5 /  8.0  (gap:  0.5)
+  AI Detection Ensemble                      9.5 / 10.0  (gap:  0.5)
+  Stylometric Markers                        5.0 /  6.0  (gap:  1.0)
+  Syntactic Complexity                       4.0 /  4.0  (gap:  0.0)
+
+Core Patterns               32.3 / 35.0  ( 92.3%)
+  Burstiness (Sentence Variation)           11.0 / 12.0  (gap:  1.0)
+  Perplexity (Vocabulary)                    9.5 / 10.0  (gap:  0.5)
+  Formatting Patterns                        7.0 /  8.0  (gap:  1.0)
+  Heading Hierarchy                          4.8 /  5.0  (gap:  0.2)
+
+Supporting Signals          22.5 / 25.0  ( 90.0%)
+  Voice & Authenticity                       7.5 /  8.0  (gap:  0.5)
+  Structure & Organization                   6.5 /  7.0  (gap:  0.5)
+  Emotional Depth                            5.5 /  6.0  (gap:  0.5)
+  Technical Depth                            3.0 /  4.0  (gap:  1.0)
+
+PATH TO TARGET: Already exceeds targets! (Quality ≥85, Detection ≤30)
+
+OVERALL: Publication-ready, minimal refinement opportunities
+```
+
+### AI-Generated Draft (Dual Score)
+
+```
+Quality Score:       43.2 / 100  AI-LIKE - Substantial work needed
+Detection Risk:      72.8 / 100  VERY HIGH - Will be flagged
+
+SCORE BREAKDOWN BY CATEGORY:
+
+Advanced Detection          14.0 / 40.0  ( 35.0%)
+⚠ GLTR Token Ranking                         2.0 / 12.0  (gap: 10.0)
+⚠ Advanced Lexical (HDD/Yule's K)            2.0 /  8.0  (gap:  6.0)
+⚠ AI Detection Ensemble                      2.0 / 10.0  (gap:  8.0)
+⚠ Stylometric Markers                        4.0 /  6.0  (gap:  2.0)
+⚠ Syntactic Complexity                       4.0 /  4.0  (gap:  0.0)
+
+Core Patterns               18.2 / 35.0  ( 52.0%)
+⚠ Burstiness (Sentence Variation)            3.0 / 12.0  (gap:  9.0)
+⚠ Perplexity (Vocabulary)                    2.0 / 10.0  (gap:  8.0)
+⚠ Formatting Patterns                        2.0 /  8.0  (gap:  6.0)
+⚠ Heading Hierarchy                          1.2 /  5.0  (gap:  3.8)
+
+Supporting Signals          11.0 / 25.0  ( 44.0%)
+⚠ Voice & Authenticity                       1.0 /  8.0  (gap:  7.0)
+⚠ Structure & Organization                   4.0 /  7.0  (gap:  3.0)
+⚠ Emotional Depth                            2.0 /  6.0  (gap:  4.0)
+⚠ Technical Depth                            1.0 /  4.0  (gap:  3.0)
+
+PATH TO TARGET (8 actions, EXTENSIVE effort):
+1. GLTR Token Ranking (HIGH effort, +10.0 pts)
+2. Burstiness (MEDIUM effort, +9.0 pts)
+3. Perplexity (MEDIUM effort, +8.0 pts)
+4. AI Detection Ensemble (HIGH effort, +8.0 pts)
+[... 4 more actions ...]
+
+Gap to Target: Quality needs +41.8 pts
+
+OVERALL: Major rewrite recommended, use detailed mode for line-by-line fixes
+```
+
+### Standard Mode Examples
+
+**High-Quality Technical Writing:**
 ```
 Perplexity:    HIGH      (2.1 AI words per 1k)
 Burstiness:    HIGH      (StdDev 13.2, varied lengths)
@@ -452,8 +825,7 @@ Formatting:    HIGH      (1.3 em-dashes per page)
 OVERALL: MINIMAL humanization needed
 ```
 
-### AI-Generated Draft
-
+**AI-Generated Draft:**
 ```
 Perplexity:    VERY LOW  (24.7 AI words per 1k)
 Burstiness:    LOW       (StdDev 4.2, uniform sentences)
