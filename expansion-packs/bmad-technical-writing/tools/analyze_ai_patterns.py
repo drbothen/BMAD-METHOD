@@ -197,27 +197,54 @@ class AIPatternAnalyzer:
     AI_VOCAB_REPLACEMENTS = {
         r'\bdelv(e|es|ing)\b': ['explore', 'examine', 'investigate', 'look at', 'dig into'],
         r'\brobust(ness)?\b': ['reliable', 'powerful', 'solid', 'effective', 'well-designed'],
-        r'\bleverag(e|es|ing)\b': ['use', 'apply', 'take advantage of', 'employ'],
-        r'\bharness(es|ing)?\b': ['use', 'apply', 'employ', 'tap into'],
+        r'\bleverag(e|es|ing)\b': ['use', 'apply', 'take advantage of', 'employ', 'work with'],
+        r'\bharness(es|ing)?\b': ['use', 'apply', 'employ', 'tap into', 'utilize'],
         r'\bfacilitat(e|es|ing)\b': ['enable', 'help', 'make easier', 'allow', 'support'],
-        r'\bunderscore[sd]?\b': ['emphasize', 'highlight', 'stress', 'point out'],
-        r'\bseamless(ly)?\b': ['smooth', 'easy', 'straightforward', 'effortless'],
-        r'\bcomprehensive(ly)?\b': ['thorough', 'complete', 'detailed', 'full'],
-        r'\bstreamlin(e|ed|ing)\b': ['simplify', 'improve', 'optimize', 'refine'],
-        r'\butiliz(e|es|ation|ing)\b': ['use', 'employ', 'apply'],
-        r'\bunpack(s|ing)?\b': ['explain', 'explore', 'break down', 'examine'],
-        r'\bmyriad\b': ['many', 'countless', 'numerous', 'various'],
-        r'\bplethora\b': ['many', 'abundance', 'wealth', 'plenty'],
-        r'\bparamount\b': ['critical', 'essential', 'crucial', 'vital'],
+        r'\bunderscore(s|d|ing)?\b': ['emphasize', 'highlight', 'stress', 'point out', 'show'],
+        r'\bpivotal\b': ['key', 'important', 'critical', 'essential', 'crucial'],
+        r'\bseamless(ly)?\b': ['smooth', 'easy', 'straightforward', 'effortless', 'natural'],
+        r'\bholistic(ally)?\b': ['complete', 'comprehensive', 'full', 'thorough', 'whole'],
+        r'\bcomprehensive(ly)?\b': ['thorough', 'complete', 'detailed', 'full', 'extensive'],
+        r'\boptimiz(e|es|ing|ation)\b': ['improve', 'enhance', 'fine-tune', 'make better', 'refine'],
+        r'\bstreamlin(e|ed|ing)\b': ['simplify', 'improve', 'make efficient', 'refine', 'enhance'],
+        r'\butiliz(e|es|ation|ing)\b': ['use', 'employ', 'apply', 'work with'],
+        r'\bunpack(s|ing)?\b': ['explain', 'explore', 'break down', 'examine', 'analyze'],
+        r'\bmyriad\b': ['many', 'countless', 'numerous', 'various', 'multiple'],
+        r'\bplethora\b': ['many', 'abundance', 'wealth', 'plenty', 'lots'],
+        r'\bparamount\b': ['critical', 'essential', 'crucial', 'vital', 'key'],
+        r'\bquintessential\b': ['typical', 'classic', 'perfect example', 'ideal', 'archetypal'],
+        r'\binnovative\b': ['new', 'creative', 'novel', 'original', 'fresh'],
+        r'\bcutting-edge\b': ['advanced', 'modern', 'latest', 'state-of-the-art', 'new'],
+        r'\brevolutionary\b': ['groundbreaking', 'major', 'significant', 'transformative', 'game-changing'],
+        r'\bgame-changing\b': ['significant', 'major', 'important', 'transformative', 'impactful'],
+        r'\btransformative\b': ['significant', 'major', 'powerful', 'game-changing', 'impactful'],
+        r'\bdive deep\b': ['explore thoroughly', 'examine closely', 'investigate', 'look closely at', 'study'],
+        r'\bdeep dive\b': ['thorough look', 'detailed examination', 'close look', 'in-depth analysis', 'careful study'],
+        r'\becosystem\b': ['environment', 'system', 'network', 'platform', 'framework'],
+        r'\blandscape\b': ['field', 'area', 'space', 'domain', 'world'],
+        r'\bparadigm\s+shift\b': ['major change', 'fundamental shift', 'big change', 'transformation', 'sea change'],
+        r'\bsynerg(y|istic)\b': ['cooperation', 'collaboration', 'combined effect', 'teamwork', 'partnership'],
+        r'\bcommence(s|d)?\b': ['start', 'begin', 'initiate', 'launch', 'kick off'],
+        r'\bendeavor(s)?\b': ['effort', 'project', 'attempt', 'undertaking', 'initiative'],
     }
 
     # Transition replacements (for detailed mode)
     TRANSITION_REPLACEMENTS = {
-        'Furthermore,': ['Plus,', 'What\'s more,', 'Beyond that,', 'And here\'s the thing,'],
-        'Moreover,': ['Plus,', 'On top of that,', 'And,'],
-        'Additionally,': ['Also,', 'Plus,', 'And,'],
-        'In addition,': ['Also,', 'Plus,', 'What\'s more,'],
-        'First and foremost,': ['First,', 'To start,', 'Most importantly,'],
+        'Furthermore,': ['Plus,', 'What\'s more,', 'Beyond that,', 'And here\'s the thing,', 'On top of that,'],
+        'Moreover,': ['Plus,', 'On top of that,', 'And,', 'What\'s more,', 'Beyond that,'],
+        'Additionally,': ['Also,', 'Plus,', 'And,', 'What\'s more,', 'On top of that,'],
+        'In addition,': ['Also,', 'Plus,', 'What\'s more,', 'Beyond that,', 'And,'],
+        'First and foremost,': ['First,', 'To start,', 'Most importantly,', 'Above all,', 'First off,'],
+        'It is important to note that': ['Note that', 'Keep in mind', 'Remember', 'Worth noting:', 'Key point:'],
+        'It is worth mentioning that': ['Worth noting', 'Keep in mind', 'Note that', 'Also', 'Interestingly,'],
+        'When it comes to': ['For', 'With', 'Regarding', 'As for', 'Looking at'],
+        'In conclusion,': ['Finally,', 'To sum up,', 'In short,', 'Bottom line:', 'To wrap up,'],
+        'To summarize,': ['In short,', 'Briefly,', 'To sum up,', 'Bottom line:', 'In a nutshell,'],
+        'In summary,': ['In short,', 'Briefly,', 'To recap,', 'Bottom line:', 'To sum up,'],
+        'As mentioned earlier,': ['Earlier,', 'As noted,', 'Remember,', 'Recall that', 'As we saw,'],
+        'It should be noted that': ['Note that', 'Keep in mind', 'Remember', 'Worth noting:', 'Important:'],
+        'With that said,': ['That said,', 'Still,', 'Even so,', 'But', 'However,'],
+        'Having said that,': ['That said,', 'Still,', 'Even so,', 'But', 'However,'],
     }
 
     # AI-characteristic vocabulary (from ai-detection-patterns.md)
@@ -339,7 +366,7 @@ class AIPatternAnalyzer:
                         word=word,
                         context=context,
                         full_line=line.strip(),
-                        suggestions=suggestions[:3]  # Top 3 suggestions
+                        suggestions=suggestions[:5]  # Top 5 suggestions
                     ))
 
         return instances
@@ -501,17 +528,21 @@ class AIPatternAnalyzer:
                     # Get full sentence context
                     context = line.strip()
 
-                    # Get suggestions from mapping
-                    suggestions = self.TRANSITION_REPLACEMENTS.get(
-                        transition,
-                        ['Remove transition entirely', 'Use natural flow']
-                    )
+                    # Get suggestions from mapping (case-insensitive lookup)
+                    suggestions = None
+                    for key, values in self.TRANSITION_REPLACEMENTS.items():
+                        if transition.lower() == key.lower():
+                            suggestions = values
+                            break
+
+                    if suggestions is None:
+                        suggestions = ['Remove transition entirely', 'Use natural flow']
 
                     instances.append(TransitionInstance(
                         line_number=line_num,
                         transition=transition,
                         context=context,
-                        suggestions=suggestions[:3]
+                        suggestions=suggestions[:5]
                     ))
 
         return instances
