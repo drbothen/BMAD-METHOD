@@ -372,15 +372,79 @@ class TransitionInstance:
 
 
 @dataclass
+class SentenceBurstinessIssue:
+    """Sentence uniformity problem with location"""
+    start_line: int
+    end_line: int
+    sentence_count: int
+    mean_length: float
+    stdev: float
+    problem: str
+    sentences_preview: List[Tuple[int, str, int]]  # (line, text, word_count)
+    suggestion: str
+
+
+@dataclass
+class SyntacticIssue:
+    """Syntactic complexity issue with location"""
+    line_number: int
+    sentence: str
+    issue_type: str  # 'passive', 'shallow', 'subordination'
+    metric_value: float
+    problem: str
+    suggestion: str
+
+
+@dataclass
+class StylometricIssue:
+    """Stylometric AI marker with location"""
+    line_number: int
+    marker_type: str  # 'however', 'moreover', 'moreover_cluster'
+    context: str
+    frequency: float  # per 1k words
+    problem: str
+    suggestion: str
+
+
+@dataclass
+class FormattingIssue:
+    """Bold/italic overuse with location"""
+    line_number: int
+    issue_type: str  # 'bold_dense', 'italic_dense', 'consistent'
+    context: str
+    density: float
+    problem: str
+    suggestion: str
+
+
+@dataclass
+class HighPredictabilitySegment:
+    """High GLTR score (AI-like) section"""
+    start_line: int
+    end_line: int
+    segment_preview: str
+    gltr_score: float
+    problem: str
+    suggestion: str
+
+
+@dataclass
 class DetailedAnalysis:
     """Comprehensive detailed analysis results"""
     file_path: str
     summary: Dict
+    # Original detailed findings
     ai_vocabulary: List[VocabInstance] = field(default_factory=list)
     heading_issues: List[HeadingIssue] = field(default_factory=list)
     uniform_paragraphs: List[UniformParagraph] = field(default_factory=list)
     em_dashes: List[EmDashInstance] = field(default_factory=list)
     transitions: List[TransitionInstance] = field(default_factory=list)
+    # ADVANCED: New detailed findings
+    burstiness_issues: List[SentenceBurstinessIssue] = field(default_factory=list)
+    syntactic_issues: List[SyntacticIssue] = field(default_factory=list)
+    stylometric_issues: List[StylometricIssue] = field(default_factory=list)
+    formatting_issues: List[FormattingIssue] = field(default_factory=list)
+    high_predictability_segments: List[HighPredictabilitySegment] = field(default_factory=list)
 
 
 @dataclass
@@ -746,12 +810,19 @@ class AIPatternAnalyzer:
         # Run standard analysis for summary
         standard_results = self.analyze_file(file_path)
 
-        # Run detailed analyses
+        # Run detailed analyses - Original methods
         vocab_instances = self._analyze_ai_vocabulary_detailed()
         heading_issues = self._analyze_headings_detailed()
         uniform_paras = self._analyze_sentence_uniformity_detailed()
         em_dash_instances = self._analyze_em_dashes_detailed()
         transition_instances = self._analyze_transitions_detailed()
+
+        # ADVANCED: New detailed analyses for advanced metrics
+        burstiness_issues = self._analyze_burstiness_issues_detailed()
+        syntactic_issues = self._analyze_syntactic_issues_detailed()
+        stylometric_issues = self._analyze_stylometric_issues_detailed()
+        formatting_issues = self._analyze_formatting_issues_detailed()
+        high_pred_segments = self._analyze_high_predictability_segments_detailed()
 
         # Build summary dict from standard results
         summary = {
@@ -769,16 +840,28 @@ class AIPatternAnalyzer:
             'em_dashes_per_page': standard_results.em_dashes_per_page,
             'heading_depth': standard_results.heading_depth,
             'heading_parallelism': standard_results.heading_parallelism_score,
+            # ADVANCED: Include new metric scores
+            'gltr_score': standard_results.gltr_score if standard_results.gltr_score else "N/A",
+            'advanced_lexical_score': standard_results.advanced_lexical_score if standard_results.advanced_lexical_score else "N/A",
+            'stylometric_score': standard_results.stylometric_score if standard_results.stylometric_score else "N/A",
+            'ai_detection_score': standard_results.ai_detection_score if standard_results.ai_detection_score else "N/A",
         }
 
         return DetailedAnalysis(
             file_path=file_path,
             summary=summary,
+            # Original detailed findings
             ai_vocabulary=vocab_instances[:15],  # Limit to top 15
             heading_issues=heading_issues,
             uniform_paragraphs=uniform_paras,
             em_dashes=em_dash_instances[:20],  # Limit to top 20
             transitions=transition_instances[:15],  # Limit to top 15
+            # ADVANCED: New detailed findings
+            burstiness_issues=burstiness_issues[:10],  # Limit to top 10
+            syntactic_issues=syntactic_issues[:20],  # Limit to top 20
+            stylometric_issues=stylometric_issues[:15],  # Limit to top 15
+            formatting_issues=formatting_issues[:15],  # Limit to top 15
+            high_predictability_segments=high_pred_segments[:10],  # Limit to top 10
         )
 
     def _analyze_ai_vocabulary_detailed(self) -> List[VocabInstance]:
@@ -983,6 +1066,338 @@ class AIPatternAnalyzer:
                     ))
 
         return instances
+
+    def _analyze_burstiness_issues_detailed(self) -> List[SentenceBurstinessIssue]:
+        """Detect sections with uniform sentence lengths (low burstiness)"""
+        issues = []
+
+        # Split into paragraphs
+        current_para = []
+        para_start_line = 1
+
+        for line_num, line in enumerate(self.lines, start=1):
+            stripped = line.strip()
+
+            # Skip headings and code blocks
+            if stripped.startswith('#') or stripped.startswith('```'):
+                continue
+
+            if stripped:
+                current_para.append((line_num, line))
+            else:
+                # End of paragraph - analyze it
+                if len(current_para) >= 3:
+                    para_text = ' '.join([l[1] for l in current_para])
+                    sent_pattern = re.compile(r'(?<=[.!?])\s+')
+                    sentences = [s.strip() for s in sent_pattern.split(para_text) if s.strip()]
+
+                    if len(sentences) >= 3:
+                        lengths = [len(re.findall(r"[\w'-]+", s)) for s in sentences]
+                        if len(lengths) > 1:
+                            mean = statistics.mean(lengths)
+                            stdev = statistics.stdev(lengths)
+
+                            # Low burstiness: stdev < 5 words (AI signature)
+                            if stdev < 5:
+                                # Get preview of sentences with their lengths
+                                preview = []
+                                for i, sent in enumerate(sentences[:3]):
+                                    preview.append((
+                                        current_para[0][0] + i,  # Line number
+                                        sent[:60] + '...' if len(sent) > 60 else sent,
+                                        lengths[i]
+                                    ))
+
+                                issues.append(SentenceBurstinessIssue(
+                                    start_line=current_para[0][0],
+                                    end_line=current_para[-1][0],
+                                    sentence_count=len(sentences),
+                                    mean_length=round(mean, 1),
+                                    stdev=round(stdev, 1),
+                                    problem=f'Uniform sentence lengths ({int(min(lengths))}-{int(max(lengths))} words, σ={stdev:.1f})',
+                                    sentences_preview=preview,
+                                    suggestion='Add variety: combine short sentences (5-10 words), keep medium (15-25), add complex (30-45 words)'
+                                ))
+
+                current_para = []
+                para_start_line = line_num + 1
+
+        return issues
+
+    def _analyze_syntactic_issues_detailed(self) -> List[SyntacticIssue]:
+        """Detect syntactic complexity issues (passive voice, shallow trees, low subordination)"""
+        if not HAS_SPACY:
+            return []
+
+        issues = []
+
+        try:
+            import spacy
+            nlp = spacy.load('en_core_web_sm')
+
+            for line_num, line in enumerate(self.lines, start=1):
+                stripped = line.strip()
+
+                # Skip headings, code blocks, and short lines
+                if not stripped or stripped.startswith('#') or stripped.startswith('```') or len(stripped) < 20:
+                    continue
+
+                # Parse sentences on this line
+                doc = nlp(stripped)
+
+                for sent in doc.sents:
+                    sent_text = sent.text.strip()
+                    if len(sent_text) < 10:
+                        continue
+
+                    # Check for passive constructions
+                    has_passive = any(token.dep_ in ['nsubjpass', 'auxpass'] for token in sent)
+                    if has_passive:
+                        issues.append(SyntacticIssue(
+                            line_number=line_num,
+                            sentence=sent_text[:100] + '...' if len(sent_text) > 100 else sent_text,
+                            issue_type='passive',
+                            metric_value=1.0,
+                            problem='Passive voice construction (AI tends to overuse)',
+                            suggestion='Convert to active voice - identify actor and make them the subject'
+                        ))
+
+                    # Check for shallow dependency trees (depth < 3)
+                    max_depth = 0
+                    for token in sent:
+                        depth = 1
+                        current = token
+                        while current.head != current:
+                            depth += 1
+                            current = current.head
+                        max_depth = max(max_depth, depth)
+
+                    if max_depth < 3 and len(sent) > 10:
+                        issues.append(SyntacticIssue(
+                            line_number=line_num,
+                            sentence=sent_text[:100] + '...' if len(sent_text) > 100 else sent_text,
+                            issue_type='shallow',
+                            metric_value=max_depth,
+                            problem=f'Shallow syntax (depth={max_depth}, human avg=4-6)',
+                            suggestion='Add subordinate clauses, relative clauses, or prepositional phrases'
+                        ))
+
+                    # Check for low subordination (no subordinate clauses)
+                    subordinate_count = sum(1 for token in sent if token.dep_ in ['advcl', 'ccomp', 'xcomp', 'acl', 'relcl'])
+                    if subordinate_count == 0 and len(sent) > 15:
+                        issues.append(SyntacticIssue(
+                            line_number=line_num,
+                            sentence=sent_text[:100] + '...' if len(sent_text) > 100 else sent_text,
+                            issue_type='subordination',
+                            metric_value=0.0,
+                            problem='No subordinate clauses (simple construction)',
+                            suggestion='Add "because", "while", "although", or "when" clauses for complexity'
+                        ))
+
+        except Exception as e:
+            print(f"Warning: Syntactic analysis failed: {e}", file=sys.stderr)
+
+        return issues
+
+    def _analyze_stylometric_issues_detailed(self) -> List[StylometricIssue]:
+        """Detect AI-specific stylometric markers (however, moreover, repetitive vocabulary)"""
+        issues = []
+
+        # Track "however" and "moreover" usage
+        however_pattern = re.compile(r'\bhowever\b', re.IGNORECASE)
+        moreover_pattern = re.compile(r'\bmoreover\b', re.IGNORECASE)
+
+        # Count total words for frequency calculation
+        total_words = sum(len(re.findall(r'\b\w+\b', line)) for line in self.lines)
+        words_in_thousands = total_words / 1000 if total_words > 0 else 1
+
+        for line_num, line in enumerate(self.lines, start=1):
+            stripped = line.strip()
+
+            # Skip headings and code blocks
+            if stripped.startswith('#') or stripped.startswith('```'):
+                continue
+
+            # Check for "however" (AI: 5-10 per 1k, Human: 1-3 per 1k)
+            however_matches = list(however_pattern.finditer(line))
+            for match in however_matches:
+                context = line.strip()
+                issues.append(StylometricIssue(
+                    line_number=line_num,
+                    marker_type='however',
+                    context=context[:120] + '...' if len(context) > 120 else context,
+                    frequency=len(however_matches) / words_in_thousands if words_in_thousands > 0 else 0,
+                    problem='"However" is AI transition marker (human writers use sparingly)',
+                    suggestion='Replace with: "But", "Yet", "Still", or natural flow without transition'
+                ))
+
+            # Check for "moreover" (AI: 3-7 per 1k, Human: 0-1 per 1k)
+            moreover_matches = list(moreover_pattern.finditer(line))
+            for match in moreover_matches:
+                context = line.strip()
+                issues.append(StylometricIssue(
+                    line_number=line_num,
+                    marker_type='moreover',
+                    context=context[:120] + '...' if len(context) > 120 else context,
+                    frequency=len(moreover_matches) / words_in_thousands if words_in_thousands > 0 else 0,
+                    problem='"Moreover" is strong AI signature (very rare in human writing)',
+                    suggestion='Replace with: "Also", "And", "Plus", or remove transition entirely'
+                ))
+
+        # Check for clusters (multiple "however" in close proximity)
+        however_lines = [i for i, line in enumerate(self.lines, start=1)
+                        if however_pattern.search(line)]
+        for i in range(len(however_lines) - 1):
+            if however_lines[i+1] - however_lines[i] <= 3:  # Within 3 lines
+                issues.append(StylometricIssue(
+                    line_number=however_lines[i],
+                    marker_type='however_cluster',
+                    context=f'Lines {however_lines[i]}-{however_lines[i+1]}',
+                    frequency=2 / words_in_thousands if words_in_thousands > 0 else 0,
+                    problem='Clustered "however" usage (strong AI signature)',
+                    suggestion='Vary transitions or remove some instances entirely'
+                ))
+
+        return issues
+
+    def _analyze_formatting_issues_detailed(self) -> List[FormattingIssue]:
+        """Detect excessive bold/italic usage and mechanical formatting patterns"""
+        issues = []
+
+        bold_pattern = re.compile(r'\*\*[^*]+\*\*|__[^_]+__')
+        italic_pattern = re.compile(r'\*[^*]+\*|_[^_]+_')
+
+        for line_num, line in enumerate(self.lines, start=1):
+            stripped = line.strip()
+
+            # Skip headings and code blocks
+            if stripped.startswith('#') or stripped.startswith('```'):
+                continue
+
+            if not stripped:
+                continue
+
+            # Count formatting on this line
+            word_count = len(re.findall(r'\b\w+\b', line))
+            if word_count == 0:
+                continue
+
+            bold_matches = list(bold_pattern.finditer(line))
+            italic_matches = list(italic_pattern.finditer(line))
+
+            bold_words = sum(len(re.findall(r'\b\w+\b', match.group())) for match in bold_matches)
+            italic_words = sum(len(re.findall(r'\b\w+\b', match.group())) for match in italic_matches)
+
+            bold_density = (bold_words / word_count) * 100 if word_count > 0 else 0
+            italic_density = (italic_words / word_count) * 100 if word_count > 0 else 0
+
+            # Excessive bold (>10% of words)
+            if bold_density > 10:
+                context = line.strip()[:100] + '...' if len(line.strip()) > 100 else line.strip()
+                issues.append(FormattingIssue(
+                    line_number=line_num,
+                    issue_type='bold_dense',
+                    context=context,
+                    density=bold_density,
+                    problem=f'Excessive bolding ({bold_density:.1f}% of words, target <5%)',
+                    suggestion='Remove bold from less critical terms; reserve for key concepts only'
+                ))
+
+            # Excessive italic (>15% of words, excluding functional use)
+            if italic_density > 15:
+                context = line.strip()[:100] + '...' if len(line.strip()) > 100 else line.strip()
+                issues.append(FormattingIssue(
+                    line_number=line_num,
+                    issue_type='italic_dense',
+                    context=context,
+                    density=italic_density,
+                    problem=f'Excessive italics ({italic_density:.1f}% of words, target <10%)',
+                    suggestion='Use italics functionally: titles, defined terms, subtle emphasis only'
+                ))
+
+        return issues
+
+    def _analyze_high_predictability_segments_detailed(self) -> List[HighPredictabilitySegment]:
+        """Identify text segments with high GLTR scores (AI-like predictability)"""
+        if not HAS_TRANSFORMERS:
+            return []
+
+        issues = []
+
+        try:
+            global _perplexity_model, _perplexity_tokenizer
+
+            if _perplexity_model is None:
+                # Model already loaded in other GLTR function
+                return []
+
+            # Analyze in 50-100 word chunks
+            chunk_size = 75  # words
+            current_chunk = []
+            chunk_start_line = 1
+
+            for line_num, line in enumerate(self.lines, start=1):
+                stripped = line.strip()
+
+                # Skip headings and code blocks
+                if stripped.startswith('#') or stripped.startswith('```'):
+                    continue
+
+                if stripped:
+                    words = re.findall(r'\b\w+\b', stripped)
+                    current_chunk.extend(words)
+
+                    if len(current_chunk) >= chunk_size:
+                        # Analyze this chunk
+                        chunk_text = ' '.join(current_chunk)
+
+                        # Calculate GLTR for chunk
+                        try:
+                            tokens = _perplexity_tokenizer.encode(chunk_text, add_special_tokens=True)
+                            if len(tokens) < 10:
+                                current_chunk = []
+                                chunk_start_line = line_num + 1
+                                continue
+
+                            import torch
+                            ranks = []
+                            for i in range(1, min(len(tokens), 100)):
+                                input_ids = torch.tensor([tokens[:i]])
+                                with torch.no_grad():
+                                    outputs = _perplexity_model(input_ids)
+                                    logits = outputs.logits[0, -1, :]
+                                    probs = torch.softmax(logits, dim=-1)
+                                    sorted_indices = torch.argsort(probs, descending=True)
+                                    actual_token = tokens[i]
+                                    rank = (sorted_indices == actual_token).nonzero(as_tuple=True)[0].item()
+                                    ranks.append(rank)
+
+                            if ranks:
+                                top10_pct = sum(1 for r in ranks if r < 10) / len(ranks)
+
+                                # High predictability: >70% in top-10
+                                if top10_pct > 0.70:
+                                    preview = chunk_text[:150] + '...' if len(chunk_text) > 150 else chunk_text
+                                    issues.append(HighPredictabilitySegment(
+                                        start_line=chunk_start_line,
+                                        end_line=line_num,
+                                        segment_preview=preview,
+                                        gltr_score=top10_pct,
+                                        problem=f'High predictability (GLTR={top10_pct:.2f}, AI threshold >0.70)',
+                                        suggestion='Rewrite with less common word choices, vary sentence structure, add unexpected turns'
+                                    ))
+
+                        except Exception as e:
+                            print(f"Warning: GLTR chunk analysis failed: {e}", file=sys.stderr)
+
+                        # Reset chunk
+                        current_chunk = []
+                        chunk_start_line = line_num + 1
+
+        except Exception as e:
+            print(f"Warning: High predictability segment analysis failed: {e}", file=sys.stderr)
+
+        return issues
 
     def analyze_file(self, file_path: str) -> AnalysisResults:
         """Analyze a single markdown file for AI patterns"""
@@ -3111,11 +3526,18 @@ def format_detailed_report(analysis: DetailedAnalysis, output_format: str = 'tex
         return json.dumps({
             'file_path': analysis.file_path,
             'summary': analysis.summary,
+            # Original detailed findings
             'ai_vocabulary': [asdict(v) for v in analysis.ai_vocabulary],
             'heading_issues': [asdict(h) for h in analysis.heading_issues],
             'uniform_paragraphs': [asdict(p) for p in analysis.uniform_paragraphs],
             'em_dashes': [asdict(e) for e in analysis.em_dashes],
             'transitions': [asdict(t) for t in analysis.transitions],
+            # ADVANCED: New detailed findings for LLM-driven fixes
+            'burstiness_issues': [asdict(b) for b in analysis.burstiness_issues],
+            'syntactic_issues': [asdict(s) for s in analysis.syntactic_issues],
+            'stylometric_issues': [asdict(s) for s in analysis.stylometric_issues],
+            'formatting_issues': [asdict(f) for f in analysis.formatting_issues],
+            'high_predictability_segments': [asdict(h) for h in analysis.high_predictability_segments],
         }, indent=2)
 
     else:  # text format
@@ -3317,6 +3739,196 @@ FORMULAIC TRANSITIONS ({len(analysis.transitions)} found)
             report += f"""
 {'─' * 80}
 TRANSITIONS: Natural transitions used ✓
+{'─' * 80}
+
+"""
+
+        # ADVANCED: Burstiness Issues
+        if analysis.burstiness_issues:
+            report += f"""
+{'─' * 80}
+BURSTINESS ISSUES ({len(analysis.burstiness_issues)} sections with uniform sentence lengths)
+{'─' * 80}
+
+"""
+            for issue in analysis.burstiness_issues[:5]:  # Show top 5
+                report += f"""Lines {issue.start_line}-{issue.end_line} ({issue.sentence_count} sentences):
+  Mean: {issue.mean_length} words | StdDev: {issue.stdev} (LOW VARIATION)
+  Problem: {issue.problem}
+  Sample sentences:
+"""
+                for line_num, text, word_count in issue.sentences_preview:
+                    report += f"""    Line {line_num}: "{text}" ({word_count} words)
+"""
+                report += f"""  → Suggestion: {issue.suggestion}
+
+"""
+        else:
+            report += f"""
+{'─' * 80}
+BURSTINESS: Good sentence variation ✓
+{'─' * 80}
+
+"""
+
+        # ADVANCED: Syntactic Issues
+        if analysis.syntactic_issues:
+            # Group by type
+            passive_issues = [s for s in analysis.syntactic_issues if s.issue_type == 'passive']
+            shallow_issues = [s for s in analysis.syntactic_issues if s.issue_type == 'shallow']
+            subordination_issues = [s for s in analysis.syntactic_issues if s.issue_type == 'subordination']
+
+            report += f"""
+{'─' * 80}
+SYNTACTIC COMPLEXITY ISSUES ({len(analysis.syntactic_issues)} total)
+{'─' * 80}
+
+"""
+            if passive_issues:
+                report += f"""PASSIVE VOICE ({len(passive_issues)} instances):
+"""
+                for syn in passive_issues[:3]:
+                    report += f"""  Line {syn.line_number}: {syn.sentence}
+    → {syn.suggestion}
+
+"""
+
+            if shallow_issues:
+                report += f"""
+SHALLOW SYNTAX ({len(shallow_issues)} instances):
+"""
+                for syn in shallow_issues[:3]:
+                    report += f"""  Line {syn.line_number}: {syn.sentence}
+    Problem: {syn.problem}
+    → {syn.suggestion}
+
+"""
+
+            if subordination_issues:
+                report += f"""
+LOW SUBORDINATION ({len(subordination_issues)} instances):
+"""
+                for syn in subordination_issues[:3]:
+                    report += f"""  Line {syn.line_number}: {syn.sentence}
+    → {syn.suggestion}
+
+"""
+        else:
+            report += f"""
+{'─' * 80}
+SYNTACTIC COMPLEXITY: Good variation ✓
+{'─' * 80}
+
+"""
+
+        # ADVANCED: Stylometric Issues
+        if analysis.stylometric_issues:
+            # Group by marker type
+            however_issues = [s for s in analysis.stylometric_issues if s.marker_type == 'however']
+            moreover_issues = [s for s in analysis.stylometric_issues if s.marker_type == 'moreover']
+            cluster_issues = [s for s in analysis.stylometric_issues if s.marker_type == 'however_cluster']
+
+            report += f"""
+{'─' * 80}
+STYLOMETRIC AI MARKERS ({len(analysis.stylometric_issues)} total)
+{'─' * 80}
+
+"""
+            if however_issues:
+                report += f""""HOWEVER" USAGE ({len(however_issues)} instances - AI marker):
+"""
+                for styl in however_issues[:5]:
+                    report += f"""  Line {styl.line_number}: {styl.context}
+    → {styl.suggestion}
+
+"""
+
+            if moreover_issues:
+                report += f"""
+"MOREOVER" USAGE ({len(moreover_issues)} instances - strong AI signature):
+"""
+                for styl in moreover_issues[:5]:
+                    report += f"""  Line {styl.line_number}: {styl.context}
+    → {styl.suggestion}
+
+"""
+
+            if cluster_issues:
+                report += f"""
+CLUSTERED MARKERS ({len(cluster_issues)} clusters - strong AI signature):
+"""
+                for styl in cluster_issues:
+                    report += f"""  {styl.context}
+    → {styl.suggestion}
+
+"""
+        else:
+            report += f"""
+{'─' * 80}
+STYLOMETRIC MARKERS: Natural writing patterns ✓
+{'─' * 80}
+
+"""
+
+        # ADVANCED: Formatting Issues
+        if analysis.formatting_issues:
+            bold_issues = [f for f in analysis.formatting_issues if f.issue_type == 'bold_dense']
+            italic_issues = [f for f in analysis.formatting_issues if f.issue_type == 'italic_dense']
+
+            report += f"""
+{'─' * 80}
+FORMATTING PATTERN ISSUES ({len(analysis.formatting_issues)} total)
+{'─' * 80}
+
+"""
+            if bold_issues:
+                report += f"""EXCESSIVE BOLD ({len(bold_issues)} lines):
+"""
+                for fmt in bold_issues[:5]:
+                    report += f"""  Line {fmt.line_number}: {fmt.context}
+    Problem: {fmt.problem}
+    → {fmt.suggestion}
+
+"""
+
+            if italic_issues:
+                report += f"""
+EXCESSIVE ITALIC ({len(italic_issues)} lines):
+"""
+                for fmt in italic_issues[:5]:
+                    report += f"""  Line {fmt.line_number}: {fmt.context}
+    Problem: {fmt.problem}
+    → {fmt.suggestion}
+
+"""
+        else:
+            report += f"""
+{'─' * 80}
+FORMATTING PATTERNS: Natural variation ✓
+{'─' * 80}
+
+"""
+
+        # ADVANCED: High Predictability Segments
+        if analysis.high_predictability_segments:
+            report += f"""
+{'─' * 80}
+HIGH PREDICTABILITY SEGMENTS ({len(analysis.high_predictability_segments)} AI-like sections found)
+{'─' * 80}
+These sections score high on GLTR analysis (>70% top-10 tokens = AI signature)
+
+"""
+            for seg in analysis.high_predictability_segments[:5]:
+                report += f"""Lines {seg.start_line}-{seg.end_line} (GLTR={seg.gltr_score:.2f}):
+  Preview: {seg.segment_preview}
+  Problem: {seg.problem}
+  → {seg.suggestion}
+
+"""
+        else:
+            report += f"""
+{'─' * 80}
+PREDICTABILITY: Natural word choice variation ✓
 {'─' * 80}
 
 """
