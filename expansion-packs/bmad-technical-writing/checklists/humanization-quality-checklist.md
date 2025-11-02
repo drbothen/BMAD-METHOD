@@ -23,7 +23,7 @@ Verify that humanized content meets quality standards across all critical dimens
 ### Run Dual Score Analysis
 
 ```bash
-cd {{config.root}}/tools
+cd {{config.root}}/data/tools
 source nlp-env/bin/activate  # Activate Python environment
 python analyze_ai_patterns.py PATH_TO_FILE \
   --show-scores \

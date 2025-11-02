@@ -41,7 +41,7 @@ The tool supports **three analysis modes**:
 ## Prerequisites
 
 - Python 3.7+ installed (Python 3.9+ recommended)
-- AI Pattern Analysis Tool available at `{{config.root}}/tools/analyze_ai_patterns.py`
+- AI Pattern Analysis Tool available at `{{config.root}}/data/tools/analyze_ai_patterns.py`
 - Markdown files to analyze (chapters, sections, or entire manuscript)
 - Python virtual environment set up with required dependencies (see setup below)
 
@@ -54,7 +54,7 @@ The tool supports **three analysis modes**:
 **Navigate to tools directory**:
 
 ```bash
-cd {{config.root}}/tools
+cd {{config.root}}/data/tools
 ```
 
 **Create virtual environment** (one-time setup):
@@ -100,7 +100,7 @@ python analyze_ai_patterns.py --help
 - **First-time setup takes 5-10 minutes** (downloading models ~500MB-1GB total)
 - **Subsequent uses**: Just activate the environment (`source nlp-env/bin/activate`)
 - **When done**: Deactivate with `deactivate` command
-- **Virtual environment location**: `{{config.root}}/tools/nlp-env/` (gitignored)
+- **Virtual environment location**: `{{config.root}}/data/tools/nlp-env/` (gitignored)
 
 **Troubleshooting**:
 
@@ -146,7 +146,7 @@ python analyze_ai_patterns.py --help
 **IMPORTANT**: Activate the virtual environment first (every time you use the tool):
 
 ```bash
-cd {{config.root}}/tools
+cd {{config.root}}/data/tools
 source nlp-env/bin/activate  # macOS/Linux
 # OR nlp-env\Scripts\activate  # Windows
 ```
@@ -401,7 +401,7 @@ Strategy: Do Actions 1 and 2 first (12 pts gain, ~1 hour)
 **IMPORTANT**: Activate virtual environment first:
 
 ```bash
-cd {{config.root}}/tools
+cd {{config.root}}/data/tools
 source nlp-env/bin/activate  # macOS/Linux
 ```
 
@@ -591,14 +591,14 @@ Estimated time: [TIME] minutes
 
 ## Tool Reference
 
-**Script location**: `{{config.root}}/tools/analyze_ai_patterns.py`
-**Documentation**: `{{config.root}}/tools/README.md`
-**Requirements**: `{{config.root}}/tools/requirements.txt`
+**Script location**: `{{config.root}}/data/tools/analyze_ai_patterns.py`
+**Documentation**: `{{config.root}}/data/tools/README.md`
+**Requirements**: `{{config.root}}/data/tools/requirements.txt`
 
 **Installation** (see Step 0 above for full setup):
 
 ```bash
-cd {{config.root}}/tools
+cd {{config.root}}/data/tools
 python3 -m venv nlp-env
 source nlp-env/bin/activate
 pip install -r requirements.txt
@@ -634,7 +634,7 @@ deactivate
 
 ```bash
 # Navigate to tools directory
-cd /Users/author/manuscript-project/.bmad-technical-writing/tools
+cd /Users/author/manuscript-project/.bmad-technical-writing/data/tools
 
 # Activate virtual environment
 source nlp-env/bin/activate

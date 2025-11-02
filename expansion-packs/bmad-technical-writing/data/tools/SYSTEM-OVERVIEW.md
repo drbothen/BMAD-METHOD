@@ -153,7 +153,7 @@ Adjust based on content type and stakes:
 
 ```bash
 # Activate virtual environment
-cd expansion-packs/bmad-technical-writing/tools
+cd expansion-packs/bmad-technical-writing/data/tools
 source nlp-env/bin/activate
 
 # Run dual score analysis
@@ -172,7 +172,7 @@ python analyze_ai_patterns.py /path/to/file.md \
 **First-time setup**:
 
 ```bash
-cd tools
+cd data/tools
 python3 -m venv nlp-env
 source nlp-env/bin/activate
 pip install -r requirements.txt
@@ -186,9 +186,9 @@ python -m spacy download en_core_web_sm
 
 **Core Tool**:
 
-- `tools/analyze_ai_patterns.py` - 14-dimension dual scoring engine
-- `tools/README.md` - Complete technical documentation
-- `tools/requirements.txt` - Python dependencies
+- `data/tools/analyze_ai_patterns.py` - 14-dimension dual scoring engine
+- `data/tools/README.md` - Complete technical documentation
+- `data/tools/requirements.txt` - Python dependencies
 
 **Tasks** (executable workflows):
 
@@ -230,7 +230,7 @@ python -m spacy download en_core_web_sm
 **Use case**: Initial assessment of AI-generated draft
 
 ```bash
-cd tools
+cd data/tools
 source nlp-env/bin/activate
 python analyze_ai_patterns.py ../manuscript/chapter-03.md \
   --show-scores \
@@ -413,7 +413,7 @@ Generates journey documentation:
 
 ### For New Users
 
-1. **Read**: `tools/README.md` - Complete technical documentation
+1. **Read**: `data/tools/README.md` - Complete technical documentation
 2. **Setup**: Run first-time Python environment setup (5 min)
 3. **Test**: Analyze sample file to understand output format (5 min)
 4. **Learn**: Review path-to-target recommendations structure

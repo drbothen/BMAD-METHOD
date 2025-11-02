@@ -18,7 +18,7 @@ Systematically optimize AI-generated content through iterative humanization pass
 ## Prerequisites
 
 - Python 3.7+ installed (Python 3.9+ recommended)
-- AI Pattern Analysis Tool with dual scoring (`{{config.root}}/tools/analyze_ai_patterns.py`)
+- AI Pattern Analysis Tool with dual scoring (`{{config.root}}/data/tools/analyze_ai_patterns.py`)
 - Python virtual environment set up with required dependencies (see analyze-ai-patterns.md task for setup)
 - AI-generated content ready for humanization
 - Clear understanding of target scores (defaults: Quality ≥85, Detection ≤30)
@@ -46,7 +46,7 @@ Systematically optimize AI-generated content through iterative humanization pass
 See `analyze-ai-patterns.md` task Step 0 for complete setup instructions, or run:
 
 ```bash
-cd {{config.root}}/tools
+cd {{config.root}}/data/tools
 python3 -m venv nlp-env
 source nlp-env/bin/activate
 pip install -r requirements.txt
@@ -88,7 +88,7 @@ Optimization Targets for {{content_name}}:
 **Activate environment**:
 
 ```bash
-cd {{config.root}}/tools
+cd {{config.root}}/data/tools
 source nlp-env/bin/activate
 ```
 
@@ -448,7 +448,7 @@ Total: 2 iterations, 75 minutes, +18.7 quality points
 
 ```bash
 # Environment activation (every session)
-cd {{config.root}}/tools
+cd {{config.root}}/data/tools
 source nlp-env/bin/activate  # macOS/Linux
 # OR nlp-env\Scripts\activate  # Windows
 

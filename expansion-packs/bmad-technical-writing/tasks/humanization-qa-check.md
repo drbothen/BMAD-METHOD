@@ -18,7 +18,7 @@ Validate that humanization efforts have successfully removed AI patterns and tha
 
 - Content that has undergone humanization editing
 - Python 3.7+ installed (Python 3.9+ recommended) for quantitative analysis
-- AI Pattern Analysis Tool (`{{config.root}}/tools/analyze_ai_patterns.py`)
+- AI Pattern Analysis Tool (`{{config.root}}/data/tools/analyze_ai_patterns.py`)
 - Python virtual environment set up with required dependencies (see analyze-ai-patterns.md task for setup)
 - Before-humanization baseline metrics (recommended for comparison)
 - 20-30 minutes for comprehensive QA check
@@ -38,7 +38,7 @@ Validate that humanization efforts have successfully removed AI patterns and tha
 **Execute dual score analysis on humanized content**:
 
 ```bash
-cd {{config.root}}/tools
+cd {{config.root}}/data/tools
 
 # Activate virtual environment (REQUIRED every time)
 source nlp-env/bin/activate  # macOS/Linux

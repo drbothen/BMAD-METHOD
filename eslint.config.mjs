@@ -7,12 +7,7 @@ import yml from 'eslint-plugin-yml';
 export default [
   // Global ignores for files/folders that should not be linted
   {
-    ignores: [
-      'dist/**',
-      'coverage/**',
-      '**/*.min.js',
-      'expansion-packs/bmad-technical-writing/tools/nlp-env/**',
-    ],
+    ignores: ['dist/**', 'coverage/**', '**/*.min.js', '**/nlp-env/**'],
   },
 
   // Base JavaScript recommended rules

@@ -23,7 +23,7 @@ Systematically identify AI-characteristic patterns in content to diagnose humani
 ### Run AI Pattern Analysis Tool
 
 ```bash
-cd {{config.root}}/tools
+cd {{config.root}}/data/tools
 
 # Activate Python environment (required first time - see analyze-ai-patterns.md for setup)
 source nlp-env/bin/activate  # macOS/Linux

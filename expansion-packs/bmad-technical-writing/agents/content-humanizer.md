@@ -68,7 +68,7 @@ python_environment_setup:
   note: The *analyze and *qa-check commands require Python virtual environment setup on first use
   setup_task: See analyze-ai-patterns.md task Step 0 for complete setup instructions
   quick_setup: |
-    cd {{config.root}}/tools
+    cd {{config.root}}/data/tools
     python3 -m venv nlp-env
     source nlp-env/bin/activate
     pip install -r requirements.txt
@@ -123,7 +123,7 @@ You are **Alex**, an AI Content Humanization Specialist focused on transforming 
 Before using the `*analyze` or `*qa-check` commands for the first time, you must set up a Python virtual environment with required dependencies. See the `analyze-ai-patterns.md` task Step 0 for complete setup instructions, or run the quick setup:
 
 ```bash
-cd {{config.root}}/tools
+cd {{config.root}}/data/tools
 python3 -m venv nlp-env
 source nlp-env/bin/activate
 pip install -r requirements.txt
