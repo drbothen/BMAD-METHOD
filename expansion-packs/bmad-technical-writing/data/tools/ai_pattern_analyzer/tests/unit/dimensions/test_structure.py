@@ -1192,3 +1192,185 @@ class TestScoreMethodBranches:
         # issues = 5, should be VERY LOW (2.0)
         assert score == 2.0
         assert label == "VERY LOW"
+
+
+# ============================================================================
+# Additional Branch Coverage - Helper Methods
+# ============================================================================
+
+class TestHasCommonPattern:
+    """Tests for _has_common_pattern() method - Lines 221, 240."""
+
+    def test_has_common_pattern_understanding(self, analyzer):
+        """Test detection of 'Understanding' pattern - Line 221."""
+        texts = [
+            "Understanding Python",
+            "Understanding Django",
+            "Understanding Flask"
+        ]
+        result = analyzer._has_common_pattern(texts)
+        assert result is True  # Line 221, 240
+
+    def test_has_common_pattern_how_to(self, analyzer):
+        """Test detection of 'How to' pattern - Line 221."""
+        texts = [
+            "How to Install",
+            "How to Configure",
+            "How to Deploy"
+        ]
+        result = analyzer._has_common_pattern(texts)
+        assert result is True
+
+    def test_has_common_pattern_no_match(self, analyzer):
+        """Test no pattern detected returns False - Line 240."""
+        texts = [
+            "Random Title One",
+            "Another Different Title",
+            "Yet Another Heading"
+        ]
+        result = analyzer._has_common_pattern(texts)
+        assert result is False  # Line 240
+
+    def test_has_common_pattern_below_threshold(self, analyzer):
+        """Test pattern below 60% threshold returns False - Line 240."""
+        texts = [
+            "Understanding Python",
+            "Random Title",
+            "Another Title",
+            "Different Heading"
+        ]
+        result = analyzer._has_common_pattern(texts)
+        assert result is False  # Only 25% match, below 60% threshold
+
+
+class TestSectionVarianceEdgeCases:
+    """Tests for _calculate_section_variance() edge cases - Lines 275, 280, 284, 306."""
+
+    def test_section_variance_empty_content(self, analyzer):
+        """Test section with no content after heading - Line 275."""
+        text = """# Section One
+
+# Section Two
+
+# Section Three
+
+"""
+        result = analyzer._calculate_section_variance(text)
+        # All sections have empty content, should return INSUFFICIENT_DATA
+        assert result['assessment'] == 'INSUFFICIENT_DATA'  # Line 284
+        assert result['section_count'] < 3
+
+    def test_section_variance_zero_words(self, analyzer):
+        """Test section with zero word count handling - Line 280."""
+        text = """# Section One
+
+```python
+# Only code, no text
+```
+
+# Section Two
+
+Some text here.
+
+# Section Three
+
+More content.
+"""
+        result = analyzer._calculate_section_variance(text)
+        # Sections with 0 words should be excluded (line 280)
+        assert 'variance_pct' in result
+
+    def test_section_variance_insufficient_data(self, analyzer):
+        """Test with fewer than 3 sections - Line 284."""
+        text = """# Section One
+
+Some content here.
+
+# Section Two
+
+More content.
+"""
+        result = analyzer._calculate_section_variance(text)
+        assert result['assessment'] == 'INSUFFICIENT_DATA'  # Line 284
+        assert result['variance_pct'] == 0.0
+        assert result['score'] == 8.0
+        assert result['section_count'] < 3
+
+    def test_section_variance_fair_range(self, analyzer):
+        """Test variance in FAIR range (15-25%) - Line 306."""
+        # Create sections with ~20% variance
+        text = """# Section One
+
+""" + ("word " * 100) + """
+
+# Section Two
+
+""" + ("word " * 120) + """
+
+# Section Three
+
+""" + ("word " * 110) + """
+
+# Section Four
+
+""" + ("word " * 115) + """
+"""
+        result = analyzer._calculate_section_variance(text)
+        # Should fall in FAIR range (15-25% variance)
+        if 15 <= result['variance_pct'] < 25:
+            assert result['assessment'] == 'FAIR'  # Line 306
+            assert result['score'] == 3.0
+
+
+class TestListNestingDepthBranches:
+    """Tests for list nesting depth edge cases - Lines 366, 370."""
+
+    def test_list_nesting_no_lists(self, analyzer):
+        """Test with no lists in text."""
+        text = "# Title\n\nJust regular text without lists."
+        result = analyzer._calculate_list_nesting_depth(text)
+        assert result['max_depth'] == 0
+        assert result['avg_depth'] == 0.0
+        assert result['assessment'] == 'NO_LISTS'
+
+    def test_list_nesting_single_level(self, analyzer):
+        """Test with single-level lists only."""
+        text = """# Title
+
+- Item 1
+- Item 2
+- Item 3
+"""
+        result = analyzer._calculate_list_nesting_depth(text)
+        assert result['max_depth'] == 1
+        assert result['avg_depth'] == 1.0
+        assert result['assessment'] == 'EXCELLENT'
+
+    def test_list_nesting_depth_4_good(self, analyzer):
+        """Test depth 4 returns GOOD - Line 366."""
+        text = """# Title
+
+- Level 1
+  - Level 2
+    - Level 3
+      - Level 4
+"""
+        result = analyzer._calculate_list_nesting_depth(text)
+        assert result['max_depth'] == 4
+        assert result['assessment'] == 'GOOD'  # Line 366
+        assert result['score'] == 4.0
+
+    def test_list_nesting_depth_5_fair(self, analyzer):
+        """Test depth 5-6 returns FAIR - Line 370."""
+        text = """# Title
+
+- Level 1
+  - Level 2
+    - Level 3
+      - Level 4
+        - Level 5
+"""
+        result = analyzer._calculate_list_nesting_depth(text)
+        assert result['max_depth'] == 5
+        assert result['assessment'] == 'FAIR'  # Line 370
+        assert result['score'] == 2.0
