@@ -11,8 +11,8 @@ HAS_MARKO = True
 
 
 # Create concrete implementation for testing abstract base class
-class TestDimensionAnalyzer(DimensionAnalyzer):
-    """Concrete implementation for testing."""
+class ConcreteDimensionAnalyzer(DimensionAnalyzer):
+    """Concrete implementation for testing the abstract base class."""
 
     def analyze(self, text, lines=None, **kwargs):
         """Test implementation of abstract analyze method."""
@@ -26,7 +26,7 @@ class TestDimensionAnalyzer(DimensionAnalyzer):
 @pytest.fixture
 def analyzer():
     """Create test analyzer instance."""
-    return TestDimensionAnalyzer()
+    return ConcreteDimensionAnalyzer()
 
 
 @pytest.fixture
@@ -113,7 +113,7 @@ class TestGetDimensionName:
         """Test dimension name extraction from class name."""
         name = analyzer.get_dimension_name()
 
-        assert name == "TestDimension"
+        assert name == "ConcreteDimension"
         assert "Analyzer" not in name
 
     def test_get_dimension_name_various_classes(self):
