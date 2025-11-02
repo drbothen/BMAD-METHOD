@@ -26,10 +26,10 @@ Manual humanization is inconsistent, subjective, and time-consuming. You need a 
 
 ### Core Innovation: Two Complementary Scores
 
-**Quality Score** (0-144 points, displayed as 0-100, higher = better)
+**Quality Score** (0-174 points, displayed as 0-100, higher = better)
 
 - Measures how human-like the writing is
-- Based on 18 dimensions across 3 tiers (144 total quality points)
+- Based on 22 dimensions across 3 tiers (174 total quality points)
 - Target: ≥85 for publication-ready content
 - Interpretation: EXCEPTIONAL (95+), EXCELLENT (85-94), GOOD (70-84), MIXED (50-69), AI-LIKE (30-49)
 
@@ -40,34 +40,38 @@ Manual humanization is inconsistent, subjective, and time-consuming. You need a 
 - Target: ≤30 for low-risk content
 - Interpretation: VERY LOW (0-14), LOW (15-29), MEDIUM (30-49), HIGH (50-69), VERY HIGH (70-100)
 
-### The 18 Dimensions (3-Tier Architecture)
+### The 22 Dimensions (3-Tier Architecture)
 
-**TIER 1: Advanced Detection (60/144 points)** - Highest accuracy signals
+**TIER 1: Advanced Detection (70/174 points, 40.2%)** - Highest accuracy signals
 
 1. **GLTR Token Ranking** (12 pts) - Token predictability analysis (95% accuracy on GPT detection)
 2. **Advanced Lexical Diversity** (8 pts) - HDD/Yule's K metrics (vocabulary sophistication)
 3. **MATTR Lexical Richness** (12 pts) - Moving Average Type-Token Ratio (window=100)
 4. **RTTR Global Diversity** (8 pts) - Root Type-Token Ratio (length-independent)
 5. **AI Detection Ensemble** (10 pts) - Emotional variation via RoBERTa sentiment analysis
-6. **Stylometric Markers** (6 pts) - However/moreover transition word patterns
+6. **Stylometric Markers** (10 pts) - Transition words, passive voice, function word patterns
 7. **Syntactic Complexity** (4 pts) - Subordinate clause depth, parse tree analysis
+8. **Multi-Model Perplexity Consensus** (6 pts) - GPT-2/DistilGPT-2 agreement on predictability
 
-**TIER 2: Core Patterns (59/144 points)** - Strong AI signals
+**TIER 2: Core Patterns (74/174 points, 42.5%)** - Strong AI signals
 
-8. **Burstiness** (12 pts) - Sentence length variation (AI = uniform, Human = varied)
-9. **Perplexity** (10 pts) - Word choice unpredictability (AI vocabulary detection)
-10. **Formatting Patterns** (8 pts) - Em-dashes, bold/italic distribution
-11. **Heading Hierarchy** (5 pts) - Depth, parallelism, asymmetry
-12. **Heading Length Patterns** (10 pts) - Average word count (AI: 9-12w, Human: 3-7w)
-13. **Subsection Asymmetry** (8 pts) - H3 count variation under H2s (CV metric)
-14. **Heading Depth Variance** (6 pts) - Transition patterns (lateral moves, jumps)
+9. **Burstiness** (12 pts) - Sentence length variation (AI = uniform, Human = varied)
+10. **Perplexity** (10 pts) - Word choice unpredictability (AI vocabulary detection)
+11. **Formatting Patterns** (8 pts) - Em-dashes, bold/italic distribution
+12. **Heading Hierarchy** (5 pts) - Depth, parallelism, asymmetry
+13. **Heading Length Patterns** (10 pts) - Average word count (AI: 9-12w, Human: 3-7w)
+14. **Subsection Asymmetry** (8 pts) - H3 count variation under H2s (CV metric)
+15. **Heading Depth Variance** (6 pts) - Transition patterns (lateral moves, jumps)
+16. **Paragraph Length Variance** (8 pts) - Coefficient of variation in paragraph sizes
+17. **Section Length Variance** (7 pts) - Asymmetry in H2 section word counts
 
-**TIER 3: Supporting Signals (25/144 points)** - Contextual indicators
+**TIER 3: Supporting Signals (30/174 points, 17.2%)** - Contextual indicators
 
-15. **Voice & Authenticity** (8 pts) - Personal perspective, contractions, hedging
-16. **Structure & Organization** (7 pts) - List density, transition quality
-17. **Emotional Depth** (6 pts) - Sentiment variance, anecdotes
-18. **Technical Depth** (4 pts) - Domain terminology usage
+18. **Voice & Authenticity** (8 pts) - Personal perspective, contractions, hedging
+19. **Structure & Organization** (7 pts) - List density, transition quality
+20. **Emotional Depth** (6 pts) - Sentiment variance, anecdotes
+21. **Technical Depth** (4 pts) - Domain terminology usage
+22. **List Nesting Depth** (5 pts) - List hierarchy complexity (AI loves deep nesting)
 
 ## Key Features
 
@@ -383,10 +387,10 @@ Generates journey documentation:
 
 ### Analysis Coverage
 
-- **18 dimensions** across 3 tiers
-- **144-point Quality Scale** (displayed as 0-100, higher better)
+- **22 dimensions** across 3 tiers
+- **174-point Quality Scale** (displayed as 0-100, higher better)
 - **100+ point Detection Scale** (0-100+, lower better)
-- **3-tier impact weighting** (Advanced 41.7%, Core 41.0%, Supporting 17.4%)
+- **3-tier impact weighting** (Advanced 40.2%, Core 42.5%, Supporting 17.2%)
 
 ### Accuracy Claims
 
@@ -466,6 +470,27 @@ You've built a **complete, research-backed system** for systematically transform
 ---
 
 **Created**: January 2025
-**Version**: 1.0
+**Version**: 2.0 (Option C - 174-point architecture with expanded structural/stylometric analysis)
 **Expansion Pack**: bmad-technical-writing
 **Contact**: See BMAD Discord for questions/support
+
+---
+
+## Version History
+
+**v2.0** (Nov 2025) - Option C Implementation
+
+- Expanded from 18 to 22 dimensions (144 → 174 quality points)
+- Added Multi-Model Perplexity Consensus (Tier 1, 6 pts)
+- Expanded Stylometric Markers to include passive voice + function words (6 → 10 pts)
+- Added Paragraph Length Variance (Tier 2, 8 pts)
+- Added Section Length Variance (Tier 2, 7 pts)
+- Added List Nesting Depth (Tier 3, 5 pts)
+- Enhanced detection risk with 5 new penalty conditions
+
+**v1.0** (Jan 2025) - Initial Release
+
+- 18 dimensions, 144 quality points
+- Dual scoring system (Quality + Detection Risk)
+- Path-to-target optimization
+- Historical tracking

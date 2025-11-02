@@ -4295,6 +4295,30 @@ class AIPatternAnalyzer:
             else:
                 signals.append(1)  # AI-like
 
+        # Passive constructions percentage (AI: >15%, Human: <12%)
+        if r.passive_constructions is not None:
+            if r.passive_constructions <= 10:
+                signals.append(4)  # Human-like (low passive voice)
+            elif r.passive_constructions <= 15:
+                signals.append(3)  # Somewhat human-like
+            elif r.passive_constructions <= 20:
+                signals.append(2)  # Borderline
+            else:
+                signals.append(1)  # AI-like (excessive passive)
+
+        # Function word ratio (AI: 0.40-0.45 uniform, Human: more varied)
+        if r.function_word_ratio is not None:
+            # Human writing tends to have either very high (0.48+) or lower (0.35-0.42) function word ratios
+            # AI clusters in the middle (0.40-0.45)
+            if r.function_word_ratio >= 0.48 or r.function_word_ratio <= 0.38:
+                signals.append(4)  # Human-like (extreme values)
+            elif r.function_word_ratio <= 0.39 or r.function_word_ratio >= 0.46:
+                signals.append(3)  # Somewhat human-like
+            elif 0.40 <= r.function_word_ratio <= 0.45:
+                signals.append(1)  # AI-like (middle clustering)
+            else:
+                signals.append(2)  # Borderline
+
         if not signals:
             return "UNKNOWN"
 
@@ -4538,7 +4562,7 @@ class AIPatternAnalyzer:
         score_map = {"HIGH": 1.0, "MEDIUM": 0.75, "LOW": 0.5, "VERY LOW": 0.25, "UNKNOWN": 0.5, "N/A": 0.5}
 
         # ============================================================================
-        # TIER 1: ADVANCED DETECTION (40 points) - Highest accuracy
+        # TIER 1: ADVANCED DETECTION (70 points) - Highest accuracy
         # ============================================================================
 
         # GLTR Token Ranking (12 points) - 95% accuracy on GPT-3/ChatGPT
@@ -4611,17 +4635,17 @@ class AIPatternAnalyzer:
             recommendation="Increase emotional variation (sentiment variance > 0.15)" if ai_detect_val < 0.75 else None
         )
 
-        # Stylometric Markers - However/Moreover (6 points)
+        # Stylometric Markers - Transition words + Passive voice + Function words (10 points) - EXPANDED
         stylo_val = score_map.get(results.stylometric_score, 0.5) if results.stylometric_score else 0.5
         stylo_score = ScoreDimension(
             name="Stylometric Markers",
-            score=stylo_val * 6,
-            max_score=6.0,
+            score=stylo_val * 10,
+            max_score=10.0,
             percentage=stylo_val * 100,
-            impact=self._calculate_impact(stylo_val, 6.0),
-            gap=(1.0 - stylo_val) * 6,
+            impact=self._calculate_impact(stylo_val, 10.0),
+            gap=(1.0 - stylo_val) * 10,
             raw_value=results.however_per_1k,
-            recommendation="Remove AI transitions (however/moreover)" if stylo_val < 0.75 else None
+            recommendation="Reduce AI transitions (however/moreover), passive voice <12%, vary function words" if stylo_val < 0.75 else None
         )
 
         # Syntactic Complexity (4 points)
@@ -4637,16 +4661,44 @@ class AIPatternAnalyzer:
             recommendation="Add subordinate clauses, vary tree depth" if syntax_val < 0.75 else None
         )
 
+        # Multi-Model Perplexity Consensus (6 points) - NEW: Multiple LLM agreement
+        # Checks if GPT-2 and DistilGPT-2 both agree on low/high perplexity
+        multi_perp_score_val = 3.0  # Default
+        avg_perp = None
+        if results.gpt2_perplexity and results.distilgpt2_perplexity:
+            # Thresholds: High perplexity (human-like) > 120, Low (AI-like) < 80
+            gpt2_human = results.gpt2_perplexity > 120
+            distil_human = results.distilgpt2_perplexity > 120
+            avg_perp = (results.gpt2_perplexity + results.distilgpt2_perplexity) / 2
+
+            if gpt2_human and distil_human:  # Both agree: human-like
+                multi_perp_score_val = 6.0
+            elif not gpt2_human and not distil_human:  # Both agree: AI-like
+                multi_perp_score_val = 0.0
+            else:  # Disagreement
+                multi_perp_score_val = 3.0
+
+        multi_perp_dim = ScoreDimension(
+            name="Multi-Model Perplexity Consensus",
+            score=multi_perp_score_val,
+            max_score=6.0,
+            percentage=(multi_perp_score_val / 6.0) * 100,
+            impact=self._calculate_impact(multi_perp_score_val / 6.0, 6.0),
+            gap=6.0 - multi_perp_score_val,
+            raw_value=avg_perp,
+            recommendation="Increase unpredictability: use diverse vocabulary, unexpected word choices" if multi_perp_score_val < 4.5 else None
+        )
+
         advanced_category = ScoreCategory(
             name="Advanced Detection",
-            total=gltr_score.score + lexical_score.score + mattr_dim.score + rttr_dim.score + ai_detect_score.score + stylo_score.score + syntax_score.score,
-            max_total=60.0,  # Includes advanced lexical metrics: +12 (MATTR) +8 (RTTR)
-            percentage=((gltr_score.score + lexical_score.score + mattr_dim.score + rttr_dim.score + ai_detect_score.score + stylo_score.score + syntax_score.score) / 60.0) * 100,
-            dimensions=[gltr_score, lexical_score, mattr_dim, rttr_dim, ai_detect_score, stylo_score, syntax_score]
+            total=gltr_score.score + lexical_score.score + mattr_dim.score + rttr_dim.score + ai_detect_score.score + stylo_score.score + syntax_score.score + multi_perp_dim.score,
+            max_total=70.0,  # Includes: MATTR(12) + RTTR(8) + Stylometric(10) + Multi-Perp(6)
+            percentage=((gltr_score.score + lexical_score.score + mattr_dim.score + rttr_dim.score + ai_detect_score.score + stylo_score.score + syntax_score.score + multi_perp_dim.score) / 70.0) * 100,
+            dimensions=[gltr_score, lexical_score, mattr_dim, rttr_dim, ai_detect_score, stylo_score, syntax_score, multi_perp_dim]
         )
 
         # ============================================================================
-        # TIER 2: CORE PATTERNS (35 points) - Proven AI signatures
+        # TIER 2: CORE PATTERNS (74 points) - Proven AI signatures
         # ============================================================================
 
         # Burstiness - Sentence Variation (12 points)
@@ -4746,16 +4798,46 @@ class AIPatternAnalyzer:
             recommendation="Add lateral H3→H3 transitions and depth jumps" if depth_variance_score_val < 4.0 else None
         )
 
+        # Paragraph Length Variance (8 points) - NEW: Phase 1 Structural
+        paragraph_cv_score_val = 8.0 * (1.0 if results.paragraph_cv_assessment == 'EXCELLENT' else
+                                         0.75 if results.paragraph_cv_assessment == 'GOOD' else
+                                         0.375 if results.paragraph_cv_assessment == 'FAIR' else 0.0) if results.paragraph_cv_assessment else 4.0
+        paragraph_cv_dim = ScoreDimension(
+            name="Paragraph Length Variance",
+            score=paragraph_cv_score_val,
+            max_score=8.0,
+            percentage=(paragraph_cv_score_val / 8.0) * 100,
+            impact=self._calculate_impact(paragraph_cv_score_val / 8.0, 8.0),
+            gap=8.0 - paragraph_cv_score_val,
+            raw_value=results.paragraph_cv,
+            recommendation="Vary paragraph lengths (target CV ≥0.40, mix short/medium/long)" if paragraph_cv_score_val < 6.0 else None
+        )
+
+        # Section Length Variance (7 points) - NEW: Phase 1 Structural
+        section_var_score_val = 7.0 * (1.0 if results.section_variance_assessment == 'EXCELLENT' else
+                                        0.714 if results.section_variance_assessment == 'GOOD' else
+                                        0.357 if results.section_variance_assessment == 'FAIR' else 0.0) if results.section_variance_assessment else 3.5
+        section_var_dim = ScoreDimension(
+            name="Section Length Variance",
+            score=section_var_score_val,
+            max_score=7.0,
+            percentage=(section_var_score_val / 7.0) * 100,
+            impact=self._calculate_impact(section_var_score_val / 7.0, 7.0),
+            gap=7.0 - section_var_score_val,
+            raw_value=results.section_variance_pct,
+            recommendation="Break section uniformity (target variance >40%, avoid balanced sections)" if section_var_score_val < 5.0 else None
+        )
+
         core_category = ScoreCategory(
             name="Core Patterns",
-            total=burst_score.score + perp_score.score + format_score.score + heading_score.score + heading_length_dim.score + subsection_dim.score + depth_variance_dim.score,
-            max_total=59.0,  # Includes enhanced heading analysis: +10 (length) +8 (subsection) +6 (depth)
-            percentage=((burst_score.score + perp_score.score + format_score.score + heading_score.score + heading_length_dim.score + subsection_dim.score + depth_variance_dim.score) / 59.0) * 100,
-            dimensions=[burst_score, perp_score, format_score, heading_score, heading_length_dim, subsection_dim, depth_variance_dim]
+            total=burst_score.score + perp_score.score + format_score.score + heading_score.score + heading_length_dim.score + subsection_dim.score + depth_variance_dim.score + paragraph_cv_dim.score + section_var_dim.score,
+            max_total=74.0,  # Includes enhanced heading (+10+8+6) + structural patterns (+8+7)
+            percentage=((burst_score.score + perp_score.score + format_score.score + heading_score.score + heading_length_dim.score + subsection_dim.score + depth_variance_dim.score + paragraph_cv_dim.score + section_var_dim.score) / 74.0) * 100,
+            dimensions=[burst_score, perp_score, format_score, heading_score, heading_length_dim, subsection_dim, depth_variance_dim, paragraph_cv_dim, section_var_dim]
         )
 
         # ============================================================================
-        # TIER 3: SUPPORTING SIGNALS (25 points) - Context indicators
+        # TIER 3: SUPPORTING SIGNALS (30 points) - Context indicators
         # ============================================================================
 
         # Voice & Authenticity (8 points)
@@ -4810,12 +4892,27 @@ class AIPatternAnalyzer:
             recommendation="Add domain-specific terminology" if tech_val < 0.75 else None
         )
 
+        # List Nesting Depth (5 points) - NEW: Phase 1 Structural
+        list_depth_score_val = 5.0 * (1.0 if results.list_depth_assessment == 'EXCELLENT' else
+                                       0.6 if results.list_depth_assessment == 'GOOD' else
+                                       0.4 if results.list_depth_assessment == 'FAIR' else 0.0) if results.list_depth_assessment else 2.5
+        list_depth_dim = ScoreDimension(
+            name="List Nesting Depth",
+            score=list_depth_score_val,
+            max_score=5.0,
+            percentage=(list_depth_score_val / 5.0) * 100,
+            impact=self._calculate_impact(list_depth_score_val / 5.0, 5.0),
+            gap=5.0 - list_depth_score_val,
+            raw_value=results.list_max_depth,
+            recommendation="Flatten nested lists (target ≤3 levels, avoid deep hierarchies)" if list_depth_score_val < 3.0 else None
+        )
+
         supporting_category = ScoreCategory(
             name="Supporting Signals",
-            total=voice_score.score + struct_score.score + sent_score.score + tech_score.score,
-            max_total=25.0,
-            percentage=((voice_score.score + struct_score.score + sent_score.score + tech_score.score) / 25.0) * 100,
-            dimensions=[voice_score, struct_score, sent_score, tech_score]
+            total=voice_score.score + struct_score.score + sent_score.score + tech_score.score + list_depth_dim.score,
+            max_total=30.0,
+            percentage=((voice_score.score + struct_score.score + sent_score.score + tech_score.score + list_depth_dim.score) / 30.0) * 100,
+            dimensions=[voice_score, struct_score, sent_score, tech_score, list_depth_dim]
         )
 
         # ============================================================================
@@ -4848,6 +4945,20 @@ class AIPatternAnalyzer:
             detection_components.append(7)   # Low subsection asymmetry adds +7 risk points
         if results.heading_depth_pattern == 'RIGID':
             detection_components.append(5)   # Rigid depth pattern adds +5 risk points
+
+        # NEW: Structural pattern penalties
+        if results.paragraph_cv is not None and results.paragraph_cv < 0.30:
+            detection_components.append(8)   # Uniform paragraphs add +8 risk points
+        if results.section_variance_pct is not None and results.section_variance_pct < 15:
+            detection_components.append(7)   # Uniform sections add +7 risk points
+        if results.list_max_depth is not None and results.list_max_depth >= 5:
+            detection_components.append(5)   # Deep nesting adds +5 risk points
+
+        # NEW: Stylometric penalties
+        if results.passive_constructions is not None and results.passive_constructions > 18:
+            detection_components.append(6)   # Excessive passive voice adds +6 risk points
+        if results.function_word_ratio is not None and 0.40 <= results.function_word_ratio <= 0.45:
+            detection_components.append(4)   # AI-typical function word ratio adds +4 risk points
 
         detection_risk = sum(detection_components)
 
