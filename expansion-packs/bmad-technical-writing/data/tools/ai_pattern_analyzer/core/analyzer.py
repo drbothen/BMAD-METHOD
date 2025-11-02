@@ -665,7 +665,6 @@ class AIPatternAnalyzer:
                     level=level,
                     text=text,
                     issue_type=issue_type,
-                    problem=problem,
                     suggestion=suggestion
                 ))
 
@@ -732,12 +731,17 @@ class AIPatternAnalyzer:
 
             # Flag if too uniform (CV < 0.3 is AI-like)
             if cv < 0.3:
+                # Create sentence details list (line_num, text, word_count)
+                sentence_details = [(start_line, sent[:100], sent_lengths[i])
+                                   for i, sent in enumerate(sentences[:5])]  # First 5 sentences
+
                 uniform_paragraphs.append(UniformParagraph(
                     start_line=start_line,
+                    end_line=start_line,  # Approximate - same line for now
                     sentence_count=len(sentences),
                     mean_length=round(mean_len, 1),
                     stdev=round(stdev, 1),
-                    cv=round(cv, 2),
+                    sentences=sentence_details,
                     problem=f'Uniform sentence lengths (CV={cv:.2f}, typical human: >0.4)',
                     suggestion='Vary sentence length: mix short (5-10w), medium (15-25w), and long (30-45w) sentences'
                 ))

@@ -36,15 +36,15 @@ AI_VOCABULARY = [
 
 # Formulaic transitions (from ai-detection-patterns.md)
 FORMULAIC_TRANSITIONS = [
-    r'\bFurthermore,\b', r'\bMoreover,\b', r'\bAdditionally,\b',
-    r'\bIn addition,\b', r'\bIt is important to note that\b',
+    r'\bFurthermore,', r'\bMoreover,', r'\bAdditionally,',
+    r'\bIn addition,', r'\bIt is important to note that\b',
     r'\bIt is worth mentioning that\b', r'\bWhen it comes to\b',
-    r'\bOne of the key aspects\b', r'\bFirst and foremost,\b',
-    r'\bIn conclusion,\b', r'\bTo summarize,\b', r'\bIn summary,\b',
-    r'\bAs mentioned earlier,\b', r'\bAs we have seen,\b',
-    r'\bIt should be noted that\b', r'\bWith that said,\b',
-    r'\bHaving said that\b', r'\bIn today\'s world,\b',
-    r'\bIn the modern era,\b',
+    r'\bOne of the key aspects\b', r'\bFirst and foremost,',
+    r'\bIn conclusion,', r'\bTo summarize,', r'\bIn summary,',
+    r'\bAs mentioned earlier,', r'\bAs we have seen,',
+    r'\bIt should be noted that\b', r'\bWith that said,',
+    r'\bHaving said that\b', r'\bIn today\'s world,',
+    r'\bIn the modern era,',
 ]
 
 # Domain-specific technical terms (customizable per project)

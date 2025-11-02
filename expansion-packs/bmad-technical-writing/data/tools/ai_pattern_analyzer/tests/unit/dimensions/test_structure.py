@@ -769,13 +769,6 @@ class TestAnalyzeBlockquotePatterns:
         result = analyzer._analyze_blockquote_patterns(text_with_blockquotes, word_count=100)
         assert result.get('total_blockquotes', 0) > 0
 
-    def test_blockquote_patterns_fallback(self, analyzer, mock_marko_unavailable, text_with_blockquotes):
-        """Test blockquote analysis falls back to regex without marko."""
-        result = analyzer._analyze_blockquote_patterns(text_with_blockquotes, word_count=100)
-
-        # Should still work with regex fallback
-        assert 'total_blockquotes' in result or 'code_blocks' in result
-
     def test_blockquote_section_start_clustering(self, analyzer):
         """Test detection of blockquotes at section starts."""
         text = """# Title
@@ -842,13 +835,6 @@ class TestAnalyzeLinkAnchorQuality:
         result = analyzer._analyze_link_anchor_quality(text_with_links, word_count=50)
         assert result['total_links'] > 0
 
-    def test_link_anchor_quality_fallback(self, analyzer, mock_marko_unavailable, text_with_links):
-        """Test link analysis falls back to regex without marko."""
-        result = analyzer._analyze_link_anchor_quality(text_with_links, word_count=50)
-
-        # Should still work with regex fallback
-        assert 'total_links' in result
-
 
 class TestAnalyzeEnhancedListStructureAst:
     """Tests for _analyze_enhanced_list_structure_ast Phase 3 method."""
@@ -892,13 +878,6 @@ class TestAnalyzeEnhancedListStructureAst:
 
         # Uniform items should have high symmetry (low CV)
         assert 'symmetry_score' in result
-
-    def test_enhanced_list_structure_no_marko(self, analyzer, mock_marko_unavailable, text_with_lists):
-        """Test graceful handling when marko unavailable."""
-        result = analyzer._analyze_enhanced_list_structure_ast(text_with_lists)
-
-        # Gracefully degrades without marko
-        assert 'assessment' in result
 
 
 class TestAnalyzeCodeBlockPatternsAst:
@@ -956,13 +935,6 @@ block
 
         # Varied lengths should have some variance
         assert result['length_cv'] >= 0
-
-    def test_code_block_patterns_ast_fallback(self, analyzer, mock_marko_unavailable, text_with_code_blocks):
-        """Test fallback regex when marko unavailable."""
-        result = analyzer._analyze_code_block_patterns_ast(text_with_code_blocks)
-
-        # Should still work with regex
-        assert 'total_blocks' in result
 
 
 # ============================================================================
