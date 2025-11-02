@@ -152,9 +152,9 @@ try:
     _perplexity_tokenizer = None
     _sentiment_pipeline = None
     _ai_detector_pipeline = None
-except (ImportError, ValueError):
+except (ImportError, ValueError, OSError):
     HAS_TRANSFORMERS = False
-    # Don't print warning - optional and heavy
+    # Don't print warning - optional and heavy dependency
 
 
 # ============================================================================
@@ -5919,6 +5919,72 @@ HEADING HIERARCHY ANALYSIS:
   Hierarchy Adherence: {r.heading_strict_adherence:.3f} (1.0 = perfect = AI-like)
   Heading Length Variance: {r.heading_length_variance:.1f} (Higher = more varied)
   Score: {r.heading_hierarchy_score} ({'✓ Human-like' if r.heading_hierarchy_score in ['HIGH', 'MEDIUM'] else '⚠ AI-like' if r.heading_hierarchy_score not in ['N/A'] else 'N/A'})"""
+
+        # PHASE 2: Advanced Lexical Diversity & Heading Analysis
+        phase2_sections = []
+
+        # MATTR & RTTR
+        if r.mattr is not None or r.rttr is not None:
+            section = "\nADVANCED LEXICAL DIVERSITY (Phase 2 - Textacy):"
+            if r.mattr is not None:
+                mattr_icon = "✓" if r.mattr >= 0.70 else "✗"
+                section += f"\n  MATTR (window=100): {r.mattr:.3f}  {mattr_icon} {r.mattr_assessment}"
+                if r.mattr < 0.70:
+                    section += "\n    → ACTION: Increase vocabulary variety (target: MATTR ≥0.70)"
+            if r.rttr is not None:
+                rttr_icon = "✓" if r.rttr >= 7.5 else "✗"
+                section += f"\n  RTTR: {r.rttr:.2f}  {rttr_icon} {r.rttr_assessment}"
+                if r.rttr < 7.5:
+                    section += "\n    → ACTION: Add more unique terminology (target: RTTR ≥7.5)"
+            phase2_sections.append(section)
+
+        # Heading Length Analysis
+        if r.heading_length_short_pct is not None:
+            heading_icon = "✓" if r.avg_heading_length <= 7 else "✗"
+            section = f"""
+ENHANCED HEADING LENGTH PATTERNS (Phase 2):
+  Average Length: {r.avg_heading_length:.1f} words  {heading_icon} {r.heading_length_assessment}
+  Distribution: Short (≤5w): {r.heading_length_short_pct:.1f}%, Medium (6-8w): {r.heading_length_medium_pct:.1f}%, Long (≥9w): {r.heading_length_long_pct:.1f}%"""
+            if r.avg_heading_length > 7:
+                section += "\n  → ACTION: Shorten headings (target: avg ≤7 words, 60%+ short)"
+            phase2_sections.append(section)
+
+        # Subsection Asymmetry
+        if r.subsection_cv is not None and r.subsection_counts:
+            subsec_icon = "✓" if r.subsection_cv >= 0.6 else ("⚠" if r.subsection_cv >= 0.4 else "✗")
+            section = f"""
+SUBSECTION ASYMMETRY (Phase 2):
+  Coefficient of Variation: {r.subsection_cv:.3f}  {subsec_icon} {r.subsection_assessment}
+  Subsection Counts: {r.subsection_counts}
+  Uniform Sections (3-4 subs): {r.subsection_uniform_count}"""
+            if r.subsection_cv < 0.4:
+                section += "\n  → ACTION: Break uniformity, vary subsection counts (target: CV ≥0.6)"
+            phase2_sections.append(section)
+
+        # Heading Depth Variance
+        if r.heading_depth_pattern is not None:
+            depth_icon = "✓" if r.heading_depth_pattern == 'VARIED' else ("⚠" if r.heading_depth_pattern == 'SEQUENTIAL' else "✗")
+            section = f"""
+HEADING DEPTH TRANSITIONS (Phase 2):
+  Pattern: {r.heading_depth_pattern}  {depth_icon} {r.heading_depth_assessment}
+  Has Lateral Moves (H3→H3): {r.heading_has_lateral}
+  Has Depth Jumps (H3→H1): {r.heading_has_jumps}"""
+            if r.heading_transitions:
+                trans_str = ", ".join([f"{k}({v})" for k, v in list(r.heading_transitions.items())[:5]])
+                section += f"\n  Transitions: {trans_str}"
+            if r.heading_depth_pattern == 'RIGID':
+                section += "\n  → ACTION: Add lateral H3→H3 moves, occasional depth jumps"
+            phase2_sections.append(section)
+
+        if phase2_sections:
+            report += f"""
+
+{'─' * 80}
+PHASE 2: ADVANCED LEXICAL & HEADING ANALYSIS
+{'─' * 80}
+"""
+            for section in phase2_sections:
+                report += section + "\n"
 
         report += f"""
 
