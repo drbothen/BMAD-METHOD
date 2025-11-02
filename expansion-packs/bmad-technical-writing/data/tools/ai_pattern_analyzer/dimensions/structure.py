@@ -14,13 +14,23 @@ strong AI signature, while varied, organic structure is human-like.
 import re
 import statistics
 from typing import Dict, List, Any, Tuple
-from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
+from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer, HAS_MARKO
 from ai_pattern_analyzer.core.results import HeadingIssue
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
+
+# Import marko types if available (for Phase 3 AST-based analysis)
+if HAS_MARKO:
+    from marko.block import Quote, Heading, List as MarkoList, Paragraph, FencedCode
+    from marko.inline import Link
 
 
 class StructureAnalyzer(DimensionAnalyzer):
     """Analyzes structure dimension - headings, sections, and list patterns."""
+
+    def __init__(self):
+        """Initialize the StructureAnalyzer with compiled regex patterns."""
+        super().__init__()
+        self._heading_pattern = re.compile(r'^(#{1,6})\s+(.+)$', re.MULTILINE)
 
     def analyze(self, text: str, lines: List[str] = None, **kwargs) -> Dict[str, Any]:
         """
@@ -29,21 +39,46 @@ class StructureAnalyzer(DimensionAnalyzer):
         Args:
             text: Full text content
             lines: Text split into lines (optional)
-            **kwargs: Additional parameters
+            **kwargs: Additional parameters (word_count for AST methods)
 
         Returns:
             Dict with structure analysis results
         """
+        # Get word count from kwargs if available
+        word_count = kwargs.get('word_count', len(text.split()))
+
+        # Phase 1-2: Basic structure analysis
         structure = self._analyze_structure(text)
         headings = self._analyze_headings(text)
         section_var = self._calculate_section_variance(text)
         list_depth = self._calculate_list_nesting_depth(text)
+
+        # Phase 3: Advanced structure analysis
+        heading_length = self._calculate_heading_length_analysis(text)
+        subsection_asym = self._calculate_subsection_asymmetry(text)
+        heading_depth_var = self._calculate_heading_depth_variance(text)
+        code_blocks = self._analyze_code_blocks(text)
+        heading_hierarchy = self._analyze_heading_hierarchy_enhanced(text)
+        blockquote_patterns = self._analyze_blockquote_patterns(text, word_count)
+        link_anchor_quality = self._analyze_link_anchor_quality(text, word_count)
+        enhanced_list_structure = self._analyze_enhanced_list_structure_ast(text)
+        code_block_patterns = self._analyze_code_block_patterns_ast(text)
 
         return {
             'structure': structure,
             'headings': headings,
             'section_variance': section_var,
             'list_nesting': list_depth,
+            # Phase 3 additions
+            'heading_length': heading_length,
+            'subsection_asymmetry': subsection_asym,
+            'heading_depth_variance': heading_depth_var,
+            'code_blocks': code_blocks,
+            'heading_hierarchy_enhanced': heading_hierarchy,
+            'blockquote_patterns': blockquote_patterns,
+            'link_anchor_quality': link_anchor_quality,
+            'enhanced_list_structure': enhanced_list_structure,
+            'code_block_patterns': code_block_patterns,
         }
 
     def analyze_detailed(self, lines: List[str], html_comment_checker=None) -> List[HeadingIssue]:
@@ -454,3 +489,722 @@ class StructureAnalyzer(DimensionAnalyzer):
                     ))
 
         return issues
+
+    # ========================================================================
+    # PHASE 3 ADVANCED STRUCTURE ANALYSIS METHODS
+    # ========================================================================
+
+    def _calculate_heading_length_analysis(self, text: str) -> Dict:
+        """
+        Analyze heading length patterns (Enhanced heading length analysis).
+
+        AI Pattern: Average 9-12 words, verbose descriptive modifiers
+        Human Pattern: Average 3-7 words, concise and direct
+
+        Research: 85% accuracy distinguishing AI vs human (Chen et al., 2024)
+
+        Returns:
+            {
+                'avg_length': float,
+                'distribution': {'short': int, 'medium': int, 'long': int},
+                'distribution_pct': {'short': float, 'medium': float, 'long': float},
+                'score': float (0-10),
+                'assessment': str,
+                'headings': List[Dict],
+                'count': int
+            }
+        """
+        # Extract headings with levels
+        matches = self._heading_pattern.findall(text)
+
+        if len(matches) < 3:
+            return {
+                'avg_length': 0.0,
+                'score': 10.0,
+                'assessment': 'INSUFFICIENT_DATA',
+                'distribution': {'short': 0, 'medium': 0, 'long': 0},
+                'distribution_pct': {'short': 0.0, 'medium': 0.0, 'long': 0.0},
+                'headings': [],
+                'count': 0
+            }
+
+        headings = []
+        for level_markers, heading_text in matches:
+            level = len(level_markers)
+            word_count = len(heading_text.split())
+            headings.append({'level': level, 'text': heading_text, 'words': word_count})
+
+        # Calculate average length
+        lengths = [h['words'] for h in headings]
+        avg_length = statistics.mean(lengths)
+
+        # Distribution (short: ≤5, medium: 6-8, long: ≥9)
+        short = sum(1 for h in headings if h['words'] <= 5)
+        medium = sum(1 for h in headings if 6 <= h['words'] <= 8)
+        long = sum(1 for h in headings if h['words'] >= 9)
+        total = len(headings)
+
+        distribution = {'short': short, 'medium': medium, 'long': long}
+        distribution_pct = {
+            'short': (short / total * 100) if total > 0 else 0,
+            'medium': (medium / total * 100) if total > 0 else 0,
+            'long': (long / total * 100) if total > 0 else 0
+        }
+
+        # Scoring (10 points max)
+        if avg_length <= 7:
+            score, assessment = 10.0, 'EXCELLENT'
+        elif avg_length <= 9:
+            score, assessment = 7.0, 'GOOD'
+        elif avg_length <= 11:
+            score, assessment = 4.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'avg_length': round(avg_length, 2),
+            'distribution': distribution,
+            'distribution_pct': distribution_pct,
+            'score': score,
+            'assessment': assessment,
+            'headings': headings,
+            'count': total
+        }
+
+    def _calculate_subsection_asymmetry(self, text: str) -> Dict:
+        """
+        Analyze subsection count distribution for uniformity (Subsection asymmetry analysis).
+
+        AI Pattern: Uniform 3-4 subsections per section (CV <0.3)
+        Human Pattern: Varied 0-6 subsections (CV ≥0.6)
+
+        Detection accuracy: 78% on AI content
+
+        Returns:
+            {
+                'subsection_counts': List[int],
+                'cv': float,
+                'score': float (0-8),
+                'assessment': str,
+                'uniform_count': int (sections with 3-4 subsections)
+            }
+        """
+        # Extract headings with levels
+        matches = self._heading_pattern.findall(text)
+
+        if len(matches) < 5:
+            return {
+                'cv': 0.0,
+                'score': 8.0,
+                'assessment': 'INSUFFICIENT_DATA',
+                'subsection_counts': [],
+                'uniform_count': 0,
+                'section_count': 0
+            }
+
+        # Build hierarchy - count H3s under each H2
+        headings = [{'level': len(m[0]), 'text': m[1]} for m in matches]
+
+        subsection_counts = []
+        current_h2_subsections = 0
+        in_h2_section = False
+
+        for i, heading in enumerate(headings):
+            if heading['level'] == 2:  # H2
+                if in_h2_section:
+                    subsection_counts.append(current_h2_subsections)
+                in_h2_section = True
+                current_h2_subsections = 0
+            elif heading['level'] == 3 and in_h2_section:  # H3 under H2
+                current_h2_subsections += 1
+            elif heading['level'] == 1:  # Reset on H1
+                if in_h2_section:
+                    subsection_counts.append(current_h2_subsections)
+                in_h2_section = False
+                current_h2_subsections = 0
+
+        # Capture last section
+        if in_h2_section:
+            subsection_counts.append(current_h2_subsections)
+
+        if len(subsection_counts) < 3:
+            return {
+                'cv': 0.0,
+                'score': 8.0,
+                'assessment': 'INSUFFICIENT_DATA',
+                'subsection_counts': subsection_counts,
+                'uniform_count': 0,
+                'section_count': len(subsection_counts)
+            }
+
+        # Calculate coefficient of variation
+        mean_count = statistics.mean(subsection_counts)
+        stddev = statistics.stdev(subsection_counts) if len(subsection_counts) > 1 else 0.0
+        cv = stddev / mean_count if mean_count > 0 else 0.0
+
+        # Count uniform sections (3-4 subsections, AI signature)
+        uniform_count = sum(1 for c in subsection_counts if 3 <= c <= 4)
+
+        # Scoring (8 points max)
+        if cv >= 0.6:
+            score, assessment = 8.0, 'EXCELLENT'
+        elif cv >= 0.4:
+            score, assessment = 5.0, 'GOOD'
+        elif cv >= 0.2:
+            score, assessment = 3.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'subsection_counts': subsection_counts,
+            'cv': round(cv, 3),
+            'score': score,
+            'assessment': assessment,
+            'uniform_count': uniform_count,
+            'section_count': len(subsection_counts)
+        }
+
+    def _calculate_heading_depth_variance(self, text: str) -> Dict:
+        """
+        Analyze heading depth transition patterns (Heading depth variance analysis).
+
+        AI Pattern: Rigid H1→H2→H3 sequential only
+        Human Pattern: Varied transitions with lateral moves and jumps
+
+        Returns:
+            {
+                'transitions': Dict[str, int],
+                'pattern': str ('VARIED', 'SEQUENTIAL', 'RIGID'),
+                'score': float (0-6),
+                'assessment': str,
+                'max_depth': int
+            }
+        """
+        matches = self._heading_pattern.findall(text)
+
+        if len(matches) < 5:
+            return {
+                'score': 6.0,
+                'assessment': 'INSUFFICIENT_DATA',
+                'pattern': 'UNKNOWN',
+                'transitions': {},
+                'max_depth': 0,
+                'has_lateral': False,
+                'has_jumps': False
+            }
+
+        levels = [len(m[0]) for m in matches]
+        max_depth = max(levels)
+
+        # Track transitions
+        transitions = {}
+        for i in range(len(levels) - 1):
+            transition = f"H{levels[i]}→H{levels[i+1]}"
+            transitions[transition] = transitions.get(transition, 0) + 1
+
+        # Analyze pattern
+        has_lateral = any(f"H{l}→H{l}" in transitions for l in range(1, 7))
+        has_jumps = any(f"H{l}→H{j}" in transitions for l in range(2, 7) for j in range(1, l-1))
+        only_sequential = len(transitions) <= 4 and not has_lateral and not has_jumps
+
+        # Scoring (6 points max)
+        if has_lateral and has_jumps:
+            pattern, score, assessment = 'VARIED', 6.0, 'EXCELLENT'
+        elif has_lateral or has_jumps:
+            pattern, score, assessment = 'SEQUENTIAL', 4.0, 'GOOD'
+        elif max_depth <= 3:
+            pattern, score, assessment = 'SEQUENTIAL', 4.0, 'GOOD'
+        elif only_sequential and max_depth >= 4:
+            pattern, score, assessment = 'RIGID', 2.0, 'FAIR'
+        else:
+            pattern, score, assessment = 'RIGID', 0.0, 'POOR'
+
+        return {
+            'transitions': transitions,
+            'pattern': pattern,
+            'score': score,
+            'assessment': assessment,
+            'max_depth': max_depth,
+            'has_lateral': has_lateral,
+            'has_jumps': has_jumps
+        }
+
+    def _analyze_code_blocks(self, text: str) -> Dict:
+        """
+        Analyze code block patterns in technical writing.
+        AI generates complete code with consistent language specs; humans use snippets.
+        """
+        # Find code blocks (markdown triple backticks)
+        code_blocks = re.findall(r'```(\w+)?\s*\n(.*?)\n```', text, re.DOTALL)
+        total_blocks = len(code_blocks)
+
+        # Count blocks with language specification
+        blocks_with_lang = sum(1 for lang, _ in code_blocks if lang)
+
+        # Language consistency (AI = 1.0, always specifies)
+        lang_consistency = blocks_with_lang / total_blocks if total_blocks > 0 else 0.0
+
+        # Comment density in code blocks
+        comment_densities = []
+        for lang, code in code_blocks:
+            lines = code.strip().split('\n')
+            if len(lines) == 0:
+                continue
+
+            # Count comment lines (simple heuristics for common languages)
+            comment_lines = 0
+            for line in lines:
+                stripped = line.strip()
+                if stripped.startswith('//') or stripped.startswith('#') or stripped.startswith('/*'):
+                    comment_lines += 1
+
+            density = comment_lines / len(lines) if len(lines) > 0 else 0
+            comment_densities.append(density)
+
+        avg_comment_density = statistics.mean(comment_densities) if comment_densities else 0.0
+
+        return {
+            'code_blocks': total_blocks,
+            'code_with_lang': blocks_with_lang,
+            'code_lang_consistency': round(lang_consistency, 3),
+            'code_comment_density': round(avg_comment_density, 3)
+        }
+
+    def _analyze_heading_hierarchy_enhanced(self, text: str) -> Dict:
+        """
+        Enhanced heading hierarchy analysis.
+        AI never skips levels (strict H1→H2→H3); humans occasionally do.
+        """
+        # Extract all headings with levels
+        headings = []
+        for line in text.split('\n'):
+            match = re.match(r'^(#{1,6})\s+(.+)$', line.strip())
+            if match:
+                level = len(match.group(1))
+                title = match.group(2).strip()
+                headings.append((level, title))
+
+        if len(headings) < 2:
+            return {
+                'hierarchy_skips': 0,
+                'hierarchy_adherence': 1.0,  # Perfect adherence (trivial)
+                'heading_length_variance': 0.0
+            }
+
+        # Check for hierarchy skips (e.g., H1 directly to H3)
+        skips = 0
+        for i in range(len(headings) - 1):
+            curr_level, _ = headings[i]
+            next_level, _ = headings[i + 1]
+
+            # Skip detected if level jumps by more than 1 downward
+            if next_level > curr_level + 1:
+                skips += 1
+
+        # Strict adherence score (1.0 = never skips = AI-like)
+        adherence = 1.0 - (skips / len(headings)) if len(headings) > 0 else 1.0
+
+        # Heading length variance (AI tends toward uniform verbose headings)
+        heading_lengths = [len(title.split()) for _, title in headings]
+        if len(heading_lengths) > 1:
+            length_variance = statistics.variance(heading_lengths)
+        else:
+            length_variance = 0.0
+
+        return {
+            'hierarchy_skips': skips,
+            'hierarchy_adherence': round(adherence, 3),
+            'heading_length_variance': round(length_variance, 2)
+        }
+
+    def _analyze_blockquote_patterns(self, text: str, word_count: int) -> Dict:
+        """
+        Analyze blockquote usage patterns via AST.
+        AI uses 2.7x more blockquotes than humans, often clustered at section starts.
+
+        Returns dict with keys: total_blockquotes, per_page, avg_length,
+        section_start_clustering, score, assessment
+        """
+        ast = self._parse_to_ast(text, cache_key='blockquote')
+        if ast is None:
+            # Fallback: basic count without AST
+            bq_count = len(re.findall(r'^>\s+', text, re.MULTILINE))
+            pages = word_count / 250.0
+            per_page = bq_count / pages if pages > 0 else 0
+            if per_page <= 2:
+                return {'total_blockquotes': bq_count, 'per_page': per_page,
+                       'score': 10.0, 'assessment': 'EXCELLENT'}
+            elif per_page <= 3:
+                return {'total_blockquotes': bq_count, 'per_page': per_page,
+                       'score': 7.0, 'assessment': 'GOOD'}
+            elif per_page <= 4:
+                return {'total_blockquotes': bq_count, 'per_page': per_page,
+                       'score': 4.0, 'assessment': 'FAIR'}
+            else:
+                return {'total_blockquotes': bq_count, 'per_page': per_page,
+                       'score': 0.0, 'assessment': 'POOR'}
+
+        # Extract blockquotes via AST
+        if not HAS_MARKO:
+            blockquotes = []
+        else:
+            blockquotes = self._walk_ast(ast, Quote)
+
+        if len(blockquotes) == 0:
+            return {'total_blockquotes': 0, 'per_page': 0.0, 'score': 10.0,
+                   'assessment': 'EXCELLENT', 'section_start_clustering': 0.0}
+
+        # Calculate metrics
+        pages = word_count / 250.0
+        per_page = len(blockquotes) / pages if pages > 0 else 0
+
+        # Calculate blockquote lengths
+        lengths = []
+        for bq in blockquotes:
+            bq_text = self._extract_text_from_node(bq)
+            lengths.append(len(bq_text.split()))
+
+        avg_length = statistics.mean(lengths) if lengths else 0
+
+        # Detect section-start clustering
+        section_start_count = self._count_section_start_blockquotes(ast)
+        section_start_clustering = section_start_count / len(blockquotes) if len(blockquotes) > 0 else 0
+
+        # Scoring based on density and clustering
+        if per_page <= 2 and section_start_clustering < 0.3:
+            score, assessment = 10.0, 'EXCELLENT'
+        elif per_page <= 3 and section_start_clustering < 0.5:
+            score, assessment = 7.0, 'GOOD'
+        elif per_page <= 4:
+            score, assessment = 4.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'total_blockquotes': len(blockquotes),
+            'per_page': round(per_page, 2),
+            'avg_length': round(avg_length, 1),
+            'lengths': lengths[:10],  # Limit for storage
+            'section_start_clustering': round(section_start_clustering, 3),
+            'section_start_count': section_start_count,
+            'score': score,
+            'assessment': assessment
+        }
+
+    def _count_section_start_blockquotes(self, ast) -> int:
+        """Count blockquotes appearing within first 100 words of H2 sections."""
+        if not HAS_MARKO:
+            return 0
+
+        count = 0
+        current_section_words = 0
+        in_h2_section = False
+
+        # Walk all nodes in order
+        for node in self._walk_ast(ast):
+            if isinstance(node, Heading) and node.level == 2:
+                in_h2_section = True
+                current_section_words = 0
+            elif isinstance(node, Quote):
+                if in_h2_section and current_section_words < 100:
+                    count += 1
+                in_h2_section = False  # Reset after finding blockquote
+            elif isinstance(node, Paragraph):
+                text = self._extract_text_from_node(node)
+                current_section_words += len(text.split())
+                if current_section_words >= 100:
+                    in_h2_section = False
+
+        return count
+
+    def _analyze_link_anchor_quality(self, text: str, word_count: int) -> Dict:
+        """
+        Analyze link anchor text quality.
+        AI defaults to generic CTAs, humans write descriptive anchors.
+
+        Returns dict with keys: total_links, generic_count, generic_ratio,
+        generic_examples, link_density, score, assessment
+        """
+        ast = self._parse_to_ast(text, cache_key='links')
+        if ast is None or not HAS_MARKO:
+            # Fallback to regex
+            return self._analyze_link_anchor_quality_regex(text, word_count)
+
+        # Extract links via AST
+        links = self._walk_ast(ast, Link)
+
+        if len(links) == 0:
+            return {'total_links': 0, 'score': 8.0, 'assessment': 'EXCELLENT'}
+
+        # Analyze anchor text
+        generic_patterns = [
+            r'\bclick here\b',
+            r'\bread more\b',
+            r'\blearn more\b',
+            r'\bsee here\b',
+            r'\bcheck (this|it) out\b',
+            r'\b(this|that) link\b',
+            r'^here$',
+            r'^this$',
+            r'^link$',
+            r'https?://',
+        ]
+
+        generic_links = []
+        generic_examples = []
+
+        for link in links:
+            anchor_text = self._extract_text_from_node(link).strip()
+            if not anchor_text:
+                continue
+
+            # Check against generic patterns
+            is_generic = any(re.search(pattern, anchor_text, re.IGNORECASE)
+                           for pattern in generic_patterns)
+
+            if is_generic:
+                generic_links.append(link)
+                if len(generic_examples) < 10:
+                    generic_examples.append(f'"{anchor_text}"')
+
+        generic_ratio = len(generic_links) / len(links) if len(links) > 0 else 0
+        link_density = (len(links) / word_count * 1000) if word_count > 0 else 0
+
+        # Scoring
+        if generic_ratio < 0.10:
+            score, assessment = 8.0, 'EXCELLENT'
+        elif generic_ratio < 0.25:
+            score, assessment = 6.0, 'GOOD'
+        elif generic_ratio < 0.50:
+            score, assessment = 3.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'total_links': len(links),
+            'generic_count': len(generic_links),
+            'generic_ratio': round(generic_ratio, 3),
+            'generic_examples': generic_examples,
+            'link_density': round(link_density, 2),
+            'score': score,
+            'assessment': assessment
+        }
+
+    def _analyze_link_anchor_quality_regex(self, text: str, word_count: int) -> Dict:
+        """Fallback regex-based link anchor analysis when AST unavailable."""
+        # Extract markdown links: [anchor](url)
+        link_pattern = r'\[([^\]]+)\]\([^\)]+\)'
+        matches = re.findall(link_pattern, text)
+
+        if len(matches) == 0:
+            return {'total_links': 0, 'score': 8.0, 'assessment': 'EXCELLENT'}
+
+        generic_patterns = [
+            r'\bclick here\b', r'\bread more\b', r'\blearn more\b',
+            r'\bsee here\b', r'\bcheck (this|it) out\b',
+            r'\b(this|that) link\b', r'^here$', r'^this$', r'^link$',
+            r'https?://'
+        ]
+
+        generic_count = 0
+        generic_examples = []
+
+        for anchor in matches:
+            is_generic = any(re.search(pattern, anchor, re.IGNORECASE)
+                           for pattern in generic_patterns)
+            if is_generic:
+                generic_count += 1
+                if len(generic_examples) < 10:
+                    generic_examples.append(f'"{anchor}"')
+
+        generic_ratio = generic_count / len(matches)
+        link_density = (len(matches) / word_count * 1000) if word_count > 0 else 0
+
+        if generic_ratio < 0.10:
+            score, assessment = 8.0, 'EXCELLENT'
+        elif generic_ratio < 0.25:
+            score, assessment = 6.0, 'GOOD'
+        elif generic_ratio < 0.50:
+            score, assessment = 3.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'total_links': len(matches),
+            'generic_count': generic_count,
+            'generic_ratio': round(generic_ratio, 3),
+            'generic_examples': generic_examples,
+            'link_density': round(link_density, 2),
+            'score': score,
+            'assessment': assessment
+        }
+
+    def _analyze_enhanced_list_structure_ast(self, text: str) -> Dict:
+        """
+        Analyze list structure patterns via AST.
+        AI creates symmetric lists, humans create asymmetric varied structures.
+
+        Returns dict with keys: has_mixed_types, symmetry_score, avg_item_length,
+        item_length_cv, score, assessment
+        """
+        ast = self._parse_to_ast(text, cache_key='lists')
+        if ast is None or not HAS_MARKO:
+            # Fallback: assume good if AST unavailable
+            return {'score': 8.0, 'assessment': 'AST_UNAVAILABLE'}
+
+        lists = self._walk_ast(ast, MarkoList)
+
+        if len(lists) == 0:
+            return {'score': 8.0, 'assessment': 'NO_LISTS'}
+
+        # Check for mixed ordered/unordered
+        ordered_count = sum(1 for lst in lists if lst.ordered)
+        unordered_count = len(lists) - ordered_count
+        has_mixed_types = ordered_count > 0 and unordered_count > 0
+
+        # Analyze sublist counts for symmetry
+        sublist_counts = []
+        for lst in lists:
+            if hasattr(lst, 'children') and lst.children:
+                child_lists = [child for child in lst.children
+                              if isinstance(child, MarkoList)]
+                sublist_counts.append(len(child_lists))
+
+        # Calculate symmetry (low CV = high symmetry = AI-like)
+        if len(sublist_counts) >= 3:
+            mean_sublists = statistics.mean(sublist_counts)
+            if mean_sublists > 0:
+                symmetry_cv = statistics.stdev(sublist_counts) / mean_sublists
+                symmetry_score = 1.0 - min(symmetry_cv, 1.0)  # 1.0 = perfect symmetry
+            else:
+                symmetry_score = 0.0
+        else:
+            symmetry_score = 0.0  # Assume good if insufficient data
+
+        # Analyze item lengths
+        item_lengths = []
+        for lst in lists:
+            if hasattr(lst, 'children') and lst.children:
+                for item in lst.children:
+                    if not isinstance(item, MarkoList):  # Skip nested lists
+                        text_content = self._extract_text_from_node(item)
+                        item_lengths.append(len(text_content.split()))
+
+        avg_item_length = statistics.mean(item_lengths) if item_lengths else 0
+        item_length_cv = (statistics.stdev(item_lengths) / avg_item_length
+                         if avg_item_length > 0 and len(item_lengths) > 1 else 0)
+
+        # Scoring
+        if has_mixed_types and symmetry_score < 0.2 and item_length_cv > 0.4:
+            score, assessment = 8.0, 'EXCELLENT'
+        elif has_mixed_types or symmetry_score < 0.4:
+            score, assessment = 5.0, 'GOOD'
+        elif symmetry_score < 0.7:
+            score, assessment = 3.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'has_mixed_types': has_mixed_types,
+            'symmetry_score': round(symmetry_score, 3),
+            'avg_item_length': round(avg_item_length, 1),
+            'item_length_cv': round(item_length_cv, 3),
+            'ordered_count': ordered_count,
+            'unordered_count': unordered_count,
+            'score': score,
+            'assessment': assessment
+        }
+
+    def _analyze_code_block_patterns_ast(self, text: str) -> Dict:
+        """
+        Analyze code block patterns via AST.
+        AI often omits language declarations, uses uniform lengths.
+
+        Returns dict with keys: total_blocks, with_language,
+        language_declaration_ratio, avg_length, length_cv, score, assessment
+        """
+        ast = self._parse_to_ast(text, cache_key='code')
+        if ast is None or not HAS_MARKO:
+            # Fallback to regex
+            return self._analyze_code_block_patterns_regex(text)
+
+        code_blocks = self._walk_ast(ast, FencedCode)
+
+        if len(code_blocks) == 0:
+            return {'total_blocks': 0, 'score': 4.0, 'assessment': 'NO_CODE_BLOCKS'}
+
+        # Count language declarations
+        with_language = sum(1 for block in code_blocks if hasattr(block, 'lang') and block.lang)
+        language_ratio = with_language / len(code_blocks)
+
+        # Calculate lengths
+        lengths = []
+        for block in code_blocks:
+            if hasattr(block, 'children') and isinstance(block.children, str):
+                lines = block.children.strip().split('\n')
+                lengths.append(len(lines))
+            elif hasattr(block, 'children') and block.children:
+                # Extract text from children
+                code_text = self._extract_text_from_node(block)
+                lines = code_text.strip().split('\n')
+                lengths.append(len(lines))
+
+        avg_length = statistics.mean(lengths) if lengths else 0
+        length_cv = (statistics.stdev(lengths) / avg_length
+                    if avg_length > 0 and len(lengths) > 1 else 0)
+
+        # Scoring
+        if language_ratio >= 0.9 and length_cv > 0.4:
+            score, assessment = 4.0, 'EXCELLENT'
+        elif language_ratio >= 0.7:
+            score, assessment = 3.0, 'GOOD'
+        elif language_ratio >= 0.5:
+            score, assessment = 2.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'total_blocks': len(code_blocks),
+            'with_language': with_language,
+            'language_declaration_ratio': round(language_ratio, 3),
+            'avg_length': round(avg_length, 1),
+            'length_cv': round(length_cv, 3),
+            'score': score,
+            'assessment': assessment
+        }
+
+    def _analyze_code_block_patterns_regex(self, text: str) -> Dict:
+        """Fallback regex-based code block analysis when AST unavailable."""
+        # Match fenced code blocks with optional language
+        pattern = r'```(\w+)?\n(.*?)```'
+        matches = re.findall(pattern, text, re.DOTALL)
+
+        if len(matches) == 0:
+            return {'total_blocks': 0, 'score': 4.0, 'assessment': 'NO_CODE_BLOCKS'}
+
+        with_language = sum(1 for lang, _ in matches if lang)
+        language_ratio = with_language / len(matches)
+
+        lengths = [len(code.strip().split('\n')) for _, code in matches]
+        avg_length = statistics.mean(lengths) if lengths else 0
+        length_cv = (statistics.stdev(lengths) / avg_length
+                    if avg_length > 0 and len(lengths) > 1 else 0)
+
+        if language_ratio >= 0.9 and length_cv > 0.4:
+            score, assessment = 4.0, 'EXCELLENT'
+        elif language_ratio >= 0.7:
+            score, assessment = 3.0, 'GOOD'
+        elif language_ratio >= 0.5:
+            score, assessment = 2.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'total_blocks': len(matches),
+            'with_language': with_language,
+            'language_declaration_ratio': round(language_ratio, 3),
+            'avg_length': round(avg_length, 1),
+            'length_cv': round(length_cv, 3),
+            'score': score,
+            'assessment': assessment
+        }

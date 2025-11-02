@@ -280,8 +280,8 @@ class AIPatternAnalyzer:
         # Core analyses using dimension analyzers
         perplexity_results = self.perplexity_analyzer.analyze(text, lines)
         burstiness_results = self.burstiness_analyzer.analyze(text, lines)
-        structure_results = self.structure_analyzer.analyze(text, lines)
-        formatting_results = self.formatting_analyzer.analyze(text, lines)
+        structure_results = self.structure_analyzer.analyze(text, lines, word_count=word_count)
+        formatting_results = self.formatting_analyzer.analyze(text, lines, word_count=word_count)
         voice_results = self.voice_analyzer.analyze(text, lines)
 
         # Enhanced analyses (optional dependencies)

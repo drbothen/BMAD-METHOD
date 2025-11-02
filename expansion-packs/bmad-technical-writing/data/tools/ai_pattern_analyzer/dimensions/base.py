@@ -6,11 +6,30 @@ to ensure consistent interface across the analysis system.
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
+import warnings
+
+# Optional AST parsing support
+try:
+    import marko
+    from marko import Markdown
+    from marko.block import Quote, Heading, List as MarkoList, Paragraph, FencedCode
+    from marko.inline import Link, CodeSpan
+    HAS_MARKO = True
+except ImportError:
+    HAS_MARKO = False
+    warnings.warn("marko not installed. AST-based structure analysis unavailable. "
+                  "Install with: pip install marko>=2.0.0", UserWarning)
 
 
 class DimensionAnalyzer(ABC):
     """Base class for all dimension analyzers."""
+
+    def __init__(self):
+        """Initialize the dimension analyzer with AST support."""
+        # AST parser and cache (marko)
+        self._markdown_parser = None
+        self._ast_cache = {}
 
     @abstractmethod
     def analyze(self, text: str, lines: List[str], **kwargs) -> Dict[str, Any]:
@@ -59,3 +78,83 @@ class DimensionAnalyzer(ABC):
             Dimension name
         """
         return self.__class__.__name__.replace('Analyzer', '')
+
+    # ========================================================================
+    # AST HELPER METHODS (for Phase 3 structure analysis)
+    # ========================================================================
+
+    def _get_markdown_parser(self):
+        """Lazy load marko parser."""
+        if self._markdown_parser is None and HAS_MARKO:
+            self._markdown_parser = Markdown()
+        return self._markdown_parser
+
+    def _parse_to_ast(self, text: str, cache_key: Optional[str] = None):
+        """Parse markdown to AST with caching.
+
+        Args:
+            text: Markdown text to parse
+            cache_key: Optional cache key for reusing parsed AST
+
+        Returns:
+            Parsed AST node or None if marko unavailable or parsing fails
+        """
+        if not HAS_MARKO:
+            return None
+
+        if cache_key and cache_key in self._ast_cache:
+            return self._ast_cache[cache_key]
+
+        parser = self._get_markdown_parser()
+        if parser is None:
+            return None
+
+        try:
+            ast = parser.parse(text)
+            if cache_key:
+                self._ast_cache[cache_key] = ast
+            return ast
+        except Exception:
+            return None
+
+    def _walk_ast(self, node, node_type=None):
+        """Recursively walk AST and collect nodes of specified type.
+
+        Args:
+            node: AST node to walk
+            node_type: Optional type to filter (e.g., Quote)
+
+        Returns:
+            List of nodes matching node_type, or all nodes if node_type is None
+        """
+        nodes = []
+
+        if node_type is None or isinstance(node, node_type):
+            nodes.append(node)
+
+        # Recursively process children
+        if hasattr(node, 'children') and node.children:
+            for child in node.children:
+                nodes.extend(self._walk_ast(child, node_type))
+
+        return nodes
+
+    def _extract_text_from_node(self, node) -> str:
+        """Extract plain text from AST node recursively.
+
+        Args:
+            node: AST node to extract text from
+
+        Returns:
+            Plain text string
+        """
+        if hasattr(node, 'children') and node.children:
+            return ''.join([self._extract_text_from_node(child) for child in node.children])
+        elif hasattr(node, 'children') and isinstance(node.children, str):
+            return node.children
+        elif hasattr(node, 'dest'):  # Link destination
+            return ''
+        elif isinstance(node, str):
+            return node
+        else:
+            return ''
