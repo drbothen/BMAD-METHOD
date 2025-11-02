@@ -146,6 +146,10 @@ try:
         AutoTokenizer,
         pipeline
     )
+    # Suppress transformers informational warnings (e.g., loss_type config messages)
+    from transformers.utils import logging as transformers_logging
+    transformers_logging.set_verbosity_error()
+
     HAS_TRANSFORMERS = True
     # Initialize models (will be loaded lazily if needed)
     _perplexity_model = None
@@ -741,25 +745,25 @@ class AnalysisResults:
     maas_score: Optional[float] = None  # Maas length-corrected diversity
     vocab_concentration: Optional[float] = None  # Zipfian vocabulary concentration
 
-    # PHASE 2: Textacy-based lexical diversity (optional - requires textacy+spacy)
+    # Advanced lexical diversity - Textacy-based (optional - requires textacy+spacy)
     mattr: Optional[float] = None  # Moving Average Type-Token Ratio (window=100, AI: <0.65, Human: ≥0.70)
     rttr: Optional[float] = None  # Root Type-Token Ratio (AI: <7.5, Human: ≥7.5)
     mattr_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
     rttr_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
 
-    # PHASE 2: Enhanced heading length analysis
+    # Enhanced heading length analysis
     heading_length_short_pct: Optional[float] = None  # % of headings ≤5 words
     heading_length_medium_pct: Optional[float] = None  # % of headings 6-8 words
     heading_length_long_pct: Optional[float] = None  # % of headings ≥9 words
     heading_length_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
 
-    # PHASE 2: Subsection asymmetry analysis
+    # Subsection asymmetry analysis
     subsection_counts: Optional[List[int]] = None  # H3 counts under each H2
     subsection_cv: Optional[float] = None  # Coefficient of variation (CV <0.3 = AI-like, ≥0.6 = human)
     subsection_uniform_count: Optional[int] = None  # Count of sections with 3-4 subsections (AI signature)
     subsection_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
 
-    # PHASE 2: Heading depth variance analysis
+    # Heading depth variance analysis
     heading_transitions: Optional[Dict[str, int]] = None  # Transition counts (e.g., H1→H2: 5)
     heading_depth_pattern: Optional[str] = None  # VARIED/SEQUENTIAL/RIGID
     heading_has_lateral: Optional[bool] = None  # Has H3→H3 lateral moves
@@ -1649,7 +1653,7 @@ class AIPatternAnalyzer:
         roberta_ai = self._calculate_roberta_ai_detection(text) if HAS_TRANSFORMERS else {}
         detectgpt = self._calculate_detectgpt_metrics(text) if HAS_TRANSFORMERS else {}
 
-        # PHASE 2: Textacy lexical diversity and enhanced heading analysis
+        # Advanced lexical diversity and enhanced heading analysis
         textacy_lexical = self._calculate_textacy_lexical_diversity(text) if HAS_TEXTACY and HAS_SPACY else {}
         heading_length = self._calculate_heading_length_analysis(text)
         subsection_asym = self._calculate_subsection_asymmetry(text)
@@ -1800,25 +1804,25 @@ class AIPatternAnalyzer:
             **roberta_ai,
             **detectgpt,
 
-            # PHASE 2: Textacy lexical diversity
+            # Advanced lexical diversity (Textacy-based)
             mattr=textacy_lexical.get('mattr'),
             rttr=textacy_lexical.get('rttr'),
             mattr_assessment=textacy_lexical.get('mattr_assessment'),
             rttr_assessment=textacy_lexical.get('rttr_assessment'),
 
-            # PHASE 2: Enhanced heading length
+            # Enhanced heading length analysis
             heading_length_short_pct=heading_length.get('distribution_pct', {}).get('short'),
             heading_length_medium_pct=heading_length.get('distribution_pct', {}).get('medium'),
             heading_length_long_pct=heading_length.get('distribution_pct', {}).get('long'),
             heading_length_assessment=heading_length.get('assessment'),
 
-            # PHASE 2: Subsection asymmetry
+            # Subsection asymmetry analysis
             subsection_counts=subsection_asym.get('subsection_counts'),
             subsection_cv=subsection_asym.get('cv'),
             subsection_uniform_count=subsection_asym.get('uniform_count'),
             subsection_assessment=subsection_asym.get('assessment'),
 
-            # PHASE 2: Heading depth variance
+            # Heading depth variance analysis
             heading_transitions=heading_depth_var.get('transitions'),
             heading_depth_pattern=heading_depth_var.get('pattern'),
             heading_has_lateral=heading_depth_var.get('has_lateral'),
@@ -2797,7 +2801,7 @@ class AIPatternAnalyzer:
 
     def _calculate_textacy_lexical_diversity(self, text: str) -> Dict:
         """
-        Calculate MATTR and RTTR using textacy (Phase 2 enhancement).
+        Calculate MATTR and RTTR using textacy (Advanced lexical diversity metrics).
 
         MATTR (Moving Average Type-Token Ratio):
         - Window size 100 (research-validated default)
@@ -2840,13 +2844,12 @@ class AIPatternAnalyzer:
             # Process with spaCy
             doc = nlp_spacy(text_clean)
 
-            # Use textacy's TextStats for MATTR
+            # Use textacy's text_stats for MATTR (new API - direct function call)
             from textacy import text_stats
-            ts = text_stats.TextStats(doc)
 
             # Calculate MATTR (window size 100 is research-validated)
             try:
-                mattr = ts.mattr(window_size=100)
+                mattr = text_stats.mattr(doc, window_size=100)
             except Exception:
                 # Fallback if text too short for window size 100
                 mattr = 0.0
@@ -2905,7 +2908,7 @@ class AIPatternAnalyzer:
 
     def _calculate_heading_length_analysis(self, text: str) -> Dict:
         """
-        Analyze heading length patterns (Phase 2 enhancement).
+        Analyze heading length patterns (Enhanced heading length analysis).
 
         AI Pattern: Average 9-12 words, verbose descriptive modifiers
         Human Pattern: Average 3-7 words, concise and direct
@@ -2982,7 +2985,7 @@ class AIPatternAnalyzer:
 
     def _calculate_subsection_asymmetry(self, text: str) -> Dict:
         """
-        Analyze subsection count distribution for uniformity (Phase 2 enhancement).
+        Analyze subsection count distribution for uniformity (Subsection asymmetry analysis).
 
         AI Pattern: Uniform 3-4 subsections per section (CV <0.3)
         Human Pattern: Varied 0-6 subsections (CV ≥0.6)
@@ -3075,7 +3078,7 @@ class AIPatternAnalyzer:
 
     def _calculate_heading_depth_variance(self, text: str) -> Dict:
         """
-        Analyze heading depth transition patterns (Phase 2 enhancement).
+        Analyze heading depth transition patterns (Heading depth variance analysis).
 
         AI Pattern: Rigid H1→H2→H3 sequential only
         Human Pattern: Varied transitions with lateral moves and jumps
@@ -4356,7 +4359,7 @@ class AIPatternAnalyzer:
 
     def _score_textacy_lexical(self, r: AnalysisResults) -> str:
         """
-        Score Phase 2 textacy lexical diversity (MATTR + RTTR).
+        Score advanced textacy-based lexical diversity (MATTR + RTTR).
         MATTR: AI <0.65, Human ≥0.70
         RTTR: AI <7.5, Human ≥7.5
         """
@@ -4399,7 +4402,7 @@ class AIPatternAnalyzer:
 
     def _score_heading_length(self, r: AnalysisResults) -> str:
         """
-        Score Phase 2 heading length analysis.
+        Score enhanced heading length analysis.
         AI: avg >9 words, Human: avg ≤7 words
         """
         if r.heading_length_assessment is None or r.heading_length_assessment == 'INSUFFICIENT_DATA':
@@ -4416,7 +4419,7 @@ class AIPatternAnalyzer:
 
     def _score_subsection_asymmetry(self, r: AnalysisResults) -> str:
         """
-        Score Phase 2 subsection asymmetry.
+        Score subsection asymmetry analysis.
         AI: CV <0.3 (uniform), Human: CV ≥0.6 (varied)
         """
         if r.subsection_assessment is None or r.subsection_assessment == 'INSUFFICIENT_DATA':
@@ -4432,7 +4435,7 @@ class AIPatternAnalyzer:
 
     def _score_heading_depth_variance(self, r: AnalysisResults) -> str:
         """
-        Score Phase 2 heading depth variance.
+        Score heading depth variance analysis.
         AI: RIGID (sequential only), Human: VARIED (lateral moves, jumps)
         """
         if r.heading_depth_assessment is None or r.heading_depth_assessment == 'INSUFFICIENT_DATA':
@@ -4564,7 +4567,7 @@ class AIPatternAnalyzer:
             recommendation="Increase vocabulary diversity (target HDD > 0.65)" if lexical_val < 0.75 else None
         )
 
-        # PHASE 2: MATTR (Moving Average Type-Token Ratio) - 12 points
+        # Advanced Lexical: MATTR (Moving Average Type-Token Ratio) - 12 points
         textacy_lexical_val = score_map.get(self._score_textacy_lexical(results), 0.5)
         mattr_score_val = 12.0 * (1.0 if results.mattr_assessment == 'EXCELLENT' else
                                    0.75 if results.mattr_assessment == 'GOOD' else
@@ -4580,7 +4583,7 @@ class AIPatternAnalyzer:
             recommendation="Increase vocabulary variety (target MATTR ≥0.70)" if mattr_score_val < 9.0 else None
         )
 
-        # PHASE 2: RTTR (Root Type-Token Ratio) - 8 points
+        # Advanced Lexical: RTTR (Root Type-Token Ratio) - 8 points
         rttr_score_val = 8.0 * (1.0 if results.rttr_assessment == 'EXCELLENT' else
                                  0.75 if results.rttr_assessment == 'GOOD' else
                                  0.375 if results.rttr_assessment == 'FAIR' else 0.0) if results.rttr else 0.0
@@ -4637,7 +4640,7 @@ class AIPatternAnalyzer:
         advanced_category = ScoreCategory(
             name="Advanced Detection",
             total=gltr_score.score + lexical_score.score + mattr_dim.score + rttr_dim.score + ai_detect_score.score + stylo_score.score + syntax_score.score,
-            max_total=60.0,  # Increased from 40 with Phase 2: +12 (MATTR) +8 (RTTR)
+            max_total=60.0,  # Includes advanced lexical metrics: +12 (MATTR) +8 (RTTR)
             percentage=((gltr_score.score + lexical_score.score + mattr_dim.score + rttr_dim.score + ai_detect_score.score + stylo_score.score + syntax_score.score) / 60.0) * 100,
             dimensions=[gltr_score, lexical_score, mattr_dim, rttr_dim, ai_detect_score, stylo_score, syntax_score]
         )
@@ -4698,7 +4701,7 @@ class AIPatternAnalyzer:
             recommendation="Flatten to H3 max, break parallelism, create asymmetry" if heading_val < 0.75 else None
         )
 
-        # PHASE 2: Heading Length Analysis (10 points)
+        # Enhanced Heading: Length Analysis (10 points)
         heading_length_score_val = 10.0 * (1.0 if results.heading_length_assessment == 'EXCELLENT' else
                                              0.7 if results.heading_length_assessment == 'GOOD' else
                                              0.4 if results.heading_length_assessment == 'FAIR' else 0.0) if results.heading_length_assessment else 5.0
@@ -4713,7 +4716,7 @@ class AIPatternAnalyzer:
             recommendation="Shorten headings (target avg ≤7 words, remove descriptive modifiers)" if heading_length_score_val < 7.0 else None
         )
 
-        # PHASE 2: Subsection Asymmetry (8 points)
+        # Enhanced Heading: Subsection Asymmetry (8 points)
         subsection_score_val = 8.0 * (1.0 if results.subsection_assessment == 'EXCELLENT' else
                                        0.625 if results.subsection_assessment == 'GOOD' else
                                        0.375 if results.subsection_assessment == 'FAIR' else 0.0) if results.subsection_assessment else 4.0
@@ -4728,7 +4731,7 @@ class AIPatternAnalyzer:
             recommendation="Break uniformity: vary subsections per H2 (target CV ≥0.6)" if subsection_score_val < 5.0 else None
         )
 
-        # PHASE 2: Heading Depth Variance (6 points)
+        # Enhanced Heading: Depth Variance (6 points)
         depth_variance_score_val = 6.0 * (1.0 if results.heading_depth_assessment == 'EXCELLENT' else
                                            0.67 if results.heading_depth_assessment == 'GOOD' else
                                            0.33 if results.heading_depth_assessment == 'FAIR' else 0.0) if results.heading_depth_assessment else 3.0
@@ -4746,7 +4749,7 @@ class AIPatternAnalyzer:
         core_category = ScoreCategory(
             name="Core Patterns",
             total=burst_score.score + perp_score.score + format_score.score + heading_score.score + heading_length_dim.score + subsection_dim.score + depth_variance_dim.score,
-            max_total=59.0,  # Increased from 35 with Phase 2: +10 (heading length) +8 (subsection) +6 (depth)
+            max_total=59.0,  # Includes enhanced heading analysis: +10 (length) +8 (subsection) +6 (depth)
             percentage=((burst_score.score + perp_score.score + format_score.score + heading_score.score + heading_length_dim.score + subsection_dim.score + depth_variance_dim.score) / 59.0) * 100,
             dimensions=[burst_score, perp_score, format_score, heading_score, heading_length_dim, subsection_dim, depth_variance_dim]
         )
@@ -4834,7 +4837,7 @@ class AIPatternAnalyzer:
             (1.0 - perp_val) * 5,       # Perplexity 5%
         ]
 
-        # PHASE 2: Detection risk contributions
+        # Advanced detection risk contributions (lexical & heading metrics)
         if results.mattr is not None and results.mattr < 0.70:
             detection_components.append(10)  # Poor MATTR adds +10 risk points
         if results.rttr is not None and results.rttr < 7.5:
@@ -5920,12 +5923,12 @@ HEADING HIERARCHY ANALYSIS:
   Heading Length Variance: {r.heading_length_variance:.1f} (Higher = more varied)
   Score: {r.heading_hierarchy_score} ({'✓ Human-like' if r.heading_hierarchy_score in ['HIGH', 'MEDIUM'] else '⚠ AI-like' if r.heading_hierarchy_score not in ['N/A'] else 'N/A'})"""
 
-        # PHASE 2: Advanced Lexical Diversity & Heading Analysis
-        phase2_sections = []
+        # Advanced lexical diversity & enhanced heading analysis
+        advanced_sections = []
 
         # MATTR & RTTR
         if r.mattr is not None or r.rttr is not None:
-            section = "\nADVANCED LEXICAL DIVERSITY (Phase 2 - Textacy):"
+            section = "\nADVANCED LEXICAL DIVERSITY (Textacy-based):"
             if r.mattr is not None:
                 mattr_icon = "✓" if r.mattr >= 0.70 else "✗"
                 section += f"\n  MATTR (window=100): {r.mattr:.3f}  {mattr_icon} {r.mattr_assessment}"
@@ -5936,36 +5939,36 @@ HEADING HIERARCHY ANALYSIS:
                 section += f"\n  RTTR: {r.rttr:.2f}  {rttr_icon} {r.rttr_assessment}"
                 if r.rttr < 7.5:
                     section += "\n    → ACTION: Add more unique terminology (target: RTTR ≥7.5)"
-            phase2_sections.append(section)
+            advanced_sections.append(section)
 
         # Heading Length Analysis
         if r.heading_length_short_pct is not None:
             heading_icon = "✓" if r.avg_heading_length <= 7 else "✗"
             section = f"""
-ENHANCED HEADING LENGTH PATTERNS (Phase 2):
+ENHANCED HEADING LENGTH PATTERNS:
   Average Length: {r.avg_heading_length:.1f} words  {heading_icon} {r.heading_length_assessment}
   Distribution: Short (≤5w): {r.heading_length_short_pct:.1f}%, Medium (6-8w): {r.heading_length_medium_pct:.1f}%, Long (≥9w): {r.heading_length_long_pct:.1f}%"""
             if r.avg_heading_length > 7:
                 section += "\n  → ACTION: Shorten headings (target: avg ≤7 words, 60%+ short)"
-            phase2_sections.append(section)
+            advanced_sections.append(section)
 
         # Subsection Asymmetry
         if r.subsection_cv is not None and r.subsection_counts:
             subsec_icon = "✓" if r.subsection_cv >= 0.6 else ("⚠" if r.subsection_cv >= 0.4 else "✗")
             section = f"""
-SUBSECTION ASYMMETRY (Phase 2):
+SUBSECTION ASYMMETRY:
   Coefficient of Variation: {r.subsection_cv:.3f}  {subsec_icon} {r.subsection_assessment}
   Subsection Counts: {r.subsection_counts}
   Uniform Sections (3-4 subs): {r.subsection_uniform_count}"""
             if r.subsection_cv < 0.4:
                 section += "\n  → ACTION: Break uniformity, vary subsection counts (target: CV ≥0.6)"
-            phase2_sections.append(section)
+            advanced_sections.append(section)
 
         # Heading Depth Variance
         if r.heading_depth_pattern is not None:
             depth_icon = "✓" if r.heading_depth_pattern == 'VARIED' else ("⚠" if r.heading_depth_pattern == 'SEQUENTIAL' else "✗")
             section = f"""
-HEADING DEPTH TRANSITIONS (Phase 2):
+HEADING DEPTH TRANSITIONS:
   Pattern: {r.heading_depth_pattern}  {depth_icon} {r.heading_depth_assessment}
   Has Lateral Moves (H3→H3): {r.heading_has_lateral}
   Has Depth Jumps (H3→H1): {r.heading_has_jumps}"""
@@ -5974,16 +5977,16 @@ HEADING DEPTH TRANSITIONS (Phase 2):
                 section += f"\n  Transitions: {trans_str}"
             if r.heading_depth_pattern == 'RIGID':
                 section += "\n  → ACTION: Add lateral H3→H3 moves, occasional depth jumps"
-            phase2_sections.append(section)
+            advanced_sections.append(section)
 
-        if phase2_sections:
+        if advanced_sections:
             report += f"""
 
 {'─' * 80}
-PHASE 2: ADVANCED LEXICAL & HEADING ANALYSIS
+ADVANCED LEXICAL & HEADING ANALYSIS
 {'─' * 80}
 """
-            for section in phase2_sections:
+            for section in advanced_sections:
                 report += section + "\n"
 
         report += f"""
