@@ -1067,3 +1067,128 @@ class TestEdgeCases:
         text = "# Title\n\n" + ("word " * 10000)
         result = analyzer.analyze(text)
         assert isinstance(result, dict)
+
+
+# ============================================================================
+# Score Method Branch Coverage
+# ============================================================================
+
+class TestScoreMethodBranches:
+    """Tests for score() method covering all threshold branches - Lines 111-136."""
+
+    def test_score_depth_5_or_more(self, analyzer):
+        """Test score with heading depth >= 5 - Line 111."""
+        analysis_results = {
+            'heading_depth': 5,
+            'heading_parallelism_score': 0.0,
+            'total_headings': 10,
+            'verbose_headings_count': 0
+        }
+        score, label = analyzer.score(analysis_results)
+        # issues += 2 from depth, so issues = 2, should be MEDIUM (7.0)
+        assert score == 7.0
+        assert label == "MEDIUM"
+
+    def test_score_depth_4(self, analyzer):
+        """Test score with heading depth == 4 - Line 113."""
+        analysis_results = {
+            'heading_depth': 4,
+            'heading_parallelism_score': 0.0,
+            'total_headings': 10,
+            'verbose_headings_count': 0
+        }
+        score, label = analyzer.score(analysis_results)
+        # issues += 1 from depth, so issues = 1, should be MEDIUM (7.0)
+        assert score == 7.0
+        assert label == "MEDIUM"
+
+    def test_score_parallelism_high(self, analyzer):
+        """Test score with high parallelism >= 0.7 - Line 118."""
+        analysis_results = {
+            'heading_depth': 3,
+            'heading_parallelism_score': 0.7,
+            'total_headings': 10,
+            'verbose_headings_count': 0
+        }
+        score, label = analyzer.score(analysis_results)
+        # issues += 2 from parallelism, so issues = 2, should be MEDIUM (7.0)
+        assert score == 7.0
+        assert label == "MEDIUM"
+
+    def test_score_parallelism_medium(self, analyzer):
+        """Test score with medium parallelism >= 0.4 - Line 120."""
+        analysis_results = {
+            'heading_depth': 3,
+            'heading_parallelism_score': 0.4,
+            'total_headings': 10,
+            'verbose_headings_count': 0
+        }
+        score, label = analyzer.score(analysis_results)
+        # issues += 1 from parallelism, so issues = 1, should be MEDIUM (7.0)
+        assert score == 7.0
+        assert label == "MEDIUM"
+
+    def test_score_verbose_headings(self, analyzer):
+        """Test score with excessive verbose headings - Line 126."""
+        analysis_results = {
+            'heading_depth': 3,
+            'heading_parallelism_score': 0.0,
+            'total_headings': 10,
+            'verbose_headings_count': 4  # 40% > 30% threshold
+        }
+        score, label = analyzer.score(analysis_results)
+        # issues += 1 from verbose, so issues = 1, should be MEDIUM (7.0)
+        assert score == 7.0
+        assert label == "MEDIUM"
+
+    def test_score_no_issues_high(self, analyzer):
+        """Test score with no issues returns HIGH - Line 130."""
+        analysis_results = {
+            'heading_depth': 2,
+            'heading_parallelism_score': 0.0,
+            'total_headings': 10,
+            'verbose_headings_count': 0
+        }
+        score, label = analyzer.score(analysis_results)
+        # issues = 0, should be HIGH (10.0)
+        assert score == 10.0
+        assert label == "HIGH"
+
+    def test_score_medium_range(self, analyzer):
+        """Test score with 1-2 issues returns MEDIUM - Line 132."""
+        analysis_results = {
+            'heading_depth': 4,  # +1 issue
+            'heading_parallelism_score': 0.45,  # +1 issue
+            'total_headings': 10,
+            'verbose_headings_count': 0
+        }
+        score, label = analyzer.score(analysis_results)
+        # issues = 2, should be MEDIUM (7.0)
+        assert score == 7.0
+        assert label == "MEDIUM"
+
+    def test_score_low_range(self, analyzer):
+        """Test score with 3-4 issues returns LOW - Line 134."""
+        analysis_results = {
+            'heading_depth': 4,  # +1 issue
+            'heading_parallelism_score': 0.75,  # +2 issues
+            'total_headings': 10,
+            'verbose_headings_count': 4  # +1 issue (40% > 30%)
+        }
+        score, label = analyzer.score(analysis_results)
+        # issues = 4, should be LOW (4.0)
+        assert score == 4.0
+        assert label == "LOW"
+
+    def test_score_very_low_range(self, analyzer):
+        """Test score with 5+ issues returns VERY LOW - Line 136."""
+        analysis_results = {
+            'heading_depth': 5,  # +2 issues
+            'heading_parallelism_score': 0.75,  # +2 issues
+            'total_headings': 10,
+            'verbose_headings_count': 4  # +1 issue (40% > 30%)
+        }
+        score, label = analyzer.score(analysis_results)
+        # issues = 5, should be VERY LOW (2.0)
+        assert score == 2.0
+        assert label == "VERY LOW"
