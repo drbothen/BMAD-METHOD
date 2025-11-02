@@ -38,6 +38,10 @@ spacy>=3.7.0
 # Requires spaCy to be installed first
 textacy>=0.13.0
 
+# Marko - Markdown AST parsing for Phase 3 structure analysis
+# Provides: AST-based blockquote, link, list, and code block pattern detection
+marko>=2.0.0
+
 # Transformers - Perplexity, GLTR, sentiment, and AI detection
 # Provides: DistilGPT-2 perplexity, RoBERTa sentiment, AI classifiers, GLTR token ranking
 # WARNING: Large download (~500MB+ for models), requires PyTorch

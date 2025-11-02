@@ -160,6 +160,18 @@ except (ImportError, ValueError, OSError):
     HAS_TRANSFORMERS = False
     # Don't print warning - optional and heavy dependency
 
+try:
+    import marko
+    from marko import Markdown
+    from marko.block import Quote, Heading, List as MarkoList, Paragraph, FencedCode
+    from marko.inline import Link, CodeSpan
+    HAS_MARKO = True
+except ImportError:
+    HAS_MARKO = False
+    import warnings
+    warnings.warn("marko not installed. AST-based structure analysis unavailable. "
+                  "Install with: pip install marko>=2.0.0", UserWarning)
+
 
 # ============================================================================
 # ERROR CLASSES
@@ -770,6 +782,39 @@ class AnalysisResults:
     heading_has_jumps: Optional[bool] = None  # Has H3→H1 jumps
     heading_depth_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
 
+    # PHASE 3: AST-based structure analysis and advanced patterns (optional - requires marko)
+    blockquote_total: Optional[int] = None  # Total blockquotes in document
+    blockquote_per_page: Optional[float] = None  # Blockquotes per 250-word page (AI: 4+, Human: 0-2)
+    blockquote_avg_length: Optional[float] = None  # Average blockquote length in words
+    blockquote_section_start_clustering: Optional[float] = None  # % at section starts (AI: >50%)
+    blockquote_score: Optional[float] = None  # Quality score contribution (0-10)
+    blockquote_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
+
+    link_total: Optional[int] = None  # Total markdown links
+    link_generic_count: Optional[int] = None  # Generic anchor text count
+    link_generic_ratio: Optional[float] = None  # Generic/total ratio (AI: >40%, Human: <10%)
+    link_generic_examples: Optional[List[str]] = None  # Example generic anchors
+    link_density: Optional[float] = None  # Links per 1000 words
+    link_anchor_score: Optional[float] = None  # Quality score contribution (0-8)
+    link_anchor_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
+
+    punctuation_colon_cv: Optional[float] = None  # Colon spacing coefficient of variation
+    punctuation_primary_cv: Optional[float] = None  # Primary punctuation CV (AI: <0.35, Human: ≥0.7)
+    punctuation_spacing_score: Optional[float] = None  # Quality score contribution (0-6)
+    punctuation_spacing_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
+
+    list_has_mixed_types: Optional[bool] = None  # Has both ordered and unordered lists
+    list_symmetry_score: Optional[float] = None  # 0-1, higher = more symmetric (AI-like)
+    list_ast_score: Optional[float] = None  # Quality score contribution (0-8)
+    list_ast_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
+
+    code_total_blocks: Optional[int] = None  # Total fenced code blocks
+    code_with_language: Optional[int] = None  # Blocks with language declarations
+    code_lang_declaration_ratio: Optional[float] = None  # Declared/total (AI: <60%, Human: >90%)
+    code_avg_length: Optional[float] = None  # Average code block length in lines
+    code_ast_score: Optional[float] = None  # Quality score contribution (0-4)
+    code_ast_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
+
     # ADVANCED: Enhanced syntactic analysis (optional - requires spaCy)
     avg_tree_depth: Optional[float] = None  # Dependency tree depth (AI: 2-3, Human: 4-6)
     subordination_index: Optional[float] = None  # Subordinate clause frequency (AI: <0.1, Human: >0.15)
@@ -974,6 +1019,88 @@ class AIPatternAnalyzer:
         self._first_person_pattern = re.compile(r'\b(I|we|my|our|me|us)\b', re.IGNORECASE)
         self._second_person_pattern = re.compile(r'\b(you|your|yours)\b', re.IGNORECASE)
         self._contraction_pattern = re.compile(r"\b\w+'\w+\b")
+
+        # Phase 3: AST parser and cache (marko)
+        self._markdown_parser = None
+        self._ast_cache = {}
+
+    def _get_markdown_parser(self):
+        """Lazy load marko parser."""
+        if self._markdown_parser is None and HAS_MARKO:
+            self._markdown_parser = Markdown()
+        return self._markdown_parser
+
+    def _parse_to_ast(self, text: str, cache_key: Optional[str] = None):
+        """Parse markdown to AST with caching.
+
+        Args:
+            text: Markdown text to parse
+            cache_key: Optional cache key for reusing parsed AST
+
+        Returns:
+            Parsed AST node or None if marko unavailable or parsing fails
+        """
+        if not HAS_MARKO:
+            return None
+
+        if cache_key and cache_key in self._ast_cache:
+            return self._ast_cache[cache_key]
+
+        parser = self._get_markdown_parser()
+        if parser is None:
+            return None
+
+        try:
+            ast = parser.parse(text)
+            if cache_key:
+                self._ast_cache[cache_key] = ast
+            return ast
+        except Exception as e:
+            import warnings
+            warnings.warn(f"Markdown parsing failed: {e}. Falling back to regex analysis.", UserWarning)
+            return None
+
+    def _walk_ast(self, node, node_type=None):
+        """Recursively walk AST and collect nodes of specified type.
+
+        Args:
+            node: AST node to walk
+            node_type: Optional type to filter (e.g., Quote)
+
+        Returns:
+            List of nodes matching node_type, or all nodes if node_type is None
+        """
+        nodes = []
+
+        if node_type is None or isinstance(node, node_type):
+            nodes.append(node)
+
+        # Recursively process children
+        if hasattr(node, 'children') and node.children:
+            for child in node.children:
+                nodes.extend(self._walk_ast(child, node_type))
+
+        return nodes
+
+    def _extract_text_from_node(self, node) -> str:
+        """Extract plain text from AST node recursively.
+
+        Args:
+            node: AST node to extract text from
+
+        Returns:
+            Plain text string
+        """
+        if hasattr(node, 'children') and node.children:
+            return ''.join([self._extract_text_from_node(child) for child in node.children])
+        elif hasattr(node, 'children') and isinstance(node.children, str):
+            return node.children
+        elif hasattr(node, 'dest'):  # Link destination
+            return ''
+        elif isinstance(node, str):
+            return node
+        else:
+            return ''
 
     def _strip_html_comments(self, text: str) -> str:
         """Remove HTML comment blocks (metadata) from text for analysis"""
@@ -1672,6 +1799,13 @@ class AIPatternAnalyzer:
         section_variance = self._calculate_section_variance(text)
         list_nesting = self._calculate_list_nesting_depth(text)
 
+        # PHASE 3: AST-based structure analysis and advanced patterns
+        blockquote_patterns = self._analyze_blockquote_patterns(text, word_count)
+        link_anchor_quality = self._analyze_link_anchor_quality(text, word_count)
+        punctuation_spacing_cv = self._analyze_punctuation_spacing_cv(text)
+        enhanced_list_structure = self._analyze_enhanced_list_structure_ast(text)
+        code_block_patterns = self._analyze_code_block_patterns_ast(text)
+
         # Calculate pages (estimate: 500-1000 tokens per page, use 750 average)
         estimated_pages = max(1, word_count / 750)
 
@@ -1827,7 +1961,40 @@ class AIPatternAnalyzer:
             heading_depth_pattern=heading_depth_var.get('pattern'),
             heading_has_lateral=heading_depth_var.get('has_lateral'),
             heading_has_jumps=heading_depth_var.get('has_jumps'),
-            heading_depth_assessment=heading_depth_var.get('assessment')
+            heading_depth_assessment=heading_depth_var.get('assessment'),
+
+            # PHASE 3: AST-based structure analysis and advanced patterns
+            blockquote_total=blockquote_patterns.get('total_blockquotes'),
+            blockquote_per_page=blockquote_patterns.get('per_page'),
+            blockquote_avg_length=blockquote_patterns.get('avg_length'),
+            blockquote_section_start_clustering=blockquote_patterns.get('section_start_clustering'),
+            blockquote_score=blockquote_patterns.get('score'),
+            blockquote_assessment=blockquote_patterns.get('assessment'),
+
+            link_total=link_anchor_quality.get('total_links'),
+            link_generic_count=link_anchor_quality.get('generic_count'),
+            link_generic_ratio=link_anchor_quality.get('generic_ratio'),
+            link_generic_examples=link_anchor_quality.get('generic_examples', []),
+            link_density=link_anchor_quality.get('link_density'),
+            link_anchor_score=link_anchor_quality.get('score'),
+            link_anchor_assessment=link_anchor_quality.get('assessment'),
+
+            punctuation_colon_cv=punctuation_spacing_cv.get('colon_spacing_cv'),
+            punctuation_primary_cv=punctuation_spacing_cv.get('primary_cv'),
+            punctuation_spacing_score=punctuation_spacing_cv.get('score'),
+            punctuation_spacing_assessment=punctuation_spacing_cv.get('assessment'),
+
+            list_has_mixed_types=enhanced_list_structure.get('has_mixed_types'),
+            list_symmetry_score=enhanced_list_structure.get('symmetry_score'),
+            list_ast_score=enhanced_list_structure.get('score'),
+            list_ast_assessment=enhanced_list_structure.get('assessment'),
+
+            code_total_blocks=code_block_patterns.get('total_blocks'),
+            code_with_language=code_block_patterns.get('with_language'),
+            code_lang_declaration_ratio=code_block_patterns.get('language_declaration_ratio'),
+            code_avg_length=code_block_patterns.get('avg_length'),
+            code_ast_score=code_block_patterns.get('score'),
+            code_ast_assessment=code_block_patterns.get('assessment')
         )
 
         # Calculate dimension scores
@@ -3793,6 +3960,485 @@ class AIPatternAnalyzer:
             'heading_length_variance': round(length_variance, 2)
         }
 
+    # ========================================================================
+    # PHASE 3: AST-BASED STRUCTURE ANALYSIS & ADVANCED PATTERNS
+    # ========================================================================
+
+    def _analyze_blockquote_patterns(self, text: str, word_count: int) -> Dict:
+        """
+        Analyze blockquote usage patterns via AST.
+        AI uses 2.7x more blockquotes than humans, often clustered at section starts.
+
+        Returns dict with keys: total_blockquotes, per_page, avg_length,
+        section_start_clustering, score, assessment
+        """
+        ast = self._parse_to_ast(text, cache_key='blockquote')
+        if ast is None:
+            # Fallback: basic count without AST
+            bq_count = len(re.findall(r'^>\s+', text, re.MULTILINE))
+            pages = word_count / 250.0
+            per_page = bq_count / pages if pages > 0 else 0
+            if per_page <= 2:
+                return {'total_blockquotes': bq_count, 'per_page': per_page,
+                       'score': 10.0, 'assessment': 'EXCELLENT'}
+            elif per_page <= 3:
+                return {'total_blockquotes': bq_count, 'per_page': per_page,
+                       'score': 7.0, 'assessment': 'GOOD'}
+            elif per_page <= 4:
+                return {'total_blockquotes': bq_count, 'per_page': per_page,
+                       'score': 4.0, 'assessment': 'FAIR'}
+            else:
+                return {'total_blockquotes': bq_count, 'per_page': per_page,
+                       'score': 0.0, 'assessment': 'POOR'}
+
+        # Extract blockquotes via AST
+        if not HAS_MARKO:
+            blockquotes = []
+        else:
+            blockquotes = self._walk_ast(ast, Quote)
+
+        if len(blockquotes) == 0:
+            return {'total_blockquotes': 0, 'per_page': 0.0, 'score': 10.0,
+                   'assessment': 'EXCELLENT', 'section_start_clustering': 0.0}
+
+        # Calculate metrics
+        pages = word_count / 250.0
+        per_page = len(blockquotes) / pages if pages > 0 else 0
+
+        # Calculate blockquote lengths
+        lengths = []
+        for bq in blockquotes:
+            bq_text = self._extract_text_from_node(bq)
+            lengths.append(len(bq_text.split()))
+
+        avg_length = statistics.mean(lengths) if lengths else 0
+
+        # Detect section-start clustering
+        section_start_count = self._count_section_start_blockquotes(ast)
+        section_start_clustering = section_start_count / len(blockquotes) if len(blockquotes) > 0 else 0
+
+        # Scoring based on density and clustering
+        if per_page <= 2 and section_start_clustering < 0.3:
+            score, assessment = 10.0, 'EXCELLENT'
+        elif per_page <= 3 and section_start_clustering < 0.5:
+            score, assessment = 7.0, 'GOOD'
+        elif per_page <= 4:
+            score, assessment = 4.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'total_blockquotes': len(blockquotes),
+            'per_page': round(per_page, 2),
+            'avg_length': round(avg_length, 1),
+            'lengths': lengths[:10],  # Limit for storage
+            'section_start_clustering': round(section_start_clustering, 3),
+            'section_start_count': section_start_count,
+            'score': score,
+            'assessment': assessment
+        }
+
+    def _count_section_start_blockquotes(self, ast) -> int:
+        """Count blockquotes appearing within first 100 words of H2 sections."""
+        if not HAS_MARKO:
+            return 0
+
+        count = 0
+        current_section_words = 0
+        in_h2_section = False
+
+        # Walk all nodes in order
+        for node in self._walk_ast(ast):
+            if isinstance(node, Heading) and node.level == 2:
+                in_h2_section = True
+                current_section_words = 0
+            elif isinstance(node, Quote):
+                if in_h2_section and current_section_words < 100:
+                    count += 1
+                in_h2_section = False  # Reset after finding blockquote
+            elif isinstance(node, Paragraph):
+                text = self._extract_text_from_node(node)
+                current_section_words += len(text.split())
+                if current_section_words >= 100:
+                    in_h2_section = False
+
+        return count
+
+    def _analyze_link_anchor_quality(self, text: str, word_count: int) -> Dict:
+        """
+        Analyze link anchor text quality.
+        AI defaults to generic CTAs, humans write descriptive anchors.
+
+        Returns dict with keys: total_links, generic_count, generic_ratio,
+        generic_examples, link_density, score, assessment
+        """
+        ast = self._parse_to_ast(text, cache_key='links')
+        if ast is None or not HAS_MARKO:
+            # Fallback to regex
+            return self._analyze_link_anchor_quality_regex(text, word_count)
+
+        # Extract links via AST
+        links = self._walk_ast(ast, Link)
+
+        if len(links) == 0:
+            return {'total_links': 0, 'score': 8.0, 'assessment': 'EXCELLENT'}
+
+        # Analyze anchor text
+        generic_patterns = [
+            r'\bclick here\b',
+            r'\bread more\b',
+            r'\blearn more\b',
+            r'\bsee here\b',
+            r'\bcheck (this|it) out\b',
+            r'\b(this|that) link\b',
+            r'^here$',
+            r'^this$',
+            r'^link$',
+            r'https?://',
+        ]
+
+        generic_links = []
+        generic_examples = []
+
+        for link in links:
+            anchor_text = self._extract_text_from_node(link).strip()
+            if not anchor_text:
+                continue
+
+            # Check against generic patterns
+            is_generic = any(re.search(pattern, anchor_text, re.IGNORECASE)
+                           for pattern in generic_patterns)
+
+            if is_generic:
+                generic_links.append(link)
+                if len(generic_examples) < 10:
+                    generic_examples.append(f'"{anchor_text}"')
+
+        generic_ratio = len(generic_links) / len(links) if len(links) > 0 else 0
+        link_density = (len(links) / word_count * 1000) if word_count > 0 else 0
+
+        # Scoring
+        if generic_ratio < 0.10:
+            score, assessment = 8.0, 'EXCELLENT'
+        elif generic_ratio < 0.25:
+            score, assessment = 6.0, 'GOOD'
+        elif generic_ratio < 0.50:
+            score, assessment = 3.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'total_links': len(links),
+            'generic_count': len(generic_links),
+            'generic_ratio': round(generic_ratio, 3),
+            'generic_examples': generic_examples,
+            'link_density': round(link_density, 2),
+            'score': score,
+            'assessment': assessment
+        }
+
+    def _analyze_link_anchor_quality_regex(self, text: str, word_count: int) -> Dict:
+        """Fallback regex-based link anchor analysis when AST unavailable."""
+        # Extract markdown links: [anchor](url)
+        link_pattern = r'\[([^\]]+)\]\([^\)]+\)'
+        matches = re.findall(link_pattern, text)
+
+        if len(matches) == 0:
+            return {'total_links': 0, 'score': 8.0, 'assessment': 'EXCELLENT'}
+
+        generic_patterns = [
+            r'\bclick here\b', r'\bread more\b', r'\blearn more\b',
+            r'\bsee here\b', r'\bcheck (this|it) out\b',
+            r'\b(this|that) link\b', r'^here$', r'^this$', r'^link$',
+            r'https?://'
+        ]
+
+        generic_count = 0
+        generic_examples = []
+
+        for anchor in matches:
+            is_generic = any(re.search(pattern, anchor, re.IGNORECASE)
+                           for pattern in generic_patterns)
+            if is_generic:
+                generic_count += 1
+                if len(generic_examples) < 10:
+                    generic_examples.append(f'"{anchor}"')
+
+        generic_ratio = generic_count / len(matches)
+        link_density = (len(matches) / word_count * 1000) if word_count > 0 else 0
+
+        if generic_ratio < 0.10:
+            score, assessment = 8.0, 'EXCELLENT'
+        elif generic_ratio < 0.25:
+            score, assessment = 6.0, 'GOOD'
+        elif generic_ratio < 0.50:
+            score, assessment = 3.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'total_links': len(matches),
+            'generic_count': generic_count,
+            'generic_ratio': round(generic_ratio, 3),
+            'generic_examples': generic_examples,
+            'link_density': round(link_density, 2),
+            'score': score,
+            'assessment': assessment
+        }
+
+    def _analyze_punctuation_spacing_cv(self, text: str) -> Dict:
+        """
+        Analyze punctuation distribution via coefficient of variation.
+        AI distributes uniformly (low CV), humans cluster naturally (high CV).
+
+        Returns dict with keys: colon_spacing_cv, primary_cv, score, assessment,
+        spacing_examples, colon_count, semicolon_count, emdash_count
+        """
+        # Find positions of key punctuation marks (word offsets)
+        words = text.split()
+
+        colon_positions = []
+        semicolon_positions = []
+        emdash_positions = []
+
+        for i, word in enumerate(words):
+            if ':' in word:
+                colon_positions.append(i)
+            if ';' in word:
+                semicolon_positions.append(i)
+            if '—' in word or '--' in word:
+                emdash_positions.append(i)
+
+        def calculate_spacing_cv(positions):
+            """Calculate coefficient of variation for spacing between marks."""
+            if len(positions) < 3:
+                return None
+            spacing = [positions[i+1] - positions[i] for i in range(len(positions)-1)]
+            if len(spacing) < 2:
+                return None
+            mean_spacing = statistics.mean(spacing)
+            if mean_spacing == 0:
+                return 0.0
+            stddev = statistics.stdev(spacing)
+            return stddev / mean_spacing
+
+        colon_cv = calculate_spacing_cv(colon_positions)
+        semicolon_cv = calculate_spacing_cv(semicolon_positions)
+        emdash_cv = calculate_spacing_cv(emdash_positions)
+
+        # Use colon CV as primary (most common in technical writing)
+        # Check explicitly for None since 0.0 is a valid CV value
+        if colon_cv is not None:
+            primary_cv = colon_cv
+        elif semicolon_cv is not None:
+            primary_cv = semicolon_cv
+        elif emdash_cv is not None:
+            primary_cv = emdash_cv
+        else:
+            primary_cv = 1.0
+
+        # Scoring based on CV (higher CV = more human-like clustering)
+        if primary_cv >= 0.7:
+            score, assessment = 6.0, 'EXCELLENT'
+        elif primary_cv >= 0.5:
+            score, assessment = 4.0, 'GOOD'
+        elif primary_cv >= 0.3:
+            score, assessment = 2.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        spacing_examples = {}
+        if colon_positions and len(colon_positions) > 1:
+            spacing_examples['colons'] = [colon_positions[i+1] - colon_positions[i]
+                                         for i in range(min(5, len(colon_positions)-1))]
+
+        return {
+            'colon_spacing_cv': round(colon_cv, 3) if colon_cv is not None else None,
+            'semicolon_spacing_cv': round(semicolon_cv, 3) if semicolon_cv is not None else None,
+            'emdash_spacing_cv': round(emdash_cv, 3) if emdash_cv is not None else None,
+            'primary_cv': round(primary_cv, 3),
+            'score': score,
+            'assessment': assessment,
+            'spacing_examples': spacing_examples,
+            'colon_count': len(colon_positions),
+            'semicolon_count': len(semicolon_positions),
+            'emdash_count': len(emdash_positions)
+        }
+
+    def _analyze_enhanced_list_structure_ast(self, text: str) -> Dict:
+        """
+        Analyze list structure patterns via AST.
+        AI creates symmetric lists, humans create asymmetric varied structures.
+
+        Returns dict with keys: has_mixed_types, symmetry_score, avg_item_length,
+        item_length_cv, score, assessment
+        """
+        ast = self._parse_to_ast(text, cache_key='lists')
+        if ast is None or not HAS_MARKO:
+            # Fallback: assume good if AST unavailable
+            return {'score': 8.0, 'assessment': 'AST_UNAVAILABLE'}
+
+        lists = self._walk_ast(ast, MarkoList)
+
+        if len(lists) == 0:
+            return {'score': 8.0, 'assessment': 'NO_LISTS'}
+
+        # Check for mixed ordered/unordered
+        ordered_count = sum(1 for lst in lists if lst.ordered)
+        unordered_count = len(lists) - ordered_count
+        has_mixed_types = ordered_count > 0 and unordered_count > 0
+
+        # Analyze sublist counts for symmetry
+        sublist_counts = []
+        for lst in lists:
+            if hasattr(lst, 'children') and lst.children:
+                child_lists = [child for child in lst.children
+                              if isinstance(child, MarkoList)]
+                sublist_counts.append(len(child_lists))
+
+        # Calculate symmetry (low CV = high symmetry = AI-like)
+        if len(sublist_counts) >= 3:
+            mean_sublists = statistics.mean(sublist_counts)
+            if mean_sublists > 0:
+                symmetry_cv = statistics.stdev(sublist_counts) / mean_sublists
+                symmetry_score = 1.0 - min(symmetry_cv, 1.0)  # 1.0 = perfect symmetry
+            else:
+                symmetry_score = 0.0
+        else:
+            symmetry_score = 0.0  # Assume good if insufficient data
+
+        # Analyze item lengths
+        item_lengths = []
+        for lst in lists:
+            if hasattr(lst, 'children') and lst.children:
+                for item in lst.children:
+                    if not isinstance(item, MarkoList):  # Skip nested lists
+                        text_content = self._extract_text_from_node(item)
+                        item_lengths.append(len(text_content.split()))
+
+        avg_item_length = statistics.mean(item_lengths) if item_lengths else 0
+        item_length_cv = (statistics.stdev(item_lengths) / avg_item_length
+                         if avg_item_length > 0 and len(item_lengths) > 1 else 0)
+
+        # Scoring
+        if has_mixed_types and symmetry_score < 0.2 and item_length_cv > 0.4:
+            score, assessment = 8.0, 'EXCELLENT'
+        elif has_mixed_types or symmetry_score < 0.4:
+            score, assessment = 5.0, 'GOOD'
+        elif symmetry_score < 0.7:
+            score, assessment = 3.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'has_mixed_types': has_mixed_types,
+            'symmetry_score': round(symmetry_score, 3),
+            'avg_item_length': round(avg_item_length, 1),
+            'item_length_cv': round(item_length_cv, 3),
+            'ordered_count': ordered_count,
+            'unordered_count': unordered_count,
+            'score': score,
+            'assessment': assessment
+        }
+
+    def _analyze_code_block_patterns_ast(self, text: str) -> Dict:
+        """
+        Analyze code block patterns via AST.
+        AI often omits language declarations, uses uniform lengths.
+
+        Returns dict with keys: total_blocks, with_language,
+        language_declaration_ratio, avg_length, length_cv, score, assessment
+        """
+        ast = self._parse_to_ast(text, cache_key='code')
+        if ast is None or not HAS_MARKO:
+            # Fallback to regex
+            return self._analyze_code_block_patterns_regex(text)
+
+        code_blocks = self._walk_ast(ast, FencedCode)
+
+        if len(code_blocks) == 0:
+            return {'total_blocks': 0, 'score': 4.0, 'assessment': 'NO_CODE_BLOCKS'}
+
+        # Count language declarations
+        with_language = sum(1 for block in code_blocks if hasattr(block, 'lang') and block.lang)
+        language_ratio = with_language / len(code_blocks)
+
+        # Calculate lengths
+        lengths = []
+        for block in code_blocks:
+            if hasattr(block, 'children') and isinstance(block.children, str):
+                lines = block.children.strip().split('\n')
+                lengths.append(len(lines))
+            elif hasattr(block, 'children') and block.children:
+                # Extract text from children
+                code_text = self._extract_text_from_node(block)
+                lines = code_text.strip().split('\n')
+                lengths.append(len(lines))
+
+        avg_length = statistics.mean(lengths) if lengths else 0
+        length_cv = (statistics.stdev(lengths) / avg_length
+                    if avg_length > 0 and len(lengths) > 1 else 0)
+
+        # Scoring
+        if language_ratio >= 0.9 and length_cv > 0.4:
+            score, assessment = 4.0, 'EXCELLENT'
+        elif language_ratio >= 0.7:
+            score, assessment = 3.0, 'GOOD'
+        elif language_ratio >= 0.5:
+            score, assessment = 2.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'total_blocks': len(code_blocks),
+            'with_language': with_language,
+            'language_declaration_ratio': round(language_ratio, 3),
+            'avg_length': round(avg_length, 1),
+            'length_cv': round(length_cv, 3),
+            'score': score,
+            'assessment': assessment
+        }
+
+    def _analyze_code_block_patterns_regex(self, text: str) -> Dict:
+        """Fallback regex-based code block analysis when AST unavailable."""
+        # Match fenced code blocks with optional language
+        pattern = r'```(\w+)?\n(.*?)```'
+        matches = re.findall(pattern, text, re.DOTALL)
+
+        if len(matches) == 0:
+            return {'total_blocks': 0, 'score': 4.0, 'assessment': 'NO_CODE_BLOCKS'}
+
+        with_language = sum(1 for lang, _ in matches if lang)
+        language_ratio = with_language / len(matches)
+
+        lengths = [len(code.strip().split('\n')) for _, code in matches]
+        avg_length = statistics.mean(lengths) if lengths else 0
+        length_cv = (statistics.stdev(lengths) / avg_length
+                    if avg_length > 0 and len(lengths) > 1 else 0)
+
+        if language_ratio >= 0.9 and length_cv > 0.4:
+            score, assessment = 4.0, 'EXCELLENT'
+        elif language_ratio >= 0.7:
+            score, assessment = 3.0, 'GOOD'
+        elif language_ratio >= 0.5:
+            score, assessment = 2.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'total_blocks': len(matches),
+            'with_language': with_language,
+            'language_declaration_ratio': round(language_ratio, 3),
+            'avg_length': round(avg_length, 1),
+            'length_cv': round(length_cv, 3),
+            'score': score,
+            'assessment': assessment
+        }
+
+    # ========================================================================
+    # END PHASE 3 METHODS
+    # ========================================================================
+
     def _calculate_readability(self, text: str) -> Dict:
         """Calculate readability metrics using textstat"""
         if not HAS_TEXTSTAT:
@@ -4916,10 +5562,87 @@ class AIPatternAnalyzer:
         )
 
         # ============================================================================
+        # TIER 4: PHASE 3 AST-BASED PATTERNS (36 points) - Advanced structure detection
+        # ============================================================================
+
+        # Blockquote Patterns (10 points)
+        blockquote_score_val = results.blockquote_score if results.blockquote_score is not None else 10.0
+        blockquote_dim = ScoreDimension(
+            name="Blockquote Patterns",
+            score=blockquote_score_val,
+            max_score=10.0,
+            percentage=(blockquote_score_val / 10.0) * 100,
+            impact=self._calculate_impact(blockquote_score_val / 10.0, 10.0),
+            gap=10.0 - blockquote_score_val,
+            raw_value=results.blockquote_per_page,
+            recommendation=f"Reduce blockquotes to 0-2 per page (currently {results.blockquote_per_page:.1f})" if results.blockquote_per_page and results.blockquote_per_page > 2 else None
+        )
+
+        # Link Anchor Quality (8 points)
+        link_anchor_score_val = results.link_anchor_score if results.link_anchor_score is not None else 8.0
+        link_anchor_dim = ScoreDimension(
+            name="Link Anchor Quality",
+            score=link_anchor_score_val,
+            max_score=8.0,
+            percentage=(link_anchor_score_val / 8.0) * 100,
+            impact=self._calculate_impact(link_anchor_score_val / 8.0, 8.0),
+            gap=8.0 - link_anchor_score_val,
+            raw_value=results.link_generic_ratio,
+            recommendation=f"Rewrite generic anchors with descriptive text (generic ratio: {results.link_generic_ratio:.0%})" if results.link_generic_ratio and results.link_generic_ratio > 0.1 else None
+        )
+
+        # Punctuation Spacing CV (6 points)
+        punctuation_spacing_score_val = results.punctuation_spacing_score if results.punctuation_spacing_score is not None else 6.0
+        punctuation_spacing_dim = ScoreDimension(
+            name="Punctuation Clustering",
+            score=punctuation_spacing_score_val,
+            max_score=6.0,
+            percentage=(punctuation_spacing_score_val / 6.0) * 100,
+            impact=self._calculate_impact(punctuation_spacing_score_val / 6.0, 6.0),
+            gap=6.0 - punctuation_spacing_score_val,
+            raw_value=results.punctuation_primary_cv,
+            recommendation="Allow natural punctuation clustering (avoid uniform spacing)" if results.punctuation_primary_cv and results.punctuation_primary_cv < 0.5 else None
+        )
+
+        # Enhanced List Structure (8 points)
+        list_ast_score_val = results.list_ast_score if results.list_ast_score is not None else 8.0
+        list_ast_dim = ScoreDimension(
+            name="List Structure (AST)",
+            score=list_ast_score_val,
+            max_score=8.0,
+            percentage=(list_ast_score_val / 8.0) * 100,
+            impact=self._calculate_impact(list_ast_score_val / 8.0, 8.0),
+            gap=8.0 - list_ast_score_val,
+            raw_value=results.list_symmetry_score,
+            recommendation="Break list symmetry: vary subitem counts, mix ordered/unordered" if results.list_symmetry_score and results.list_symmetry_score > 0.4 else None
+        )
+
+        # Code Block Patterns (4 points)
+        code_ast_score_val = results.code_ast_score if results.code_ast_score is not None else 4.0
+        code_ast_dim = ScoreDimension(
+            name="Code Block Patterns",
+            score=code_ast_score_val,
+            max_score=4.0,
+            percentage=(code_ast_score_val / 4.0) * 100,
+            impact=self._calculate_impact(code_ast_score_val / 4.0, 4.0),
+            gap=4.0 - code_ast_score_val,
+            raw_value=results.code_lang_declaration_ratio,
+            recommendation="Add language declarations to all code blocks" if results.code_lang_declaration_ratio and results.code_lang_declaration_ratio < 0.9 else None
+        )
+
+        phase3_category = ScoreCategory(
+            name="AST-Based Patterns",
+            total=blockquote_dim.score + link_anchor_dim.score + punctuation_spacing_dim.score + list_ast_dim.score + code_ast_dim.score,
+            max_total=36.0,
+            percentage=((blockquote_dim.score + link_anchor_dim.score + punctuation_spacing_dim.score + list_ast_dim.score + code_ast_dim.score) / 36.0) * 100,
+            dimensions=[blockquote_dim, link_anchor_dim, punctuation_spacing_dim, list_ast_dim, code_ast_dim]
+        )
+
+        # ============================================================================
         # CALCULATE DUAL SCORES
         # ============================================================================
 
-        total_quality = advanced_category.total + core_category.total + supporting_category.total
+        total_quality = advanced_category.total + core_category.total + supporting_category.total + phase3_category.total
         quality_score = total_quality  # Already 0-100
 
         # Detection risk is INVERSE of quality (100 - quality)
@@ -4960,6 +5683,18 @@ class AIPatternAnalyzer:
         if results.function_word_ratio is not None and 0.40 <= results.function_word_ratio <= 0.45:
             detection_components.append(4)   # AI-typical function word ratio adds +4 risk points
 
+        # PHASE 3: AST-based structure penalties
+        if results.blockquote_per_page is not None and results.blockquote_per_page >= 4:
+            detection_components.append(9)   # Excessive blockquotes add +9 risk points
+        if results.link_generic_ratio is not None and results.link_generic_ratio > 0.4:
+            detection_components.append(7)   # Generic link anchors add +7 risk points
+        if results.punctuation_primary_cv is not None and results.punctuation_primary_cv < 0.35:
+            detection_components.append(5)   # Uniform punctuation spacing add +5 risk points
+        if results.list_symmetry_score is not None and results.list_symmetry_score > 0.7:
+            detection_components.append(6)   # Symmetric lists add +6 risk points
+        if results.code_lang_declaration_ratio is not None and results.code_total_blocks and results.code_total_blocks > 0 and results.code_lang_declaration_ratio < 0.6:
+            detection_components.append(4)   # Missing code language declarations add +4 risk points
+
         detection_risk = sum(detection_components)
 
         # Interpretations
@@ -4977,7 +5712,8 @@ class AIPatternAnalyzer:
         all_dimensions = (
             advanced_category.dimensions +
             core_category.dimensions +
-            supporting_category.dimensions
+            supporting_category.dimensions +
+            phase3_category.dimensions
         )
 
         improvements = []
@@ -5032,7 +5768,7 @@ class AIPatternAnalyzer:
             quality_target=quality_target,
             detection_gap=round(detection_gap, 1),
             quality_gap=round(quality_gap, 1),
-            categories=[advanced_category, core_category, supporting_category],
+            categories=[advanced_category, core_category, supporting_category, phase3_category],
             improvements=improvements,
             path_to_target=path,
             estimated_effort=effort,
