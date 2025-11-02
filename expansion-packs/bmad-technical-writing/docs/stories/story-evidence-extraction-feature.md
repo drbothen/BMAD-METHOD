@@ -5,7 +5,7 @@
 **Priority:** HIGH
 **Estimated Effort:** 2-3 hours
 **Status:** Ready for Development
-**Depends On:** None (can be implemented independently)
+**Depends On:** BMAD-TW-REFACTOR-001 (Modularization - should be implemented in modularized codebase)
 
 ## Story Overview
 
@@ -526,7 +526,20 @@ python analyze_ai_patterns.py chapter-03.md --show-evidence > evidence-report.tx
 
 ### Code Location
 
-**File:** `/Users/jmagady/Dev/BMAD-METHOD/expansion-packs/bmad-technical-writing/data/tools/analyze_ai_patterns.py`
+**IMPORTANT:** This implementation assumes the modularized codebase from BMAD-TW-REFACTOR-001.
+
+**Primary Files:**
+
+- `/expansion-packs/bmad-technical-writing/data/tools/ai_pattern_analyzer/evidence/` - NEW package directory
+  - `formatter.py` - `EvidenceFormatter` class (NEW)
+  - `extractors.py` - Dimension-specific evidence extraction (NEW)
+- `/expansion-packs/bmad-technical-writing/data/tools/ai_pattern_analyzer/core/analyzer.py` - Main analyzer
+- `/expansion-packs/bmad-technical-writing/data/tools/ai_pattern_analyzer/dimensions/` - Dimension modules
+  - `perplexity.py` - AI vocabulary analysis
+  - `burstiness.py` - Sentence variation
+  - `formatting.py` - Em-dash analysis
+  - `structure.py` - Heading analysis
+- `/expansion-packs/bmad-technical-writing/data/tools/analyze_ai_patterns.py` - CLI entry point
 
 ### New Dependencies
 
@@ -544,15 +557,52 @@ pip install rich
 
 ### Implementation Approach
 
-**1. Extend Existing Detailed Analysis Methods**
+**IMPORTANT:** This implementation targets the modularized codebase structure from BMAD-TW-REFACTOR-001.
 
-The tool already has detailed analysis methods (e.g., `_analyze_ai_vocabulary_detailed()` at line 1009, `_analyze_headings_detailed()` at line 1038, `_analyze_formatting_issues_detailed()` at line 1423). These return structured objects with line numbers and context.
+**1. Create Evidence Package**
 
-**Strategy:** Enhance these methods and add new evidence formatting layer.
+Create new package: `ai_pattern_analyzer/evidence/`
 
-**2. Add Evidence Formatter Module**
+- `formatter.py` - Evidence formatting and display
+- `extractors.py` - Evidence extraction from dimension modules
+
+**2. Enhance Dimension Analyzers**
+
+Each dimension module in `ai_pattern_analyzer/dimensions/` will expose evidence extraction:
+
+- `perplexity.py` - Extract AI vocabulary instances with context
+- `burstiness.py` - Extract uniform paragraph clusters
+- `formatting.py` - Extract em-dash instances
+- `structure.py` - Extract heading parallelism patterns
+
+**3. Evidence Formatter Implementation**
+
+Create `ai_pattern_analyzer/evidence/formatter.py`:
 
 ```python
+# ai_pattern_analyzer/evidence/formatter.py
+
+from typing import List, Dict, Optional
+from dataclasses import dataclass
+
+try:
+    from rich.console import Console
+    from rich.syntax import Syntax
+    from rich.panel import Panel
+    RICH_AVAILABLE = True
+except ImportError:
+    RICH_AVAILABLE = False
+
+@dataclass
+class VocabInstance:
+    """AI vocabulary instance with context"""
+    line_number: int
+    word: str
+    context_before: List[str]
+    context_after: List[str]
+    full_line: str
+    suggestions: List[str]
+
 class EvidenceFormatter:
     """Format problematic content evidence for display"""
 
@@ -819,40 +869,57 @@ def parse_arguments():
     return parser.parse_args()
 ```
 
-**4. Enhance Detailed Analysis to Capture Context**
+**4. Enhance Dimension Modules to Support Evidence Extraction**
 
-Modify existing detailed analysis methods to capture surrounding line context:
+Update dimension modules in `ai_pattern_analyzer/dimensions/` to expose evidence:
 
 ````python
-def _analyze_ai_vocabulary_detailed(self) -> List[VocabInstance]:
-    """Detect AI vocabulary with line numbers and context (ENHANCED)"""
-    instances = []
+# ai_pattern_analyzer/dimensions/perplexity.py
 
-    for line_num, line in enumerate(self.lines, start=1):
-        # Skip HTML comments, headings, code blocks
-        if self._is_line_in_html_comment(line):
-            continue
-        if line.strip().startswith('#') or line.strip().startswith('```'):
-            continue
+from ai_pattern_analyzer.evidence.extractors import VocabInstance
 
-        for pattern, suggestions in self.AI_VOCAB_REPLACEMENTS.items():
-            for match in re.finditer(pattern, line, re.IGNORECASE):
-                word = match.group()
+class PerplexityAnalyzer:
+    """Analyzes AI vocabulary and perplexity patterns"""
 
-                # Get context lines (1-2 before and after)
-                context_before = self._get_context_lines(line_num, before=2)
-                context_after = self._get_context_lines(line_num, after=2)
+    def analyze_with_evidence(self, text: str, lines: List[str]) -> Tuple[Dict, List[VocabInstance]]:
+        """Analyze and extract evidence for problematic patterns"""
+        # Run standard analysis
+        results = self.analyze(text, lines)
 
-                instances.append(VocabInstance(
-                    line_number=line_num,
-                    word=word,
-                    context_before=context_before,  # NEW
-                    context_after=context_after,    # NEW
-                    full_line=line.strip(),
-                    suggestions=suggestions[:5]
-                ))
+        # Extract evidence instances
+        evidence = self._extract_vocab_evidence(lines)
 
-    return instances
+        return results, evidence
+
+    def _extract_vocab_evidence(self, lines: List[str]) -> List[VocabInstance]:
+        """Extract AI vocabulary instances with context"""
+        instances = []
+
+        for line_num, line in enumerate(lines, start=1):
+            # Skip HTML comments, headings, code blocks
+            if self._is_line_in_html_comment(line):
+                continue
+            if line.strip().startswith('#') or line.strip().startswith('```'):
+                continue
+
+            for pattern, suggestions in self.AI_VOCAB_REPLACEMENTS.items():
+                for match in re.finditer(pattern, line, re.IGNORECASE):
+                    word = match.group()
+
+                    # Get context lines (1-2 before and after)
+                    context_before = self._get_context_lines(lines, line_num, before=2)
+                    context_after = self._get_context_lines(lines, line_num, after=2)
+
+                    instances.append(VocabInstance(
+                        line_number=line_num,
+                        word=word,
+                        context_before=context_before,
+                        context_after=context_after,
+                        full_line=line.strip(),
+                        suggestions=suggestions[:5]
+                    ))
+
+        return instances
 
 def _get_context_lines(self, line_num: int, before: int = 0, after: int = 0) -> List[str]:
     """Get context lines before/after a given line number"""
@@ -873,7 +940,16 @@ def _get_context_lines(self, line_num: int, before: int = 0, after: int = 0) -> 
 
 **5. Main Analysis Flow Integration**
 
+Update `analyze_ai_patterns.py` CLI to integrate evidence extraction:
+
 ```python
+# analyze_ai_patterns.py
+
+from ai_pattern_analyzer.core.analyzer import AIPatternAnalyzer
+from ai_pattern_analyzer.evidence.formatter import EvidenceFormatter
+from ai_pattern_analyzer.scoring.dual_score import calculate_dual_score
+from ai_pattern_analyzer.cli.args import parse_arguments
+
 def main():
     args = parse_arguments()
 
@@ -886,7 +962,8 @@ def main():
 
     # Standard output
     if args.show_scores:
-        print_dual_scores(results)
+        dual_score = calculate_dual_score(results)
+        print_dual_scores(dual_score)
 
     # Evidence extraction (NEW)
     if args.show_evidence:

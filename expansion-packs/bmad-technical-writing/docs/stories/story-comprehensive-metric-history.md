@@ -5,7 +5,7 @@
 **Priority:** HIGH
 **Estimated Effort:** 2-3 hours
 **Status:** Ready for Development
-**Depends On:** BMAD-TW-DUAL-001 (Dual Scoring System)
+**Depends On:** BMAD-TW-DUAL-001 (Dual Scoring System), BMAD-TW-REFACTOR-001 (Modularization)
 
 ## Story Overview
 
@@ -564,11 +564,30 @@ ROI: EXCELLENT (2.8 quality pts per editing pass)
 
 ### Code Location
 
-**File:** `/Users/jmagady/Dev/BMAD-METHOD/expansion-packs/bmad-technical-writing/data/tools/analyze_ai_patterns.py`
+**IMPORTANT:** This implementation assumes the modularized codebase from BMAD-TW-REFACTOR-001.
+
+**Primary Files:**
+
+- `/expansion-packs/bmad-technical-writing/data/tools/ai_pattern_analyzer/history/` - History tracking package
+  - `tracker.py` - `HistoricalScore`, `ScoreHistory`, `DimensionScore` classes
+  - `export.py` - CSV/JSON export functionality
+  - `trends.py` - Trend analysis and plateau detection (NEW)
+- `/expansion-packs/bmad-technical-writing/data/tools/ai_pattern_analyzer/scoring/dual_score.py` - Dual scoring system
+- `/expansion-packs/bmad-technical-writing/data/tools/ai_pattern_analyzer/core/results.py` - AnalysisResults dataclass
+- `/expansion-packs/bmad-technical-writing/data/tools/analyze_ai_patterns.py` - CLI entry point
 
 ### Enhanced Data Structures
 
+Create in `ai_pattern_analyzer/history/tracker.py`:
+
 ```python
+# ai_pattern_analyzer/history/tracker.py
+
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional
+from pathlib import Path
+import json
+
 @dataclass
 class DimensionScore:
     """Individual dimension score for history tracking"""
@@ -818,7 +837,11 @@ class ScoreHistory:
 
 ### Command-Line Interface
 
+Update `ai_pattern_analyzer/cli/args.py` to add history-related arguments:
+
 ```python
+# ai_pattern_analyzer/cli/args.py
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Analyze AI patterns with comprehensive history tracking")
 
@@ -843,15 +866,34 @@ def parse_arguments():
 
 ### Integration Points
 
+Update main CLI entry point to use modular history tracking:
+
 ```python
-# In main() function
+# analyze_ai_patterns.py
 
-if args.show_scores:
-    # Calculate dual score
-    dual_score = analyzer.calculate_dual_score(...)
+from ai_pattern_analyzer.core.analyzer import AIPatternAnalyzer
+from ai_pattern_analyzer.scoring.dual_score import calculate_dual_score
+from ai_pattern_analyzer.history.tracker import load_score_history, save_score_history
+from ai_pattern_analyzer.history.trends import (
+    generate_full_history_report,
+    generate_dimension_trend_report,
+    generate_comparison_report
+)
+from ai_pattern_analyzer.cli.args import parse_arguments
 
-    # Load history
-    history = analyzer.load_score_history(args.file)
+def main():
+    args = parse_arguments()
+
+    # Run analysis
+    analyzer = AIPatternAnalyzer(args.file)
+    results = analyzer.analyze()
+
+    if args.show_scores:
+        # Calculate dual score
+        dual_score = calculate_dual_score(results)
+
+        # Load history
+        history = load_score_history(args.file)
 
     # Add current score with ALL metrics (v2.0)
     history.add_score(dual_score, results, notes=args.history_notes)
