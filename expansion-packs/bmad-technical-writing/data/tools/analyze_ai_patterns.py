@@ -680,6 +680,26 @@ class AnalysisResults:
     heading_strict_adherence: float = 0.0  # 1.0 = never skips (AI-like)
     heading_length_variance: float = 0.0  # Variation in heading lengths
 
+    # NEW: Structural pattern analysis (Phase 1 - High ROI patterns)
+    paragraph_cv: float = 0.0  # Coefficient of variation for paragraph lengths (CV <0.3 = AI-like)
+    paragraph_cv_mean: float = 0.0  # Mean paragraph length in words
+    paragraph_cv_stddev: float = 0.0  # Standard deviation of paragraph lengths
+    paragraph_cv_assessment: str = ""  # EXCELLENT/GOOD/FAIR/POOR
+    paragraph_cv_score: float = 0.0  # Quality score contribution (0-10)
+    paragraph_count: int = 0  # Number of paragraphs analyzed
+
+    section_variance_pct: float = 0.0  # Variance in H2 section lengths (variance <15% = AI-like)
+    section_count: int = 0  # Number of sections analyzed
+    section_variance_assessment: str = ""  # EXCELLENT/GOOD/FAIR/POOR
+    section_variance_score: float = 0.0  # Quality score contribution (0-8)
+    section_uniform_clusters: int = 0  # Count of 3+ sections with similar lengths
+
+    list_max_depth: int = 0  # Maximum nesting depth across all lists
+    list_avg_depth: float = 0.0  # Average nesting depth
+    list_total_items: int = 0  # Total list items analyzed
+    list_depth_assessment: str = ""  # EXCELLENT/GOOD/FAIR/POOR
+    list_depth_score: float = 0.0  # Quality score contribution (0-6)
+
     # Readability (optional - requires textstat)
     flesch_reading_ease: Optional[float] = None
     flesch_kincaid_grade: Optional[float] = None
@@ -768,6 +788,7 @@ class AnalysisResults:
     whitespace_score: str = ""  # Paragraph/whitespace distribution
     code_structure_score: str = ""  # Code block patterns (if applicable)
     heading_hierarchy_score: str = ""  # Heading level adherence
+    structural_patterns_score: str = ""  # Phase 1: Paragraph CV, Section Variance, List Nesting
 
     # ADVANCED: AI detection scores (ensemble)
     gltr_score: str = ""  # GLTR token ranking score
@@ -1611,6 +1632,11 @@ class AIPatternAnalyzer:
         code_blocks = self._analyze_code_blocks(text)
         heading_hierarchy = self._analyze_heading_hierarchy_enhanced(text)
 
+        # NEW: Phase 1 High-ROI structural pattern detection (always available)
+        paragraph_cv = self._calculate_paragraph_cv(text)
+        section_variance = self._calculate_section_variance(text)
+        list_nesting = self._calculate_list_nesting_depth(text)
+
         # Calculate pages (estimate: 500-1000 tokens per page, use 750 average)
         estimated_pages = max(1, word_count / 750)
 
@@ -1710,6 +1736,26 @@ class AIPatternAnalyzer:
             heading_strict_adherence=heading_hierarchy['hierarchy_adherence'],
             heading_length_variance=heading_hierarchy['heading_length_variance'],
 
+            # NEW: Phase 1 High-ROI structural patterns
+            paragraph_cv=paragraph_cv['cv'],
+            paragraph_cv_mean=paragraph_cv['mean_length'],
+            paragraph_cv_stddev=paragraph_cv['stddev'],
+            paragraph_cv_assessment=paragraph_cv['assessment'],
+            paragraph_cv_score=paragraph_cv['score'],
+            paragraph_count=paragraph_cv['paragraph_count'],
+
+            section_variance_pct=section_variance['variance_pct'],
+            section_count=section_variance['section_count'],
+            section_variance_assessment=section_variance['assessment'],
+            section_variance_score=section_variance['score'],
+            section_uniform_clusters=section_variance['uniform_clusters'],
+
+            list_max_depth=list_nesting['max_depth'],
+            list_avg_depth=list_nesting['avg_depth'],
+            list_total_items=list_nesting['total_list_items'],
+            list_depth_assessment=list_nesting['assessment'],
+            list_depth_score=list_nesting['score'],
+
             **readability,
             **nltk_lexical,
             **sentiment,
@@ -1741,6 +1787,7 @@ class AIPatternAnalyzer:
         results.whitespace_score = self._score_whitespace(results)
         results.code_structure_score = self._score_code_structure(results)
         results.heading_hierarchy_score = self._score_heading_hierarchy(results)
+        results.structural_patterns_score = self._score_structural_patterns(results)
 
         # ADVANCED: Enhanced detection scores
         results.gltr_score = self._score_gltr(results)
@@ -1874,6 +1921,269 @@ class AIPatternAnalyzer:
             'stdev': round(statistics.stdev(para_words), 1) if len(para_words) > 1 else 0,
             'min': min(para_words),
             'max': max(para_words)
+        }
+
+    def _calculate_paragraph_cv(self, text: str) -> Dict[str, float]:
+        """
+        Calculate coefficient of variation for paragraph lengths.
+
+        Phase 1 High-ROI pattern: Detects unnaturally uniform paragraph lengths,
+        a strong AI signature. Human writing typically shows CV ≥0.4, while
+        AI-generated content often has CV <0.3.
+
+        Returns:
+            {
+                'mean_length': float,
+                'stddev': float,
+                'cv': float,
+                'score': float (0-10),
+                'assessment': str,
+                'paragraph_count': int
+            }
+        """
+        # Split by double newlines to get paragraphs
+        paragraphs = [p.strip() for p in text.split('\n\n') if p.strip()]
+
+        # Filter out headings, code blocks, and very short lines
+        filtered_paragraphs = []
+        for p in paragraphs:
+            # Skip headings (start with #)
+            if p.startswith('#'):
+                continue
+            # Skip code blocks
+            if '```' in p:
+                continue
+            # Skip very short lines (likely not real paragraphs)
+            if len(p.split()) < 10:
+                continue
+            filtered_paragraphs.append(p)
+
+        # Count words per paragraph
+        lengths = [len(p.split()) for p in filtered_paragraphs]
+
+        if len(lengths) < 3:
+            return {
+                'mean_length': 0.0,
+                'stddev': 0.0,
+                'cv': 0.0,
+                'score': 10.0,  # Benefit of doubt for insufficient data
+                'assessment': 'INSUFFICIENT_DATA',
+                'paragraph_count': len(lengths)
+            }
+
+        mean_length = statistics.mean(lengths)
+        stddev = statistics.stdev(lengths)
+        cv = stddev / mean_length if mean_length > 0 else 0.0
+
+        # Scoring based on research thresholds
+        if cv >= 0.6:
+            score, assessment = 10.0, 'EXCELLENT'
+        elif cv >= 0.4:
+            score, assessment = 7.0, 'GOOD'
+        elif cv >= 0.3:
+            score, assessment = 4.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'mean_length': round(mean_length, 1),
+            'stddev': round(stddev, 1),
+            'cv': round(cv, 2),
+            'score': score,
+            'assessment': assessment,
+            'paragraph_count': len(lengths)
+        }
+
+    def _count_uniform_clusters(self, lengths: List[int], tolerance: float = 0.10) -> int:
+        """
+        Count sequences of 3+ sections with similar lengths (within tolerance).
+
+        Helper method for section variance analysis. Detects clusters of
+        uniformly-sized sections, a strong AI signature.
+
+        Args:
+            lengths: List of section lengths in words
+            tolerance: Allowed relative difference (default 10%)
+
+        Returns:
+            Number of uniform clusters detected
+        """
+        if len(lengths) < 3:
+            return 0
+
+        clusters = 0
+        current_cluster = 1
+
+        for i in range(1, len(lengths)):
+            # Calculate relative difference
+            if lengths[i-1] > 0:
+                relative_diff = abs(lengths[i] - lengths[i-1]) / lengths[i-1]
+                if relative_diff <= tolerance:
+                    current_cluster += 1
+                else:
+                    if current_cluster >= 3:
+                        clusters += 1
+                    current_cluster = 1
+            else:
+                # Reset if previous length was 0
+                current_cluster = 1
+
+        # Check final cluster
+        if current_cluster >= 3:
+            clusters += 1
+
+        return clusters
+
+    def _calculate_section_variance(self, text: str) -> Dict[str, float]:
+        """
+        Calculate variance in H2 section lengths.
+
+        Phase 1 High-ROI pattern: Detects unnaturally uniform section structure,
+        where every H2 section has similar word count. Human writing typically
+        shows variance ≥40%, while AI often creates uniform sections (<15%).
+
+        Returns:
+            {
+                'variance_pct': float,
+                'score': float (0-8),
+                'assessment': str,
+                'section_count': int,
+                'section_lengths': List[int],
+                'uniform_clusters': int
+            }
+        """
+        # Split by H2 headings (## )
+        sections = re.split(r'\n##\s+', text)
+
+        if len(sections) < 3:
+            return {
+                'variance_pct': 0.0,
+                'score': 8.0,  # Benefit of doubt for insufficient data
+                'assessment': 'INSUFFICIENT_DATA',
+                'section_count': len(sections) - 1 if len(sections) > 1 else 0,
+                'section_lengths': [],
+                'uniform_clusters': 0
+            }
+
+        # Count words per section (excluding heading line and preamble)
+        section_lengths = []
+        for section in sections[1:]:  # Skip preamble before first H2
+            # Take only the content (skip the heading line itself)
+            lines = section.split('\n', 1)
+            if len(lines) > 1:
+                content = lines[1]
+            else:
+                content = ""
+
+            # Count words, excluding code blocks
+            content_no_code = re.sub(r'```[\s\S]*?```', '', content)
+            words = len(content_no_code.split())
+            if words > 0:  # Only count non-empty sections
+                section_lengths.append(words)
+
+        if len(section_lengths) < 3:
+            return {
+                'variance_pct': 0.0,
+                'score': 8.0,
+                'assessment': 'INSUFFICIENT_DATA',
+                'section_count': len(section_lengths),
+                'section_lengths': section_lengths,
+                'uniform_clusters': 0
+            }
+
+        mean_length = statistics.mean(section_lengths)
+        stddev = statistics.stdev(section_lengths)
+        variance_pct = (stddev / mean_length * 100) if mean_length > 0 else 0.0
+
+        # Detect uniform clusters (3+ sections within ±10%)
+        uniform_clusters = self._count_uniform_clusters(section_lengths, tolerance=0.10)
+
+        # Scoring based on research thresholds
+        if variance_pct >= 40:
+            score, assessment = 8.0, 'EXCELLENT'
+        elif variance_pct >= 25:
+            score, assessment = 5.0, 'GOOD'
+        elif variance_pct >= 15:
+            score, assessment = 3.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'variance_pct': round(variance_pct, 1),
+            'score': score,
+            'assessment': assessment,
+            'section_count': len(section_lengths),
+            'section_lengths': section_lengths,
+            'uniform_clusters': uniform_clusters
+        }
+
+    def _calculate_list_nesting_depth(self, text: str) -> Dict[str, any]:
+        """
+        Analyze markdown list nesting depth and structure.
+
+        Phase 1 High-ROI pattern: Detects overly deep list nesting with
+        perfect symmetry, a strong AI signature. Human lists typically
+        stay at 2-3 levels with variation, while AI creates deep (4-6 level)
+        perfectly balanced hierarchies.
+
+        Returns:
+            {
+                'max_depth': int,
+                'avg_depth': float,
+                'depth_distribution': Dict[int, int],
+                'score': float (0-6),
+                'assessment': str,
+                'total_list_items': int
+            }
+        """
+        lines = text.split('\n')
+        list_depths = []
+
+        for line in lines:
+            # Match list items with indentation (both - and * markers)
+            # Pattern: optional whitespace + list marker + space
+            match = re.match(r'^(\s*)[-*+]\s+', line)
+            if match:
+                indent = len(match.group(1))
+                # Assuming 2 spaces per level (standard markdown)
+                depth = (indent // 2) + 1
+                list_depths.append(depth)
+
+        if not list_depths:
+            return {
+                'max_depth': 0,
+                'avg_depth': 0.0,
+                'depth_distribution': {},
+                'score': 6.0,  # No lists is fine
+                'assessment': 'NO_LISTS',
+                'total_list_items': 0
+            }
+
+        max_depth = max(list_depths)
+        avg_depth = statistics.mean(list_depths)
+
+        # Count distribution
+        depth_distribution = {}
+        for depth in list_depths:
+            depth_distribution[depth] = depth_distribution.get(depth, 0) + 1
+
+        # Scoring based on research thresholds
+        if max_depth <= 3:
+            score, assessment = 6.0, 'EXCELLENT'
+        elif max_depth == 4:
+            score, assessment = 4.0, 'GOOD'
+        elif max_depth <= 6:
+            score, assessment = 2.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'max_depth': max_depth,
+            'avg_depth': round(avg_depth, 2),
+            'depth_distribution': depth_distribution,
+            'score': score,
+            'assessment': assessment,
+            'total_list_items': len(list_depths)
         }
 
     def _analyze_lexical_diversity(self, text: str) -> Dict:
@@ -3445,6 +3755,36 @@ class AIPatternAnalyzer:
         else:
             return "HIGH"  # Lots of hierarchy deviation = human-like
 
+    def _score_structural_patterns(self, r: AnalysisResults) -> str:
+        """
+        Score Phase 1 High-ROI structural patterns (paragraph CV, section variance, list nesting).
+
+        Combined quality score (24 points):
+        - Paragraph CV: 10 points (EXCELLENT=10, GOOD=7, FAIR=4, POOR=0)
+        - Section variance: 8 points (EXCELLENT=8, GOOD=5, FAIR=3, POOR=0)
+        - List nesting: 6 points (EXCELLENT=6, GOOD=4, FAIR=2, POOR=0)
+
+        Detection risk contribution (19 points):
+        - Poor paragraph CV (<0.35): +8 risk points
+        - Poor section variance (<20%): +6 risk points
+        - Excessive list depth (>4): +5 risk points
+        """
+        # Calculate total quality score (max 24 points)
+        total_score = r.paragraph_cv_score + r.section_variance_score + r.list_depth_score
+
+        # Calculate normalized percentage (0-100%)
+        score_pct = (total_score / 24.0) * 100
+
+        # Categorize based on percentage
+        if score_pct >= 75:  # 18+ / 24
+            return "HIGH"  # Human-like variation
+        elif score_pct >= 50:  # 12+ / 24
+            return "MEDIUM"  # Moderate variation
+        elif score_pct >= 30:  # 7+ / 24
+            return "LOW"  # Some uniformity detected
+        else:
+            return "VERY LOW"  # Strong AI signatures detected
+
     def _score_gltr(self, r: AnalysisResults) -> str:
         """
         Score GLTR (token ranking) analysis.
@@ -4794,6 +5134,61 @@ Code Structure:             {r.code_structure_score:12s}  (Blocks: {r.code_block
         if r.total_headings >= 3:
             report += f"""
 Heading Hierarchy:          {r.heading_hierarchy_score:12s}  (Skips: {r.heading_hierarchy_skips}, Adherence: {r.heading_strict_adherence:.2f})"""
+
+        # NEW: Phase 1 High-ROI Structural Patterns
+        report += f"""
+
+{'─' * 80}
+STRUCTURAL PATTERNS (Phase 1 High-ROI Detection)
+{'─' * 80}"""
+
+        # Paragraph CV
+        para_icon = "✓" if r.paragraph_cv >= 0.4 else ("⚠" if r.paragraph_cv >= 0.3 else "✗")
+        report += f"""
+
+Paragraph Length CV:     {r.paragraph_cv:.2f}  {para_icon} {r.paragraph_cv_assessment}
+  Mean: {r.paragraph_cv_mean:.0f} words, StdDev: {r.paragraph_cv_stddev:.0f} words
+  {r.paragraph_count} paragraphs analyzed"""
+
+        if r.paragraph_cv < 0.35:
+            report += """
+  → ACTION: Vary paragraph lengths (mix 50-100, 150-250, 300-400 word paragraphs)"""
+
+        # Section Variance
+        sec_icon = "✓" if r.section_variance_pct >= 40 else ("⚠" if r.section_variance_pct >= 15 else "✗")
+        report += f"""
+
+Section Length Variance: {r.section_variance_pct:.1f}% {sec_icon} {r.section_variance_assessment}
+  {r.section_count} sections analyzed"""
+
+        if r.section_uniform_clusters > 0:
+            report += f"""
+  {r.section_uniform_clusters} uniform clusters detected (3+ similar-length sections)"""
+
+        if r.section_variance_pct < 20:
+            report += """
+  → ACTION: Combine/split sections to create asymmetry (target: 40%+ variance)"""
+
+        # List Nesting Depth
+        list_icon = "✓" if r.list_max_depth <= 3 else ("⚠" if r.list_max_depth <= 4 else "✗")
+        if r.list_max_depth > 0:
+            report += f"""
+
+List Nesting Depth:      Max {r.list_max_depth} levels {list_icon} {r.list_depth_assessment}
+  {r.list_total_items} list items analyzed, Avg depth: {r.list_avg_depth:.1f}"""
+
+            if r.list_max_depth > 4:
+                report += """
+  → ACTION: Flatten deep lists, break into separate sections"""
+        else:
+            report += f"""
+
+List Nesting Depth:      No lists detected"""
+
+        # Overall structural patterns score
+        report += f"""
+
+Structural Patterns Score: {r.structural_patterns_score:12s}  (Combined quality: {r.paragraph_cv_score + r.section_variance_score + r.list_depth_score:.0f}/24 points)"""
 
         report += f"""
 
