@@ -46,3 +46,23 @@ test-project-install/*
 sample-project/*
 flattened-codebase.xml
 *.stats.md
+
+docs/research
+docs/stories
+docs/qa
+manuscripts/research/AuthorBundle_updated/venv
+
+.mcp.json
+nlp-env
+__pycache__
+
+# AI pattern analysis score history
+.score-history/
+
+# Python test and coverage artifacts
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+*.pyc
+.claude_memory

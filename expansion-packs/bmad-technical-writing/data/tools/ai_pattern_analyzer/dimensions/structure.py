@@ -14,14 +14,13 @@ strong AI signature, while varied, organic structure is human-like.
 import re
 import statistics
 from typing import Dict, List, Any, Tuple
-from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer, HAS_MARKO
+from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
 from ai_pattern_analyzer.core.results import HeadingIssue
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
 
-# Import marko types if available (for Phase 3 AST-based analysis)
-if HAS_MARKO:
-    from marko.block import Quote, Heading, List as MarkoList, Paragraph, FencedCode
-    from marko.inline import Link
+# Required marko types for AST-based analysis
+from marko.block import Quote, Heading, List as MarkoList, Paragraph, FencedCode
+from marko.inline import Link
 
 
 class StructureAnalyzer(DimensionAnalyzer):
@@ -845,10 +844,7 @@ class StructureAnalyzer(DimensionAnalyzer):
                        'score': 0.0, 'assessment': 'POOR'}
 
         # Extract blockquotes via AST
-        if not HAS_MARKO:
-            blockquotes = []
-        else:
-            blockquotes = self._walk_ast(ast, Quote)
+        blockquotes = self._walk_ast(ast, Quote)
 
         if len(blockquotes) == 0:
             return {'total_blockquotes': 0, 'per_page': 0.0, 'score': 10.0,
@@ -893,9 +889,6 @@ class StructureAnalyzer(DimensionAnalyzer):
 
     def _count_section_start_blockquotes(self, ast) -> int:
         """Count blockquotes appearing within first 100 words of H2 sections."""
-        if not HAS_MARKO:
-            return 0
-
         count = 0
         current_section_words = 0
         in_h2_section = False
@@ -926,7 +919,7 @@ class StructureAnalyzer(DimensionAnalyzer):
         generic_examples, link_density, score, assessment
         """
         ast = self._parse_to_ast(text, cache_key='links')
-        if ast is None or not HAS_MARKO:
+        if ast is None:
             # Fallback to regex
             return self._analyze_link_anchor_quality_regex(text, word_count)
 
@@ -1048,7 +1041,7 @@ class StructureAnalyzer(DimensionAnalyzer):
         item_length_cv, score, assessment
         """
         ast = self._parse_to_ast(text, cache_key='lists')
-        if ast is None or not HAS_MARKO:
+        if ast is None:
             # Fallback: assume good if AST unavailable
             return {'score': 8.0, 'assessment': 'AST_UNAVAILABLE'}
 
@@ -1124,7 +1117,7 @@ class StructureAnalyzer(DimensionAnalyzer):
         language_declaration_ratio, avg_length, length_cv, score, assessment
         """
         ast = self._parse_to_ast(text, cache_key='code')
-        if ast is None or not HAS_MARKO:
+        if ast is None:
             # Fallback to regex
             return self._analyze_code_block_patterns_regex(text)
 

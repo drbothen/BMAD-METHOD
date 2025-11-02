@@ -44,18 +44,11 @@ from ai_pattern_analyzer.dimensions.stylometric import StylometricAnalyzer
 from ai_pattern_analyzer.dimensions.advanced import AdvancedAnalyzer
 from ai_pattern_analyzer.scoring.dual_score_calculator import calculate_dual_score as _calculate_dual_score
 
-# Optional dependencies
-try:
-    import marko
-    from marko import Markdown
-    from marko.block import Quote, Heading, List as MarkoList, Paragraph, FencedCode
-    from marko.inline import Link, CodeSpan
-    HAS_MARKO = True
-except ImportError:
-    HAS_MARKO = False
-    import warnings
-    warnings.warn("marko not installed. AST-based structure analysis unavailable. "
-                  "Install with: pip install marko>=2.0.0", UserWarning)
+# Required dependencies
+import marko
+from marko import Markdown
+from marko.block import Quote, Heading, List as MarkoList, Paragraph, FencedCode
+from marko.inline import Link, CodeSpan
 
 
 class AIPatternAnalyzer:
@@ -170,14 +163,12 @@ class AIPatternAnalyzer:
 
     def _get_markdown_parser(self):
         """Lazy load marko parser."""
-        if self._markdown_parser is None and HAS_MARKO:
+        if self._markdown_parser is None:
             self._markdown_parser = Markdown()
         return self._markdown_parser
 
     def _parse_to_ast(self, text: str, cache_key: Optional[str] = None):
         """Parse markdown to AST with caching."""
-        if not HAS_MARKO:
-            return None
 
         if cache_key and cache_key in self._ast_cache:
             return self._ast_cache[cache_key]

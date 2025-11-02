@@ -23,12 +23,8 @@ from ai_pattern_analyzer.core.results import (
 from ai_pattern_analyzer.scoring.dual_score import DualScore
 from ai_pattern_analyzer.history.tracker import ScoreHistory
 
-# Import for textstat detection
-try:
-    import textstat
-    HAS_TEXTSTAT = True
-except ImportError:
-    HAS_TEXTSTAT = False
+# Required dependency
+import textstat
 
 
 def format_dual_score_report(dual_score: DualScore, history: Optional[ScoreHistory] = None,
@@ -857,7 +853,7 @@ ENHANCED NLP ANALYSIS
             for section in enhanced_sections:
                 report += section + "\n"
 
-        if HAS_TEXTSTAT and r.flesch_reading_ease is not None:
+        if r.flesch_reading_ease is not None:
             report += f"""
 READABILITY METRICS:
   Flesch Reading Ease: {r.flesch_reading_ease:.1f} (60-70 = Standard, higher = easier)

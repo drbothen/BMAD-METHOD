@@ -27,38 +27,19 @@ from ai_pattern_analyzer.core.results import HighPredictabilitySegment
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
 from ai_pattern_analyzer.utils.text_processing import safe_ratio
 
-# Optional imports
-try:
-    import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-    from transformers.utils import logging as transformers_logging
-    transformers_logging.set_verbosity_error()
-    HAS_TRANSFORMERS = True
-except (ImportError, ValueError, OSError):
-    HAS_TRANSFORMERS = False
+# Required imports (no longer optional)
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers.utils import logging as transformers_logging
+transformers_logging.set_verbosity_error()
 
-try:
-    from scipy.stats import hypergeom
-    HAS_SCIPY = True
-except ImportError:
-    HAS_SCIPY = False
+from scipy.stats import hypergeom
 
-try:
-    import spacy
-    nlp_spacy = spacy.load('en_core_web_sm')
-    HAS_SPACY = True
-except (ImportError, OSError):
-    HAS_SPACY = False
-    nlp_spacy = None
+import spacy
+nlp_spacy = spacy.load('en_core_web_sm')
 
-try:
-    if not HAS_SPACY:
-        raise ImportError("spaCy not available")
-    import textacy
-    from textacy import text_stats
-    HAS_TEXTACY = True
-except (ImportError, ValueError, AttributeError):
-    HAS_TEXTACY = False
+import textacy
+from textacy import text_stats
 
 
 # Global model instances (lazy loading)
@@ -83,26 +64,17 @@ class AdvancedAnalyzer(DimensionAnalyzer):
         """
         results = {}
 
-        # GLTR analysis (requires transformers)
-        if HAS_TRANSFORMERS:
-            gltr_metrics = self._calculate_gltr_metrics(text)
-            results.update(gltr_metrics)
+        # GLTR analysis
+        gltr_metrics = self._calculate_gltr_metrics(text)
+        results.update(gltr_metrics)
 
-        # Advanced lexical diversity (requires scipy)
-        if HAS_SCIPY:
-            advanced_lexical = self._calculate_advanced_lexical_diversity(text)
-            results.update(advanced_lexical)
+        # Advanced lexical diversity
+        advanced_lexical = self._calculate_advanced_lexical_diversity(text)
+        results.update(advanced_lexical)
 
-        # Textacy metrics (requires textacy + spacy)
-        if HAS_TEXTACY and HAS_SPACY:
-            textacy_metrics = self._calculate_textacy_lexical_diversity(text)
-            results.update(textacy_metrics)
-
-        if not results:
-            return {
-                'available': False,
-                'reason': 'Advanced analysis requires: transformers, scipy, textacy, or spacy'
-            }
+        # Textacy metrics
+        textacy_metrics = self._calculate_textacy_lexical_diversity(text)
+        results.update(textacy_metrics)
 
         results['available'] = True
         return results
@@ -118,9 +90,6 @@ class AdvancedAnalyzer(DimensionAnalyzer):
         Returns:
             List of HighPredictabilitySegment objects
         """
-        if not HAS_TRANSFORMERS:
-            return []
-
         return self._analyze_high_predictability_segments_detailed(lines, html_comment_checker)
 
     def score(self, analysis_results: Dict[str, Any]) -> tuple:
@@ -159,9 +128,6 @@ class AdvancedAnalyzer(DimensionAnalyzer):
 
         Research: 95% accuracy on GPT-3/ChatGPT detection.
         """
-        if not HAS_TRANSFORMERS:
-            return {}
-
         try:
             global _perplexity_model, _perplexity_tokenizer
 
@@ -248,9 +214,6 @@ class AdvancedAnalyzer(DimensionAnalyzer):
 
         Research: +8% accuracy improvement over TTR/MTLD
         """
-        if not HAS_SCIPY:
-            return {}
-
         try:
             # Remove code blocks and extract words
             text = re.sub(r'```[\s\S]*?```', '', text)
@@ -345,17 +308,6 @@ class AdvancedAnalyzer(DimensionAnalyzer):
         Returns:
             Dict with mattr, rttr, scores, and assessments
         """
-        if not HAS_TEXTACY or not HAS_SPACY:
-            return {
-                'available': False,
-                'mattr': 0.0,
-                'mattr_score': 0.0,
-                'mattr_assessment': 'UNAVAILABLE',
-                'rttr': 0.0,
-                'rttr_score': 0.0,
-                'rttr_assessment': 'UNAVAILABLE'
-            }
-
         try:
             # Remove code blocks for accurate text analysis
             text_clean = re.sub(r'```[\s\S]*?```', '', text)
@@ -424,9 +376,6 @@ class AdvancedAnalyzer(DimensionAnalyzer):
 
     def _analyze_high_predictability_segments_detailed(self, lines: List[str], html_comment_checker=None) -> List[HighPredictabilitySegment]:
         """Identify text segments with high GLTR scores (AI-like predictability)."""
-        if not HAS_TRANSFORMERS:
-            return []
-
         issues = []
 
         try:

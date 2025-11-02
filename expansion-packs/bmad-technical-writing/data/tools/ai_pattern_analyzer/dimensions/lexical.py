@@ -18,13 +18,9 @@ from typing import Dict, List, Any
 from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
 
-# Optional imports
-try:
-    from nltk.tokenize import word_tokenize
-    from nltk.stem import PorterStemmer
-    HAS_NLTK = True
-except ImportError:
-    HAS_NLTK = False
+# Required imports
+from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer
 
 
 class LexicalAnalyzer(DimensionAnalyzer):
@@ -44,9 +40,8 @@ class LexicalAnalyzer(DimensionAnalyzer):
         """
         lexical = self._analyze_lexical_diversity(text)
 
-        if HAS_NLTK:
-            nltk_metrics = self._analyze_nltk_lexical(text)
-            lexical.update(nltk_metrics)
+        nltk_metrics = self._analyze_nltk_lexical(text)
+        lexical.update(nltk_metrics)
 
         return {
             'lexical_diversity': lexical,
@@ -108,9 +103,6 @@ class LexicalAnalyzer(DimensionAnalyzer):
 
     def _analyze_nltk_lexical(self, text: str) -> Dict:
         """Enhanced lexical diversity using NLTK."""
-        if not HAS_NLTK:
-            return {}
-
         try:
             # Remove code blocks
             text = re.sub(r'```[\s\S]*?```', '', text)

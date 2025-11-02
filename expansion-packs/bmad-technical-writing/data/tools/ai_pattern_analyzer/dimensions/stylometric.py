@@ -6,9 +6,9 @@ Analyzes stylometric patterns:
 - Average word length
 - Average sentence length
 - Syllable patterns
-- POS tag distribution (if nltk/spacy available)
+- POS tag distribution
 
-Requires optional dependencies: textstat, nltk, spacy
+Requires dependencies: textstat, nltk
 """
 
 import re
@@ -17,18 +17,9 @@ from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
 from ai_pattern_analyzer.core.results import StylometricIssue
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
 
-# Optional imports
-try:
-    import textstat
-    HAS_TEXTSTAT = True
-except ImportError:
-    HAS_TEXTSTAT = False
-
-try:
-    import nltk
-    HAS_NLTK = True
-except ImportError:
-    HAS_NLTK = False
+# Required imports
+import textstat
+import nltk
 
 
 class StylometricAnalyzer(DimensionAnalyzer):
@@ -88,13 +79,12 @@ class StylometricAnalyzer(DimensionAnalyzer):
             'avg_sentence_length': 0.0,
         }
 
-        if HAS_TEXTSTAT:
-            try:
-                result['flesch_reading_ease'] = textstat.flesch_reading_ease(text)
-                result['flesch_kincaid_grade'] = textstat.flesch_kincaid_grade(text)
-                result['automated_readability_index'] = textstat.automated_readability_index(text)
-            except Exception:
-                pass
+        try:
+            result['flesch_reading_ease'] = textstat.flesch_reading_ease(text)
+            result['flesch_kincaid_grade'] = textstat.flesch_kincaid_grade(text)
+            result['automated_readability_index'] = textstat.automated_readability_index(text)
+        except Exception:
+            pass
 
         return result
 

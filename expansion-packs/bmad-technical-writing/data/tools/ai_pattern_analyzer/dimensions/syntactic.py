@@ -21,14 +21,9 @@ from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
 from ai_pattern_analyzer.core.results import SyntacticIssue
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
 
-# Optional imports
-try:
-    import spacy
-    nlp_spacy = spacy.load('en_core_web_sm')
-    HAS_SPACY = True
-except (ImportError, OSError):
-    HAS_SPACY = False
-    nlp_spacy = None
+# Required imports
+import spacy
+nlp_spacy = spacy.load('en_core_web_sm')
 
 
 class SyntacticAnalyzer(DimensionAnalyzer):
@@ -100,9 +95,6 @@ class SyntacticAnalyzer(DimensionAnalyzer):
         - Passive constructions (AI tends to overuse)
         - Morphological richness (unique lemmas)
         """
-        if not HAS_SPACY:
-            return {'available': False}
-
         try:
             # Remove code blocks
             text = re.sub(r'```[\s\S]*?```', '', text)
@@ -188,9 +180,6 @@ class SyntacticAnalyzer(DimensionAnalyzer):
 
     def _analyze_syntactic_issues_detailed(self, lines: List[str], html_comment_checker=None) -> List[SyntacticIssue]:
         """Detect syntactic complexity issues (passive voice, shallow trees, low subordination)."""
-        if not HAS_SPACY:
-            return []
-
         issues = []
 
         try:
