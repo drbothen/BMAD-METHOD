@@ -66,9 +66,9 @@ class BurstinessAnalyzer(DimensionAnalyzer):
         if total_sentences == 0:
             return (0.0, "UNKNOWN")
 
-        stdev = analysis_results.get('sentence_stdev', 0)
-        short_count = analysis_results.get('short_sentences_count', 0)
-        long_count = analysis_results.get('long_sentences_count', 0)
+        stdev = analysis_results.get('stdev', 0)
+        short_count = analysis_results.get('short', 0)
+        long_count = analysis_results.get('long', 0)
 
         short_pct = safe_ratio(short_count, total_sentences)
         long_pct = safe_ratio(long_count, total_sentences)

@@ -266,9 +266,9 @@ class TestScore:
         """Test score for high burstiness (varied sentences)."""
         analysis = {
             'total_sentences': 10,
-            'sentence_stdev': 10.0,
-            'short_sentences_count': 3,
-            'long_sentences_count': 2
+            'stdev': 10.0,
+            'short': 3,
+            'long': 2
         }
         score, label = analyzer.score(analysis)
 
@@ -279,9 +279,9 @@ class TestScore:
         """Test score for medium burstiness."""
         analysis = {
             'total_sentences': 10,
-            'sentence_stdev': 6.0,
-            'short_sentences_count': 2,
-            'long_sentences_count': 1
+            'stdev': 6.0,
+            'short': 2,
+            'long': 1
         }
         score, label = analyzer.score(analysis)
 
@@ -292,9 +292,9 @@ class TestScore:
         """Test score for low burstiness (uniform)."""
         analysis = {
             'total_sentences': 10,
-            'sentence_stdev': 3.5,
-            'short_sentences_count': 1,
-            'long_sentences_count': 0
+            'stdev': 3.5,
+            'short': 1,
+            'long': 0
         }
         score, label = analyzer.score(analysis)
 
@@ -305,9 +305,9 @@ class TestScore:
         """Test score for very low burstiness."""
         analysis = {
             'total_sentences': 10,
-            'sentence_stdev': 2.0,
-            'short_sentences_count': 0,
-            'long_sentences_count': 0
+            'stdev': 2.0,
+            'short': 0,
+            'long': 0
         }
         score, label = analyzer.score(analysis)
 

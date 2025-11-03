@@ -288,7 +288,7 @@ class AIPatternAnalyzer:
         # Extract values from dimension analysis results
         ai_vocab = perplexity_results.get('ai_vocabulary', {})
         formulaic = perplexity_results.get('formulaic_transitions', {})
-        burstiness = burstiness_results.get('sentence_variation', {})
+        burstiness = burstiness_results.get('sentence_burstiness', {})
         paragraphs = burstiness_results.get('paragraph_variation', {})
         lexical = lexical_results.get('lexical_diversity', {})
         structure = structure_results.get('structure', {})
@@ -353,12 +353,13 @@ class AIPatternAnalyzer:
 
             # Enhanced metrics from dimension analyzers
             **self._flatten_optional_metrics(syntactic_results, lexical_results,
-                                             stylometric_results, advanced_results)
+                                             stylometric_results, advanced_results,
+                                             formatting_results, burstiness_results)
         )
 
         # Calculate all dimension scores
         results.perplexity_score = self.perplexity_analyzer.score(perplexity_results)[1]
-        results.burstiness_score = self.burstiness_analyzer.score(burstiness_results)[1]
+        results.burstiness_score = self.burstiness_analyzer.score(burstiness_results.get('sentence_burstiness', {}))[1]
         results.structure_score = self.structure_analyzer.score(structure_results)[1]
         results.voice_score = self.voice_analyzer.score(voice_results)[1]
         results.formatting_score = self.formatting_analyzer.score(formatting_results)[1]
@@ -382,7 +383,8 @@ class AIPatternAnalyzer:
         return len(words)
 
     def _flatten_optional_metrics(self, syntactic_results, lexical_results,
-                                  stylometric_results, advanced_results) -> Dict:
+                                  stylometric_results, advanced_results,
+                                  formatting_results=None, burstiness_results=None) -> Dict:
         """Flatten optional metrics from dimension analyzers into flat dict for AnalysisResults."""
         metrics = {}
 
@@ -410,6 +412,44 @@ class AIPatternAnalyzer:
             metrics['hdd_score'] = adv_lex.get('hdd')
             metrics['yules_k'] = adv_lex.get('yules_k')
             metrics['advanced_lexical_score'] = "HIGH" if adv_lex.get('hdd', 0) > 0.65 else "LOW"
+
+        # Formatting metrics (Phase 3 enhancements)
+        if formatting_results:
+            # Bold/italic patterns
+            if formatting_results.get('bold_italic'):
+                bold_italic = formatting_results['bold_italic']
+                metrics['bold_per_1k_words'] = bold_italic.get('bold_per_1k', 0.0)
+                metrics['italic_per_1k_words'] = bold_italic.get('italic_per_1k', 0.0)
+                metrics['formatting_consistency_score'] = bold_italic.get('formatting_consistency', 0.0)
+
+            # List usage patterns
+            if formatting_results.get('list_usage'):
+                list_usage = formatting_results['list_usage']
+                metrics['total_list_items'] = list_usage.get('total_list_items', 0)
+                metrics['ordered_list_items'] = list_usage.get('ordered_items', 0)
+                metrics['unordered_list_items'] = list_usage.get('unordered_items', 0)
+                metrics['list_to_text_ratio'] = list_usage.get('list_to_text_ratio', 0.0)
+                metrics['ordered_to_unordered_ratio'] = list_usage.get('ordered_to_unordered_ratio', 0.0)
+
+            # Punctuation clustering
+            if formatting_results.get('punctuation_clustering'):
+                punct = formatting_results['punctuation_clustering']
+                metrics['em_dash_cascading_score'] = punct.get('em_dash_cascading', 0.0)
+                metrics['oxford_comma_count'] = punct.get('oxford_comma_count', 0)
+                metrics['oxford_comma_consistency'] = punct.get('oxford_consistency', 0.0)
+
+            # Whitespace patterns
+            if formatting_results.get('whitespace_patterns'):
+                whitespace = formatting_results['whitespace_patterns']
+                metrics['paragraph_length_variance'] = whitespace.get('paragraph_variance', 0.0)
+                metrics['paragraph_uniformity_score'] = whitespace.get('paragraph_uniformity', 0.0)
+
+        # Burstiness metrics (paragraph CV from Phase 1)
+        if burstiness_results and burstiness_results.get('paragraph_cv'):
+            para_cv = burstiness_results['paragraph_cv']
+            metrics['paragraph_cv'] = para_cv.get('cv', 0.0)
+            metrics['paragraph_cv_score'] = para_cv.get('score', 0.0)
+            metrics['paragraph_cv_assessment'] = para_cv.get('assessment', 'UNKNOWN')
 
         return metrics
 
