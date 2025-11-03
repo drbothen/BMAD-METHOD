@@ -653,7 +653,8 @@ def format_report(results: AnalysisResults,
                   include_score_summary: bool = True,
                   detection_target: float = 30.0,
                   quality_target: float = 85.0,
-                  dual_score = None) -> str:
+                  dual_score = None,
+                  dual_score_section: str = None) -> str:
     """
     Format analysis results for output.
 
@@ -664,6 +665,7 @@ def format_report(results: AnalysisResults,
         detection_target: Target detection risk score
         quality_target: Target quality score
         dual_score: Optional pre-calculated DualScore object (avoids recalculation)
+        dual_score_section: Optional pre-formatted dual score section to insert at top
     """
 
     if output_format == 'json':
@@ -707,7 +709,13 @@ AI PATTERN ANALYSIS REPORT
 
 File: {r.file_path}
 Words: {r.total_words} | Sentences: {r.total_sentences} | Paragraphs: {r.total_paragraphs}
+"""
 
+        # Insert dual score section if provided (for --scores-detailed mode)
+        if dual_score_section:
+            report += dual_score_section
+
+        report += f"""
 {'─' * 80}
 DIMENSION SCORES
 {'─' * 80}

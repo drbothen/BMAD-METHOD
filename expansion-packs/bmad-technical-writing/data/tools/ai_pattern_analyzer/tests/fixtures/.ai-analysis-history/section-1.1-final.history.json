@@ -18,6 +18,105 @@
       "quality_interpretation": "MIXED - Needs moderate work",
       "total_words": 5108,
       "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:29:42.424304",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:30:12.220006",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:30:44.520441",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:31:18.423001",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:32:59.714074",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:40:02.880796",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:40:33.263875",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:41:08.279863",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:41:51.899897",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:42:22.498915",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:42:52.762788",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
     }
   ]
 }

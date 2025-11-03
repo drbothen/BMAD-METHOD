@@ -679,6 +679,18 @@ class StructureAnalyzer(DimensionAnalyzer):
         stddev = statistics.stdev(subsection_counts) if len(subsection_counts) > 1 else 0.0
         cv = stddev / mean_count if mean_count > 0 else 0.0
 
+        # Special case: If no H3 subsections exist at all (all counts are 0), this is not a pattern issue
+        # It's just a flat document structure - return INSUFFICIENT_DATA
+        if all(count == 0 for count in subsection_counts):
+            return {
+                'cv': 0.0,
+                'score': 8.0,  # Neutral score (50% of max)
+                'assessment': 'INSUFFICIENT_DATA',
+                'subsection_counts': subsection_counts,
+                'uniform_count': 0,
+                'section_count': len(subsection_counts)
+            }
+
         # Count uniform sections (3-4 subsections, AI signature)
         uniform_count = sum(1 for c in subsection_counts if 3 <= c <= 4)
 
@@ -770,6 +782,18 @@ class StructureAnalyzer(DimensionAnalyzer):
         mean_count = statistics.mean(h4_counts)
         stddev = statistics.stdev(h4_counts) if len(h4_counts) > 1 else 0.0
         cv = stddev / mean_count if mean_count > 0 else 0.0
+
+        # Special case: If no H4s exist at all (all counts are 0), this is not a pattern issue
+        # It's just a document structure choice - return INSUFFICIENT_DATA
+        if all(count == 0 for count in h4_counts):
+            return {
+                'cv': 0.0,
+                'score': 6.0,  # Neutral score (50% of max)
+                'assessment': 'INSUFFICIENT_DATA',
+                'h4_counts': h4_counts,
+                'uniform_count': 0,
+                'h3_count': len(h4_counts)
+            }
 
         # Count uniform sections (2-3 H4s per H3, AI signature)
         uniform_count = sum(1 for c in h4_counts if 2 <= c <= 3)
