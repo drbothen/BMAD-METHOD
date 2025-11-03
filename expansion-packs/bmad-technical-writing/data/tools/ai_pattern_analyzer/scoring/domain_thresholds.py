@@ -312,10 +312,10 @@ def calculate_cv_score(cv: float, thresholds: HierarchyThresholds) -> Tuple[floa
 
 
 def calculate_combined_structure_score(
-    section_length_cv: float,
-    h3_subsection_cv: float,
-    h4_subsection_cv: float,
-    domain: DocumentDomain
+    section_length_cv: float = None,
+    h3_subsection_cv: float = None,
+    h4_subsection_cv: float = None,
+    domain: DocumentDomain = DocumentDomain.GENERAL
 ) -> Dict:
     """
     Calculate multi-level combined structural score using domain-specific thresholds.
@@ -356,20 +356,33 @@ def calculate_combined_structure_score(
     config = get_domain_config(domain)
 
     # Calculate individual scores for each level
-    h2_score, h2_assessment = calculate_cv_score(
-        section_length_cv,
-        config.h2_section_length
-    )
+    # Use neutral score (50% of max) for insufficient data (None values)
+    if section_length_cv is not None:
+        h2_score, h2_assessment = calculate_cv_score(
+            section_length_cv,
+            config.h2_section_length
+        )
+    else:
+        h2_score = config.h2_section_length.max_score * 0.5
+        h2_assessment = "INSUFFICIENT_DATA"
 
-    h3_score, h3_assessment = calculate_cv_score(
-        h3_subsection_cv,
-        config.h3_subsection_count
-    )
+    if h3_subsection_cv is not None:
+        h3_score, h3_assessment = calculate_cv_score(
+            h3_subsection_cv,
+            config.h3_subsection_count
+        )
+    else:
+        h3_score = config.h3_subsection_count.max_score * 0.5
+        h3_assessment = "INSUFFICIENT_DATA"
 
-    h4_score, h4_assessment = calculate_cv_score(
-        h4_subsection_cv,
-        config.h4_subsection_count
-    )
+    if h4_subsection_cv is not None:
+        h4_score, h4_assessment = calculate_cv_score(
+            h4_subsection_cv,
+            config.h4_subsection_count
+        )
+    else:
+        h4_score = config.h4_subsection_count.max_score * 0.5
+        h4_assessment = "INSUFFICIENT_DATA"
 
     # Apply domain-specific weights
     weighted_h2 = h2_score * config.weight_h2

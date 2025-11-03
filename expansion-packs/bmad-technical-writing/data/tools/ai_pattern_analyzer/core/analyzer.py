@@ -424,6 +424,20 @@ class AIPatternAnalyzer:
                 metrics['italic_per_1k_words'] = bold_italic.get('italic_per_1k', 0.0)
                 metrics['formatting_consistency_score'] = bold_italic.get('formatting_consistency', 0.0)
 
+                # Calculate bold_italic_score based on metrics
+                bold_issues = 0
+                bold_val = bold_italic.get('bold_per_1k', 0.0)
+                if bold_val > 50:  # Extreme AI
+                    bold_issues += 2
+                elif bold_val > 10:  # AI-like
+                    bold_issues += 1
+
+                consistency = bold_italic.get('formatting_consistency', 0.0)
+                if consistency > 0.6:  # Mechanical
+                    bold_issues += 1
+
+                metrics['bold_italic_score'] = 'HIGH' if bold_issues == 0 else ('MEDIUM' if bold_issues == 1 else 'LOW')
+
             # List usage patterns
             if formatting_results.get('list_usage'):
                 list_usage = formatting_results['list_usage']
@@ -434,12 +448,38 @@ class AIPatternAnalyzer:
                 metrics['ordered_to_unordered_ratio'] = list_usage.get('ordered_to_unordered_ratio', 0.0)
                 metrics['list_item_length_variance'] = list_usage.get('list_item_variance', 0.0)
 
+                # Calculate list_usage_score based on metrics
+                list_issues = 0
+                list_ratio = list_usage.get('list_to_text_ratio', 0.0)
+                if list_ratio > 0.25:  # AI tends >25%
+                    list_issues += 2
+                elif list_ratio > 0.15:
+                    list_issues += 1
+
+                ordered_ratio = list_usage.get('ordered_to_unordered_ratio', 0.0)
+                if 0.15 <= ordered_ratio <= 0.25:  # AI typical range
+                    list_issues += 1
+
+                metrics['list_usage_score'] = 'HIGH' if list_issues == 0 else ('MEDIUM' if list_issues == 1 else 'LOW')
+
             # Punctuation clustering
             if formatting_results.get('punctuation_clustering'):
                 punct = formatting_results['punctuation_clustering']
                 metrics['em_dash_cascading_score'] = punct.get('em_dash_cascading', 0.0)
                 metrics['oxford_comma_count'] = punct.get('oxford_comma_count', 0)
                 metrics['oxford_comma_consistency'] = punct.get('oxford_consistency', 0.0)
+
+                # Calculate punctuation_score based on metrics
+                punct_issues = 0
+                oxford_consistency = punct.get('oxford_consistency', 0.0)
+                if oxford_consistency > 0.95:  # Always Oxford = AI-like
+                    punct_issues += 1
+
+                em_cascade = punct.get('em_dash_cascading', 0.0)
+                if em_cascade > 0.7:  # AI declining pattern
+                    punct_issues += 1
+
+                metrics['punctuation_score'] = 'HIGH' if punct_issues == 0 else ('MEDIUM' if punct_issues == 1 else 'LOW')
 
             # Whitespace patterns
             if formatting_results.get('whitespace_patterns'):
@@ -448,6 +488,16 @@ class AIPatternAnalyzer:
                 metrics['paragraph_uniformity_score'] = whitespace.get('paragraph_uniformity', 0.0)
                 metrics['blank_lines_count'] = whitespace.get('blank_lines', 0)
                 metrics['text_density'] = whitespace.get('text_density', 0.0)
+
+                # Calculate whitespace_score based on metrics
+                ws_issues = 0
+                para_uniformity = whitespace.get('paragraph_uniformity', 0.0)
+                if para_uniformity > 0.6:  # High uniformity = AI-like
+                    ws_issues += 2
+                elif para_uniformity > 0.4:
+                    ws_issues += 1
+
+                metrics['whitespace_score'] = 'HIGH' if ws_issues == 0 else ('MEDIUM' if ws_issues == 1 else 'LOW')
 
         # Burstiness metrics (paragraph CV from Phase 1)
         if burstiness_results and burstiness_results.get('paragraph_cv'):
@@ -485,6 +535,20 @@ class AIPatternAnalyzer:
                 metrics['heading_hierarchy_skips'] = head_hier.get('hierarchy_skips', 0)
                 metrics['heading_length_variance'] = head_hier.get('heading_length_variance', 0.0)
                 metrics['heading_strict_adherence'] = head_hier.get('hierarchy_adherence', 0.0)
+
+                # Calculate heading_hierarchy_score based on metrics
+                hier_issues = 0
+                adherence = head_hier.get('hierarchy_adherence', 0.0)
+                if adherence >= 1.0:  # Perfect = AI-like
+                    hier_issues += 2
+                elif adherence >= 0.95:
+                    hier_issues += 1
+
+                length_variance = head_hier.get('heading_length_variance', 0.0)
+                if length_variance < 2.0:  # Low variance = AI-like
+                    hier_issues += 1
+
+                metrics['heading_hierarchy_score'] = 'HIGH' if hier_issues == 0 else ('MEDIUM' if hier_issues <= 1 else 'LOW')
 
             # Subsection asymmetry (H3 counts under H2 sections)
             if structure_results.get('subsection_asymmetry'):

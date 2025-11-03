@@ -75,14 +75,14 @@ class StructureAnalyzer(DimensionAnalyzer):
 
         # Calculate multi-level combined score (if sufficient data available)
         combined_score = None
-        section_cv = section_var.get('cv', 0.0)
-        h3_cv = subsection_asym.get('cv', 0.0)
-        h4_cv = h4_subsection_asym.get('cv', 0.0)
 
-        # Only calculate combined score if we have real data (not just defaults)
-        if (section_var.get('section_count', 0) > 0 or
-            subsection_asym.get('assessment', 'UNKNOWN') != 'INSUFFICIENT_DATA' or
-            h4_subsection_asym.get('assessment', 'UNKNOWN') != 'INSUFFICIENT_DATA'):
+        # Use None for insufficient data to signal neutral scoring
+        section_cv = section_var.get('cv', 0.0) if section_var.get('section_count', 0) > 1 else None
+        h3_cv = subsection_asym.get('cv', 0.0) if subsection_asym.get('assessment') != 'INSUFFICIENT_DATA' else None
+        h4_cv = h4_subsection_asym.get('cv', 0.0) if h4_subsection_asym.get('assessment') != 'INSUFFICIENT_DATA' else None
+
+        # Only calculate combined score if we have at least some real data
+        if section_cv is not None or h3_cv is not None or h4_cv is not None:
             try:
                 combined_score = calculate_combined_structure_score(
                     section_length_cv=section_cv,

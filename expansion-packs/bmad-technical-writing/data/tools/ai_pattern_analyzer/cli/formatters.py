@@ -693,7 +693,7 @@ Sentiment (Variation):      {r.sentiment_score:12s}  (Variance: {r.sentiment_var
         report += f"""
 
 {'─' * 80}
-ENHANCED STRUCTURAL ANALYSIS (NEW)
+ENHANCED STRUCTURAL ANALYSIS
 {'─' * 80}
 
 Bold/Italic Patterns:       {r.bold_italic_score:12s}  (Bold: {r.bold_per_1k_words:.1f}/1k, Consistency: {r.formatting_consistency_score:.2f})
@@ -713,7 +713,7 @@ Heading Hierarchy:          {r.heading_hierarchy_score:12s}  (Skips: {r.heading_
         report += f"""
 
 {'─' * 80}
-STRUCTURAL PATTERNS (Phase 1 High-ROI Detection)
+STRUCTURAL PATTERNS
 {'─' * 80}"""
 
         # Paragraph CV
@@ -778,7 +778,7 @@ H4 Subsection CV:        {r.h4_subsection_cv:.2f}  {h4_icon} {r.h4_assessment}
             report += f"""
 
 {'─' * 80}
-MULTI-LEVEL STRUCTURE ANALYSIS (Research-Backed)
+MULTI-LEVEL STRUCTURE ANALYSIS
 {'─' * 80}
 
 Domain: {r.combined_structure_domain.upper() if r.combined_structure_domain else 'GENERAL'}
@@ -876,7 +876,7 @@ TRUE PERPLEXITY (GPT-2 Transformer):
             enhanced_sections.append(section)
 
         if enhanced_sections:
-            report += """
+            report += f"""
 {'─' * 80}
 ENHANCED NLP ANALYSIS
 {'─' * 80}
