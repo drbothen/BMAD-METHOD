@@ -126,6 +126,8 @@ Examples:
                         help='Omit quality score summary from standard report')
     parser.add_argument('--no-track-history', action='store_true',
                         help='Disable saving score history to .ai-analysis-history/ directory')
+    parser.add_argument('--history-notes', metavar='TEXT', default='',
+                        help='Add notes/description for this iteration in history tracking')
     parser.add_argument('--detection-target', type=float, default=30.0, metavar='N',
                         help='Target detection risk score (0-100, lower=better, default: 30.0)')
     parser.add_argument('--quality-target', type=float, default=85.0, metavar='N',
@@ -192,7 +194,7 @@ Examples:
                 # Load and save history (unless disabled)
                 if not args.no_track_history:
                     history = analyzer.load_score_history(args.file)
-                    history.add_score(dual_score, notes="")
+                    history.add_score(dual_score, notes=args.history_notes)
                     analyzer.save_score_history(history)
                 else:
                     # Create empty history for display purposes
@@ -271,7 +273,7 @@ Examples:
                         # Save to history (unless disabled)
                         if not args.no_track_history:
                             history = analyzer.load_score_history(args.file)
-                            history.add_score(calculated_dual_score, notes="")
+                            history.add_score(calculated_dual_score, notes=args.history_notes)
                             analyzer.save_score_history(history)
 
                     except Exception as e:

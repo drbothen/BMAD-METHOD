@@ -23,6 +23,7 @@ Systematically optimize AI-generated content through iterative humanization pass
 - AI-generated content ready for humanization
 - Clear understanding of target scores (defaults: Quality ≥85, Detection ≤30)
 - 1-3 hours budgeted for iterative optimization (varies by content quality)
+- **Reference**: `{{config.root}}/data/COMPREHENSIVE-METRICS-GUIDE.md` for detailed metric improvement strategies
 
 ## Target Scores
 
@@ -92,7 +93,7 @@ cd {{config.root}}/data/tools
 source nlp-env/bin/activate
 ```
 
-**Run initial dual score analysis**:
+**Run initial dual score analysis with notes**:
 
 ```bash
 python analyze_ai_patterns.py PATH_TO_FILE \
@@ -100,6 +101,7 @@ python analyze_ai_patterns.py PATH_TO_FILE \
   --quality-target {{quality_target}} \
   --detection-target {{detection_target}} \
   --domain-terms "Domain,Specific,Terms" \
+  --history-notes "Iteration 0: Baseline - initial AI draft" \
   > iteration-0-baseline.txt
 ```
 
@@ -111,6 +113,7 @@ python analyze_ai_patterns.py ../manuscript/chapters/chapter-03.md \
   --quality-target 85 \
   --detection-target 30 \
   --domain-terms "Docker,Kubernetes,PostgreSQL" \
+  --history-notes "Baseline measurement of AI-generated draft" \
   > chapter-03-iteration-0.txt
 ```
 
@@ -121,10 +124,19 @@ python analyze_ai_patterns.py ../manuscript/chapters/chapter-03.md \
 - Quality Gap: {{quality_target}} - {{quality_0}} = {{quality_gap}}
 - Detection Gap: {{detection_0}} - {{detection_target}} = {{detection_gap}}
 
-**Historical tracking automatically created**:
+**Comprehensive history tracking (v2.0)**:
 
-- Score history saved to: `{{file_parent}}/.score-history/{{filename}}.history.json`
-- Trend will show on subsequent runs
+History automatically saved to: `.history_{{filename}}.json` (hidden file in same directory)
+
+**What's tracked**:
+
+- Aggregate scores (Quality + Detection Risk)
+- All 33 dimension scores across 4 tiers
+- All raw metrics (AI vocabulary, sentence stdev, MATTR, etc.)
+- Word count, sentence count, paragraph count
+- Timestamp and your notes
+
+No manual tracking needed - history builds automatically with each analysis.
 
 ### 3. Review Path-to-Target Recommendations
 
@@ -159,6 +171,13 @@ PATH TO TARGET (4 actions, sorted by ROI)
 - **Effort Level**: Note LOW/MEDIUM/HIGH for time planning
 - **Expected Gain**: Sum potential gains from selected actions
 - **Estimated Time**: 20-45 min depending on effort levels
+
+**For detailed improvement strategies**: See `{{config.root}}/data/COMPREHENSIVE-METRICS-GUIDE.md` for:
+
+- Specific techniques to improve each dimension (GLTR, Burstiness, MATTR, etc.)
+- Mathematical definitions and thresholds
+- Concrete before/after examples
+- Academic foundations for each metric
 
 ### 4. Iteration Loop - Execute and Measure
 
@@ -209,14 +228,26 @@ Iteration {{N}} Changes:
 
 #### 4.2. Re-analyze After Changes
 
-**Run dual score analysis again** (environment should still be activated):
+**Run dual score analysis again with notes** (environment should still be activated):
 
 ```bash
 python analyze_ai_patterns.py PATH_TO_FILE \
   --show-scores \
   --quality-target {{quality_target}} \
   --detection-target {{detection_target}} \
+  --history-notes "Iteration {{N}}: [describe what you changed]" \
   > iteration-{{N}}-analysis.txt
+```
+
+**Example with notes**:
+
+```bash
+python analyze_ai_patterns.py ../manuscript/chapters/chapter-03.md \
+  --show-scores \
+  --quality-target 85 \
+  --detection-target 30 \
+  --history-notes "Iteration 2: Reduced AI vocab by 60%, varied sentence lengths" \
+  > chapter-03-iteration-2.txt
 ```
 
 **Review updated scores**:
@@ -237,6 +268,19 @@ HISTORICAL TREND ({{N+1}} scores tracked)
 
 Quality:   IMPROVING (+3.2 pts)
 Detection: IMPROVING (-5.1 pts)
+```
+
+**View complete progress anytime**:
+
+```bash
+# See full optimization journey
+python analyze_ai_patterns.py FILE.md --show-history-full
+
+# Compare first vs current iteration
+python analyze_ai_patterns.py FILE.md --compare-history "first,last"
+
+# See which dimensions improved most
+python analyze_ai_patterns.py FILE.md --show-dimension-trends
 ```
 
 #### 4.3. Evaluate Progress and Decide
@@ -317,47 +361,99 @@ Lessons Learned:
 - {{lesson_2}}
 ```
 
-### 6. Score History Management
+### 6. Score History Management (v2.0)
 
-**Historical tracking is automatic**:
+**Historical tracking is automatic and comprehensive**:
 
-- Scores saved to: `{{file_parent}}/.score-history/{{filename}}.history.json`
-- Trend displayed on each analysis run
+- Scores saved to: `.history_{{filename}}.json` (hidden file in same directory)
+- Trend displayed on each `--show-scores` run
+- All 33 dimensions tracked, not just aggregates
 - No manual management needed
 
-**View full history**:
+**View complete optimization journey**:
 
 ```bash
-cat {{file_parent}}/.score-history/{{filename}}.history.json
+python analyze_ai_patterns.py FILE.md --show-history-full
 ```
 
-**Example history file**:
+Shows:
 
-```json
-{
-  "file_path": "/path/to/chapter-03.md",
-  "scores": [
-    {
-      "timestamp": "2025-01-15T10:30:00",
-      "quality_score": 67.8,
-      "detection_risk": 38.8,
-      "quality_interpretation": "MIXED - Needs moderate work",
-      "detection_interpretation": "MEDIUM - May be flagged",
-      "total_words": 4532,
-      "notes": ""
-    },
-    {
-      "timestamp": "2025-01-15T11:45:00",
-      "quality_score": 79.2,
-      "detection_risk": 25.3,
-      "quality_interpretation": "GOOD - Natural with minor tells",
-      "detection_interpretation": "LOW - Unlikely flagged",
-      "total_words": 4581,
-      "notes": ""
-    }
-  ]
-}
+- Full iteration-by-iteration summary with all scores
+- Aggregate score trends with sparklines (▁▂▃▄▅▆▇█)
+- Tier score progressions (all 4 tiers)
+- Top dimension improvements/declines
+- Publication readiness assessment
+- Notes for each iteration
+
+**Compare specific iterations**:
+
+```bash
+# Compare first and last iterations
+python analyze_ai_patterns.py FILE.md --compare-history "first,last"
+
+# Compare specific iteration numbers
+python analyze_ai_patterns.py FILE.md --compare-history "1,4"
 ```
+
+Shows side-by-side:
+
+- Aggregate score changes
+- Tier score changes
+- Significant dimension improvements (±2pts)
+- Key insights and ROI of your efforts
+
+**View dimension-level trends**:
+
+```bash
+python analyze_ai_patterns.py FILE.md --show-dimension-trends
+```
+
+Identifies:
+
+- Top improving dimensions
+- Declining dimensions (need attention)
+- Plateaued dimensions (stopped improving)
+
+**View raw metric trends**:
+
+```bash
+python analyze_ai_patterns.py FILE.md --show-raw-metric-trends
+```
+
+Shows sparkline charts for:
+
+- AI vocabulary per 1k words
+- Sentence standard deviation
+- MATTR (lexical richness)
+- And all other raw metrics
+
+**Export history for reporting**:
+
+```bash
+# Export to CSV for Excel/Google Sheets
+python analyze_ai_patterns.py FILE.md --export-history csv
+
+# Export to JSON for programmatic analysis
+python analyze_ai_patterns.py FILE.md --export-history json
+```
+
+CSV includes:
+
+- All iterations with timestamps
+- Word/sentence/paragraph counts
+- Quality and detection scores
+- All 4 tier scores
+- All 33 dimension scores
+- All raw metrics
+- Notes for each iteration
+
+**Use cases for history features**:
+
+- **Progress tracking**: See quality improve iteration-by-iteration
+- **ROI analysis**: Which techniques yielded best improvements?
+- **Plateau detection**: When to switch tactics or stop iterating
+- **Reporting**: Export to CSV for stakeholders
+- **Learning**: Build knowledge of what works for your content type
 
 ## Output Deliverables
 

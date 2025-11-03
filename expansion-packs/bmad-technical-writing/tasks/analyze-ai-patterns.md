@@ -44,6 +44,7 @@ The tool supports **three analysis modes**:
 - AI Pattern Analysis Tool available at `{{config.root}}/data/tools/analyze_ai_patterns.py`
 - Markdown files to analyze (chapters, sections, or entire manuscript)
 - Python virtual environment set up with required dependencies (see setup below)
+- **Reference**: `{{config.root}}/data/COMPREHENSIVE-METRICS-GUIDE.md` for detailed metric definitions, thresholds, and improvement strategies
 
 ## Workflow Steps
 
@@ -304,6 +305,13 @@ Strategy: Do Actions 1 and 2 first (12 pts gain, ~1 hour)
 → Would reach 79.8, then reassess if Action 3 needed to reach 85
 ```
 
+**For detailed metric understanding**: See `{{config.root}}/data/COMPREHENSIVE-METRICS-GUIDE.md` for:
+
+- Mathematical definitions of each dimension (GLTR, Burstiness, MATTR, etc.)
+- Quantitative thresholds (AI vs. human patterns)
+- Specific improvement strategies with examples
+- Academic research foundations for each metric
+
 **Check historical trend** (if running analysis multiple times):
 
 - **IMPROVING**: Quality increasing OR detection decreasing (good progress)
@@ -366,6 +374,200 @@ Strategy: Do Actions 1 and 2 first (12 pts gain, ~1 hour)
 - MODERATE humanization needed: Systematic editing (10-20% AI patterns)
 - SUBSTANTIAL humanization required: Major rewrite (20-40% AI patterns)
 - EXTENSIVE humanization required: Likely AI-generated (>40% AI patterns)
+
+### 5b. View Optimization History (v2.0 Features)
+
+Comprehensive history tracking with dimension-level trends, sparkline visualization, and iteration comparison.
+
+**Automatic History Tracking**:
+
+Every time you analyze a file with `--show-scores`, the tool automatically saves:
+
+- Aggregate scores (Quality + Detection Risk)
+- All 33 dimension scores across 4 tiers
+- All raw metrics (AI vocabulary, sentence stdev, MATTR, etc.)
+- Word count, sentence count, paragraph count
+- Timestamp and optional notes
+
+History is saved to: `.history_FILENAME.json` (hidden file in same directory)
+
+**View Complete Optimization Journey**:
+
+```bash
+python analyze_ai_patterns.py FILE.md --show-history-full
+```
+
+This shows:
+
+- Aggregate score trends with sparklines (▁▂▃▄▅▆▇█)
+- All 4 tier score progressions
+- Full iteration-by-iteration summary
+- Top dimension improvements
+- Publication readiness assessment
+- Success/failure indicators
+
+**Example output**:
+
+```
+COMPLETE OPTIMIZATION JOURNEY
+================================================================================
+Document: chapter-03.md
+Iterations: 5 (2025-11-02 to 2025-11-02)
+
+AGGREGATE SCORES:
+  Quality:   60.0 → 88.0  (+28.0 pts)  IMPROVING ↑
+  Detection: 55.0 → 22.0  (-33.0 pts)  IMPROVING ↑
+
+ITERATION SUMMARY:
+--------------------------------------------------------------------------------
+ITERATION 1: Initial draft - straight from AI
+Timestamp:     2025-11-02T10:00:00
+Quality:       60.0 / 100  (POOR - Needs major work)
+Detection:     55.0 / 100  (HIGH - Likely flagged)
+Total Words:   3800
+Sentences:     180
+Paragraphs:    22
+
+...
+
+Status: PUBLICATION READY ✓
+```
+
+**View Dimension-Level Trends**:
+
+```bash
+python analyze_ai_patterns.py FILE.md --show-dimension-trends
+```
+
+Shows top improving/declining dimensions with sparklines:
+
+```
+TOP 5 DIMENSION IMPROVEMENTS:
+
+  1. Burstiness (Sent. Var):
+     5.0 → 11.0  (+6.0 pts)  ↑  EXCELLENT improvement
+  2. Voice & Authenticity:
+     2.0 → 8.0  (+6.0 pts)  ↑  EXCELLENT improvement
+  3. Perplexity (AI Vocab):
+     4.0 → 9.0  (+5.0 pts)  ↑  EXCELLENT improvement
+```
+
+**Compare Two Iterations**:
+
+```bash
+python analyze_ai_patterns.py FILE.md --compare-history "first,last"
+# OR specific iteration numbers
+python analyze_ai_patterns.py FILE.md --compare-history "1,5"
+```
+
+Shows side-by-side comparison:
+
+- Aggregate score changes
+- Tier score changes
+- Significant dimension improvements (±2pts)
+- Key insights and recommendations
+
+**View Raw Metric Trends**:
+
+```bash
+python analyze_ai_patterns.py FILE.md --show-raw-metric-trends
+```
+
+Shows sparkline charts for underlying metrics:
+
+```
+ai_vocabulary_per_1k:
+  █▄▃▂▁  25.50 → 12.00  (-13.5, -53%)  ↓
+
+sentence_stdev:
+  ▁▁▅▆█  4.20 → 10.50  (+6.3, +150%)  ↑
+
+mattr:
+  ▁▂▃▅█  0.62 → 0.74  (+0.1, +19%)  ↑
+```
+
+**Export History for External Analysis**:
+
+```bash
+# Export to CSV for Excel/Numbers/Google Sheets
+python analyze_ai_patterns.py FILE.md --export-history csv
+
+# Export to JSON for programmatic analysis
+python analyze_ai_patterns.py FILE.md --export-history json
+```
+
+CSV includes:
+
+- All iterations with timestamps
+- Word/sentence/paragraph counts
+- Quality and detection scores
+- All 4 tier scores
+- All 33 dimension scores (score + percentage)
+- All raw metrics
+- Notes for each iteration
+
+**Add Notes to Iterations**:
+
+```bash
+python analyze_ai_patterns.py FILE.md --show-scores \
+  --history-notes "Reduced AI vocabulary by 50%"
+```
+
+Notes appear in full history report and CSV export, making it easy to remember what changed.
+
+**Quick History Summary** (included automatically with --show-scores):
+
+When you run `--show-scores` on a file with history, you'll see:
+
+```
+HISTORICAL TREND (3 scores tracked)
+────────────────────────────────────────────────────────────────────────────────
+Quality:   IMPROVING (+8.2 pts)
+Detection: IMPROVING (-11.3 pts)
+```
+
+**Typical Workflow with History**:
+
+1. **Baseline** (Iteration 1):
+
+   ```bash
+   python analyze_ai_patterns.py chapter.md --show-scores \
+     --history-notes "Initial AI draft"
+   ```
+
+2. **After each humanization pass** (Iterations 2-N):
+
+   ```bash
+   # Apply humanization edits...
+   python analyze_ai_patterns.py chapter.md --show-scores \
+     --history-notes "Fixed sentence variation and AI vocab"
+   ```
+
+3. **View progress**:
+
+   ```bash
+   python analyze_ai_patterns.py chapter.md --show-history-full
+   ```
+
+4. **Compare first vs current**:
+
+   ```bash
+   python analyze_ai_patterns.py chapter.md --compare-history "first,last"
+   ```
+
+5. **Export for reporting**:
+   ```bash
+   python analyze_ai_patterns.py chapter.md --export-history csv
+   ```
+
+**Use Cases**:
+
+- **Iterative optimization**: Track quality improvements over multiple editing passes
+- **Plateau detection**: Identify when dimensions stop improving (switch tactics)
+- **ROI analysis**: See which humanization techniques yield best score improvements
+- **Reporting**: Export to CSV for stakeholder reports or team dashboards
+- **Learning**: Build knowledge of which patterns work for your content type
+- **Validation**: Prove content meets quality standards with quantitative data
 
 ### 6. Document Specific Issues
 
@@ -473,6 +675,7 @@ python3 analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
 - 60-90 minute editing session
 - Use `humanize-post-generation.md` task
 - Focus on dimensions scored LOW or VERY LOW
+- **Reference**: See `{{config.root}}/data/COMPREHENSIVE-METRICS-GUIDE.md` for specific improvement strategies for each dimension
 
 **If Overall Assessment = SUBSTANTIAL/EXTENSIVE**:
 

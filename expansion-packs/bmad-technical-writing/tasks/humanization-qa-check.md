@@ -22,6 +22,7 @@ Validate that humanization efforts have successfully removed AI patterns and tha
 - Python virtual environment set up with required dependencies (see analyze-ai-patterns.md task for setup)
 - Before-humanization baseline metrics (recommended for comparison)
 - 20-30 minutes for comprehensive QA check
+- **Reference**: `{{config.root}}/data/COMPREHENSIVE-METRICS-GUIDE.md` for understanding metric thresholds and signals
 
 ## Workflow Steps
 
@@ -155,6 +156,8 @@ Decision: PASS - Publication ready
 - [ ] Standard deviation: e6 (target: e10)
 - [ ] If <3: **FAIL** - Must add sentence variation
 
+**For detailed signal understanding**: See `{{config.root}}/data/COMPREHENSIVE-METRICS-GUIDE.md` for mathematical definitions, detection thresholds, and specific improvement strategies for each metric.
+
 ### 4. Qualitative "Read Aloud" Test
 
 **Read 3-5 representative paragraphs aloud**:
@@ -196,36 +199,88 @@ Decision: PASS - Publication ready
 
 **Action**: If technical accuracy compromised, revert problematic edits and re-humanize more carefully.
 
-### 6. Compare Before/After Metrics (If Available)
+### 6. Compare Before/After Metrics (Automatic with v2.0 History)
 
-**If baseline metrics exist from pre-humanization analysis**:
+**If you ran analysis before humanization**, the tool automatically tracked baseline metrics in history.
 
-**Expected improvements**:
+**Use the automatic comparison command**:
 
-- AI vocabulary per 1k: **Decreased 50-80%**
-- Sentence StdDev: **Increased** (higher burstiness)
-- Formulaic transitions: **Decreased to <3**
-- Heading depth: **Decreased to d3**
-- Em-dashes per page: **Decreased to 1-2**
-- Overall assessment: **Improved 1-2 levels**
+```bash
+cd {{config.root}}/data/tools
+source nlp-env/bin/activate
 
-**Document improvement**:
+# Compare first iteration (baseline) vs current (humanized)
+python analyze_ai_patterns.py PATH_TO_HUMANIZED_FILE \
+  --compare-history "first,last"
+```
+
+**Example comparison output**:
 
 ```
-Before Humanization:
-- Perplexity: LOW (12.4 AI words/1k)
-- Burstiness: LOW (StdDev 4.2)
-- Formatting: VERY LOW (7.8 em-dashes/page)
-- Overall: SUBSTANTIAL humanization required
+ITERATION COMPARISON: #0 vs #4
+════════════════════════════════════════════════════════════════════════════════
 
-After Humanization:
-- Perplexity: MEDIUM (3.1 AI words/1k)
-- Burstiness: HIGH (StdDev 11.7)
-- Formatting: HIGH (1.4 em-dashes/page)
-- Overall: LIGHT humanization needed
+Iteration #0 (2025-11-02 10:00:00)
+────────────────────────────────────────────────────────────────────────────────
+Notes:         Baseline - initial AI draft
+Total Words:   3800
+Sentences:     180
+Paragraphs:    22
 
-Improvement: 75% reduction in AI patterns 
+Quality:       60.0 / 100  (POOR - Needs major work)
+Detection:     55.0 / 100  (HIGH - Likely flagged)
+
+Tier Scores:
+  Tier 1 (Critical):    45.0 / 60
+  Tier 2 (Important):   52.0 / 60
+  Tier 3 (Refinement):  28.0 / 60
+  Tier 4 (Polish):      5.0 / 15
+
+Iteration #4 (2025-11-02 16:00:00)
+────────────────────────────────────────────────────────────────────────────────
+Notes:         Final pass - expanded vocabulary
+Total Words:   4050
+Sentences:     210
+Paragraphs:    28
+
+Quality:       88.0 / 100  (EXCELLENT - Exceeds target)
+Detection:     22.0 / 100  (LOW - Safe for publication)
+
+Tier Scores:
+  Tier 1 (Critical):    60.0 / 60
+  Tier 2 (Important):   68.0 / 60
+  Tier 3 (Refinement):  42.0 / 60
+  Tier 4 (Polish):      7.0 / 15
+
+CHANGES (First → Last)
+────────────────────────────────────────────────────────────────────────────────
+Words:         3800 → 4050 (+250, +6.6%)
+Quality:       60.0 → 88.0 (+28.0 pts) ✓ IMPROVED
+Detection:     55.0 → 22.0 (-33.0 pts) ✓ IMPROVED
+
+Top Dimension Improvements:
+  1. Burstiness (Sent. Var):    41.7% → 91.7% (+50.0%)
+  2. Perplexity (AI Vocab):     40.0% → 90.0% (+50.0%)
+  3. Voice & Authenticity:      20.0% → 80.0% (+60.0%)
 ```
+
+**Expected improvements for publication-ready content**:
+
+- Quality Score: **+15 to +30 points**
+- Detection Risk: **-10 to -20 points**
+- All Tier 1 dimensions: **MEDIUM or higher**
+- Critical signals addressed: **Em-dashes ≤2/page, Heading depth ≤3**
+
+**See complete optimization journey**:
+
+```bash
+# View all iterations with trend analysis
+python analyze_ai_patterns.py PATH_TO_FILE --show-history-full
+```
+
+**If no history exists** (manual comparison fallback):
+
+Compare current scores against pre-humanization baseline manually using the QA report format in Step 9.
 
 ### 7. Publisher AI Compliance Check (Optional)
 

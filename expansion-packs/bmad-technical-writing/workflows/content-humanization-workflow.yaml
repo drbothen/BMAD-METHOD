@@ -1,7 +1,7 @@
 workflow:
   id: content-humanization-workflow
   name: AI Content Humanization
-  description: Systematic workflow for transforming AI-generated technical content into natural, human-sounding writing using dual score optimization (Quality Score + Detection Risk). Guides content humanizers through pre-generation prompt engineering, AI pattern analysis across 14 dimensions, post-generation editing, iterative optimization until targets met, and quality verification. Ensures content maintains technical accuracy while improving perplexity, burstiness, voice consistency, formatting patterns, heading hierarchy, and emotional resonance.
+  description: Systematic workflow for transforming AI-generated technical content into natural, human-sounding writing using dual score optimization (Quality Score + Detection Risk). Guides content humanizers through pre-generation prompt engineering, AI pattern analysis across 33 dimensions in 4 tiers, post-generation editing, iterative optimization until targets met with v2.0 history tracking, and quality verification. Ensures content maintains technical accuracy while improving perplexity, burstiness, voice consistency, formatting patterns, heading hierarchy, and emotional resonance.
   type: content-humanization
   project_types:
     - technical-book
@@ -15,7 +15,7 @@ workflow:
     - agent: content-humanizer
       analyzes: content-draft.md
       requires: draft_content
-      notes: "Analyze AI-generated content using *analyze command with dual score analysis (--show-scores). Produces Quality Score (0-100, higher=better) and Detection Risk (0-100, lower=better) across 14 dimensions in 3 tiers: Advanced Detection (GLTR, lexical diversity, AI detection, stylometric, syntactic), Core Patterns (burstiness, perplexity, formatting, headings), and Supporting Signals (voice, structure, emotional depth, technical). Provides path-to-target recommendations sorted by ROI with effort estimation (LOW/MEDIUM/HIGH). Use ai-pattern-detection-checklist.md for supplementary manual inspection. SAVE OUTPUT: Create analysis report at humanization/{{content_name}}/ai-pattern-analysis.txt with dual scores, dimension breakdown, and prioritized action plan"
+      notes: "Analyze AI-generated content using *analyze command with dual score analysis (--show-scores). Produces Quality Score (0-100, higher=better) and Detection Risk (0-100, lower=better) across 33 dimensions in 4 tiers: Critical (sentence variation, AI vocabulary, syntactic complexity), Important (lexical diversity, transitions, MATTR), Refinement (structure, voice, emotional depth), and Polish (formatting, headings, readability). v2.0 automatically tracks history to .history_FILENAME.json. Provides path-to-target recommendations sorted by ROI with effort estimation (LOW/MEDIUM/HIGH). Use ai-pattern-detection-checklist.md for supplementary manual inspection. SAVE OUTPUT: Create analysis report at humanization/{{content_name}}/ai-pattern-analysis.txt with dual scores, dimension breakdown, and prioritized action plan"
 
     - agent: content-humanizer
       develops: humanization-plan.md
@@ -36,7 +36,7 @@ workflow:
       requires:
         - humanized_draft
         - quality_targets
-      notes: "OPTIONAL: For high-stakes content (book chapters, publications), use *optimize command for iterative optimization via iterative-humanization-optimization.md task. Re-analyze with dual scoring after each editing pass to measure improvement. Review path-to-target recommendations and apply next highest-ROI actions. Continue iteration loop until Quality Score ≥85 and Detection Risk ≤30 (adjustable targets: book chapters 90/20, blog posts 85/30, drafts 75/40). Track historical trend (IMPROVING/STABLE/WORSENING) across iterations. Stop when targets met or plateau detected. Maximum 5 iterations recommended. SAVE OUTPUT: Create iteration reports at humanization/{{content_name}}/iteration-N-analysis.txt and optimization summary at humanization/{{content_name}}/optimization-summary.md with before/after metrics"
+      notes: "OPTIONAL: For high-stakes content (book chapters, publications), use *optimize command for iterative optimization via iterative-humanization-optimization.md task. Re-analyze with dual scoring after each editing pass to measure improvement (use --history-notes to annotate each iteration). Review path-to-target recommendations and apply next highest-ROI actions. Continue iteration loop until Quality Score ≥85 and Detection Risk ≤30 (adjustable targets: book chapters 90/20, blog posts 85/30, drafts 75/40). v2.0 automatically tracks all 33 dimensions, 4 tier scores, and raw metrics with trend analysis (IMPROVING/STABLE/WORSENING) and sparkline visualization. View progress with --show-history-full or --compare-history. Stop when targets met or plateau detected. Maximum 5 iterations recommended. SAVE OUTPUT: Create iteration reports at humanization/{{content_name}}/iteration-N-analysis.txt and optimization summary at humanization/{{content_name}}/optimization-summary.md with before/after metrics. Optional: Export comprehensive history with --export-history for Excel/Pandas analysis"
 
     - agent: technical-reviewer
       verifies: humanized-draft.md
@@ -167,10 +167,10 @@ workflow:
   quality_gates:
     pattern_analysis_complete:
       - Dual score analysis complete (Quality Score and Detection Risk calculated)
-      - All 14 dimensions assessed across 3 tiers (Advanced Detection, Core Patterns, Supporting Signals)
+      - All 33 dimensions assessed across 4 tiers (Critical, Important, Refinement, Polish)
       - Path-to-target recommendations generated with ROI sorting
       - Effort levels estimated (LOW/MEDIUM/HIGH) for each action
-      - Historical baseline established for tracking improvement
+      - Historical baseline established for tracking improvement (v2.0 auto-saved to .history_FILENAME.json)
       - Diagnostic decision made (Minimal/Light/Substantial/Regeneration)
       - Checklist: ai-pattern-detection-checklist.md
 
@@ -196,11 +196,12 @@ workflow:
       - OPTIONAL: For high-stakes content only
       - Dual score targets met (Quality ≥85, Detection ≤30) OR plateau reached
       - Multiple iterations completed with re-analysis between each
-      - Historical trend shows IMPROVING or STABLE (not WORSENING)
+      - v2.0 historical trend shows IMPROVING or STABLE (not WORSENING) with sparkline visualization
       - Path-to-target actions applied systematically by ROI
-      - Iteration reports documented for all passes
-      - Optimization summary created with before/after metrics
+      - Iteration reports documented for all passes with --history-notes annotations
+      - Optimization summary created with before/after metrics (use --compare-history "first,last")
       - Maximum 5 iterations respected (diminishing returns)
+      - Optional: CSV export generated for detailed analysis (--export-history)
       - Task: iterative-humanization-optimization.md
 
     technical_accuracy_verified:
@@ -213,9 +214,10 @@ workflow:
 
     quality_assessment_passed:
       - Dual score targets met (Quality ≥85, Detection ≤30 for standard content)
-      - Historical trend IMPROVING or STABLE (if multiple analyses run)
+      - v2.0 historical trend IMPROVING or STABLE (if multiple analyses run)
+      - Before/after comparison shows significant improvement (use --compare-history "first,last")
       - No critical AI signals present (em-dashes ≤2/page, heading depth ≤3, AI vocab ≤5/1k)
-      - All 14 dimensions scored acceptably (no VERY LOW scores)
+      - All 33 dimensions scored acceptably across 4 tiers (no VERY LOW scores)
       - Technical accuracy 100% preserved (critical requirement)
       - Read-aloud test passed (natural flow and rhythm)
       - Publication readiness decision: PASS or CONDITIONAL PASS
@@ -402,7 +404,7 @@ workflow:
 
   output_artifacts:
     required:
-      - "ai-pattern-analysis.txt (dual score analysis with 14-dimension breakdown)"
+      - "ai-pattern-analysis.txt (dual score analysis with 33-dimension breakdown across 4 tiers)"
       - "humanization-plan.md (targeted improvement plan based on path-to-target)"
       - "humanized-draft.md (edited content)"
       - "accuracy-verification.md (technical accuracy check)"
@@ -412,12 +414,13 @@ workflow:
     recommended:
       - "editing-notes.md (document changes made during editing)"
       - "lessons-learned.md (insights for future prompt engineering)"
-      - "before-after-comparison.md (show improvement achieved with dual score deltas)"
+      - "before-after-comparison.md (show improvement achieved - use --compare-history 'first,last')"
 
     optional:
       - "iteration-0-baseline.txt (initial dual score analysis for baseline)"
-      - "iteration-N-analysis.txt (dual score analysis after each iteration)"
-      - "optimization-summary.md (complete before/after with all iterations tracked)"
-      - "score-history.json (automatic historical tracking in .score-history/ directory)"
+      - "iteration-N-analysis.txt (dual score analysis after each iteration with --history-notes)"
+      - "optimization-summary.md (complete before/after with all iterations - use --show-history-full)"
+      - ".history_FILENAME.json (v2.0 automatic tracking: 33 dimensions, 4 tiers, raw metrics, sparklines)"
+      - "analysis-history.csv (v2.0 CSV export for Excel/Pandas - use --export-history)"
       - "detection-test-results.md (AI detector results for external validation)"
       - "peer-review-feedback.md (fresh-eyes quality check)"
