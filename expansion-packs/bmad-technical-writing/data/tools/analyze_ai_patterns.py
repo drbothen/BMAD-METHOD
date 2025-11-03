@@ -128,6 +128,19 @@ Examples:
                         help='Disable saving score history to .ai-analysis-history/ directory')
     parser.add_argument('--history-notes', metavar='TEXT', default='',
                         help='Add notes/description for this iteration in history tracking')
+
+    # History viewing commands
+    parser.add_argument('--show-history-full', action='store_true',
+                        help='Show complete optimization journey with all iterations')
+    parser.add_argument('--compare-history', metavar='ITERATIONS',
+                        help='Compare two iterations (e.g., "first,last" or "1,5")')
+    parser.add_argument('--show-dimension-trends', action='store_true',
+                        help='Show dimension-level trend analysis')
+    parser.add_argument('--show-raw-metric-trends', action='store_true',
+                        help='Show raw metric trends with sparklines')
+    parser.add_argument('--export-history', choices=['csv', 'json'],
+                        help='Export history to CSV or JSON format')
+
     parser.add_argument('--detection-target', type=float, default=30.0, metavar='N',
                         help='Target detection risk score (0-100, lower=better, default: 30.0)')
     parser.add_argument('--quality-target', type=float, default=85.0, metavar='N',
@@ -138,6 +151,81 @@ Examples:
     # Validate inputs
     if not args.file and not args.batch:
         parser.error('Either FILE or --batch DIR must be specified')
+
+    # Handle history viewing commands (don't need to run analysis)
+    if any([args.show_history_full, args.compare_history, args.show_dimension_trends,
+            args.show_raw_metric_trends, args.export_history]):
+        if not args.file:
+            parser.error('History viewing commands require a FILE argument')
+
+        from ai_pattern_analyzer.history.trends import (
+            generate_full_history_report,
+            generate_comparison_report,
+            generate_dimension_trend_report,
+            generate_raw_metric_trends
+        )
+
+        # Analyzer already imported at top of file
+        analyzer = AIPatternAnalyzer()
+        history = analyzer.load_score_history(args.file)
+
+        if len(history.scores) == 0:
+            print(f"No history found for {args.file}", file=sys.stderr)
+            print("Run analysis with --show-scores first to create history.", file=sys.stderr)
+            sys.exit(1)
+
+        # Generate and print requested report
+        if args.show_history_full:
+            print(generate_full_history_report(history))
+
+        elif args.compare_history:
+            # Parse iteration specifiers (e.g., "first,last" or "1,5")
+            parts = args.compare_history.split(',')
+            if len(parts) != 2:
+                parser.error('--compare-history requires two iterations separated by comma (e.g., "first,last" or "1,5")')
+
+            # Convert to indices
+            def parse_iteration(spec: str, history_len: int) -> int:
+                spec = spec.strip().lower()
+                if spec == 'first':
+                    return 0
+                elif spec == 'last':
+                    return history_len - 1
+                else:
+                    try:
+                        idx = int(spec)
+                        if idx < 0 or idx >= history_len:
+                            raise ValueError(f"Iteration {idx} out of range (0-{history_len-1})")
+                        return idx
+                    except ValueError as e:
+                        raise ValueError(f"Invalid iteration specifier: {spec}")
+
+            try:
+                idx1 = parse_iteration(parts[0], len(history.scores))
+                idx2 = parse_iteration(parts[1], len(history.scores))
+                print(generate_comparison_report(history, idx1, idx2))
+            except ValueError as e:
+                parser.error(str(e))
+
+        elif args.show_dimension_trends:
+            print(generate_dimension_trend_report(history))
+
+        elif args.show_raw_metric_trends:
+            print(generate_raw_metric_trends(history))
+
+        elif args.export_history:
+            if args.export_history == 'csv':
+                output_file = args.file.replace('.md', '-history.csv')
+                history.export_to_csv(output_file)
+                print(f"History exported to: {output_file}")
+            elif args.export_history == 'json':
+                output_file = args.file.replace('.md', '-history.json')
+                import json
+                with open(output_file, 'w') as f:
+                    json.dump(history.to_dict(), f, indent=2)
+                print(f"History exported to: {output_file}")
+
+        sys.exit(0)
 
     # Detailed mode limitations
     if args.detailed and args.batch:
