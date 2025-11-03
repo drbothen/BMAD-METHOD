@@ -652,9 +652,8 @@ class AIPatternAnalyzer:
             with open(history_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
 
-            # Reconstruct ScoreHistory from JSON
-            scores = [HistoricalScore(**score_data) for score_data in data.get('scores', [])]
-            return ScoreHistory(file_path=data.get('file_path', file_path), scores=scores)
+            # Reconstruct ScoreHistory from JSON using from_dict() to properly restore DimensionScore objects
+            return ScoreHistory.from_dict(data)
 
         except Exception as e:
             print(f"Warning: Could not load history from {history_file}: {e}", file=sys.stderr)
