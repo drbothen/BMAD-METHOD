@@ -624,8 +624,23 @@ USAGE TIP: Use line numbers above to locate and fix issues systematically
         return report
 
 
-def format_report(results: AnalysisResults, output_format: str = 'text') -> str:
-    """Format analysis results for output"""
+def format_report(results: AnalysisResults,
+                  output_format: str = 'text',
+                  include_score_summary: bool = True,
+                  detection_target: float = 30.0,
+                  quality_target: float = 85.0,
+                  dual_score = None) -> str:
+    """
+    Format analysis results for output.
+
+    Args:
+        results: Analysis results object
+        output_format: Output format ('text', 'json', 'tsv')
+        include_score_summary: Include quality score summary at end
+        detection_target: Target detection risk score
+        quality_target: Target quality score
+        dual_score: Optional pre-calculated DualScore object (avoids recalculation)
+    """
 
     if output_format == 'json':
         return json.dumps(asdict(results), indent=2)
@@ -1431,4 +1446,54 @@ Content appears naturally human-written across all dimensions.
 
         report += f"\n{'=' * 80}\n"
 
+        # Add quality score summary at the end (if enabled)
+        if include_score_summary and output_format == 'text':
+            report += format_score_summary(results, detection_target, quality_target, dual_score)
+
         return report
+
+
+def format_score_summary(r: AnalysisResults,
+                         detection_target: float = 30.0,
+                         quality_target: float = 85.0,
+                         dual_score = None) -> str:
+    """
+    Generate brief quality score summary for standard report.
+
+    Args:
+        r: Analysis results
+        detection_target: Target detection risk score
+        quality_target: Target quality score
+        dual_score: Optional pre-calculated DualScore object (avoids recalculation)
+    """
+    from ai_pattern_analyzer.scoring.dual_score_calculator import calculate_dual_score
+
+    # Use pre-calculated dual_score if provided, otherwise calculate it
+    if dual_score is None:
+        dual_score = calculate_dual_score(r, detection_target, quality_target)
+
+    # Format top 3 actions
+    top_actions = ""
+    for i, action in enumerate(dual_score.path_to_target[:3], 1):
+        top_actions += f"  {i}. {action.dimension} → {action.potential_gain:+.1f} pts\n"
+
+    if not top_actions:
+        top_actions = "  ✓ Target already achieved!\n"
+
+    return f"""
+{'─' * 80}
+QUALITY SCORE SUMMARY
+{'─' * 80}
+
+Quality Score:      {dual_score.quality_score:5.1f} / 100  (Target: ≥{quality_target})   Gap: {dual_score.quality_gap:+.1f} pts
+Detection Risk:     {dual_score.detection_risk:5.1f} / 100  (Target: ≤{detection_target})  Gap: {-dual_score.detection_gap:+.1f} pts
+
+Assessment:         {dual_score.quality_interpretation}
+Effort Required:    {dual_score.estimated_effort}
+
+Top Actions to Reach Target (sorted by ROI):
+{top_actions}
+Use --scores-detailed for complete breakdown and optimization path.
+
+{'=' * 80}
+"""
