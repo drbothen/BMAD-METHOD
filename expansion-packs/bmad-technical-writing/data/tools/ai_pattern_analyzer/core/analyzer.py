@@ -486,6 +486,41 @@ class AIPatternAnalyzer:
                 metrics['heading_length_variance'] = head_hier.get('heading_length_variance', 0.0)
                 metrics['heading_strict_adherence'] = head_hier.get('hierarchy_adherence', 0.0)
 
+            # Subsection asymmetry (H3 counts under H2 sections)
+            if structure_results.get('subsection_asymmetry'):
+                subsec = structure_results['subsection_asymmetry']
+                metrics['subsection_counts'] = subsec.get('subsection_counts', [])
+                metrics['subsection_cv'] = subsec.get('cv', 0.0)
+                metrics['subsection_uniform_count'] = subsec.get('uniform_count', 0)
+                metrics['subsection_assessment'] = subsec.get('assessment', 'UNKNOWN')
+
+            # H4 subsection asymmetry (H4 counts under H3 sections)
+            if structure_results.get('h4_subsection_asymmetry'):
+                h4_subsec = structure_results['h4_subsection_asymmetry']
+                metrics['h4_counts'] = h4_subsec.get('h4_counts', [])
+                metrics['h4_subsection_cv'] = h4_subsec.get('cv', 0.0)
+                metrics['h4_uniform_count'] = h4_subsec.get('uniform_count', 0)
+                metrics['h4_assessment'] = h4_subsec.get('assessment', 'UNKNOWN')
+                metrics['h4_h3_sections_analyzed'] = h4_subsec.get('h3_count', 0)
+
+            # Multi-level combined structure score (domain-specific)
+            if structure_results.get('combined_structure_score'):
+                combined = structure_results['combined_structure_score']
+                if combined and not combined.get('error'):
+                    metrics['combined_structure_score'] = combined.get('combined_score', 0.0)
+                    metrics['combined_structure_assessment'] = combined.get('combined_assessment', 'UNKNOWN')
+                    metrics['combined_structure_domain'] = combined.get('domain', 'general')
+                    metrics['combined_structure_prob_human'] = combined.get('prob_human', 0.0)
+
+                    # Breakdown details
+                    breakdown = combined.get('breakdown', {})
+                    metrics['combined_h2_score'] = breakdown.get('h2_score', 0.0)
+                    metrics['combined_h2_assessment'] = breakdown.get('h2_assessment', 'UNKNOWN')
+                    metrics['combined_h3_score'] = breakdown.get('h3_score', 0.0)
+                    metrics['combined_h3_assessment'] = breakdown.get('h3_assessment', 'UNKNOWN')
+                    metrics['combined_h4_score'] = breakdown.get('h4_score', 0.0)
+                    metrics['combined_h4_assessment'] = breakdown.get('h4_assessment', 'UNKNOWN')
+
         return metrics
 
     def _assess_overall(self, results: AnalysisResults) -> str:

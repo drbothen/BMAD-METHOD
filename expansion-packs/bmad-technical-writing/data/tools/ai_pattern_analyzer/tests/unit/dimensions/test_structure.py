@@ -610,6 +610,100 @@ Regular text without subsections.
         assert 'cv' in result
 
 
+class TestCalculateH4SubsectionAsymmetry:
+    """Tests for _calculate_h4_subsection_asymmetry Phase 3 method."""
+
+    def test_h4_subsection_asymmetry_uniform(self, analyzer):
+        """Test uniform H4 counts under H3 (AI pattern)."""
+        text = """# Title
+
+## Section One
+### Sub 1A
+#### Detail 1A1
+#### Detail 1A2
+
+### Sub 1B
+#### Detail 1B1
+#### Detail 1B2
+
+### Sub 1C
+#### Detail 1C1
+#### Detail 1C2
+"""
+        result = analyzer._calculate_h4_subsection_asymmetry(text)
+
+        assert 'cv' in result
+        assert 'h4_counts' in result
+        assert 'score' in result
+        assert 'assessment' in result
+        # AI has uniform H4 counts (2, 2, 2) -> low CV
+        assert result['cv'] < 0.3
+        assert result['h4_counts'] == [2, 2, 2]
+
+    def test_h4_subsection_asymmetry_varied(self, analyzer):
+        """Test varied H4 counts under H3 (human pattern)."""
+        text = """# Title
+
+## Section One
+### Sub 1A
+#### Only one detail
+
+### Sub 1B
+#### Detail 1B1
+#### Detail 1B2
+#### Detail 1B3
+#### Detail 1B4
+#### Detail 1B5
+
+### Sub 1C
+#### Detail 1C1
+#### Detail 1C2
+
+### Sub 1D
+No H4s here
+"""
+        result = analyzer._calculate_h4_subsection_asymmetry(text)
+
+        # Human has varied H4 counts (1, 5, 2, 0) -> high CV
+        assert result['cv'] >= 0.45
+        assert result['h4_counts'] == [1, 5, 2, 0]
+        assert result['assessment'] in ['EXCELLENT', 'GOOD']
+
+    def test_h4_subsection_asymmetry_insufficient_data(self, analyzer):
+        """Test H4 asymmetry with insufficient structure."""
+        text = """# Title
+
+## Section One
+### Only one H3
+#### Detail 1
+"""
+        result = analyzer._calculate_h4_subsection_asymmetry(text)
+
+        # Should return insufficient data assessment
+        assert result['assessment'] == 'INSUFFICIENT_DATA'
+        assert 'cv' in result
+
+    def test_h4_subsection_asymmetry_no_h4s(self, analyzer):
+        """Test H4 asymmetry when no H4s present."""
+        text = """# Title
+
+## Section One
+### Sub 1A
+Content without H4s
+
+### Sub 1B
+More content
+
+### Sub 1C
+Even more content
+"""
+        result = analyzer._calculate_h4_subsection_asymmetry(text)
+
+        # Should handle gracefully - insufficient data when all zeros
+        assert 'cv' in result
+        assert result['assessment'] == 'INSUFFICIENT_DATA'
+
+
 class TestCalculateHeadingDepthVariance:
     """Tests for _calculate_heading_depth_variance Phase 3 method."""
 

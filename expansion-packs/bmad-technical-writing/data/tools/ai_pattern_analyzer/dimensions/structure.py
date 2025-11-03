@@ -17,6 +17,10 @@ from typing import Dict, List, Any, Tuple
 from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
 from ai_pattern_analyzer.core.results import HeadingIssue
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
+from ai_pattern_analyzer.scoring.domain_thresholds import (
+    DocumentDomain,
+    calculate_combined_structure_score
+)
 
 # Required marko types for AST-based analysis
 from marko.block import Quote, Heading, List as MarkoList, Paragraph, FencedCode
@@ -38,13 +42,18 @@ class StructureAnalyzer(DimensionAnalyzer):
         Args:
             text: Full text content
             lines: Text split into lines (optional)
-            **kwargs: Additional parameters (word_count for AST methods)
+            **kwargs: Additional parameters:
+                - word_count: Word count for AST methods
+                - domain: DocumentDomain enum for threshold selection (default: GENERAL)
 
         Returns:
             Dict with structure analysis results
         """
         # Get word count from kwargs if available
         word_count = kwargs.get('word_count', len(text.split()))
+
+        # Get domain for threshold selection (default to GENERAL)
+        domain = kwargs.get('domain', DocumentDomain.GENERAL)
 
         # Phase 1-2: Basic structure analysis
         structure = self._analyze_structure(text)
@@ -55,6 +64,7 @@ class StructureAnalyzer(DimensionAnalyzer):
         # Phase 3: Advanced structure analysis
         heading_length = self._calculate_heading_length_analysis(text)
         subsection_asym = self._calculate_subsection_asymmetry(text)
+        h4_subsection_asym = self._calculate_h4_subsection_asymmetry(text)
         heading_depth_var = self._calculate_heading_depth_variance(text)
         code_blocks = self._analyze_code_blocks(text)
         heading_hierarchy = self._analyze_heading_hierarchy_enhanced(text)
@@ -62,6 +72,31 @@ class StructureAnalyzer(DimensionAnalyzer):
         link_anchor_quality = self._analyze_link_anchor_quality(text, word_count)
         enhanced_list_structure = self._analyze_enhanced_list_structure_ast(text)
         code_block_patterns = self._analyze_code_block_patterns_ast(text)
+
+        # Calculate multi-level combined score (if sufficient data available)
+        combined_score = None
+        section_cv = section_var.get('cv', 0.0)
+        h3_cv = subsection_asym.get('cv', 0.0)
+        h4_cv = h4_subsection_asym.get('cv', 0.0)
+
+        # Only calculate combined score if we have real data (not just defaults)
+        if (section_var.get('section_count', 0) > 0 or
+            subsection_asym.get('assessment', 'UNKNOWN') != 'INSUFFICIENT_DATA' or
+            h4_subsection_asym.get('assessment', 'UNKNOWN') != 'INSUFFICIENT_DATA'):
+            try:
+                combined_score = calculate_combined_structure_score(
+                    section_length_cv=section_cv,
+                    h3_subsection_cv=h3_cv,
+                    h4_subsection_cv=h4_cv,
+                    domain=domain
+                )
+            except Exception as e:
+                # Gracefully handle any calculation errors
+                combined_score = {
+                    'error': str(e),
+                    'combined_score': 0.0,
+                    'combined_assessment': 'ERROR'
+                }
 
         return {
             'structure': structure,
@@ -71,6 +106,7 @@ class StructureAnalyzer(DimensionAnalyzer):
             # Phase 3 additions
             'heading_length': heading_length,
             'subsection_asymmetry': subsection_asym,
+            'h4_subsection_asymmetry': h4_subsection_asym,
             'heading_depth_variance': heading_depth_var,
             'code_blocks': code_blocks,
             'heading_hierarchy_enhanced': heading_hierarchy,
@@ -78,6 +114,8 @@ class StructureAnalyzer(DimensionAnalyzer):
             'link_anchor_quality': link_anchor_quality,
             'enhanced_list_structure': enhanced_list_structure,
             'code_block_patterns': code_block_patterns,
+            # Multi-level combined scoring (research-backed)
+            'combined_structure_score': combined_score,
         }
 
     def analyze_detailed(self, lines: List[str], html_comment_checker=None) -> List[HeadingIssue]:
@@ -661,6 +699,99 @@ class StructureAnalyzer(DimensionAnalyzer):
             'assessment': assessment,
             'uniform_count': uniform_count,
             'section_count': len(subsection_counts)
+        }
+
+    def _calculate_h4_subsection_asymmetry(self, text: str) -> Dict:
+        """
+        Analyze H4 subsection count distribution under H3 sections.
+
+        Research-backed patterns (Deep Research 2025):
+        AI Pattern: Uniform 2-3 H4s per H3 (CV <0.25)
+        Human Pattern: Varied 0-5 H4s (CV ≥0.45)
+
+        Returns:
+            {
+                'h4_counts': List[int],  # H4 counts under each H3
+                'cv': float,
+                'score': float (0-6),
+                'assessment': str,
+                'uniform_count': int (H3 sections with 2-3 H4s)
+            }
+        """
+        # Extract headings with levels
+        matches = self._heading_pattern.findall(text)
+
+        if len(matches) < 7:  # Need reasonable depth for H4 analysis
+            return {
+                'cv': 0.0,
+                'score': 6.0,
+                'assessment': 'INSUFFICIENT_DATA',
+                'h4_counts': [],
+                'uniform_count': 0,
+                'h3_count': 0
+            }
+
+        # Build hierarchy - count H4s under each H3
+        headings = [{'level': len(m[0]), 'text': m[1]} for m in matches]
+
+        h4_counts = []
+        current_h3_subsections = 0
+        in_h3_section = False
+
+        for heading in headings:
+            if heading['level'] == 3:  # H3
+                if in_h3_section:
+                    h4_counts.append(current_h3_subsections)
+                in_h3_section = True
+                current_h3_subsections = 0
+            elif heading['level'] == 4 and in_h3_section:  # H4 under H3
+                current_h3_subsections += 1
+            elif heading['level'] <= 2:  # Reset on H1 or H2
+                if in_h3_section:
+                    h4_counts.append(current_h3_subsections)
+                in_h3_section = False
+                current_h3_subsections = 0
+
+        # Capture last section
+        if in_h3_section:
+            h4_counts.append(current_h3_subsections)
+
+        if len(h4_counts) < 3:
+            return {
+                'cv': 0.0,
+                'score': 6.0,
+                'assessment': 'INSUFFICIENT_DATA',
+                'h4_counts': h4_counts,
+                'uniform_count': 0,
+                'h3_count': len(h4_counts)
+            }
+
+        # Calculate coefficient of variation
+        mean_count = statistics.mean(h4_counts)
+        stddev = statistics.stdev(h4_counts) if len(h4_counts) > 1 else 0.0
+        cv = stddev / mean_count if mean_count > 0 else 0.0
+
+        # Count uniform sections (2-3 H4s per H3, AI signature)
+        uniform_count = sum(1 for c in h4_counts if 2 <= c <= 3)
+
+        # Scoring (6 points max - H4 less weighted than H3)
+        # Research shows H4 should be weighted ~0.15-0.20 vs H3's 0.35-0.50
+        if cv >= 0.45:
+            score, assessment = 6.0, 'EXCELLENT'
+        elif cv >= 0.30:
+            score, assessment = 4.0, 'GOOD'
+        elif cv >= 0.15:
+            score, assessment = 2.0, 'FAIR'
+        else:
+            score, assessment = 0.0, 'POOR'
+
+        return {
+            'h4_counts': h4_counts,
+            'cv': round(cv, 3),
+            'score': score,
+            'assessment': assessment,
+            'uniform_count': uniform_count,
+            'h3_count': len(h4_counts)
         }
 
     def _calculate_heading_depth_variance(self, text: str) -> Dict:

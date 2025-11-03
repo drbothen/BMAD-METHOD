@@ -759,6 +759,37 @@ List Nesting Depth:      Max {r.list_max_depth} levels {list_icon} {r.list_depth
 
 List Nesting Depth:      No lists detected"""
 
+        # H4 Subsection Analysis (if available)
+        if r.h4_subsection_cv is not None and r.h4_assessment != 'INSUFFICIENT_DATA':
+            h4_icon = "✓" if r.h4_subsection_cv >= 0.45 else ("⚠" if r.h4_subsection_cv >= 0.30 else "✗")
+            report += f"""
+
+H4 Subsection CV:        {r.h4_subsection_cv:.2f}  {h4_icon} {r.h4_assessment}
+  {len(r.h4_counts) if r.h4_counts else 0} H3 sections analyzed
+  H4 counts per H3: {r.h4_counts if r.h4_counts else []}"""
+
+            if r.h4_uniform_count and r.h4_uniform_count > len(r.h4_counts or []) / 2:
+                report += f"""
+  ⚠ {r.h4_uniform_count} uniform sections (2-3 H4s each) - AI signature"""
+
+        # Multi-level Combined Structure Score (if available)
+        if r.combined_structure_score is not None:
+            combined_icon = "✓" if r.combined_structure_prob_human >= 0.65 else ("⚠" if r.combined_structure_prob_human >= 0.40 else "✗")
+            report += f"""
+
+{'─' * 80}
+MULTI-LEVEL STRUCTURE ANALYSIS (Research-Backed)
+{'─' * 80}
+
+Domain: {r.combined_structure_domain.upper() if r.combined_structure_domain else 'GENERAL'}
+Combined Score: {r.combined_structure_score:.1f}/24  {combined_icon} {r.combined_structure_assessment}
+Probability Human: {r.combined_structure_prob_human:.1%}
+
+Breakdown by Level:
+  H2 Section Length:   {r.combined_h2_score:.1f}/10  {r.combined_h2_assessment}
+  H3 Subsection Count: {r.combined_h3_score:.1f}/8   {r.combined_h3_assessment}
+  H4 Subsection Count: {r.combined_h4_score:.1f}/6   {r.combined_h4_assessment}"""
+
         # Overall structural patterns score
         report += f"""
 

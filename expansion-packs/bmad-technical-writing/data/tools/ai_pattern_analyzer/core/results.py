@@ -349,6 +349,25 @@ class AnalysisResults:
     subsection_uniform_count: Optional[int] = None  # Count of sections with 3-4 subsections (AI signature)
     subsection_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
 
+    # H4 subsection asymmetry analysis (H4 counts under each H3)
+    h4_counts: Optional[List[int]] = None  # H4 counts under each H3
+    h4_subsection_cv: Optional[float] = None  # Coefficient of variation for H4 distribution
+    h4_uniform_count: Optional[int] = None  # Count of H3 sections with 2-3 H4s (AI signature)
+    h4_assessment: Optional[str] = None  # EXCELLENT/GOOD/FAIR/POOR
+    h4_h3_sections_analyzed: Optional[int] = None  # Number of H3 sections analyzed for H4 distribution
+
+    # Multi-level combined structure score (research-backed domain-specific analysis)
+    combined_structure_score: Optional[float] = None  # Combined weighted score (0-24 max)
+    combined_structure_assessment: Optional[str] = None  # Overall assessment
+    combined_structure_domain: Optional[str] = None  # Domain used for thresholds (academic/technical/etc)
+    combined_structure_prob_human: Optional[float] = None  # Probability of human authorship (0-1)
+    combined_h2_score: Optional[float] = None  # H2 section length score
+    combined_h2_assessment: Optional[str] = None  # H2 assessment
+    combined_h3_score: Optional[float] = None  # H3 subsection count score
+    combined_h3_assessment: Optional[str] = None  # H3 assessment
+    combined_h4_score: Optional[float] = None  # H4 subsection count score
+    combined_h4_assessment: Optional[str] = None  # H4 assessment
+
     # Heading depth variance analysis
     heading_transitions: Optional[Dict[str, int]] = None  # Transition counts (e.g., H1→H2: 5)
     heading_depth_pattern: Optional[str] = None  # VARIED/SEQUENTIAL/RIGID
