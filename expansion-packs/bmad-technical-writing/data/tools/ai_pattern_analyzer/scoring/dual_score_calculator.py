@@ -229,18 +229,454 @@ def calculate_dual_score(results: AnalysisResults,
         recommendation="Reduce em-dashes to ≤2 per page, reduce bold/italic density" if format_val < 0.75 else None
     )
 
-    # Create simplified core category for now (full implementation in original has many more dimensions)
-    core_category = ScoreCategory(
-        name="Core Patterns",
-        total=burst_score.score + perp_score.score + format_score.score,
-        max_total=30.0,  # Simplified - full version has 74 points
-        percentage=((burst_score.score + perp_score.score + format_score.score) / 30.0) * 100,
-        dimensions=[burst_score, perp_score, format_score]
+    # Voice & Authenticity (10 points)
+    voice_val = score_map[results.voice_score]
+    voice_score = ScoreDimension(
+        name="Voice & Authenticity",
+        score=voice_val * 10,
+        max_score=10.0,
+        percentage=voice_val * 100,
+        impact=_calculate_impact(voice_val, 10.0),
+        gap=(1.0 - voice_val) * 10,
+        raw_value=results.first_person_count,
+        recommendation="Add personal perspective, contractions, direct address" if voice_val < 0.75 else None
     )
 
-    # Simplified supporting and phase3 categories
-    supporting_category = ScoreCategory(name="Supporting Indicators", total=0, max_total=0, percentage=0, dimensions=[])
-    phase3_category = ScoreCategory(name="Phase 3 Advanced", total=0, max_total=0, percentage=0, dimensions=[])
+    # Structure & Organization (8 points)
+    structure_val = score_map[results.structure_score]
+    structure_score = ScoreDimension(
+        name="Structure & Organization",
+        score=structure_val * 8,
+        max_score=8.0,
+        percentage=structure_val * 100,
+        impact=_calculate_impact(structure_val, 8.0),
+        gap=(1.0 - structure_val) * 8,
+        raw_value=results.formulaic_transitions_count,
+        recommendation="Reduce formulaic transitions, vary heading depth" if structure_val < 0.75 else None
+    )
+
+    # Technical Depth (6 points)
+    technical_val = score_map[results.technical_score]
+    technical_score = ScoreDimension(
+        name="Technical Depth",
+        score=technical_val * 6,
+        max_score=6.0,
+        percentage=technical_val * 100,
+        impact=_calculate_impact(technical_val, 6.0),
+        gap=(1.0 - technical_val) * 6,
+        raw_value=results.domain_terms_count,
+        recommendation="Increase domain-specific terminology" if technical_val < 0.75 else None
+    )
+
+    # Bold/Italic Patterns (6 points)
+    bold_italic_val = score_map[results.bold_italic_score]
+    bold_italic_score = ScoreDimension(
+        name="Bold/Italic Patterns",
+        score=bold_italic_val * 6,
+        max_score=6.0,
+        percentage=bold_italic_val * 100,
+        impact=_calculate_impact(bold_italic_val, 6.0),
+        gap=(1.0 - bold_italic_val) * 6,
+        raw_value=results.bold_per_1k_words,
+        recommendation="Reduce bold density to 1-5 per 1k words" if bold_italic_val < 0.75 else None
+    )
+
+    # List Usage Patterns (4 points)
+    list_usage_val = score_map[results.list_usage_score]
+    list_usage_score = ScoreDimension(
+        name="List Usage Patterns",
+        score=list_usage_val * 4,
+        max_score=4.0,
+        percentage=list_usage_val * 100,
+        impact=_calculate_impact(list_usage_val, 4.0),
+        gap=(1.0 - list_usage_val) * 4,
+        raw_value=results.total_list_items,
+        recommendation="Adjust list patterns and distribution" if list_usage_val < 0.75 else None
+    )
+
+    # Punctuation Clustering (4 points)
+    punctuation_val = score_map[results.punctuation_score]
+    punctuation_score = ScoreDimension(
+        name="Punctuation Clustering",
+        score=punctuation_val * 4,
+        max_score=4.0,
+        percentage=punctuation_val * 100,
+        impact=_calculate_impact(punctuation_val, 4.0),
+        gap=(1.0 - punctuation_val) * 4,
+        raw_value=results.em_dash_cascading_score,
+        recommendation="Break punctuation patterns (em-dash cascading, Oxford consistency)" if punctuation_val < 0.75 else None
+    )
+
+    # Whitespace Patterns (4 points)
+    whitespace_val = score_map[results.whitespace_score]
+    whitespace_score = ScoreDimension(
+        name="Whitespace Patterns",
+        score=whitespace_val * 4,
+        max_score=4.0,
+        percentage=whitespace_val * 100,
+        impact=_calculate_impact(whitespace_val, 4.0),
+        gap=(1.0 - whitespace_val) * 4,
+        raw_value=results.paragraph_uniformity_score,
+        recommendation="Increase paragraph length variation" if whitespace_val < 0.75 else None
+    )
+
+    # Heading Hierarchy (2 points)
+    heading_hierarchy_val = score_map[results.heading_hierarchy_score]
+    heading_hierarchy_score = ScoreDimension(
+        name="Heading Hierarchy",
+        score=heading_hierarchy_val * 2,
+        max_score=2.0,
+        percentage=heading_hierarchy_val * 100,
+        impact=_calculate_impact(heading_hierarchy_val, 2.0),
+        gap=(1.0 - heading_hierarchy_val) * 2,
+        raw_value=results.heading_strict_adherence,
+        recommendation="Add occasional hierarchy skips (H2→H4)" if heading_hierarchy_val < 0.75 else None
+    )
+
+    core_category = ScoreCategory(
+        name="Core Patterns",
+        total=(burst_score.score + perp_score.score + format_score.score + voice_score.score +
+               structure_score.score + technical_score.score + bold_italic_score.score +
+               list_usage_score.score + punctuation_score.score + whitespace_score.score +
+               heading_hierarchy_score.score),
+        max_total=74.0,
+        percentage=((burst_score.score + perp_score.score + format_score.score + voice_score.score +
+                    structure_score.score + technical_score.score + bold_italic_score.score +
+                    list_usage_score.score + punctuation_score.score + whitespace_score.score +
+                    heading_hierarchy_score.score) / 74.0) * 100,
+        dimensions=[burst_score, perp_score, format_score, voice_score, structure_score,
+                   technical_score, bold_italic_score, list_usage_score, punctuation_score,
+                   whitespace_score, heading_hierarchy_score]
+    )
+
+    # ============================================================================
+    # TIER 3: SUPPORTING INDICATORS (46 points)
+    # ============================================================================
+
+    # Lexical Diversity - Basic (6 points)
+    lexical_div_val = min(1.0, results.lexical_diversity / 0.50) if results.lexical_diversity else 0.5
+    lexical_div_score = ScoreDimension(
+        name="Lexical Diversity (Basic)",
+        score=lexical_div_val * 6,
+        max_score=6.0,
+        percentage=lexical_div_val * 100,
+        impact=_calculate_impact(lexical_div_val, 6.0),
+        gap=(1.0 - lexical_div_val) * 6,
+        raw_value=results.lexical_diversity,
+        recommendation="Increase vocabulary richness (target: >0.50)" if lexical_div_val < 0.75 else None
+    )
+
+    # MTLD Score (6 points)
+    mtld_val = 0.5  # Default
+    if results.mtld_score:
+        if results.mtld_score >= 160:
+            mtld_val = 1.0
+        elif results.mtld_score >= 120:
+            mtld_val = 0.75
+        elif results.mtld_score >= 80:
+            mtld_val = 0.5
+        else:
+            mtld_val = 0.25
+    mtld_dim = ScoreDimension(
+        name="MTLD (Vocabulary Variation)",
+        score=mtld_val * 6,
+        max_score=6.0,
+        percentage=mtld_val * 100,
+        impact=_calculate_impact(mtld_val, 6.0),
+        gap=(1.0 - mtld_val) * 6,
+        raw_value=results.mtld_score,
+        recommendation="Improve MTLD score (target: ≥160)" if mtld_val < 0.75 else None
+    )
+
+    # Syntactic Repetition (4 points)
+    syntactic_rep_val = 0.5  # Default
+    if results.syntactic_repetition_score is not None:
+        if results.syntactic_repetition_score <= 0.010:
+            syntactic_rep_val = 1.0
+        elif results.syntactic_repetition_score <= 0.015:
+            syntactic_rep_val = 0.75
+        elif results.syntactic_repetition_score <= 0.020:
+            syntactic_rep_val = 0.5
+        else:
+            syntactic_rep_val = 0.25
+    syntactic_rep_dim = ScoreDimension(
+        name="Syntactic Repetition",
+        score=syntactic_rep_val * 4,
+        max_score=4.0,
+        percentage=syntactic_rep_val * 100,
+        impact=_calculate_impact(syntactic_rep_val, 4.0),
+        gap=(1.0 - syntactic_rep_val) * 4,
+        raw_value=results.syntactic_repetition_score,
+        recommendation="Reduce structural repetition (target: ≤0.010)" if syntactic_rep_val < 0.75 else None
+    )
+
+    # Paragraph CV (6 points)
+    para_cv_val = 0.5  # Default
+    if results.paragraph_cv_assessment == "EXCELLENT":
+        para_cv_val = 1.0
+    elif results.paragraph_cv_assessment == "GOOD":
+        para_cv_val = 0.75
+    elif results.paragraph_cv_assessment == "FAIR":
+        para_cv_val = 0.42
+    elif results.paragraph_cv_assessment == "POOR":
+        para_cv_val = 0.25
+    para_cv_dim = ScoreDimension(
+        name="Paragraph Length Variance",
+        score=para_cv_val * 6,
+        max_score=6.0,
+        percentage=para_cv_val * 100,
+        impact=_calculate_impact(para_cv_val, 6.0),
+        gap=(1.0 - para_cv_val) * 6,
+        raw_value=results.paragraph_cv,
+        recommendation="Increase paragraph length variation (CV target: >0.60)" if para_cv_val < 0.75 else None
+    )
+
+    # Section Variance (6 points)
+    section_var_val = 0.5  # Default
+    if results.section_variance_assessment == "EXCELLENT":
+        section_var_val = 1.0
+    elif results.section_variance_assessment == "GOOD":
+        section_var_val = 0.75
+    elif results.section_variance_assessment == "FAIR":
+        section_var_val = 0.42
+    elif results.section_variance_assessment in ["POOR", "INSUFFICIENT_DATA"]:
+        section_var_val = 0.25
+    section_var_dim = ScoreDimension(
+        name="H2 Section Length Variance",
+        score=section_var_val * 6,
+        max_score=6.0,
+        percentage=section_var_val * 100,
+        impact=_calculate_impact(section_var_val, 6.0),
+        gap=(1.0 - section_var_val) * 6,
+        raw_value=results.section_variance_pct,
+        recommendation="Vary H2 section lengths (target: 40%+ variance)" if section_var_val < 0.75 else None
+    )
+
+    # List Depth (4 points)
+    list_depth_val = 0.5  # Default
+    if results.list_depth_assessment == "EXCELLENT":
+        list_depth_val = 1.0
+    elif results.list_depth_assessment == "GOOD":
+        list_depth_val = 0.75
+    elif results.list_depth_assessment == "FAIR":
+        list_depth_val = 0.42
+    elif results.list_depth_assessment == "POOR":
+        list_depth_val = 0.25
+    list_depth_dim = ScoreDimension(
+        name="List Nesting Depth",
+        score=list_depth_val * 4,
+        max_score=4.0,
+        percentage=list_depth_val * 100,
+        impact=_calculate_impact(list_depth_val, 4.0),
+        gap=(1.0 - list_depth_val) * 4,
+        raw_value=results.list_max_depth,
+        recommendation="Adjust list nesting (target: 2-3 levels)" if list_depth_val < 0.75 else None
+    )
+
+    # H3/H4 Subsection Asymmetry (6 points)
+    h3_val = 0.5  # Default
+    if results.subsection_assessment == "EXCELLENT":
+        h3_val = 1.0
+    elif results.subsection_assessment == "GOOD":
+        h3_val = 0.75
+    elif results.subsection_assessment == "FAIR":
+        h3_val = 0.42
+    elif results.subsection_assessment in ["POOR", "INSUFFICIENT_DATA"]:
+        h3_val = 0.25
+
+    h4_val = 0.5  # Default
+    if results.h4_assessment == "EXCELLENT":
+        h4_val = 1.0
+    elif results.h4_assessment == "GOOD":
+        h4_val = 0.75
+    elif results.h4_assessment == "FAIR":
+        h4_val = 0.42
+    elif results.h4_assessment in ["POOR", "INSUFFICIENT_DATA"]:
+        h4_val = 0.25
+
+    subsection_asym_val = (h3_val + h4_val) / 2
+    subsection_asym_dim = ScoreDimension(
+        name="H3/H4 Subsection Asymmetry",
+        score=subsection_asym_val * 6,
+        max_score=6.0,
+        percentage=subsection_asym_val * 100,
+        impact=_calculate_impact(subsection_asym_val, 6.0),
+        gap=(1.0 - subsection_asym_val) * 6,
+        raw_value=results.subsection_cv,
+        recommendation="Vary subsection counts (break uniform 3-4 pattern)" if subsection_asym_val < 0.75 else None
+    )
+
+    # Heading Length Variance (4 points)
+    heading_length_val = 0.5  # Default
+    if results.heading_length_assessment == "EXCELLENT":
+        heading_length_val = 1.0
+    elif results.heading_length_assessment == "GOOD":
+        heading_length_val = 0.75
+    elif results.heading_length_assessment == "FAIR":
+        heading_length_val = 0.42
+    elif results.heading_length_assessment == "POOR":
+        heading_length_val = 0.25
+    heading_length_dim = ScoreDimension(
+        name="Heading Length Variance",
+        score=heading_length_val * 4,
+        max_score=4.0,
+        percentage=heading_length_val * 100,
+        impact=_calculate_impact(heading_length_val, 4.0),
+        gap=(1.0 - heading_length_val) * 4,
+        raw_value=getattr(results, 'heading_length_variance', None),
+        recommendation="Vary heading lengths (avoid uniform word counts)" if heading_length_val < 0.75 else None
+    )
+
+    # Heading Depth Navigation (4 points)
+    heading_depth_val = 0.5  # Default
+    if results.heading_depth_assessment == "VARIED":
+        heading_depth_val = 1.0
+    elif results.heading_depth_assessment == "SEQUENTIAL":
+        heading_depth_val = 0.5
+    elif results.heading_depth_assessment == "RIGID":
+        heading_depth_val = 0.25
+    heading_depth_dim = ScoreDimension(
+        name="Heading Depth Navigation",
+        score=heading_depth_val * 4,
+        max_score=4.0,
+        percentage=heading_depth_val * 100,
+        impact=_calculate_impact(heading_depth_val, 4.0),
+        gap=(1.0 - heading_depth_val) * 4,
+        raw_value=getattr(results, 'heading_depth_transitions', None),
+        recommendation="Add lateral moves (H3→H3) and occasional jumps" if heading_depth_val < 0.75 else None
+    )
+
+    supporting_category = ScoreCategory(
+        name="Supporting Indicators",
+        total=(lexical_div_score.score + mtld_dim.score + syntactic_rep_dim.score +
+               para_cv_dim.score + section_var_dim.score + list_depth_dim.score +
+               subsection_asym_dim.score + heading_length_dim.score + heading_depth_dim.score),
+        max_total=46.0,
+        percentage=((lexical_div_score.score + mtld_dim.score + syntactic_rep_dim.score +
+                    para_cv_dim.score + section_var_dim.score + list_depth_dim.score +
+                    subsection_asym_dim.score + heading_length_dim.score + heading_depth_dim.score) / 46.0) * 100,
+        dimensions=[lexical_div_score, mtld_dim, syntactic_rep_dim, para_cv_dim, section_var_dim,
+                   list_depth_dim, subsection_asym_dim, heading_length_dim, heading_depth_dim]
+    )
+
+    # ============================================================================
+    # TIER 4: PHASE 3 ADVANCED (10 points) - AST-based patterns
+    # ============================================================================
+
+    # Blockquote Clustering (3 points)
+    blockquote_val = 0.5  # Default
+    if results.blockquote_assessment == "EXCELLENT":
+        blockquote_val = 1.0
+    elif results.blockquote_assessment == "GOOD":
+        blockquote_val = 0.75
+    elif results.blockquote_assessment == "FAIR":
+        blockquote_val = 0.42
+    elif results.blockquote_assessment == "POOR":
+        blockquote_val = 0.25
+    blockquote_dim = ScoreDimension(
+        name="Blockquote Distribution",
+        score=blockquote_val * 3 if results.blockquote_assessment else 1.5,  # Neutral if not analyzed
+        max_score=3.0,
+        percentage=blockquote_val * 100 if results.blockquote_assessment else 50,
+        impact=_calculate_impact(blockquote_val, 3.0),
+        gap=(1.0 - blockquote_val) * 3 if results.blockquote_assessment else 1.5,
+        raw_value=results.blockquote_score,
+        recommendation="Reduce section-start clustering" if blockquote_val < 0.75 and results.blockquote_assessment else None
+    )
+
+    # Link Anchor Patterns (2 points)
+    link_anchor_val = 0.5  # Default
+    if results.link_anchor_assessment == "EXCELLENT":
+        link_anchor_val = 1.0
+    elif results.link_anchor_assessment == "GOOD":
+        link_anchor_val = 0.75
+    elif results.link_anchor_assessment == "FAIR":
+        link_anchor_val = 0.42
+    elif results.link_anchor_assessment == "POOR":
+        link_anchor_val = 0.25
+    link_anchor_dim = ScoreDimension(
+        name="Link Anchor Text",
+        score=link_anchor_val * 2 if results.link_anchor_assessment else 1.0,  # Neutral if not analyzed
+        max_score=2.0,
+        percentage=link_anchor_val * 100 if results.link_anchor_assessment else 50,
+        impact=_calculate_impact(link_anchor_val, 2.0),
+        gap=(1.0 - link_anchor_val) * 2 if results.link_anchor_assessment else 1.0,
+        raw_value=results.link_anchor_score,
+        recommendation="Replace generic anchors with descriptive text" if link_anchor_val < 0.75 and results.link_anchor_assessment else None
+    )
+
+    # Punctuation Spacing (2 points)
+    punct_spacing_val = 0.5  # Default
+    if results.punctuation_spacing_assessment == "EXCELLENT":
+        punct_spacing_val = 1.0
+    elif results.punctuation_spacing_assessment == "GOOD":
+        punct_spacing_val = 0.75
+    elif results.punctuation_spacing_assessment == "FAIR":
+        punct_spacing_val = 0.42
+    elif results.punctuation_spacing_assessment == "POOR":
+        punct_spacing_val = 0.25
+    punct_spacing_dim = ScoreDimension(
+        name="Punctuation Spacing",
+        score=punct_spacing_val * 2 if results.punctuation_spacing_assessment else 1.0,  # Neutral if not analyzed
+        max_score=2.0,
+        percentage=punct_spacing_val * 100 if results.punctuation_spacing_assessment else 50,
+        impact=_calculate_impact(punct_spacing_val, 2.0),
+        gap=(1.0 - punct_spacing_val) * 2 if results.punctuation_spacing_assessment else 1.0,
+        raw_value=results.punctuation_spacing_score,
+        recommendation="Vary punctuation spacing patterns" if punct_spacing_val < 0.75 and results.punctuation_spacing_assessment else None
+    )
+
+    # List AST Symmetry (2 points)
+    list_ast_val = 0.5  # Default
+    if results.list_ast_assessment == "EXCELLENT":
+        list_ast_val = 1.0
+    elif results.list_ast_assessment == "GOOD":
+        list_ast_val = 0.75
+    elif results.list_ast_assessment == "FAIR":
+        list_ast_val = 0.42
+    elif results.list_ast_assessment == "POOR":
+        list_ast_val = 0.25
+    list_ast_dim = ScoreDimension(
+        name="List Symmetry (AST)",
+        score=list_ast_val * 2 if results.list_ast_assessment else 1.0,  # Neutral if not analyzed
+        max_score=2.0,
+        percentage=list_ast_val * 100 if results.list_ast_assessment else 50,
+        impact=_calculate_impact(list_ast_val, 2.0),
+        gap=(1.0 - list_ast_val) * 2 if results.list_ast_assessment else 1.0,
+        raw_value=results.list_ast_score,
+        recommendation="Break symmetric list patterns" if list_ast_val < 0.75 and results.list_ast_assessment else None
+    )
+
+    # Code AST Patterns (1 point)
+    code_ast_val = 0.5  # Default
+    if results.code_ast_assessment == "EXCELLENT":
+        code_ast_val = 1.0
+    elif results.code_ast_assessment == "GOOD":
+        code_ast_val = 0.75
+    elif results.code_ast_assessment == "FAIR":
+        code_ast_val = 0.42
+    elif results.code_ast_assessment == "POOR":
+        code_ast_val = 0.25
+    code_ast_dim = ScoreDimension(
+        name="Code Block Patterns",
+        score=code_ast_val * 1 if results.code_ast_assessment else 0.5,  # Neutral if not analyzed
+        max_score=1.0,
+        percentage=code_ast_val * 100 if results.code_ast_assessment else 50,
+        impact=_calculate_impact(code_ast_val, 1.0),
+        gap=(1.0 - code_ast_val) * 1 if results.code_ast_assessment else 0.5,
+        raw_value=results.code_ast_score,
+        recommendation="Improve code block language declarations" if code_ast_val < 0.75 and results.code_ast_assessment else None
+    )
+
+    phase3_category = ScoreCategory(
+        name="Phase 3 Advanced",
+        total=(blockquote_dim.score + link_anchor_dim.score + punct_spacing_dim.score +
+               list_ast_dim.score + code_ast_dim.score),
+        max_total=10.0,
+        percentage=((blockquote_dim.score + link_anchor_dim.score + punct_spacing_dim.score +
+                    list_ast_dim.score + code_ast_dim.score) / 10.0) * 100,
+        dimensions=[blockquote_dim, link_anchor_dim, punct_spacing_dim, list_ast_dim, code_ast_dim]
+    )
 
     # ============================================================================
     # CALCULATE OVERALL SCORES
@@ -351,15 +787,32 @@ def _calculate_impact(current_val: float, max_points: float) -> str:
 def _estimate_effort(dimension_name: str, gap: float) -> str:
     """Estimate effort required to close gap."""
     # Some dimensions are easier to fix than others
-    easy_fixes = ["Formatting Patterns", "Stylometric Markers", "Heading Hierarchy"]
-    medium_fixes = ["Burstiness (Sentence Variation)", "Perplexity (Vocabulary)", "Structure & Organization"]
-    hard_fixes = ["GLTR Token Ranking", "Advanced Lexical (HDD/Yule's K)", "Syntactic Complexity"]
+    easy_fixes = [
+        "Formatting Patterns", "Stylometric Markers", "Heading Hierarchy",
+        "Bold/Italic Patterns", "Punctuation Clustering", "Whitespace Patterns",
+        "Blockquote Distribution", "Link Anchor Text", "Punctuation Spacing",
+        "List Symmetry (AST)", "Code Block Patterns"
+    ]
+    medium_fixes = [
+        "Burstiness (Sentence Variation)", "Perplexity (Vocabulary)",
+        "Structure & Organization", "Voice & Authenticity", "Technical Depth",
+        "List Usage Patterns", "List Nesting Depth", "Heading Length Variance",
+        "Heading Depth Navigation", "Paragraph Length Variance",
+        "H2 Section Length Variance", "H3/H4 Subsection Asymmetry"
+    ]
+    hard_fixes = [
+        "GLTR Token Ranking", "Advanced Lexical (HDD/Yule's K)",
+        "Syntactic Complexity", "MATTR (Lexical Richness)",
+        "RTTR (Global Diversity)", "AI Detection Ensemble",
+        "Multi-Model Perplexity Consensus", "Lexical Diversity (Basic)",
+        "MTLD (Vocabulary Variation)", "Syntactic Repetition"
+    ]
 
     if dimension_name in easy_fixes:
         return "LOW" if gap < 3 else "MEDIUM"
     elif dimension_name in medium_fixes:
         return "MEDIUM" if gap < 4 else "HIGH"
-    else:  # hard_fixes
+    else:  # hard_fixes or unknown
         return "HIGH"
 
 
