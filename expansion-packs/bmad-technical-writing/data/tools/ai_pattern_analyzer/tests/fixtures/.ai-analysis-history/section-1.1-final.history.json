@@ -2,7 +2,16 @@
   "file_path": "ai_pattern_analyzer/tests/fixtures/section-1.1-final.md",
   "scores": [
     {
-      "timestamp": "2025-11-02T20:59:13.589329",
+      "timestamp": "2025-11-02T21:21:04.367866",
+      "detection_risk": 40.2,
+      "quality_score": 59.8,
+      "detection_interpretation": "MEDIUM - May be flagged",
+      "quality_interpretation": "MIXED - Needs moderate work",
+      "total_words": 5108,
+      "notes": ""
+    },
+    {
+      "timestamp": "2025-11-02T21:22:32.987328",
       "detection_risk": 40.2,
       "quality_score": 59.8,
       "detection_interpretation": "MEDIUM - May be flagged",

@@ -35,7 +35,7 @@ def calculate_dual_score(results: AnalysisResults,
     - Tier 1: Advanced Detection (70 points) - Highest accuracy metrics
     - Tier 2: Core Patterns (74 points) - Proven AI signatures
     - Tier 3: Supporting Indicators (46 points) - Context and quality
-    - Tier 4: Phase 3 Advanced Structure (10 points) - AST-based patterns
+    - Tier 4: Advanced Structural Patterns (10 points) - AST-based patterns
 
     Args:
         results: AnalysisResults from analysis
@@ -669,7 +669,7 @@ def calculate_dual_score(results: AnalysisResults,
     )
 
     phase3_category = ScoreCategory(
-        name="Phase 3 Advanced",
+        name="Advanced Structural Patterns",
         total=(blockquote_dim.score + link_anchor_dim.score + punct_spacing_dim.score +
                list_ast_dim.score + code_ast_dim.score),
         max_total=10.0,

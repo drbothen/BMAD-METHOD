@@ -28,8 +28,16 @@ import textstat
 
 
 def format_dual_score_report(dual_score: DualScore, history: Optional[ScoreHistory] = None,
-                             output_format: str = 'text') -> str:
-    """Format dual score report with optimization path"""
+                             output_format: str = 'text', as_detailed_section: bool = False) -> str:
+    """
+    Format dual score report with optimization path.
+
+    Args:
+        dual_score: DualScore object with scoring data
+        history: Optional score history for trend analysis
+        output_format: Output format ('text' or 'json')
+        as_detailed_section: If True, formats as continuation of standard report (skips header)
+    """
 
     if output_format == 'json':
         # Convert to dict for JSON serialization
@@ -62,7 +70,23 @@ def format_dual_score_report(dual_score: DualScore, history: Optional[ScoreHisto
         return json.dumps(data, indent=2)
 
     else:  # text format
-        report = f"""
+        if as_detailed_section:
+            # Format as continuation of standard report (no redundant header)
+            report = f"""
+{'─' * 80}
+COMPLETE DUAL SCORE BREAKDOWN
+{'─' * 80}
+
+Quality Score:      {dual_score.quality_score:5.1f} / 100  {dual_score.quality_interpretation}
+Detection Risk:     {dual_score.detection_risk:5.1f} / 100  {dual_score.detection_interpretation}
+Targets:            Quality ≥{dual_score.quality_target:.0f}, Detection ≤{dual_score.detection_target:.0f}
+Gap to Target:      {dual_score.quality_gap:+.1f} pts quality, {-dual_score.detection_gap:+.1f} pts detection
+Effort Required:    {dual_score.estimated_effort}
+
+"""
+        else:
+            # Standalone report (with full header)
+            report = f"""
 {'=' * 80}
 DUAL SCORE ANALYSIS - OPTIMIZATION REPORT
 {'=' * 80}
