@@ -64,6 +64,22 @@ Examples:
     parser.add_argument('--quality-target', type=float, default=85.0, metavar='N',
                         help='Target quality score (0-100, higher=better, default: 85.0)')
 
+    # History tracking and visualization (v2.0)
+    parser.add_argument('--show-history', action='store_true',
+                        help='Show aggregate score trends (quality/detection)')
+    parser.add_argument('--show-history-full', action='store_true',
+                        help='Show complete optimization journey with all iterations')
+    parser.add_argument('--show-dimension-trends', action='store_true',
+                        help='Show trends for all dimensions (v2.0 data required)')
+    parser.add_argument('--show-raw-metric-trends', action='store_true',
+                        help='Show raw metric trends with sparklines (v2.0 data required)')
+    parser.add_argument('--compare-history', type=str, metavar='I1,I2',
+                        help='Compare two iterations (e.g., "first,last" or "1,5")')
+    parser.add_argument('--export-history', type=str, choices=['csv', 'json'], metavar='FORMAT',
+                        help='Export history to CSV or JSON format')
+    parser.add_argument('--history-notes', type=str, default="", metavar='NOTES',
+                        help='Add notes for this iteration (e.g., "Fixed AI vocabulary")')
+
     args = parser.parse_args()
 
     # Validate inputs
