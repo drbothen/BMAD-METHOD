@@ -415,6 +415,13 @@ class AIPatternAnalyzer:
             metrics['yules_k'] = adv_lex.get('yules_k')
             metrics['advanced_lexical_score'] = "HIGH" if adv_lex.get('hdd', 0) > 0.65 else "LOW"
 
+        # MATTR/RTTR metrics (textacy-based advanced lexical diversity)
+        if advanced_results.get('available'):
+            metrics['mattr'] = advanced_results.get('mattr')
+            metrics['mattr_assessment'] = advanced_results.get('mattr_assessment')
+            metrics['rttr'] = advanced_results.get('rttr')
+            metrics['rttr_assessment'] = advanced_results.get('rttr_assessment')
+
         # Formatting metrics (Phase 3 enhancements)
         if formatting_results:
             # Bold/italic patterns
