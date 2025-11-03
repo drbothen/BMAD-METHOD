@@ -354,7 +354,8 @@ class AIPatternAnalyzer:
             # Enhanced metrics from dimension analyzers
             **self._flatten_optional_metrics(syntactic_results, lexical_results,
                                              stylometric_results, advanced_results,
-                                             formatting_results, burstiness_results)
+                                             formatting_results, burstiness_results,
+                                             structure_results)
         )
 
         # Calculate all dimension scores
@@ -384,7 +385,8 @@ class AIPatternAnalyzer:
 
     def _flatten_optional_metrics(self, syntactic_results, lexical_results,
                                   stylometric_results, advanced_results,
-                                  formatting_results=None, burstiness_results=None) -> Dict:
+                                  formatting_results=None, burstiness_results=None,
+                                  structure_results=None) -> Dict:
         """Flatten optional metrics from dimension analyzers into flat dict for AnalysisResults."""
         metrics = {}
 
@@ -430,6 +432,7 @@ class AIPatternAnalyzer:
                 metrics['unordered_list_items'] = list_usage.get('unordered_items', 0)
                 metrics['list_to_text_ratio'] = list_usage.get('list_to_text_ratio', 0.0)
                 metrics['ordered_to_unordered_ratio'] = list_usage.get('ordered_to_unordered_ratio', 0.0)
+                metrics['list_item_length_variance'] = list_usage.get('list_item_variance', 0.0)
 
             # Punctuation clustering
             if formatting_results.get('punctuation_clustering'):
@@ -443,13 +446,45 @@ class AIPatternAnalyzer:
                 whitespace = formatting_results['whitespace_patterns']
                 metrics['paragraph_length_variance'] = whitespace.get('paragraph_variance', 0.0)
                 metrics['paragraph_uniformity_score'] = whitespace.get('paragraph_uniformity', 0.0)
+                metrics['blank_lines_count'] = whitespace.get('blank_lines', 0)
+                metrics['text_density'] = whitespace.get('text_density', 0.0)
 
         # Burstiness metrics (paragraph CV from Phase 1)
         if burstiness_results and burstiness_results.get('paragraph_cv'):
             para_cv = burstiness_results['paragraph_cv']
             metrics['paragraph_cv'] = para_cv.get('cv', 0.0)
+            metrics['paragraph_cv_mean'] = para_cv.get('mean_length', 0.0)
+            metrics['paragraph_cv_stddev'] = para_cv.get('stddev', 0.0)
             metrics['paragraph_cv_score'] = para_cv.get('score', 0.0)
             metrics['paragraph_cv_assessment'] = para_cv.get('assessment', 'UNKNOWN')
+            metrics['paragraph_count'] = para_cv.get('paragraph_count', 0)
+
+        # Structure metrics (Phase 1 & 3)
+        if structure_results:
+            # Section variance
+            if structure_results.get('section_variance'):
+                sec_var = structure_results['section_variance']
+                metrics['section_variance_pct'] = sec_var.get('variance_pct', 0.0)
+                metrics['section_variance_score'] = sec_var.get('score', 0.0)
+                metrics['section_variance_assessment'] = sec_var.get('assessment', 'UNKNOWN')
+                metrics['section_count'] = sec_var.get('section_count', 0)
+                metrics['section_uniform_clusters'] = sec_var.get('uniform_clusters', 0)
+
+            # List nesting depth
+            if structure_results.get('list_nesting'):
+                list_nest = structure_results['list_nesting']
+                metrics['list_max_depth'] = list_nest.get('max_depth', 0)
+                metrics['list_avg_depth'] = list_nest.get('avg_depth', 0.0)
+                metrics['list_total_items'] = list_nest.get('total_list_items', 0)
+                metrics['list_depth_assessment'] = list_nest.get('assessment', 'UNKNOWN')
+                metrics['list_depth_score'] = list_nest.get('score', 0.0)
+
+            # Heading hierarchy enhanced (includes length variance)
+            if structure_results.get('heading_hierarchy_enhanced'):
+                head_hier = structure_results['heading_hierarchy_enhanced']
+                metrics['heading_hierarchy_skips'] = head_hier.get('hierarchy_skips', 0)
+                metrics['heading_length_variance'] = head_hier.get('heading_length_variance', 0.0)
+                metrics['heading_strict_adherence'] = head_hier.get('hierarchy_adherence', 0.0)
 
         return metrics
 
