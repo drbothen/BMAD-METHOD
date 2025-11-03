@@ -40,6 +40,7 @@ nlp_spacy = spacy.load('en_core_web_sm')
 
 import textacy
 from textacy import text_stats
+from textacy.text_stats import diversity
 
 
 # Global model instances (lazy loading)
@@ -315,12 +316,18 @@ class AdvancedAnalyzer(DimensionAnalyzer):
             # Process with spaCy
             doc = nlp_spacy(text_clean[:100000])  # Limit for performance
 
-            # Calculate MATTR (window size 100 is research-validated)
+            # Calculate MATTR (segment size 100 is research-validated)
+            # Using textacy's segmented_ttr with moving-avg variant (MATTR)
             try:
-                mattr = text_stats.mattr(doc, window_size=100)
-            except Exception:
-                # Fallback if text too short for window size 100
-                mattr = 0.0
+                mattr = diversity.segmented_ttr(doc, segment_size=100, variant='moving-avg')
+            except Exception as e:
+                # Fallback if text too short for segment size 100
+                print(f"Warning: MATTR calculation failed, trying smaller segment: {e}", file=sys.stderr)
+                try:
+                    # Try smaller segment size
+                    mattr = diversity.segmented_ttr(doc, segment_size=50, variant='moving-avg')
+                except Exception:
+                    mattr = 0.0
 
             # Calculate RTTR
             # Count only alphabetic tokens for consistency
