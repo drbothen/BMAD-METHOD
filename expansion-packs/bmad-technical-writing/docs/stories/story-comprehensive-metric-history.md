@@ -1,15 +1,55 @@
 # Story: Comprehensive Metric History Tracking
 
+> **📝 UPDATED Nov 2025**: This story has been updated via **complete codebase scan** of all ai_pattern_analyzer files to reflect actual implementation state:
+>
+> - ✅ Modular refactoring (BMAD-TW-REFACTOR-001) is **COMPLETE**
+> - ✅ All line counts verified (analyzer: 989 lines, results: 466 lines, dual_score_calculator: 847 lines, formatters: 1,531 lines)
+> - ✅ **33 dimensions** across 4 tiers confirmed (Tier 1: 8 dims/70pts, Tier 2: 11 dims/74pts, Tier 3: 9 dims/46pts, Tier 4: 5 dims/10pts = 200 quality points)
+> - ⚠️ **FOUND**: domain_thresholds.py (431 lines) provides domain-aware scoring (ACADEMIC/TECHNICAL/BUSINESS/TUTORIAL/GENERAL)
+> - ⚠️ **FOUND**: Outdated header comment in dual_score_calculator.py (says "22 dimensions/174 points" but implements 33/200)
+> - ⚠️ **FOUND**: history/export.py contains only NotImplementedError stubs (45 lines) - needs full implementation
+> - ✅ History v1.0 is basic (86 lines, aggregate scores only) - v2.0 enhancement is the focus of THIS story
+
 **Story ID:** BMAD-TW-DETECT-005
 **Epic:** AI Pattern Detection Enhancement
 **Priority:** HIGH
 **Estimated Effort:** 2-3 hours
 **Status:** Ready for Development
-**Depends On:** BMAD-TW-DUAL-001 (Dual Scoring System), BMAD-TW-REFACTOR-001 (Modularization)
+**Depends On:** BMAD-TW-DUAL-001 (Dual Scoring System) ✅, BMAD-TW-REFACTOR-001 (Modularization) ✅
 
 ## Story Overview
 
-As a **technical author optimizing AI-assisted content**, I want the score history to track ALL metrics (all 14 dimension scores + raw metric values) over time, so that I can understand exactly which changes had which impacts on which dimensions and validate that my optimization efforts are systematically improving the content.
+As a **technical author optimizing AI-assisted content**, I want the score history to track ALL metrics (all 33 dimension scores + raw metric values) over time, so that I can understand exactly which changes had which impacts on which dimensions and validate that my optimization efforts are systematically improving the content.
+
+**Note:** The system has evolved to include **33 dimensions across 4 tiers**:
+
+- **Tier 1 (Advanced Detection)**: 8 dimensions, 70 points - GLTR, MATTR, RTTR, AI detection, stylometric, etc.
+- **Tier 2 (Core Patterns)**: 11 dimensions, 74 points - Burstiness, perplexity, formatting, voice, etc.
+- **Tier 3 (Supporting Indicators)**: 9 dimensions, 46 points - Lexical diversity, paragraph variance, etc.
+- **Tier 4 (Advanced Structural)**: 5 dimensions, 10 points - Blockquotes, link anchors, AST patterns
+- **Total**: 200 quality points
+
+## Implementation Status (Nov 2025)
+
+**✅ Prerequisites Complete:**
+
+- Modular package structure fully implemented (BMAD-TW-REFACTOR-001)
+- 9 dimension analyzers extracted and working (perplexity, burstiness, structure, formatting, voice, syntactic, lexical, stylometric, advanced)
+- Dual score calculator fully functional (847 lines, 4-tier system with 200 quality points across 33 dimensions)
+- Basic history tracking (v1.0) working with aggregate scores only
+- Comprehensive test structure in place
+
+**📋 This Story Implements:**
+
+- Enhance `HistoricalScore` from v1.0 → v2.0 (add dimension scores, tier scores, raw metrics)
+- Implement `ScoreHistory.export_to_csv()` for data export
+- Create `history/trends.py` module for trend analysis and plateau detection
+- Add CLI arguments for history visualization (`--show-history-full`, `--compare-history`, etc.)
+- Implement backward compatibility with v1.0 history files
+- Add comprehensive dimension-level trend analysis
+
+**🎯 Ready to Start:**
+All dependencies are in place. The modular structure makes this enhancement straightforward - we're adding capabilities to the existing `history/` package without touching the working dimension analyzers.
 
 ## Business Value
 
@@ -39,7 +79,7 @@ Comprehensive metric tracking enables:
 **Success Metrics:**
 
 - Users can answer "what changed?" questions without re-running analysis
-- 100% of dimension trends visible in history output
+- 100% of dimension trends visible in history output (all 33 dimensions across 4 tiers)
 - Export to CSV enables custom analysis in Excel/Python
 - Historical reports show complete optimization journey
 - Trend visualization shows at-a-glance progress across all dimensions
@@ -53,8 +93,8 @@ Comprehensive metric tracking enables:
 **Then** it should capture:
 
 - [x] **Aggregate scores**: quality_score, detection_risk (existing)
-- [x] **All 14 dimension scores**: GLTR, lexical diversity, AI detection ensemble, etc.
-- [x] **All category scores**: Tier 1 (Advanced Detection), Tier 2 (Core Patterns), Tier 3 (Supporting Signals)
+- [x] **All 33 dimension scores**: GLTR, MATTR, RTTR, perplexity, burstiness, structure, formatting, voice, blockquotes, link anchors, etc.
+- [x] **All category scores**: Tier 1 (Advanced Detection, 70pts), Tier 2 (Core Patterns, 74pts), Tier 3 (Supporting Indicators, 46pts), Tier 4 (Advanced Structural, 10pts)
 - [x] **Key raw metrics**:
   - AI vocabulary per 1k words
   - Sentence length StdDev (burstiness)
@@ -87,15 +127,17 @@ class HistoricalScore:
     quality_interpretation: str
 
     # Category scores (NEW)
-    tier1_score: float  # Advanced Detection (40 pts)
-    tier2_score: float  # Core Patterns (35 pts)
-    tier3_score: float  # Supporting Signals (25 pts)
+    tier1_score: float  # Advanced Detection (70 pts)
+    tier2_score: float  # Core Patterns (74 pts)
+    tier3_score: float  # Supporting Signals (46 pts)
+    tier4_score: float  # Advanced Structural (10 pts)
 
-    # All 14 dimension scores (NEW)
+    # All 33 dimension scores (NEW)
     dimensions: Dict[str, DimensionScore] = field(default_factory=dict)
     # Example: {
     #   'gltr_token_ranking': DimensionScore(score=8.5, max=12, percentage=70.8, raw_value=0.42),
-    #   'lexical_diversity': DimensionScore(score=6.0, max=8, percentage=75.0, raw_value=0.72),
+    #   'mattr': DimensionScore(score=9.0, max=12, percentage=75.0, raw_value=0.72),
+    #   'burstiness': DimensionScore(score=10.2, max=12, percentage=85.0, raw_value=11.4),
     #   ...
     # }
 
@@ -564,17 +606,67 @@ ROI: EXCELLENT (2.8 quality pts per editing pass)
 
 ### Code Location
 
-**IMPORTANT:** This implementation assumes the modularized codebase from BMAD-TW-REFACTOR-001.
+**CURRENT STATUS:** The modularized codebase from BMAD-TW-REFACTOR-001 is ✅ COMPLETE.
 
-**Primary Files:**
+**Existing Modular Structure (as of Nov 2025 - VERIFIED via complete codebase scan):**
 
-- `/expansion-packs/bmad-technical-writing/data/tools/ai_pattern_analyzer/history/` - History tracking package
-  - `tracker.py` - `HistoricalScore`, `ScoreHistory`, `DimensionScore` classes
-  - `export.py` - CSV/JSON export functionality
-  - `trends.py` - Trend analysis and plateau detection (NEW)
-- `/expansion-packs/bmad-technical-writing/data/tools/ai_pattern_analyzer/scoring/dual_score.py` - Dual scoring system
-- `/expansion-packs/bmad-technical-writing/data/tools/ai_pattern_analyzer/core/results.py` - AnalysisResults dataclass
-- `/expansion-packs/bmad-technical-writing/data/tools/analyze_ai_patterns.py` - CLI entry point
+```
+ai_pattern_analyzer/
+├── core/
+│   ├── analyzer.py           # Main AIPatternAnalyzer class (989 lines) ✅
+│   └── results.py           # AnalysisResults dataclass (466 lines, 100+ fields) ✅
+├── dimensions/              # 9 dimension analyzers ✅
+│   ├── base.py             # DimensionAnalyzer interface (140 lines)
+│   ├── perplexity.py       # AI vocabulary detection (290 lines)
+│   ├── burstiness.py       # Sentence variation analysis (340 lines)
+│   ├── structure.py        # Headings/sections (1,300 lines - MOST comprehensive)
+│   ├── formatting.py       # Em-dash, bold/italic patterns (257 lines)
+│   ├── voice.py            # Voice consistency (146 lines)
+│   ├── syntactic.py        # Syntactic complexity (262 lines)
+│   ├── lexical.py          # Lexical diversity - MATTR/RTTR/MTLD (174 lines)
+│   ├── stylometric.py      # Stylometric markers (163 lines)
+│   └── advanced.py         # GLTR token ranking (170 lines)
+├── scoring/
+│   ├── dual_score.py            # DualScore/ScoreCategory/ScoreDimension (205 lines) ✅
+│   ├── dual_score_calculator.py # Score calculation - 33 dimensions (847 lines) ✅
+│   └── domain_thresholds.py     # Domain-aware thresholds (431 lines) ✅ NEW!
+│       # Supports: ACADEMIC, TECHNICAL, BUSINESS, TUTORIAL, GENERAL domains
+│       # Provides research-backed thresholds per document type
+├── history/
+│   ├── tracker.py          # HistoricalScore v1.0 (86 lines - basic aggregate only) ✅
+│   └── export.py           # NotImplementedError stubs (45 lines) ⚠️ PLACEHOLDER
+├── cli/
+│   ├── args.py             # CLI argument parsing (103 lines) ✅
+│   └── formatters.py       # Output formatting (1,531 lines) ✅
+├── utils/
+│   ├── text_processing.py  # Text utilities (~180 lines) ✅
+│   ├── pattern_matching.py # Regex patterns (~240 lines) ✅
+│   └── visualization.py    # Sparklines (~200 lines) ✅
+├── evidence/               # Evidence extraction (placeholder)
+└── tests/                  # Comprehensive test structure ✅
+    ├── unit/dimensions/    # 10 test files (test_*.py)
+    ├── unit/scoring/       # 2 test files (dual_score, domain_thresholds)
+    ├── unit/history/       # 1 test file (test_tracker.py)
+    ├── unit/utils/         # 2 test files
+    ├── unit/core/          # 1 test file (test_analyzer.py)
+    ├── integration/        # End-to-end tests
+    ├── performance/        # Performance regression tests
+    └── regression/         # Regression test suite
+```
+
+**⚠️ IMPORTANT DISCOVERY:** The `dual_score_calculator.py` header comment is **OUTDATED**. It says "22 dimensions and 174 quality points" but the actual implementation has:
+
+- **33 dimensions** (verified by line-by-line code scan)
+- **200 quality points** (70+74+46+10)
+- **4 tiers** with exact breakdown above
+
+**Files to Modify for This Story:**
+
+- `ai_pattern_analyzer/history/tracker.py` - Enhance from v1.0 to v2.0 (add dimension/tier tracking)
+- `ai_pattern_analyzer/history/export.py` - Implement CSV export (currently placeholder)
+- `ai_pattern_analyzer/history/trends.py` - NEW FILE for trend analysis and plateau detection
+- `ai_pattern_analyzer/cli/args.py` - Add history-related CLI arguments
+- `analyze_ai_patterns.py` - CLI entry point integration
 
 ### Enhanced Data Structures
 
@@ -923,7 +1015,28 @@ if args.export_history:
 
 ## Testing Strategy
 
-**Unit Tests:**
+**Test Location:** `/expansion-packs/bmad-technical-writing/data/tools/ai_pattern_analyzer/tests/`
+
+The modular codebase already has a comprehensive test structure in place:
+
+```
+tests/
+├── unit/
+│   ├── dimensions/     # Tests for each dimension analyzer
+│   ├── scoring/        # Tests for dual score calculation
+│   ├── history/        # Tests for history tracking ← ADD v2.0 tests here
+│   ├── utils/          # Tests for utilities
+│   └── core/           # Tests for core analyzer
+├── integration/        # End-to-end workflow tests
+├── performance/        # Performance regression tests
+├── regression/         # Regression test suite
+└── fixtures/           # Sample test data
+    ├── sample_ai_text.md
+    ├── sample_human_text.md
+    └── sample_mixed_text.md
+```
+
+**Unit Tests (add to `tests/unit/history/test_tracker.py`):**
 
 ```python
 def test_comprehensive_history_tracking():
@@ -937,9 +1050,10 @@ def test_comprehensive_history_tracking():
 
     assert len(history.scores) == 1
     assert history.scores[0].history_version == "2.0"
-    assert len(history.scores[0].dimensions) == 14  # All 14 dimensions
+    assert len(history.scores[0].dimensions) == 33  # All 33 dimensions across 4 tiers
     assert 'ai_vocabulary_per_1k' in history.scores[0].raw_metrics
     assert history.scores[0].tier1_score > 0
+    assert history.scores[0].tier4_score >= 0  # Tier 4 included (5 dimensions)
 
 def test_backward_compatibility():
     """Test that v1.0 history files can be loaded"""
@@ -1041,12 +1155,25 @@ def test_csv_export():
 
 ## Dependencies and Prerequisites
 
-**Before starting:**
+**✅ Prerequisites COMPLETED:**
 
-- [x] Dual scoring system functional (BMAD-TW-DUAL-001)
-- [x] Current v1.0 history tracking working
+- [x] Dual scoring system functional (BMAD-TW-DUAL-001) - ✅ DONE
+- [x] Modularized codebase (BMAD-TW-REFACTOR-001) - ✅ DONE (Nov 2025)
+  - 9 dimension analyzers extracted and working
+  - dual_score_calculator.py fully implemented (846 lines)
+  - Test structure in place
+- [x] Current v1.0 history tracking working - ✅ DONE (basic aggregate tracking)
 
-**New dependencies:**
+**Current Implementation Status:**
+
+The modular package structure is complete with:
+
+- ✅ All dimension analyzers implemented (perplexity, burstiness, structure, formatting, etc.)
+- ✅ Dual score calculation working with 4-tier system (174 quality points)
+- ✅ Basic history tracking (v1.0 - aggregate scores only)
+- ⚠️ History v2.0 enhancements needed (dimension-level tracking, CSV export, trend analysis)
+
+**New dependencies for this story:**
 
 - None (uses Python standard library)
 
@@ -1057,10 +1184,12 @@ def test_csv_export():
 
 ## Related Stories
 
-- **Depends On:** BMAD-TW-DUAL-001 (Dual Scoring System) ✓ Completed
-- **Enhances:** BMAD-TW-DETECT-001, 002, 003 (Phase 1-3 dimensions will be tracked)
+- **Depends On:**
+  - BMAD-TW-DUAL-001 (Dual Scoring System) - ✅ COMPLETED
+  - BMAD-TW-REFACTOR-001 (Modularization) - ✅ COMPLETED (Nov 2025)
+- **Enhances:** All dimension detection stories (dimensions now modular and testable)
 - **Enables:** Future visualization stories (charts, graphs, dashboards)
-- **Complements:** BMAD-TW-DETECT-004 (Evidence Extraction)
+- **Complements:** Evidence extraction and recommendation system enhancements
 
 ## Future Enhancements
 
