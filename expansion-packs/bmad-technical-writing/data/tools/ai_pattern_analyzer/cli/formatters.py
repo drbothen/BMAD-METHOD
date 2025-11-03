@@ -1019,43 +1019,415 @@ RECOMMENDATIONS
 
 """
 
-        # Generate recommendations based on scores
-        recommendations = []
+        # Generate tiered recommendations
+        critical = []
+        important = []
+        refinements = []
+        strengths = []  # Quality recommendations - what's working well
 
+        # ====================================================================
+        # 🔴 CRITICAL ISSUES (Core Dimensions)
+        # ====================================================================
+
+        # Perplexity/Vocabulary
         if r.perplexity_score in ["LOW", "VERY LOW"]:
-            recommendations.append(f"⚠ VOCABULARY: Replace {r.ai_vocabulary_count} AI-typical words with natural alternatives")
+            vocab_rec = f"⚠ VOCABULARY: Replace {r.ai_vocabulary_count} AI-typical words with natural alternatives"
+            if r.ai_vocabulary_list:
+                examples = ', '.join(r.ai_vocabulary_list[:3])
+                vocab_rec += f"\n   Examples: {examples}"
+            critical.append(vocab_rec)
 
+        # Burstiness/Sentence Variation
         if r.burstiness_score in ["LOW", "VERY LOW"]:
-            recommendations.append(f"⚠ SENTENCE VARIATION: Increase variation (current stdev: {r.sentence_stdev}, target: >8)")
-            recommendations.append(f"  - Add more short sentences (≤10 words): currently {r.short_sentences_count}/{r.total_sentences}")
-            recommendations.append(f"  - Add more long sentences (≥30 words): currently {r.long_sentences_count}/{r.total_sentences}")
+            burst_rec = f"⚠ SENTENCE VARIATION: Increase variation (current stdev: {r.sentence_stdev:.1f}, target: >8)"
+            burst_rec += f"\n   - Add more short sentences (≤10 words): currently {r.short_sentences_count}/{r.total_sentences}"
+            burst_rec += f"\n   - Add more long sentences (≥30 words): currently {r.long_sentences_count}/{r.total_sentences}"
+            critical.append(burst_rec)
 
-        if r.formulaic_transitions_count > 3:
-            recommendations.append(f"⚠ TRANSITIONS: Remove {r.formulaic_transitions_count} formulaic transitions")
+        # Structure (high-level)
+        if r.structure_score in ["LOW", "VERY LOW"]:
+            critical.append("⚠ STRUCTURE: Improve document organization and hierarchy")
 
-        if r.heading_depth >= 4:
-            recommendations.append(f"⚠ HEADING DEPTH: Flatten hierarchy from {r.heading_depth} to 3 levels maximum")
-
-        if r.heading_parallelism_score >= 0.5:
-            recommendations.append(f"⚠ HEADING PARALLELISM: Break mechanical parallelism (score: {r.heading_parallelism_score:.2f})")
-
-        if r.verbose_headings_count > 0:
-            recommendations.append(f"⚠ HEADINGS: Shorten {r.verbose_headings_count} verbose headings to 3-7 words")
-
-        if r.em_dashes_per_page > 3:
-            recommendations.append(f"⚠ FORMATTING: Reduce em-dashes from {r.em_dashes_per_page:.1f} to 1-2 per page")
-
+        # Voice/Authenticity
         if r.voice_score in ["LOW", "VERY LOW"]:
-            recommendations.append("⚠ VOICE: Add personal perspective markers and conversational elements")
+            voice_rec = "⚠ VOICE: Add personal perspective markers and conversational elements"
+            voice_rec += f"\n   Current: {r.first_person_count} first-person, {r.contraction_count} contractions"
+            critical.append(voice_rec)
 
+        # Technical depth
+        if r.technical_score in ["LOW", "VERY LOW"]:
+            critical.append("⚠ TECHNICAL DEPTH: Increase domain-specific terminology and expertise")
+
+        # Formatting (high-level)
+        if r.formatting_score in ["LOW", "VERY LOW"]:
+            critical.append("⚠ FORMATTING: Address overall formatting patterns (see details below)")
+
+        # Syntactic naturalness
+        if r.syntactic_score in ["LOW", "VERY LOW"]:
+            critical.append("⚠ SYNTAX: Vary syntactic structures and sentence complexity")
+
+        # Formulaic transitions
+        if r.formulaic_transitions_count > 3:
+            trans_rec = f"⚠ TRANSITIONS: Remove {r.formulaic_transitions_count} formulaic transitions"
+            if r.formulaic_transitions_list:
+                examples = ', '.join(r.formulaic_transitions_list[:3])
+                trans_rec += f"\n   Examples: {examples}"
+            critical.append(trans_rec)
+
+        # GLTR score (if available)
+        if r.gltr_score in ["LOW", "VERY LOW"]:
+            critical.append(f"⚠ PREDICTABILITY: High GLTR score detected - rephrase predictable segments")
+
+        # Sentiment variation (if available)
+        if r.sentiment_score in ["LOW", "VERY LOW"]:
+            critical.append("⚠ SENTIMENT: Increase emotional variation across paragraphs")
+
+        # ====================================================================
+        # 🟡 IMPORTANT IMPROVEMENTS (Enhanced Structural Patterns)
+        # ====================================================================
+
+        # Bold/Italic patterns
+        if r.bold_italic_score in ["LOW", "VERY LOW"]:
+            important.append(f"• BOLD/ITALIC: Reduce bold density from {r.bold_per_1k_words:.1f} to 1-5 per 1k words")
+        elif r.bold_italic_score == "MEDIUM" and r.formatting_consistency_score > 0.5:
+            important.append(f"• FORMATTING CONSISTENCY: Vary bold/italic patterns (consistency: {r.formatting_consistency_score:.2f})")
+
+        # List usage patterns
+        if r.list_usage_score in ["LOW", "VERY LOW"]:
+            if r.list_to_text_ratio > 0.25:
+                important.append(f"• LIST USAGE: Reduce list-to-text ratio from {r.list_to_text_ratio*100:.1f}% to <15%")
+            if 0.15 <= r.ordered_to_unordered_ratio <= 0.25:
+                important.append(f"• LIST DISTRIBUTION: Vary ordered/unordered ratio (current: {r.ordered_to_unordered_ratio:.2f})")
+
+        # Punctuation clustering
+        if r.punctuation_score in ["LOW", "VERY LOW"]:
+            if r.em_dash_cascading_score > 0.7:
+                important.append(f"• EM-DASH PATTERN: Break declining cascade pattern (score: {r.em_dash_cascading_score:.2f})")
+            if r.oxford_comma_consistency > 0.95:
+                important.append(f"• OXFORD COMMA: Break consistency (currently {r.oxford_comma_consistency*100:.0f}% consistent = AI-like)")
+
+        # Whitespace patterns
+        if r.whitespace_score in ["LOW", "VERY LOW"]:
+            important.append(f"• WHITESPACE: Break paragraph uniformity (score: {r.paragraph_uniformity_score:.2f})")
+            important.append(f"  Vary blank line spacing and text density (current: {r.text_density:.1f} chars/line)")
+
+        # Heading hierarchy adherence
+        if r.heading_hierarchy_score in ["LOW", "VERY LOW"]:
+            important.append(f"• HEADING HIERARCHY: Add occasional hierarchy skips (currently {r.heading_strict_adherence*100:.0f}% adherent = AI-like)")
+            important.append("  Suggestion: Skip from H2→H4 occasionally, or add lateral H3→H3 moves")
+
+        # Code structure (if applicable)
+        if r.code_structure_score in ["LOW", "VERY LOW"]:
+            if r.code_lang_consistency and r.code_lang_consistency > 0.9:
+                important.append(f"• CODE BLOCKS: Vary language declaration patterns (currently {r.code_lang_consistency*100:.0f}% consistent)")
+
+        # Heading depth
+        if r.heading_depth >= 4:
+            important.append(f"• HEADING DEPTH: Flatten hierarchy from {r.heading_depth} to 3 levels maximum")
+
+        # Heading parallelism
+        if r.heading_parallelism_score >= 0.5:
+            important.append(f"• HEADING PARALLELISM: Break mechanical parallelism (score: {r.heading_parallelism_score:.2f})")
+
+        # Verbose headings
+        if r.verbose_headings_count > 0:
+            important.append(f"• HEADING LENGTH: Shorten {r.verbose_headings_count} verbose headings to 3-7 words")
+
+        # Em-dashes per page
+        if r.em_dashes_per_page > 3:
+            important.append(f"• EM-DASHES: Reduce from {r.em_dashes_per_page:.1f} to 1-2 per page")
+
+        # Lexical diversity
         if r.lexical_diversity < 0.45:
-            recommendations.append(f"⚠ VOCABULARY: Increase lexical diversity (current: {r.lexical_diversity:.3f}, target: >0.50)")
+            important.append(f"• LEXICAL DIVERSITY: Increase vocabulary richness (current: {r.lexical_diversity:.3f}, target: >0.50)")
 
-        if recommendations:
-            for rec in recommendations:
-                report += f"{rec}\n"
+        # MTLD score (if available)
+        if r.mtld_score is not None and r.mtld_score < 160:
+            important.append(f"• VOCABULARY VARIATION: Improve MTLD score (current: {r.mtld_score:.1f}, target: >160)")
+
+        # Syntactic repetition (if available)
+        if r.syntactic_repetition_score is not None and r.syntactic_repetition_score > 0.015:
+            important.append(f"• STRUCTURAL REPETITION: Reduce syntactic patterns (score: {r.syntactic_repetition_score:.3f})")
+
+        # Stylometric markers (if available)
+        if r.stylometric_score in ["LOW", "VERY LOW"]:
+            important.append("• STYLOMETRIC MARKERS: Reduce AI-typical discourse markers (however/moreover frequency)")
+
+        # Advanced lexical (if available)
+        if r.advanced_lexical_score in ["LOW", "VERY LOW"]:
+            important.append("• ADVANCED LEXICAL: Improve vocabulary richness patterns (HDD/Yule's K)")
+
+        # ====================================================================
+        # 🔵 STRUCTURAL REFINEMENTS (Advanced Metrics)
+        # ====================================================================
+
+        # Paragraph CV
+        if r.paragraph_cv_assessment in ["POOR", "FAIR"]:
+            ref_rec = f"• Paragraph Variation: Increase length variance (CV: {r.paragraph_cv:.2f}, target: >0.60)"
+            ref_rec += f"\n  Current mean: {r.paragraph_cv_mean:.0f} words - vary between 20-100 words"
+            refinements.append(ref_rec)
+
+        # Section variance
+        if r.section_variance_assessment == "INSUFFICIENT_DATA":
+            refinements.append(f"• Section Structure: Add more H2 sections to enable variance analysis (current: {r.section_count} sections)")
+        elif r.section_variance_assessment in ["POOR", "FAIR"]:
+            refinements.append(f"• Section Variance: Vary H2 section lengths (current: {r.section_variance_pct:.1f}%, target: >40%)")
+
+        # List nesting depth
+        if r.list_depth_assessment in ["POOR", "FAIR"]:
+            refinements.append(f"• List Nesting: Adjust nesting depth (current max: {r.list_max_depth}, target: 2-3 levels)")
+
+        # H4 subsection asymmetry
+        if r.h4_assessment == "INSUFFICIENT_DATA":
+            refinements.append(f"• H4 Structure: Add more H3 sections for H4 distribution analysis")
+        elif r.h4_assessment in ["POOR", "FAIR"]:
+            refinements.append(f"• H4 Distribution: Vary H4 counts under H3 sections (CV: {r.h4_subsection_cv:.2f}, target: >0.60)")
+
+        # H3 subsection asymmetry
+        if r.subsection_assessment == "INSUFFICIENT_DATA":
+            refinements.append(f"• H3 Structure: Add more H2 sections for subsection analysis")
+        elif r.subsection_assessment in ["POOR", "FAIR"]:
+            ref_rec = f"• H3 Distribution: Vary H3 counts under H2 sections (CV: {r.subsection_cv:.2f}, target: >0.60)"
+            if r.subsection_uniform_count and r.subsection_uniform_count > 0:
+                ref_rec += f"\n  Avoid uniform pattern: {r.subsection_uniform_count} sections with 3-4 subsections"
+            refinements.append(ref_rec)
+
+        # Combined multi-level structure
+        if r.combined_structure_assessment in ["POOR", "FAIR", "VERY_POOR"]:
+            ref_rec = f"• Multi-Level Structure: Improve hierarchical variance (score: {r.combined_structure_score:.1f}/24, {r.combined_structure_prob_human*100:.1f}% human)"
+            if r.combined_h2_assessment:
+                ref_rec += f"\n  - H2 Section Length: {r.combined_h2_assessment}"
+            if r.combined_h3_assessment:
+                ref_rec += f"\n  - H3 Subsection Count: {r.combined_h3_assessment}"
+            if r.combined_h4_assessment:
+                ref_rec += f"\n  - H4 Subsection Count: {r.combined_h4_assessment}"
+            refinements.append(ref_rec)
+
+        # Heading length analysis
+        if r.heading_length_assessment in ["POOR", "FAIR"]:
+            refinements.append(f"• Heading Length Variance: Vary heading lengths (current variance: {r.heading_length_variance:.1f})")
+
+        # Heading depth patterns
+        if r.heading_depth_assessment in ["RIGID", "SEQUENTIAL"]:
+            ref_rec = f"• Heading Navigation: Add lateral moves and depth jumps (current: {r.heading_depth_assessment})"
+            if not r.heading_has_lateral:
+                ref_rec += "\n  Add H3→H3 lateral transitions"
+            if not r.heading_has_jumps:
+                ref_rec += "\n  Add occasional H3→H1 or H4→H2 jumps"
+            refinements.append(ref_rec)
+
+        # Blockquote patterns (if available)
+        if r.blockquote_assessment in ["POOR", "FAIR"]:
+            if r.blockquote_section_start_clustering and r.blockquote_section_start_clustering > 0.5:
+                refinements.append(f"• Blockquote Placement: Reduce section-start clustering ({r.blockquote_section_start_clustering*100:.0f}%, target: <30%)")
+
+        # Link anchor quality (if available)
+        if r.link_anchor_assessment in ["POOR", "FAIR"]:
+            if r.link_generic_count and r.link_generic_count > 0:
+                ref_rec = f"• Link Anchors: Replace {r.link_generic_count} generic anchors with descriptive text"
+                if r.link_generic_examples:
+                    examples = ', '.join(r.link_generic_examples[:3])
+                    ref_rec += f"\n  Examples: {examples}"
+                refinements.append(ref_rec)
+
+        # Punctuation spacing (if available)
+        if r.punctuation_spacing_assessment in ["POOR", "FAIR"]:
+            refinements.append(f"• Punctuation Spacing: Vary punctuation patterns (colon CV: {r.punctuation_colon_cv:.2f})")
+
+        # List AST patterns (if available)
+        if r.list_ast_assessment in ["POOR", "FAIR"]:
+            if r.list_symmetry_score and r.list_symmetry_score > 0.7:
+                refinements.append(f"• List Symmetry: Break symmetric list patterns (score: {r.list_symmetry_score:.2f})")
+
+        # Code AST patterns (if available)
+        if r.code_ast_assessment in ["POOR", "FAIR"]:
+            if r.code_lang_declaration_ratio is not None:
+                refinements.append(f"• Code Language Tags: Adjust declaration ratio ({r.code_lang_declaration_ratio*100:.0f}%, target: >90%)")
+
+        # Syntactic complexity (if available)
+        if r.avg_dependency_depth is not None and r.avg_dependency_depth < 4:
+            refinements.append(f"• Syntactic Complexity: Increase dependency depth (current: {r.avg_dependency_depth:.1f}, target: >4)")
+
+        # Subordination (if available)
+        if r.subordination_index is not None and r.subordination_index < 0.1:
+            refinements.append(f"• Subordinate Clauses: Add more complex sentences (current: {r.subordination_index:.2f}, target: >0.15)")
+
+        # ====================================================================
+        # ✅ STRENGTHS (Quality Recommendations - What's Working Well)
+        # ====================================================================
+
+        # Core dimension strengths
+        if r.perplexity_score in ["HIGH", "VERY HIGH"]:
+            strengths.append(f"✓ VOCABULARY: Natural word choice with minimal AI markers ({r.ai_vocabulary_per_1k:.1f} per 1k words)")
+
+        if r.burstiness_score in ["HIGH", "VERY HIGH"]:
+            strengths.append(f"✓ SENTENCE VARIATION: Excellent variety (stdev: {r.sentence_stdev:.1f}, range: {r.sentence_min}-{r.sentence_max} words)")
+
+        if r.structure_score in ["HIGH", "VERY HIGH"]:
+            strengths.append(f"✓ STRUCTURE: Well-organized document hierarchy ({r.total_headings} headings across {r.heading_depth} levels)")
+
+        if r.voice_score in ["HIGH", "VERY HIGH"]:
+            strengths.append(f"✓ VOICE: Strong authentic voice ({r.first_person_count} first-person, {r.contraction_count} contractions)")
+
+        if r.technical_score in ["HIGH", "VERY HIGH"]:
+            strengths.append(f"✓ TECHNICAL DEPTH: Appropriate domain expertise ({r.domain_terms_count} domain terms)")
+
+        if r.formatting_score in ["HIGH", "VERY HIGH"]:
+            strengths.append("✓ FORMATTING: Natural formatting patterns throughout")
+
+        if r.syntactic_score in ["HIGH", "VERY HIGH"]:
+            strengths.append("✓ SYNTAX: Varied and natural sentence structures")
+
+        # Enhanced structural strengths
+        if r.bold_italic_score in ["HIGH", "VERY HIGH"]:
+            strengths.append(f"✓ BOLD/ITALIC: Well-balanced formatting ({r.bold_per_1k_words:.1f} bold, {r.italic_per_1k_words:.1f} italic per 1k)")
+
+        if r.list_usage_score in ["HIGH", "VERY HIGH"]:
+            strengths.append(f"✓ LIST USAGE: Appropriate list patterns ({r.total_list_items} items, {r.list_to_text_ratio*100:.1f}% of content)")
+
+        if r.punctuation_score in ["HIGH", "VERY HIGH"]:
+            strengths.append(f"✓ PUNCTUATION: Natural punctuation variety")
+
+        if r.whitespace_score in ["HIGH", "VERY HIGH"]:
+            strengths.append(f"✓ WHITESPACE: Good paragraph variation (uniformity: {r.paragraph_uniformity_score:.2f})")
+
+        if r.heading_hierarchy_score in ["HIGH", "VERY HIGH"]:
+            strengths.append(f"✓ HEADING HIERARCHY: Natural hierarchy with {r.heading_hierarchy_skips} skips")
+
+        if r.lexical_diversity >= 0.50:
+            strengths.append(f"✓ LEXICAL DIVERSITY: Strong vocabulary richness ({r.lexical_diversity:.3f}, unique words: {r.unique_words})")
+
+        # Structural pattern strengths
+        if r.paragraph_cv_assessment in ["EXCELLENT", "GOOD"]:
+            strengths.append(f"✓ PARAGRAPH VARIATION: Excellent length variety (CV: {r.paragraph_cv:.2f})")
+
+        if r.section_variance_assessment in ["EXCELLENT", "GOOD"]:
+            strengths.append(f"✓ SECTION VARIANCE: Good asymmetry in section lengths ({r.section_variance_pct:.1f}% variance)")
+
+        if r.list_depth_assessment in ["EXCELLENT", "GOOD"]:
+            strengths.append(f"✓ LIST NESTING: Appropriate depth (max: {r.list_max_depth}, avg: {r.list_avg_depth:.1f})")
+
+        if r.h4_assessment in ["EXCELLENT", "GOOD"]:
+            strengths.append(f"✓ H4 DISTRIBUTION: Strong subsection variety (CV: {r.h4_subsection_cv:.2f})")
+
+        if r.subsection_assessment in ["EXCELLENT", "GOOD"]:
+            strengths.append(f"✓ H3 DISTRIBUTION: Good subsection asymmetry (CV: {r.subsection_cv:.2f})")
+
+        if r.combined_structure_assessment in ["EXCELLENT", "GOOD"]:
+            strengths.append(f"✓ MULTI-LEVEL STRUCTURE: Strong hierarchical variance (score: {r.combined_structure_score:.1f}/24, {r.combined_structure_prob_human*100:.1f}% human)")
+
+        if r.heading_length_assessment in ["EXCELLENT", "GOOD"]:
+            strengths.append(f"✓ HEADING LENGTHS: Good variation in heading lengths")
+
+        if r.heading_depth_assessment == "VARIED":
+            strengths.append("✓ HEADING NAVIGATION: Natural varied navigation patterns")
+
+        # Advanced NLP strengths
+        if r.mtld_score is not None and r.mtld_score >= 160:
+            strengths.append(f"✓ MTLD DIVERSITY: Excellent vocabulary variation ({r.mtld_score:.1f})")
+
+        if r.syntactic_repetition_score is not None and r.syntactic_repetition_score <= 0.010:
+            strengths.append(f"✓ SYNTACTIC VARIETY: Minimal structural repetition ({r.syntactic_repetition_score:.3f})")
+
+        if r.avg_dependency_depth is not None and r.avg_dependency_depth >= 4:
+            strengths.append(f"✓ SYNTACTIC COMPLEXITY: Appropriate complexity (depth: {r.avg_dependency_depth:.1f})")
+
+        if r.subordination_index is not None and r.subordination_index >= 0.15:
+            strengths.append(f"✓ SUBORDINATION: Good use of complex sentences ({r.subordination_index:.2f})")
+
+        # Phase 3 AST strengths
+        if r.blockquote_assessment in ["EXCELLENT", "GOOD"]:
+            strengths.append(f"✓ BLOCKQUOTE PLACEMENT: Natural blockquote distribution")
+
+        if r.link_anchor_assessment in ["EXCELLENT", "GOOD"]:
+            strengths.append(f"✓ LINK ANCHORS: Descriptive anchor text ({r.link_total} links)")
+
+        if r.list_ast_assessment in ["EXCELLENT", "GOOD"]:
+            strengths.append(f"✓ LIST PATTERNS: Natural list structure variety")
+
+        if r.code_ast_assessment in ["EXCELLENT", "GOOD"]:
+            strengths.append(f"✓ CODE BLOCKS: Good language declaration practices")
+
+        # ====================================================================
+        # OUTPUT TIERED RECOMMENDATIONS
+        # ====================================================================
+
+        has_any_recommendations = critical or important or refinements
+        has_any_content = has_any_recommendations or strengths
+
+        if not has_any_content:
+            report += "✓ No analysis results available.\n"
+        elif not has_any_recommendations and strengths:
+            report += f"""
+✅ EXCELLENT CONTENT - No Issues Detected
+{'─' * 80}
+Content appears naturally human-written across all dimensions.
+
+"""
+            # Show strengths
+            report += f"""
+✅ STRENGTHS (What's Working Well):
+{'─' * 80}
+"""
+            for strength in strengths:
+                report += f"{strength}\n"
         else:
-            report += "✓ No major issues detected. Content appears naturally human-written.\n"
+            # Critical tier
+            if critical:
+                report += f"""
+🔴 CRITICAL ISSUES (Fix First):
+{'─' * 80}
+"""
+                for rec in critical:
+                    report += f"{rec}\n"
+            else:
+                report += f"""
+🔴 CRITICAL ISSUES (Fix First):
+{'─' * 80}
+✓ No critical issues detected
+
+"""
+
+            # Important tier
+            if important:
+                report += f"""
+🟡 IMPORTANT IMPROVEMENTS:
+{'─' * 80}
+"""
+                for rec in important:
+                    report += f"{rec}\n"
+            else:
+                report += f"""
+🟡 IMPORTANT IMPROVEMENTS:
+{'─' * 80}
+✓ No important improvements needed
+
+"""
+
+            # Refinements tier
+            if refinements:
+                report += f"""
+🔵 STRUCTURAL REFINEMENTS (Advanced):
+{'─' * 80}
+"""
+                for rec in refinements:
+                    report += f"{rec}\n"
+            else:
+                report += f"""
+🔵 STRUCTURAL REFINEMENTS (Advanced):
+{'─' * 80}
+✓ No structural refinements needed
+
+"""
+
+            # Strengths tier (quality recommendations)
+            if strengths:
+                report += f"""
+✅ STRENGTHS (What's Working Well):
+{'─' * 80}
+"""
+                for strength in strengths:
+                    report += f"{strength}\n"
 
         report += f"\n{'=' * 80}\n"
 
