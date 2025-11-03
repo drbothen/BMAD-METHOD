@@ -158,15 +158,15 @@ One of the most common confusion points for ICS newcomers? SCADA versus DCS. The
 
 **Think of it this way**: SCADA supervises geographically scattered assets handling relatively simple monitoring and control (pump station on/off, valve open/closed, tank level monitoring). DCS autonomously runs complex continuous processes within a single facility where precise, real-time control of interrelated process variables proves essential.
 
-| Aspect | SCADA | DCS |
-|--------|-------|-----|
-| **Geographic Scope** | Wide-area, distributed sites (miles apart) | Single facility, localized |
-| **Control Philosophy** | Supervisory control over local controllers | Autonomous distributed control |
-| **Communication** | Tolerates intermittent connectivity | Requires continuous deterministic communication |
-| **Integration** | Open protocols, multi-vendor | Proprietary protocols, single-vendor |
-| **Typical Applications** | Water/wastewater, electrical grid, pipelines, transportation | Refineries, chemical plants, power generation, manufacturing |
-| **Response Time** | Seconds to minutes | Milliseconds to seconds |
-| **Operator Role** | Actively monitors and issues commands | Monitors and adjusts setpoints while DCS handles moment-to-moment control |
+| Aspect                   | SCADA                                                        | DCS                                                                       |
+| ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| **Geographic Scope**     | Wide-area, distributed sites (miles apart)                   | Single facility, localized                                                |
+| **Control Philosophy**   | Supervisory control over local controllers                   | Autonomous distributed control                                            |
+| **Communication**        | Tolerates intermittent connectivity                          | Requires continuous deterministic communication                           |
+| **Integration**          | Open protocols, multi-vendor                                 | Proprietary protocols, single-vendor                                      |
+| **Typical Applications** | Water/wastewater, electrical grid, pipelines, transportation | Refineries, chemical plants, power generation, manufacturing              |
+| **Response Time**        | Seconds to minutes                                           | Milliseconds to seconds                                                   |
+| **Operator Role**        | Actively monitors and issues commands                        | Monitors and adjusts setpoints while DCS handles moment-to-moment control |
 
 **Real-world mapping**: A petroleum company might use SCADA to monitor pipelines transporting crude oil from production fields to refineries (distributed geography, supervisory control), and DCS to control the refining process itself (single-site, continuous process).
 
@@ -312,13 +312,13 @@ I've built security programs for facilities where half the environment was moder
 
 **Quick Reference:**
 
-| Mistake | Better Approach |
-|---------|-----------------|
-| "SCADA" as catch-all for ICS | Use specific terms: SCADA, DCS, PLC |
-| Treating ICS as "just computers" | Design compensating controls for constraints |
-| Overlooking historians | Protect as reconnaissance goldmines |
-| Ignoring physical safety | Always ask: "What happens physically if this fails?" |
-| Expecting uniform security | Assess capabilities component-by-component |
+| Mistake                          | Better Approach                                      |
+| -------------------------------- | ---------------------------------------------------- |
+| "SCADA" as catch-all for ICS     | Use specific terms: SCADA, DCS, PLC                  |
+| Treating ICS as "just computers" | Design compensating controls for constraints         |
+| Overlooking historians           | Protect as reconnaissance goldmines                  |
+| Ignoring physical safety         | Always ask: "What happens physically if this fails?" |
+| Expecting uniform security       | Assess capabilities component-by-component           |
 
 ### Key Takeaways
 

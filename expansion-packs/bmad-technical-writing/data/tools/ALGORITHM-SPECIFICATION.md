@@ -67,7 +67,7 @@ Dual scores measure both "human-likeness" (Quality) and "AI-detectability" (Dete
 
 #### Dimension 1: GLTR Token Ranking (12 points max)
 
-**Research**: 95% accuracy detecting GPT-3/ChatGPT [(Gehrmann et al., 2019)](https://arxiv.org/abs/1906.04043)
+**Research**: ⚠️ **VALIDATION WARNING**: Original ACL 2019 paper reports 72% human-assisted detection, NOT 95% automated accuracy. Claimed thresholds (>70% for AI, <55% for human) not formally validated in published research. Independent testing shows significant false positives on human text. [(Gehrmann et al., 2019)](https://arxiv.org/abs/1906.04043) - See VALIDATION_REPORT_advanced.md for details.
 
 | Metric                   | Type  | AI Pattern   | Human Pattern | Scored             |
 | ------------------------ | ----- | ------------ | ------------- | ------------------ |
@@ -93,15 +93,15 @@ else: score = HIGH  # Human-like
 
 #### Dimension 2: Advanced Lexical Diversity (8 points max)
 
-**Research**: HDD most robust metric [(McCarthy & Jarvis, 2007)](https://doi.org/10.3758/BF03193446)
+**Research**: ⚠️ **VALIDATION WARNING**: HDD validated for lexical diversity generally, NOT AI detection specifically. McCarthy & Jarvis studied language development, not AI text. Claimed ranges (HDD: 0.40-0.55 vs 0.65-0.85, Yule's K: 100-150 vs 60-90) **not found in any peer-reviewed AI detection literature**. Yule's K is absent from contemporary AI detection research. [(McCarthy & Jarvis, 2007)](https://doi.org/10.3758/BF03193446) - See VALIDATION_REPORT_advanced.md for details.
 
-| Metric                   | Type  | AI Pattern   | Human Pattern | Scored             |
-| ------------------------ | ----- | ------------ | ------------- | ------------------ |
-| `hdd_score`              | float | 0.40-0.55    | 0.65-0.85     | ✅ Primary         |
-| `yules_k`                | float | 100-150      | 60-90         | ✅ Secondary       |
-| `maas_score`             | float | -            | -             | ❌ Reference only  |
-| `vocab_concentration`    | float | -            | -             | ❌ Reference only  |
-| `advanced_lexical_score` | str   | LOW/VERY LOW | HIGH/MEDIUM   | ✅ Used in scoring |
+| Metric                   | Type  | AI Pattern               | Human Pattern            | Scored             |
+| ------------------------ | ----- | ------------------------ | ------------------------ | ------------------ |
+| `hdd_score`              | float | 0.40-0.55 ⚠️ UNVALIDATED | 0.65-0.85 ⚠️ UNVALIDATED | ✅ Primary         |
+| `yules_k`                | float | 100-150 ⚠️ UNVALIDATED   | 60-90 ⚠️ UNVALIDATED     | ✅ Secondary       |
+| `maas_score`             | float | -                        | -                        | ❌ Reference only  |
+| `vocab_concentration`    | float | -                        | -                        | ❌ Reference only  |
+| `advanced_lexical_score` | str   | LOW/VERY LOW             | HIGH/MEDIUM              | ✅ Used in scoring |
 
 **Scoring Logic**:
 
@@ -118,12 +118,12 @@ combined = (hdd_signal * 0.7 + yules_signal * 0.3)
 
 #### Dimension 3: MATTR - Moving Average Type-Token Ratio (12 points max)
 
-**Research**: 0.89 correlation with human judgments [(McCarthy & Jarvis, 2010)](https://doi.org/10.3758/BRM.42.2.381)
+**Research**: ⚠️ **VALIDATION WARNING - CONTRADICTED BY EVIDENCE**: McCarthy & Jarvis (2010) validated MATTR for lexical diversity generally, NOT AI detection. The claimed thresholds (AI: <0.65, Human: ≥0.70) and 0.89 correlation **not found in that paper**. **Contemporary research directly contradicts these thresholds**: ChatGPT 4.0 shows HIGHER lexical diversity (MTLD 143.25) than humans (66.56), contradicting the assumption that AI shows lower diversity. [(McCarthy & Jarvis, 2010)](https://doi.org/10.3758/BRM.42.2.381) - See VALIDATION_REPORT_advanced.md for details.
 
-| Metric             | Type  | AI Pattern | Human Pattern  | Scored             |
-| ------------------ | ----- | ---------- | -------------- | ------------------ |
-| `mattr`            | float | <0.65      | ≥0.70          | ✅ Primary         |
-| `mattr_assessment` | str   | POOR/FAIR  | GOOD/EXCELLENT | ✅ Used in scoring |
+| Metric             | Type  | AI Pattern            | Human Pattern         | Scored             |
+| ------------------ | ----- | --------------------- | --------------------- | ------------------ |
+| `mattr`            | float | <0.65 ⚠️ CONTRADICTED | ≥0.70 ⚠️ CONTRADICTED | ✅ Primary         |
+| `mattr_assessment` | str   | POOR/FAIR             | GOOD/EXCELLENT        | ✅ Used in scoring |
 
 **Scoring Logic**:
 
@@ -141,12 +141,12 @@ else: score = 0.0, assessment = POOR
 
 #### Dimension 4: RTTR - Root Type-Token Ratio (8 points max)
 
-**Research**: Length-independent diversity measure
+**Research**: ⚠️ **VALIDATION WARNING**: Length-independent diversity measure validated in general linguistics. Claimed threshold (AI: <7.5, Human: ≥7.5) **not found in peer-reviewed AI detection literature**. Performance is highly task-dependent (varies by domain, model, task type). Effect size 0.193 indicates modest practical distinction. No universal threshold established. See VALIDATION_REPORT_advanced.md for details.
 
-| Metric            | Type  | AI Pattern | Human Pattern  | Scored             |
-| ----------------- | ----- | ---------- | -------------- | ------------------ |
-| `rttr`            | float | <7.5       | ≥7.5           | ✅ Primary         |
-| `rttr_assessment` | str   | POOR/FAIR  | GOOD/EXCELLENT | ✅ Used in scoring |
+| Metric            | Type  | AI Pattern          | Human Pattern       | Scored             |
+| ----------------- | ----- | ------------------- | ------------------- | ------------------ |
+| `rttr`            | float | <7.5 ⚠️ UNVALIDATED | ≥7.5 ⚠️ UNVALIDATED | ✅ Primary         |
+| `rttr_assessment` | str   | POOR/FAIR           | GOOD/EXCELLENT      | ✅ Used in scoring |
 
 **Scoring Logic**:
 
@@ -1342,11 +1342,31 @@ python analyze_ai_patterns.py manuscript.md --format json > analysis.json
 
 ## Research References
 
-1. **GLTR**: Gehrmann et al. (2019). "GLTR: Statistical Detection and Visualization of Generated Text"
-2. **HDD**: McCarthy & Jarvis (2007). "Vocd: A theoretical and empirical evaluation"
-3. **MATTR**: McCarthy & Jarvis (2010). "MTLD, vocd-D, and HD-D: A validation study"
+1. **GLTR**: Gehrmann et al. (2019). "GLTR: Statistical Detection and Visualization of Generated Text" - ⚠️ Claims in code exceed published findings
+2. **HDD**: McCarthy & Jarvis (2007). "Vocd: A theoretical and empirical evaluation" - ⚠️ General lexical diversity, not AI detection
+3. **MATTR**: McCarthy & Jarvis (2010). "MTLD, vocd-D, and HD-D: A validation study" - ⚠️ General lexical diversity, not AI detection; thresholds contradicted
 4. **Heading Length**: Chen et al. (2024). "AI-Generated Text Detection via Heading Patterns"
 5. **Burstiness**: Ippolito et al. (2020). "Automatic Detection of Generated Text"
+
+## Research Validation Status
+
+**⚠️ CRITICAL**: A comprehensive peer-reviewed literature validation (November 2025) revealed that **most claimed thresholds in the Advanced Detection tier lack empirical support for AI text detection**. See `VALIDATION_REPORT_advanced.md` for complete details.
+
+**Key Findings**:
+
+1. **GLTR (Dimension 1)**: Claimed 95% accuracy not found in published research. Actual: 72% human-assisted detection. Specific thresholds (>70% for AI, <55% for human) not formally validated.
+
+2. **HDD & Yule's K (Dimension 2)**: Claimed ranges (0.40-0.55 vs 0.65-0.85 for HDD; 100-150 vs 60-90 for Yule's K) **not found in any peer-reviewed AI detection literature**. These metrics validated for general linguistics, not AI detection.
+
+3. **MATTR (Dimension 3)**: Claimed thresholds (<0.65 for AI, ≥0.70 for human) and 0.89 correlation **not in McCarthy & Jarvis (2010)**. Contemporary research **directly contradicts** these thresholds - ChatGPT 4.0 shows HIGHER diversity (MTLD 143.25) than humans (66.56).
+
+4. **RTTR (Dimension 4)**: Claimed threshold (AI: <7.5, Human: ≥7.5) **not validated in literature**. Performance is task-dependent and varies by domain, model, and context.
+
+5. **General Claim**: "+8-10% accuracy improvement" from advanced metrics **lacks empirical support**. Performance varies ±20-30% based on domain, model, and generation parameters.
+
+**Recommendation**: These metrics provide research indicators but should NOT be relied upon as definitive AI detectors. Thresholds appear to be arbitrary or aspirational rather than evidence-based. Modern transformer-based ensemble methods (Binoculars, RoBERTa classifiers, SpecDetect) show superior empirical performance.
+
+**Status**: All dimensions remain implemented for research continuity, but users should be aware of validation limitations. Consider local calibration on domain-specific data before production deployment.
 
 ---
 

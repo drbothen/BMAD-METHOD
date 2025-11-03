@@ -118,8 +118,14 @@ Examples:
     parser.add_argument('--output', '-o', metavar='FILE', help='Write output to file instead of stdout')
 
     # Dual scoring options
-    parser.add_argument('--show-scores', action='store_true',
-                        help='Calculate and display dual scores (Detection Risk + Quality Score) with optimization path')
+    parser.add_argument('--scores-detailed', action='store_true',
+                        help='Show detailed dual score breakdown with full tier analysis and optimization path')
+    parser.add_argument('--show-scores', action='store_true', dest='scores_detailed',
+                        help='(Deprecated: use --scores-detailed) Show detailed dual score breakdown')
+    parser.add_argument('--no-score-summary', action='store_true',
+                        help='Omit quality score summary from standard report')
+    parser.add_argument('--no-track-history', action='store_true',
+                        help='Disable saving score history to .ai-analysis-history/ directory')
     parser.add_argument('--detection-target', type=float, default=30.0, metavar='N',
                         help='Target detection risk score (0-100, lower=better, default: 30.0)')
     parser.add_argument('--quality-target', type=float, default=85.0, metavar='N',
@@ -166,11 +172,11 @@ Examples:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
 
-    elif args.show_scores:
-        # Dual scoring mode (single file only)
+    elif args.scores_detailed:
+        # Detailed scoring mode (standard report + full dual score breakdown)
         if args.batch:
-            print("Warning: --show-scores mode not supported for batch analysis. Using standard mode.", file=sys.stderr)
-            args.show_scores = False
+            print("Warning: --scores-detailed mode not supported for batch analysis. Using standard mode.", file=sys.stderr)
+            args.scores_detailed = False
         else:
             try:
                 # Run standard analysis first
@@ -183,22 +189,38 @@ Examples:
                     quality_target=args.quality_target
                 )
 
-                # Load history
-                history = analyzer.load_score_history(args.file)
+                # Load and save history (unless disabled)
+                if not args.no_track_history:
+                    history = analyzer.load_score_history(args.file)
+                    history.add_score(dual_score, notes="")
+                    analyzer.save_score_history(history)
+                else:
+                    # Create empty history for display purposes
+                    from ai_pattern_analyzer.history.tracker import ScoreHistory
+                    history = ScoreHistory(file_path=args.file, scores=[])
 
-                # Add current score to history
-                history.add_score(dual_score, notes="")
+                # Generate dual score section first (will be inserted at top of report)
+                dual_score_section = format_dual_score_report(
+                    dual_score,
+                    history,
+                    args.format,
+                    as_detailed_section=True  # Format as continuation, not standalone
+                )
 
-                # Save updated history
-                analyzer.save_score_history(history)
-
-                # Format and output
-                output_text = format_dual_score_report(dual_score, history, args.format)
+                # Generate full report with dual score at top
+                output_text = format_report(
+                    result,
+                    args.format,
+                    include_score_summary=False,  # Don't show summary - detailed breakdown is shown at top
+                    detection_target=args.detection_target,
+                    quality_target=args.quality_target,
+                    dual_score_section=dual_score_section  # Insert at top, after header
+                )
 
                 if args.output:
                     with open(args.output, 'w', encoding='utf-8') as f:
                         f.write(output_text)
-                    print(f"Dual score analysis written to {args.output}", file=sys.stderr)
+                    print(f"Detailed analysis written to {args.output}", file=sys.stderr)
                 else:
                     print(output_text)
 
@@ -234,6 +256,28 @@ Examples:
             try:
                 result = analyzer.analyze_file(args.file)
                 results.append(result)
+
+                # Calculate dual score for history and optimization
+                # (needed when score summary is shown)
+                calculated_dual_score = None
+                if not args.no_score_summary and args.format == 'text':
+                    try:
+                        calculated_dual_score = analyzer.calculate_dual_score(
+                            result,
+                            detection_target=args.detection_target,
+                            quality_target=args.quality_target
+                        )
+
+                        # Save to history (unless disabled)
+                        if not args.no_track_history:
+                            history = analyzer.load_score_history(args.file)
+                            history.add_score(calculated_dual_score, notes="")
+                            analyzer.save_score_history(history)
+
+                    except Exception as e:
+                        # Don't fail the entire run if history tracking fails
+                        print(f"Warning: Could not calculate/save score history: {e}", file=sys.stderr)
+
             except Exception as e:
                 print(f"Error: {e}", file=sys.stderr)
                 sys.exit(1)
@@ -249,7 +293,17 @@ Examples:
         else:
             # Individual reports
             for r in results:
-                output_lines.append(format_report(r, args.format))
+                # Pass pre-calculated dual_score only for single file mode
+                dual_score_param = calculated_dual_score if (len(results) == 1 and not args.batch) else None
+
+                output_lines.append(format_report(
+                    r,
+                    args.format,
+                    include_score_summary=not args.no_score_summary,
+                    detection_target=args.detection_target,
+                    quality_target=args.quality_target,
+                    dual_score=dual_score_param
+                ))
 
         output_text = '\n'.join(output_lines)
 
