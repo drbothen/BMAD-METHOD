@@ -1,0 +1,60 @@
+# BMAD Obsidian 2nd Brain Expansion Pack Configuration
+name: bmad-obsidian-2nd-brain
+version: 1.0.0
+short-title: Obsidian 2nd Brain
+description: >-
+  Transform Obsidian into a powerful second brain with temporal RAG architecture.
+  Combines semantic search with bi-temporal graph database for knowledge evolution tracking.
+author: BMAD Team
+slashPrefix: bmad-2b
+
+# Vault directory structure configuration
+vault:
+  inbox: inbox
+  archive: archive
+  mocs: mocs
+  daily_notes: daily-notes
+  periodic_reviews: reviews
+
+# Neo4j configuration (optional)
+neo4j:
+  enabled: true # Set to false for Obsidian-only mode
+  uri: bolt://localhost:7687
+  username: neo4j
+  password: changeme
+  database: obsidian
+
+# Required Obsidian plugins
+required_plugins:
+  - name: Smart Connections
+    purpose: Local semantic search
+  - name: MCP Tools
+    purpose: Claude integration
+  - name: Local REST API
+    purpose: External tool access
+  - name: Dataview
+    purpose: Dynamic queries
+  - name: Templater
+    purpose: Note templates
+
+# MCP servers configuration
+mcp_servers:
+  - name: obsidian-mcp
+    purpose: Vault operations
+  - name: graphiti-mcp
+    purpose: Temporal graph database
+  - name: perplexity
+    purpose: External research
+  - name: context7
+    purpose: Documentation lookup
+
+# Agent configurations
+agents:
+  yolo_mode_default: false
+  auto_link_threshold: 0.8
+
+# Quality thresholds
+quality_thresholds:
+  atomic_score_min: 0.7
+  link_density_min: 0.3
+  staleness_threshold_days: 90
