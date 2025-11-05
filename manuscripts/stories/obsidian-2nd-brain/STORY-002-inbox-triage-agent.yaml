@@ -25,12 +25,12 @@ acceptance_criteria:
   - "AC9: Commands implemented: *help, *process-inbox, *capture, *classify, *batch-process, *yolo, *exit"
 
 tasks_subtasks: |
-  - [ ] Task 1: Create agent file with YAML metadata (AC1)
+  - [ ] Task 1: Create agent file skeleton with YAML metadata (AC1)
     - [ ] Navigate to /Users/jmagady/Dev/BMAD-METHOD/expansion-packs/bmad-obsidian-2nd-brain/agents/
     - [ ] Create file: inbox-triage-agent.md
     - [ ] Add BMAD header: <!-- Powered by BMAD™ Core -->
     - [ ] Add activation notice section
-    - [ ] Add YAML metadata block with complete agent definition
+    - [ ] Add YAML metadata block structure with agent definition
     - [ ] Add agent.name: Triage
     - [ ] Add agent.id: inbox-triage-agent
     - [ ] Add agent.title: Inbox Triage Agent
@@ -39,12 +39,60 @@ tasks_subtasks: |
     - [ ] Add persona section (role, style, identity, focus per requirements doc)
     - [ ] Add core_principles list
     - [ ] Add commands section with all 7 commands
-    - [ ] Add dependencies section (tasks, templates, checklists, data)
+    - [ ] Add dependencies section placeholder (will populate in Task 9b after files created)
     - [ ] Add startup context section after YAML block
     - [ ] Verify YAML syntax is valid
 
-  - [ ] Task 2: Implement content classification system (AC2, AC6)
-    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-classify-content-type.md
+  - [ ] Task 2: Create templates (AC4)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/templates/inbox-note-tmpl.yaml
+    - [ ] Define template metadata:
+      - [ ] template.id: inbox-note-template-v1
+      - [ ] template.name: Inbox Note
+      - [ ] template.version: 1.0
+      - [ ] template.output.format: markdown
+    - [ ] Define template sections:
+      - [ ] Frontmatter (YAML): status, content_type, confidence, source, author, captured, tags
+      - [ ] Content section: {{content}}
+      - [ ] Context section: {{context}} (if available)
+      - [ ] Processing Notes section: (empty, for triage agent to fill)
+      - [ ] Next Actions section: (empty, for user or agent to fill)
+    - [ ] Add template variables list and descriptions
+    - [ ] Reference bmad-core templates for structure guidance
+
+  - [ ] Task 3: Create checklists (AC8)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/checklists/capture-quality-checklist.md
+    - [ ] Define quality criteria:
+      - [ ] Content is non-empty (min 10 characters)
+      - [ ] Content type classified with confidence >= 0.5
+      - [ ] Source URL is valid format (if present)
+      - [ ] Author extracted or marked as "Unknown"
+      - [ ] Timestamp is valid ISO 8601 format
+      - [ ] No HTML/JavaScript injection detected
+      - [ ] Filename follows naming convention
+      - [ ] Inbox note created successfully in Obsidian
+      - [ ] Neo4j CaptureEvent created (if enabled) or skipped gracefully
+      - [ ] Template all required fields populated
+    - [ ] Add remediation steps for each failed check
+
+  - [ ] Task 4: Create knowledge base files (AC2, AC3)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/data/content-type-taxonomy.md
+    - [ ] Define each of 6 content types with:
+      - [ ] Name and description
+      - [ ] Characteristics and signals
+      - [ ] Example snippets (3-5 per type)
+      - [ ] Common sources
+      - [ ] Processing recommendations
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/data/source-patterns.md
+    - [ ] Define URL patterns for common sources:
+      - [ ] Academic: arxiv.org, scholar.google.com, pubmed.ncbi.nlm.nih.gov
+      - [ ] News: Medium, Substack, major news sites
+      - [ ] Social: Twitter/X, LinkedIn, Reddit
+      - [ ] Books: Kindle highlights, Readwise, Literal
+      - [ ] Documentation: GitHub, official docs sites
+    - [ ] Add author extraction patterns per source type
+
+  - [ ] Task 5: Implement content classification system (AC2, AC6)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/classify-content-type.md
     - [ ] Add task header with purpose and inputs/outputs
     - [ ] Define classification heuristics for each of 6 types:
       - [ ] Quote: Has quotation marks or block quote formatting, has source attribution
@@ -63,8 +111,8 @@ tasks_subtasks: |
     - [ ] Add output format: {type: string, confidence: float, reasoning: string}
     - [ ] Reference data/content-type-taxonomy.md for detailed definitions
 
-  - [ ] Task 3: Implement metadata extraction (AC3)
-    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-extract-metadata.md
+  - [ ] Task 6: Implement metadata extraction (AC3)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/extract-metadata.md
     - [ ] Define metadata extraction steps:
       - [ ] Extract source URL using regex for common URL patterns
       - [ ] Extract author from "by [name]", "@[handle]", or meta tags
@@ -79,8 +127,8 @@ tasks_subtasks: |
     - [ ] Add output format: {source_url, author, timestamp, context, tags, raw_metadata}
     - [ ] Reference data/source-patterns.md for URL pattern recognition
 
-  - [ ] Task 4: Create inbox note creation task (AC4)
-    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-inbox-note.md
+  - [ ] Task 7: Create inbox note creation task (AC4)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/create-inbox-note.md
     - [ ] Define steps for Obsidian MCP Tools integration:
       - [ ] Load inbox-note-tmpl.yaml template
       - [ ] Substitute variables: {{content}}, {{content_type}}, {{source}}, {{author}}, {{timestamp}}, {{confidence}}
@@ -91,9 +139,13 @@ tasks_subtasks: |
     - [ ] Add retry logic: 3 attempts with exponential backoff
     - [ ] Add validation: verify note created successfully before returning
 
-  - [ ] Task 5: Create Neo4j CaptureEvent creation task (AC5)
-    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-capture-event.md
-    - [ ] Add Neo4j enabled check: read config.yaml neo4j.enabled field
+  - [ ] Task 8: Create Neo4j CaptureEvent creation task (AC5)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/create-capture-event.md
+    - [ ] Add Neo4j enabled check with explicit steps:
+      - [ ] Read expansion pack config file: expansion-packs/bmad-obsidian-2nd-brain/config.yaml
+      - [ ] Parse YAML and extract neo4j.enabled boolean field
+      - [ ] If neo4j.enabled is false or undefined, skip to graceful degradation
+      - [ ] If neo4j.enabled is true, proceed with Graphiti MCP integration
     - [ ] If enabled, define Graphiti MCP integration:
       - [ ] Prepare episode text: "{content_type} captured from {source}: {content_preview}"
       - [ ] Call Graphiti MCP: add_episode(content={episode_text}, timestamp={iso_timestamp})
@@ -112,54 +164,6 @@ tasks_subtasks: |
     - [ ] If disabled, skip gracefully and return: {skipped: true, reason: "neo4j_disabled"}
     - [ ] Return: {success: boolean, event_id: string|null, error: string|null}
 
-  - [ ] Task 6: Create templates (AC4)
-    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/templates/inbox-note-tmpl.yaml
-    - [ ] Define template metadata:
-      - [ ] template.id: inbox-note-template-v1
-      - [ ] template.name: Inbox Note
-      - [ ] template.version: 1.0
-      - [ ] template.output.format: markdown
-    - [ ] Define template sections:
-      - [ ] Frontmatter (YAML): status, content_type, confidence, source, author, captured, tags
-      - [ ] Content section: {{content}}
-      - [ ] Context section: {{context}} (if available)
-      - [ ] Processing Notes section: (empty, for triage agent to fill)
-      - [ ] Next Actions section: (empty, for user or agent to fill)
-    - [ ] Add template variables list and descriptions
-    - [ ] Reference bmad-core templates for structure guidance
-
-  - [ ] Task 7: Create checklists (AC8)
-    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/checklists/capture-quality-checklist.md
-    - [ ] Define quality criteria:
-      - [ ] Content is non-empty (min 10 characters)
-      - [ ] Content type classified with confidence >= 0.5
-      - [ ] Source URL is valid format (if present)
-      - [ ] Author extracted or marked as "Unknown"
-      - [ ] Timestamp is valid ISO 8601 format
-      - [ ] No HTML/JavaScript injection detected
-      - [ ] Filename follows naming convention
-      - [ ] Inbox note created successfully in Obsidian
-      - [ ] Neo4j CaptureEvent created (if enabled) or skipped gracefully
-      - [ ] Template all required fields populated
-    - [ ] Add remediation steps for each failed check
-
-  - [ ] Task 8: Create knowledge base files (AC2, AC3)
-    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/data/content-type-taxonomy.md
-    - [ ] Define each of 6 content types with:
-      - [ ] Name and description
-      - [ ] Characteristics and signals
-      - [ ] Example snippets (3-5 per type)
-      - [ ] Common sources
-      - [ ] Processing recommendations
-    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/data/source-patterns.md
-    - [ ] Define URL patterns for common sources:
-      - [ ] Academic: arxiv.org, scholar.google.com, pubmed.ncbi.nlm.nih.gov
-      - [ ] News: Medium, Substack, major news sites
-      - [ ] Social: Twitter/X, LinkedIn, Reddit
-      - [ ] Books: Kindle highlights, Readwise, Literal
-      - [ ] Documentation: GitHub, official docs sites
-    - [ ] Add author extraction patterns per source type
-
   - [ ] Task 9: Implement agent commands (AC9)
     - [ ] In inbox-triage-agent.md, add command implementations in Startup Context section:
       - [ ] *help: List all commands with descriptions
@@ -171,8 +175,13 @@ tasks_subtasks: |
       - [ ] *exit: Exit agent mode with confirmation
     - [ ] Define command parameters and return values
     - [ ] Add error handling for invalid inputs
+    - [ ] Populate agent file dependencies section with created files:
+      - [ ] tasks: classify-content-type.md, extract-metadata.md, create-inbox-note.md, create-capture-event.md
+      - [ ] templates: inbox-note-tmpl.yaml
+      - [ ] checklists: capture-quality-checklist.md
+      - [ ] data: content-type-taxonomy.md, source-patterns.md
 
-  - [ ] Task 10: Add security hardening (Should-Fix Issue #7)
+  - [ ] Task 10: Add security hardening
     - [ ] In extract-metadata.md task, add security section:
       - [ ] Input validation: sanitize all user-provided content
       - [ ] URL safety: validate URLs against safe regex, block file:// and javascript: protocols
@@ -255,7 +264,7 @@ dev_notes: |
     - FOR LATER USE ONLY - NOT FOR ACTIVATION...
     - Dependencies map to {root}/{type}/{name}
     - type=folder (tasks|templates|checklists|data)
-    - Example: capture-classify-content-type.md → {root}/tasks/capture-classify-content-type.md
+    - Example: classify-content-type.md → {root}/tasks/classify-content-type.md
 
   REQUEST-RESOLUTION: Match user requests to your commands/dependencies flexibly...
 
@@ -547,10 +556,10 @@ dev_notes: |
   - `expansion-packs/bmad-obsidian-2nd-brain/agents/inbox-triage-agent.md`
 
   **Tasks:**
-  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-classify-content-type.md`
-  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-extract-metadata.md`
-  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-inbox-note.md`
-  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-capture-event.md`
+  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/classify-content-type.md`
+  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/extract-metadata.md`
+  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/create-inbox-note.md`
+  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/create-capture-event.md`
 
   **Templates:**
   - `expansion-packs/bmad-obsidian-2nd-brain/templates/inbox-note-tmpl.yaml`
@@ -678,6 +687,18 @@ change_log:
     version: 2.0
     description: Comprehensive remediation of all validation issues - added tasks_subtasks, dev_notes, security considerations, dependency specifications, testing standards, anti-hallucination safeguards
     author: Sarah (Product Owner)
+  - date: 2025-11-04
+    version: 3.0
+    description: |
+      Fixed all validation issues identified in comprehensive story validation:
+      - CRITICAL FIX: Reordered tasks to resolve dependency violations (Tasks 2-4 moved before Tasks 5-8)
+      - Correct task sequence: 1→2→3→4→5→6→7→8→9→10→11→12 (templates/checklists/kb before implementation)
+      - Standardized task file names to match requirements doc (removed "capture-" prefix)
+      - Added explicit Neo4j config reading steps in Task 8 (config.yaml parsing with graceful degradation)
+      - Split Task 1 to create agent skeleton first, populate dependencies in Task 9 after files created
+      - Updated all file path references to use canonical names from requirements doc
+      - Added Task 9 substep to populate agent dependencies section after all files exist
+    author: Sarah (Product Owner)
 
 dev_agent_record: |
   # Dev Agent Record
@@ -698,15 +719,15 @@ dev_agent_record: |
 
   ### Task Completion Status
 
-  - [ ] Task 1: Create agent file with YAML metadata
-  - [ ] Task 2: Implement content classification system
-  - [ ] Task 3: Implement metadata extraction
-  - [ ] Task 4: Create inbox note creation task
-  - [ ] Task 5: Create Neo4j CaptureEvent creation task
-  - [ ] Task 6: Create templates
-  - [ ] Task 7: Create checklists
-  - [ ] Task 8: Create knowledge base files
-  - [ ] Task 9: Implement agent commands
+  - [ ] Task 1: Create agent file skeleton with YAML metadata
+  - [ ] Task 2: Create templates
+  - [ ] Task 3: Create checklists
+  - [ ] Task 4: Create knowledge base files
+  - [ ] Task 5: Implement content classification system
+  - [ ] Task 6: Implement metadata extraction
+  - [ ] Task 7: Create inbox note creation task
+  - [ ] Task 8: Create Neo4j CaptureEvent creation task
+  - [ ] Task 9: Implement agent commands and populate dependencies
   - [ ] Task 10: Add security hardening
   - [ ] Task 11: Testing and validation
   - [ ] Task 12: Integration verification
@@ -718,10 +739,10 @@ dev_agent_record: |
   ### Files Created
 
   - expansion-packs/bmad-obsidian-2nd-brain/agents/inbox-triage-agent.md
-  - expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-classify-content-type.md
-  - expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-extract-metadata.md
-  - expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-inbox-note.md
-  - expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-capture-event.md
+  - expansion-packs/bmad-obsidian-2nd-brain/tasks/classify-content-type.md
+  - expansion-packs/bmad-obsidian-2nd-brain/tasks/extract-metadata.md
+  - expansion-packs/bmad-obsidian-2nd-brain/tasks/create-inbox-note.md
+  - expansion-packs/bmad-obsidian-2nd-brain/tasks/create-capture-event.md
   - expansion-packs/bmad-obsidian-2nd-brain/templates/inbox-note-tmpl.yaml
   - expansion-packs/bmad-obsidian-2nd-brain/checklists/capture-quality-checklist.md
   - expansion-packs/bmad-obsidian-2nd-brain/data/content-type-taxonomy.md
