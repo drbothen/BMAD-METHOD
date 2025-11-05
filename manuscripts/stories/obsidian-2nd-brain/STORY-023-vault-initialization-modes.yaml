@@ -1,0 +1,376 @@
+---
+story_id: STORY-023
+title: Implement Greenfield and Brownfield Vault Initialization
+epic_id: EPIC-001
+phase: 1
+priority: high
+estimated_effort: 12 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a user setting up the expansion pack
+  I want different installation flows for new vs existing vaults
+  So that the system creates structure for new vaults and adapts to existing vaults
+
+acceptance_criteria:
+  - "AC1: Detect if vault is greenfield (empty/minimal) or brownfield (existing content)"
+  - "AC2: Provide greenfield initialization with organizational structure creation"
+  - "AC3: Provide brownfield initialization that adapts to existing structure"
+  - "AC4: Offer organizational method templates for greenfield vaults"
+  - "AC5: Guide user through appropriate setup flow based on vault state"
+  - "AC6: Document both initialization modes in user guide"
+
+tasks_subtasks: |
+  - [ ] Task 1: Implement vault state detection (AC1)
+    - [ ] Create `tools/vault-state-detector.js`
+    - [ ] Implement vault analysis logic:
+      ```javascript
+      function detectVaultState(vaultPath) {
+        const analysis = {
+          isEmpty: false,           // <10 notes total
+          isMinimal: false,          // <50 notes total
+          hasStructure: false,       // Organized folders detected
+          noteCount: 0,
+          folderCount: 0,
+          organizationMethod: null,  // para, zettelkasten, lyt, custom, none
+          existingFolders: [],
+          detectedPaths: {}
+        };
+
+        // Count markdown files (excluding .obsidian/)
+        // Count folders
+        // Detect organizational patterns
+        // Return analysis
+      }
+      ```
+    - [ ] Define greenfield threshold: <10 notes and <5 folders
+    - [ ] Define brownfield: ≥10 notes OR organized folder structure
+    - [ ] Detect organizational patterns:
+      - PARA: Projects/Areas/Resources/Archive folders
+      - Zettelkasten: Flat structure, numbered notes, Fleeting/Permanent
+      - LYT: MOCs folder, Home note
+      - Johnny Decimal: Numerical folder names
+      - Custom: Has folders but no clear pattern
+      - None: Empty or minimal
+    - [ ] Exclude Obsidian system folders (.obsidian/, .trash/)
+    - [ ] Handle vault plugins folder detection
+
+  - [ ] Task 2: Create greenfield initialization flow (AC2)
+    - [ ] Build interactive setup wizard for empty vaults:
+      - Welcome message explaining greenfield setup
+      - Ask: "Which organizational method would you like to use?"
+      - Options: PARA, Zettelkasten, LYT, Johnny Decimal, Custom
+      - For each method, show what folders will be created
+      - Confirm structure creation
+      - Create folders
+      - Create starter notes (README, index, templates)
+      - Update vault-mappings.yaml with created structure
+    - [ ] Define folder creation templates:
+      ```yaml
+      organizational_templates:
+        para:
+          folders:
+            - "10 Projects"
+            - "20 Areas"
+            - "30 Resources"
+            - "40 Archive"
+            - "50 Atomic Notes"
+            - "60 MOCs"
+            - "00 Inbox"
+            - "99 Agent Output"
+            - "Templates"
+          starter_notes:
+            - "README.md": Explains PARA method
+            - "00 Inbox/Start Here.md": Inbox explanation
+            - "60 MOCs/Home.md": Main navigation MOC
+
+        zettelkasten:
+          folders:
+            - "Fleeting Notes"
+            - "Literature Notes"
+            - "Permanent Notes"
+            - "Inbox"
+            - "Agent Output"
+            - "Templates"
+          starter_notes:
+            - "README.md": Explains Zettelkasten method
+            - "Inbox/Start Here.md": Capture instructions
+            - "Index.md": Main index note
+
+        lyt:
+          folders:
+            - "MOCs"
+            - "Sources"
+            - "Workbench"
+            - "Inbox"
+            - "Agent Output"
+            - "Templates"
+          starter_notes:
+            - "README.md": Explains LYT method
+            - "MOCs/Home.md": Home MOC
+            - "Workbench/Start Here.md": Usage guide
+      ```
+    - [ ] Create folder creation utility
+    - [ ] Generate starter notes with explanations
+    - [ ] Add template examples
+    - [ ] Create .gitkeep files for empty folders
+
+  - [ ] Task 3: Create brownfield initialization flow (AC3)
+    - [ ] Build adaptive setup wizard for existing vaults:
+      - Welcome message explaining brownfield setup
+      - Show detected vault statistics (note count, folders)
+      - Display detected organizational method (if any)
+      - Ask: "We detected [method]. Is this correct?"
+      - If incorrect, ask for manual selection
+      - Ask user to map existing folders to key locations:
+        - "Where do you keep projects?" → User selects folder
+        - "Where do you keep inbox items?" → User selects folder
+        - "Where should agents create output?" → User selects folder
+      - Confirm mapping
+      - Create only missing essential folders (e.g., Agent Output)
+      - Update vault-mappings.yaml with mapped structure
+    - [ ] Implement folder mapping interface:
+      ```javascript
+      function mapExistingFolders(vaultPath, detectedFolders) {
+        const mapping = {
+          inbox: promptUserSelection("Inbox folder", detectedFolders, "Inbox"),
+          projects: promptUserSelection("Projects folder", detectedFolders, null),
+          areas: promptUserSelection("Areas folder", detectedFolders, null),
+          resources: promptUserSelection("Resources folder", detectedFolders, null),
+          archive: promptUserSelection("Archive folder", detectedFolders, null),
+          atomicNotes: promptUserSelection("Atomic notes folder", detectedFolders, null),
+          mocs: promptUserSelection("MOCs folder", detectedFolders, null),
+          agentOutput: promptUserSelection("Agent output folder", detectedFolders, "99 Agent Output"),
+          templates: promptUserSelection("Templates folder", detectedFolders, "Templates")
+        };
+        return mapping;
+      }
+      ```
+    - [ ] Support "skip" option for locations not applicable
+    - [ ] Only create missing essential folders (Agent Output, Templates)
+    - [ ] Preserve all existing content and structure
+    - [ ] Warning before creating any new folders
+    - [ ] Option to customize folder names
+
+  - [ ] Task 4: Create organizational method templates (AC4)
+    - [ ] Create `templates/vault-initialization/` directory
+    - [ ] Create PARA template:
+      - Folder structure definition
+      - README.md with PARA explanation
+      - Starter notes with usage examples
+      - Tag taxonomy recommendation
+    - [ ] Create Zettelkasten template:
+      - Folder structure definition
+      - README.md with Zettelkasten principles
+      - Note ID scheme explanation
+      - Linking guidelines
+    - [ ] Create LYT template:
+      - Folder structure definition
+      - README.md with LYT explanation
+      - Example MOCs
+      - Home note template
+    - [ ] Create Johnny Decimal template:
+      - Folder structure with numeric categories
+      - README.md with numbering system
+      - Category index
+    - [ ] Create Minimal template:
+      - Just Inbox and Agent Output
+      - For users who prefer flat structure
+    - [ ] Document each template's philosophy and use cases
+
+  - [ ] Task 5: Integrate with vault mapping setup (AC5)
+    - [ ] Update `bmad-2b configure` command flow:
+      - Detect vaults (from STORY-019)
+      - For each vault:
+        - Detect if greenfield or brownfield
+        - Branch to appropriate wizard
+        - Complete initialization
+        - Add to vault-mappings.yaml
+      - Summary of all configured vaults
+    - [ ] Add CLI command: `bmad-2b vault:init <vault-path>`
+      - Manual vault initialization
+      - Detects state and runs appropriate wizard
+    - [ ] Add CLI command: `bmad-2b vault:reinit <vault-id>`
+      - Re-run initialization for existing vault
+      - Useful if user changes organizational method
+    - [ ] Add safety checks:
+      - Confirm before creating folders in brownfield vaults
+      - Backup vault state before major changes
+      - Allow dry-run mode to preview changes
+    - [ ] Update STORY-019 to call initialization logic
+
+  - [ ] Task 6: Document both initialization modes (AC6)
+    - [ ] Create `docs/vault-initialization-guide.md`
+    - [ ] Section 1: Understanding Greenfield vs Brownfield
+      - Define both terms
+      - When each applies
+      - How system detects
+    - [ ] Section 2: Greenfield Initialization
+      - Step-by-step wizard walkthrough
+      - Organizational method comparison
+      - What gets created
+      - Starter notes explanation
+    - [ ] Section 3: Brownfield Initialization
+      - Step-by-step wizard walkthrough
+      - Folder mapping process
+      - Preserving existing structure
+      - Adding missing components
+    - [ ] Section 4: Organizational Methods
+      - PARA detailed explanation and when to use
+      - Zettelkasten detailed explanation and when to use
+      - LYT detailed explanation and when to use
+      - Johnny Decimal detailed explanation and when to use
+      - Custom/Minimal approaches
+    - [ ] Section 5: Post-Initialization
+      - Verifying setup
+      - Customizing configuration
+      - Adding agents
+      - First steps
+    - [ ] Section 6: Troubleshooting
+      - Wrong method detected
+      - Re-running initialization
+      - Fixing folder mappings
+    - [ ] Add to main user guide with links
+
+dev_notes: |
+  ## Greenfield vs Brownfield Philosophy
+
+  **Greenfield Vaults:**
+  - Opportunity to establish best practices from the start
+  - Can create opinionated structure
+  - Guide users toward proven organizational methods
+  - Less risk of disrupting existing workflows
+  - Can be more prescriptive
+
+  **Brownfield Vaults:**
+  - Must respect user's existing organization
+  - Adaptation over prescription
+  - Detect patterns, don't assume
+  - Minimal intrusion
+  - Preserve all existing content and links
+  - User knows their vault better than we do
+
+  ## Detection Heuristics
+
+  **Greenfield Indicators:**
+  - <10 markdown files (excluding .obsidian/)
+  - <5 user-created folders
+  - No organizational pattern detected
+  - No MOC or index notes
+  - Creation date within last month
+
+  **Brownfield Indicators:**
+  - ≥10 markdown files
+  - Organized folder structure
+  - Presence of index/MOC notes
+  - Existing tag system
+  - Links between notes
+  - Age > 1 month
+
+  **Edge Cases:**
+  - User created vault but hasn't added content yet → Greenfield
+  - User has many notes but no folders → Brownfield (flat structure preference)
+  - User has folders but minimal notes → Ask user (ambiguous)
+
+  ## Organizational Method Selection
+
+  Help users choose the right method:
+
+  **PARA (Projects, Areas, Resources, Archive)**
+  - Best for: Action-oriented knowledge work
+  - Users who: Manage multiple projects, need clear filing system
+  - Examples: Freelancers, project managers, consultants
+
+  **Zettelkasten**
+  - Best for: Research, writing, deep thinking
+  - Users who: Value atomic notes and emergent structure
+  - Examples: Academics, researchers, authors
+
+  **LYT (Linking Your Thinking)**
+  - Best for: Flexible knowledge building
+  - Users who: Prefer MOCs and fluid connections
+  - Examples: Knowledge workers, students, writers
+
+  **Johnny Decimal**
+  - Best for: Strict categorization needs
+  - Users who: Want numerical filing system
+  - Examples: Detail-oriented organizers, archivists
+
+  **Custom/Minimal**
+  - Best for: Users with specific needs or existing system
+  - Users who: Already know what they want
+
+  ## Folder Creation Safety
+
+  Critical principles:
+  1. NEVER delete existing folders or notes
+  2. NEVER rename user's existing folders
+  3. ALWAYS confirm before creating folders in brownfield vaults
+  4. ALWAYS provide dry-run/preview mode
+  5. Create only essential missing folders
+  6. Use .gitkeep for empty folders (if vault in git)
+
+  ## Integration with Existing Stories
+
+  - **STORY-019**: Vault discovery calls this initialization
+  - **STORY-020**: Agent output uses detected/created paths
+  - **STORY-021**: Per-vault config uses mapped locations
+  - **STORY-022**: File registry starts tracking after init
+
+  ## Starter Notes Content
+
+  Create helpful starter notes:
+  - README.md: Explain organizational method chosen
+  - Home/Index: Main navigation point
+  - Inbox Start Here: How to use inbox
+  - Templates folder: Include basic templates
+  - Agent Output README: Explain what agents create here
+
+  ## User Experience Considerations
+
+  - Clear messaging about what will be created
+  - Visual preview of folder structure
+  - Allow cancellation at any point
+  - Provide links to documentation for each method
+  - Offer to open key starter notes after setup
+  - Success message with next steps
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-019: Vault discovery and mapping system
+  - STORY-020: Agent output organization (uses created paths)
+  - STORY-021: Per-vault configuration (uses mapped locations)
+  - Node.js fs/path modules
+  - Interactive CLI library (inquirer or similar)
+  - YAML parsing library (js-yaml)
+
+testing:
+  - Test greenfield detection with empty vault
+  - Test brownfield detection with existing vault (100+ notes)
+  - Test edge case: 5 notes in vault (ambiguous)
+  - Test PARA template creation in greenfield vault
+  - Test Zettelkasten template creation
+  - Test LYT template creation
+  - Test folder mapping in brownfield vault
+  - Test detection of each organizational method
+  - Test brownfield vault with no clear organization
+  - Verify no existing folders/notes are modified
+  - Test re-initialization scenario
+  - Test cancellation at various wizard steps
+  - Verify all starter notes are created correctly
+  - Test integration with vault-mappings.yaml
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation to address greenfield vs brownfield vault initialization
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

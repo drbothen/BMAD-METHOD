@@ -1,0 +1,356 @@
+---
+story_id: STORY-031
+title: Create Phase 3 Templates (Content Brief, Publication)
+epic_id: EPIC-001
+phase: 3
+priority: high
+estimated_effort: 4 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want templates for content creation and publication
+  So that I can efficiently produce external outputs from my knowledge base
+
+acceptance_criteria:
+  - Create content-brief-tmpl.yaml
+  - Create publication-manifest-tmpl.yaml
+  - Both templates include comprehensive YAML structure
+  - Both templates include frontmatter fields, sections, and instructions
+  - Both templates include validation rules
+  - Templates follow bmad-doc-template.md specification
+
+tasks_subtasks: |
+  - [ ] Task 1: Create content-brief-tmpl.yaml (AC1)
+    - [ ] Define template metadata:
+      - template_id: content-brief-tmpl
+      - version: 1.0
+      - description: "Template for content creation briefs"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - creation_type: [article, essay, presentation, video_script, tweet_thread, code_project, tutorial] (required)
+      - topic: text (required)
+      - audience: text (required)
+      - tone: [formal, conversational, technical, inspirational, educational]
+      - length_target: text (word count, time duration, or scope)
+      - deadline: date
+      - created_at: datetime (required)
+    - [ ] Define sections:
+      - id: core_arguments
+        title: Core Arguments
+        required: true
+        instructions: |
+          Main points to develop
+          Format:
+          1. [[Note A]]: Argument or claim with link
+          2. [[Note B]]: Supporting point
+          Include preview of how arguments connect
+        validation:
+          min_items: 1
+      - id: supporting_evidence
+        title: Supporting Evidence
+        required: true
+        instructions: |
+          Key data, quotes, examples
+          Format:
+          - From [[Source X]]: "Quotable passage" (context)
+          - Data point from [[Note Y]]: 42% increase (interpretation)
+          Include full attribution for all evidence
+        validation:
+          min_items: 3
+      - id: counterarguments
+        title: Counterarguments
+        required: false
+        instructions: |
+          Alternative perspectives to address
+          Format:
+          - Objection A: [description]
+            - From [[Note X]]
+            - Refutation: [how to address]
+      - id: temporal_context
+        title: Temporal Context
+        required: false
+        instructions: |
+          How topic has evolved; relevant timing
+          Include:
+          - Historical development (if relevant)
+          - Recent changes or trends
+          - Why now? (timeliness argument)
+      - id: unique_angles
+        title: Unique Angles
+        required: true
+        instructions: |
+          Unexpected connections; novel combinations
+          Include:
+          - Cross-domain insights (connecting X and Y)
+          - Contrarian takes
+          - Analogies or metaphors
+        validation:
+          min_items: 1
+      - id: research_gaps
+        title: Research Gaps
+        required: false
+        instructions: |
+          Information needed beyond knowledge base
+          Format:
+          - Gap A: [what's needed]
+            - Suggested sources: [list]
+            - Estimated effort: [hours]
+      - id: citation_manifest
+        title: Citation Manifest
+        required: true
+        instructions: |
+          Complete list of knowledge base items used
+          Auto-populated by Content Brief Agent
+          Format:
+          - [[Note A]]: Used in section 1 (core argument)
+          - [[Note B]]: Used in section 2 (evidence)
+          Enables provenance tracking
+    - [ ] Define variable substitution:
+      - {{topic}} - Topic description
+      - {{creation_type}} - Article/essay/presentation/etc.
+      - {{audience}} - Intended audience
+      - {{deadline}} - Target date
+    - [ ] Add LLM instructions for brief generation
+    - [ ] Add usage notes for Content Brief Agent
+    - [ ] Add example content brief
+
+  - [ ] Task 2: Create publication-manifest-tmpl.yaml (AC2)
+    - [ ] Define template metadata:
+      - template_id: publication-manifest-tmpl
+      - version: 1.0
+      - description: "Template for publication tracking and provenance"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - publication_type: [blog_post, article, paper, book_chapter, presentation, video, tweet_thread] (required)
+      - target_format: [html, pdf, markdown, epub, slides, plain_text] (required)
+      - target_audience: [general, expert, practitioner, students, peers] (required)
+      - publication_date: datetime (required)
+      - source_notes: list_of_links (required)
+      - content_status: [draft, review, published, archived] (default: draft)
+      - version_control: text (semantic versioning, default: '1.0.0')
+    - [ ] Define sections:
+      - id: metadata_section
+        title: Metadata
+        required: true
+        instructions: |
+          Publication details
+          - Format: [Target format]
+          - Audience: [Intended readers]
+          - Scope: [What's included/excluded]
+          - Word count: [Approximate]
+          - Published to: [Platform or venue]
+        validation:
+          min_length: 100
+      - id: content
+        title: Content
+        required: true
+        instructions: |
+          Actual publication content with embedded formatting
+          Converted from Obsidian wikilinks to target format
+        validation:
+          min_length: 500
+      - id: bibliography
+        title: Bibliography
+        required: true
+        instructions: |
+          Complete source attribution
+          Auto-generated from citation metadata
+          Format:
+          [1] Author. "Title". Publication. Date. URL.
+          [2] ...
+        validation:
+          min_items: 1
+      - id: version_history
+        title: Version History
+        required: true
+        instructions: |
+          Publication version updates
+          Format:
+          - v1.0.0 ([Date]): Initial publication
+          - v1.1.0 ([Date]): Updated section X based on feedback
+          - v1.1.1 ([Date]): Fixed typos
+        validation:
+          min_entries: 1
+      - id: reversion_path
+        title: Reversion Path
+        required: false
+        instructions: |
+          How to return content to knowledge base
+          Include:
+          - Which notes were modified for publication (audience adaptation)
+          - What insights from publication should feed back to KB
+          - Whether published version should be archived in KB
+      - id: usage_tracking
+        title: Usage Tracking
+        required: true
+        instructions: |
+          Link to Neo4j CreativeOutput node
+          Tracks:
+          - Which notes were used
+          - Which concepts were referenced
+          - When output was created
+          - Feedback or insights from publication
+    - [ ] Define variable substitution:
+      - {{publication_type}} - Blog post/article/etc.
+      - {{target_format}} - HTML/PDF/etc.
+      - {{publication_date}} - Publication timestamp
+      - {{version_control}} - Version number
+    - [ ] Add LLM instructions for manifest generation
+    - [ ] Add usage notes for Publication Formatter Agent
+    - [ ] Add example publication manifest
+
+  - [ ] Task 3: Follow bmad-doc-template.md specification (AC6)
+    - [ ] Ensure both templates follow standard format:
+      - YAML structure with metadata
+      - Frontmatter field definitions with types and constraints
+      - Section definitions with IDs, titles, instructions
+      - Validation rules for required sections
+      - Variable substitution patterns
+      - LLM instructions embedded
+      - Usage notes for agents
+    - [ ] Validate YAML syntax
+    - [ ] Test variable substitution
+    - [ ] Verify validation rules
+
+  - [ ] Task 4: Create template usage documentation (AC4)
+    - [ ] Document content brief template usage:
+      - When to generate briefs (before creation)
+      - How to fill research gaps
+      - Citation manifest population
+      - Integration with creation workflow
+    - [ ] Document publication manifest template usage:
+      - When to create manifests (during publication)
+      - Format conversion patterns
+      - Bibliography generation
+      - Version control practices
+      - Reversion path documentation
+
+technical_notes: |
+  ## Template Design Philosophy
+
+  These Phase 3 templates support **creation and publication**:
+  - Content brief template organizes knowledge base materials for content creation
+  - Publication manifest template tracks provenance and enables feedback loops
+
+  ## Content Brief Template Structure
+
+  The brief serves as a **context package** for content creation:
+  - **Core Arguments**: Main points from knowledge base
+  - **Supporting Evidence**: Quotes, data, examples with attribution
+  - **Counterarguments**: Alternative perspectives to address
+  - **Temporal Context**: Why now? What's changed?
+  - **Unique Angles**: Novel insights and cross-domain connections
+  - **Research Gaps**: Missing information requiring external research
+  - **Citation Manifest**: Complete provenance tracking
+
+  **Creation Type Adaptations:**
+  - **Article/Essay**: Focus on core arguments and evidence
+  - **Presentation**: Emphasize unique angles and visual concepts
+  - **Video Script**: Include temporal context and storytelling flow
+  - **Tweet Thread**: Extract key insights and simplify arguments
+  - **Tutorial**: Focus on step-by-step evidence with examples
+  - **Code Project**: Technical evidence and implementation patterns
+
+  ## Publication Manifest Template Structure
+
+  The manifest enables **bi-directional knowledge flow** (KB → Content → KB):
+  - **Metadata Section**: Publication details and scope
+  - **Content**: Formatted output with converted links
+  - **Bibliography**: Auto-generated from citation metadata
+  - **Version History**: Track updates and changes
+  - **Reversion Path**: How to feed insights back to knowledge base
+  - **Usage Tracking**: Neo4j CreativeOutput node linkage
+
+  ## Two-Way Knowledge Flow
+
+  **KB → Content:**
+  1. Content Brief Agent generates brief from knowledge base
+  2. User creates content using brief
+  3. Publication Formatter Agent prepares output
+
+  **Content → KB:**
+  1. User documents insights from creation process
+  2. New connections discovered during writing
+  3. Gaps identified become research priorities
+  4. Feedback from publication informs note updates
+
+  ## Format Conversion Patterns
+
+  **Wikilink Conversion:**
+  - HTML: `[[Note]]` → `<a href="...">Note</a>`
+  - PDF: `[[Note]]` → Footnote reference
+  - Markdown: `[[Note]]` → `[Note](url)`
+  - Plain text: `[[Note]]` → "(see: Note)"
+
+  **Citation Generation:**
+  - Parse frontmatter source metadata
+  - Generate formatted citations
+  - Support multiple citation styles (APA, MLA, Chicago, etc.)
+  - Include URLs and access dates
+
+  ## Privacy Compliance
+
+  Publication templates integrate with privacy checks:
+  - Flag notes marked #private or in private folders
+  - Detect PII (personal identifiable information)
+  - Verify source permissions
+  - Check for unpublished sensitive content
+
+  ## Integration with Workflows
+
+  - **Content Brief**: Used in creation-project-workflow (Phase 2)
+  - **Publication Manifest**: Used in creation-project-workflow (Phase 7)
+  - Both integrate with Neo4j for provenance tracking
+
+dependencies:
+  - STORY-026: creation-project-workflow (uses both templates)
+  - STORY-007: Content Brief Agent (uses content-brief-tmpl)
+  - STORY-007: Publication Formatter Agent (uses publication-manifest-tmpl)
+  - Neo4j integration (for usage tracking) - optional
+  - common/utils/bmad-doc-template.md (template format specification)
+
+testing:
+  - Validate YAML syntax for both templates
+  - Test variable substitution patterns
+  - Verify validation rules work correctly
+  - Test template instantiation with sample data
+  - Test content brief with different creation types
+  - Verify citation manifest population
+  - Test publication manifest with different formats
+  - Validate wikilink conversion for all formats
+  - Test bibliography generation
+  - Verify version history tracking
+  - Test reversion path documentation
+  - Validate privacy compliance integration
+  - Test Neo4j usage tracking
+
+definition_of_done:
+  - content-brief-tmpl.yaml created with all sections
+  - publication-manifest-tmpl.yaml created with all sections
+  - Both templates follow bmad-doc-template.md format
+  - All frontmatter fields defined with types and constraints
+  - All sections include instructions and validation rules
+  - Variable substitution patterns documented
+  - LLM instructions embedded in templates
+  - Usage documentation created
+  - YAML syntax validated
+  - Templates tested with sample data
+  - Integration with agents verified
+  - Format conversion patterns documented
+  - Privacy compliance integration verified
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Phase 3 templates
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

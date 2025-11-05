@@ -1,0 +1,384 @@
+---
+story_id: STORY-032
+title: Create Phase 4 Templates (Gap Analysis)
+epic_id: EPIC-001
+phase: 4
+priority: high
+estimated_effort: 3 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want a template for documenting knowledge gaps
+  So that I can systematically track and prioritize research needs
+
+acceptance_criteria:
+  - Create gap-analysis-tmpl.yaml
+  - Template includes comprehensive YAML structure
+  - Template includes frontmatter fields, sections, and instructions
+  - Template includes validation rules
+  - Template follows bmad-doc-template.md specification
+  - Template supports gap tracking workflow
+
+tasks_subtasks: |
+  - [ ] Task 1: Create gap-analysis-tmpl.yaml (AC1)
+    - [ ] Define template metadata:
+      - template_id: gap-analysis-tmpl
+      - version: 1.0
+      - description: "Template for knowledge gap analysis"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - gap_type: [coverage, evidence, prerequisite, assumption, conceptual] (required)
+      - discovery_date: datetime (required)
+      - gap_location: [within_notes, cross_domain, foundational, methodological]
+      - priority: [critical, high, medium, low] (required)
+      - research_status: [identified, researching, researched, closed] (default: identified)
+      - blocking_work: list_of_links (projects or outputs waiting on gap resolution)
+    - [ ] Define sections:
+      - id: gap_description
+        title: Knowledge Gap Description
+        required: true
+        instructions: |
+          Clear description of what is missing
+          Include:
+          - What we don't know
+          - Why it's a gap (vs. intentional boundary)
+          - How gap manifests (errors, confusion, inability to proceed)
+        validation:
+          min_length: 100
+      - id: why_matters
+        title: Why This Gap Matters
+        required: true
+        instructions: |
+          Impact on current understanding and work
+          Include:
+          - How gap limits current work
+          - Potential insights if gap filled
+          - Risks of leaving gap unaddressed
+        validation:
+          min_length: 50
+      - id: where_appears
+        title: Where Gap Appears
+        required: true
+        instructions: |
+          Specific references where gap creates problems
+          Format:
+          - [[Note A]]: Can't complete argument due to missing premise X
+          - [[Note B]]: Contradiction unresolvable without understanding Y
+          - [[Project C]]: Decision blocked pending research on Z
+        validation:
+          min_items: 1
+      - id: research_approach
+        title: Suggested Research Approach
+        required: true
+        instructions: |
+          Methods, sources, estimated effort
+          Include:
+          - Recommended research methods (reading, experimentation, consultation)
+          - Potential sources (specific books, experts, datasets)
+          - Estimated effort (hours or days)
+          - Required expertise level
+        validation:
+          min_length: 100
+      - id: success_criteria
+        title: Success Criteria
+        required: true
+        instructions: |
+          How to know gap is adequately filled
+          Include:
+          - Specific questions that should be answerable
+          - Artifacts that should exist (notes, data, etc.)
+          - Validation method (review against sources, expert consultation)
+        validation:
+          min_items: 1
+      - id: related_gaps
+        title: Related Gaps
+        required: false
+        instructions: |
+          Other gaps that depend on this one or are adjacent
+          Format:
+          - Depends on: [gaps that must be resolved first]
+          - Blocks: [gaps that can't be addressed until this one is]
+          - Related: [adjacent gaps that might resolve together]
+      - id: research_progress
+        title: Research Progress
+        required: false
+        instructions: |
+          Timeline of research effort and findings
+          Format:
+          - [Date]: Started research approach X
+          - [Date]: Found source Y, provided partial answer
+          - [Date]: Consulted expert Z, clarified aspect A
+          Update as research progresses
+    - [ ] Define variable substitution:
+      - {{gap_type}} - Coverage/evidence/prerequisite/assumption
+      - {{priority}} - Critical/high/medium/low
+      - {{research_status}} - Current status
+    - [ ] Add LLM instructions for gap analysis
+    - [ ] Add usage notes for Gap Detector Agent
+    - [ ] Add example gap analysis
+
+  - [ ] Task 2: Define gap type taxonomy (AC6)
+    - [ ] Document gap types:
+      - **Coverage Gap**: Missing topic or domain entirely
+        - Example: "We have notes on JavaScript but nothing on TypeScript"
+        - Detection: Domain analysis reveals missing areas
+      - **Evidence Gap**: Claims without sufficient support
+        - Example: "Note claims X but provides no sources or data"
+        - Detection: Citation analysis, source validation
+      - **Prerequisite Gap**: Missing foundational knowledge
+        - Example: "Can't understand advanced topic without basics"
+        - Detection: Concept dependency analysis
+      - **Assumption Gap**: Implicit assumptions not examined
+        - Example: "Argument relies on unstated premise P"
+        - Detection: Logical analysis, argumentation structure
+      - **Conceptual Gap**: Incomplete or shallow understanding
+        - Example: "Surface-level note without deep exploration"
+        - Detection: Depth analysis, question identification
+    - [ ] Document gap location types:
+      - **Within Notes**: Missing content in individual notes
+      - **Cross Domain**: Missing connections between domains
+      - **Foundational**: Missing basic concepts or frameworks
+      - **Methodological**: Missing research or analysis methods
+
+  - [ ] Task 3: Define priority scoring rubric (AC6)
+    - [ ] Document priority levels:
+      - **Critical**: Blocks current work, high impact
+        - Blocking work exists
+        - No workaround available
+        - High value if resolved
+        - Score: 90-100
+      - **High**: Significant limitation, should address soon
+        - Limits understanding or decisions
+        - Workaround exists but suboptimal
+        - Medium-high value if resolved
+        - Score: 70-89
+      - **Medium**: Desirable but not urgent
+        - Would improve understanding
+        - Workarounds acceptable
+        - Medium value if resolved
+        - Score: 40-69
+      - **Low**: Nice to have, low urgency
+        - Minor limitation
+        - Low value if resolved
+        - Can defer indefinitely
+        - Score: 0-39
+    - [ ] Document priority calculation:
+      - Base score = (blocking_work_count * 50) + (reference_count * 10)
+      - Adjust for domain importance (×1.5 for critical domains)
+      - Adjust for research feasibility (÷ estimated_hours)
+
+  - [ ] Task 4: Define research status lifecycle (AC6)
+    - [ ] Document status transitions:
+      - **Identified**: Gap discovered and documented
+        - Gap analysis created
+        - Priority assigned
+        - Research approach suggested
+      - **Researching**: Active research in progress
+        - Research initiated
+        - Sources being consulted
+        - Progress notes being added
+      - **Researched**: Research completed, integration pending
+        - Sufficient information gathered
+        - Ready for integration into knowledge base
+        - Notes to be created from findings
+      - **Closed**: Gap filled and integrated
+        - Notes created from research
+        - Links established
+        - Original gap-analysis archived or updated
+    - [ ] Add status workflow diagram
+
+  - [ ] Task 5: Follow bmad-doc-template.md specification (AC5)
+    - [ ] Ensure template follows standard format:
+      - YAML structure with metadata
+      - Frontmatter field definitions with types and constraints
+      - Section definitions with IDs, titles, instructions
+      - Validation rules for required sections
+      - Variable substitution patterns
+      - LLM instructions embedded
+      - Usage notes for agents
+    - [ ] Validate YAML syntax
+    - [ ] Test variable substitution
+    - [ ] Verify validation rules
+
+  - [ ] Task 6: Create template usage documentation (AC6)
+    - [ ] Document gap analysis template usage:
+      - When to create gap analyses (during reviews, creation)
+      - How to assess priority
+      - Research progress tracking
+      - Integration with research-integration-workflow
+      - Gap closure criteria
+    - [ ] Document integration points:
+      - Gap Detector Agent creates gap analyses
+      - Monthly Deep Review Workflow triggers gap detection
+      - Creation Project Workflow identifies gaps during brief preparation
+      - Research Integration Workflow resolves gaps
+      - Contradiction Resolution Workflow may create gaps (Strategy B)
+
+technical_notes: |
+  ## Template Design Philosophy
+
+  The gap analysis template supports **systematic knowledge gap management**:
+  - Structured identification and documentation
+  - Priority-based research planning
+  - Progress tracking throughout research lifecycle
+  - Integration with multiple workflows
+
+  ## Gap Analysis Lifecycle
+
+  **Phase 1: Discovery**
+  - Gap detected (automated or manual)
+  - Gap analysis created from template
+  - Initial assessment completed
+  - Status: "identified"
+
+  **Phase 2: Prioritization**
+  - Priority score calculated
+  - Blocking work assessed
+  - Research approach defined
+  - Placed in research queue
+
+  **Phase 3: Research**
+  - Research initiated
+  - Sources consulted
+  - Progress notes added
+  - Status: "researching"
+
+  **Phase 4: Integration**
+  - Research findings documented
+  - Notes created from findings
+  - Links established
+  - Status: "researched" → "closed"
+
+  ## Gap Detection Methods
+
+  **Automated Detection:**
+  - Unresolved questions in notes (?, TODO, RESEARCH markers)
+  - Undeveloped concepts (stub notes, low link density)
+  - Missing prerequisites (dependency analysis)
+  - Evidence gaps (claims without sources)
+  - Domain boundaries (unexplored adjacent areas)
+
+  **Manual Detection:**
+  - User notices confusion or uncertainty
+  - Creation projects reveal missing information
+  - Contradictions unresolvable due to missing knowledge
+  - Questions emerge during synthesis
+
+  ## Integration with Research Workflow
+
+  Gap analysis feeds directly into research-integration-workflow:
+  1. Gap identified → Gap analysis created
+  2. Gap prioritized → Added to research queue
+  3. Research initiated → Status: "researching"
+  4. Research completed → research-integration-workflow triggered
+  5. Findings integrated → Gap status: "closed"
+
+  ## Neo4j Gap Tracking
+
+  ```cypher
+  // Create gap node
+  CREATE (gap:Gap {
+    id: "uuid",
+    type: "evidence",
+    priority: "high",
+    status: "identified",
+    discovery_date: "2025-11-05"
+  })
+
+  // Link to notes where gap appears
+  MATCH (note:Note {id: "note-123"})
+  CREATE (note)-[:HAS_GAP]->(gap)
+
+  // Link to blocking work
+  MATCH (project:Project {id: "proj-456"})
+  CREATE (gap)-[:BLOCKS]->(project)
+
+  // Track research progress
+  MATCH (gap:Gap {id: "uuid"})
+  SET gap.status = "researching"
+  SET gap.research_started = "2025-11-06"
+
+  // Close gap
+  MATCH (gap:Gap {id: "uuid"})
+  MATCH (note:Note {id: "note-789"})
+  CREATE (note)-[:FILLS_GAP]->(gap)
+  SET gap.status = "closed"
+  SET gap.closed_date = "2025-11-07"
+  ```
+
+  ## Gap Type Examples
+
+  **Coverage Gap:**
+  - "We have extensive ML notes but nothing on transformers"
+  - Research approach: Read foundational transformer papers
+
+  **Evidence Gap:**
+  - "Note claims transformers revolutionized NLP but cites no sources"
+  - Research approach: Find authoritative sources, add citations
+
+  **Prerequisite Gap:**
+  - "Can't understand transformers without attention mechanism"
+  - Research approach: Study attention mechanism first
+
+  **Assumption Gap:**
+  - "Argument assumes transformers are always better, but is this true?"
+  - Research approach: Compare transformers to alternatives
+
+  **Conceptual Gap:**
+  - "Transformer note is shallow, lacks architectural details"
+  - Research approach: Deep dive into architecture, create detailed notes
+
+dependencies:
+  - STORY-040: Gap Detector Agent (creates gap analyses)
+  - STORY-024: monthly-deep-review-workflow (triggers gap detection)
+  - STORY-026: creation-project-workflow (identifies gaps during briefs)
+  - STORY-025: research-integration-workflow (resolves gaps)
+  - STORY-028: contradiction-resolution-workflow (may create gaps)
+  - Neo4j integration (for gap tracking) - optional
+  - common/utils/bmad-doc-template.md (template format specification)
+
+testing:
+  - Validate YAML syntax
+  - Test variable substitution patterns
+  - Verify validation rules work correctly
+  - Test template instantiation with sample gap data
+  - Test all gap types (coverage, evidence, prerequisite, assumption, conceptual)
+  - Validate priority scoring calculation
+  - Test research status lifecycle transitions
+  - Verify integration with Gap Detector Agent
+  - Test Neo4j gap tracking queries
+  - Validate blocking work linkage
+  - Test gap closure workflow
+  - Verify research progress tracking
+
+definition_of_done:
+  - gap-analysis-tmpl.yaml created with all sections
+  - Template follows bmad-doc-template.md format
+  - All frontmatter fields defined with types and constraints
+  - All sections include instructions and validation rules
+  - Gap type taxonomy documented
+  - Priority scoring rubric defined
+  - Research status lifecycle documented
+  - Variable substitution patterns documented
+  - LLM instructions embedded in template
+  - Usage documentation created
+  - YAML syntax validated
+  - Template tested with sample data
+  - Integration with Gap Detector Agent verified
+  - Neo4j tracking queries documented
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Phase 4 gap analysis template
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

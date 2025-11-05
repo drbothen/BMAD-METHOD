@@ -1,0 +1,340 @@
+---
+story_id: STORY-025
+title: Create Research Integration Workflow with Adaptive Tool Detection
+epic_id: EPIC-001
+phase: 5
+priority: high
+estimated_effort: 10 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want an adaptive research workflow that uses available MCP tools
+  So that I can efficiently fill knowledge gaps with high-quality external research
+
+acceptance_criteria:
+  - Create research-integration-workflow.yaml
+  - Define adaptive workflow with tool detection phase
+  - Support both automated (tool-available) and manual (tool-unavailable) modes
+  - Include quality assurance with credibility scoring
+  - Define provenance tracking in Neo4j
+  - Document duration and quality metrics
+  - Add Mermaid diagram visualization
+
+tasks_subtasks: |
+  - [ ] Task 1: Create workflow structure (AC1)
+    - [ ] Create workflows/research-integration-workflow.yaml
+    - [ ] Define workflow metadata:
+      - workflow_id: research-integration
+      - version: 2.0 (enhanced with tool detection)
+      - name: "Research Integration Workflow (Adaptive)"
+      - phases: 9
+      - estimated_duration: "15-30 min (automated) or 1-10 hours (manual)"
+      - adaptive: true
+    - [ ] List agents involved:
+      - Gap Detector Agent
+      - Research Coordinator Agent (optional but recommended)
+      - Structural Analysis Agent
+      - Semantic Linker Agent
+
+  - [ ] Task 2: Define Phase 1 - Define Research Scope (AC2)
+    - [ ] Phase name: "Define Research Scope"
+    - [ ] Agent: Gap Detector Agent
+    - [ ] Steps:
+      1. What questions need answering?
+      2. What sources are appropriate? (academic, technical docs, news, etc.)
+      3. What depth needed? (quick/medium/comprehensive)
+      4. Estimate effort required
+      5. Define success criteria
+    - [ ] Inputs: [gap_identification, creation_needs]
+    - [ ] Outputs: [research_scope, source_criteria, success_criteria]
+    - [ ] Exit criteria: Clear research questions and scope defined
+
+  - [ ] Task 3: Define Phase 2 - Tool Detection and Profiling (AC2, AC3)
+    - [ ] Phase name: "Detect and Profile Research Tools"
+    - [ ] Agent: Research Coordinator Agent
+    - [ ] Steps:
+      1. Scan environment for MCP research tools
+      2. Detect available tools:
+         - Perplexity (deep_research, reason, search)
+         - WebSearch
+         - Context7 (library documentation)
+         - WebFetch
+      3. Profile tool capabilities
+      4. Assess tool availability matrix
+      5. Recommend tool installation if gaps
+      6. Select optimal research strategy based on tools
+    - [ ] Inputs: [mcp_server_config, available_tools]
+    - [ ] Outputs: [tool_profile, recommended_strategy]
+    - [ ] Decision point: "Are research tools available?"
+    - [ ] Exit criteria: Tool profile created, strategy selected
+
+  - [ ] Task 4: Define Phase 3 - Execute Research (Automated Mode) (AC3)
+    - [ ] Phase name: "Execute Automated Research"
+    - [ ] Agent: Research Coordinator Agent
+    - [ ] Condition: Tool availability = true
+    - [ ] Steps:
+      1. Generate 10-25 optimized queries for detected tools
+      2. Execute parallel/sequential research:
+         - Perplexity deep_research for comprehensive topics
+         - Perplexity reason for complex analysis
+         - Perplexity search for quick lookups
+         - WebSearch for current events
+         - Context7 for library documentation
+      3. Collect findings from all tools
+      4. Assess source credibility (0-100 scoring rubric)
+      5. Synthesize multi-source findings
+      6. Resolve conflicts and contradictions
+      7. Create comprehensive research report
+    - [ ] Task references:
+      - generate-research-queries
+      - execute-tool-research
+      - assess-source-credibility
+      - synthesize-multi-source-findings
+    - [ ] Outputs: [research_report, credibility_scores, source_list]
+    - [ ] Quality threshold: avg credibility ≥ 75
+
+  - [ ] Task 5: Define Phase 3 - Execute Research (Manual Mode) (AC3)
+    - [ ] Phase name: "Execute Manual Research"
+    - [ ] Agent: Research Coordinator Agent
+    - [ ] Condition: Tool availability = false
+    - [ ] Steps:
+      1. Generate copy/paste queries for manual research
+      2. Provide search strategy recommendations
+      3. User conducts research externally (Google, academic databases, etc.)
+      4. User collects findings
+      5. Import findings via structured interview:
+         - What sources did you consult?
+         - What are the key findings?
+         - How credible are the sources?
+         - Any conflicting information?
+      6. Agent structures imported findings
+      7. Create research report from user input
+    - [ ] Task references:
+      - generate-manual-queries
+      - import-research-findings
+    - [ ] Outputs: [research_report, user_provided_sources]
+    - [ ] Note: Manual mode takes 50-70% longer
+
+  - [ ] Task 6: Define Phase 4 - Quality Assurance (AC4)
+    - [ ] Phase name: "Research Quality Assurance"
+    - [ ] Agent: Research Coordinator Agent
+    - [ ] Steps:
+      1. Cross-validate findings across sources
+      2. Identify conflicts and contradictions
+      3. Assign confidence levels:
+         - High: Multiple reliable sources agree
+         - Medium: Single reliable source or minor conflicts
+         - Low: Unreliable sources or major conflicts
+         - Unverified: Claim needs validation
+      4. Flag low-confidence findings for manual review
+      5. Assess research completeness (0-100 score)
+      6. Identify remaining gaps
+    - [ ] Outputs: [qa_report, confidence_levels, remaining_gaps]
+    - [ ] Quality metrics:
+      - Cross-validated claims ≥ 95%
+      - Unresolved conflicts < 5%
+      - Completeness score ≥ 80/100
+    - [ ] Exit criteria: Quality assurance complete, high confidence achieved
+
+  - [ ] Task 7: Define Phase 5 - Integration Preparation (AC5)
+    - [ ] Phase name: "Prepare Research for Integration"
+    - [ ] Agent: Research Coordinator Agent
+    - [ ] Steps:
+      1. Identify atomic concepts in findings
+      2. Prepare for note creation with source attribution
+      3. Map findings to vault organizational structure
+      4. Track research provenance for Neo4j:
+         - ResearchProject node
+         - Tools used
+         - Sources consulted
+         - Time spent
+    - [ ] Outputs: [atomic_concepts, attribution_data, provenance_metadata]
+    - [ ] Exit criteria: Research structured for integration
+
+  - [ ] Task 8: Define Phase 6 - Create Atomic Notes (AC5)
+    - [ ] Phase name: "Create Atomic Notes from Research"
+    - [ ] Agent: Structural Analysis Agent
+    - [ ] Steps:
+      1. Fragment research report into atomic notes
+      2. Preserve source citations in frontmatter:
+         - source_title
+         - source_url
+         - source_credibility
+         - retrieved_date
+      3. Create notes in appropriate location
+      4. Add tags and metadata
+    - [ ] Template: atomic-note-from-research-tmpl.yaml
+    - [ ] Outputs: [created_note_files]
+    - [ ] Exit criteria: All atomic concepts extracted as notes
+
+  - [ ] Task 9: Define Phase 7 - Link to Existing Knowledge (AC5)
+    - [ ] Phase name: "Link Research to Existing Knowledge"
+    - [ ] Agent: Semantic Linker Agent
+    - [ ] Steps:
+      1. Query Smart Connections for related notes
+      2. Suggest connections to existing notes
+      3. Create bidirectional links
+      4. Update relevant MOCs with new insights
+      5. Flag potential contradictions with existing notes
+    - [ ] Outputs: [link_suggestions, updated_mocs, flagged_contradictions]
+    - [ ] Exit criteria: Research integrated into knowledge graph
+
+  - [ ] Task 10: Define Phase 8 - Track Provenance (AC5)
+    - [ ] Phase name: "Track Research Provenance"
+    - [ ] Agent: Research Coordinator Agent
+    - [ ] Condition: Neo4j enabled
+    - [ ] Steps:
+      1. Create ResearchProject node in Neo4j
+      2. Link to tools used (MCP server references)
+      3. Link to sources consulted (Source nodes)
+      4. Link to notes created (Note nodes)
+      5. Record metadata:
+         - research_date
+         - strategy_used (automated/manual)
+         - tools_used
+         - effort_hours
+         - completeness_score
+      6. Enable future queries:
+         - "What research informed this note?"
+         - "What have I researched on topic X?"
+         - "Which tools were most effective?"
+    - [ ] Outputs: [provenance_graph]
+    - [ ] Exit criteria: Provenance tracked in Neo4j
+
+  - [ ] Task 11: Define Phase 9 - Mark Gap Resolved (AC5)
+    - [ ] Phase name: "Mark Gap as Resolved"
+    - [ ] Agent: Gap Detector Agent
+    - [ ] Steps:
+      1. Update gap status to "resolved"
+      2. Verify success criteria met
+      3. Record resolution method (automated/manual/import)
+      4. Calculate gap resolution time
+      5. Add to gap resolution history
+    - [ ] Outputs: [updated_gap_status]
+    - [ ] Exit criteria: Gap marked as resolved
+
+  - [ ] Task 12: Create Mermaid diagram (AC7)
+    - [ ] Show adaptive branching (automated vs manual)
+    - [ ] Highlight tool detection phase
+    - [ ] Show quality assurance gates
+    - [ ] Include provenance tracking
+
+  - [ ] Task 13: Define duration and quality metrics (AC6)
+    - [ ] Duration metrics:
+      - Automated (with tools): 15-30 minutes for comprehensive research
+      - Manual workflow: 1-10 hours depending on scope
+      - Time savings: 50-70% when tools available
+    - [ ] Quality metrics:
+      - Average source credibility ≥ 75 (Reliable+)
+      - Cross-validated claims ≥ 95%
+      - Unresolved conflicts < 5%
+      - Completeness score ≥ 80/100
+    - [ ] Success criteria:
+      - Research questions answered
+      - High-quality sources used
+      - Notes created and integrated
+      - Provenance tracked
+      - Gap marked resolved
+
+technical_notes: |
+  ## Adaptive Workflow Design
+
+  This workflow is **adaptive** - it detects available tools and adjusts strategy:
+
+  - **Full automation**: All tools available (Perplexity, WebSearch, Context7)
+  - **Partial automation**: Some tools available (use available tools optimally)
+  - **Manual mode**: No tools available (query generation + import workflow)
+
+  ## Tool Detection Logic
+
+  ```javascript
+  const tools = await detectResearchTools();
+
+  if (tools.perplexity || tools.webSearch) {
+    strategy = "automated";
+  } else {
+    strategy = "manual";
+    generateManualQueries();
+  }
+  ```
+
+  ## Source Credibility Rubric (0-100)
+
+  - **90-100**: Peer-reviewed academic sources, official documentation
+  - **75-89**: Reputable news outlets, established experts, verified sources
+  - **60-74**: General websites, blogs with citations, secondary sources
+  - **40-59**: Uncited claims, opinion pieces, unverified sources
+  - **0-39**: Known unreliable sources, misinformation, propaganda
+
+  ## Multi-Source Synthesis
+
+  When multiple sources provide conflicting information:
+  1. Compare source credibility scores
+  2. Look for consensus among high-credibility sources
+  3. Note conflicts explicitly in research report
+  4. Assign confidence level based on agreement
+
+  ## Integration with Enhanced Research Agent
+
+  This workflow leverages the Research Coordinator Agent v2.0 with enhanced capabilities:
+  - Automatic tool detection
+  - Adaptive strategy selection
+  - Multi-tool orchestration
+  - Source credibility assessment
+  - Conflict resolution
+  - Provenance tracking
+
+  See `bmad-obsidian-2nd-brain-research-enhancement.md` for complete agent specification.
+
+dependencies:
+  - STORY-050: Research Coordinator Agent (Phase 5 - enhanced)
+  - STORY-040: Gap Detector Agent (Phase 4)
+  - STORY-003: Structural Analysis Agent (for note creation)
+  - STORY-004: Semantic Linker Agent (for integration)
+  - MCP research tools (Perplexity, WebSearch, Context7) - optional
+  - Neo4j integration (for provenance tracking) - optional
+  - STORY-011: Templates (atomic-note-from-research-tmpl)
+  - Research enhancement document
+
+testing:
+  - Test with all tools available (full automation)
+  - Test with no tools available (manual mode)
+  - Test with partial tool availability (Perplexity only, etc.)
+  - Validate tool detection logic
+  - Test credibility scoring accuracy
+  - Validate multi-source synthesis
+  - Test conflict resolution
+  - Verify provenance tracking in Neo4j
+  - Test gap resolution marking
+  - Validate quality metrics thresholds
+  - Compare automated vs manual duration
+  - Test integration with existing notes
+
+definition_of_done:
+  - research-integration-workflow.yaml created
+  - All 9 phases defined with adaptive branching
+  - Tool detection phase implemented
+  - Both automated and manual modes specified
+  - Quality assurance steps defined
+  - Provenance tracking documented
+  - Duration and quality metrics defined
+  - Mermaid diagram created and verified
+  - Integration with Research Coordinator Agent documented
+  - Workflow tested in both modes
+  - Documentation complete
+
+change_log:
+  - date: 2025-11-05
+    version: 2.0.0
+    description: Enhanced research integration workflow with adaptive tool detection
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

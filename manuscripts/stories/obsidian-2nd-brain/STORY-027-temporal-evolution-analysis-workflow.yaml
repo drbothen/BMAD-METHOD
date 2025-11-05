@@ -1,0 +1,348 @@
+---
+story_id: STORY-027
+title: Create Temporal Evolution Analysis Workflow
+epic_id: EPIC-001
+phase: 2
+priority: medium
+estimated_effort: 6 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want to analyze how my understanding of concepts has evolved over time
+  So that I can gain meta-cognitive insights and understand my thinking patterns
+
+acceptance_criteria:
+  - Create temporal-evolution-analysis-workflow.yaml
+  - Define 7 phases from concept selection through synthesis
+  - Include timeline visualization
+  - Identify evolution phases (capture, development, maturation, maintenance)
+  - Analyze understanding shifts and triggers
+  - Generate temporal narrative
+  - Support optional meta-synthesis note creation
+
+tasks_subtasks: |
+  - [ ] Task 1: Create workflow structure (AC1)
+    - [ ] Create workflows/temporal-evolution-analysis-workflow.yaml
+    - [ ] Define workflow metadata:
+      - workflow_id: temporal-evolution-analysis
+      - version: 1.0
+      - name: "Temporal Evolution Analysis Workflow"
+      - phases: 7
+      - estimated_duration: "30-60 minutes per concept"
+      - trigger: "annual review, domain maturation, ad-hoc curiosity"
+    - [ ] List agents involved:
+      - Timeline Constructor Agent (Phase 2)
+      - User (active participant)
+
+  - [ ] Task 2: Define Phase 1 - Select Concept (AC2)
+    - [ ] Phase name: "Select Concept or Domain for Analysis"
+    - [ ] Agent: User
+    - [ ] Steps:
+      1. Choose concept/domain to analyze
+      2. Identify scope:
+         - Single concept (e.g., "knowledge management")
+         - Domain cluster (e.g., "PKM ecosystem")
+         - Project evolution (e.g., "building second brain")
+         - Recurring theme (e.g., "productivity systems")
+      3. Set analysis timeframe (e.g., last year, all time)
+      4. Define analysis objective:
+         - Understand evolution
+         - Identify patterns
+         - Document journey
+         - Prepare for teaching
+    - [ ] Inputs: [vault_notes, temporal_graph]
+    - [ ] Outputs: [selected_concept, scope, timeframe, objective]
+    - [ ] Exit criteria: Concept clearly defined with scope
+
+  - [ ] Task 3: Define Phase 2 - Query Temporal Events (AC3)
+    - [ ] Phase name: "Query Temporal Events"
+    - [ ] Agent: Timeline Constructor Agent
+    - [ ] Condition: Neo4j enabled for full temporal tracking
+    - [ ] Steps:
+      1. Query all temporal events for concept:
+         - CaptureEvent (when first encountered)
+         - EditEvent (modifications to notes)
+         - PromotionEvent (fleeting → permanent)
+         - LinkCreationEvent (connections made)
+         - ReferenceEvent (used in creative output)
+      2. Retrieve associated metadata:
+         - Timestamps
+         - User actions
+         - Source context
+         - Relationship changes
+      3. Order events chronologically
+      4. Group events by time periods (weeks/months/years)
+    - [ ] Fallback: If Neo4j unavailable, use file system metadata
+    - [ ] Outputs: [temporal_events, chronological_timeline]
+    - [ ] Exit criteria: All events retrieved and ordered
+
+  - [ ] Task 4: Define Phase 3 - Identify Evolution Phases (AC4)
+    - [ ] Phase name: "Identify Evolution Phases"
+    - [ ] Agent: Timeline Constructor Agent
+    - [ ] Steps:
+      1. Analyze event patterns to identify phases:
+         - **Initial Capture Phase**:
+           - First encounters
+           - High capture frequency
+           - Exploratory notes
+           - Few connections
+         - **Development Phase**:
+           - Rapid edits and refinements
+           - Link creation surge
+           - Concept clarification
+           - Fragmentation into atomic notes
+         - **Maturation Phase**:
+           - Promotion to evergreen status
+           - Integration into MOCs
+           - Used in creative outputs
+           - Stable understanding
+         - **Maintenance Phase**:
+           - Occasional updates
+           - Low edit frequency
+           - Established connections
+           - Reference use
+      2. Mark phase transitions
+      3. Calculate phase durations
+      4. Identify acceleration/deceleration points
+    - [ ] Outputs: [evolution_phases, phase_transitions, phase_durations]
+    - [ ] Exit criteria: Phases identified and characterized
+
+  - [ ] Task 5: Define Phase 4 - Analyze Understanding Shifts (AC5)
+    - [ ] Phase name: "Analyze Shifts in Understanding"
+    - [ ] Agent: Timeline Constructor Agent
+    - [ ] Steps:
+      1. For each phase transition, analyze:
+         - What changed in understanding?
+         - How did definition evolve?
+         - What connections emerged?
+         - What contradictions arose?
+      2. Identify shift triggers:
+         - New sources encountered
+         - Contradictory information
+         - Synthesis with other concepts
+         - Practical application
+         - Teaching/explaining
+         - Creative output process
+      3. Extract key insights from each phase
+      4. Identify unresolved tensions or questions
+    - [ ] Outputs: [understanding_shifts, shift_triggers, key_insights, unresolved_tensions]
+    - [ ] Exit criteria: Shifts analyzed and documented
+
+  - [ ] Task 6: Define Phase 5 - Generate Temporal Narrative (AC6)
+    - [ ] Phase name: "Generate Temporal Narrative"
+    - [ ] Agent: Timeline Constructor Agent
+    - [ ] Steps:
+      1. Create temporal narrative document
+      2. Structure narrative:
+         - **Introduction**: Concept overview and current understanding
+         - **Timeline**: Chronological journey with phases
+         - **Key Moments**: Significant shifts and why they occurred
+         - **Evolution Patterns**: What patterns emerged
+         - **Current State**: Where understanding stands now
+         - **Open Questions**: Unresolved tensions
+         - **Reflections**: Meta-insights about learning process
+      3. Include timeline visualization:
+         - Visual representation (Mermaid timeline or ASCII)
+         - Phase markers
+         - Key events highlighted
+      4. Document sources and influences
+      5. Add quotes from original notes showing evolution
+    - [ ] Template: temporal-narrative-tmpl.yaml
+    - [ ] Outputs: [temporal_narrative_file, timeline_visualization]
+    - [ ] Exit criteria: Narrative created with visualization
+
+  - [ ] Task 7: Define Phase 6 - User Reflection (AC2)
+    - [ ] Phase name: "User Reflection"
+    - [ ] Agent: User
+    - [ ] Steps:
+      1. Read temporal narrative
+      2. Reflect on evolution:
+         - What patterns do I notice in how I learn?
+         - What triggers understanding shifts?
+         - How has my thinking changed?
+         - What influences shaped my understanding?
+         - Am I satisfied with current understanding?
+         - What biases or blind spots exist?
+      3. Consider meta-cognitive insights:
+         - Do I move too quickly from capture to conclusion?
+         - Do I let ideas marinate enough?
+         - Do I integrate contradictions or ignore them?
+         - What's my typical concept maturation time?
+      4. Identify actionable insights for future learning
+    - [ ] Outputs: [reflection_notes]
+    - [ ] Exit criteria: Reflection completed
+
+  - [ ] Task 8: Define Phase 7 - Create Synthesis Note (Optional) (AC7)
+    - [ ] Phase name: "Create Meta-Synthesis Note"
+    - [ ] Agent: User with Structural Analysis Agent
+    - [ ] Condition: User wants to capture meta-insights
+    - [ ] Steps:
+      1. Create meta-note about evolution process
+      2. Document insights about personal thinking:
+         - Learning patterns identified
+         - Thinking style observations
+         - Bias awareness
+         - Growth areas
+      3. Capture patterns in how understanding develops:
+         - Typical maturation timeline
+         - Common shift triggers
+         - Concept integration style
+      4. Link to temporal narrative
+      5. Tag as meta-cognitive insight
+    - [ ] Template: meta-cognitive-insight-tmpl.yaml
+    - [ ] Outputs: [meta_synthesis_note]
+    - [ ] Exit criteria: Meta-insights captured
+
+  - [ ] Task 9: Create Mermaid diagram (AC6)
+    - [ ] Show workflow phases from selection to synthesis
+    - [ ] Highlight optional synthesis note phase
+    - [ ] Include sample timeline visualization
+
+  - [ ] Task 10: Define success criteria (AC2)
+    - [ ] Success criteria:
+      - Concept selected with clear scope
+      - Temporal events retrieved and ordered
+      - Evolution phases identified
+      - Understanding shifts analyzed
+      - Temporal narrative created with visualization
+      - User reflection completed
+      - Meta-insights captured (optional)
+    - [ ] Quality indicators:
+      - Timeline covers full concept history
+      - All major shifts identified
+      - Narrative is coherent and insightful
+      - Reflection yields actionable insights
+
+technical_notes: |
+  ## Evolution Phase Patterns
+
+  ### Typical Patterns Observed:
+
+  **Fast-Track Evolution** (weeks to months):
+  - Capture → Development → Maturation
+  - Common for practical skills, tools, frameworks
+  - Example: Learning a new software tool
+
+  **Slow-Burn Evolution** (months to years):
+  - Extended development phase with many iterations
+  - Common for complex, abstract concepts
+  - Example: Understanding "emergence" or "systems thinking"
+
+  **Cyclical Evolution** (revisited over time):
+  - Multiple capture-development cycles
+  - Understanding deepens with each cycle
+  - Common for philosophical or foundational concepts
+  - Example: "What is knowledge?"
+
+  **Stalled Evolution** (capture but no development):
+  - Captured but never developed
+  - Indicates low priority or lack of application
+  - Candidate for archival or renewed focus
+
+  ## Timeline Visualization Options
+
+  ### Option 1: Mermaid Timeline
+  ```mermaid
+  timeline
+    title Knowledge Management Evolution
+    2023-01 : Initial Capture : Read "Building a Second Brain"
+    2023-03 : Development : Experimented with Zettelkasten
+    2023-06 : Shift : Discovered Progressive Summarization
+    2024-01 : Maturation : Integrated into daily workflow
+    2024-06 : Maintenance : Occasional refinements
+  ```
+
+  ### Option 2: ASCII Timeline
+  ```
+  2023 -------|---------|---------|---------|
+        Jan   Mar       Jun               Dec
+         ↓     ↓         ↓
+      Capture Dev     Shift
+  ```
+
+  ## Neo4j Temporal Queries
+
+  ```cypher
+  // Get all events for a concept
+  MATCH (concept:Note {title: "Knowledge Management"})
+  MATCH (concept)-[:CAPTURED_IN|:EDITED_IN|:PROMOTED_IN|:LINKED_IN]->(event)
+  RETURN event
+  ORDER BY event.timestamp
+
+  // Find shift triggers
+  MATCH (event:EditEvent)-[:TRIGGERED_BY]->(source:Source)
+  WHERE event.note_id = $note_id
+  RETURN source, event
+  ```
+
+  ## Fallback Without Neo4j
+
+  If Neo4j is unavailable:
+  1. Use file system metadata (created, modified dates)
+  2. Parse note history from version control (git log)
+  3. Analyze outgoing links and backlinks for connections
+  4. Less detailed but still valuable
+
+  ## Use Cases
+
+  - **Annual Review**: Analyze key concepts from the year
+  - **Domain Maturation**: When domain reaches critical mass
+  - **Teaching Preparation**: Understand concept journey to teach others
+  - **Curiosity**: Ad-hoc exploration of concept evolution
+  - **Retrospective**: Project post-mortem
+
+  ## Meta-Cognitive Benefits
+
+  Understanding how you think helps you think better:
+  - Recognize learning patterns
+  - Identify bias and blind spots
+  - Optimize information intake
+  - Improve synthesis processes
+  - Build self-awareness
+
+dependencies:
+  - STORY-020: Timeline Constructor Agent (Phase 2)
+  - STORY-003: Structural Analysis Agent (for synthesis note)
+  - Neo4j temporal graph (optional but recommended)
+  - STORY-011: Templates (temporal-narrative-tmpl, meta-cognitive-insight-tmpl)
+  - Version control integration (optional for git history)
+
+testing:
+  - Test with single concept evolution
+  - Test with domain cluster evolution
+  - Test with Neo4j enabled (full temporal tracking)
+  - Test fallback mode without Neo4j
+  - Test with different timeframes (months, years, all-time)
+  - Validate phase identification accuracy
+  - Test timeline visualization rendering
+  - Validate narrative quality
+  - Test meta-synthesis note creation
+  - Test with concepts at different maturity levels
+
+definition_of_done:
+  - temporal-evolution-analysis-workflow.yaml created
+  - All 7 phases defined with clear steps
+  - Optional synthesis note phase specified
+  - Timeline visualization options documented
+  - Evolution phase patterns defined
+  - Mermaid diagram created and verified
+  - Fallback mode without Neo4j defined
+  - Success criteria documented
+  - Workflow tested end-to-end
+  - Documentation complete
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for temporal evolution analysis workflow
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

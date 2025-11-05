@@ -1,0 +1,212 @@
+---
+story_id: STORY-019
+title: Implement Vault Discovery and Configuration Mapping System
+epic_id: EPIC-001
+phase: 1
+priority: critical
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a user
+  I want the expansion pack to discover my Obsidian vaults and configure itself appropriately
+  So that agents know where to create files and respect my organizational preferences
+
+acceptance_criteria:
+  - "AC1: Create vault-mappings.yaml configuration file structure"
+  - "AC2: Implement vault discovery mechanism (find installed Obsidian vaults)"
+  - "AC3: Support multiple vaults with per-vault configuration"
+  - "AC4: Document vault configuration options (organization method, folder locations)"
+  - "AC5: Create configuration UI/CLI for vault mapping"
+  - "AC6: Validate vault paths and detect organizational structure"
+
+tasks_subtasks: |
+  - [ ] Task 1: Design vault-mappings.yaml structure (AC1)
+    - [ ] Create schema for vault configuration:
+      ```yaml
+      vaults:
+        - id: "vault-001"
+          name: "Personal Vault"
+          path: "/Users/username/Documents/Vaults/PersonalVault"
+          enabled: true
+          organizationMethod: "para"  # para, zettelkasten, lyt, johnny-decimal, custom
+          keyLocations:
+            inbox: "00 Inbox"
+            projects: "10 Projects"
+            areas: "20 Areas"
+            resources: "30 Resources"
+            archive: "40 Archive"
+            atomicNotes: "50 Atomic Notes"
+            mocs: "60 MOCs"
+            agentOutput: "99 Agent Output"
+            templates: "100 Templates"
+          agentsEnabled:
+            - inbox-triage-agent
+            - atomic-note-creator
+            - semantic-linker
+            - query-interpreter
+            - quality-auditor
+          autoProcessing:
+            enabled: true
+            schedule: "daily"
+            time: "09:00"
+          excludedFolders:
+            - "Archive"
+            - "Templates"
+            - ".trash"
+      ```
+    - [ ] Define required vs optional fields
+    - [ ] Add validation rules for paths and folder names
+    - [ ] Document all configuration options
+
+  - [ ] Task 2: Implement vault discovery (AC2)
+    - [ ] Research Obsidian vault storage locations:
+      - macOS: `~/Library/Application Support/obsidian/` (config)
+      - Windows: `%APPDATA%\Obsidian\` (config)
+      - Linux: `~/.config/obsidian/` (config)
+    - [ ] Parse Obsidian config to find vault list
+    - [ ] Extract vault paths from obsidian.json or equivalent
+    - [ ] Handle both file-system vaults and Obsidian Sync vaults
+    - [ ] Verify vault accessibility (read/write permissions)
+    - [ ] Create `tools/vault-discovery.js` utility
+
+  - [ ] Task 3: Support multiple vaults (AC3)
+    - [ ] Ensure vault-mappings.yaml can handle multiple vaults
+    - [ ] Implement vault selection during installation
+    - [ ] Support adding vaults post-installation
+    - [ ] Support enabling/disabling vaults without deletion
+    - [ ] Handle vault moves/renames gracefully
+    - [ ] Create vault management CLI commands:
+      - `bmad-2b vault:add <path>`
+      - `bmad-2b vault:remove <id>`
+      - `bmad-2b vault:list`
+      - `bmad-2b vault:enable <id>`
+      - `bmad-2b vault:disable <id>`
+
+  - [ ] Task 4: Document configuration options (AC4)
+    - [ ] Create comprehensive config documentation
+    - [ ] Document organization method options:
+      - **PARA**: Projects, Areas, Resources, Archives
+      - **Zettelkasten**: Flat/minimal hierarchy, atomic notes
+      - **LYT**: Map of Contents focused
+      - **Johnny Decimal**: Numerical categorization
+      - **Custom**: User-defined structure
+    - [ ] Document keyLocations mapping
+    - [ ] Explain agent enablement per-vault
+    - [ ] Document auto-processing settings
+    - [ ] Create examples for each organization method
+    - [ ] Add to `docs/vault-configuration-guide.md`
+
+  - [ ] Task 5: Create configuration UI/CLI (AC5)
+    - [ ] Build interactive setup wizard:
+      - Detect vaults automatically
+      - Prompt user to select vaults
+      - Detect organization method (or ask)
+      - Prompt for key folder locations
+      - Select agents to enable
+      - Configure auto-processing preferences
+    - [ ] Create CLI commands for configuration:
+      - `bmad-2b configure`
+      - `bmad-2b detect-vaults`
+      - `bmad-2b set-organization <vault-id> <method>`
+    - [ ] Save configuration to vault-mappings.yaml
+    - [ ] Provide config validation and error messages
+
+  - [ ] Task 6: Implement vault structure detection (AC6)
+    - [ ] Analyze vault folder structure
+    - [ ] Detect likely organization method:
+      - PARA indicators: "Projects", "Areas", "Resources", "Archive" folders
+      - Zettelkasten indicators: Flat structure, "Fleeting", "Permanent" notes
+      - LYT indicators: "MOCs" folder, heavy linking
+      - Johnny Decimal: Numerical folder names (10-19, 20-29, etc.)
+    - [ ] Detect key folder locations automatically
+    - [ ] Validate detected structure
+    - [ ] Present findings to user for confirmation
+    - [ ] Allow manual override of detection
+    - [ ] Create `tools/vault-analyzer.js` utility
+
+dev_notes: |
+  ## Research Insights
+
+  **Vault Organization Diversity:**
+  Users employ diverse organizational systems:
+  - PARA: Project-based, 4 main categories
+  - Zettelkasten: Flat, link-heavy, atomic notes
+  - LYT: MOC-centric, flexible linking
+  - Johnny Decimal: Strict numerical categorization
+  - ACE: Location, alphabet, time, category, relevance
+  - Hybrid: Combinations of above
+
+  **Critical Requirements:**
+  1. Don't assume folder structure
+  2. Support multiple vaults per user
+  3. Allow per-vault configuration
+  4. Respect user's organizational preferences
+  5. Provide sensible defaults with override capability
+
+  ## Configuration Hierarchy
+
+  From research, configuration should follow this precedence:
+  1. Hardcoded defaults (in code)
+  2. Global defaults (default-config.yaml)
+  3. User global preferences (user-preferences.yaml)
+  4. Per-vault settings (vault-mappings.yaml)
+  5. Vault-local overrides (.obsidian/.bmad/config.json)
+  6. Runtime overrides (environment variables)
+
+  ## Obsidian Vault Detection
+
+  Obsidian stores vault information in:
+  - **obsidian.json**: Contains vault list and paths
+  - **Location varies by OS** (see paths above)
+  - Each vault has unique ID and path
+  - Vault config stored in `.obsidian/` within each vault
+
+  ## Implementation Notes
+
+  - Use Node.js fs and path modules for cross-platform compatibility
+  - Handle symlinks and aliases properly
+  - Validate vault accessibility before adding
+  - Provide clear error messages for inaccessible vaults
+  - Support relative and absolute paths
+  - Handle spaces and special characters in paths
+
+  ## Future Enhancements
+
+  - Auto-detect when vaults are added/removed from Obsidian
+  - Sync vault list from Obsidian automatically
+  - Support Obsidian Sync vaults (cloud-based)
+  - Provide GUI for vault configuration (web-based)
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure and installation location
+  - STORY-015: Obsidian MCP integration (for vault access)
+  - STORY-023: Vault initialization modes (greenfield/brownfield)
+  - Node.js file system APIs
+  - YAML parsing library (js-yaml)
+
+testing:
+  - Test vault discovery on all three operating systems
+  - Test with 0, 1, and multiple vaults
+  - Test with vaults using different organization methods
+  - Test with vaults in different locations (local, network, cloud)
+  - Test vault path validation
+  - Test configuration file creation and parsing
+  - Test vault enabling/disabling
+  - Test vault add/remove operations
+  - Verify graceful handling of moved/deleted vaults
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation based on research findings
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

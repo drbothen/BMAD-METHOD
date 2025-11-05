@@ -1,0 +1,384 @@
+---
+story_id: STORY-030
+title: Create Phase 2 Templates (MOC, Temporal, Links)
+epic_id: EPIC-001
+phase: 2
+priority: high
+estimated_effort: 6 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want complete templates for MOC construction, temporal narratives, and link suggestions
+  So that I can synthesize knowledge and track conceptual evolution
+
+acceptance_criteria:
+  - Create moc-tmpl.yaml (complete version with all sections)
+  - Create temporal-narrative-tmpl.yaml
+  - Create link-suggestion-tmpl.yaml
+  - All templates include comprehensive YAML structure
+  - All templates include frontmatter fields, sections, and instructions
+  - All templates include validation rules
+  - Templates follow bmad-doc-template.md specification
+
+tasks_subtasks: |
+  - [ ] Task 1: Create moc-tmpl.yaml (complete) (AC1)
+    - [ ] Define template metadata:
+      - template_id: moc-tmpl
+      - version: 2.0 (complete)
+      - description: "Complete Map of Content structure for knowledge domain navigation"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - type: [map_of_content, MOC]
+      - created: datetime (ISO8601)
+      - updated: datetime (ISO8601)
+      - domain: text (required)
+      - status: [active, archived]
+      - last_review: datetime
+      - maturity_level: [nascent, developing, established, comprehensive]
+    - [ ] Define sections:
+      - id: overview
+        title: Overview
+        required: true
+        instructions: 2-3 sentence synthesis of domain
+        validation:
+          min_length: 100
+          max_length: 500
+      - id: core_concepts
+        title: Core Concepts
+        required: true
+        instructions: List core concepts with 1-sentence definitions and links
+        format: "- [[Concept Name]]: Brief definition"
+        validation:
+          min_items: 3
+      - id: knowledge_branches
+        title: Knowledge Branches
+        subsections_dynamic: true
+        required: true
+        instructions: |
+          For each branch:
+          ### Branch Name
+          Summary and links to related notes
+        validation:
+          min_branches: 1
+      - id: emerging_questions
+        title: Emerging Questions
+        required: false
+        instructions: Open questions needing research or investigation
+      - id: dataview_queries
+        title: Dynamic Content
+        required: false
+        instructions: |
+          Optional Dataview queries for dynamic note lists
+          Example:
+          ```dataview
+          TABLE status, updated
+          FROM #domain AND -#archived
+          SORT updated DESC
+          ```
+      - id: maintenance_history
+        title: Last Updated
+        required: true
+        instructions: Date and summary of last update
+    - [ ] Define variable substitution:
+      - {{domain}} - Topic domain
+      - {{updated}} - Last modification timestamp
+      - {{maturity_level}} - Nascent/developing/established/comprehensive
+    - [ ] Add LLM instructions for MOC creation
+    - [ ] Add usage notes for MOC Constructor Agent
+    - [ ] Add example MOC structure
+
+  - [ ] Task 2: Create temporal-narrative-tmpl.yaml (AC2)
+    - [ ] Define template metadata:
+      - template_id: temporal-narrative-tmpl
+      - version: 1.0
+      - description: "Template for temporal analysis narratives"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - type: [temporal_narrative, evolution_analysis]
+      - narrative_type: [idea_evolution, domain_development, personal_shift]
+      - start_date: date (ISO8601, required)
+      - end_date: date (ISO8601, required)
+      - primary_subject: text (required)
+      - maturation_days: number (calculated)
+    - [ ] Define sections:
+      - id: initial_understanding
+        title: Initial Understanding
+        required: true
+        instructions: |
+          Document how concept was first understood
+          Include:
+          - Date of initial capture
+          - Original formulation (quote if from source)
+          - Source attribution
+          - Initial context or trigger
+        validation:
+          min_length: 100
+      - id: key_shifts
+        title: Key Shifts
+        subsections_dynamic: true
+        required: true
+        instructions: |
+          For each significant shift in understanding:
+          ### Shift [Number] ([Date])
+          - What changed
+          - Why it changed (new evidence, contradiction, synthesis)
+          - New understanding formulation
+          - Confidence in new understanding
+        validation:
+          min_shifts: 1
+      - id: current_understanding
+        title: Current Understanding
+        required: true
+        instructions: |
+          Latest formulation of concept
+          Include:
+          - Current definition/explanation
+          - Confidence level (high/medium/low)
+          - Date of last significant update
+        validation:
+          min_length: 100
+      - id: unresolved_tensions
+        title: Unresolved Tensions
+        required: false
+        instructions: |
+          Remaining contradictions, uncertainties, or open questions
+          Include what would resolve each tension
+      - id: timeline_visualization
+        title: Timeline Visualization
+        required: true
+        instructions: |
+          ASCII or Mermaid timeline showing key events
+          Example:
+          ```
+          2024-01-15: Initial capture from Source A
+          2024-02-03: Contradiction discovered in Source B
+          2024-02-10: Synthesis resolved contradiction
+          2024-03-15: Promoted to evergreen
+          ```
+      - id: influences
+        title: Influences
+        required: false
+        instructions: |
+          What influenced understanding at each stage
+          Include:
+          - External sources (books, articles, conversations)
+          - Internal connections (other notes, MOCs)
+          - Events or experiences
+    - [ ] Define variable substitution:
+      - {{primary_subject}} - Concept name
+      - {{start_date}} - Begin date
+      - {{end_date}} - End date
+      - {{maturation_days}} - Calculated days to maturity
+    - [ ] Add LLM instructions for narrative generation
+    - [ ] Add usage notes for Timeline Constructor Agent
+    - [ ] Add example timeline visualization
+
+  - [ ] Task 3: Create link-suggestion-tmpl.yaml (AC3)
+    - [ ] Define template metadata:
+      - template_id: link-suggestion-tmpl
+      - version: 1.0
+      - description: "Template for link suggestions from Semantic Linker Agent"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - suggestion_type: [semantic, temporal, causal, bridging, source-based] (required)
+      - source_note: link (required)
+      - target_note: link (required)
+      - confidence: number [0.0, 1.0] (required)
+      - reasoning: text (required)
+      - automatically_created: boolean (default: false)
+      - user_decision: [pending, accepted, rejected, review_later] (default: pending)
+      - decision_date: datetime
+    - [ ] Define sections:
+      - id: why_link
+        title: Why This Link
+        required: true
+        instructions: |
+          Detailed explanation of detected relationship
+          Include:
+          - Primary reason for suggestion
+          - Type of relationship (supports, contradicts, elaborates, etc.)
+        validation:
+          min_length: 50
+      - id: semantic_similarity
+        title: Semantic Similarity
+        required: false
+        instructions: |
+          Overlapping concepts with similarity scores
+          Format:
+          - Concept X: similarity 0.85
+          - Concept Y: similarity 0.78
+      - id: temporal_context
+        title: Temporal Context
+        required: false
+        instructions: |
+          When these ideas appeared and evolved
+          Include:
+          - Capture dates
+          - Edit timeline
+          - Temporal proximity
+      - id: implications
+        title: Implications
+        required: true
+        instructions: |
+          What connecting these ideas reveals or suggests
+          Include:
+          - New insights from connection
+          - Patterns that emerge
+          - Questions raised
+        validation:
+          min_length: 50
+      - id: user_options
+        title: User Options
+        required: true
+        instructions: |
+          Available actions:
+          - Accept: Creates bidirectional wikilink in both notes
+          - Reject: System notes decision for learning
+          - Review Later: Marks for future consideration
+    - [ ] Define variable substitution:
+      - {{source_note}} - Source note title
+      - {{target_note}} - Target note title
+      - {{confidence}} - Confidence score
+      - {{suggestion_type}} - Type of suggestion
+    - [ ] Add LLM instructions for link suggestion
+    - [ ] Add usage notes for Semantic Linker Agent
+    - [ ] Add example link suggestion
+
+  - [ ] Task 4: Follow bmad-doc-template.md specification (AC7)
+    - [ ] Ensure all templates follow standard format:
+      - YAML structure with metadata
+      - Frontmatter field definitions with types and constraints
+      - Section definitions with IDs, titles, instructions
+      - Validation rules for required sections
+      - Variable substitution patterns
+      - LLM instructions embedded
+      - Usage notes for agents
+    - [ ] Validate YAML syntax
+    - [ ] Test variable substitution
+    - [ ] Verify validation rules
+
+  - [ ] Task 5: Create template usage documentation (AC4)
+    - [ ] Document MOC template usage:
+      - When to use complete vs basic version
+      - How to structure knowledge branches
+      - Dataview query patterns
+    - [ ] Document temporal narrative template usage:
+      - How to identify key shifts
+      - Timeline visualization options
+      - Evolution pattern documentation
+    - [ ] Document link suggestion template usage:
+      - How confidence scores work
+      - Relationship type taxonomy
+      - User decision workflow
+
+technical_notes: |
+  ## Template Design Philosophy
+
+  These Phase 2 templates support **synthesis and temporal analysis**:
+  - MOC template enables domain-level knowledge organization
+  - Temporal narrative template tracks conceptual evolution
+  - Link suggestion template facilitates knowledge graph construction
+
+  ## MOC Template (Complete vs Basic)
+
+  **Basic MOC (Phase 1):**
+  - Simple structure for nascent domains
+  - Core concepts and basic organization
+  - Minimal metadata
+
+  **Complete MOC (Phase 2):**
+  - Dynamic knowledge branches with subsections
+  - Dataview queries for automated content
+  - Maintenance history tracking
+  - Maturity level progression
+  - Emerging questions section
+
+  ## Temporal Narrative Template Structure
+
+  The template captures **four temporal phases**:
+  1. **Initial Understanding**: First encounter and formulation
+  2. **Key Shifts**: Significant changes with triggers and reasoning
+  3. **Current Understanding**: Latest formulation with confidence
+  4. **Unresolved Tensions**: Open questions and contradictions
+
+  **Timeline Visualization Options:**
+  - ASCII timeline (simple, always works)
+  - Mermaid timeline (rich, requires rendering support)
+
+  ## Link Suggestion Template Types
+
+  **Suggestion Types:**
+  - **Semantic**: Overlapping concepts, similar topics
+  - **Temporal**: Ideas from same time period or evolution
+  - **Causal**: One idea leads to or explains another
+  - **Bridging**: Ideas that connect disparate domains
+  - **Source-based**: Share common sources or citations
+
+  **Confidence Scoring:**
+  - 0.9-1.0: Very high confidence (obvious connection)
+  - 0.8-0.89: High confidence (strong semantic overlap)
+  - 0.7-0.79: Medium confidence (clear relationship)
+  - 0.6-0.69: Low confidence (potential connection)
+  - Below 0.6: Not suggested (filtered out)
+
+  ## Integration with Agents
+
+  - **MOC Constructor Agent** uses moc-tmpl.yaml to create and maintain MOCs
+  - **Timeline Constructor Agent** uses temporal-narrative-tmpl.yaml for evolution analysis
+  - **Semantic Linker Agent** uses link-suggestion-tmpl.yaml for link proposals
+
+  ## Variable Substitution
+
+  Templates use `{{variable_name}}` syntax:
+  - Populated by agents during template instantiation
+  - Supports nested properties: `{{frontmatter.created}}`
+  - Date formatting: `{{date|format:YYYY-MM-DD}}`
+
+dependencies:
+  - STORY-011: Phase 1 templates (baseline)
+  - STORY-006: MOC Constructor Agent (uses moc-tmpl)
+  - STORY-020: Timeline Constructor Agent (uses temporal-narrative-tmpl)
+  - STORY-004: Semantic Linker Agent (uses link-suggestion-tmpl)
+  - common/utils/bmad-doc-template.md (template format specification)
+
+testing:
+  - Validate YAML syntax for all templates
+  - Test variable substitution patterns
+  - Verify validation rules work correctly
+  - Test template instantiation with sample data
+  - Validate MOC template with different maturity levels
+  - Test temporal narrative with various evolution patterns
+  - Validate link suggestion with different confidence scores
+  - Test Dataview query syntax in MOC template
+  - Verify timeline visualization rendering
+  - Test all frontmatter field types and constraints
+
+definition_of_done:
+  - moc-tmpl.yaml (complete) created with all sections
+  - temporal-narrative-tmpl.yaml created with all sections
+  - link-suggestion-tmpl.yaml created with all sections
+  - All templates follow bmad-doc-template.md format
+  - All frontmatter fields defined with types and constraints
+  - All sections include instructions and validation rules
+  - Variable substitution patterns documented
+  - LLM instructions embedded in templates
+  - Usage documentation created
+  - YAML syntax validated
+  - Templates tested with sample data
+  - Integration with agents verified
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Phase 2 templates
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

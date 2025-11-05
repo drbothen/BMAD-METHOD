@@ -1,0 +1,397 @@
+---
+story_id: STORY-024
+title: Create Monthly Deep Review Workflow
+epic_id: EPIC-001
+phase: 1
+priority: medium
+estimated_effort: 8 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want a comprehensive monthly review workflow
+  So that I can maintain knowledge base quality and plan strategic research
+
+acceptance_criteria:
+  - Create monthly-deep-review-workflow.yaml
+  - Define 5 phases with clear step-by-step procedures
+  - Specify all agent roles and tasks
+  - Include duration estimates (1.5-2 hours total)
+  - Add Mermaid diagram visualization
+  - Document exit criteria for each phase
+
+tasks_subtasks: |
+  - [ ] Task 1: Create workflow structure (AC1)
+    - [ ] Create workflows/monthly-deep-review-workflow.yaml
+    - [ ] Define workflow metadata:
+      - workflow_id: monthly-deep-review
+      - version: 1.0
+      - name: "Monthly Deep Review Workflow"
+      - phases: 5
+      - estimated_duration: "1.5-2 hours"
+      - frequency: monthly
+      - best_time: "Last Sunday of month"
+    - [ ] List agents involved:
+      - Quality Auditor Agent
+      - Gap Detector Agent
+      - Timeline Constructor Agent
+      - MOC Constructor Agent
+      - User (active participant)
+
+  - [ ] Task 2: Define Phase 1 - Comprehensive Audit (AC2)
+    - [ ] Phase name: "Comprehensive Quality Audit"
+    - [ ] Agent: Quality Auditor Agent
+    - [ ] Duration: 30 minutes
+    - [ ] Steps:
+      1. Run comprehensive audit across all quality dimensions
+      2. Check freshness (all notes, identify stale content)
+      3. Validate links (broken links, orphaned notes)
+      4. Verify citations (uncited claims, missing sources)
+      5. Analyze note quality scores
+      6. Generate comprehensive audit report
+      7. Prioritize action items by severity
+    - [ ] Inputs: [entire_vault, quality_thresholds]
+    - [ ] Outputs: [audit_report, action_items_by_severity]
+    - [ ] Exit criteria: Audit report created with prioritized action items
+
+  - [ ] Task 3: Define Phase 2 - Strategic Gap Analysis (AC2)
+    - [ ] Phase name: "Strategic Gap Analysis and Research Planning"
+    - [ ] Agent: Gap Detector Agent
+    - [ ] Duration: 20 minutes
+    - [ ] Steps:
+      1. Review all identified gaps from past month
+      2. Analyze domain coverage and maturity
+      3. Identify knowledge clusters and sparse areas
+      4. Prioritize research opportunities by:
+         - Domain importance
+         - Current usage patterns
+         - Creation project needs
+         - Time investment required
+      5. Create research queue for next month
+      6. Estimate effort for top 3-5 gaps
+      7. Generate gap analysis report
+    - [ ] Inputs: [all_gaps, domain_usage, creation_history]
+    - [ ] Outputs: [gap_analysis_report, prioritized_research_queue]
+    - [ ] Exit criteria: Research queue created with effort estimates
+
+  - [ ] Task 4: Define Phase 3 - Domain Evolution Analysis (AC2)
+    - [ ] Phase name: "Domain Evolution Analysis"
+    - [ ] Agent: Timeline Constructor Agent
+    - [ ] Duration: 30 minutes
+    - [ ] Steps:
+      1. User selects 1-2 key domains for analysis
+      2. Query temporal events for selected domains
+      3. Build evolution timeline (captures, edits, links, promotions)
+      4. Identify maturation patterns:
+         - Rapid growth phases
+         - Consolidation periods
+         - Stable maintenance
+      5. Analyze knowledge trajectory
+      6. Generate domain evolution narrative
+      7. Document insights about domain maturity
+    - [ ] Inputs: [selected_domains, temporal_graph]
+    - [ ] Outputs: [evolution_narratives, maturity_assessment]
+    - [ ] Decision point: "Do evolution patterns reveal research priorities?"
+    - [ ] Exit criteria: Evolution narrative created for selected domains
+
+  - [ ] Task 5: Define Phase 4 - User Remediation (AC2)
+    - [ ] Phase name: "Critical Issue Remediation"
+    - [ ] Agent: User (with agent assistance)
+    - [ ] Duration: 20-30 minutes
+    - [ ] Steps:
+      1. Review critical audit findings (severity = high)
+      2. Fix broken links (Quality Auditor suggestions)
+      3. Update stale domain-critical notes
+      4. Add missing citations for important claims
+      5. Merge duplicate notes if discovered
+      6. Delete or archive obsolete content
+      7. Mark issues requiring more time for future work
+    - [ ] Inputs: [audit_action_items, gap_priorities]
+    - [ ] Outputs: [remediation_log, deferred_issues]
+    - [ ] Decision point: "Can all critical issues be addressed this month?"
+    - [ ] Exit criteria: Critical issues resolved or scheduled
+
+  - [ ] Task 6: Define Phase 5 - MOC Maintenance (AC2)
+    - [ ] Phase name: "MOC Maintenance and Archival"
+    - [ ] Agent: MOC Constructor Agent
+    - [ ] Duration: 20-30 minutes
+    - [ ] Steps:
+      1. Review all active MOCs in vault
+      2. Update MOC summaries with new insights
+      3. Refresh Dataview queries (if applicable)
+      4. Add newly-created notes to relevant MOCs
+      5. Identify MOCs for archival (inactive domains)
+      6. Archive inactive MOCs (move to Archive, mark as archived)
+      7. Identify domains needing new MOCs
+      8. Create MOC creation queue
+    - [ ] Inputs: [all_mocs, note_creation_log, domain_activity]
+    - [ ] Outputs: [updated_mocs, archived_mocs, moc_creation_queue]
+    - [ ] Exit criteria: All active MOCs reviewed and updated
+
+  - [ ] Task 7: Create Mermaid diagram (AC5)
+    - [ ] Visualize workflow phases and decision points
+    - [ ] Show parallel vs sequential steps
+    - [ ] Highlight user involvement points
+    - [ ] Include feedback loops
+
+  - [ ] Task 8: Define success criteria and metrics (AC6)
+    - [ ] Success criteria:
+      - Comprehensive audit completed
+      - Action items prioritized by severity
+      - Research queue created for next month
+      - 1-2 domain evolution narratives generated
+      - Critical audit findings addressed
+      - All active MOCs reviewed and updated
+      - Inactive MOCs archived
+    - [ ] Duration metrics:
+      - Total time: 1.5-2 hours
+      - Can be split across multiple sessions
+    - [ ] Quality metrics:
+      - % of critical issues resolved
+      - % of MOCs updated
+      - Research queue has 3-5 actionable items
+
+  - [ ] Task 9: Document integration with other workflows (AC6)
+    - [ ] Builds on weekly-review-workflow
+    - [ ] Feeds into research-integration-workflow (via research queue)
+    - [ ] Connects to creation-project-workflow (gap analysis informs projects)
+    - [ ] Part of knowledge-lifecycle-workflow (Phase 4: Periodic Review)
+
+technical_notes: |
+  ## Workflow Structure (YAML)
+
+  ```yaml
+  workflow_id: monthly-deep-review
+  version: 1.0
+  name: "Monthly Deep Review Workflow"
+  description: |
+    Comprehensive monthly review for knowledge base maintenance,
+    strategic planning, and domain evolution analysis.
+
+  phases: 5
+  estimated_duration: "1.5-2 hours"
+  frequency: monthly
+  best_time: "Last Sunday of month"
+  can_split: true  # Can spread across multiple sessions
+
+  agents_involved:
+    - Quality Auditor Agent
+    - Gap Detector Agent
+    - Timeline Constructor Agent
+    - MOC Constructor Agent
+    - User
+
+  workflow:
+    phase_1:
+      name: "Comprehensive Quality Audit"
+      agent: Quality Auditor Agent
+      duration: "30 minutes"
+      steps:
+        - step: 1
+          action: "Run comprehensive audit"
+          task: run-comprehensive-audit
+          inputs: [entire_vault, quality_thresholds]
+          scope: all_dimensions
+          checklist: quality-audit-checklist.md
+
+        - step: 2
+          action: "Generate audit report"
+          template: audit-report-tmpl.yaml
+          outputs: [audit_report, action_items_by_severity]
+
+      exit_criteria: "Audit report created with prioritized action items"
+
+    phase_2:
+      name: "Strategic Gap Analysis"
+      agent: Gap Detector Agent
+      duration: "20 minutes"
+      steps:
+        - step: 3
+          action: "Review all identified gaps"
+          inputs: [all_gaps, domain_usage]
+
+        - step: 4
+          action: "Prioritize research opportunities"
+          task: prioritize-gaps
+          outputs: [prioritized_research_queue]
+
+        - step: 5
+          action: "Create research queue for next month"
+          template: research-queue-tmpl.yaml
+          outputs: [research_queue_file]
+
+      exit_criteria: "Research queue created with top 3-5 priorities"
+
+    phase_3:
+      name: "Domain Evolution Analysis"
+      agent: Timeline Constructor Agent
+      duration: "30 minutes"
+      steps:
+        - step: 6
+          action: "Select 1-2 domains for evolution analysis"
+          inputs: [domain_list, usage_stats]
+          user_input_required: true
+
+        - step: 7
+          action: "Build evolution timeline"
+          task: build-domain-timeline
+          inputs: [selected_domains, temporal_graph]
+
+        - step: 8
+          action: "Generate evolution narrative"
+          template: domain-evolution-tmpl.yaml
+          outputs: [evolution_narratives]
+
+      exit_criteria: "Evolution narrative created for selected domains"
+
+    phase_4:
+      name: "Critical Issue Remediation"
+      agent: User
+      duration: "20-30 minutes"
+      steps:
+        - step: 9
+          action: "Address critical audit findings"
+          inputs: [audit_action_items]
+          filter: "severity = high"
+
+        - step: 10
+          action: "Fix broken links"
+          note: "Use Quality Auditor suggestions"
+
+        - step: 11
+          action: "Update stale critical notes"
+
+        - step: 12
+          action: "Add missing citations"
+
+        - step: 13
+          action: "Mark issues for future work"
+          decision_point: "Can't complete all critical items?"
+          outputs: [deferred_issues]
+
+      exit_criteria: "Critical issues resolved or scheduled"
+
+    phase_5:
+      name: "MOC Maintenance and Archival"
+      agent: MOC Constructor Agent
+      duration: "20-30 minutes"
+      steps:
+        - step: 14
+          action: "Review all active MOCs"
+          task: review-mocs
+
+        - step: 15
+          action: "Update MOC summaries"
+
+        - step: 16
+          action: "Identify MOCs for archival"
+          filter: "last_updated > 90 days AND activity = low"
+
+        - step: 17
+          action: "Archive inactive MOCs"
+          outputs: [archived_mocs]
+
+        - step: 18
+          action: "Create MOC creation queue"
+          note: "Domains needing new MOCs"
+          outputs: [moc_creation_queue]
+
+      exit_criteria: "All active MOCs reviewed, inactive MOCs archived"
+
+  success_criteria:
+    - Audit report generated with action items
+    - Research queue has 3-5 actionable priorities
+    - Domain evolution narratives created
+    - Critical issues addressed (>80%)
+    - All active MOCs updated
+    - Inactive MOCs archived
+
+  mermaid_diagram: |
+    flowchart TD
+      Start([Monthly Review]) --> Audit[Phase 1: Comprehensive Audit]
+      Audit --> AuditReport[Generate Audit Report]
+
+      AuditReport --> GapAnalysis[Phase 2: Gap Analysis]
+      GapAnalysis --> ResearchQueue[Create Research Queue]
+
+      ResearchQueue --> SelectDomains{User Selects Domains}
+      SelectDomains --> Evolution[Phase 3: Domain Evolution]
+      Evolution --> Narratives[Generate Evolution Narratives]
+
+      Narratives --> Remediate[Phase 4: User Remediation]
+      Remediate --> FixLinks[Fix Critical Issues]
+      FixLinks --> UpdateNotes[Update Stale Notes]
+      UpdateNotes --> AddCitations[Add Citations]
+      AddCitations --> DeferCheck{All Critical Done?}
+      DeferCheck -->|No| Defer[Mark for Future]
+      DeferCheck -->|Yes| MOCs
+      Defer --> MOCs
+
+      MOCs[Phase 5: MOC Maintenance] --> ReviewMOCs[Review Active MOCs]
+      ReviewMOCs --> UpdateMOCs[Update Summaries]
+      UpdateMOCs --> ArchiveCheck{Inactive MOCs?}
+      ArchiveCheck -->|Yes| Archive[Archive MOCs]
+      ArchiveCheck -->|No| CreateQueue
+      Archive --> CreateQueue[Create MOC Creation Queue]
+
+      CreateQueue --> Complete([Monthly Review Complete])
+  ```
+
+  ## Integration Points
+
+  - Extends weekly-review-workflow with deeper analysis
+  - Feeds research-integration-workflow via research queue
+  - Informs creation-project-workflow via gap analysis
+  - Part of knowledge-lifecycle-workflow Phase 4
+
+  ## Customization Options
+
+  - Can skip Phase 3 (evolution analysis) if short on time
+  - Can focus Phase 4 on specific quality dimensions
+  - Can adjust frequency (bi-monthly for lighter users)
+
+dependencies:
+  - STORY-013: Phase 1 workflows (builds on weekly-review-workflow)
+  - STORY-006: Quality Auditor Agent
+  - STORY-040: Gap Detector Agent (Phase 4)
+  - STORY-020: Timeline Constructor Agent (Phase 2)
+  - STORY-030: MOC Constructor Agent (Phase 3)
+  - STORY-012: Phase 1 checklists (quality-audit-checklist)
+  - STORY-011: Phase 1 templates (audit-report-tmpl)
+
+testing:
+  - Execute monthly-deep-review-workflow end-to-end
+  - Validate each phase produces expected outputs
+  - Test with vaults of different sizes (small, medium, large)
+  - Verify duration estimates are accurate (±20%)
+  - Test split across multiple sessions
+  - Validate integration with weekly-review-workflow
+  - Test decision points and branching logic
+  - Verify Mermaid diagram renders correctly
+
+definition_of_done:
+  - monthly-deep-review-workflow.yaml created
+  - All 5 phases defined with clear steps
+  - Agent roles specified for each phase
+  - Duration estimates provided
+  - Exit criteria defined for each phase
+  - Success criteria documented
+  - Mermaid diagram created and verified
+  - Integration points documented
+  - Workflow tested end-to-end
+  - Documentation added to user guide
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for monthly deep review workflow
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

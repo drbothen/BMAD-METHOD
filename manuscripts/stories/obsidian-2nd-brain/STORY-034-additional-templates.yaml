@@ -1,0 +1,431 @@
+---
+story_id: STORY-034
+title: Create Additional Supporting Templates
+epic_id: EPIC-001
+phase: 6
+priority: low
+estimated_effort: 8 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want supporting templates for specialized use cases
+  So that I have complete template coverage for all workflows
+
+acceptance_criteria:
+  - Create capture-event-tmpl.yaml (Neo4j capture tracking)
+  - Create fragmentation-report-tmpl.yaml (atomization analysis)
+  - Create relationship-record-tmpl.yaml (Neo4j relationship metadata)
+  - Create moc-section-tmpl.yaml (MOC subsection structure)
+  - Create routing-decision-tmpl.yaml (query routing explanation)
+  - Create evolution-analysis-tmpl.yaml (understanding shifts)
+  - Create usage-manifest-tmpl.yaml (content usage tracking)
+  - Create remediation-plan-tmpl.yaml (quality issue fixes)
+  - Create research-priority-tmpl.yaml (prioritized research queue)
+  - Create bibliography-tmpl.yaml (citation list structure)
+  - All templates include YAML structure with metadata
+  - All templates follow bmad-doc-template.md specification
+
+tasks_subtasks: |
+  - [ ] Task 1: Create capture-event-tmpl.yaml (AC1)
+    - [ ] Define template for Neo4j CaptureEvent nodes
+    - [ ] Frontmatter fields:
+      - event_type: capture
+      - note_id: text (link to captured note)
+      - capture_timestamp: datetime (ISO8601)
+      - capture_method: [web_clipper, manual, api, mobile]
+      - source_url: text
+      - content_type: [quote, concept, reference, reflection, question]
+    - [ ] Sections:
+      - Neo4j node structure
+      - Cypher creation query
+      - Usage by Inbox Triage Agent
+    - [ ] Document Neo4j tracking purpose
+
+  - [ ] Task 2: Create fragmentation-report-tmpl.yaml (AC2)
+    - [ ] Define template for atomization analysis results
+    - [ ] Frontmatter fields:
+      - source_note_id: text
+      - analysis_date: datetime
+      - fragments_identified: number
+      - atomicity_score: number [0-100]
+      - fragmentation_recommended: boolean
+    - [ ] Sections:
+      - id: source_analysis
+        title: Source Note Analysis
+        instructions: Overview of source note structure and issues
+      - id: identified_fragments
+        title: Identified Atomic Concepts
+        instructions: List of atomic concepts detected with reasoning
+      - id: fragmentation_strategy
+        title: Fragmentation Strategy
+        instructions: How to split note into atomic notes
+      - id: link_preservation
+        title: Link Preservation Plan
+        instructions: How to maintain relationships after fragmentation
+    - [ ] Usage by Structural Analysis Agent
+
+  - [ ] Task 3: Create relationship-record-tmpl.yaml (AC3)
+    - [ ] Define template for Neo4j relationship metadata
+    - [ ] Frontmatter fields:
+      - relationship_type: [LINKS_TO, CITES, CONTRADICTS, SUPPORTS, etc.]
+      - source_node_id: text
+      - target_node_id: text
+      - relationship_strength: number [0.0-1.0]
+      - created_date: datetime
+      - confidence: number [0.0-1.0]
+    - [ ] Sections:
+      - Neo4j relationship structure
+      - Cypher creation query
+      - Relationship semantics documentation
+      - Usage by Semantic Linker Agent
+    - [ ] Document relationship type taxonomy
+
+  - [ ] Task 4: Create moc-section-tmpl.yaml (AC4)
+    - [ ] Define template for MOC subsection structure
+    - [ ] Frontmatter fields:
+      - section_title: text
+      - parent_moc: link
+      - section_type: [core_concepts, knowledge_branch, resources, questions]
+      - maturity: [nascent, developing, established]
+    - [ ] Sections:
+      - id: section_overview
+        title: Section Overview
+        instructions: 1-2 sentence summary of this subsection
+      - id: section_content
+        title: Section Content
+        instructions: Links and descriptions for this section
+      - id: section_notes
+        title: Notes
+        instructions: Additional context or maintenance notes
+    - [ ] Usage by MOC Constructor Agent
+
+  - [ ] Task 5: Create routing-decision-tmpl.yaml (AC5)
+    - [ ] Define template for query routing explanation
+    - [ ] Frontmatter fields:
+      - query: text (original query)
+      - routing_decision: [obsidian, neo4j, hybrid]
+      - confidence: number [0.0-1.0]
+      - decision_factors: list
+    - [ ] Sections:
+      - id: query_analysis
+        title: Query Analysis
+        instructions: How query was interpreted
+      - id: routing_rationale
+        title: Routing Rationale
+        instructions: Why this backend was selected
+      - id: execution_plan
+        title: Execution Plan
+        instructions: How query will be executed
+    - [ ] Usage by Query Interpreter Agent
+
+  - [ ] Task 6: Create evolution-analysis-tmpl.yaml (AC6)
+    - [ ] Define template for understanding shift analysis
+    - [ ] Frontmatter fields:
+      - concept: text
+      - analysis_date: datetime
+      - evolution_phases: number
+      - total_shifts: number
+      - maturation_complete: boolean
+    - [ ] Sections:
+      - id: shift_summary
+        title: Shift Summary
+        instructions: High-level overview of how understanding evolved
+      - id: shift_timeline
+        title: Shift Timeline
+        instructions: Chronological list of shifts with dates
+      - id: shift_triggers
+        title: Shift Triggers
+        instructions: What caused each shift (sources, contradictions, synthesis)
+      - id: current_state
+        title: Current Understanding State
+        instructions: Where understanding stands now
+      - id: meta_insights
+        title: Meta Insights
+        instructions: What this reveals about learning patterns
+    - [ ] Usage by Timeline Constructor Agent
+
+  - [ ] Task 7: Create usage-manifest-tmpl.yaml (AC7)
+    - [ ] Define template for content usage tracking
+    - [ ] Frontmatter fields:
+      - content_title: text
+      - content_type: [article, presentation, video, tutorial]
+      - creation_date: datetime
+      - notes_used_count: number
+      - usage_density: [light, moderate, heavy]
+    - [ ] Sections:
+      - id: notes_used
+        title: Notes Used
+        instructions: Complete list with usage context
+      - id: usage_patterns
+        title: Usage Patterns
+        instructions: How knowledge base was utilized
+      - id: effectiveness_assessment
+        title: Effectiveness Assessment
+        instructions: How well KB supported creation
+      - id: feedback_loop
+        title: Feedback Loop
+        instructions: Insights to integrate back into KB
+    - [ ] Usage by Content Brief Agent
+
+  - [ ] Task 8: Create remediation-plan-tmpl.yaml (AC8)
+    - [ ] Define template for quality issue action plans
+    - [ ] Frontmatter fields:
+      - audit_report_id: link
+      - remediation_date: datetime
+      - total_issues: number
+      - critical_issues: number
+      - estimated_effort_hours: number
+    - [ ] Sections:
+      - id: prioritized_actions
+        title: Prioritized Actions
+        instructions: Ranked list of fixes to make
+      - id: effort_estimates
+        title: Effort Estimates
+        instructions: Time required for each action
+      - id: execution_order
+        title: Execution Order
+        instructions: Sequence for addressing issues
+      - id: success_metrics
+        title: Success Metrics
+        instructions: How to measure improvement
+    - [ ] Usage by Quality Auditor Agent
+
+  - [ ] Task 9: Create research-priority-tmpl.yaml (AC9)
+    - [ ] Define template for prioritized research queue
+    - [ ] Frontmatter fields:
+      - queue_date: datetime
+      - total_gaps: number
+      - critical_gaps: number
+      - research_capacity_hours: number
+    - [ ] Sections:
+      - id: priority_ranking
+        title: Priority Ranking
+        instructions: Gaps sorted by priority score
+      - id: research_roadmap
+        title: Research Roadmap
+        instructions: Sequencing and dependencies
+      - id: capacity_allocation
+        title: Capacity Allocation
+        instructions: Time allocation per gap
+      - id: quick_wins
+        title: Quick Wins
+        instructions: High-value, low-effort gaps
+    - [ ] Usage by Gap Detector Agent
+
+  - [ ] Task 10: Create bibliography-tmpl.yaml (AC10)
+    - [ ] Define template for citation list structure
+    - [ ] Frontmatter fields:
+      - publication_id: link
+      - citation_style: [APA, MLA, Chicago, IEEE]
+      - total_citations: number
+      - generated_date: datetime
+    - [ ] Sections:
+      - id: citations
+        title: Citations
+        instructions: Formatted citation list in selected style
+      - id: sources_by_type
+        title: Sources by Type
+        instructions: Grouped by academic, web, book, etc.
+      - id: access_dates
+        title: Access Dates
+        instructions: When sources were accessed
+      - id: urls
+        title: URLs
+        instructions: Full URLs for all web sources
+    - [ ] Multiple citation style support
+    - [ ] Usage by Publication Formatter Agent
+
+  - [ ] Task 11: Follow bmad-doc-template.md specification (AC12)
+    - [ ] Ensure all 10 templates follow standard format:
+      - YAML structure with metadata
+      - Frontmatter field definitions
+      - Section definitions with instructions
+      - Usage notes for agents
+    - [ ] Validate YAML syntax for all templates
+    - [ ] Test variable substitution where applicable
+
+  - [ ] Task 12: Document template purposes and usage (AC12)
+    - [ ] Capture-event: Neo4j temporal tracking
+    - [ ] Fragmentation-report: Atomization guidance
+    - [ ] Relationship-record: Graph metadata
+    - [ ] MOC-section: Modular MOC structure
+    - [ ] Routing-decision: Query transparency
+    - [ ] Evolution-analysis: Learning insights
+    - [ ] Usage-manifest: Content provenance
+    - [ ] Remediation-plan: Quality improvement
+    - [ ] Research-priority: Gap management
+    - [ ] Bibliography: Publication citations
+
+technical_notes: |
+  ## Template Purpose
+
+  These **supporting templates** enable specialized functionality:
+  - **Neo4j Templates**: capture-event, relationship-record
+  - **Analysis Templates**: fragmentation-report, evolution-analysis
+  - **Workflow Templates**: routing-decision, remediation-plan, research-priority
+  - **Content Templates**: moc-section, usage-manifest, bibliography
+
+  ## Neo4j Integration Templates
+
+  ### capture-event-tmpl.yaml
+  Tracks when and how content was captured:
+  ```cypher
+  CREATE (event:CaptureEvent {
+    timestamp: "2025-11-05T10:30:00Z",
+    method: "web_clipper",
+    source_url: "https://example.com/article",
+    content_type: "quote"
+  })
+  MATCH (note:Note {id: "note-123"})
+  CREATE (note)-[:CAPTURED_IN]->(event)
+  ```
+
+  ### relationship-record-tmpl.yaml
+  Documents relationship metadata:
+  ```cypher
+  MATCH (source:Note {id: "note-123"})
+  MATCH (target:Note {id: "note-456"})
+  CREATE (source)-[:SUPPORTS {
+    strength: 0.85,
+    confidence: 0.9,
+    created: "2025-11-05",
+    reasoning: "Both discuss same framework"
+  }]->(target)
+  ```
+
+  ## Analysis Templates
+
+  ### fragmentation-report-tmpl.yaml
+  Guides note atomization:
+  - Identifies distinct concepts in monolithic notes
+  - Suggests fragmentation strategy
+  - Plans link preservation
+  - Calculates atomicity score (0-100)
+
+  ### evolution-analysis-tmpl.yaml
+  Tracks understanding shifts:
+  - Timeline of conceptual changes
+  - Shift triggers (sources, contradictions, synthesis)
+  - Meta-cognitive insights
+  - Learning pattern identification
+
+  ## Workflow Templates
+
+  ### routing-decision-tmpl.yaml
+  Explains query routing logic:
+  - Why Obsidian vs Neo4j vs hybrid
+  - Decision confidence
+  - Execution plan transparency
+
+  ### remediation-plan-tmpl.yaml
+  Organizes quality fixes:
+  - Prioritized action items
+  - Effort estimates
+  - Execution sequence
+  - Success metrics
+
+  ### research-priority-tmpl.yaml
+  Manages research queue:
+  - Gaps ranked by priority score
+  - Research roadmap with dependencies
+  - Capacity allocation
+  - Quick wins identification
+
+  ## Content Templates
+
+  ### moc-section-tmpl.yaml
+  Enables modular MOC structure:
+  - Reusable section format
+  - Consistent organization
+  - Maturity tracking per section
+
+  ### usage-manifest-tmpl.yaml
+  Tracks content creation usage:
+  - Which notes informed creation
+  - Usage patterns analysis
+  - KB effectiveness assessment
+  - Feedback loop for improvements
+
+  ### bibliography-tmpl.yaml
+  Generates citation lists:
+  - Multiple citation styles (APA, MLA, Chicago, IEEE)
+  - Grouped by source type
+  - Full URLs and access dates
+  - Auto-populated from note metadata
+
+  ## Integration Points
+
+  - **Capture-event**: Used by Inbox Triage Agent during capture
+  - **Fragmentation-report**: Used by Structural Analysis Agent during atomization
+  - **Relationship-record**: Used by Semantic Linker Agent during linking
+  - **MOC-section**: Used by MOC Constructor Agent during MOC building
+  - **Routing-decision**: Used by Query Interpreter Agent for transparency
+  - **Evolution-analysis**: Used by Timeline Constructor Agent for meta-analysis
+  - **Usage-manifest**: Used by Content Brief Agent during creation tracking
+  - **Remediation-plan**: Used by Quality Auditor Agent after audits
+  - **Research-priority**: Used by Gap Detector Agent for queue management
+  - **Bibliography**: Used by Publication Formatter Agent during publication
+
+  ## Optional vs Required
+
+  Most of these templates are **optional** depending on:
+  - Neo4j integration enabled (capture-event, relationship-record)
+  - Workflow phase (not all phases need all templates)
+  - User preferences (some users may not need all analysis templates)
+
+  **Always useful:**
+  - bibliography-tmpl (if publishing)
+  - usage-manifest-tmpl (for creation projects)
+  - remediation-plan-tmpl (for quality management)
+
+dependencies:
+  - Multiple agents use these templates
+  - Neo4j integration (for Neo4j templates) - optional
+  - Various workflows reference these templates
+  - common/utils/bmad-doc-template.md (template format specification)
+
+testing:
+  - Validate YAML syntax for all 10 templates
+  - Test Neo4j Cypher queries
+  - Verify template instantiation with sample data
+  - Test capture-event tracking
+  - Validate fragmentation-report structure
+  - Test relationship-record metadata
+  - Verify MOC-section modularity
+  - Test routing-decision transparency
+  - Validate evolution-analysis insights
+  - Test usage-manifest tracking
+  - Verify remediation-plan actionability
+  - Test research-priority ranking
+  - Validate bibliography generation for all styles
+  - Verify integration with respective agents
+
+definition_of_done:
+  - All 10 supporting templates created
+  - All templates follow bmad-doc-template.md format
+  - All frontmatter fields defined
+  - All sections include instructions
+  - Neo4j Cypher examples provided where relevant
+  - Usage notes documented for each template
+  - YAML syntax validated for all templates
+  - Templates tested with sample data
+  - Integration points documented
+  - Agent usage documented
+  - Citation style variations documented (bibliography)
+  - Relationship type taxonomy documented (relationship-record)
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for additional supporting templates
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

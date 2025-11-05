@@ -1,0 +1,238 @@
+---
+story_id: STORY-021
+title: Implement Per-Vault Configuration System in .obsidian/.bmad/
+epic_id: EPIC-001
+phase: 1
+priority: high
+estimated_effort: 12 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a user with multiple Obsidian vaults
+  I want each vault to have its own configuration overrides
+  So that agents behave appropriately for each vault's unique structure
+
+acceptance_criteria:
+  - "AC1: Create .obsidian/.bmad/ directory structure within each vault"
+  - "AC2: Implement vault-local config.yaml override system"
+  - "AC3: Define configuration hierarchy and precedence rules"
+  - "AC4: Support vault-specific agent enablement and scheduling"
+  - "AC5: Create configuration initialization during vault mapping"
+  - "AC6: Document per-vault configuration options"
+
+tasks_subtasks: |
+  - [ ] Task 1: Define .obsidian/.bmad/ structure (AC1)
+    - [ ] Create directory structure within Obsidian vault:
+      ```
+      {vault-root}/
+      ├── .obsidian/
+      │   ├── .bmad/
+      │   │   ├── config.yaml           # Vault-specific overrides
+      │   │   ├── state.json            # Vault-specific agent state
+      │   │   ├── file-registry.json    # Files created by agents in this vault
+      │   │   └── logs/
+      │   │       └── YYYY-MM-DD.log    # Daily execution logs
+      │   └── [other Obsidian config]
+      └── [user content folders]
+      ```
+    - [ ] Document purpose of each file
+    - [ ] Explain why stored in .obsidian/ (Obsidian conventions)
+    - [ ] Note that .bmad/ is hidden by default
+
+  - [ ] Task 2: Implement vault-local config.yaml (AC2)
+    - [ ] Define schema for vault-local configuration:
+      ```yaml
+      # Vault-Local Configuration
+      # Overrides global settings for this specific vault
+
+      enabled: true
+
+      agents:
+        inbox-triage-agent:
+          enabled: true
+          schedule: "09:00"
+          autoProcess: true
+          tags:
+            routing:
+              "#project": "10 Projects"
+              "#area": "20 Areas"
+              "#resource": "30 Resources"
+              "#reference": "30 Resources"
+
+        atomic-note-creator:
+          enabled: true
+          schedule: "weekly"
+          minNoteLength: 500
+          targetNoteLength: 200
+
+        semantic-linker:
+          enabled: true
+          autoLinkThreshold: 0.8
+          schedule: "daily"
+
+        query-interpreter:
+          enabled: true
+
+        quality-auditor:
+          enabled: true
+          schedule: "weekly"
+          dayOfWeek: "sunday"
+          time: "10:00"
+
+      processing:
+        autoProcessInbox: true
+        preserveUserTags: true
+        backupBeforeModification: true
+
+      output:
+        agentOutputFolder: "99 Agent Output"
+        timestampFormat: "YYYY-MM-DD"
+        retentionDays: 90
+      ```
+    - [ ] Define all overrideable settings
+    - [ ] Provide sensible defaults
+    - [ ] Validate configuration on load
+    - [ ] Support both YAML and JSON formats
+
+  - [ ] Task 3: Define configuration hierarchy (AC3)
+    - [ ] Document precedence order:
+      1. Hardcoded defaults (in agent code)
+      2. Global defaults (`.bmad-obsidian-2nd-brain/config/default-config.yaml`)
+      3. User global preferences (`.bmad-obsidian-2nd-brain/config/user-preferences.yaml`)
+      4. Per-vault settings (vault-mappings.yaml entry for this vault)
+      5. **Vault-local overrides** (`.obsidian/.bmad/config.yaml`) ← This story
+      6. Runtime overrides (environment variables, CLI flags)
+    - [ ] Implement configuration merging logic
+    - [ ] Handle nested configuration objects
+    - [ ] Create `tools/config-resolver.js` utility
+    - [ ] Add configuration validation
+    - [ ] Provide clear error messages for conflicts
+
+  - [ ] Task 4: Support vault-specific agent settings (AC4)
+    - [ ] Enable/disable agents per vault
+    - [ ] Configure agent schedules per vault
+    - [ ] Set agent-specific parameters per vault
+    - [ ] Override tag routing rules per vault
+    - [ ] Configure output preferences per vault
+    - [ ] Example use case:
+      - Personal vault: All agents enabled, daily processing
+      - Work vault: Only inbox triage and auditor, weekly processing
+      - Research vault: Semantic linker heavily used, others minimal
+    - [ ] Document common per-vault customizations
+
+  - [ ] Task 5: Initialize vault-local config (AC5)
+    - [ ] Create .obsidian/.bmad/ during vault mapping setup
+    - [ ] Generate initial config.yaml with detected settings
+    - [ ] Copy relevant settings from vault-mappings.yaml
+    - [ ] Set appropriate file permissions
+    - [ ] Handle .obsidian/ directory already exists
+    - [ ] Handle vault without .obsidian/ (error case)
+    - [ ] Add initialization to vault mapping process (STORY-019)
+    - [ ] Create `tools/vault-config-init.js` utility
+
+  - [ ] Task 6: Document per-vault configuration (AC6)
+    - [ ] Add section to user guide: "Per-Vault Configuration"
+    - [ ] Explain .obsidian/.bmad/ directory
+    - [ ] Show configuration hierarchy with examples
+    - [ ] Document all configurable options
+    - [ ] Provide examples for common scenarios:
+      - Different organization methods per vault
+      - Different agent schedules per vault
+      - Different output preferences per vault
+    - [ ] Explain how changes take effect
+    - [ ] Document configuration validation
+    - [ ] Add troubleshooting section
+    - [ ] Update `docs/user-guide.md` and `docs/configuration-guide.md`
+
+dev_notes: |
+  ## Why .obsidian/.bmad/?
+
+  **Obsidian Conventions:**
+  - `.obsidian/` is standard config directory in every vault
+  - Hidden by default (reduces clutter)
+  - Users familiar with this location for vault settings
+  - Syncs with vault (if using Obsidian Sync or git)
+  - Separates config from user content
+
+  **Advantages of Per-Vault Config:**
+  - Different vaults have different needs
+  - Personal vs Work vs Research vaults vary significantly
+  - Organization methods differ per vault
+  - Agent schedules may vary
+  - Output preferences may differ
+
+  ## Configuration Design Principles
+
+  1. **Least Surprise**: Vault-local config overrides global, as expected
+  2. **Explicit Over Implicit**: Make it clear what's overridden
+  3. **Fail Safely**: Invalid config falls back to defaults
+  4. **Document Thoroughly**: Users need to understand precedence
+  5. **Validate Early**: Catch errors during config load
+
+  ## State vs Configuration
+
+  - **config.yaml**: User-editable settings
+  - **state.json**: System-managed runtime state
+  - **file-registry.json**: Tracking database
+  - **logs/**: Historical execution records
+
+  ## Implementation Considerations
+
+  - Check if .obsidian/ exists before creating .bmad/
+  - Handle read-only vaults gracefully
+  - Respect file permissions
+  - Log configuration loading for debugging
+  - Cache resolved configuration for performance
+  - Invalidate cache when files change
+
+  ## Sync Considerations
+
+  If user syncs vault across devices:
+  - .obsidian/.bmad/config.yaml syncs (good - consistent settings)
+  - state.json may not sync well (device-specific state)
+  - file-registry.json should sync (tracks created files)
+  - logs/ probably shouldn't sync (device-specific)
+
+  Consider adding .gitignore patterns if vault is in git.
+
+  ## Future Enhancements
+
+  - Configuration UI in Obsidian (plugin)
+  - Configuration validation command
+  - Configuration diff/comparison tool
+  - Import/export configuration across vaults
+  - Configuration templates for common setups
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-019: Vault mappings system
+  - STORY-022: File registry system (shares directory)
+  - Node.js fs/path modules
+  - YAML parsing library (js-yaml)
+
+testing:
+  - Test .bmad/ directory creation
+  - Test config.yaml creation with defaults
+  - Test configuration merging across hierarchy
+  - Test vault-specific overrides
+  - Test configuration validation
+  - Test invalid configuration handling
+  - Test missing .obsidian/ directory
+  - Test read-only vault scenarios
+  - Test configuration changes taking effect
+  - Verify no interference with Obsidian's .obsidian/ files
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for per-vault configuration
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]
