@@ -1,0 +1,833 @@
+---
+story_id: STORY-037
+title: Create Research & Agent-Specific Knowledge Bases
+epic_id: EPIC-001
+phase: 5
+priority: high
+estimated_effort: 32 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want specialized knowledge bases for research and agent operations
+  So that agents have detailed reference documentation for their specialized tasks
+
+acceptance_criteria:
+  - Create 6 research-specific knowledge bases
+  - Create 3 content & structure knowledge bases
+  - Create 2 linking & semantics knowledge bases
+  - Create 2 quality & analysis knowledge bases
+  - All KBs include comprehensive reference content
+  - All KBs follow markdown format with clear sections
+  - All KBs include examples and usage guidance
+
+tasks_subtasks: |
+  - [ ] Task 1: Create Research-Specific Knowledge Bases (AC1)
+    - [ ] Create research-tools-catalog.md:
+      - Purpose: Comprehensive catalog of available research tools
+      - Sections:
+        - Perplexity Integration (Search, Reason, Deep Research)
+        - Context7 MCP (library documentation retrieval)
+        - Web search capabilities
+        - Tool capabilities matrix
+        - Tool selection decision tree
+        - Rate limits and costs
+        - Tool availability detection
+      - For each tool:
+        - Capabilities and strengths
+        - Best use cases
+        - Query format requirements
+        - Output characteristics
+        - Integration patterns
+      - Usage by: Research Coordinator Agent
+
+    - [ ] Create research-methodologies.md:
+      - Purpose: Research approaches and when to use each
+      - Sections:
+        - Automated research (Perplexity-based)
+        - Manual research (user-guided)
+        - Hybrid research (mixed approach)
+        - Research strategy patterns:
+          - Single-source validation
+          - Multi-source synthesis
+          - Deep dive investigation
+          - Breadth-first exploration
+          - Conflict resolution research
+        - Research workflow patterns
+        - Quality vs speed tradeoffs
+      - Decision matrices for approach selection
+      - Usage by: Research Coordinator Agent
+
+    - [ ] Create source-evaluation-criteria.md:
+      - Purpose: Detailed criteria for assessing source credibility
+      - Sections:
+        - Credibility factors (complete list):
+          - Author credentials and expertise
+          - Publication reputation and authority
+          - Peer review status
+          - Citation quality (sources cite other sources)
+          - Recency and currency
+          - Bias indicators
+          - Conflicts of interest
+          - Corroboration (multiple sources agree)
+          - Methodology transparency (for research)
+          - Editorial standards
+        - Source type scoring:
+          - Academic papers (baseline 85-95)
+          - Technical documentation (baseline 80-90)
+          - Reputable news (baseline 70-85)
+          - Expert blogs (baseline 60-75)
+          - General websites (baseline 40-60)
+          - Social media (baseline 20-40)
+        - Red flags and warning signs
+        - Handling conflicting credibility signals
+      - Usage by: Research Coordinator Agent
+
+    - [ ] Create query-optimization-patterns.md:
+      - Purpose: How to craft effective queries for different tools
+      - Sections:
+        - Perplexity query patterns:
+          - Search queries (quick lookups)
+          - Reasoning queries (complex problems)
+          - Deep research queries (comprehensive)
+        - Context7 MCP query patterns:
+          - Library name resolution
+          - Topic-focused queries
+          - Version-specific queries
+        - Web search query patterns
+        - Query refinement strategies
+        - Specificity vs breadth tradeoffs
+        - Multi-query strategies (parallel vs sequential)
+        - Query templates by research need
+      - Examples for each pattern
+      - Usage by: Research Coordinator Agent
+
+    - [ ] Create research-strategy-patterns.md:
+      - Purpose: Patterns for tool selection and execution strategy
+      - Sections:
+        - Adaptive strategy selection:
+          - Tool availability assessment
+          - Research goal analysis (speed vs depth vs breadth)
+          - Query count optimization (2-5 for deep, 5-10 for reasoning)
+          - Execution strategy (parallel/sequential/hybrid)
+        - Strategy patterns:
+          - Quick Lookup (1-2 search queries)
+          - Standard Research (3-5 queries, mixed tools)
+          - Deep Investigation (5-10 queries, reasoning-heavy)
+          - Comprehensive Research (10+ queries, deep research)
+        - Tool combination patterns:
+          - Perplexity Search → Context7 docs → synthesis
+          - Deep Research → reasoning → validation
+          - Parallel search → conflict resolution
+        - Fallback strategies (when tools unavailable)
+        - Quality vs cost optimization
+      - Usage by: Research Coordinator Agent
+
+    - [ ] Create credibility-scoring-rubric.md:
+      - Purpose: Complete rubric for 0-100 credibility scoring
+      - Sections:
+        - Scoring tiers (detailed):
+          - 90-100: Authoritative (peer-reviewed, official docs)
+          - 75-89: Reliable (reputable, expert, verified)
+          - 60-74: Acceptable (cited, secondary sources)
+          - 40-59: Questionable (uncited, opinion, unverified)
+          - 0-39: Unreliable (known false, propaganda, spam)
+        - Scoring factors with point values:
+          - Author credentials: +10-20
+          - Peer review: +20-30
+          - Citations provided: +10-15
+          - Publication reputation: +10-20
+          - Recency: ±5-10
+          - Conflicts of interest: -10-30
+          - Corroboration: +5-15
+          - Methodology: +5-10
+        - Source type baseline scores
+        - Adjustment rules
+        - Edge case handling
+        - Examples with score calculations
+      - Usage by: Research Coordinator Agent
+
+  - [ ] Task 2: Create Content & Structure Knowledge Bases (AC2)
+    - [ ] Create content-type-taxonomy.md:
+      - Purpose: Taxonomy of content types and their characteristics
+      - Sections:
+        - Content output types:
+          - Article (blog post, essay)
+          - Tutorial (step-by-step guide)
+          - Video script (presentation, screencast)
+          - Presentation (slides, talk)
+          - Documentation (technical, API)
+          - Book chapter
+          - Social media (thread, post)
+        - For each type:
+          - Typical structure
+          - Target audience considerations
+          - Required elements
+          - Optional elements
+          - Length guidelines
+          - Tone recommendations
+          - KB usage patterns
+        - Creation brief requirements by type
+        - Publication format requirements by type
+      - Usage by: Content Brief Agent
+
+    - [ ] Create atomicity-principles.md:
+      - Purpose: What makes a note atomic and why it matters
+      - Sections:
+        - Core atomicity principle: "One concept, one note"
+        - Benefits of atomicity:
+          - Reusability across contexts
+          - Clear linking semantics
+          - Easier maintenance
+          - Better knowledge discovery
+        - Atomicity criteria:
+          - Single coherent concept
+          - Self-contained understanding
+          - Linkable granularity
+          - Stable over time
+        - Anti-patterns:
+          - Kitchen sink notes (too broad)
+          - Over-fragmentation (too narrow)
+          - Temporal mixing (multiple time periods)
+          - Context dependency (can't understand alone)
+        - Atomicity scoring (0-100)
+        - Fragmentation decision criteria
+        - When NOT to fragment (MOCs, project notes)
+      - Usage by: Structural Analysis Agent
+
+    - [ ] Create knowledge-building-blocks.md:
+      - Purpose: The 6 building block types from Zettelkasten
+      - Sections:
+        - Building block types:
+          1. Fleeting Notes (transient captures)
+             - Lifespan: hours to days
+             - Purpose: Quick capture
+             - Workflow: Inbox → process → archive
+          2. Literature Notes (source-linked)
+             - Content: Ideas from sources
+             - Attribution: Always sourced
+             - Workflow: Reading → capture → link
+          3. Permanent Notes (atomic, evergreen)
+             - Content: Stable concepts
+             - Characteristics: Self-contained, linked
+             - Workflow: Synthesis → permanent
+          4. MOCs (Maps of Content)
+             - Purpose: Organization and overview
+             - Structure: Curated link lists
+             - Workflow: Collect → organize → refine
+          5. Project Notes (time-bound)
+             - Purpose: Specific project support
+             - Lifespan: Project duration
+             - Workflow: Create → use → archive
+          6. Index Notes (navigation)
+             - Purpose: Entry points
+             - Structure: Category-based links
+             - Workflow: Maintain as KB grows
+        - Building block relationships
+        - Transformation patterns (fleeting → permanent)
+        - Lifecycle management
+      - Usage by: Inbox Triage Agent, Structural Analysis Agent
+
+  - [ ] Task 3: Create Linking & Semantics Knowledge Bases (AC3)
+    - [ ] Create link-relationship-types.md:
+      - Purpose: Taxonomy of relationship types between notes
+      - Sections:
+        - Structural relationships:
+          - LINKED_TO (basic wikilink)
+          - CONTAINS (MOC to note)
+          - PART_OF (note in MOC)
+        - Semantic relationships:
+          - SUPPORTS (provides evidence for)
+          - CONTRADICTS (conflicts with)
+          - ELABORATES (expands on)
+          - ANALOGOUS_TO (similar pattern)
+          - CONTRASTS_WITH (different approach)
+        - Hierarchical relationships:
+          - GENERALIZES (more abstract)
+          - SPECIALIZES (more specific)
+          - PREREQUISITE_OF (required before)
+        - Temporal relationships:
+          - SUPERSEDES (replaces old understanding)
+          - INFLUENCED (affected by)
+          - EVOLVED_FROM (descended from)
+        - Creative relationships:
+          - INSPIRED_BY (source of idea)
+          - SYNTHESIZED_IN (combined into)
+          - APPLIED_IN (used in creation)
+        - For each relationship type:
+          - Semantic meaning
+          - When to use
+          - Neo4j representation
+          - Strength/confidence attributes
+        - Bidirectional vs unidirectional
+        - Relationship inference rules
+      - Usage by: Semantic Linker Agent
+
+    - [ ] Create semantic-patterns.md:
+      - Purpose: Common semantic similarity patterns and how to identify them
+      - Sections:
+        - Similarity detection methods:
+          - Keyword overlap
+          - Concept co-occurrence
+          - Citation overlap (common sources)
+          - Tag similarity
+          - Semantic embedding similarity
+        - Similarity thresholds:
+          - 0.95-1.0: Duplicate/near-duplicate
+          - 0.85-0.95: Highly related
+          - 0.70-0.85: Related
+          - 0.50-0.70: Somewhat related
+          - <0.50: Unrelated
+        - Pattern types:
+          - Complementary (fill each other's gaps)
+          - Overlapping (partial duplication)
+          - Sequential (logical progression)
+          - Hierarchical (general/specific)
+          - Contradictory (conflicting claims)
+        - Link suggestion criteria
+        - Disambiguation strategies
+        - Context consideration
+      - Usage by: Semantic Linker Agent
+
+  - [ ] Task 4: Create Quality & Analysis Knowledge Bases (AC4)
+    - [ ] Create gap-detection-patterns.md:
+      - Purpose: Common patterns for identifying knowledge gaps
+      - Sections:
+        - Gap detection methods:
+          - Automated detection:
+            - Unresolved question markers (?, TODO, RESEARCH)
+            - Stub notes (low word count, few links)
+            - Missing prerequisites (dependency analysis)
+            - Evidence gaps (claims without sources)
+            - Domain boundaries (unexplored adjacent areas)
+            - Orphan note clusters (disconnected)
+          - Manual detection:
+            - User confusion signals
+            - Creation blockers
+            - Unresolvable contradictions
+            - Synthesis questions
+        - Gap type indicators:
+          - Coverage gap: Missing domain in MOC structure
+          - Evidence gap: Low source citation rate
+          - Prerequisite gap: Can't understand advanced note
+          - Assumption gap: Logical leaps in arguments
+          - Conceptual gap: Shallow treatment of topic
+        - Gap severity scoring:
+          - Critical: Blocks work, no workaround
+          - High: Limits understanding, poor workaround
+          - Medium: Would improve, acceptable workaround
+          - Low: Nice to have, low value
+        - Gap discovery triggers:
+          - Monthly deep review
+          - Creation project briefs
+          - Contradiction resolution
+          - Quality audits
+        - False positive patterns (not really gaps)
+      - Usage by: Gap Detector Agent
+
+    - [ ] Create contradiction-patterns.md:
+      - Purpose: Common types of contradictions and resolution strategies
+      - Sections:
+        - Contradiction types:
+          - Factual contradictions:
+            - Direct conflict (A says X, B says not-X)
+            - Quantitative conflict (different numbers)
+            - Temporal conflict (different dates)
+          - Definitional contradictions:
+            - Same term, different meanings
+            - Scope disagreements
+            - Category conflicts
+          - Assumptive contradictions:
+            - Different unstated premises
+            - Framework conflicts
+            - Value disagreements
+          - Contextual contradictions:
+            - True in different contexts
+            - Time-dependent truth
+            - Perspective-dependent claims
+        - Resolution strategies:
+          - Strategy A: Accept both with context
+          - Strategy B: Research to resolve
+          - Strategy C: Temporal resolution (understanding evolved)
+          - Strategy D: Accept one, reject other with rationale
+          - Strategy E: Synthesize higher-level understanding
+        - Resolution decision tree
+        - Contradiction severity assessment
+        - Neo4j relationship modeling
+        - Examples of each type
+      - Usage by: Semantic Linker Agent, Gap Detector Agent
+
+  - [ ] Task 5: Document integration patterns (AC7)
+    - [ ] Document which KBs are used by which agents:
+      - Research Coordinator Agent:
+        - research-tools-catalog.md
+        - research-methodologies.md
+        - source-evaluation-criteria.md
+        - query-optimization-patterns.md
+        - research-strategy-patterns.md
+        - credibility-scoring-rubric.md
+      - Content Brief Agent:
+        - content-type-taxonomy.md
+      - Structural Analysis Agent:
+        - atomicity-principles.md
+        - knowledge-building-blocks.md
+      - Semantic Linker Agent:
+        - link-relationship-types.md
+        - semantic-patterns.md
+        - contradiction-patterns.md
+      - Gap Detector Agent:
+        - gap-detection-patterns.md
+        - contradiction-patterns.md
+    - [ ] Document KB maintenance patterns
+    - [ ] Document KB versioning strategy
+
+technical_notes: |
+  ## Knowledge Base Organization
+
+  These **specialized knowledge bases** enable advanced agent capabilities:
+  - **Research KBs**: Enable adaptive, tool-aware research workflows
+  - **Content & Structure KBs**: Guide atomicity and building block usage
+  - **Linking & Semantics KBs**: Enable sophisticated relationship detection
+  - **Quality & Analysis KBs**: Enable systematic gap and contradiction detection
+
+  ## Research Knowledge Bases (6)
+
+  ### research-tools-catalog.md
+  Comprehensive catalog of all research tools:
+
+  **Perplexity Integration:**
+  - Search: Quick lookups, factual questions
+  - Reason: Complex problems, multi-step reasoning
+  - Deep Research: Comprehensive investigation, detailed reports
+
+  **Context7 MCP:**
+  - Library documentation retrieval
+  - Version-specific docs
+  - Code examples and API references
+
+  **Tool Detection:**
+  ```javascript
+  // Detect available tools
+  const availableTools = {
+    perplexity_search: checkMCP('perplexity', 'search'),
+    perplexity_reason: checkMCP('perplexity', 'reason'),
+    perplexity_deep: checkMCP('perplexity', 'deep_research'),
+    context7: checkMCP('context7', 'get-library-docs'),
+    web_search: checkWebSearch()
+  }
+  ```
+
+  ### research-methodologies.md
+  Research approach patterns:
+
+  **Automated Research:**
+  - Tool-driven discovery
+  - Parallel query execution
+  - Automated synthesis
+
+  **Hybrid Research:**
+  - User provides direction
+  - Agent executes queries
+  - Collaborative synthesis
+
+  **Strategy Selection:**
+  - Quick questions → Search
+  - Complex problems → Reasoning
+  - Comprehensive needs → Deep Research
+  - Technical docs → Context7
+
+  ### source-evaluation-criteria.md
+  Credibility assessment framework:
+
+  **Credibility Factors:**
+  1. Author credentials (expertise, reputation)
+  2. Publication authority (peer review, editorial standards)
+  3. Citation quality (sources cited)
+  4. Methodology (transparent, reproducible)
+  5. Recency (up-to-date)
+  6. Bias indicators (objectivity, conflicts)
+  7. Corroboration (multiple sources agree)
+
+  **Scoring Process:**
+  1. Identify source type (baseline score)
+  2. Assess each credibility factor
+  3. Apply adjustments (+/-)
+  4. Check for red flags (major deductions)
+  5. Final score: 0-100
+
+  ### query-optimization-patterns.md
+  Query crafting strategies:
+
+  **Perplexity Search Queries:**
+  - Concise, specific questions
+  - Include key terms
+  - Specify context if ambiguous
+  - Example: "What is the time complexity of QuickSort?"
+
+  **Perplexity Reasoning Queries:**
+  - Complex, multi-part questions
+  - Request comparisons or analysis
+  - Include constraints or requirements
+  - Example: "Compare React and Vue for large-scale applications considering performance, ecosystem, and learning curve"
+
+  **Perplexity Deep Research Queries:**
+  - Broad topic investigations
+  - Request comprehensive analysis
+  - Specify focus areas if needed
+  - Example: "Research the evolution of neural network architectures from 2010-2024"
+
+  **Context7 Queries:**
+  - Library name for resolution
+  - Topic for focused retrieval
+  - Example: "React hooks" for /facebook/react
+
+  ### research-strategy-patterns.md
+  Adaptive research strategies:
+
+  **Quick Lookup Pattern:**
+  - 1-2 Perplexity Search queries
+  - For: Definitions, quick facts
+  - Time: <1 minute
+
+  **Standard Research Pattern:**
+  - 3-5 queries (mixed tools)
+  - For: Moderate depth questions
+  - Time: 2-5 minutes
+
+  **Deep Investigation Pattern:**
+  - 5-10 Perplexity Reasoning queries
+  - For: Complex problems
+  - Time: 5-10 minutes
+
+  **Comprehensive Research Pattern:**
+  - 10+ queries, Deep Research tool
+  - For: Extensive topic coverage
+  - Time: 10-30 minutes
+
+  **Tool Combination Strategies:**
+  ```
+  # Technical question pattern
+  1. Perplexity Search: Quick overview
+  2. Context7: Official documentation
+  3. Perplexity Reason: Compare approaches
+  4. Synthesis: Integrate findings
+
+  # Gap filling pattern
+  1. Identify gap specifics
+  2. Deep Research: Comprehensive investigation
+  3. Reasoning: Address conflicts
+  4. Validation: Cross-check with Search
+  5. Synthesis: Create notes
+  ```
+
+  ### credibility-scoring-rubric.md
+  Complete 0-100 scoring system:
+
+  **Tier Definitions:**
+  - **90-100: Authoritative**
+    - Peer-reviewed academic journals
+    - Official technical documentation
+    - Standards bodies (W3C, IEEE)
+    - Criteria: Rigorous review, expert authorship, reproducible
+
+  - **75-89: Reliable**
+    - Reputable news outlets (NYT, BBC, Reuters)
+    - Established expert blogs (industry leaders)
+    - Verified sources with editorial standards
+    - Criteria: Editorial oversight, expert authors, cited sources
+
+  - **60-74: Acceptable**
+    - General websites with citations
+    - Secondary sources
+    - Mainstream media without editorial rigor
+    - Criteria: Some citations, reasonable reputation
+
+  - **40-59: Questionable**
+    - Uncited claims
+    - Opinion pieces without backing
+    - Unverified sources
+    - Criteria: Minimal sourcing, unclear expertise
+
+  - **0-39: Unreliable**
+    - Known misinformation sources
+    - Propaganda outlets
+    - Spam content
+    - Social media without verification
+    - Criteria: No sourcing, known false claims, conflicts
+
+  **Scoring Calculation:**
+  ```
+  Base Score = Source Type Baseline
+  + Author Credentials (0-20)
+  + Peer Review (0-30)
+  + Citations Provided (0-15)
+  + Publication Reputation (0-20)
+  + Recency (±10)
+  - Conflicts of Interest (0-30)
+  + Corroboration (0-15)
+  + Methodology (0-10)
+  = Final Score (capped 0-100)
+  ```
+
+  ## Content & Structure Knowledge Bases (3)
+
+  ### content-type-taxonomy.md
+  Content creation types and requirements:
+
+  **Article:**
+  - Structure: Intro, body, conclusion
+  - Length: 800-2000 words
+  - Tone: Informative, accessible
+  - KB Usage: Moderate (5-15 notes)
+
+  **Tutorial:**
+  - Structure: Prerequisites, steps, troubleshooting
+  - Length: 1000-3000 words
+  - Tone: Instructional, clear
+  - KB Usage: Heavy (10-30 notes)
+
+  **Video Script:**
+  - Structure: Hook, segments, CTA
+  - Length: 500-1500 words (5-15 min video)
+  - Tone: Conversational, engaging
+  - KB Usage: Moderate (5-20 notes)
+
+  ### atomicity-principles.md
+  What makes notes atomic:
+
+  **Atomic Note Characteristics:**
+  1. Single coherent concept
+  2. Self-contained (understandable alone)
+  3. Linkable granularity (not too broad, not too narrow)
+  4. Stable over time (won't need splitting)
+
+  **Atomicity Scoring:**
+  - 90-100: Perfect atomicity
+  - 70-89: Mostly atomic, minor issues
+  - 50-69: Somewhat atomic, needs refinement
+  - 0-49: Not atomic, needs fragmentation
+
+  **Fragmentation Triggers:**
+  - Multiple distinct concepts in one note
+  - Excessive length (>2000 words)
+  - Different temporal contexts mixed
+  - Unrelated link clusters
+
+  ### knowledge-building-blocks.md
+  The 6 Zettelkasten building blocks:
+
+  **Fleeting → Literature → Permanent Workflow:**
+  ```
+  1. Capture (Fleeting)
+     - Quick inbox capture
+     - Minimal processing
+     - Lifespan: hours to days
+
+  2. Process (Literature)
+     - Extract ideas from sources
+     - Add attribution
+     - Lifespan: indefinite (if valuable)
+
+  3. Synthesize (Permanent)
+     - Combine multiple sources
+     - Express in own words
+     - Create atomic notes
+     - Lifespan: indefinite (evergreen)
+
+  4. Organize (MOCs)
+     - Curate related notes
+     - Provide overviews
+     - Maintain as KB grows
+
+  5. Execute (Projects)
+     - Time-bound work
+     - Draw on permanent notes
+     - Archive when done
+
+  6. Navigate (Index)
+     - Entry points
+     - Category organization
+     - Maintain structure
+  ```
+
+  ## Linking & Semantics Knowledge Bases (2)
+
+  ### link-relationship-types.md
+  Complete relationship taxonomy:
+
+  **Neo4j Relationship Types:**
+  ```cypher
+  // Semantic relationships
+  CREATE (a)-[:SUPPORTS {strength: 0.9, confidence: 0.85}]->(b)
+  CREATE (a)-[:CONTRADICTS {severity: "high", context: "temporal"}]->(b)
+  CREATE (a)-[:ELABORATES {aspect: "implementation"}]->(b)
+
+  // Hierarchical relationships
+  CREATE (specific)-[:SPECIALIZES {domain: "ML"}]->(general)
+  CREATE (prereq)-[:PREREQUISITE_OF {critical: true}]->(advanced)
+
+  // Temporal relationships
+  CREATE (new)-[:SUPERSEDES {date: "2025-11-05"}]->(old)
+  CREATE (effect)-[:INFLUENCED {degree: 0.8}]->(cause)
+
+  // Creative relationships
+  CREATE (creation)-[:SYNTHESIZED_IN {type: "article"}]->(notes)
+  CREATE (idea)-[:INSPIRED_BY {date: "2025-10-15"}]->(source)
+  ```
+
+  **Relationship Inference Rules:**
+  - If A SUPPORTS B and B SUPPORTS C, suggest A may support C
+  - If A CONTRADICTS B and B SUPPORTS C, flag A-C conflict
+  - If A PREREQUISITE_OF B and B PREREQUISITE_OF C, chain A→B→C
+
+  ### semantic-patterns.md
+  Similarity detection and linking:
+
+  **Similarity Thresholds:**
+  - **0.95-1.0: Duplicates**
+    - Action: Merge or deduplicate
+    - User notification: Required
+
+  - **0.85-0.95: Highly Related**
+    - Action: Suggest strong link
+    - Relationship: ELABORATES or SUPPORTS
+
+  - **0.70-0.85: Related**
+    - Action: Suggest link
+    - Relationship: LINKED_TO with semantic tag
+
+  - **0.50-0.70: Somewhat Related**
+    - Action: Consider link if relevant
+    - Relationship: Weak LINKED_TO
+
+  **Pattern Detection:**
+  - Complementary: Notes that fill each other's gaps
+  - Sequential: Logical progression (A→B→C)
+  - Hierarchical: General concept with specific instances
+  - Contradictory: Conflicting claims (require resolution)
+
+  ## Quality & Analysis Knowledge Bases (2)
+
+  ### gap-detection-patterns.md
+  Systematic gap identification:
+
+  **Automated Detection Queries:**
+  ```
+  # Unresolved questions
+  SEARCH: "?" OR "TODO" OR "RESEARCH"
+
+  # Stub notes
+  WHERE word_count < 200 AND link_count < 2
+
+  # Missing prerequisites
+  FIND notes referencing concepts not in KB
+
+  # Evidence gaps
+  WHERE claims_count > 0 AND sources_count = 0
+
+  # Domain boundaries
+  ANALYZE MOC structure for missing adjacent areas
+
+  # Orphan clusters
+  WHERE link_count < 2 AND not in MOC
+  ```
+
+  **Gap Severity Scoring:**
+  ```
+  Severity = (blocking_work_count * 50) + (reference_count * 10)
+  Adjust for domain importance (×1.5 for critical domains)
+  Adjust for research feasibility (÷ estimated_hours)
+  ```
+
+  ### contradiction-patterns.md
+  Contradiction types and resolution:
+
+  **Factual Contradiction Example:**
+  - Note A: "React was released in 2013"
+  - Note B: "React was released in 2011"
+  - Resolution: Research → Accept A (2013 correct, 2011 was internal release)
+
+  **Definitional Contradiction Example:**
+  - Note A: "Atomic note = single concept"
+  - Note B: "Atomic note = <500 words"
+  - Resolution: Strategy E (Synthesize: Atomic notes have single concept AND are typically <500 words, but concept boundary matters more than length)
+
+  **Contextual Contradiction Example:**
+  - Note A: "Microservices are better than monoliths"
+  - Note B: "Monoliths are better than microservices"
+  - Resolution: Strategy A (Both true in different contexts: microservices for scale, monoliths for simplicity)
+
+  ## Integration Patterns
+
+  **Agent Knowledge Base Dependencies:**
+  - **Research Coordinator Agent**: 6 research KBs (all research operations)
+  - **Content Brief Agent**: 1 KB (content-type-taxonomy)
+  - **Structural Analysis Agent**: 2 KBs (atomicity, building-blocks)
+  - **Semantic Linker Agent**: 3 KBs (link-relationships, semantic-patterns, contradiction-patterns)
+  - **Gap Detector Agent**: 2 KBs (gap-detection, contradiction-patterns)
+
+  ## KB Maintenance
+
+  **Versioning Strategy:**
+  - v1.0: Initial KB creation
+  - v1.x: Minor updates (examples, clarifications)
+  - v2.0: Major revisions (new frameworks, patterns)
+
+  **Update Triggers:**
+  - New research tools available
+  - Patterns emerge from usage
+  - Quality standards evolve
+  - Agent capabilities expand
+
+dependencies:
+  - Research Coordinator Agent (uses all 6 research KBs)
+  - Content Brief Agent (uses content-type-taxonomy)
+  - Structural Analysis Agent (uses atomicity-principles, knowledge-building-blocks)
+  - Semantic Linker Agent (uses link-relationship-types, semantic-patterns, contradiction-patterns)
+  - Gap Detector Agent (uses gap-detection-patterns, contradiction-patterns)
+  - Perplexity MCP integration (referenced in research KBs)
+  - Context7 MCP integration (referenced in research KBs)
+  - Neo4j integration (relationship types) - optional
+
+testing:
+  - Validate markdown formatting for all 13 KBs
+  - Test research-tools-catalog with actual tool detection
+  - Verify credibility-scoring-rubric calculations
+  - Test query-optimization patterns with sample queries
+  - Validate atomicity-principles scoring
+  - Test link-relationship-types with Neo4j queries
+  - Verify semantic-patterns thresholds
+  - Test gap-detection-patterns with sample gaps
+  - Validate contradiction-patterns resolution strategies
+  - Verify integration with respective agents
+  - Test KB cross-references (internal consistency)
+  - Validate examples in all KBs
+
+definition_of_done:
+  - All 13 specialized knowledge bases created
+  - All KBs follow markdown format with clear sections
+  - Research KBs (6) include tool catalogs, methodologies, and scoring rubrics
+  - Content & Structure KBs (3) include taxonomies, principles, and building blocks
+  - Linking & Semantics KBs (2) include relationship types and similarity patterns
+  - Quality & Analysis KBs (2) include detection patterns and resolution strategies
+  - All KBs include examples and usage guidance
+  - Integration patterns documented (which agents use which KBs)
+  - KB maintenance and versioning documented
+  - All KBs tested with sample scenarios
+  - Cross-references validated
+  - Agent dependencies updated
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for research & agent-specific knowledge bases
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]
