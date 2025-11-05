@@ -87,9 +87,41 @@ In Claude Desktop or your IDE, activate the agents using the slash prefix:
 
 ## Available Agents
 
-Agents will be populated in future releases. The expansion pack infrastructure is now ready to support:
+### Inbox Triage Agent (📥)
 
-- Inbox Triage Agent
+**Status:** ✓ Available
+**Command:** `/bmad-2b:inbox-triage-agent`
+
+Automatically classifies and organizes captured content in your Obsidian inbox. Features:
+
+- **6 Content Types:** Quote, Concept, Reference, Reflection, Question, Observation
+- **Confidence Scoring:** 0.0-1.0 scale with automatic flagging for low confidence (< 0.7)
+- **Metadata Extraction:** Automatically extracts source URLs, authors, timestamps, and context
+- **Quality Gates:** Enforces capture quality standards before finalization
+- **Bi-Temporal Tracking:** Stores capture events in Neo4j (if enabled) with temporal metadata
+- **Batch Processing:** Process multiple captures efficiently with rate limiting
+- **Security Hardened:** Input validation, XSS prevention, and injection protection
+
+**Commands:**
+
+- `*help` - Show available commands
+- `*capture {source} {content}` - Manual capture with source attribution
+- `*process-inbox` - Process all unprocessed inbox items
+- `*classify {note_id}` - Reclassify existing inbox note
+- `*batch-process` - Process inbox in bulk
+- `*yolo` - Toggle auto-processing without confirmation
+- `*exit` - Exit agent mode
+
+**Requirements:**
+
+- Obsidian MCP Tools configured
+- Obsidian vault with `/inbox` directory
+- (Optional) Neo4j for temporal graph tracking
+
+### Future Agents
+
+The following agents are planned for future releases:
+
 - Auto-Linking Agent
 - MOC Constructor Agent
 - Timeline Constructor Agent

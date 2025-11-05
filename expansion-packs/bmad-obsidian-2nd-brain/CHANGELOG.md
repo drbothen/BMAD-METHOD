@@ -7,9 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Inbox Triage Agent** - Automatically classify and organize captured content
+  - 6 content types: Quote, Concept, Reference, Reflection, Question, Observation
+  - Confidence scoring (0.0-1.0) with automatic low-confidence flagging (< 0.7)
+  - Metadata extraction (source URLs, authors, timestamps, context, tags)
+  - Quality gates via capture-quality-checklist.md
+  - Bi-temporal tracking in Neo4j (optional, graceful degradation if disabled)
+  - Batch processing with rate limiting
+  - Security hardening (XSS prevention, parameterized queries, input validation)
+  - Commands: *help, *capture, *process-inbox, *classify, *batch-process, *yolo, \*exit
+  - Dependencies: 4 tasks, 1 template, 1 checklist, 2 data files
+
 ### Planned
 
-- Inbox Triage Agent
 - Auto-Linking Agent
 - MOC Constructor Agent
 - Timeline Constructor Agent

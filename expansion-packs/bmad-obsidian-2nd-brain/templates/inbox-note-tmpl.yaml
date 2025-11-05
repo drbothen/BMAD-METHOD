@@ -1,0 +1,206 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: inbox-note-template-v1
+  name: Inbox Note
+  version: 1.0
+  description: Structured template for captured content in Obsidian inbox
+  output:
+    format: markdown
+    filename: "{{timestamp}}-{{sanitized_title}}.md"
+
+variables:
+  - name: content_type
+    description: Classification type (quote, concept, reference, reflection, question, observation)
+    required: true
+  - name: confidence
+    description: Classification confidence score (0.0-1.0)
+    required: true
+  - name: source
+    description: Source URL or source description
+    required: false
+  - name: author
+    description: Author name or handle
+    required: false
+    default: "Unknown"
+  - name: captured
+    description: Capture timestamp in ISO 8601 format
+    required: true
+  - name: tags
+    description: Array of tags for categorization
+    required: false
+    default: []
+  - name: content
+    description: The captured content text
+    required: true
+  - name: context
+    description: Surrounding context (paragraph before/after)
+    required: false
+  - name: timestamp
+    description: Timestamp for filename (YYYY-MM-DD-HHMM)
+    required: true
+  - name: sanitized_title
+    description: Sanitized first few words for filename
+    required: true
+
+workflow:
+  elicitation: false
+  mode: template
+
+sections:
+  - id: frontmatter
+    title: Frontmatter
+    type: template-text
+    instruction: |
+      Generate YAML frontmatter with metadata about the captured content.
+      All variables should be populated from the capture process.
+      Status is always 'unprocessed' for new inbox items.
+      Flag for review if confidence < 0.7.
+    template: |
+      ---
+      status: unprocessed
+      content_type: {{content_type}}
+      confidence: {{confidence}}
+      source: {{source}}
+      author: {{author}}
+      captured: {{captured}}
+      tags: [{{tags}}]
+      flagged_for_review: {{flagged_for_review}}
+      ---
+
+  - id: content
+    title: Content
+    type: paragraphs
+    instruction: |
+      Insert the captured content exactly as provided.
+      Preserve formatting, links, and markdown structure.
+      Do not modify or interpret the content.
+    template: |
+      # {{content_type | titlecase}}: {{sanitized_title}}
+
+      {{content}}
+
+  - id: context
+    title: Context
+    type: paragraphs
+    condition: context is not empty
+    instruction: |
+      Include surrounding context if available.
+      This helps understand where the content came from.
+      Only include if context variable is provided.
+    template: |
+      ## Context
+
+      {{context}}
+
+  - id: processing_notes
+    title: Processing Notes
+    type: paragraphs
+    owner: inbox-triage-agent
+    editors: [inbox-triage-agent, user]
+    instruction: |
+      This section is left empty for the triage agent or user to fill in.
+      Agent may add notes about classification decisions, confidence reasoning,
+      or suggested next steps.
+    placeholder: |
+      ## Processing Notes
+
+      *To be filled by triage agent or user during processing*
+
+  - id: next_actions
+    title: Next Actions
+    type: bullet-list
+    owner: user
+    editors: [user, inbox-triage-agent]
+    instruction: |
+      This section is left empty for user or organization agent to fill in.
+      Typical next actions might include:
+      - Link to related notes
+      - Create permanent note
+      - Add to project
+      - Schedule review
+      - Extract highlights
+    placeholder: |
+      ## Next Actions
+
+      - [ ] *To be filled by user or organization agent*
+
+examples:
+  - |
+    ---
+    status: unprocessed
+    content_type: concept
+    confidence: 0.85
+    source: https://zettelkasten.de/posts/create-zettel-from-reading-notes/
+    author: Sascha Fast
+    captured: 2025-11-04T15:30:00Z
+    tags: [zettelkasten, note-taking, atomicity]
+    flagged_for_review: false
+    ---
+
+    # Concept: Atomic Notes
+
+    The Zettelkasten method emphasizes creating "atomic" notes - each note should
+    contain exactly one idea that can stand alone. This principle enables flexible
+    recombination and prevents "note bloat" where large notes become unmanageable.
+
+    ## Context
+
+    This concept was introduced in the context of explaining the fundamental
+    principles of effective Zettelkasten note-taking.
+
+    ## Processing Notes
+
+    *To be filled by triage agent or user during processing*
+
+    ## Next Actions
+
+    - [ ] *To be filled by user or organization agent*
+
+  - |
+    ---
+    status: unprocessed
+    content_type: quote
+    confidence: 0.95
+    source: https://example.com/article
+    author: Cal Newport
+    captured: 2025-11-04T16:45:00Z
+    tags: [productivity, attention, deep-work]
+    flagged_for_review: false
+    ---
+
+    # Quote: Knowledge Work and Attention
+
+    "Knowledge work is about managing your attention, not your time."
+
+    ## Processing Notes
+
+    *To be filled by triage agent or user during processing*
+
+    ## Next Actions
+
+    - [ ] *To be filled by user or organization agent*
+
+  - |
+    ---
+    status: unprocessed
+    content_type: observation
+    confidence: 0.60
+    source: personal tracking
+    author: Unknown
+    captured: 2025-11-04T18:20:00Z
+    tags: [metrics, progress]
+    flagged_for_review: true
+    ---
+
+    # Observation: Note Count Increase
+
+    My note count increased from 487 to 523 notes this month.
+
+    ## Processing Notes
+
+    *To be filled by triage agent or user during processing*
+
+    ## Next Actions
+
+    - [ ] *To be filled by user or organization agent*
