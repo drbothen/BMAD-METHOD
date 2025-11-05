@@ -1,0 +1,93 @@
+---
+story_id: STORY-006
+title: Implement Quality Auditor Agent
+epic_id: EPIC-001
+phase: 1
+priority: critical
+estimated_effort: 24 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want an AI agent to audit my knowledge base for quality issues
+  So that I can maintain high standards and identify problems proactively
+
+acceptance_criteria:
+  - Create quality-auditor-agent.md with complete agent definition
+  - Agent audits temporal freshness (stale notes beyond threshold)
+  - Agent validates external links (broken 4xx, redirects 3xx, timeouts)
+  - Agent validates source citations (completeness and accuracy)
+  - Agent detects orphaned notes (no incoming/outgoing links)
+  - Agent identifies atomicity violations
+  - Agent detects duplicate content
+  - Agent checks metadata completeness
+  - Agent generates comprehensive audit report
+  - Agent follows audit-coverage-checklist.md
+  - "Commands: *help, *audit-full, *audit-freshness, *audit-links, *audit-citations, *audit-orphans, *generate-report, *exit"
+
+technical_notes: |
+  Agent capabilities:
+  - Temporal freshness audit:
+    - Query notes not updated in threshold period (default 180 days)
+    - Prioritize by importance (domain-critical notes, frequently-referenced)
+  - Link validation:
+    - Test external URLs (HTTP status codes)
+    - Flag broken links (4xx)
+    - Flag redirects needing update (3xx)
+    - Flag timeouts
+  - Citation validation:
+    - Check source attribution completeness
+    - Verify citation format
+    - Identify unattributed claims
+  - Orphan detection:
+    - Query notes with no incoming links
+    - Query notes with no outgoing links
+    - Suggest linking opportunities
+  - Quality checks:
+    - Atomicity violations (multiple tangled ideas)
+    - Duplicate content detection
+    - Missing metadata fields
+  - Report generation using audit-report-tmpl.yaml
+
+  Dependencies (tasks):
+  - audit-temporal-freshness.md
+  - validate-external-links.md
+  - generate-audit-report.md
+
+  Dependencies (templates):
+  - audit-report-tmpl.yaml (basic for Phase 1)
+
+  Dependencies (checklists):
+  - audit-coverage-checklist.md
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-003: Structural Analysis Agent (for atomicity checks)
+  - STORY-004: Semantic Linker Agent (for orphan detection)
+  - audit-report-tmpl.yaml template
+  - audit-coverage-checklist.md
+  - Obsidian MCP Tools integration
+  - Neo4j Graphiti MCP (optional, for temporal queries)
+
+testing:
+  - Audit 1000-note vault for freshness issues
+  - Validate 50 external links
+  - Detect orphaned notes (should find 5-10% in typical vault)
+  - Identify atomicity violations
+  - Generate comprehensive audit report
+  - Verify prioritized action items
+  - Test vault health score calculation (0-100)
+  - Verify audit coverage checklist
+
+definition_of_done:
+  - Agent file complete with YAML metadata
+  - All commands functional
+  - Freshness audit identifies stale notes accurately
+  - Link validation tests all external URLs
+  - Orphan detection finds unconnected notes
+  - Audit report comprehensive and actionable
+  - Vault health score calculated correctly
+  - Audit coverage checklist enforced
+  - Agent activates via /bmad-2b:quality-auditor-agent
+  - Documentation added to user guide

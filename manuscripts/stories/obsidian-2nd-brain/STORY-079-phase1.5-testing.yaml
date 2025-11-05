@@ -1,0 +1,497 @@
+---
+story_id: STORY-079
+title: Phase 1.5 Integration Testing & Verification
+epic_id: EPIC-001
+phase: 1.5
+priority: critical
+estimated_effort: 24 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a quality assurance engineer
+  I want comprehensive testing of Phase 1.5 features
+  So that transcript processing and task management work reliably
+
+acceptance_criteria: |
+  **Testing Scope:**
+  - All 2 new agents tested
+  - All 17 new tasks tested
+  - All 7 new templates tested
+  - All 3 new checklists validated
+  - All 3 new workflows tested end-to-end
+  - All 4 transcript service integrations tested
+  - All 4 task plugin integrations tested
+  - Integration with Phase 1 agents tested
+
+  **Test Categories:**
+  1. Unit Testing (individual components)
+  2. Integration Testing (agent interactions)
+  3. Workflow Testing (end-to-end scenarios)
+  4. Performance Testing (speed, scale)
+  5. Error Handling Testing (edge cases)
+  6. User Acceptance Testing (real-world usage)
+
+  **Pass Criteria:**
+  - All unit tests pass (100%)
+  - Integration tests pass (>95%)
+  - Workflows complete successfully (>95%)
+  - Performance targets met (as specified)
+  - Error handling graceful (no crashes)
+  - User feedback positive (>80% satisfaction)
+
+technical_notes: |
+  Test Category 1: Unit Testing
+  Purpose: Verify individual components work correctly
+
+  Agent Tests:
+  1. Transcript Processing Agent
+     - [ ] Test *process-transcript command
+     - [ ] Test *extract-action-items command
+     - [ ] Test *identify-key-points command
+     - [ ] Test *log-decisions command
+     - [ ] Test *segment-by-topic command
+     - [ ] Test *generate-meeting-note command
+     - [ ] Test *process-interview command
+     - [ ] Test *process-lecture command
+     - [ ] Verify all dependencies load correctly
+     - [ ] Verify agent activation works
+
+  2. Task Management Agent
+     - [ ] Test *extract-tasks command
+     - [ ] Test *create-task command
+     - [ ] Test *create-project-tasks command
+     - [ ] Test *generate-daily-todo command
+     - [ ] Test *generate-weekly-review command
+     - [ ] Test *classify-task command
+     - [ ] Test *track-dependencies command
+     - [ ] Test *setup-recurring command
+     - [ ] Test *analyze-completion command
+     - [ ] Verify GTD workflow logic
+     - [ ] Verify all dependencies load correctly
+
+  Task Tests:
+  Transcript Processing Tasks (8 tasks):
+  - [ ] extract-action-items-from-transcript: Test with sample transcript
+  - [ ] identify-key-points-in-transcript: Verify 10-20 points extracted
+  - [ ] log-decisions-from-transcript: Verify decision structure
+  - [ ] segment-transcript-by-topic: Verify logical segmentation
+  - [ ] extract-speaker-diarization: Verify speaker stats accurate
+  - [ ] annotate-transcript-timestamps: Verify timestamp format
+  - [ ] extract-entities-from-transcript: Verify NER accuracy
+  - [ ] generate-meeting-note-from-transcript: Verify complete output
+
+  Task Management Tasks (9 tasks):
+  - [ ] extract-tasks-from-content: Test with various content types
+  - [ ] create-task-note: Verify task note structure
+  - [ ] classify-task-priority: Verify priority algorithm
+  - [ ] assign-task-context: Verify context logic
+  - [ ] estimate-task-effort: Verify estimates reasonable
+  - [ ] track-task-dependencies: Verify no circular deps
+  - [ ] setup-recurring-task: Test all recurrence patterns
+  - [ ] generate-daily-todo: Verify 5-10 tasks selected
+  - [ ] generate-weekly-review: Verify statistics accurate
+
+  Template Tests (7 templates):
+  - [ ] meeting-note-tmpl.yaml: Validate YAML, generate sample
+  - [ ] transcript-note-tmpl.yaml: Validate YAML, generate sample
+  - [ ] interview-note-tmpl.yaml: Validate YAML, generate sample
+  - [ ] task-tmpl.yaml: Validate YAML, generate sample
+  - [ ] project-task-list-tmpl.yaml: Validate YAML, generate sample
+  - [ ] daily-todo-tmpl.yaml: Validate YAML, generate sample
+  - [ ] weekly-review-tmpl.yaml: Validate YAML, generate sample
+
+  Checklist Tests (3 checklists):
+  - [ ] transcript-quality-checklist.md: Apply to sample meeting note
+  - [ ] task-quality-checklist.md: Apply to sample tasks
+  - [ ] gtd-workflow-checklist.md: Apply to GTD workflow implementation
+
+  ---
+
+  Test Category 2: Integration Testing
+  Purpose: Verify agents work together correctly
+
+  Agent Integration Tests:
+  1. Transcript Processing → Task Management
+     - [ ] Process transcript to generate meeting note
+     - [ ] Extract action items from transcript
+     - [ ] Task Management Agent creates tasks from action items
+     - [ ] Verify tasks linked to meeting note
+     - [ ] Verify source references preserved
+
+  2. Transcript Processing → Inbox Triage
+     - [ ] Process transcript to generate meeting note
+     - [ ] Inbox Triage Agent classifies meeting note
+     - [ ] Verify correct location suggested
+     - [ ] Verify metadata extracted
+
+  3. Task Management → Semantic Linker
+     - [ ] Create multiple task notes
+     - [ ] Semantic Linker suggests links between tasks
+     - [ ] Verify task-project links created
+     - [ ] Verify task-meeting links created
+
+  4. Task Management → Timeline Constructor
+     - [ ] Create tasks over time
+     - [ ] Query task evolution
+     - [ ] Verify temporal tracking in Neo4j
+     - [ ] Verify "What did I complete last week?" query works
+
+  5. All Agents Together
+     - [ ] Capture transcript → Process → Create tasks → Organize → Link
+     - [ ] Verify complete workflow from raw transcript to organized tasks
+     - [ ] Verify no data loss in handoffs
+     - [ ] Verify quality maintained throughout
+
+  Service Integration Tests:
+  1. Local Whisper
+     - [ ] Transcribe 5-minute sample
+     - [ ] Transcribe 30-minute sample
+     - [ ] Verify output format (VTT)
+     - [ ] Verify accuracy >85%
+     - [ ] Measure performance (processing time)
+
+  2. Deepgram
+     - [ ] Configure API key
+     - [ ] Transcribe with speaker diarization
+     - [ ] Verify speaker labels
+     - [ ] Verify timestamps accurate
+     - [ ] Verify cost tracking
+
+  3. Google Gemini
+     - [ ] Configure API key
+     - [ ] Transcribe + summarize in one call
+     - [ ] Verify multi-modal processing
+     - [ ] Verify structured output
+
+  4. OpenAI Whisper
+     - [ ] Configure API key
+     - [ ] Transcribe sample
+     - [ ] Verify accuracy
+     - [ ] Verify cost tracking
+
+  Plugin Integration Tests:
+  1. Tasks Plugin
+     - [ ] Install and configure
+     - [ ] Create tasks in unified format
+     - [ ] Test all query examples
+     - [ ] Test recurring tasks
+     - [ ] Verify completion tracking
+
+  2. Dataview Plugin
+     - [ ] Install and configure
+     - [ ] Test task queries
+     - [ ] Test statistics queries
+     - [ ] Verify DataviewJS works
+
+  3. Calendar Plugin
+     - [ ] Install and configure
+     - [ ] Verify tasks appear on correct dates
+     - [ ] Test daily note integration
+
+  4. Kanban Plugin
+     - [ ] Install and configure
+     - [ ] Create project Kanban board
+     - [ ] Test drag and drop
+     - [ ] Verify status updates
+
+  ---
+
+  Test Category 3: Workflow Testing
+  Purpose: Verify end-to-end workflows work correctly
+
+  Workflow 1: transcript-to-notes-workflow
+  Test Scenario: 30-minute executive meeting recording
+
+  Steps:
+  1. [ ] Start with audio file (meeting-recording.mp3)
+  2. [ ] Transcribe using selected service (e.g., Deepgram)
+  3. [ ] Transcript Processing Agent processes transcript
+  4. [ ] Verify meeting note generated
+  5. [ ] Verify action items extracted (expect 5-10)
+  6. [ ] Task Management Agent creates task notes
+  7. [ ] Verify tasks classified (priority, context)
+  8. [ ] Inbox Triage classifies meeting note
+  9. [ ] Semantic Linker creates links
+  10. [ ] Project task lists updated
+  11. [ ] Validate against transcript-quality-checklist.md
+  12. [ ] Validate against task-quality-checklist.md
+  13. [ ] Measure total workflow time (target: <5 minutes)
+
+  Expected Output:
+  - Meeting note in correct location
+  - 5-10 task notes created
+  - All tasks linked to meeting note
+  - All tasks linked to projects
+  - All quality checks pass
+
+  Workflow 2: gtd-daily-workflow
+  Test Scenario: Daily planning and review for 5 consecutive days
+
+  Day 1 Morning:
+  1. [ ] Review yesterday's tasks (empty for day 1)
+  2. [ ] Check overdue tasks (none)
+  3. [ ] Check today's deadlines
+  4. [ ] Identify contexts (@work, @computer)
+  5. [ ] Assess available time (6 hours)
+  6. [ ] Assess energy (high)
+  7. [ ] Generate daily todo (expect 5-10 tasks)
+  8. [ ] Verify todo is realistic (total ≤ 6 hours)
+
+  Day 1 Evening:
+  1. [ ] Review daily todo
+  2. [ ] Mark completed tasks (expect 70-80% completion)
+  3. [ ] Review incomplete tasks
+  4. [ ] Reschedule incomplete tasks
+  5. [ ] Capture new tasks
+  6. [ ] Update task notes
+  7. [ ] Brief reflection
+
+  Repeat for Days 2-5, then verify:
+  - [ ] Daily todos generated each morning
+  - [ ] Completion rates tracked
+  - [ ] Incomplete tasks rescheduled properly
+  - [ ] New tasks captured
+  - [ ] Total workflow time <15 min per day
+
+  Workflow 3: gtd-weekly-review-workflow
+  Test Scenario: Weekly review after 7 days of task activity
+
+  Phase 1: Get Clear
+  1. [ ] Collect all inbox items
+  2. [ ] Process inbox to zero
+  3. [ ] Extract tasks from inbox
+  4. [ ] Verify inbox empty
+
+  Phase 2: Get Current
+  1. [ ] Review completed tasks (expect 30-50)
+  2. [ ] Review pending tasks
+  3. [ ] Identify overdue tasks
+  4. [ ] Identify blocked tasks
+  5. [ ] Review project task lists
+  6. [ ] Review waiting for list
+
+  Phase 3: Get Creative
+  1. [ ] Review someday/maybe list
+  2. [ ] Brainstorm new ideas
+  3. [ ] Review goals
+
+  Phase 4: Analyze Patterns
+  1. [ ] Calculate completion statistics
+  2. [ ] Analyze productivity by time
+  3. [ ] Analyze productivity by context
+  4. [ ] Analyze estimation accuracy
+  5. [ ] Identify blockers and patterns
+
+  Phase 5: Plan Next Week
+  1. [ ] Review next week calendar
+  2. [ ] Identify priorities
+  3. [ ] Generate recommendations (expect 5-7)
+  4. [ ] Create weekly review report
+
+  Expected Output:
+  - Weekly review report generated
+  - Completion rate >70%
+  - Statistics accurate
+  - Recommendations actionable
+  - Total workflow time <45 minutes
+
+  ---
+
+  Test Category 4: Performance Testing
+  Purpose: Verify system performs well at scale
+
+  Transcript Processing Performance:
+  - [ ] 5-minute transcript: Process in <60 seconds
+  - [ ] 30-minute transcript: Process in <180 seconds
+  - [ ] 2-hour transcript: Process in <600 seconds
+  - [ ] 10,000-word transcript: Extract action items in <30 seconds
+  - [ ] Multiple concurrent transcripts (3): No blocking
+
+  Task Management Performance:
+  - [ ] Extract tasks from 1000-word note: <10 seconds
+  - [ ] Generate daily todo from 100 tasks: <5 seconds
+  - [ ] Generate weekly review from 500 tasks: <30 seconds
+  - [ ] Query 1000 tasks by priority: <2 seconds
+  - [ ] Query 10,000 tasks by context: <5 seconds
+  - [ ] Update 100 task statuses: <10 seconds
+
+  Plugin Performance:
+  - [ ] Tasks plugin query with 1000 tasks: <3 seconds
+  - [ ] Dataview statistics with 5000 tasks: <5 seconds
+  - [ ] Calendar rendering with 1000 dated notes: <2 seconds
+  - [ ] Kanban board with 100 cards: Smooth drag/drop
+
+  Memory Usage:
+  - [ ] Transcript processing: <500MB RAM
+  - [ ] Task management: <200MB RAM
+  - [ ] Obsidian with all plugins: <1GB RAM
+
+  ---
+
+  Test Category 5: Error Handling Testing
+  Purpose: Verify graceful error handling
+
+  Transcript Processing Errors:
+  - [ ] Invalid transcript format: Provide clear error message
+  - [ ] Missing speaker labels: Use "Unknown Speaker"
+  - [ ] Missing timestamps: Use relative timing
+  - [ ] Empty transcript: Handle gracefully
+  - [ ] Very large transcript (>100K words): Process in chunks
+  - [ ] Corrupted transcript file: Detect and report
+
+  Task Management Errors:
+  - [ ] Ambiguous task description: Flag for clarification
+  - [ ] Missing deadline: Use null value
+  - [ ] Invalid deadline format: Parse common formats
+  - [ ] Circular task dependencies: Detect and prevent
+  - [ ] Duplicate tasks: Detect and warn
+  - [ ] Invalid priority value: Use default
+
+  Service Integration Errors:
+  - [ ] Missing API key: Prompt for configuration
+  - [ ] Invalid API key: Clear error message
+  - [ ] Rate limit exceeded: Retry with backoff
+  - [ ] Network failure: Retry up to 3 times
+  - [ ] Quota exhausted: Suggest alternative service
+  - [ ] Service unavailable: Fallback to alternative
+
+  Plugin Integration Errors:
+  - [ ] Plugin not installed: Clear installation instructions
+  - [ ] Plugin disabled: Prompt to enable
+  - [ ] Query syntax error: Provide example
+  - [ ] Task format incompatible: Auto-convert if possible
+
+  ---
+
+  Test Category 6: User Acceptance Testing
+  Purpose: Verify system meets user needs
+
+  UAT Scenarios:
+  1. New User Onboarding
+     - [ ] Install all required plugins
+     - [ ] Configure transcript service
+     - [ ] Process first transcript
+     - [ ] Create first tasks
+     - [ ] Generate first daily todo
+     - [ ] Time to productivity: <30 minutes
+     - [ ] User feedback: "Easy to get started"
+
+  2. Daily Knowledge Worker Workflow
+     - [ ] Morning: Generate daily todo (5 minutes)
+     - [ ] During day: Capture 3 meeting transcripts
+     - [ ] Evening: Complete daily review (5 minutes)
+     - [ ] User feedback: "Saves time vs. manual notes"
+
+  3. Weekly Review Workflow
+     - [ ] Friday afternoon: Complete weekly review (30 minutes)
+     - [ ] User feedback: "Provides valuable insights"
+
+  4. Project Management
+     - [ ] Create project task list (10 minutes)
+     - [ ] Track progress over 2 weeks
+     - [ ] View Kanban board
+     - [ ] User feedback: "Better visibility into tasks"
+
+  5. Research & Meeting Notes
+     - [ ] Capture 5 different meeting types (standup, 1-on-1, planning, retro, all-hands)
+     - [ ] Extract action items from all
+     - [ ] Link related meetings
+     - [ ] User feedback: "Never lose action items"
+
+  User Feedback Collection:
+  - Survey 10-20 beta testers
+  - Collect feedback on:
+    - Ease of use (1-10)
+    - Time savings (1-10)
+    - Feature completeness (1-10)
+    - Would recommend? (Yes/No)
+  - Target satisfaction: >8/10 average
+
+  ---
+
+  Test Execution Plan:
+
+  Week 1:
+  - Unit testing (all agents, tasks, templates)
+  - Integration testing (agent interactions)
+  - Service integration testing
+
+  Week 2:
+  - Workflow testing (all 3 workflows end-to-end)
+  - Performance testing (speed, scale, memory)
+  - Error handling testing
+
+  Week 3:
+  - Plugin integration testing
+  - User acceptance testing (beta testers)
+  - Bug fixes and refinements
+
+  Test Environment:
+  - Fresh Obsidian vault (test vault)
+  - All Phase 1 agents installed
+  - All Phase 1.5 agents installed
+  - All required plugins installed
+  - Sample data: 100 notes, 50 tasks, 10 projects
+  - Sample transcripts: 5 meetings (5min, 15min, 30min, 1hr, 2hr)
+
+  Bug Tracking:
+  Create `testing-bugs.md` to track issues:
+  ```markdown
+  # Phase 1.5 Testing Bugs
+
+  ## Critical (Blockers)
+  - [ ] BUG-001: Transcript processing crashes on large files
+    - Severity: Critical
+    - Found: 2025-11-05
+    - Assigned: Dev Team
+
+  ## High (Must Fix)
+  - [ ] BUG-002: Task dependencies not validated
+    - Severity: High
+    - Found: 2025-11-06
+    - Assigned: Dev Team
+
+  ## Medium (Should Fix)
+  - [ ] BUG-003: Weekly review statistics off by 1
+    - Severity: Medium
+    - Found: 2025-11-07
+    - Assigned: Dev Team
+
+  ## Low (Nice to Fix)
+  - [ ] BUG-004: Daily todo could use better formatting
+    - Severity: Low
+    - Found: 2025-11-08
+    - Assigned: Backlog
+  ```
+
+  Success Metrics:
+  - Zero critical bugs
+  - <5 high-priority bugs
+  - All quality checklists pass at >90%
+  - All performance targets met
+  - User satisfaction >8/10
+  - All workflows complete successfully
+  - Integration with Phase 1 seamless
+
+dependencies:
+  - All Phase 1.5 stories complete (STORY-070 through STORY-078)
+  - Test vault prepared
+  - Sample data created
+  - Beta testers recruited
+
+testing: This IS the testing story.
+
+definition_of_done:
+  - All unit tests executed and passed
+  - All integration tests executed and passed
+  - All workflow tests executed and passed
+  - All performance tests executed and passed
+  - All error handling tests executed and passed
+  - All UAT scenarios executed
+  - User feedback collected and positive
+  - All critical and high bugs fixed
+  - Test report created and published
+  - Phase 1.5 approved for release
+  - Documentation updated with known issues
+  - Code review approved

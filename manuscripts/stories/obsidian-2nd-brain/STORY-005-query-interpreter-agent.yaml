@@ -1,0 +1,91 @@
+---
+story_id: STORY-005
+title: Implement Query Interpreter Agent
+epic_id: EPIC-001
+phase: 1
+priority: critical
+estimated_effort: 24 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want an AI agent to execute natural language queries across my knowledge base
+  So that I can retrieve relevant information using intuitive questions
+
+acceptance_criteria:
+  - Create query-interpreter-agent.md with complete agent definition
+  - Agent parses natural language queries and identifies intent (factual, temporal, causal, comparative)
+  - Agent executes queries across both Obsidian (semantic/text) and Neo4j (temporal/graph)
+  - Agent merges results from multiple sources
+  - Agent presents results in appropriate format (narrative, list, comparison table, timeline)
+  - Agent identifies contradictions in results and flags them
+  - Agent provides source attribution for all claims
+  - Agent follows query-completeness-checklist.md
+  - "Commands: *help, *query, *temporal-query, *compare, *surface-related, *yolo, *exit"
+
+technical_notes: |
+  Agent capabilities:
+  - Natural language query parsing (intent classification)
+  - Multi-source query execution:
+    - Obsidian text search via MCP Tools
+    - Semantic search via Smart Connections
+    - Temporal queries via Neo4j Graphiti MCP
+    - Graph traversal queries via Neo4j
+  - Result merging and deduplication
+  - Format selection based on query type
+  - Contradiction detection
+  - Source attribution
+  - Result quality assessment
+
+  Dependencies (tasks):
+  - parse-natural-language-query.md
+  - execute-obsidian-query.md
+  - execute-neo4j-query.md (optional, requires Neo4j)
+  - merge-results.md
+
+  Dependencies (templates):
+  - query-result-tmpl.yaml
+
+  Dependencies (checklists):
+  - query-completeness-checklist.md
+
+  Query intent types:
+  - factual: "What is X?"
+  - temporal: "How has X evolved?" or "What did I know about X in June?"
+  - causal: "Why does X happen?" or "What caused Y?"
+  - comparative: "Compare X and Y"
+  - exploratory: "Show me everything about X"
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-003: Structural Analysis Agent (for atomic notes)
+  - STORY-004: Semantic Linker Agent (for graph traversal)
+  - query-result-tmpl.yaml template
+  - query-completeness-checklist.md
+  - Obsidian MCP Tools integration
+  - Smart Connections MCP integration
+  - Neo4j Graphiti MCP (optional)
+
+testing:
+  - Execute factual query: "What is Zettelkasten?"
+  - Execute temporal query: "How has my understanding of atomic notes evolved?"
+  - Execute causal query: "Why do atomic notes improve recall?"
+  - Execute comparative query: "Compare Zettelkasten and PARA methods"
+  - Test multi-source result merging
+  - Test contradiction detection
+  - Test format selection (narrative vs. table vs. timeline)
+  - Verify source attribution
+  - Test query completeness checklist
+
+definition_of_done:
+  - Agent file complete with YAML metadata
+  - All commands functional
+  - Query intent classification accuracy > 85%
+  - Multi-source queries return relevant results
+  - Results properly merged and deduplicated
+  - Contradictions flagged appropriately
+  - Source attribution complete
+  - Query completeness checklist enforced
+  - Agent activates via /bmad-2b:query-interpreter-agent
+  - Documentation added to user guide

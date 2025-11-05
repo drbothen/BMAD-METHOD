@@ -1,0 +1,106 @@
+{
+  "metadata": {
+    "template_file": "/Users/jmagady/Dev/BMAD-METHOD/manuscripts/research/AuthorBundle_updated/Templates/269_EditTools_new.docx",
+    "total_styles": 4,
+    "packt_style_count": 0,
+    "paragraph_count": 1,
+    "character_count": 1
+  },
+  "paragraph_styles": {
+    "Normal": {
+      "name": "Normal",
+      "style_id": "Normal",
+      "type": "PARAGRAPH (1)",
+      "builtin": true,
+      "hidden": false,
+      "priority": null,
+      "paragraph_format": {
+        "alignment": null,
+        "left_indent": null,
+        "right_indent": null,
+        "first_line_indent": null,
+        "space_before": null,
+        "space_after": null,
+        "line_spacing": null,
+        "line_spacing_rule": null,
+        "keep_together": null,
+        "keep_with_next": null,
+        "page_break_before": null
+      },
+      "font": {
+        "name": null,
+        "size": null,
+        "bold": null,
+        "italic": null,
+        "underline": null,
+        "color": "None",
+        "all_caps": null,
+        "small_caps": null
+      }
+    }
+  },
+  "character_styles": {
+    "Default Paragraph Font": {
+      "name": "Default Paragraph Font",
+      "style_id": "DefaultParagraphFont",
+      "type": "CHARACTER (2)",
+      "builtin": true,
+      "hidden": true,
+      "priority": 1,
+      "font": {
+        "name": null,
+        "size": null,
+        "bold": null,
+        "italic": null,
+        "underline": null,
+        "color": "None",
+        "all_caps": null,
+        "small_caps": null
+      }
+    }
+  },
+  "table_styles": {
+    "Normal Table": {
+      "name": "Normal Table",
+      "style_id": "TableNormal",
+      "type": "TABLE (3)",
+      "builtin": true,
+      "hidden": true,
+      "priority": 99,
+      "paragraph_format": {
+        "alignment": null,
+        "left_indent": null,
+        "right_indent": null,
+        "first_line_indent": null,
+        "space_before": null,
+        "space_after": null,
+        "line_spacing": null,
+        "line_spacing_rule": null,
+        "keep_together": null,
+        "keep_with_next": null,
+        "page_break_before": null
+      },
+      "font": {
+        "name": null,
+        "size": null,
+        "bold": null,
+        "italic": null,
+        "underline": null,
+        "color": "None",
+        "all_caps": null,
+        "small_caps": null
+      }
+    }
+  },
+  "numbering_styles": {
+    "No List": {
+      "name": "No List",
+      "style_id": "NoList",
+      "type": "LIST (4)",
+      "builtin": true,
+      "hidden": true,
+      "priority": 99
+    }
+  },
+  "packt_styles": []
+}

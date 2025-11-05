@@ -1,0 +1,83 @@
+---
+story_id: STORY-007
+title: Implement Capture Tasks (4 tasks)
+epic_id: EPIC-001
+phase: 1
+priority: high
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a developer
+  I want to create the capture workflow tasks
+  So that the Inbox Triage Agent can process captured content systematically
+
+acceptance_criteria:
+  - Create tasks/capture/ directory
+  - Implement classify-content-type.md task
+  - Implement extract-metadata.md task
+  - Implement create-inbox-note.md task
+  - Implement create-capture-event.md task (optional, Neo4j)
+  - All tasks follow BMAD task specification format
+  - Tasks include step-by-step instructions
+  - Tasks specify input/output expectations
+  - Tasks reference required MCP tools
+
+technical_notes: |
+  Task 1: classify-content-type.md
+  - Input: Raw captured content
+  - Process: Pattern matching and semantic analysis
+  - Output: Content type (quote/concept/reference/reflection/question/observation) + confidence
+  - Classification patterns:
+    - quote: Contains quoted text, has source attribution
+    - concept: Defines or explains an idea
+    - reference: Points to external resource (link-heavy)
+    - reflection: Personal thoughts, "I think/feel/believe"
+    - question: Ends with "?", investigative language
+    - observation: Descriptive, factual, "I noticed/saw"
+
+  Task 2: extract-metadata.md
+  - Input: Raw captured content + source context
+  - Process: Parse URLs, extract author/title, capture timestamp
+  - Output: Structured metadata object
+  - Metadata fields:
+    - source_url: String
+    - author: String (if available)
+    - title: String (if available)
+    - timestamp: ISO8601
+    - surrounding_context: String (paragraph before/after for highlights)
+
+  Task 3: create-inbox-note.md
+  - Input: Classified content + metadata
+  - Process: Use inbox-note-tmpl.yaml to create note
+  - Output: Inbox note file in Obsidian /inbox directory
+  - MCP tool: obsidian.create_note
+
+  Task 4: create-capture-event.md
+  - Input: Created inbox note + metadata
+  - Process: Create Neo4j CaptureEvent node
+  - Output: CaptureEvent node with relationships
+  - MCP tool: graphiti.add_episode (optional, requires Neo4j)
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-002: Inbox Triage Agent (consumer of these tasks)
+  - inbox-note-tmpl.yaml template
+
+testing:
+  - Classify 20 sample captures (test classification accuracy)
+  - Extract metadata from web article
+  - Extract metadata from reading highlight
+  - Create inbox note in Obsidian
+  - Create CaptureEvent in Neo4j
+  - Verify end-to-end capture workflow
+
+definition_of_done:
+  - All 4 task files created in tasks/capture/
+  - Tasks follow BMAD specification format
+  - Step-by-step instructions complete
+  - Input/output expectations documented
+  - MCP tool dependencies specified
+  - Tasks tested individually and in workflow
+  - Documentation added to developer guide

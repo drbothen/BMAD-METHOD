@@ -1,0 +1,576 @@
+---
+story_id: STORY-074
+title: Create Transcript & Task Management Templates
+epic_id: EPIC-001
+phase: 1.5
+priority: high
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a developer
+  I want YAML templates for transcript processing and task management outputs
+  So that agents can generate consistent, structured notes
+
+acceptance_criteria: |
+  **7 Templates to Create:**
+  1. meeting-note-tmpl.yaml
+  2. transcript-note-tmpl.yaml
+  3. interview-note-tmpl.yaml
+  4. task-tmpl.yaml
+  5. project-task-list-tmpl.yaml
+  6. daily-todo-tmpl.yaml
+  7. weekly-review-tmpl.yaml
+
+  **Template Requirements:**
+  - All follow bmad-doc-template.md specification
+  - Include YAML section definitions
+  - Include LLM instructions for each section
+  - Include variable substitution patterns
+  - Include example outputs
+  - Include validation rules
+
+  **Template Format:**
+  - YAML structure with sections array
+  - Each section has: id, title, instructions, validation
+  - Support for optional sections
+  - Support for repeatable sections
+  - Support for nested sections
+
+technical_notes: |
+  Template 1: meeting-note-tmpl.yaml
+  Purpose: Generate structured meeting notes from transcripts
+
+  ```yaml
+  template_id: meeting-note
+  version: 1.0
+  description: "Structured meeting note with executive summary, key points, decisions, and action items"
+  output_format: markdown
+  variables:
+    - meeting_title
+    - meeting_date
+    - meeting_duration
+    - participants
+    - source_file
+
+  frontmatter:
+    type: meeting
+    date: "{{meeting_date}}"
+    participants: "{{participants}}"
+    duration: "{{meeting_duration}}"
+    source: "{{source_file}}"
+    tags: [meeting]
+
+  sections:
+    - id: executive_summary
+      title: Executive Summary
+      required: true
+      instructions: |
+        Write 2-3 sentence overview of the meeting.
+        Cover: main topics discussed, key outcomes, and next steps.
+        Keep it concise and executive-friendly.
+      validation:
+        min_length: 50
+        max_length: 300
+
+    - id: participants
+      title: Participants
+      required: true
+      instructions: |
+        List all meeting participants with their speaking time.
+        Format:
+        - Name (Role) - Speaking time
+        Order by speaking time (most to least).
+      example: |
+        - Sarah Johnson (CEO) - 18m 45s
+        - Mike Chen (CTO) - 12m 30s
+        - Alex Rivera (Marketing Director) - 9m 15s
+
+    - id: agenda_items
+      title: Agenda Items
+      required: false
+      instructions: |
+        List topics discussed in order.
+        For each topic include: title, duration, key participants.
+        Use timestamp links if available.
+      repeatable: true
+      example: |
+        1. [00:00:00-00:12:30] Q4 Revenue Review (Sarah, Mike)
+        2. [00:12:30-00:28:45] Marketing Campaign Planning (Alex, Sarah)
+
+    - id: key_points
+      title: Key Points
+      required: true
+      instructions: |
+        List the most important discussion points (10-20 max).
+        Each point should be one clear sentence.
+        Include timestamp link if available.
+        Order by importance.
+      validation:
+        min_items: 3
+        max_items: 20
+      example: |
+        - [00:05:12](#t=312) Q4 revenue target increased to $2M due to new enterprise deals
+        - [00:18:30](#t=1110) Marketing campaign launch delayed to December 1st
+
+    - id: decisions
+      title: Decisions Made
+      required: true
+      instructions: |
+        Document each decision with rationale and participants.
+        Format:
+        - **Decision**: Clear statement
+          - **Rationale**: Why this decision was made
+          - **Participants**: Who was involved
+          - **Alternatives**: What other options were considered
+          - **Implications**: What this means going forward
+      repeatable: true
+      example: |
+        - **Decision**: Adopt React over Angular for new web portal
+          - **Rationale**: Team has more React experience and ecosystem is more mature
+          - **Participants**: CTO, Dev Team Lead, Product Manager
+          - **Alternatives**: Angular, Vue.js
+          - **Implications**: Need to train 2 junior devs, 4-week timeline expected
+
+    - id: action_items
+      title: Action Items
+      required: true
+      instructions: |
+        Extract all commitments made during meeting.
+        Format: Markdown checkbox with owner and deadline.
+        - [ ] **Task description** (@owner, due: deadline)
+          - Context: Why this is needed
+          - Source: Who committed (timestamp)
+      validation:
+        min_items: 1
+      example: |
+        - [ ] Complete Q4 budget analysis (@sarah, due: Friday EOD)
+          - Context: Needed for Monday board meeting
+          - Source: Sarah, 00:14:32
+
+    - id: entities_mentioned
+      title: Entities Mentioned
+      required: false
+      instructions: |
+        List people, organizations, products, or technologies mentioned.
+        Link to vault notes if they exist.
+        Group by category.
+      example: |
+        **People**: [[People/Jane Smith]] (new VP hire)
+        **Organizations**: [[Organizations/Acme Corp]] (enterprise customer)
+        **Technologies**: [[Tech/React]] (web portal framework)
+
+    - id: follow_up
+      title: Follow-up
+      required: false
+      instructions: |
+        Note any topics that need additional meetings or discussion.
+        Include who should be involved.
+      example: |
+        - Schedule deep-dive on Q4 marketing strategy (Sarah, Alex, Product team)
+        - Technical architecture review for web portal (Mike, Dev team)
+
+    - id: links
+      title: Related Links
+      required: true
+      instructions: |
+        Link to related notes, projects, and people.
+        Use Obsidian wiki-link format [[Note Title]].
+      example: |
+        **Related**: [[Q4 Planning]] | [[Revenue Review]] | [[Web Portal Project]]
+        **People**: [[People/Sarah Johnson]] | [[People/Mike Chen]]
+        **Previous**: [[Meeting Notes/2025-10-28 Exec Meeting]]
+  ```
+
+  ---
+
+  Template 2: transcript-note-tmpl.yaml
+  Purpose: Store raw/processed transcript with metadata
+
+  ```yaml
+  template_id: transcript-note
+  version: 1.0
+  description: "Processed transcript with speaker diarization and timestamps"
+
+  frontmatter:
+    type: transcript
+    date: "{{transcript_date}}"
+    duration: "{{duration}}"
+    source: "{{source_type}}"  # audio, video, manual
+    speakers: "{{speaker_list}}"
+    tags: [transcript]
+
+  sections:
+    - id: metadata
+      title: Transcript Metadata
+      required: true
+      instructions: |
+        Include: Recording date, duration, source type, transcript service used.
+
+    - id: speakers
+      title: Speakers
+      required: true
+      instructions: |
+        List all speakers with statistics.
+        Format: Name - Total time, word count, segments.
+
+    - id: transcript_body
+      title: Transcript
+      required: true
+      instructions: |
+        Full transcript with speaker labels and timestamps.
+        Format:
+        **[00:00:12] Speaker Name**: Transcript text here.
+  ```
+
+  ---
+
+  Template 3: interview-note-tmpl.yaml
+  Purpose: Generate structured interview notes
+
+  ```yaml
+  template_id: interview-note
+  version: 1.0
+  description: "Interview notes with Q&A structure"
+
+  frontmatter:
+    type: interview
+    date: "{{interview_date}}"
+    interviewee: "{{interviewee_name}}"
+    interviewer: "{{interviewer_name}}"
+    topic: "{{interview_topic}}"
+    tags: [interview]
+
+  sections:
+    - id: introduction
+      title: Introduction
+      required: true
+      instructions: |
+        Brief introduction: Who was interviewed, topic, date, context.
+
+    - id: key_insights
+      title: Key Insights
+      required: true
+      instructions: |
+        Top 5-10 insights from the interview.
+        Most important takeaways first.
+
+    - id: questions_and_answers
+      title: Questions & Answers
+      required: true
+      repeatable: true
+      instructions: |
+        Document each Q&A pair.
+        Format:
+        **Q**: Question text
+        **A**: Answer text
+        Include timestamp if available.
+
+    - id: follow_up_questions
+      title: Follow-up Questions
+      required: false
+      instructions: |
+        List questions that should be asked in future interviews.
+
+    - id: links
+      title: Related Links
+      required: true
+      instructions: |
+        Link to interviewee's profile, related topics, previous interviews.
+  ```
+
+  ---
+
+  Template 4: task-tmpl.yaml
+  Purpose: Individual task note
+
+  ```yaml
+  template_id: task
+  version: 1.0
+  description: "Individual task with GTD metadata"
+
+  frontmatter:
+    type: task
+    id: "{{task_id}}"
+    status: todo  # todo, in_progress, blocked, completed
+    priority: "{{priority}}"  # critical, high, medium, low
+    owner: "{{owner}}"
+    deadline: "{{deadline}}"
+    created: "{{created_date}}"
+    completed: null
+    context: "{{context_tags}}"  # [work, computer, phone, etc.]
+    energy: "{{energy_level}}"  # high, medium, low
+    estimate: "{{time_estimate}}"
+    project: "{{project_link}}"
+    source: "{{source_link}}"
+    tags: [task]
+
+  sections:
+    - id: description
+      title: Description
+      required: true
+      instructions: |
+        Clear, actionable description of what needs to be done.
+        Should start with an action verb.
+        Include enough context to understand the task.
+      validation:
+        min_length: 20
+
+    - id: dependencies
+      title: Dependencies
+      required: false
+      instructions: |
+        List tasks that must be completed before this one.
+        Use markdown checkboxes with task links.
+        Format: - [ ] [[TASK-123]] Task description
+
+    - id: context
+      title: Context
+      required: false
+      instructions: |
+        Why is this task needed?
+        What is the larger goal?
+        Any relevant background information.
+
+    - id: completion_criteria
+      title: Completion Criteria
+      required: false
+      instructions: |
+        How will you know this task is done?
+        List specific, measurable criteria.
+        Use markdown checkboxes.
+
+    - id: notes
+      title: Notes
+      required: false
+      instructions: |
+        Any additional notes, progress updates, or blockers.
+
+    - id: links
+      title: Links
+      required: true
+      instructions: |
+        Link to project, related tasks, and source.
+        Format: Project: [[Project Name]]
+  ```
+
+  ---
+
+  Template 5: project-task-list-tmpl.yaml
+  Purpose: Task list for a project
+
+  ```yaml
+  template_id: project-task-list
+  version: 1.0
+  description: "Organized task list for a project"
+
+  frontmatter:
+    type: project-tasks
+    project: "{{project_name}}"
+    created: "{{created_date}}"
+    updated: "{{updated_date}}"
+    total_tasks: "{{total_count}}"
+    completed_tasks: "{{completed_count}}"
+    tags: [project, tasks]
+
+  sections:
+    - id: overview
+      title: Project Overview
+      required: true
+      instructions: |
+        Brief description of project and task organization.
+
+    - id: critical_tasks
+      title: Critical Tasks
+      required: false
+      instructions: |
+        Tasks that are blocking or time-critical.
+        Format: - [ ] [[TASK-ID]] Description (@owner, due: date)
+
+    - id: high_priority_tasks
+      title: High Priority Tasks
+      required: false
+      instructions: |
+        Important tasks that should be done soon.
+
+    - id: medium_priority_tasks
+      title: Medium Priority Tasks
+      required: false
+      instructions: |
+        Tasks that are important but not urgent.
+
+    - id: low_priority_tasks
+      title: Low Priority Tasks
+      required: false
+      instructions: |
+        Tasks that would be nice to complete.
+
+    - id: completed_tasks
+      title: Completed Tasks
+      required: false
+      instructions: |
+        Archive of completed tasks for this project.
+        Format: - [x] [[TASK-ID]] Description (completed: date)
+  ```
+
+  ---
+
+  Template 6: daily-todo-tmpl.yaml
+  Purpose: Daily todo list
+
+  ```yaml
+  template_id: daily-todo
+  version: 1.0
+  description: "Daily todo list based on GTD"
+
+  frontmatter:
+    type: daily-todo
+    date: "{{date}}"
+    contexts: "{{available_contexts}}"
+    available_time: "{{available_hours}}"
+    energy_level: "{{energy_level}}"
+    tags: [daily, todo]
+
+  sections:
+    - id: overview
+      title: Overview
+      required: true
+      instructions: |
+        Brief summary of today's focus and constraints.
+        Include: Available time, contexts, energy level.
+
+    - id: must_do
+      title: Must Do (Due Today)
+      required: true
+      instructions: |
+        Tasks with deadlines today.
+        Format: - [ ] [[TASK-ID]] Description (estimate) @owner
+
+    - id: high_priority
+      title: High Priority
+      required: true
+      instructions: |
+        Important tasks to tackle today if time allows.
+
+    - id: if_time_allows
+      title: If Time Allows
+      required: false
+      instructions: |
+        Nice-to-have tasks if you finish the priorities.
+
+    - id: notes
+      title: Notes
+      required: false
+      instructions: |
+        Meeting schedule, focus blocks, or other constraints.
+  ```
+
+  ---
+
+  Template 7: weekly-review-tmpl.yaml
+  Purpose: GTD weekly review
+
+  ```yaml
+  template_id: weekly-review
+  version: 1.0
+  description: "GTD weekly review with statistics and insights"
+
+  frontmatter:
+    type: weekly-review
+    week_start: "{{week_start_date}}"
+    week_end: "{{week_end_date}}"
+    total_tasks: "{{total}}"
+    completed: "{{completed}}"
+    completion_rate: "{{rate}}"
+    tags: [weekly-review, gtd]
+
+  sections:
+    - id: overview
+      title: Overview
+      required: true
+      instructions: |
+        High-level summary of the week.
+        Include completion rate and overall assessment.
+
+    - id: completed_by_priority
+      title: Completed Tasks by Priority
+      required: true
+      instructions: |
+        Break down completion by priority level.
+        Format:
+        - Critical: X/Y (Z%)
+        - High: X/Y (Z%)
+
+    - id: overdue_rolled
+      title: Overdue/Rolled Tasks
+      required: true
+      instructions: |
+        List tasks that didn't get done and why.
+        Format: - [ ] [[TASK-ID]] Description (priority) - reason
+
+    - id: productivity_insights
+      title: Productivity Insights
+      required: true
+      instructions: |
+        Analyze when and where you were most productive.
+        Include: Best times, best contexts, estimation accuracy.
+
+    - id: blockers
+      title: Blockers
+      required: true
+      instructions: |
+        List anything preventing progress.
+        What needs to be resolved?
+
+    - id: recommendations
+      title: Recommendations for Next Week
+      required: true
+      instructions: |
+        Actionable recommendations based on this week's patterns.
+        5-7 specific suggestions.
+
+    - id: next_week_preview
+      title: Next Week Preview
+      required: true
+      instructions: |
+        Overview of next week: task count, priorities, milestones.
+  ```
+
+  Template Validation Rules:
+  - All required sections must be present
+  - Section content meets min/max length requirements
+  - Variable substitution completed (no {{placeholders}} remain)
+  - YAML frontmatter is valid
+  - Markdown formatting is correct
+  - All wiki-links use correct format [[Note Title]]
+  - All checkboxes use correct format - [ ] or - [x]
+
+dependencies:
+  - common/utils/bmad-doc-template.md (template specification)
+  - BMAD core template engine (for processing templates)
+
+testing:
+  - Validate all templates against bmad-doc-template.md spec
+  - Test variable substitution for each template
+  - Generate sample outputs for each template
+  - Verify YAML frontmatter is valid
+  - Test with create-doc task
+  - Verify section validation rules work
+  - Test optional vs. required sections
+  - Test repeatable sections
+  - Verify templates work with Transcript Processing Agent
+  - Verify templates work with Task Management Agent
+
+definition_of_done:
+  - All 7 templates created in bmad-obsidian-2nd-brain/templates/
+  - All templates follow bmad-doc-template.md specification
+  - All templates include complete section definitions
+  - All templates include LLM instructions
+  - All templates include example outputs
+  - All templates include validation rules
+  - All templates tested with sample data
+  - Sample outputs generated for documentation
+  - Templates validated against specification
+  - Documentation complete
+  - Code review approved

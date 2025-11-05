@@ -1,0 +1,30 @@
+{
+  "markdown_to_packt": {
+    "h1": "Heading 1 [PACKT]",
+    "h2": "Heading 2 [PACKT]",
+    "h3": "Heading 3 [PACKT]",
+    "h4": "Heading 4 [PACKT]",
+    "paragraph": "Normal [PACKT]",
+    "code_block": "Code [PACKT]",
+    "code_inline": "Code In Text [PACKT]",
+    "bullet": "Bullet [PACKT]",
+    "numbered": "Numbered Bullet [PACKT]",
+    "quote": "Quote [PACKT]",
+    "emphasis": "Italics [PACKT]",
+    "strong": "Key Word [PACKT]",
+    "url": "URL [PACKT]",
+    "screen_text": "Screen Text [PACKT]",
+    "info_box": "Information Box [PACKT]",
+    "tip_heading": "Tip Heading [PACKT]",
+    "tip_content": "Tip [PACKT]",
+    "table_heading": "Table Column Heading [PACKT]",
+    "command_line": "Command Line [PACKT]",
+    "code_highlighted": "Code Highlighted [PACKT]",
+    "key": "Key [PACKT]"
+  },
+  "available_packt_styles": [],
+  "style_categories": {
+    "character_styles": ["Default Paragraph Font"],
+    "paragraph_styles": ["Normal"]
+  }
+}

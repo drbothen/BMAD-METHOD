@@ -1,0 +1,104 @@
+---
+story_id: STORY-040
+title: "Phase 4: Advanced Analysis & Gap Detection"
+epic_id: EPIC-001
+phase: 4
+priority: medium
+estimated_effort: 2-3 weeks
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want AI agents to identify gaps and contradictions in my knowledge base
+  So that I can prioritize research and maintain intellectual coherence
+
+acceptance_criteria: |
+  **1 Additional Agent:**
+  - Gap Detector Agent: Identify and prioritize knowledge gaps
+
+  **7 Additional Tasks:**
+  - Gap detection: identify-unresolved-questions, detect-undeveloped-concepts, find-missing-prerequisites, identify-evidence-gaps, analyze-domain-boundaries, prioritize-gaps
+  - Cross-linking: detect-logical-contradictions
+
+  **1 Additional Template:**
+  - gap-analysis-tmpl.yaml
+
+  **2 Additional Checklists:**
+  - gap-identification-checklist.md
+  - prioritization-checklist.md
+
+  **1 Additional Workflow:**
+  - contradiction-resolution-workflow
+
+  **Enhanced Knowledge Base:**
+  - quality-standards.md (complete with gap detection criteria)
+
+technical_notes: |
+  Gap Detector Agent Capabilities:
+  - Identify unresolved questions (via markers: ?, TODO, INVESTIGATE)
+  - Detect undeveloped concepts (mentioned but not explained)
+  - Find missing prerequisites (assumed knowledge not documented)
+  - Identify evidence gaps (claims without supporting sources)
+  - Analyze domain boundaries (intentional scope vs. genuine gaps)
+  - Detect logical contradictions (conflicting claims)
+  - Prioritize gaps by strategic value and feasibility
+  - Suggest research approaches for each gap
+  - Track gap resolution progress
+  - Create gap analysis reports
+
+  Gap Types:
+  1. Coverage Gaps: Topics within scope but not documented
+  2. Evidence Gaps: Claims needing sources or validation
+  3. Prerequisite Gaps: Foundational knowledge assumed but missing
+  4. Assumption Gaps: Unexamined assumptions underlying claims
+  5. Conceptual Gaps: Relationships between concepts not explored
+
+  Contradiction Detection:
+  - Identify logically incompatible claims across notes
+  - Flag in Neo4j with Contradiction nodes
+  - Investigate temporal context (which claim came first?)
+  - Suggest resolution strategies:
+    - Refine definition (ambiguity in terminology)
+    - Gather evidence (more research needed)
+    - Accept paradox (both valid in different contexts)
+    - Update understanding (one claim superseded)
+
+  Prioritization Algorithm:
+  - Impact: How does gap limit current work?
+  - Frequency: How often does gap appear?
+  - Blocking: What projects/outputs wait on resolution?
+  - Effort: Estimated hours to resolve
+  - Priority Score: (Impact × Frequency × Blocking) / Effort
+
+  Contradiction Resolution Workflow:
+  1. Gap Detector flags contradiction
+  2. Timeline Constructor investigates temporal context
+  3. User examines both notes in full context
+  4. User selects resolution strategy
+  5. Structural Analysis Agent implements resolution
+  6. Semantic Linker updates relationships (SUPERSEDES, RESOLVES)
+
+dependencies:
+  - Phase 1 complete (quality auditing functional)
+  - Phase 2 complete (temporal analysis for contradictions)
+  - Neo4j recommended (for contradiction tracking)
+
+testing:
+  - Identify unresolved questions (should find 10-20 in typical vault)
+  - Detect undeveloped concepts
+  - Find missing prerequisites
+  - Identify evidence gaps
+  - Detect logical contradictions
+  - Prioritize gaps (validate priority scores)
+  - Execute contradiction resolution workflow
+
+definition_of_done:
+  - Gap Detector Agent implemented and tested
+  - All 7 tasks created and validated
+  - Template complete
+  - Both checklists comprehensive
+  - Contradiction resolution workflow functional
+  - quality-standards.md enhanced
+  - Phase 4 testing complete
+  - Documentation updated

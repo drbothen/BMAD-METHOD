@@ -1,0 +1,90 @@
+---
+story_id: STORY-004
+title: Implement Semantic Linker Agent
+epic_id: EPIC-001
+phase: 1
+priority: critical
+estimated_effort: 24 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want an AI agent to suggest bidirectional links between related notes
+  So that my knowledge graph becomes interconnected and navigable
+
+acceptance_criteria:
+  - Create semantic-linker-agent.md with complete agent definition
+  - Agent uses Smart Connections semantic search to find related notes
+  - Agent identifies link types: supports, contradicts, elaborates, analogous_to, generalizes, specializes
+  - Agent calculates link strength (0.0-1.0) based on semantic similarity
+  - Agent generates link suggestions with reasoning
+  - Agent creates bidirectional wikilinks in both notes
+  - Agent records link metadata in Neo4j (timestamp, strength, type)
+  - Agent follows linking-quality-checklist.md
+  - User can approve/reject/review-later suggestions
+  - "Commands: *help, *suggest-links, *create-link, *batch-approve, *yolo, *exit"
+
+technical_notes: |
+  Agent capabilities:
+  - Semantic similarity query via Smart Connections MCP
+  - Link type identification using semantic analysis
+  - Link strength calculation (embedding similarity + contextual analysis)
+  - Bidirectional wikilink creation in both notes
+  - Neo4j relationship creation [:LINKED_TO] with metadata
+  - Link suggestion creation using link-suggestion-tmpl.yaml
+  - Batch approval for multiple suggestions
+
+  Dependencies (tasks):
+  - query-semantic-similarity.md
+  - create-bidirectional-link.md
+
+  Dependencies (templates):
+  - link-suggestion-tmpl.yaml
+
+  Dependencies (checklists):
+  - linking-quality-checklist.md
+
+  Link strength calculation:
+  - Semantic similarity (0.0-1.0) from Smart Connections
+  - Contextual relevance (0.0-1.0) from shared concepts
+  - Temporal proximity bonus (notes created/edited near each other)
+  - Final strength = weighted average
+
+  Link types:
+  - supports: Note A provides evidence for Note B
+  - contradicts: Note A conflicts with Note B
+  - elaborates: Note A explains Note B in detail
+  - analogous_to: Note A structurally similar to Note B
+  - generalizes: Note A is broader case of Note B
+  - specializes: Note A is specific instance of Note B
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-003: Structural Analysis Agent (for atomic notes)
+  - link-suggestion-tmpl.yaml template
+  - linking-quality-checklist.md
+  - Smart Connections MCP integration
+  - Neo4j Graphiti MCP (optional)
+
+testing:
+  - Query semantic similarity for a note
+  - Generate link suggestions (5-10 candidates)
+  - Identify link types correctly
+  - Calculate link strength accurately
+  - Create bidirectional wikilinks
+  - Record link metadata in Neo4j
+  - Approve/reject suggestions
+  - Test batch approval
+  - Test Yolo mode (auto-linking)
+  - Verify linking quality checklist enforced
+
+definition_of_done:
+  - Agent file complete with YAML metadata
+  - All commands functional
+  - Link suggestions relevant (precision > 80%)
+  - Bidirectional links created correctly
+  - Link metadata recorded in Neo4j (if enabled)
+  - Linking quality checklist enforced
+  - Agent activates via /bmad-2b:semantic-linker-agent
+  - Documentation added to user guide

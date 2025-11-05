@@ -1,0 +1,89 @@
+---
+story_id: STORY-010
+title: Implement Review Tasks (3 tasks)
+epic_id: EPIC-001
+phase: 1
+priority: high
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a developer
+  I want to create the review/audit workflow tasks
+  So that Quality Auditor Agent can maintain knowledge base health
+
+acceptance_criteria:
+  - Create tasks/review/ directory
+  - Implement audit-temporal-freshness.md task
+  - Implement validate-external-links.md task
+  - Implement generate-audit-report.md task
+  - All tasks follow BMAD task specification format
+  - Tasks include quality thresholds
+  - Tasks specify report formats
+
+technical_notes: |
+  Task 1: audit-temporal-freshness.md
+  - Input: Vault notes + freshness threshold (days)
+  - Process: Query notes not updated within threshold
+  - Output: List of stale notes prioritized by importance
+  - Algorithm:
+    - Query all notes with last_updated < (now - threshold_days)
+    - Calculate staleness score: days_stale / threshold
+    - Calculate importance: reference_count + (is_domain_critical ? 10 : 0)
+    - Rank by: staleness_score * importance
+  - Default threshold: 180 days (6 months)
+  - MCP tools: obsidian.list_notes with metadata filter
+
+  Task 2: validate-external-links.md
+  - Input: List of notes (or all notes)
+  - Process: Extract URLs, test HTTP status codes
+  - Output: Link validation report (broken, redirects, timeouts)
+  - Algorithm:
+    - Extract all URLs from note content (markdown links, plain URLs)
+    - Test each URL: HTTP HEAD request (timeout 5s)
+    - Classify results:
+      - Broken (4xx): 404, 403, 410
+      - Redirects (3xx): 301, 302, 307, 308
+      - Timeouts: No response within 5s
+      - Success (2xx): 200, 201
+  - Batch processing: 10 URLs at a time (rate limiting)
+  - MCP tools: obsidian.read_note, obsidian.list_notes
+
+  Task 3: generate-audit-report.md
+  - Input: Audit results (freshness, links, citations, orphans)
+  - Process: Aggregate findings, calculate metrics, prioritize actions
+  - Output: Comprehensive audit report using audit-report-tmpl.yaml
+  - Report sections:
+    - Executive summary (3-5 sentences)
+    - Freshness issues (prioritized table)
+    - Link validation issues (grouped by type)
+    - Orphaned notes (with suggested actions)
+    - Quality issues (atomicity violations, duplicates)
+    - Prioritized action items (critical/high/medium)
+    - Vault metrics (total notes, health score)
+  - Vault health score: 0-100 based on weighted metrics
+  - MCP tools: obsidian.create_note (for report)
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-006: Quality Auditor Agent (consumer)
+  - audit-report-tmpl.yaml template
+  - audit-coverage-checklist.md
+
+testing:
+  - Audit 1000-note vault for freshness
+  - Validate 50 external links (include broken, working, timeout cases)
+  - Generate comprehensive audit report
+  - Verify prioritization algorithm
+  - Calculate vault health score
+  - Test report formatting
+
+definition_of_done:
+  - All 3 task files created in tasks/review/
+  - Tasks follow BMAD specification format
+  - Quality thresholds documented
+  - Report formats specified
+  - Algorithms documented
+  - Tasks tested on real vaults
+  - Documentation added to developer guide

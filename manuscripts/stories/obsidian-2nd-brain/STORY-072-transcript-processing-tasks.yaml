@@ -1,0 +1,444 @@
+---
+story_id: STORY-072
+title: Implement Transcript Processing Tasks
+epic_id: EPIC-001
+phase: 1.5
+priority: high
+estimated_effort: 20 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a developer
+  I want reusable transcript processing tasks
+  So that the Transcript Processing Agent can process transcripts consistently
+
+acceptance_criteria: |
+  **8 Tasks to Create:**
+  1. extract-action-items-from-transcript.md
+  2. identify-key-points-in-transcript.md
+  3. log-decisions-from-transcript.md
+  4. segment-transcript-by-topic.md
+  5. extract-speaker-diarization.md
+  6. annotate-transcript-timestamps.md
+  7. extract-entities-from-transcript.md
+  8. generate-meeting-note-from-transcript.md
+
+  **Task Format:**
+  - All tasks follow BMAD task specification
+  - Clear step-by-step procedures
+  - Input/output specifications
+  - Error handling instructions
+  - Example outputs
+  - Quality validation steps
+
+  **Task Coverage:**
+  - All transcript processing operations covered
+  - Tasks are composable (can be chained)
+  - Tasks are reusable across different transcript types
+  - Tasks handle multiple input formats
+
+technical_notes: |
+  Task 1: extract-action-items-from-transcript.md
+  Purpose: Extract all action items with owners and deadlines
+
+  Process:
+  1. Detect action verbs: "will", "should", "need to", "must", "plan to"
+  2. Identify commitment language: "I'll", "we'll", "X will"
+  3. Extract deadline phrases: "by Friday", "next week", "EOD", "EOW"
+  4. Identify ownership: Who committed to what
+  5. Extract context: Why is this needed
+  6. Classify urgency: Critical, high, medium, low
+
+  Input:
+  - Transcript text (plain text, VTT, SRT, JSON)
+  - Speaker labels (optional)
+  - Timestamps (optional)
+
+  Output:
+  - List of action items
+  - Each item includes:
+    - Description (what)
+    - Owner (who)
+    - Deadline (when)
+    - Context (why)
+    - Source (speaker, timestamp)
+    - Priority (critical/high/medium/low)
+
+  Example Output:
+  ```yaml
+  action_items:
+    - description: "Complete Q4 budget analysis"
+      owner: "Sarah"
+      deadline: "Friday EOD"
+      context: "Needed for Monday's board meeting"
+      source: "Sarah, 00:14:32"
+      priority: "high"
+
+    - description: "Schedule follow-up meeting with design team"
+      owner: "Mike"
+      deadline: "This week"
+      context: "Discuss new mockups"
+      source: "Mike, 00:22:15"
+      priority: "medium"
+  ```
+
+  ---
+
+  Task 2: identify-key-points-in-transcript.md
+  Purpose: Extract most important discussion points
+
+  Process:
+  1. Identify emphasis markers: "importantly", "key point", "critical"
+  2. Detect repetition: Topics mentioned multiple times
+  3. Identify decision outcomes: Conclusions reached
+  4. Extract insights: New information or realizations
+  5. Find agreements/disagreements: Points of consensus/conflict
+  6. Score importance: Based on context and emphasis
+
+  Input:
+  - Transcript text
+  - Speaker labels (optional)
+
+  Output:
+  - List of key points (ranked by importance)
+  - Each point includes:
+    - Summary statement
+    - Speaker(s) who mentioned it
+    - Timestamp range
+    - Importance score (1-10)
+    - Related topics
+
+  Example Output:
+  ```yaml
+  key_points:
+    - summary: "Q4 revenue target increased to $2M due to new enterprise deals"
+      speakers: ["CEO", "CFO"]
+      timestamp_range: "00:05:12-00:07:45"
+      importance: 9
+      related_topics: ["revenue", "Q4 planning", "enterprise sales"]
+
+    - summary: "Marketing campaign launch delayed to December 1st"
+      speakers: ["Marketing Director"]
+      timestamp_range: "00:18:30-00:19:15"
+      importance: 7
+      related_topics: ["marketing", "Q4 planning", "timeline"]
+  ```
+
+  ---
+
+  Task 3: log-decisions-from-transcript.md
+  Purpose: Extract decisions made during discussion
+
+  Process:
+  1. Detect decision language: "we decided", "let's go with", "agreed"
+  2. Identify decision outcomes: What was decided
+  3. Extract rationale: Why this decision was made
+  4. Identify participants: Who was involved in decision
+  5. Find alternatives: Options that were considered
+  6. Extract implications: What this decision means
+
+  Input:
+  - Transcript text
+  - Speaker labels
+
+  Output:
+  - List of decisions
+  - Each decision includes:
+    - Decision statement
+    - Rationale
+    - Participants
+    - Alternatives considered
+    - Implications
+    - Timestamp
+
+  Example Output:
+  ```yaml
+  decisions:
+    - decision: "Adopt React over Angular for new web portal"
+      rationale: "Team has more React experience and ecosystem is more mature"
+      participants: ["CTO", "Dev Team Lead", "Product Manager"]
+      alternatives: ["Angular", "Vue.js"]
+      implications: "Need to train 2 junior devs in React, expected 4-week timeline"
+      timestamp: "00:32:15"
+  ```
+
+  ---
+
+  Task 4: segment-transcript-by-topic.md
+  Purpose: Break transcript into topical sections
+
+  Process:
+  1. Detect topic transitions: Changes in subject matter
+  2. Identify topic keywords: Main subjects being discussed
+  3. Group related segments: Conversations about same topic
+  4. Generate topic labels: Descriptive names for each section
+  5. Extract topic duration: Start and end times
+
+  Input:
+  - Transcript text
+  - Timestamps
+
+  Output:
+  - List of topic segments
+  - Each segment includes:
+    - Topic label
+    - Start/end timestamps
+    - Duration
+    - Key points within topic
+    - Speakers involved
+
+  Example Output:
+  ```yaml
+  topics:
+    - label: "Q4 Revenue Review"
+      start: "00:00:00"
+      end: "00:12:30"
+      duration: "12m 30s"
+      key_points: 3
+      speakers: ["CEO", "CFO", "VP Sales"]
+
+    - label: "Marketing Campaign Planning"
+      start: "00:12:30"
+      end: "00:28:45"
+      duration: "16m 15s"
+      key_points: 5
+      speakers: ["Marketing Director", "CEO", "Product Manager"]
+  ```
+
+  ---
+
+  Task 5: extract-speaker-diarization.md
+  Purpose: Validate and enhance speaker identification
+
+  Process:
+  1. Parse speaker labels from transcript
+  2. Validate speaker consistency
+  3. Normalize speaker names (handle variations)
+  4. Extract speaker statistics (word count, speaking time)
+  5. Identify speaker roles (presenter, moderator, participant)
+
+  Input:
+  - Transcript with speaker labels
+  - Timestamps
+
+  Output:
+  - Speaker list with metadata
+  - Speaker statistics
+  - Corrected/normalized speaker labels
+
+  Example Output:
+  ```yaml
+  speakers:
+    - name: "Sarah Johnson"
+      role: "CEO"
+      total_speaking_time: "18m 45s"
+      word_count: 2340
+      segments: 15
+
+    - name: "Mike Chen"
+      role: "CTO"
+      total_speaking_time: "12m 30s"
+      word_count: 1560
+      segments: 12
+  ```
+
+  ---
+
+  Task 6: annotate-transcript-timestamps.md
+  Purpose: Preserve and enhance timestamp information
+
+  Process:
+  1. Parse timestamps from input format (VTT, SRT, JSON)
+  2. Convert to consistent format (HH:MM:SS)
+  3. Add timestamp anchors to key points
+  4. Create clickable timestamp links (if source has playback)
+  5. Calculate segment durations
+
+  Input:
+  - Transcript with timestamps (any format)
+
+  Output:
+  - Normalized timestamps
+  - Timestamp-anchored content
+  - Playback links (if available)
+
+  Example Output:
+  ```markdown
+  ## Key Points
+
+  - [00:05:12](#t=312) Q4 revenue target increased to $2M
+  - [00:18:30](#t=1110) Marketing campaign delayed to Dec 1
+  - [00:32:15](#t=1935) Decision to use React for web portal
+  ```
+
+  ---
+
+  Task 7: extract-entities-from-transcript.md
+  Purpose: Extract named entities (people, organizations, concepts)
+
+  Process:
+  1. Apply Named Entity Recognition (NER)
+  2. Identify entity types:
+     - People (mentioned in discussion)
+     - Organizations (companies, teams, departments)
+     - Products/Projects
+     - Technologies
+     - Locations
+     - Dates/Times
+  3. Count entity mentions (frequency)
+  4. Extract entity context (how entity was mentioned)
+  5. Create entity links (link to existing vault notes)
+
+  Input:
+  - Transcript text
+
+  Output:
+  - Entity list by type
+  - Mention count
+  - Context snippets
+  - Links to vault notes (if exist)
+
+  Example Output:
+  ```yaml
+  entities:
+    people:
+      - name: "Jane Smith"
+        mentions: 5
+        context: "New VP of Engineering hire"
+        vault_link: "[[People/Jane Smith]]"
+
+    organizations:
+      - name: "Acme Corp"
+        mentions: 3
+        context: "Potential enterprise customer"
+        vault_link: "[[Organizations/Acme Corp]]"
+
+    technologies:
+      - name: "React"
+        mentions: 8
+        context: "Framework for new web portal"
+        vault_link: "[[Tech/React]]"
+  ```
+
+  ---
+
+  Task 8: generate-meeting-note-from-transcript.md
+  Purpose: Generate complete structured meeting note
+
+  Process:
+  1. Execute all extraction tasks (1-7)
+  2. Select appropriate template (meeting-note-tmpl.yaml)
+  3. Populate template sections:
+     - Executive Summary (2-3 sentences)
+     - Participants (speaker list)
+     - Agenda Items (topic segments)
+     - Key Points (from task 2)
+     - Decisions Made (from task 3)
+     - Action Items (from task 1)
+     - Entities Mentioned (from task 7)
+  4. Generate YAML frontmatter metadata
+  5. Create bidirectional links
+  6. Format as Obsidian markdown
+
+  Input:
+  - Transcript (any format)
+  - Meeting metadata (date, title, attendees)
+
+  Output:
+  - Complete meeting note (meeting-note-tmpl.yaml format)
+  - Ready for Obsidian vault
+
+  Example Output:
+  ```markdown
+  ---
+  type: meeting
+  date: 2025-11-04
+  participants: [Sarah Johnson, Mike Chen, Alex Rivera]
+  duration: 60m
+  topics: [Q4 Planning, Revenue Review, Marketing]
+  tags: [executive-meeting, quarterly-planning]
+  source: transcript-2025-11-04-exec-meeting.vtt
+  ---
+
+  # Executive Meeting - Q4 Planning
+
+  ## Executive Summary
+
+  Executive team reviewed Q4 revenue targets (increased to $2M),
+  discussed marketing campaign timeline (delayed to Dec 1), and
+  decided to adopt React for the new web portal project.
+
+  ## Participants
+
+  - Sarah Johnson (CEO) - 18m 45s
+  - Mike Chen (CTO) - 12m 30s
+  - Alex Rivera (Marketing Director) - 9m 15s
+
+  ## Key Points
+
+  - [00:05:12](#t=312) Q4 revenue target increased to $2M due to new enterprise deals
+  - [00:18:30](#t=1110) Marketing campaign launch delayed to December 1st
+  - [00:32:15](#t=1935) Decision to use React over Angular for web portal
+
+  ## Decisions Made
+
+  - **Adopt React over Angular for new web portal**
+    - Rationale: Team experience and ecosystem maturity
+    - Participants: CTO, Dev Team Lead, Product Manager
+
+  ## Action Items
+
+  - [ ] Complete Q4 budget analysis (@sarah, due: Friday EOD)
+  - [ ] Schedule follow-up with design team (@mike, due: This week)
+  - [ ] Send React training plan to junior devs (@mike, due: Monday)
+
+  ## Links
+
+  Related: [[Q4 Planning]] | [[Revenue Review]] | [[Web Portal Project]]
+  People: [[People/Sarah Johnson]] | [[People/Mike Chen]]
+  ```
+
+  Error Handling Guidelines:
+  - Missing speaker labels: Assign "Unknown Speaker"
+  - Missing timestamps: Use relative positioning ("early", "mid", "late")
+  - Incomplete transcripts: Mark with "[Partial Transcript]" tag
+  - Low confidence extractions: Add "(unverified)" marker
+  - Format errors: Attempt auto-correction, fallback to manual review
+
+  Quality Validation:
+  - All extracted action items have descriptions and owners
+  - Key points are actually important (not trivial details)
+  - Decisions include rationale
+  - Topics are logically segmented
+  - Entities are correctly identified
+  - Output passes transcript-quality-checklist.md
+
+dependencies:
+  - Common BMAD task structure
+  - Access to NLP libraries (for NER)
+  - templates/meeting-note-tmpl.yaml (for task 8)
+  - checklists/transcript-quality-checklist.md
+
+testing:
+  - Test each task independently with sample transcripts
+  - Test task chaining (output of task X → input of task Y)
+  - Test with various input formats (plain text, VTT, SRT, JSON)
+  - Test with transcripts of different lengths (5 min, 30 min, 2 hour)
+  - Test with missing data (no speakers, no timestamps)
+  - Test with poor transcript quality (many errors)
+  - Validate task 8 produces complete meeting notes
+  - Verify error handling for all edge cases
+
+definition_of_done:
+  - All 8 tasks created in bmad-obsidian-2nd-brain/tasks/
+  - All tasks follow BMAD task specification
+  - All tasks include clear step-by-step procedures
+  - All tasks include example outputs
+  - All tasks include error handling
+  - All tasks include quality validation steps
+  - Tasks are composable and reusable
+  - All tasks tested independently
+  - Task chaining tested (end-to-end workflow)
+  - Documentation complete
+  - Code review approved

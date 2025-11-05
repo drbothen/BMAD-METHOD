@@ -1,0 +1,97 @@
+---
+story_id: STORY-030
+title: "Phase 3: Creation & Publishing"
+epic_id: EPIC-001
+phase: 3
+priority: high
+estimated_effort: 3-4 weeks
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want AI agents to help me create content from my knowledge base and publish it externally
+  So that I can share insights and generate creative outputs efficiently
+
+acceptance_criteria: |
+  **2 Additional Agents:**
+  - Content Brief Agent: Gather context and prepare materials for content creation
+  - Publication Formatter Agent: Format content for external publication
+
+  **10 Additional Tasks:**
+  - Creation: query-relevant-notes, query-temporal-context, organize-materials, identify-research-gaps, extract-quotable-passages, track-content-usage
+  - Publishing: extract-publication-content, convert-wikilinks, generate-bibliography, check-privacy-compliance
+
+  **2 Additional Templates:**
+  - content-brief-tmpl.yaml
+  - publication-manifest-tmpl.yaml
+
+  **2 Additional Checklists:**
+  - brief-completeness-checklist.md
+  - publication-quality-checklist.md
+
+  **2 Additional Workflows:**
+  - creation-project-workflow
+  - Feedback loop integration into knowledge-lifecycle-workflow
+
+technical_notes: |
+  Content Brief Agent Capabilities:
+  - Query relevant notes using semantic search + temporal context
+  - Organize materials into logical outline
+  - Extract quotable passages with full attribution
+  - Identify research gaps (what's missing from knowledge base)
+  - Provide temporal context (how topic evolved)
+  - Surface unique angles (cross-domain insights, contrarian takes)
+  - Generate citation manifest (all source notes used)
+  - Support multiple creation types (article, essay, presentation, video script, tweet thread)
+
+  Publication Formatter Agent Capabilities:
+  - Extract publication content from Obsidian notes
+  - Convert wikilinks to target format (HTML, plain text, footnotes)
+  - Generate bibliography from source metadata
+  - Check privacy compliance (no private notes exposed)
+  - Validate external links (ensure not broken)
+  - Create publication manifest (provenance tracking)
+  - Support multiple target formats (blog post, PDF, slides, epub)
+  - Track usage in Neo4j (CreativeOutput nodes linking to source notes)
+
+  Creation Workflow:
+  1. User initiates creation project with topic
+  2. Content Brief Agent queries knowledge base
+  3. Agent identifies research gaps (optional: trigger Research Coordinator)
+  4. Agent generates comprehensive brief
+  5. User creates content using brief
+  6. Publication Formatter Agent prepares for publication
+  7. User reviews and publishes
+  8. Feedback loop: User updates notes with creation insights
+
+  Neo4j Provenance Tracking:
+  - CreativeOutput nodes: Store publication metadata
+  - [:USED_IN] relationships: Link notes to outputs
+  - Enable queries: "What publications reference this note?"
+  - Track concept reuse and impact
+
+dependencies:
+  - Phase 1 complete (query and retrieval functional)
+  - Phase 2 complete (temporal context available)
+  - Neo4j optional but recommended (for provenance tracking)
+
+testing:
+  - Generate content brief for technical article
+  - Identify research gaps accurately
+  - Extract quotable passages with attribution
+  - Convert wikilinks to HTML
+  - Generate bibliography
+  - Test privacy compliance checking
+  - Create publication manifest
+  - Verify provenance tracking in Neo4j
+
+definition_of_done:
+  - Both agents implemented and tested
+  - All 10 tasks created and validated
+  - Both templates complete
+  - Both checklists comprehensive
+  - Both workflows functional
+  - Provenance tracking working
+  - Phase 3 testing complete
+  - Documentation updated

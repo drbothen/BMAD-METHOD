@@ -1,0 +1,83 @@
+---
+story_id: STORY-011
+title: Create Phase 1 Templates (5 templates)
+epic_id: EPIC-001
+phase: 1
+priority: high
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a developer
+  I want to create YAML templates for Phase 1 workflows
+  So that agents can create consistently structured documents
+
+acceptance_criteria:
+  - Create templates/ directory
+  - Create inbox-note-tmpl.yaml
+  - Create atomic-note-tmpl.yaml
+  - Create moc-tmpl.yaml (basic version for Phase 1)
+  - Create query-result-tmpl.yaml
+  - Create audit-report-tmpl.yaml (basic version for Phase 1)
+  - All templates follow bmad-doc-template.md specification
+  - Templates include frontmatter field definitions
+  - Templates include section instructions
+  - Templates support variable substitution
+
+technical_notes: |
+  Template 1: inbox-note-tmpl.yaml
+  - Purpose: Structure for captured content in inbox
+  - Frontmatter fields: type, content_type, source_url, author, captured_at, confidence, status
+  - Sections: Content, Context, Initial Thoughts, Processing Notes
+  - Used by: Inbox Triage Agent (create-inbox-note task)
+
+  Template 2: atomic-note-tmpl.yaml
+  - Purpose: Structure for atomic knowledge building blocks
+  - Frontmatter fields: type, building_block_type, status, confidence, created, updated, source
+  - Sections: Core Claim, Evidence, Related Concepts, Source & Attribution
+  - Building block types: concept, argument, model, question, claim, phenomenon
+  - Used by: Structural Analysis Agent (fragment-note task)
+
+  Template 3: moc-tmpl.yaml (basic)
+  - Purpose: Structure for Maps of Content (Phase 1 basic version)
+  - Frontmatter fields: type, domain, status, last_review, maturity_level, created, updated
+  - Sections: Overview, Core Concepts, Knowledge Branches (dynamic), Last Updated
+  - Maturity levels: nascent, developing, established, comprehensive
+  - Note: Phase 2 will enhance with full features
+  - Used by: Manual creation in Phase 1, MOC Constructor Agent in Phase 2
+
+  Template 4: query-result-tmpl.yaml
+  - Purpose: Structure for query results
+  - Frontmatter fields: query, intent, timestamp, result_count, sources
+  - Sections: Query, Results Summary, Detailed Results, Contradictions (if any), Source Attribution
+  - Used by: Query Interpreter Agent (merge-results task)
+
+  Template 5: audit-report-tmpl.yaml (basic)
+  - Purpose: Structure for quality audit reports (Phase 1 basic version)
+  - Frontmatter fields: audit_type, audit_date, audit_scope, issues_found, critical_issues
+  - Sections: Executive Summary, Freshness Issues, Link Validation Issues, Orphaned Notes, Action Items
+  - Note: Phase 2 will enhance with full audit features
+  - Used by: Quality Auditor Agent (generate-audit-report task)
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - common/utils/bmad-doc-template.md specification
+  - All Phase 1 agents (consumers of templates)
+
+testing:
+  - Validate YAML syntax for all templates
+  - Create sample notes using each template
+  - Verify variable substitution works
+  - Test frontmatter field validation
+  - Test section instructions clarity
+  - Verify templates follow bmad-doc-template.md spec
+
+definition_of_done:
+  - All 5 template files created in templates/
+  - Templates follow bmad-doc-template.md specification
+  - Frontmatter fields defined with types and descriptions
+  - Section instructions complete and clear
+  - Variable substitution patterns documented
+  - Templates validated with sample documents
+  - Documentation added to developer guide

@@ -1,0 +1,106 @@
+---
+story_id: STORY-015
+title: Setup Obsidian MCP Tools Integration
+epic_id: EPIC-001
+phase: 1
+priority: critical
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a developer
+  I want to integrate Obsidian MCP Tools for vault operations
+  So that agents can create, read, update, and search notes programmatically
+
+acceptance_criteria:
+  - Document Obsidian plugin installation requirements (Local REST API, MCP Tools, Smart Connections)
+  - Create MCP server configuration guide for claude_desktop_config.json
+  - Implement connection testing utilities
+  - Document all available Obsidian MCP tools and their parameters
+  - Create error handling patterns for common failures
+  - Test all Obsidian MCP operations used by Phase 1 agents
+
+technical_notes: |
+  Required Obsidian Plugins:
+  1. Local REST API (community plugin)
+     - Provides HTTP API for vault operations
+     - Requires API key configuration
+     - Default port: 27123
+
+  2. MCP Tools (community plugin)
+     - Bridges Obsidian to MCP protocol
+     - Requires Local REST API
+     - Provides MCP server binary
+
+  3. Smart Connections (community plugin)
+     - Provides semantic search
+     - Uses BGE-micro-v2 embeddings
+     - Auto-indexes vault on activation
+
+  MCP Server Configuration:
+  ```json
+  {
+    "mcpServers": {
+      "obsidian-mcp-tools": {
+        "command": "/path/to/vault/.obsidian/plugins/obsidian-mcp-tools/bin/mcp-server",
+        "args": [],
+        "env": {
+          "OBSIDIAN_REST_API_KEY": "${OBSIDIAN_API_KEY}",
+          "OBSIDIAN_REST_API_URL": "http://localhost:27123"
+        }
+      }
+    }
+  }
+  ```
+
+  Available MCP Tools (Phase 1):
+  - obsidian.create_note: Create new note with frontmatter
+  - obsidian.read_note: Read note content
+  - obsidian.update_note: Update existing note
+  - obsidian.delete_note: Delete note (move to trash)
+  - obsidian.search_notes: Text/tag/metadata search
+  - obsidian.list_notes: List notes matching criteria
+  - obsidian.create_folder: Create directory
+  - obsidian.move_note: Move note to different folder
+  - smart_connections.semantic_search: Query by semantic similarity
+  - smart_connections.get_similar_notes: Find N most similar notes
+
+  Error Handling Patterns:
+  - API key invalid → Prompt user to reconfigure
+  - REST API unreachable → Check if Obsidian running
+  - Note not found → Return error, suggest search
+  - Permission denied → Check vault permissions
+
+  Usage by Phase 1 Agents:
+  - Inbox Triage Agent: create_note, create_folder
+  - Structural Analysis Agent: read_note, create_note, update_note
+  - Semantic Linker Agent: read_note, update_note, semantic_search, get_similar_notes
+  - Query Interpreter Agent: search_notes, semantic_search, read_note
+  - Quality Auditor Agent: list_notes, read_note, search_notes
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - Obsidian v1.4.0+
+  - Node.js v16+ (for MCP server)
+  - All Phase 1 agents
+
+testing:
+  - Test plugin installation process
+  - Test MCP server configuration
+  - Test connection to Obsidian REST API
+  - Test each MCP tool operation
+  - Test error handling for common failures
+  - Test with multiple vault sizes (10, 100, 1000 notes)
+  - Test semantic search quality
+  - Test concurrent operations
+
+definition_of_done:
+  - Plugin installation guide complete
+  - MCP configuration documented
+  - Connection testing utilities created
+  - All MCP tool operations tested
+  - Error handling implemented and documented
+  - Performance benchmarked
+  - Integration guide added to docs/installation-guide.md
+  - Troubleshooting section added to docs/troubleshooting.md

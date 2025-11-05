@@ -1,0 +1,73 @@
+---
+story_id: STORY-002
+title: Implement Inbox Triage Agent
+epic_id: EPIC-001
+phase: 1
+priority: critical
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want an AI agent to automatically classify and organize captured content
+  So that my inbox doesn't become overwhelming and content is properly structured
+
+acceptance_criteria:
+  - Create inbox-triage-agent.md with complete agent definition
+  - Agent can classify content types: quote, concept, reference, reflection, question, observation
+  - Agent extracts metadata: source URL, author, timestamp, surrounding context
+  - Agent creates inbox notes in Obsidian using inbox-note-tmpl.yaml
+  - Agent creates CaptureEvent nodes in Neo4j (if enabled)
+  - Classification confidence score calculated (0.0-1.0)
+  - Content flagged for manual review if confidence < 0.7
+  - Agent follows capture-quality-checklist.md
+  - "Commands: *help, *classify-content, *create-inbox-note, *batch-process-inbox, *yolo, *exit"
+
+technical_notes: |
+  Agent capabilities:
+  - Content type classification using pattern matching and semantic analysis
+  - Metadata extraction from various sources (web clipper, highlights, manual input)
+  - Inbox note creation via Obsidian MCP Tools
+  - Neo4j CaptureEvent node creation via Graphiti MCP (optional)
+  - Batch processing for multiple captures
+  - Yolo mode for auto-approval
+
+  Dependencies (tasks):
+  - classify-content-type.md
+  - extract-metadata.md
+  - create-inbox-note.md
+  - create-capture-event.md (optional, requires Neo4j)
+
+  Dependencies (templates):
+  - inbox-note-tmpl.yaml
+
+  Dependencies (checklists):
+  - capture-quality-checklist.md
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - inbox-note-tmpl.yaml template
+  - capture-quality-checklist.md
+  - Obsidian MCP Tools integration
+  - Neo4j Graphiti MCP (optional)
+
+testing:
+  - Classify quote from web article
+  - Classify concept from reading highlight
+  - Classify reflection from manual note
+  - Create inbox note in Obsidian
+  - Create CaptureEvent in Neo4j (if enabled)
+  - Batch process 10 captures
+  - Verify confidence scores accurate
+  - Test Yolo mode (auto-approval)
+
+definition_of_done:
+  - Agent file complete with YAML metadata
+  - All commands functional
+  - Classification accuracy > 90% on test set
+  - Inbox notes created correctly in Obsidian
+  - CaptureEvent nodes created in Neo4j (if enabled)
+  - Capture quality checklist enforced
+  - Agent activates via /bmad-2b:inbox-triage-agent
+  - Documentation added to user guide

@@ -1,0 +1,138 @@
+---
+story_id: STORY-016
+title: Setup Neo4j Graphiti MCP Integration (Optional)
+epic_id: EPIC-001
+phase: 1
+priority: medium
+estimated_effort: 20 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a developer
+  I want to integrate Neo4j with Graphiti MCP for temporal knowledge tracking
+  So that agents can store and query knowledge evolution over time
+
+acceptance_criteria:
+  - Document Neo4j installation options (Docker, Neo4j Desktop, Aura Cloud)
+  - Create docker-compose.yml for easy Neo4j setup
+  - Document Graphiti MCP server installation
+  - Create MCP server configuration guide
+  - Implement Neo4j connection testing utilities
+  - Document temporal schema design (nodes, relationships)
+  - Test all Neo4j/Graphiti MCP operations used by Phase 1 agents
+  - Ensure system works without Neo4j (graceful degradation)
+
+technical_notes: |
+  Neo4j Installation Options:
+  1. Docker (Recommended):
+     - docker-compose.yml with Neo4j + Graphiti MCP
+     - Persistent data volume
+     - APOC plugin enabled
+     - Ports: 7474 (HTTP), 7687 (Bolt)
+
+  2. Neo4j Desktop:
+     - Graphical interface
+     - Manual plugin installation
+     - Good for development
+
+  3. Aura Cloud:
+     - Managed service
+     - Auto-scaling
+     - Requires internet connection
+
+  Graphiti MCP Server Setup:
+  ```yaml
+  # docker-compose.yml
+  version: '3.8'
+  services:
+    neo4j:
+      image: neo4j:5.15
+      environment:
+        - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD}
+        - NEO4J_PLUGINS=["apoc"]
+      ports:
+        - "7474:7474"
+        - "7687:7687"
+      volumes:
+        - neo4j_data:/data
+
+    graphiti-mcp:
+      image: getzep/graphiti-mcp:latest
+      environment:
+        - OPENAI_API_KEY=${OPENAI_API_KEY}
+        - NEO4J_URI=bolt://neo4j:7687
+        - NEO4J_USER=neo4j
+        - NEO4J_PASSWORD=${NEO4J_PASSWORD}
+      ports:
+        - "8080:8080"
+      depends_on:
+        - neo4j
+  ```
+
+  MCP Server Configuration:
+  ```json
+  {
+    "mcpServers": {
+      "graphiti": {
+        "command": "docker",
+        "args": ["exec", "-i", "graphiti-mcp-1", "python", "-m", "graphiti_mcp_server"],
+        "env": {
+          "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+          "NEO4J_URI": "bolt://localhost:7687",
+          "NEO4J_USER": "neo4j",
+          "NEO4J_PASSWORD": "${NEO4J_PASSWORD}"
+        }
+      }
+    }
+  }
+  ```
+
+  Available MCP Tools (Phase 1):
+  - graphiti.add_episode: Create episodic memory node
+  - graphiti.get_episodes: Retrieve episodes by time range
+  - graphiti.add_entity: Create entity node
+  - graphiti.add_relation: Create relationship
+
+  Temporal Schema (Phase 1):
+  - Node types: Note, CaptureEvent, Date, Source
+  - Relationships: CAPTURED_AT, EDITED_AT, LINKED_TO, CITES
+
+  Graceful Degradation:
+  - All agents check Neo4j availability on startup
+  - Temporal features disabled if Neo4j unavailable
+  - Core functionality (Obsidian-only) always works
+  - User notified of degraded mode
+
+  Usage by Phase 1 Agents:
+  - Inbox Triage Agent: add_episode (for captures)
+  - Semantic Linker Agent: add_relation (for links)
+  - Query Interpreter Agent: get_episodes (optional)
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - Docker (for recommended setup)
+  - OpenAI API key (for Graphiti entity extraction)
+  - Phase 1 agents
+
+testing:
+  - Test Neo4j installation (Docker setup)
+  - Test Graphiti MCP server connection
+  - Test episode creation (CaptureEvent)
+  - Test entity creation (Note nodes)
+  - Test relationship creation (LINKED_TO)
+  - Test temporal queries (basic)
+  - Test graceful degradation (system works without Neo4j)
+  - Test error handling (connection failures, API quota)
+
+definition_of_done:
+  - Neo4j installation guide complete (all options)
+  - docker-compose.yml created and tested
+  - Graphiti MCP server installation documented
+  - MCP configuration documented
+  - Connection testing utilities created
+  - Temporal schema documented
+  - All MCP operations tested
+  - Graceful degradation verified
+  - Integration guide added to docs/installation-guide.md
+  - Optional setup clearly marked in documentation

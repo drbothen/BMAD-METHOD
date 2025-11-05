@@ -1,0 +1,585 @@
+---
+story_id: STORY-078
+title: Setup Task Management Plugin Integrations
+epic_id: EPIC-001
+phase: 1.5
+priority: medium
+estimated_effort: 12 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a user
+  I want integrations with Obsidian task management plugins
+  So that I can visualize, query, and manage tasks efficiently
+
+acceptance_criteria: |
+  **4 Obsidian Plugin Integrations:**
+  1. Tasks plugin (primary - advanced task queries)
+  2. Dataview plugin (task aggregation and reporting)
+  3. Calendar plugin (deadline visualization)
+  4. Kanban plugin (visual task board)
+
+  **Integration Requirements:**
+  - Installation guides for each plugin
+  - Configuration guides for optimal settings
+  - Query examples for common use cases
+  - Template integration (use plugin-compatible formats)
+  - Task format standardization (work with all plugins)
+  - Workflow integration (agents use plugin features)
+
+technical_notes: |
+  Integration 1: Tasks Plugin
+  Purpose: Advanced task management with GTD support
+
+  Installation:
+  1. Open Obsidian Settings → Community Plugins
+  2. Browse and search for "Tasks"
+  3. Install and enable "Tasks" by Martin Schenck
+  4. Configure settings (see below)
+
+  Configuration:
+  ```
+  Settings → Tasks:
+  ✅ Auto-suggest task properties
+  ✅ Set done date on every completed task
+  ✅ Use filename as default task date
+  ✅ Enable recurring tasks
+  Date format: YYYY-MM-DD
+  Global filter: (none - show all tasks)
+  ```
+
+  Task Format (Tasks plugin compatible):
+  ```markdown
+  - [ ] Task description 📅 2025-11-08 ⏫ #work @context
+  - [ ] Task with recurrence 📅 2025-11-04 🔁 every week
+  - [ ] Task with start date ⏳ 2025-11-01 📅 2025-11-08
+  - [x] Completed task ✅ 2025-11-05
+  ```
+
+  Emoji Syntax:
+  - 📅 Due date
+  - ⏳ Start date
+  - 🔁 Recurrence
+  - ⏫ High priority
+  - 🔼 Medium priority
+  - 🔽 Low priority
+  - ✅ Done date
+  - #tag Tags
+  - @context Context
+
+  Query Examples:
+  ````markdown
+  # Tasks Due Today
+  ```tasks
+  not done
+  due today
+  sort by priority
+  ```
+
+  # High Priority Tasks
+  ```tasks
+  not done
+  priority is high
+  sort by due
+  ```
+
+  # Tasks by Context
+  ```tasks
+  not done
+  description includes @work
+  ```
+
+  # Tasks for Project
+  ```tasks
+  not done
+  path includes Projects/Web Portal
+  sort by due
+  ```
+
+  # Overdue Tasks
+  ```tasks
+  not done
+  due before today
+  sort by due
+  ```
+
+  # Completed This Week
+  ```tasks
+  done this week
+  sort by done
+  ```
+
+  # All Tasks Statistics
+  ```tasks
+  group by status
+  ```
+  ````
+
+  Advanced Features:
+  - Recurring tasks: `🔁 every day`, `🔁 every 2 weeks on Monday`, `🔁 every month on the 1st`
+  - Relative dates: `due today`, `due tomorrow`, `due next week`
+  - Date ranges: `due after 2025-11-01`, `due before 2025-12-01`
+  - Task dependencies: Use custom format in description
+  - Priority filters: `priority is high`, `priority is not low`
+  - Multiple filters: Combine with `AND` logic
+
+  Integration with Task Management Agent:
+  - Agent generates tasks in Tasks plugin format
+  - Agent uses emoji syntax for metadata
+  - Agent creates task queries for reports
+  - Agent supports recurring task patterns
+
+  ---
+
+  Integration 2: Dataview Plugin
+  Purpose: Query and aggregate tasks using DataviewJS
+
+  Installation:
+  1. Open Obsidian Settings → Community Plugins
+  2. Browse and search for "Dataview"
+  3. Install and enable "Dataview" by Michael Brenan
+  4. Enable JavaScript queries in settings
+
+  Configuration:
+  ```
+  Settings → Dataview:
+  ✅ Enable JavaScript queries
+  ✅ Enable inline JavaScript queries
+  ✅ Enable inline queries
+  Date format: YYYY-MM-DD
+  ```
+
+  Task Queries with Dataview:
+  ````markdown
+  # All Tasks by Priority
+  ```dataview
+  TASK
+  WHERE !completed
+  GROUP BY priority
+  SORT priority DESC
+  ```
+
+  # Project Task Summary
+  ```dataview
+  TABLE
+    length(file.tasks) as "Total",
+    length(filter(file.tasks, (t) => !t.completed)) as "Open",
+    length(filter(file.tasks, (t) => t.completed)) as "Done"
+  FROM "03-Projects"
+  WHERE file.tasks
+  SORT file.name
+  ```
+
+  # Tasks Due This Week
+  ```dataview
+  TASK
+  WHERE !completed AND due >= date(today) AND due <= date(today) + dur(7 days)
+  SORT due ASC
+  ```
+  ````
+
+  Advanced DataviewJS Example:
+  ````markdown
+  # Weekly Task Statistics
+  ```dataviewjs
+  const tasks = dv.pages().file.tasks.where(t => t.completed);
+  const thisWeek = tasks.where(t =>
+    t.completion >= dv.date('2025-11-04') &&
+    t.completion <= dv.date('2025-11-10')
+  );
+
+  dv.header(3, "Completed This Week: " + thisWeek.length);
+
+  // Group by day
+  const byDay = thisWeek.groupBy(t => t.completion);
+  dv.table(
+    ["Day", "Tasks Completed"],
+    byDay.map(g => [g.key, g.rows.length])
+  );
+  ```
+  ````
+
+  Integration with Task Management Agent:
+  - Agent can generate Dataview queries
+  - Agent uses Dataview for statistics in weekly reviews
+  - Agent formats task frontmatter for Dataview compatibility
+
+  ---
+
+  Integration 3: Calendar Plugin
+  Purpose: Visualize task deadlines in calendar view
+
+  Installation:
+  1. Open Obsidian Settings → Community Plugins
+  2. Browse and search for "Calendar"
+  3. Install and enable "Calendar" by Liam Cain
+
+  Configuration:
+  ```
+  Settings → Calendar:
+  ✅ Show week number
+  ✅ Confirm before creating new note
+  Start week on: Monday
+  Weekly note format: YYYY-[W]ww
+  Daily note format: YYYY-MM-DD
+  ```
+
+  Features:
+  - Click date to open/create daily note
+  - Dots indicate notes exist for that date
+  - See tasks due on specific dates
+  - Navigate months/years
+
+  Integration with Task Management Agent:
+  - Agent creates daily notes with tasks due that day
+  - Agent links tasks to daily notes
+  - Agent uses date format compatible with Calendar plugin
+  - Daily todo lists appear in calendar view
+
+  Daily Note Template:
+  ```markdown
+  ---
+  date: {{date}}
+  type: daily-note
+  tags: [daily]
+  ---
+
+  # {{date:dddd, MMMM DD, YYYY}}
+
+  ## Tasks Due Today
+
+  ```tasks
+  not done
+  due on {{date}}
+  sort by priority
+  ```
+
+  ## Completed Today
+
+  ```tasks
+  done on {{date}}
+  ```
+
+  ## Notes
+
+  (Daily journal, thoughts, etc.)
+  ```
+
+  ---
+
+  Integration 4: Kanban Plugin
+  Purpose: Visual task board (Kanban style)
+
+  Installation:
+  1. Open Obsidian Settings → Community Plugins
+  2. Browse and search for "Kanban"
+  3. Install and enable "Kanban" by mgmeyers
+
+  Configuration:
+  Create Kanban board file: `Tasks-Board.md`
+
+  ````markdown
+  ---
+
+  kanban-plugin: basic
+
+  ---
+
+  ## Backlog
+
+  - [ ] TASK-140: API security audit @mike 📅 2025-11-15
+  - [ ] TASK-145: Update user docs @sarah 📅 2025-11-20
+
+  ## Todo
+
+  - [ ] TASK-120: Q4 budget analysis @sarah ⏫ 📅 2025-11-08
+  - [ ] TASK-123: React setup @mike 📅 2025-11-08
+
+  ## In Progress
+
+  - [ ] TASK-122: Review PR #234 @alex 📅 2025-11-05
+
+  ## Done
+
+  - [x] TASK-110: Setup dev environment ✅ 2025-11-03
+  - [x] TASK-115: Install dependencies ✅ 2025-11-04
+  ````
+
+  Features:
+  - Drag and drop tasks between columns
+  - Add new tasks inline
+  - Archive completed tasks
+  - Customize columns (Todo, In Progress, Blocked, Done)
+  - Link to task notes
+
+  Project Kanban Boards:
+  Create separate Kanban for each project
+
+  ```
+  03-Projects/
+    Web Portal/
+      Tasks-Board.md        # Kanban view
+      tasks/                # Individual task notes
+        TASK-123.md
+        TASK-124.md
+  ```
+
+  Integration with Task Management Agent:
+  - Agent creates Kanban-compatible task format
+  - Agent can generate project Kanban boards
+  - Agent updates board when task status changes
+  - Agent uses board columns for task status
+
+  ---
+
+  Unified Task Format:
+  Compatible with all 4 plugins
+
+  ```markdown
+  - [ ] {{description}} @{{context}} 📅 {{deadline}} ⏫ #{{project}}
+  ```
+
+  Example:
+  ```markdown
+  - [ ] Setup React development environment @computer 📅 2025-11-08 ⏫ #web-portal
+  ```
+
+  This format works with:
+  - ✅ Tasks plugin (emoji syntax)
+  - ✅ Dataview (can query all fields)
+  - ✅ Calendar (shows on deadline date)
+  - ✅ Kanban (drag and drop)
+
+  ---
+
+  Query Library:
+  Create `00-System/task-queries.md` with common queries
+
+  ````markdown
+  # Task Query Library
+
+  ## By Priority
+
+  ### Critical Priority
+  ```tasks
+  not done
+  description includes ⏫⏫
+  ```
+
+  ### High Priority
+  ```tasks
+  not done
+  description includes ⏫
+  ```
+
+  ## By Context
+
+  ### @work Tasks
+  ```tasks
+  not done
+  description includes @work
+  ```
+
+  ### @home Tasks
+  ```tasks
+  not done
+  description includes @home
+  ```
+
+  ## By Timeline
+
+  ### Due Today
+  ```tasks
+  not done
+  due today
+  ```
+
+  ### Due This Week
+  ```tasks
+  not done
+  due after yesterday
+  due before in 7 days
+  ```
+
+  ### Overdue
+  ```tasks
+  not done
+  due before today
+  ```
+
+  ## By Status
+
+  ### Blocked Tasks
+  ```tasks
+  not done
+  description includes 🚫
+  ```
+
+  ### Waiting For
+  ```tasks
+  not done
+  description includes ⏸️
+  ```
+
+  ## Statistics
+
+  ### Completion Rate (Dataview)
+  ```dataview
+  TABLE
+    length(file.tasks) as Total,
+    length(filter(file.tasks, (t) => t.completed)) as Done,
+    round(length(filter(file.tasks, (t) => t.completed)) / length(file.tasks) * 100) + "%" as Rate
+  FROM "03-Projects"
+  WHERE file.tasks
+  ```
+
+  ### Tasks by Project (Dataview)
+  ```dataview
+  TABLE
+    length(filter(file.tasks, (t) => !t.completed)) as Open
+  FROM "03-Projects"
+  WHERE file.tasks
+  SORT Open DESC
+  ```
+  ````
+
+  ---
+
+  Dashboard Creation:
+  Create `00-System/task-dashboard.md` as central hub
+
+  ````markdown
+  # Task Dashboard
+
+  ## Overview
+
+  - **Total Tasks**: [[Query: Total tasks]]
+  - **Open**: [[Query: Open tasks]]
+  - **Completed This Week**: [[Query: Completed this week]]
+  - **Completion Rate**: [[Query: Completion rate]]
+
+  ## Today's Focus
+
+  ```tasks
+  not done
+  due today
+  sort by priority
+  ```
+
+  ## High Priority
+
+  ```tasks
+  not done
+  description includes ⏫
+  due before in 7 days
+  sort by due
+  ```
+
+  ## By Context
+
+  ### @work
+  ```tasks
+  not done
+  description includes @work
+  limit 10
+  ```
+
+  ### @computer
+  ```tasks
+  not done
+  description includes @computer
+  limit 10
+  ```
+
+  ## By Project
+
+  ```dataview
+  TABLE
+    length(filter(file.tasks, (t) => !t.completed)) as "Open Tasks"
+  FROM "03-Projects"
+  WHERE file.tasks
+  SORT file.name
+  ```
+
+  ## Overdue (Needs Attention!)
+
+  ```tasks
+  not done
+  due before today
+  sort by due
+  ```
+  ````
+
+  ---
+
+  Hotkeys Configuration:
+  Recommend setting up these hotkeys in Obsidian:
+
+  ```
+  Settings → Hotkeys:
+
+  Tasks: Create or edit task
+    Cmd/Ctrl + T
+
+  Tasks: Toggle task done
+    Cmd/Ctrl + Enter
+
+  Dataview: Force refresh all views
+    Cmd/Ctrl + R
+
+  Calendar: Open today's daily note
+    Cmd/Ctrl + D
+
+  Kanban: Add new card
+    Cmd/Ctrl + N (in Kanban view)
+  ```
+
+  ---
+
+  Integration Testing Checklist:
+  - [ ] Tasks plugin installed and configured
+  - [ ] Dataview plugin installed and configured
+  - [ ] Calendar plugin installed and configured
+  - [ ] Kanban plugin installed and configured
+  - [ ] Unified task format works in all plugins
+  - [ ] Task queries return expected results
+  - [ ] Dataview statistics accurate
+  - [ ] Calendar shows tasks on correct dates
+  - [ ] Kanban boards functional (drag and drop)
+  - [ ] Task dashboard displays correctly
+  - [ ] Query library accessible and functional
+  - [ ] Daily notes integrate with Calendar
+  - [ ] Hotkeys configured
+  - [ ] Agent-generated tasks compatible with all plugins
+
+dependencies:
+  - Obsidian v1.4.0+ (for plugin support)
+  - STORY-071: Task Management Agent
+  - STORY-073: Task management tasks
+  - STORY-074: Task templates
+
+testing:
+  - Install all 4 plugins in test vault
+  - Create tasks using unified format
+  - Test all query examples
+  - Test Dataview statistics queries
+  - Test Calendar integration with daily notes
+  - Test Kanban board functionality
+  - Create task dashboard and verify functionality
+  - Test agent-generated tasks work with all plugins
+  - Verify hotkeys work as expected
+  - Test with 100, 1K, 10K tasks (performance)
+
+definition_of_done:
+  - All 4 plugins documented with installation guides
+  - Configuration guides complete for each plugin
+  - Unified task format defined and tested
+  - Query library created with 20+ examples
+  - Task dashboard created and functional
+  - Hotkeys documented
+  - All plugins tested and working
+  - Integration with Task Management Agent verified
+  - Performance tested with large task counts
+  - User documentation complete
+  - Code review approved

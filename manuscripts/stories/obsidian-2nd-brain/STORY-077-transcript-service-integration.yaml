@@ -1,0 +1,486 @@
+---
+story_id: STORY-077
+title: Setup Transcript Service Integrations
+epic_id: EPIC-001
+phase: 1.5
+priority: medium
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a user
+  I want integrations with transcript services
+  So that I can automatically transcribe audio/video into structured notes
+
+acceptance_criteria: |
+  **4 Transcript Service Integrations:**
+  1. Local Whisper ASR (offline, free)
+  2. Deepgram API (cloud, fast, paid)
+  3. Google Gemini API (cloud, multi-modal, paid)
+  4. OpenAI Whisper API (cloud, accurate, paid)
+
+  **Integration Requirements:**
+  - Each service has configuration guide
+  - Each service has API wrapper or CLI interface
+  - Authentication/API keys securely managed
+  - Input format handling (audio/video files)
+  - Output format standardization (convert to common format)
+  - Error handling (rate limits, network failures, quota exhausted)
+  - Cost estimation tool (for paid services)
+  - Graceful degradation (if service unavailable)
+
+  **Configuration System:**
+  - User can select preferred transcript service
+  - User can configure service-specific settings
+  - User can test connection/authentication
+  - User can estimate costs before processing
+
+technical_notes: |
+  Integration 1: Local Whisper ASR
+  Purpose: Offline transcription using OpenAI's Whisper model
+
+  Setup:
+  1. Install Python 3.8+ and ffmpeg
+  2. Install whisper: `pip install openai-whisper`
+  3. Download model (base, small, medium, large): `whisper --model base`
+  4. Test: `whisper audio.mp3 --model base --output_format vtt`
+
+  Configuration:
+  ```yaml
+  transcript_service: whisper-local
+  whisper:
+    model: base  # tiny, base, small, medium, large
+    language: auto  # or specific: en, es, fr, etc.
+    output_format: vtt  # vtt, srt, json, txt
+    device: cpu  # cpu or cuda (GPU)
+  ```
+
+  Usage:
+  ```bash
+  # Basic transcription
+  whisper meeting-recording.mp3 --model base --output_format vtt
+
+  # With language hint (faster)
+  whisper meeting-recording.mp3 --model base --language en --output_format vtt
+
+  # High accuracy (slower)
+  whisper meeting-recording.mp3 --model large --output_format vtt
+  ```
+
+  Pros:
+  - Free and offline (privacy-friendly)
+  - No API keys needed
+  - Good accuracy with large model
+  - Supports 99+ languages
+
+  Cons:
+  - Slower than cloud services (especially on CPU)
+  - Requires local installation
+  - Large models require significant disk space
+  - No speaker diarization built-in
+
+  Performance:
+  - Tiny model: ~10x real-time on CPU
+  - Base model: ~5x real-time on CPU
+  - Large model: ~1x real-time on CPU (or faster on GPU)
+
+  Output Format (VTT):
+  ```vtt
+  WEBVTT
+
+  00:00:00.000 --> 00:00:05.000
+  Welcome everyone to today's executive meeting.
+
+  00:00:05.000 --> 00:00:10.000
+  We're going to review Q4 revenue targets and discuss the marketing campaign.
+  ```
+
+  Integration Wrapper:
+  ```python
+  import subprocess
+  import json
+
+  def transcribe_with_whisper(audio_file, model='base', language='auto'):
+      cmd = [
+          'whisper', audio_file,
+          '--model', model,
+          '--output_format', 'vtt',
+      ]
+      if language != 'auto':
+          cmd.extend(['--language', language])
+
+      result = subprocess.run(cmd, capture_output=True, text=True)
+      if result.returncode != 0:
+          raise Exception(f"Whisper failed: {result.stderr}")
+
+      # Read output VTT file
+      vtt_file = audio_file.replace('.mp3', '.vtt')
+      with open(vtt_file, 'r') as f:
+          transcript = f.read()
+
+      return transcript
+  ```
+
+  ---
+
+  Integration 2: Deepgram API
+  Purpose: Fast, accurate cloud transcription with speaker diarization
+
+  Setup:
+  1. Sign up at https://deepgram.com
+  2. Get API key from console
+  3. Install SDK: `npm install @deepgram/sdk` or `pip install deepgram-sdk`
+  4. Store API key in environment: `DEEPGRAM_API_KEY=your_key`
+
+  Configuration:
+  ```yaml
+  transcript_service: deepgram
+  deepgram:
+    api_key: ${DEEPGRAM_API_KEY}  # from environment
+    model: nova-2  # nova-2 (latest), base, enhanced
+    language: en  # or auto-detect
+    diarize: true  # speaker diarization
+    punctuate: true
+    paragraphs: true
+    utterances: true  # speaker changes
+  ```
+
+  Usage (Node.js):
+  ```javascript
+  const { Deepgram } = require('@deepgram/sdk');
+
+  async function transcribeWithDeepgram(audioFile) {
+    const deepgram = new Deepgram(process.env.DEEPGRAM_API_KEY);
+
+    const response = await deepgram.transcription.preRecorded(
+      { buffer: audioFile, mimetype: 'audio/mp3' },
+      {
+        model: 'nova-2',
+        language: 'en',
+        diarize: true,
+        punctuate: true,
+        paragraphs: true,
+        utterances: true
+      }
+    );
+
+    return response.results;
+  }
+  ```
+
+  Output Format (JSON with speaker diarization):
+  ```json
+  {
+    "results": {
+      "channels": [{
+        "alternatives": [{
+          "transcript": "Welcome everyone...",
+          "words": [
+            {
+              "word": "welcome",
+              "start": 0.0,
+              "end": 0.5,
+              "speaker": 0
+            },
+            ...
+          ],
+          "paragraphs": {
+            "transcript": "Speaker 0: Welcome everyone to today's executive meeting.\n\nSpeaker 1: Thanks for having me...",
+            "paragraphs": [...]
+          }
+        }]
+      }]
+    }
+  }
+  ```
+
+  Pros:
+  - Very fast (near real-time)
+  - High accuracy (>90% WER)
+  - Built-in speaker diarization
+  - Punctuation and paragraphs
+  - Good API and SDKs
+
+  Cons:
+  - Requires API key (paid service)
+  - Costs: $0.0125 per minute (~$0.75 per hour)
+  - Requires internet connection
+  - Usage limits on free tier
+
+  Cost Estimation:
+  - 30-minute meeting: $0.38
+  - 1-hour meeting: $0.75
+  - 10 hours/month: $7.50
+
+  ---
+
+  Integration 3: Google Gemini API
+  Purpose: Multi-modal transcription + summarization
+
+  Setup:
+  1. Get API key from Google AI Studio
+  2. Install SDK: `pip install google-generativeai`
+  3. Store API key in environment: `GEMINI_API_KEY=your_key`
+
+  Configuration:
+  ```yaml
+  transcript_service: gemini
+  gemini:
+    api_key: ${GEMINI_API_KEY}
+    model: gemini-1.5-flash  # or gemini-1.5-pro
+    temperature: 0.1
+    features:
+      - transcribe
+      - summarize
+      - extract_action_items
+  ```
+
+  Usage:
+  ```python
+  import google.generativeai as genai
+
+  def transcribe_with_gemini(audio_file):
+      genai.configure(api_key=os.environ['GEMINI_API_KEY'])
+
+      # Upload audio file
+      uploaded_file = genai.upload_file(audio_file)
+
+      # Generate transcript + summary
+      model = genai.GenerativeModel('gemini-1.5-flash')
+      prompt = """
+      Transcribe this audio with speaker labels.
+      Also provide:
+      1. Executive summary (2-3 sentences)
+      2. Key points (10-15 items)
+      3. Action items with owners
+      4. Decisions made
+      """
+
+      response = model.generate_content([uploaded_file, prompt])
+      return response.text
+  ```
+
+  Output Format:
+  Custom - can request specific formats via prompt
+
+  Pros:
+  - Multi-modal (can analyze video too)
+  - Can transcribe + summarize in one call
+  - Can extract action items directly
+  - Cost-effective for combined tasks
+  - Supports 100+ languages
+
+  Cons:
+  - No built-in speaker diarization (must prompt for it)
+  - Quality varies (not always accurate)
+  - Rate limits on free tier
+  - Requires prompting for structure
+
+  Cost Estimation:
+  - Audio input: $0.025 per minute
+  - Text output: $0.075 per 1M output tokens
+  - 1-hour meeting: ~$1.50 (transcription + summarization)
+
+  ---
+
+  Integration 4: OpenAI Whisper API
+  Purpose: Cloud-based Whisper transcription (faster than local)
+
+  Setup:
+  1. Get API key from OpenAI
+  2. Install SDK: `pip install openai`
+  3. Store API key in environment: `OPENAI_API_KEY=your_key`
+
+  Configuration:
+  ```yaml
+  transcript_service: openai-whisper
+  openai:
+    api_key: ${OPENAI_API_KEY}
+    model: whisper-1
+    language: auto  # or specific
+    response_format: vtt  # json, text, srt, vtt
+    temperature: 0
+  ```
+
+  Usage:
+  ```python
+  from openai import OpenAI
+
+  def transcribe_with_openai(audio_file):
+      client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
+
+      with open(audio_file, 'rb') as f:
+          transcript = client.audio.transcriptions.create(
+              model="whisper-1",
+              file=f,
+              response_format="vtt"
+          )
+
+      return transcript
+  ```
+
+  Output Format:
+  VTT, SRT, JSON, or plain text
+
+  Pros:
+  - Very accurate (same as local Whisper large model)
+  - Fast (cloud infrastructure)
+  - Simple API
+  - No local setup required
+  - Supports 50+ languages
+
+  Cons:
+  - Costs: $0.006 per minute (~$0.36 per hour)
+  - No speaker diarization
+  - Requires API key and internet
+  - 25MB file size limit
+
+  Cost Estimation:
+  - 30-minute meeting: $0.18
+  - 1-hour meeting: $0.36
+  - 10 hours/month: $3.60
+
+  ---
+
+  Service Selection Guide:
+
+  Choose **Local Whisper** if:
+  - Privacy is critical (offline processing)
+  - No budget for transcription
+  - Have decent CPU or GPU
+  - Can wait (slower processing)
+
+  Choose **Deepgram** if:
+  - Need speaker diarization
+  - Need fast processing
+  - Budget available
+  - Want high accuracy
+
+  Choose **Google Gemini** if:
+  - Want transcription + summarization in one call
+  - Processing video content
+  - Need multi-modal analysis
+  - Budget available
+
+  Choose **OpenAI Whisper** if:
+  - Want accuracy of Whisper without local setup
+  - Budget is limited (cheapest cloud option)
+  - Don't need speaker diarization
+  - Processing shorter recordings
+
+  ---
+
+  Integration Architecture:
+
+  ```
+  Audio/Video File
+         ↓
+  [Service Selector]
+         ↓
+  ┌──────┴─────────┬──────────────┬─────────────┐
+  ↓                ↓              ↓             ↓
+  Whisper        Deepgram      Gemini      OpenAI
+  (Local)        (Cloud)       (Cloud)     (Cloud)
+  ↓                ↓              ↓             ↓
+  └──────┬─────────┴──────────────┴─────────────┘
+         ↓
+  [Format Normalizer]
+         ↓
+  Standardized Transcript (VTT with speaker labels)
+         ↓
+  Transcript Processing Agent
+  ```
+
+  Unified Transcript Format:
+  All services convert output to this format for consistent processing
+
+  ```typescript
+  interface Transcript {
+    text: string;              // Full transcript text
+    language: string;          // Detected language
+    duration: number;          // Total duration in seconds
+    speakers: Speaker[];       // Speaker information
+    segments: Segment[];       // Timestamped segments
+    words: Word[];             // Word-level timing
+    metadata: {
+      service: string;         // Which service used
+      model: string;           // Model used
+      timestamp: string;       // When transcribed
+      cost: number;            // Cost in USD (if paid)
+    }
+  }
+
+  interface Speaker {
+    id: number;
+    label: string;             // "Speaker 0" or "Sarah Johnson"
+    totalTime: number;         // Seconds
+    wordCount: number;
+  }
+
+  interface Segment {
+    start: number;             // Start time (seconds)
+    end: number;               // End time (seconds)
+    text: string;              // Segment text
+    speaker: number;           // Speaker ID
+  }
+
+  interface Word {
+    word: string;
+    start: number;
+    end: number;
+    speaker: number;
+    confidence: number;
+  }
+  ```
+
+  Error Handling:
+  - API key missing: Prompt user to configure
+  - Rate limit exceeded: Wait and retry with exponential backoff
+  - Network failure: Retry up to 3 times
+  - Quota exhausted: Suggest alternative service
+  - File format unsupported: Convert using ffmpeg
+  - File too large: Split into chunks or suggest compression
+
+  Cost Tracking:
+  Create `transcript-costs.md` note to track spending:
+  ```markdown
+  # Transcript Processing Costs
+
+  | Date | Service | Duration | Cost |
+  |------|---------|----------|------|
+  | 2025-11-04 | Deepgram | 45 min | $0.56 |
+  | 2025-11-05 | OpenAI Whisper | 30 min | $0.18 |
+
+  **Monthly Total**: $0.74
+  ```
+
+dependencies:
+  - STORY-070: Transcript Processing Agent
+  - Python 3.8+ (for Whisper, Gemini, OpenAI)
+  - Node.js 16+ (for Deepgram)
+  - ffmpeg (for audio format conversion)
+  - API keys for paid services
+
+testing:
+  - Test local Whisper installation and transcription
+  - Test Deepgram API connection and transcription
+  - Test Google Gemini API transcription + summarization
+  - Test OpenAI Whisper API transcription
+  - Test format normalization from each service
+  - Test error handling (missing API keys, rate limits, network failures)
+  - Test cost tracking
+  - Test service selection logic
+  - Validate outputs meet transcript-quality-checklist.md
+
+definition_of_done:
+  - All 4 transcript services documented
+  - Configuration guides complete
+  - API wrappers or CLI interfaces implemented
+  - Format normalizer implemented
+  - Service selector implemented
+  - Error handling implemented
+  - Cost tracking implemented
+  - All services tested
+  - User documentation complete
+  - Code review approved

@@ -1,0 +1,92 @@
+---
+story_id: STORY-020
+title: "Phase 2: Enhanced Synthesis & Temporal Analysis"
+epic_id: EPIC-001
+phase: 2
+priority: high
+estimated_effort: 3-4 weeks
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want AI agents to construct Maps of Content and analyze how my understanding evolves
+  So that I can navigate knowledge domains and understand my thinking patterns
+
+acceptance_criteria: |
+  **2 Additional Agents:**
+  - MOC Constructor Agent: Build and maintain Maps of Content
+  - Timeline Constructor Agent: Create temporal evolution narratives
+
+  **10 Additional Tasks:**
+  - Synthesis: create-moc-structure, generate-summaries, write-bridge-paragraphs, update-moc-temporal-record
+  - Temporal: query-temporal-events, retrieve-edit-history, identify-evolution-periods, create-chronological-narrative, analyze-concept-maturation, generate-timeline-visualization
+
+  **3 Additional Templates:**
+  - moc-tmpl.yaml (complete with all features)
+  - temporal-narrative-tmpl.yaml
+  - link-suggestion-tmpl.yaml
+
+  **3 Additional Checklists:**
+  - moc-completeness-checklist.md
+  - temporal-accuracy-checklist.md
+  - narrative-completeness-checklist.md
+
+  **2 Additional Workflows:**
+  - monthly-deep-review-workflow
+  - temporal-evolution-analysis-workflow
+
+  **Enhanced Knowledge Bases:**
+  - neo4j-graphiti-guide.md (complete with temporal query patterns)
+  - knowledge-graph-patterns.md (relationship types, evolution patterns)
+
+  **Enhanced Integration:**
+  - Neo4j Graphiti MCP with full temporal query support
+
+technical_notes: |
+  MOC Constructor Agent Capabilities:
+  - Analyze domain coverage (identify all notes in domain)
+  - Create hierarchical MOC structure (2-3 levels)
+  - Generate section summaries
+  - Write bridge paragraphs explaining connections
+  - Create bidirectional links to constituent notes
+  - Track MOC maturity (nascent → developing → established → comprehensive)
+  - Support dynamic Dataview queries
+
+  Timeline Constructor Agent Capabilities:
+  - Query Neo4j for temporal events (captures, edits, promotions, links)
+  - Identify evolution phases (capture → development → maturation → maintenance)
+  - Analyze shifts in understanding (what changed, why, when)
+  - Generate chronological narratives
+  - Create timeline visualizations (ASCII, Mermaid)
+  - Calculate maturation metrics (days to evergreen, edit velocity)
+  - Identify influences (sources, events, other notes)
+
+  Neo4j Temporal Query Patterns:
+  - Evolution timeline: Trace concept from capture to evergreen
+  - Relationship strength over time: How link strength changes
+  - Contradiction detection: When conflicting claims emerged
+  - Influence analysis: What informed understanding shifts
+  - Maturation metrics: Calculate concept development speed
+
+dependencies:
+  - Phase 1 complete (all MVP components functional)
+  - Neo4j Graphiti MCP required (temporal features depend on graph database)
+
+testing:
+  - Create MOC for 20-note domain
+  - Generate temporal narrative for concept tracked over 6 months
+  - Verify timeline visualizations accurate
+  - Test MOC bidirectional linking
+  - Calculate maturation metrics for 10 concepts
+
+definition_of_done:
+  - Both agents implemented and tested
+  - All 10 tasks created and validated
+  - All 3 templates complete
+  - All 3 checklists comprehensive
+  - Both workflows functional
+  - Knowledge bases enhanced with temporal patterns
+  - Neo4j integration fully functional
+  - Phase 2 testing complete
+  - Documentation updated

@@ -1,0 +1,126 @@
+---
+story_id: STORY-012
+title: Create Phase 1 Checklists (5 checklists)
+epic_id: EPIC-001
+phase: 1
+priority: high
+estimated_effort: 12 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a developer
+  I want to create validation checklists for Phase 1 workflows
+  So that agents can enforce quality standards systematically
+
+acceptance_criteria:
+  - Create checklists/ directory
+  - Create capture-quality-checklist.md
+  - Create atomicity-checklist.md
+  - Create linking-quality-checklist.md
+  - Create query-completeness-checklist.md
+  - Create audit-coverage-checklist.md
+  - All checklists include items, pass criteria, and usage notes
+  - Checklists specify required vs. optional items
+  - Checklists include validation logic
+
+technical_notes: |
+  Checklist 1: capture-quality-checklist.md
+  - Purpose: Validate capture completeness and accuracy
+  - Items (10 total, 5 required):
+    - ✓ Source URL/reference present and accessible
+    - ✓ Timestamp accurate (ISO 8601 format)
+    - ✓ Content preserves original context
+    - ✓ Content type correctly classified
+    - Classification confidence ≥ 0.7 or flagged
+    - ✓ No PII without consent
+    - ✓ Character encoding preserved
+    - Surrounding context captured (highlights)
+    - Initial tags assigned (if using tags)
+  - Pass criteria: All required items (marked ✓) checked
+  - Used by: Inbox Triage Agent (classify-content-type, create-inbox-note tasks)
+
+  Checklist 2: atomicity-checklist.md
+  - Purpose: Validate note meets Zettelkasten atomic principles
+  - Items (10 total, all required):
+    - Note contains exactly one complete building block
+    - Building block type correctly identified
+    - Core claim clearly stated in 1-2 sentences
+    - No tangled ideas requiring fragmentation
+    - Evidence supports core claim without new claims
+    - Related concepts linked but not explained in detail
+    - Source attribution complete and accurate
+    - Note title descriptive and unique
+    - Note is self-contained
+    - No orphaned content
+  - Pass criteria: All items checked
+  - Used by: Structural Analysis Agent (analyze-atomicity task)
+
+  Checklist 3: linking-quality-checklist.md
+  - Purpose: Ensure bidirectional links are meaningful
+  - Items (9 total, all required):
+    - Link represents genuine conceptual relationship
+    - Link type identified (supports, contradicts, elaborates, etc.)
+    - Context sentence explains why link exists
+    - Link bidirectional (present in both notes)
+    - No duplicate links
+    - Link strength appropriate
+    - Links don't create circular reasoning
+    - Temporal relationship recorded in Neo4j
+    - User approved link (if not Yolo mode)
+  - Pass criteria: All items checked
+  - Used by: Semantic Linker Agent (create-bidirectional-link task)
+
+  Checklist 4: query-completeness-checklist.md
+  - Purpose: Ensure query results comprehensively address question
+  - Items (11 total, 6 required):
+    - ✓ Query intent correctly interpreted
+    - ✓ All key concepts addressed
+    - Temporal context provided (if temporal intent)
+    - Multiple perspectives included (if applicable)
+    - Contradictions explicitly flagged (if present)
+    - ✓ Source attribution included for all claims
+    - ✓ Confidence levels provided for uncertain claims
+    - ✓ Related concepts surfaced
+    - ✓ Knowledge gaps identified
+    - Suggested follow-up queries provided
+    - Results in appropriate format
+  - Pass criteria: All required items (marked ✓) checked
+  - Used by: Query Interpreter Agent (merge-results task)
+
+  Checklist 5: audit-coverage-checklist.md
+  - Purpose: Ensure audit comprehensively reviews all quality dimensions
+  - Items (12 total, all required):
+    - Temporal freshness checked
+    - External links validated
+    - Source citations verified
+    - Orphaned notes identified
+    - Factual claims spot-checked
+    - Duplicate content detected
+    - Atomicity violations flagged
+    - MOC coverage assessed
+    - Metadata completeness verified
+    - Neo4j data integrity checked (if enabled)
+    - Audit scope clearly defined
+    - Priority rankings justified
+  - Pass criteria: All items checked
+  - Used by: Quality Auditor Agent (generate-audit-report task)
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - All Phase 1 agents (consumers of checklists)
+
+testing:
+  - Validate checklist format (markdown checkboxes)
+  - Test each checklist with sample content
+  - Verify pass criteria logic
+  - Ensure checklists are comprehensive
+
+definition_of_done:
+  - All 5 checklist files created in checklists/
+  - Checklists include items with checkbox format
+  - Required vs. optional items clearly marked
+  - Pass criteria specified
+  - Usage notes documented
+  - Checklists tested with sample content
+  - Documentation added to developer guide

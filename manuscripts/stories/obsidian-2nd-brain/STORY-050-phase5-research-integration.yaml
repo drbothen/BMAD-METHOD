@@ -1,0 +1,148 @@
+---
+story_id: STORY-050
+title: "Phase 5: Optional Research Integration (Enhanced)"
+epic_id: EPIC-001
+phase: 5
+priority: low
+estimated_effort: 3-4 weeks
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want AI agents to automatically execute external research using available tools
+  So that I can fill knowledge gaps efficiently and maintain up-to-date information
+
+acceptance_criteria: |
+  **1 Optional Agent (Enhanced):**
+  - Research Coordinator Agent v2.0 with adaptive capabilities
+
+  **19 Additional Tasks:**
+  - Tool Detection (4): detect-research-tools, profile-tool-capabilities, recommend-research-tools, monitor-tool-availability
+  - Query Generation (4): generate-research-queries, generate-deep-questions, optimize-query-for-tool, categorize-queries
+  - Execution (5): execute-automated-research, execute-parallel-research, execute-sequential-research, execute-targeted-research, execute-fallback-research
+  - Source Evaluation (3): assess-source-credibility, validate-research-accuracy, identify-research-conflicts
+  - Synthesis & Integration (3): synthesize-multi-source-findings, integrate-research-findings, track-research-provenance
+
+  **7 Additional Templates:**
+  - research-report-tmpl.yaml
+  - tool-detection-report-tmpl.yaml
+  - research-query-set-tmpl.yaml
+  - source-assessment-tmpl.yaml
+  - research-synthesis-tmpl.yaml
+  - research-conflict-tmpl.yaml
+  - research-provenance-tmpl.yaml
+
+  **5 Additional Checklists:**
+  - research-quality-checklist.md
+  - source-credibility-checklist.md
+  - tool-optimization-checklist.md
+  - research-synthesis-checklist.md
+  - research-accuracy-checklist.md
+
+  **6 Additional Knowledge Bases:**
+  - research-tools-catalog.md (MCP tool reference)
+  - research-methodologies.md
+  - source-evaluation-criteria.md
+  - query-optimization-patterns.md (tool-specific templates)
+  - research-strategy-patterns.md (workflow decision trees)
+  - credibility-scoring-rubric.md (0-100 scoring framework)
+
+  **1 Enhanced Workflow:**
+  - research-integration-workflow (with adaptive strategies)
+
+  **Optional Integrations (Auto-Detected):**
+  - Perplexity MCP (search/reason/deep_research)
+  - WebSearch MCP
+  - Context7 MCP
+  - Custom research MCP servers
+
+technical_notes: |
+  Research Coordinator Agent v2.0 Capabilities:
+
+  1. **Automatic Tool Detection:**
+     - Scan MCP environment for research tools
+     - Profile tool capabilities (speed, depth, coverage)
+     - Generate tool recommendations if gaps found
+     - Monitor tool availability throughout session
+
+  2. **Adaptive Query Generation:**
+     - Generate 10-30 optimized queries per research topic
+     - Tailor queries to detected tools (different patterns for Perplexity vs. WebSearch)
+     - Generate deep questions for comprehensive research
+     - Categorize queries by priority and type
+
+  3. **Multi-Tool Orchestration:**
+     - Execute parallel research (independent queries across tools)
+     - Execute sequential research (dependent queries, one after another)
+     - Execute hybrid strategies (parallel batches with sequential follow-up)
+     - Optimize for speed vs. depth based on user preference
+
+  4. **Source Credibility Assessment:**
+     - Evidence-based scoring rubric (0-100)
+     - Criteria: Authority (35%), Currency (25%), Accuracy (20%), Objectivity (10%), Coverage (10%)
+     - Classify sources: Authoritative (85-100), Reliable (70-84), Questionable (50-69), Unreliable (0-49)
+     - Flag low-credibility sources for manual review
+
+  5. **Multi-Source Synthesis:**
+     - Merge findings from multiple tools
+     - Identify conflicts and contradictions
+     - Cross-validate claims across sources
+     - Resolve conflicts (majority consensus, recency, authority)
+     - Assign confidence levels (high/medium/low/unverified)
+
+  6. **Neo4j Provenance Tracking:**
+     - Create ResearchProject nodes
+     - Link to tools used, sources consulted, notes created
+     - Enable queries: "What research informed this note?"
+     - Track research methodology for reproducibility
+
+  7. **Graceful Degradation:**
+     - If no tools detected: Provide manual query suggestions
+     - If tools fail: Fall back to manual workflow
+     - Always functional (tools enhance but not required)
+
+  Tool Catalog (Optional):
+  - **Perplexity Search:** Quick facts (2-5s response)
+  - **Perplexity Reason:** Complex analysis (10-30s response)
+  - **Perplexity Deep Research:** Comprehensive reports (30-90s response)
+  - **WebSearch:** Broad web coverage (3-8s response)
+  - **Context7:** Official library documentation (2-5s response)
+
+  Success Metrics:
+  - 50-70% time savings vs. manual research (when tools available)
+  - Average source credibility ≥ 75 (Reliable+)
+  - Research accuracy >95% (cross-validated claims)
+  - Unresolved conflicts < 5%
+  - Tool utilization appropriateness ≥ 90%
+
+dependencies:
+  - Phase 4 complete (Gap Detector identifies research needs)
+  - Optional MCP research tools (auto-detected)
+  - OpenAI API or similar (for synthesis and analysis)
+  - Neo4j recommended (for provenance tracking)
+
+testing:
+  - Test tool detection (with Perplexity, WebSearch, Context7, none)
+  - Generate optimized queries for each tool type
+  - Execute parallel research across tools
+  - Assess source credibility (validate 0-100 scores)
+  - Synthesize multi-source findings with conflicts
+  - Integrate research as atomic notes
+  - Track provenance in Neo4j
+  - Test graceful degradation (tools unavailable)
+
+definition_of_done:
+  - Research Coordinator Agent v2.0 implemented
+  - All 19 tasks created and validated
+  - All 7 templates complete
+  - All 5 checklists comprehensive
+  - All 6 knowledge bases complete
+  - Research integration workflow functional
+  - Tool detection working
+  - Credibility scoring validated
+  - Multi-source synthesis tested
+  - Provenance tracking working
+  - Graceful degradation verified
+  - Phase 5 testing complete
+  - Documentation updated with adaptive research guide

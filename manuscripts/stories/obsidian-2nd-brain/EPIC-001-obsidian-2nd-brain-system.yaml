@@ -1,0 +1,120 @@
+---
+epic_id: EPIC-001
+title: Obsidian 2nd Brain with Temporal RAG System
+type: epic
+priority: critical
+estimated_effort: 18-24 weeks
+target_phase: All Phases
+created: 2025-11-04
+status: planning
+
+description: |
+  Build a comprehensive BMAD expansion pack that transforms Obsidian into a powerful
+  second brain with temporal RAG architecture. The system combines semantic search
+  (Smart Connections) with temporal graph database (Neo4j + Graphiti MCP) to enable
+  knowledge workers to store, retrieve, and understand how their thinking evolves over time.
+
+business_value: |
+  - First personal knowledge management system combining semantic search with bi-temporal graph database
+  - Enables temporal queries: "How has my understanding of X evolved?"
+  - Supports multiple methodologies: Zettelkasten, PARA, LYT, Johnny Decimal
+  - 10+ specialized AI agents for complete knowledge lifecycle management
+  - Quality assurance through 20+ validation checklists
+  - Bridges personal knowledge base to public content creation
+
+key_capabilities:
+  - Intelligent capture and triage of web clips, highlights, and notes
+  - Automatic atomicity analysis and note fragmentation
+  - Semantic bidirectional linking
+  - Map of Content (MOC) construction and maintenance
+  - Natural language query across markdown and graph database
+  - Temporal evolution analysis and narratives
+  - Knowledge gap detection and research prioritization
+  - Content brief generation for creation projects
+  - Multi-source research with credibility assessment
+  - Quality auditing and freshness tracking
+  - Publication formatting with provenance tracking
+
+technical_architecture:
+  - Obsidian: Markdown vault with plugins (Smart Connections, MCP Tools, Local REST API)
+  - Smart Connections: Local semantic search via BGE-micro-v2 embeddings
+  - Neo4j + Graphiti: Bi-temporal graph database for evolution tracking
+  - MCP Protocol: Integration layer for tool orchestration
+  - BMAD Agents: 10+ specialized agents coordinating knowledge workflows
+
+success_criteria:
+  - 100+ active users within 3 months of release
+  - 70%+ retention rate at 30 days
+  - 90%+ notes meeting atomic standards
+  - <5% orphaned notes
+  - Net Promoter Score (NPS) > 50
+  - Query response time < 3 seconds
+  - Capture to inbox note < 30 seconds
+
+implementation_phases:
+  - phase: 1
+    name: MVP (Minimum Viable Product)
+    duration: 4-6 weeks
+    focus: Core capture, organization, and retrieval workflows
+    agents: 5 core agents
+    stories: STORY-001 through STORY-030
+
+  - phase: 2
+    name: Enhanced Synthesis & Temporal Analysis
+    duration: 3-4 weeks
+    focus: MOC construction and temporal evolution tracking
+    agents: 2 additional agents
+    stories: STORY-031 through STORY-050
+
+  - phase: 3
+    name: Creation & Publishing
+    duration: 3-4 weeks
+    focus: Content creation and publication support
+    agents: 2 additional agents
+    stories: STORY-051 through STORY-065
+
+  - phase: 4
+    name: Advanced Analysis & Gap Detection
+    duration: 2-3 weeks
+    focus: Knowledge gap identification and research prioritization
+    agents: 1 additional agent
+    stories: STORY-066 through STORY-080
+
+  - phase: 5
+    name: Optional Research Integration (Enhanced)
+    duration: 3-4 weeks
+    focus: Adaptive external research with automatic tool detection
+    agents: 1 optional agent (enhanced)
+    stories: STORY-081 through STORY-110
+
+  - phase: 6
+    name: Polish & Documentation
+    duration: 2-3 weeks
+    focus: Complete documentation, optimization, and user onboarding
+    agents: All agents refinement
+    stories: STORY-111 through STORY-130
+
+dependencies:
+  - BMAD-METHOD core framework v4.x+
+  - Obsidian v1.4.0+
+  - Node.js v16+ (for MCP servers)
+  - Docker (optional, for Neo4j)
+  - OpenAI API access (for Graphiti entity extraction)
+
+risks:
+  - Complexity overwhelms users → Mitigation: Guided onboarding, Simple/Balanced/Advanced modes
+  - Neo4j performance degradation at scale → Mitigation: Caching, query optimization, partitioning
+  - Installation barriers → Mitigation: Obsidian-only mode, one-click installers, video tutorials
+  - MCP protocol evolution → Mitigation: Follow spec updates, use stable API versions
+
+related_documents:
+  - /Users/jmagady/Dev/BMAD-METHOD/manuscripts/bmad-obsidian-2nd-brain-requirements.md
+  - /Users/jmagady/Dev/BMAD-METHOD/manuscripts/bmad-obsidian-2nd-brain-research-enhancement.md
+
+child_stories:
+  - Phase 1: STORY-001 to STORY-030
+  - Phase 2: STORY-031 to STORY-050
+  - Phase 3: STORY-051 to STORY-065
+  - Phase 4: STORY-066 to STORY-080
+  - Phase 5: STORY-081 to STORY-110
+  - Phase 6: STORY-111 to STORY-130

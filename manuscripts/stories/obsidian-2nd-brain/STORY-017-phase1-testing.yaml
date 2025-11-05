@@ -1,0 +1,112 @@
+---
+story_id: STORY-017
+title: Phase 1 Integration Testing & Verification
+epic_id: EPIC-001
+phase: 1
+priority: high
+estimated_effort: 24 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a quality assurance engineer
+  I want comprehensive integration testing for Phase 1 components
+  So that we can confidently release the MVP to beta users
+
+acceptance_criteria:
+  - Create test scenarios for all Phase 1 workflows
+  - Test end-to-end capture → organization → retrieval workflow
+  - Test all 5 core agents individually
+  - Test agent interactions (agent A → agent B workflows)
+  - Test with multiple vault sizes (empty, 10, 100, 1000, 10000 notes)
+  - Test with Neo4j enabled and disabled
+  - Test error handling and edge cases
+  - Create automated test suite (where possible)
+  - Document test results and known issues
+
+technical_notes: |
+  Test Scenarios:
+
+  1. End-to-End Workflow Test:
+     - Capture web article → Inbox note created
+     - Analyze inbox note → Fragmented into 2 atomic notes
+     - Semantic search → 3 link suggestions
+     - Approve links → Bidirectional links created
+     - Query: "What is [concept]?" → Results returned
+     - Weekly audit → Report generated
+
+  2. Agent Individual Tests:
+     - Inbox Triage Agent:
+       - Classify 20 diverse captures (accuracy > 90%)
+       - Test confidence scoring
+       - Test metadata extraction from various sources
+     - Structural Analysis Agent:
+       - Analyze 10 atomic notes (all pass)
+       - Analyze 10 non-atomic notes (all correctly identified)
+       - Fragment note with 3 tangled concepts
+     - Semantic Linker Agent:
+       - Find similar notes (precision > 80%)
+       - Create bidirectional links
+       - Test link type identification
+     - Query Interpreter Agent:
+       - Parse 20 diverse queries (intent classification > 85%)
+       - Execute multi-source queries
+       - Test result merging
+     - Quality Auditor Agent:
+       - Audit 1000-note vault
+       - Validate external links
+       - Generate comprehensive report
+
+  3. Vault Size Tests:
+     - Empty vault: All agents handle gracefully
+     - 10 notes: Core workflows functional
+     - 100 notes: Performance acceptable
+     - 1000 notes: Performance acceptable (< 3s queries)
+     - 10000 notes: Performance degradation identified
+
+  4. Neo4j Tests:
+     - With Neo4j: Full temporal features work
+     - Without Neo4j: Graceful degradation (Obsidian-only)
+     - Neo4j failure during operation: Error handled gracefully
+
+  5. Error Handling Tests:
+     - Obsidian not running → Clear error message
+     - API key invalid → Reconfiguration prompt
+     - Network timeout → Retry logic
+     - Malformed note → Validation error
+     - Duplicate note → Conflict resolution
+
+  6. Edge Cases:
+     - Very long notes (10000+ words)
+     - Notes with special characters (emoji, unicode)
+     - Notes with many links (100+ wikilinks)
+     - Notes with broken wikilinks
+     - Circular link structures
+
+  Automated Testing:
+  - Create test vault with known structure
+  - Script capture workflows
+  - Validate output against expectations
+  - Test framework: pytest or similar
+
+dependencies:
+  - All Phase 1 stories (STORY-001 through STORY-016)
+  - Test vault with diverse content
+  - Test data sets (sample captures, notes, etc.)
+
+testing:
+  - Execute all test scenarios
+  - Document pass/fail for each test
+  - Identify and document known issues
+  - Create bug reports for failures
+  - Verify acceptance criteria for all Phase 1 stories
+
+definition_of_done:
+  - All test scenarios executed
+  - Test results documented
+  - Known issues documented
+  - Critical bugs fixed
+  - Non-critical bugs triaged (Phase 2+)
+  - Automated test suite created (where feasible)
+  - Test documentation added to docs/testing.md
+  - Phase 1 ready for beta release

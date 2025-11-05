@@ -1,0 +1,77 @@
+---
+story_id: STORY-003
+title: Implement Structural Analysis Agent
+epic_id: EPIC-001
+phase: 1
+priority: critical
+estimated_effort: 20 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want an AI agent to analyze my notes for atomicity and fragment them when needed
+  So that each note contains exactly one complete knowledge building block
+
+acceptance_criteria:
+  - Create structural-analysis-agent.md with complete agent definition
+  - Agent analyzes notes for atomicity (single concept, argument, model, question, claim, or phenomenon)
+  - Agent identifies building block type for each note
+  - Agent detects when notes violate atomicity (multiple tangled ideas)
+  - Agent suggests fragmentation strategy (split into N atomic notes)
+  - Agent performs fragmentation and creates new atomic notes
+  - Agent follows atomicity-checklist.md
+  - All fragments maintain source attribution and metadata
+  - "Commands: *help, *analyze-atomicity, *fragment-note, *validate-note, *yolo, *exit"
+
+technical_notes: |
+  Agent capabilities:
+  - Atomicity analysis using structural patterns and semantic analysis
+  - Building block type identification (concept, argument, model, question, claim, phenomenon)
+  - Fragmentation planning (identify natural split points)
+  - Atomic note creation using atomic-note-tmpl.yaml
+  - Cross-linking between fragments
+  - Preservation of source metadata and timestamps
+
+  Dependencies (tasks):
+  - analyze-atomicity.md
+  - fragment-note.md
+
+  Dependencies (templates):
+  - atomic-note-tmpl.yaml
+
+  Dependencies (checklists):
+  - atomicity-checklist.md
+
+  Analysis patterns:
+  - Single claim test: Note expresses exactly one claim or concept
+  - Evidence test: Evidence supports core claim without introducing new claims
+  - Self-contained test: Note understandable without extensive external context
+  - Title test: Title is descriptive and unique
+  - Related concepts test: Related concepts linked but not explained in detail
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-002: Inbox Triage Agent (for processing inbox notes)
+  - atomic-note-tmpl.yaml template
+  - atomicity-checklist.md
+  - Obsidian MCP Tools integration
+
+testing:
+  - Analyze atomic note (pass validation)
+  - Analyze non-atomic note (detect multiple ideas)
+  - Fragment note with 3 tangled concepts
+  - Verify fragments maintain source attribution
+  - Verify fragments cross-linked appropriately
+  - Test building block type identification accuracy
+  - Test Yolo mode (auto-fragmentation)
+
+definition_of_done:
+  - Agent file complete with YAML metadata
+  - All commands functional
+  - Atomicity detection accuracy > 95%
+  - Fragmentation preserves all content and metadata
+  - Atomic notes follow template structure
+  - Atomicity checklist enforced
+  - Agent activates via /bmad-2b:structural-analysis-agent
+  - Documentation added to user guide

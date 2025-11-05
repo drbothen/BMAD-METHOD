@@ -1,0 +1,167 @@
+---
+story_id: STORY-070
+title: Implement Transcript Processing Agent
+epic_id: EPIC-001
+phase: 1.5
+priority: high
+estimated_effort: 24 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want an AI agent to process audio/video transcripts and extract key information
+  So that I can capture meeting notes, interviews, and lectures efficiently
+
+acceptance_criteria: |
+  **Agent Implementation:**
+  - Create agent file: bmad-obsidian-2nd-brain/agents/transcript-processing-agent.md
+  - Define agent persona and capabilities
+  - Specify dependencies (tasks, templates, checklists)
+  - Define agent commands and parameters
+
+  **Core Capabilities:**
+  - Process transcripts from multiple sources (Whisper, Deepgram, Google Gemini, OpenAI)
+  - Extract speaker diarization (who said what)
+  - Identify and extract key points
+  - Extract action items with owners and deadlines
+  - Log decisions made during meetings/discussions
+  - Segment transcript by topics
+  - Preserve timestamp annotations for reference
+  - Extract entities (people, organizations, concepts mentioned)
+  - Generate structured meeting notes
+  - Create interview summaries
+  - Process lecture/presentation content
+
+  **Agent Commands:**
+  - *process-transcript: Process raw transcript into structured note
+  - *extract-action-items: Extract all action items from transcript
+  - *identify-key-points: Identify and extract key discussion points
+  - *log-decisions: Extract decisions made with rationale
+  - *segment-by-topic: Break transcript into topical sections
+  - *generate-meeting-note: Create complete meeting note from transcript
+  - *process-interview: Process interview transcript with Q&A structure
+  - *process-lecture: Process educational content with key concepts
+
+  **Input Formats:**
+  - Plain text transcript with speaker labels
+  - VTT (WebVTT) format with timestamps
+  - SRT (SubRip) format
+  - JSON format from transcript services
+  - Markdown format
+
+  **Output Structure:**
+  - Meeting notes with executive summary, participants, key points, decisions, action items
+  - Interview notes with introduction, Q&A sections, key insights
+  - Lecture notes with topic outline, key concepts, definitions, examples
+  - All outputs follow Obsidian markdown format
+  - All outputs include YAML frontmatter metadata
+  - Link to original transcript file
+  - Preserve speaker attribution and timestamps
+
+  **Quality Standards:**
+  - Action item extraction accuracy >90%
+  - Decision logging completeness >85%
+  - Key point identification relevance >90%
+  - Speaker attribution accuracy >95%
+  - All outputs pass transcript-quality-checklist.md
+
+technical_notes: |
+  Agent Dependencies:
+  - tasks/extract-action-items-from-transcript.md
+  - tasks/identify-key-points-in-transcript.md
+  - tasks/log-decisions-from-transcript.md
+  - tasks/segment-transcript-by-topic.md
+  - tasks/extract-speaker-diarization.md
+  - tasks/annotate-transcript-timestamps.md
+  - tasks/extract-entities-from-transcript.md
+  - tasks/generate-meeting-note-from-transcript.md
+  - templates/meeting-note-tmpl.yaml
+  - templates/transcript-note-tmpl.yaml
+  - templates/interview-note-tmpl.yaml
+  - checklists/transcript-quality-checklist.md
+
+  Agent Architecture:
+  1. Input Processing Layer:
+     - Detect transcript format (plain text, VTT, SRT, JSON)
+     - Parse speaker labels and timestamps
+     - Normalize format to internal representation
+
+  2. Analysis Layer:
+     - Speaker diarization validation
+     - Topic segmentation using NLP
+     - Entity extraction (NER)
+     - Temporal flow analysis
+
+  3. Extraction Layer:
+     - Action item detection (commitment language, verbs)
+     - Decision identification (decision keywords, outcomes)
+     - Key point extraction (importance scoring)
+     - Quote extraction (significant statements)
+
+  4. Output Generation Layer:
+     - Select appropriate template (meeting, interview, lecture)
+     - Populate template sections
+     - Generate YAML frontmatter
+     - Create bidirectional links to mentioned concepts
+     - Format markdown output
+
+  Integration with Existing Agents:
+  - Inbox Triage Agent: Classify transcript notes
+  - Structural Analysis Agent: Validate atomicity of extracted points
+  - Semantic Linker Agent: Link to related notes and concepts
+  - Task Management Agent: Convert action items to tasks
+
+  Transcript Sources (Auto-Detection):
+  - Local Whisper ASR (offline, free, slower)
+  - Deepgram API (fast, accurate, paid)
+  - Google Gemini API (transcription + summarization)
+  - OpenAI Whisper API (accurate, paid)
+  - Manual transcripts (human-created)
+
+  Performance Targets:
+  - Process 1-hour transcript in <60 seconds
+  - Extract action items with >90% accuracy
+  - Generate meeting note in <30 seconds
+  - Support transcripts up to 50,000 words
+
+  Error Handling:
+  - Handle missing speaker labels (assign "Unknown Speaker")
+  - Handle missing timestamps (estimate relative timing)
+  - Handle incomplete transcripts (mark as partial)
+  - Validate transcript quality before processing
+  - Provide warnings for low-confidence extractions
+
+dependencies:
+  - STORY-072: Transcript processing tasks must be created first
+  - STORY-074: Templates must be created first
+  - STORY-075: Checklists must be created first
+  - Obsidian transcript plugin or external transcript service
+
+testing:
+  - Process meeting transcript (30-60 minutes)
+  - Extract action items (should find 5-15 items)
+  - Identify key points (should find 10-20 points)
+  - Log decisions (should find 2-8 decisions)
+  - Process interview transcript (Q&A format)
+  - Process lecture transcript (educational content)
+  - Test with VTT format (timestamps preserved)
+  - Test with SRT format (timestamps preserved)
+  - Test with plain text (no timestamps)
+  - Test with missing speaker labels
+  - Validate output against transcript-quality-checklist.md
+  - Verify integration with Inbox Triage Agent
+  - Verify integration with Task Management Agent
+
+definition_of_done:
+  - Agent file created with complete persona and capabilities
+  - All 8 agent commands implemented and tested
+  - Handles all 5 input formats correctly
+  - Generates all 3 output types (meeting, interview, lecture)
+  - All dependencies declared in agent metadata
+  - Integration with existing Phase 1 agents verified
+  - Performance targets met
+  - Error handling comprehensive
+  - Documentation complete
+  - Passes all test scenarios
+  - Code review approved
