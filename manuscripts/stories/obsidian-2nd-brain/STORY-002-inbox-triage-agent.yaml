@@ -14,60 +14,765 @@ user_story: |
   So that my inbox doesn't become overwhelming and content is properly structured
 
 acceptance_criteria:
-  - Create inbox-triage-agent.md with complete agent definition
-  - Agent can classify content types: quote, concept, reference, reflection, question, observation
-  - Agent extracts metadata: source URL, author, timestamp, surrounding context
-  - Agent creates inbox notes in Obsidian using inbox-note-tmpl.yaml
-  - Agent creates CaptureEvent nodes in Neo4j (if enabled)
-  - Classification confidence score calculated (0.0-1.0)
-  - Content flagged for manual review if confidence < 0.7
-  - Agent follows capture-quality-checklist.md
-  - "Commands: *help, *classify-content, *create-inbox-note, *batch-process-inbox, *yolo, *exit"
+  - "AC1: Create inbox-triage-agent.md with complete agent definition at expansion-packs/bmad-obsidian-2nd-brain/agents/"
+  - "AC2: Agent can classify content into 6 types: quote, concept, reference, reflection, question, observation"
+  - "AC3: Agent extracts metadata: source URL, author, timestamp, surrounding context"
+  - "AC4: Agent creates inbox notes in Obsidian vault /inbox directory using inbox-note-tmpl.yaml"
+  - "AC5: Agent creates CaptureEvent nodes in Neo4j with bi-temporal metadata (if Neo4j enabled)"
+  - "AC6: Classification confidence score calculated (0.0-1.0) using defined algorithm"
+  - "AC7: Content flagged for manual review if confidence < 0.7 threshold"
+  - "AC8: Agent follows capture-quality-checklist.md before finalizing captures"
+  - "AC9: Commands implemented: *help, *process-inbox, *capture, *classify, *batch-process, *yolo, *exit"
 
-technical_notes: |
-  Agent capabilities:
-  - Content type classification using pattern matching and semantic analysis
-  - Metadata extraction from various sources (web clipper, highlights, manual input)
-  - Inbox note creation via Obsidian MCP Tools
-  - Neo4j CaptureEvent node creation via Graphiti MCP (optional)
-  - Batch processing for multiple captures
-  - Yolo mode for auto-approval
+tasks_subtasks: |
+  - [ ] Task 1: Create agent file with YAML metadata (AC1)
+    - [ ] Navigate to /Users/jmagady/Dev/BMAD-METHOD/expansion-packs/bmad-obsidian-2nd-brain/agents/
+    - [ ] Create file: inbox-triage-agent.md
+    - [ ] Add BMAD header: <!-- Powered by BMAD™ Core -->
+    - [ ] Add activation notice section
+    - [ ] Add YAML metadata block with complete agent definition
+    - [ ] Add agent.name: Triage
+    - [ ] Add agent.id: inbox-triage-agent
+    - [ ] Add agent.title: Inbox Triage Agent
+    - [ ] Add agent.icon: 📥
+    - [ ] Add agent.whenToUse description
+    - [ ] Add persona section (role, style, identity, focus per requirements doc)
+    - [ ] Add core_principles list
+    - [ ] Add commands section with all 7 commands
+    - [ ] Add dependencies section (tasks, templates, checklists, data)
+    - [ ] Add startup context section after YAML block
+    - [ ] Verify YAML syntax is valid
 
-  Dependencies (tasks):
-  - classify-content-type.md
-  - extract-metadata.md
-  - create-inbox-note.md
-  - create-capture-event.md (optional, requires Neo4j)
+  - [ ] Task 2: Implement content classification system (AC2, AC6)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-classify-content-type.md
+    - [ ] Add task header with purpose and inputs/outputs
+    - [ ] Define classification heuristics for each of 6 types:
+      - [ ] Quote: Has quotation marks or block quote formatting, has source attribution
+      - [ ] Concept: Defines or explains an idea, theory, or mental model
+      - [ ] Reference: Points to external resource (link, citation, bookmark)
+      - [ ] Reflection: First-person thinking, analysis, synthesis by user
+      - [ ] Question: Interrogative structure, ends with '?', expresses curiosity
+      - [ ] Observation: Factual statement, empirical data, witnessed phenomenon
+    - [ ] Implement confidence scoring algorithm:
+      - [ ] Start at 1.0 (perfect confidence)
+      - [ ] Subtract 0.1 for each missing characteristic of primary type
+      - [ ] Subtract 0.15 for each contradictory signal
+      - [ ] Subtract 0.2 if multiple types match equally
+      - [ ] Floor at 0.0, ceiling at 1.0
+    - [ ] Add fallback: default to "observation" if confidence < 0.4 for all types
+    - [ ] Add output format: {type: string, confidence: float, reasoning: string}
+    - [ ] Reference data/content-type-taxonomy.md for detailed definitions
 
-  Dependencies (templates):
-  - inbox-note-tmpl.yaml
+  - [ ] Task 3: Implement metadata extraction (AC3)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-extract-metadata.md
+    - [ ] Define metadata extraction steps:
+      - [ ] Extract source URL using regex for common URL patterns
+      - [ ] Extract author from "by [name]", "@[handle]", or meta tags
+      - [ ] Extract timestamp (capture time if source time unavailable)
+      - [ ] Extract surrounding context (paragraph before/after if partial capture)
+      - [ ] Extract tags/categories if present
+    - [ ] Add input sanitization for security:
+      - [ ] Validate URLs using safe regex (prevent injection)
+      - [ ] Escape HTML/markdown special characters in extracted text
+      - [ ] Strip JavaScript from any web-clipper content
+      - [ ] Limit field lengths (URL: 2048 chars, author: 256 chars, context: 5000 chars)
+    - [ ] Add output format: {source_url, author, timestamp, context, tags, raw_metadata}
+    - [ ] Reference data/source-patterns.md for URL pattern recognition
 
-  Dependencies (checklists):
-  - capture-quality-checklist.md
+  - [ ] Task 4: Create inbox note creation task (AC4)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-inbox-note.md
+    - [ ] Define steps for Obsidian MCP Tools integration:
+      - [ ] Load inbox-note-tmpl.yaml template
+      - [ ] Substitute variables: {{content}}, {{content_type}}, {{source}}, {{author}}, {{timestamp}}, {{confidence}}
+      - [ ] Generate filename: YYYY-MM-DD-HHMM-{sanitized-first-words}.md
+      - [ ] Call Obsidian MCP Tools: create_note(path="/inbox/{filename}", content={filled_template})
+      - [ ] Handle errors: vault not found, permission denied, file exists
+      - [ ] Return: {success: boolean, note_path: string, error: string|null}
+    - [ ] Add retry logic: 3 attempts with exponential backoff
+    - [ ] Add validation: verify note created successfully before returning
+
+  - [ ] Task 5: Create Neo4j CaptureEvent creation task (AC5)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-capture-event.md
+    - [ ] Add Neo4j enabled check: read config.yaml neo4j.enabled field
+    - [ ] If enabled, define Graphiti MCP integration:
+      - [ ] Prepare episode text: "{content_type} captured from {source}: {content_preview}"
+      - [ ] Call Graphiti MCP: add_episode(content={episode_text}, timestamp={iso_timestamp})
+      - [ ] Graphiti will auto-extract entities and create nodes
+      - [ ] Manually create (:CaptureEvent) node with properties:
+        - [ ] event_id: uuid
+        - [ ] content_type: string
+        - [ ] confidence_score: float
+        - [ ] source_url: string
+        - [ ] author: string
+        - [ ] capture_timestamp: datetime
+        - [ ] valid_time_start: capture_timestamp
+        - [ ] transaction_time: current_timestamp
+      - [ ] Create relationship: (:CaptureEvent)-[:RESULTED_IN]->(:Note {path: note_path})
+      - [ ] Handle errors: connection failed, query error
+    - [ ] If disabled, skip gracefully and return: {skipped: true, reason: "neo4j_disabled"}
+    - [ ] Return: {success: boolean, event_id: string|null, error: string|null}
+
+  - [ ] Task 6: Create templates (AC4)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/templates/inbox-note-tmpl.yaml
+    - [ ] Define template metadata:
+      - [ ] template.id: inbox-note-template-v1
+      - [ ] template.name: Inbox Note
+      - [ ] template.version: 1.0
+      - [ ] template.output.format: markdown
+    - [ ] Define template sections:
+      - [ ] Frontmatter (YAML): status, content_type, confidence, source, author, captured, tags
+      - [ ] Content section: {{content}}
+      - [ ] Context section: {{context}} (if available)
+      - [ ] Processing Notes section: (empty, for triage agent to fill)
+      - [ ] Next Actions section: (empty, for user or agent to fill)
+    - [ ] Add template variables list and descriptions
+    - [ ] Reference bmad-core templates for structure guidance
+
+  - [ ] Task 7: Create checklists (AC8)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/checklists/capture-quality-checklist.md
+    - [ ] Define quality criteria:
+      - [ ] Content is non-empty (min 10 characters)
+      - [ ] Content type classified with confidence >= 0.5
+      - [ ] Source URL is valid format (if present)
+      - [ ] Author extracted or marked as "Unknown"
+      - [ ] Timestamp is valid ISO 8601 format
+      - [ ] No HTML/JavaScript injection detected
+      - [ ] Filename follows naming convention
+      - [ ] Inbox note created successfully in Obsidian
+      - [ ] Neo4j CaptureEvent created (if enabled) or skipped gracefully
+      - [ ] Template all required fields populated
+    - [ ] Add remediation steps for each failed check
+
+  - [ ] Task 8: Create knowledge base files (AC2, AC3)
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/data/content-type-taxonomy.md
+    - [ ] Define each of 6 content types with:
+      - [ ] Name and description
+      - [ ] Characteristics and signals
+      - [ ] Example snippets (3-5 per type)
+      - [ ] Common sources
+      - [ ] Processing recommendations
+    - [ ] Create file: expansion-packs/bmad-obsidian-2nd-brain/data/source-patterns.md
+    - [ ] Define URL patterns for common sources:
+      - [ ] Academic: arxiv.org, scholar.google.com, pubmed.ncbi.nlm.nih.gov
+      - [ ] News: Medium, Substack, major news sites
+      - [ ] Social: Twitter/X, LinkedIn, Reddit
+      - [ ] Books: Kindle highlights, Readwise, Literal
+      - [ ] Documentation: GitHub, official docs sites
+    - [ ] Add author extraction patterns per source type
+
+  - [ ] Task 9: Implement agent commands (AC9)
+    - [ ] In inbox-triage-agent.md, add command implementations in Startup Context section:
+      - [ ] *help: List all commands with descriptions
+      - [ ] *process-inbox: Scan /inbox for unprocessed notes, run full triage on each
+      - [ ] *capture {source} {content}: Manual capture with explicit source and content args
+      - [ ] *classify {note_id}: Reclassify existing inbox note, update metadata
+      - [ ] *batch-process: Process all inbox items automatically, respect rate limits
+      - [ ] *yolo: Toggle yolo mode (auto-process without confirmation, default: false)
+      - [ ] *exit: Exit agent mode with confirmation
+    - [ ] Define command parameters and return values
+    - [ ] Add error handling for invalid inputs
+
+  - [ ] Task 10: Add security hardening (Should-Fix Issue #7)
+    - [ ] In extract-metadata.md task, add security section:
+      - [ ] Input validation: sanitize all user-provided content
+      - [ ] URL safety: validate URLs against safe regex, block file:// and javascript: protocols
+      - [ ] XSS prevention: escape HTML entities in extracted content
+      - [ ] Injection prevention: parameterize Neo4j queries, no string concatenation
+      - [ ] Length limits: enforce max lengths on all fields
+      - [ ] Content filtering: strip scripts, iframes, and dangerous HTML tags
+    - [ ] Add security checklist reference in agent dependencies
+
+  - [ ] Task 11: Testing and validation (AC7, AC8, definition_of_done)
+    - [ ] Create test data set:
+      - [ ] 5 samples of each content type (30 total)
+      - [ ] Mix of high/medium/low confidence examples
+      - [ ] Include edge cases: ambiguous content, multi-type content, empty metadata
+    - [ ] Run classification on test set:
+      - [ ] Verify accuracy >= 90% (27/30 correct classifications)
+      - [ ] Verify confidence scores align with classification difficulty
+      - [ ] Verify low-confidence items (< 0.7) are flagged correctly
+    - [ ] Test Obsidian integration:
+      - [ ] Create 3 test inbox notes via MCP Tools
+      - [ ] Verify notes appear in /inbox directory
+      - [ ] Verify frontmatter populated correctly
+      - [ ] Verify filenames follow convention
+    - [ ] Test Neo4j integration (if enabled):
+      - [ ] Create 3 test CaptureEvent nodes
+      - [ ] Verify bi-temporal metadata present
+      - [ ] Verify relationships created correctly
+      - [ ] Query Neo4j to confirm persistence
+    - [ ] Test batch processing:
+      - [ ] Process 10 captures in batch mode
+      - [ ] Verify all processed successfully
+      - [ ] Verify rate limiting (if applicable)
+    - [ ] Test error scenarios:
+      - [ ] Obsidian vault not found
+      - [ ] Neo4j connection failed
+      - [ ] Invalid input data
+      - [ ] Duplicate filename collision
+    - [ ] Run capture-quality-checklist.md on 5 random results
+    - [ ] Document all test results in Dev Agent Record
+
+  - [ ] Task 12: Integration verification (definition_of_done)
+    - [ ] Verify agent activates via: /bmad-2b:inbox-triage-agent
+    - [ ] Test in Claude Desktop or Cursor with MCP Tools configured
+    - [ ] Run *help command, verify all commands listed
+    - [ ] Process sample capture end-to-end
+    - [ ] Verify all acceptance criteria met
+    - [ ] Add usage documentation to expansion pack README.md
+    - [ ] Update CHANGELOG.md with agent addition
+
+dev_notes: |
+  ## Project Context
+
+  This is a **GREENFIELD** story creating the FIRST agent for the new bmad-obsidian-2nd-brain expansion pack. The expansion pack infrastructure (STORY-001) must be completed before this story can begin.
+
+  **Expansion Pack Location:** `/Users/jmagady/Dev/BMAD-METHOD/expansion-packs/bmad-obsidian-2nd-brain/`
+
+  **Agent File Location:** `expansion-packs/bmad-obsidian-2nd-brain/agents/inbox-triage-agent.md`
+
+  ## Agent Definition Structure (CRITICAL)
+
+  **Reference Document:** `/Users/jmagady/Dev/BMAD-METHOD/manuscripts/bmad-obsidian-2nd-brain-requirements.md` (lines 164-219)
+
+  **Reference Example Agent:** `/Users/jmagady/Dev/BMAD-METHOD/expansion-packs/bmad-creative-writing/agents/editor.md`
+
+  **Agent File Structure:**
+
+  ```markdown
+  <!-- Powered by BMAD™ Core -->
+
+  # inbox-triage-agent
+
+  ACTIVATION-NOTICE: This file contains your full agent operating guidelines...
+
+  CRITICAL: Read the full YAML BLOCK that FOLLOWS IN THIS FILE...
+
+  ## COMPLETE AGENT DEFINITION FOLLOWS - NO EXTERNAL FILES NEEDED
+
+  ```yaml
+  IDE-FILE-RESOLUTION:
+    - FOR LATER USE ONLY - NOT FOR ACTIVATION...
+    - Dependencies map to {root}/{type}/{name}
+    - type=folder (tasks|templates|checklists|data)
+    - Example: capture-classify-content-type.md → {root}/tasks/capture-classify-content-type.md
+
+  REQUEST-RESOLUTION: Match user requests to your commands/dependencies flexibly...
+
+  activation-instructions:
+    - STEP 1: Read THIS ENTIRE FILE
+    - STEP 2: Adopt the persona defined below
+    - STEP 3: Greet user with name/role and mention `*help` command
+    - DO NOT: Load any other agent files during activation
+    - ONLY load dependency files when user selects them for execution
+    - STAY IN CHARACTER!
+    - CRITICAL: On activation, ONLY greet user and then HALT
+
+  agent:
+    name: Triage
+    id: inbox-triage-agent
+    title: Inbox Triage Agent
+    icon: 📥
+    whenToUse: Use for processing captured content, classifying notes, and organizing inbox
+    customization: null
+
+  persona:
+    role: First-contact handler for all incoming information
+    style: Efficient, decisive, detail-oriented, pattern-recognizing
+    identity: Information classifier and routing coordinator
+    focus: Rapid categorization, source attribution, quality filtering
+
+  core_principles:
+    - Speed with accuracy - triage quickly without sacrificing quality
+    - Source attribution is sacred - never lose provenance
+    - Classification confidence matters - flag uncertainty
+    - Batch processing for efficiency - handle multiple captures seamlessly
+    - Quality gates prevent garbage - enforce capture standards
+    - Temporal metadata from day one - capture time is knowledge
+    - Graceful degradation - work without Neo4j if needed
+
+  commands:
+    - '*help - Show available commands'
+    - '*process-inbox - Process all unprocessed inbox items'
+    - '*capture {source} {content} - Manual capture with source attribution'
+    - '*classify {note_id} - Reclassify existing inbox note'
+    - '*batch-process - Process inbox in bulk (respecting rate limits)'
+    - '*yolo - Toggle Yolo Mode (auto-process without confirmation)'
+    - '*exit - Exit agent mode'
+
+  dependencies:
+    tasks:
+      - classify-content-type.md
+      - extract-metadata.md
+      - create-inbox-note.md
+      - create-capture-event.md
+    templates:
+      - inbox-note-tmpl.yaml
+    checklists:
+      - capture-quality-checklist.md
+    data:
+      - content-type-taxonomy.md
+      - source-patterns.md
+  ```
+
+  ## Startup Context
+
+  You are **Triage**, the first-contact handler for all knowledge entering the system.
+
+  Your mission: Ensure every piece of captured information is properly classified,
+  attributed to its source, and stored with rich metadata for future retrieval.
+
+  Focus on:
+  - **Rapid classification** into 6 content types (quote, concept, reference, reflection, question, observation)
+  - **Source attribution** - URLs, authors, timestamps are sacred
+  - **Quality filtering** - enforce capture standards
+  - **Confidence awareness** - flag uncertain classifications
+  - **Batch efficiency** - process multiple captures seamlessly
+  - **Temporal metadata** - capture time is part of knowledge
+
+  Remember: You're the gatekeeper of knowledge quality. Garbage in, garbage out.
+  ```
+
+  ## Content Type Classification System
+
+  **Source:** Requirements document section 2.1, Agent 1 responsibilities (line 179)
+
+  **6 Content Types:**
+
+  1. **Quote** - Direct quotation from source material
+     - Signals: Quotation marks, block quote formatting, attribution present
+     - Example: "Knowledge work is about managing your attention" - Cal Newport
+
+  2. **Concept** - Definition or explanation of an idea, theory, or mental model
+     - Signals: Defines terms, explains mechanisms, describes models
+     - Example: "The Zettelkasten method uses atomic notes linked by concept relationships"
+
+  3. **Reference** - Pointer to external resource
+     - Signals: URL, citation, "see also", bookmark-like structure
+     - Example: "Research on spaced repetition: https://www.example.com/spaced-repetition"
+
+  4. **Reflection** - Personal thinking, analysis, or synthesis
+     - Signals: First-person perspective, "I think", synthesis of multiple sources
+     - Example: "I'm noticing a pattern between GTD's inbox zero and Zettelkasten's triage phase"
+
+  5. **Question** - Interrogative statement expressing curiosity or uncertainty
+     - Signals: Question mark, interrogative words (what, why, how), expresses gap
+     - Example: "How does bi-temporal versioning differ from event sourcing?"
+
+  6. **Observation** - Factual statement, empirical data, witnessed phenomenon
+     - Signals: Objective language, data points, describes what happened
+     - Example: "My note count increased from 487 to 523 notes this month"
+
+  ## Confidence Score Algorithm
+
+  **Purpose:** Quantify classification certainty to flag ambiguous content for manual review
+
+  **Algorithm:**
+
+  ```
+  confidence = 1.0  # Start with perfect confidence
+
+  # Subtract for missing characteristics
+  for each missing_characteristic in primary_type:
+    confidence -= 0.1
+
+  # Subtract for contradictory signals
+  for each contradictory_signal:
+    confidence -= 0.15
+
+  # Subtract if multiple types match equally
+  if multiple_types_tied:
+    confidence -= 0.2
+
+  # Clamp to valid range
+  confidence = max(0.0, min(1.0, confidence))
+
+  # Fallback for very low confidence
+  if confidence < 0.4 for all types:
+    type = "observation"  # Default type
+    confidence = 0.4
+
+  # Flag for manual review
+  if confidence < 0.7:
+    flag_for_review = true
+  ```
+
+  **AC7 Requirement:** Content flagged when confidence < 0.7
+
+  ## MCP Server Integration
+
+  **Obsidian MCP Tools** (Required)
+
+  - **Purpose:** Create notes in Obsidian vault /inbox directory
+  - **Server:** obsidian-mcp (must be configured in Claude Desktop MCP settings)
+  - **Key Operations:**
+    - `create_note(path, content)` - Create new note with frontmatter and content
+    - `read_note(path)` - Read existing note for reclassification
+    - `update_note(path, content)` - Update note metadata
+    - `list_notes(directory)` - List unprocessed inbox notes
+
+  **Example Usage:**
+
+  ```yaml
+  # Call MCP tool to create inbox note
+  create_note:
+    path: "/inbox/2025-11-04-1530-zettelkasten-atomic-notes.md"
+    content: |
+      ---
+      status: unprocessed
+      content_type: concept
+      confidence: 0.85
+      source: https://zettelkasten.de/posts/create-zettel-from-reading-notes/
+      author: Sascha Fast
+      captured: 2025-11-04T15:30:00Z
+      tags: [zettelkasten, note-taking, atomicity]
+      ---
+
+      # Concept: Atomic Notes
+
+      The Zettelkasten method emphasizes creating "atomic" notes - each note should
+      contain exactly one idea that can stand alone. This principle enables flexible
+      recombination and prevents "note bloat" where large notes become unmanageable.
+
+      ## Processing Notes
+
+      *To be filled by triage agent or user*
+
+      ## Next Actions
+
+      *To be filled by user or organization agent*
+  ```
+
+  **Neo4j Graphiti MCP** (Optional - if neo4j.enabled: true in config.yaml)
+
+  - **Purpose:** Create temporal CaptureEvent nodes with bi-temporal metadata
+  - **Server:** graphiti-mcp (must be configured in MCP settings)
+  - **Key Operations:**
+    - `add_episode(content, timestamp)` - Add episodic memory (auto-extracts entities)
+    - Custom Cypher for manual node creation (CaptureEvent with properties)
+
+  **Bi-Temporal Metadata:**
+
+  - `valid_time_start` - When the capture occurred in real world
+  - `valid_time_end` - null (ongoing validity)
+  - `transaction_time` - When the record was created in database
+
+  **Example Neo4j Node:**
+
+  ```cypher
+  CREATE (c:CaptureEvent {
+    event_id: "uuid-here",
+    content_type: "concept",
+    confidence_score: 0.85,
+    source_url: "https://zettelkasten.de/posts/create-zettel-from-reading-notes/",
+    author: "Sascha Fast",
+    capture_timestamp: datetime('2025-11-04T15:30:00Z'),
+    valid_time_start: datetime('2025-11-04T15:30:00Z'),
+    transaction_time: datetime()
+  })
+  ```
+
+  **Graceful Degradation:** If Neo4j disabled or connection fails, agent continues with Obsidian-only mode.
+
+  ## Security Considerations (CRITICAL)
+
+  **Input Validation:**
+
+  - Sanitize ALL user-provided content before processing
+  - Validate URLs with safe regex patterns
+  - Block dangerous protocols: `file://`, `javascript:`, `data:`
+  - Limit field lengths to prevent DoS:
+    - URL: 2048 characters max
+    - Author: 256 characters max
+    - Content: 100,000 characters max
+    - Context: 5000 characters max
+
+  **XSS Prevention:**
+
+  - Escape HTML entities in extracted content: `<`, `>`, `&`, `"`, `'`
+  - Strip all `<script>`, `<iframe>`, `<object>`, `<embed>` tags
+  - Remove event handlers: `onclick`, `onerror`, etc.
+
+  **Injection Prevention:**
+
+  - **Obsidian:** Escape markdown special characters in filenames
+  - **Neo4j:** Use parameterized queries ONLY, never string concatenation
+  - Example: `CREATE (c:CaptureEvent $props)` with params, NOT `"CREATE (c:CaptureEvent {source: '" + url + "'})"`
+
+  **Content Filtering:**
+
+  - Scan for malicious patterns in web clipper content
+  - Validate JSON/YAML frontmatter structure
+  - Reject captures with suspicious payloads
+
+  ## Testing Strategy
+
+  **Classification Accuracy Test:**
+
+  - Create test set: 30 samples (5 per content type)
+  - Include edge cases: ambiguous, multi-type, minimal metadata
+  - Target: >= 90% accuracy (27/30 correct)
+  - Measure: precision, recall, F1 score per type
+
+  **Confidence Calibration Test:**
+
+  - Verify high-confidence (>0.8) classifications are accurate
+  - Verify low-confidence (<0.7) items correctly flagged
+  - Check confidence distribution aligns with classification difficulty
+
+  **Integration Test:**
+
+  - Obsidian MCP: Create 10 notes, verify all appear in vault
+  - Neo4j MCP: Create 10 CaptureEvents, query to verify persistence
+  - Error handling: Test with vault unavailable, Neo4j disconnected
+
+  **Security Test:**
+
+  - XSS payload in content: `<script>alert('xss')</script>`
+  - SQL injection pattern in author: `'; DROP TABLE users; --`
+  - File protocol URL: `file:///etc/passwd`
+  - Oversized content: 200KB text blob
+  - All should be sanitized or rejected
+
+  **Batch Processing Test:**
+
+  - Process 50 captures in batch mode
+  - Verify all processed correctly
+  - Measure throughput (captures/second)
+  - Check memory usage stays bounded
+
+  ## File Locations Summary
+
+  **Agent File:**
+  - `expansion-packs/bmad-obsidian-2nd-brain/agents/inbox-triage-agent.md`
+
+  **Tasks:**
+  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-classify-content-type.md`
+  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-extract-metadata.md`
+  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-inbox-note.md`
+  - `expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-capture-event.md`
+
+  **Templates:**
+  - `expansion-packs/bmad-obsidian-2nd-brain/templates/inbox-note-tmpl.yaml`
+
+  **Checklists:**
+  - `expansion-packs/bmad-obsidian-2nd-brain/checklists/capture-quality-checklist.md`
+
+  **Knowledge Base:**
+  - `expansion-packs/bmad-obsidian-2nd-brain/data/content-type-taxonomy.md`
+  - `expansion-packs/bmad-obsidian-2nd-brain/data/source-patterns.md`
+
+  ## Command Specifications
+
+  **\*process-inbox**
+  - Parameters: None
+  - Behavior: Scans /inbox directory for notes with `status: unprocessed`, runs full triage workflow on each
+  - Returns: Count of processed notes, list of any errors
+  - Yolo mode: Auto-confirms all actions
+
+  **\*capture {source} {content}**
+  - Parameters:
+    - source (required): URL or source description
+    - content (required): Captured text/content
+  - Behavior: Manually create capture with explicit source
+  - Returns: Success confirmation with note path
+
+  **\*classify {note_id}**
+  - Parameters:
+    - note_id (required): Path or filename of inbox note
+  - Behavior: Re-run classification, update metadata
+  - Returns: New classification with confidence score
+
+  **\*batch-process**
+  - Parameters: None
+  - Behavior: Like *process-inbox but optimized for bulk operations, adds progress indicator
+  - Returns: Summary statistics, error log
+
+  **\*yolo**
+  - Parameters: None
+  - Behavior: Toggle yolo mode flag (default: false)
+  - Returns: Current yolo mode state
+  - Note: In yolo mode, all confirmations auto-accepted
+
+  ## Dependencies on Other Stories
+
+  - **STORY-001** (BLOCKING): Expansion pack infrastructure must exist before agent file can be created
+  - All dependency files (tasks, templates, checklists, data) created AS PART OF this story
+
+  ## Anti-Hallucination Safeguards
+
+  - All technical specifications sourced from: `/manuscripts/bmad-obsidian-2nd-brain-requirements.md`
+  - Agent structure modeled on: `/expansion-packs/bmad-creative-writing/agents/editor.md`
+  - No invented MCP capabilities - all operations verified against MCP protocol spec
+  - Classification algorithm explicitly defined (not inferred)
+  - Confidence thresholds explicitly stated (0.7 from requirements)
+  - All file paths explicitly specified (no guessing)
 
 dependencies:
-  - STORY-001: Expansion pack infrastructure
-  - inbox-note-tmpl.yaml template
-  - capture-quality-checklist.md
-  - Obsidian MCP Tools integration
-  - Neo4j Graphiti MCP (optional)
+  - STORY-001: Expansion pack infrastructure (BLOCKING - must complete first)
+  - Obsidian MCP Tools integration (must be configured in Claude Desktop/Cursor)
+  - Neo4j Graphiti MCP (optional, graceful degradation if unavailable)
+  - Obsidian vault with /inbox directory
+  - BMAD-METHOD core framework v4.x+
 
 testing:
-  - Classify quote from web article
-  - Classify concept from reading highlight
-  - Classify reflection from manual note
-  - Create inbox note in Obsidian
-  - Create CaptureEvent in Neo4j (if enabled)
-  - Batch process 10 captures
-  - Verify confidence scores accurate
-  - Test Yolo mode (auto-approval)
+  framework: Manual testing via Claude Desktop or Cursor with MCP configured
+
+  test_data_location: expansion-packs/bmad-obsidian-2nd-brain/tests/test-captures.yaml (to be created)
+
+  classification_tests:
+    - Classify 5 quotes from web articles (expect: type=quote, confidence>=0.8)
+    - Classify 5 concept definitions (expect: type=concept, confidence>=0.8)
+    - Classify 5 reading highlights (mixed types, measure accuracy)
+    - Classify 5 personal reflections (expect: type=reflection)
+    - Classify 5 questions (expect: type=question, confidence>=0.9)
+    - Classify 5 observations with data (expect: type=observation)
+    - Classify 5 ambiguous items (expect: confidence<0.7, flagged for review)
+
+  integration_tests:
+    - Create 10 inbox notes in Obsidian via MCP, verify all present in vault
+    - Create 10 CaptureEvent nodes in Neo4j (if enabled), query to verify
+    - Test batch-process with 20 items, verify throughput and accuracy
+    - Test with Neo4j disabled, verify graceful degradation
+    - Test with invalid Obsidian vault path, verify error handling
+
+  security_tests:
+    - Submit XSS payload in content, verify sanitization
+    - Submit file:// URL, verify rejection
+    - Submit 200KB content, verify size limits enforced
+    - Submit SQL injection in author field, verify parameterized queries used
+
+  acceptance_validation:
+    - Run capture-quality-checklist.md on 10 random captures
+    - Verify 90%+ classification accuracy on 30-item test set
+    - Verify all commands functional (*help, *capture, *classify, etc.)
+    - Verify agent activates via /bmad-2b:inbox-triage-agent
+    - Verify confidence flagging works (items <0.7 marked for review)
 
 definition_of_done:
-  - Agent file complete with YAML metadata
-  - All commands functional
-  - Classification accuracy > 90% on test set
-  - Inbox notes created correctly in Obsidian
-  - CaptureEvent nodes created in Neo4j (if enabled)
-  - Capture quality checklist enforced
-  - Agent activates via /bmad-2b:inbox-triage-agent
-  - Documentation added to user guide
+  - Agent file complete with YAML metadata at correct location
+  - All 4 task files created and functional
+  - inbox-note-tmpl.yaml template created
+  - capture-quality-checklist.md created
+  - Both knowledge base files created (content-type-taxonomy.md, source-patterns.md)
+  - All 7 commands implemented and functional
+  - Classification accuracy >= 90% on test set (27/30 correct)
+  - Confidence scoring algorithm implemented correctly
+  - Inbox notes created successfully in Obsidian via MCP
+  - CaptureEvent nodes created in Neo4j (when enabled)
+  - Graceful degradation tested (Neo4j disabled scenario)
+  - Security hardening complete (input validation, XSS prevention, injection prevention)
+  - Capture quality checklist enforced before finalizing
+  - All acceptance criteria validated
+  - Agent activates successfully via /bmad-2b:inbox-triage-agent
+  - Usage documentation added to expansion pack README.md
+  - CHANGELOG.md updated with agent addition
+  - Story passes validation with GO status
+
+change_log:
+  - date: 2025-11-04
+    version: 1.0
+    description: Initial story creation
+    author: Product Owner
+  - date: 2025-11-04
+    version: 2.0
+    description: Comprehensive remediation of all validation issues - added tasks_subtasks, dev_notes, security considerations, dependency specifications, testing standards, anti-hallucination safeguards
+    author: Sarah (Product Owner)
+
+dev_agent_record: |
+  # Dev Agent Record
+
+  This section will be populated by the development agent during implementation.
+
+  ## Agent Model Used
+
+  [To be populated by dev agent - specify model name and version]
+
+  ## Debug Log References
+
+  [To be populated by dev agent - reference any debug logs or traces]
+
+  ## Completion Notes
+
+  [To be populated by dev agent - notes about task completion, issues encountered, decisions made]
+
+  ### Task Completion Status
+
+  - [ ] Task 1: Create agent file with YAML metadata
+  - [ ] Task 2: Implement content classification system
+  - [ ] Task 3: Implement metadata extraction
+  - [ ] Task 4: Create inbox note creation task
+  - [ ] Task 5: Create Neo4j CaptureEvent creation task
+  - [ ] Task 6: Create templates
+  - [ ] Task 7: Create checklists
+  - [ ] Task 8: Create knowledge base files
+  - [ ] Task 9: Implement agent commands
+  - [ ] Task 10: Add security hardening
+  - [ ] Task 11: Testing and validation
+  - [ ] Task 12: Integration verification
+
+  ## File List
+
+  [To be populated by dev agent - list all files created, modified, or affected]
+
+  ### Files Created
+
+  - expansion-packs/bmad-obsidian-2nd-brain/agents/inbox-triage-agent.md
+  - expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-classify-content-type.md
+  - expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-extract-metadata.md
+  - expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-inbox-note.md
+  - expansion-packs/bmad-obsidian-2nd-brain/tasks/capture-create-capture-event.md
+  - expansion-packs/bmad-obsidian-2nd-brain/templates/inbox-note-tmpl.yaml
+  - expansion-packs/bmad-obsidian-2nd-brain/checklists/capture-quality-checklist.md
+  - expansion-packs/bmad-obsidian-2nd-brain/data/content-type-taxonomy.md
+  - expansion-packs/bmad-obsidian-2nd-brain/data/source-patterns.md
+
+  ### Files Modified
+
+  - expansion-packs/bmad-obsidian-2nd-brain/README.md (added agent documentation)
+  - expansion-packs/bmad-obsidian-2nd-brain/CHANGELOG.md (added entry for agent)
+
+qa_results: |
+  # QA Results
+
+  This section will be populated by the QA agent after story implementation.
+
+  ## Test Execution Summary
+
+  [To be populated by QA agent - overall pass/fail status]
+
+  ## Acceptance Criteria Validation
+
+  - [ ] AC1: Agent file created with complete definition
+  - [ ] AC2: 6 content types classification implemented
+  - [ ] AC3: Metadata extraction functional
+  - [ ] AC4: Inbox notes created in Obsidian
+  - [ ] AC5: CaptureEvent nodes created in Neo4j
+  - [ ] AC6: Confidence score calculation working
+  - [ ] AC7: Low-confidence flagging functional (<0.7 threshold)
+  - [ ] AC8: Capture quality checklist enforced
+  - [ ] AC9: All commands functional
+
+  ## Classification Accuracy Results
+
+  [To be populated by QA agent - test accuracy percentage on 30-item test set]
+
+  ## Integration Test Results
+
+  [To be populated by QA agent - Obsidian MCP and Neo4j MCP integration status]
+
+  ## Security Test Results
+
+  [To be populated by QA agent - validation of XSS prevention, injection prevention, input validation]
+
+  ## Performance Metrics
+
+  [To be populated by QA agent - batch processing throughput, latency measurements]
+
+  ## Issues Found
+
+  [To be populated by QA agent - list any defects or issues discovered]
+
+  ## Final Assessment
+
+  [To be populated by QA agent - GO/NO-GO recommendation for production]

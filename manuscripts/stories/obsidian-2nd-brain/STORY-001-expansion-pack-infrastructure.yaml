@@ -16,7 +16,7 @@ user_story: |
 acceptance_criteria:
   - "AC1: Create bmad-obsidian-2nd-brain/ directory in expansion-packs/"
   - "AC2: Create standard subdirectories - agents/, tasks/, templates/, checklists/, workflows/, data/, docs/"
-  - "AC3: Create tasks/ subdirectories for workflow organization"
+  - "AC3: Create tasks/ directory with flat structure (no subdirectories per BMAD requirement)"
   - "AC4: Create config.yaml with expansion pack metadata"
   - "AC5: Create README.md with expansion pack overview and quickstart"
   - "AC6: Create CHANGELOG.md for version tracking"
@@ -34,16 +34,7 @@ tasks_subtasks: |
     - [ ] Create subdirectory: workflows/
     - [ ] Create subdirectory: data/
     - [ ] Create subdirectory: docs/
-    - [ ] Create subdirectory: tasks/
-    - [ ] Create tasks subdirectory: tasks/capture/
-    - [ ] Create tasks subdirectory: tasks/organization/
-    - [ ] Create tasks subdirectory: tasks/synthesis/
-    - [ ] Create tasks subdirectory: tasks/retrieval/
-    - [ ] Create tasks subdirectory: tasks/creation/
-    - [ ] Create tasks subdirectory: tasks/review/
-    - [ ] Create tasks subdirectory: tasks/temporal/
-    - [ ] Create tasks subdirectory: tasks/gap-detection/
-    - [ ] Create tasks subdirectory: tasks/publishing/
+    - [ ] Create subdirectory: tasks/ (flat structure - no subdirectories)
     - [ ] Verify all directories created successfully
 
   - [ ] Task 2: Create config.yaml with proper structure (AC4)
@@ -106,7 +97,9 @@ dev_notes: |
   **Location:** All expansion packs live in `/Users/jmagady/Dev/BMAD-METHOD/expansion-packs/`
 
   **Reference Example:** `/Users/jmagady/Dev/BMAD-METHOD/expansion-packs/bmad-creative-writing/`
-  - Use this as a structural reference for directory layout
+  - Use this as a structural reference for TOP-LEVEL directory layout
+  - NOTE: All folders (tasks, templates, checklists, etc.) use FLAT structure - no subdirectories
+  - Task files are placed directly in tasks/ folder (e.g., tasks/capture-inbox.md, NOT tasks/capture/capture-inbox.md)
   - Note: It has config.yaml and README.md but no package.json or CHANGELOG.md
   - Our expansion pack will add CHANGELOG.md as a new standard
 
@@ -209,18 +202,26 @@ dev_notes: |
   - `npm run build:agents` - Builds only agent bundles
   - `npm run build:teams` - Builds only team bundles
 
-  ## Tasks Subdirectory Organization
+  ## Tasks Directory Structure
 
-  Tasks are organized by workflow category to match the agent specializations:
-  - capture/ - Initial note capture and triage
-  - organization/ - Filing, tagging, linking
-  - synthesis/ - MOC construction, knowledge synthesis
-  - retrieval/ - Search and query operations
-  - creation/ - Content brief generation
-  - review/ - Quality audits, freshness checks
-  - temporal/ - Evolution analysis, narrative generation
-  - gap-detection/ - Knowledge gap identification
-  - publishing/ - Content formatting and provenance
+  **CRITICAL:** Tasks MUST be in a flat directory structure (no subdirectories).
+
+  The BMAD dependency resolver expects: `expansion-packs/{pack-name}/tasks/{task-file}.md`
+
+  For logical organization, use file naming prefixes:
+  - capture-*.md (e.g., capture-triage-inbox.md)
+  - organize-*.md (e.g., organize-auto-link.md)
+  - synthesis-*.md (e.g., synthesis-build-moc.md)
+  - retrieve-*.md (e.g., retrieve-semantic-search.md)
+  - create-*.md (e.g., create-content-brief.md)
+  - review-*.md (e.g., review-quality-audit.md)
+  - temporal-*.md (e.g., temporal-evolution-analysis.md)
+  - gap-*.md (e.g., gap-detect-knowledge-gaps.md)
+  - publish-*.md (e.g., publish-format-content.md)
+
+  **Rationale:** The build system's dependency-resolver.js (line 124) uses
+  `path.join(this.bmadCore, type, id)` which expects flat structure.
+  All existing expansion packs follow this pattern.
 
   ## Implementation Notes
 
@@ -256,8 +257,8 @@ testing:
   structure_verification:
     - Use `tree expansion-packs/bmad-obsidian-2nd-brain/` or `ls -R`
     - Verify all required directories exist
+    - Verify tasks/ folder contains NO subdirectories (must be flat)
     - Verify config.yaml, README.md, CHANGELOG.md files exist
-    - Check that tasks/ subdirectories (capture/, organization/, etc.) are present
 
   config_syntax_validation:
     - Run `cat expansion-packs/bmad-obsidian-2nd-brain/config.yaml | grep -E "name:|version:|slashPrefix:"`
@@ -279,6 +280,10 @@ change_log:
   - date: 2025-11-04
     version: 1.0.0
     description: Initial story creation for expansion pack infrastructure
+    author: Product Owner
+  - date: 2025-11-04
+    version: 1.1.0
+    description: Fixed tasks directory structure to use flat layout per BMAD framework requirement
     author: Product Owner
 
 dev_agent_record: |

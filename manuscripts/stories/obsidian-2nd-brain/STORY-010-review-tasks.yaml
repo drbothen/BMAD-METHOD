@@ -14,10 +14,9 @@ user_story: |
   So that Quality Auditor Agent can maintain knowledge base health
 
 acceptance_criteria:
-  - Create tasks/review/ directory
-  - Implement audit-temporal-freshness.md task
-  - Implement validate-external-links.md task
-  - Implement generate-audit-report.md task
+  - Implement review-audit-temporal-freshness.md task in tasks/ directory
+  - Implement review-validate-external-links.md task in tasks/ directory
+  - Implement review-generate-audit-report.md task in tasks/ directory
   - All tasks follow BMAD task specification format
   - Tasks include quality thresholds
   - Tasks specify report formats
@@ -80,7 +79,7 @@ testing:
   - Test report formatting
 
 definition_of_done:
-  - All 3 task files created in tasks/review/
+  - All 3 task files created in tasks/ with review- prefix
   - Tasks follow BMAD specification format
   - Quality thresholds documented
   - Report formats specified

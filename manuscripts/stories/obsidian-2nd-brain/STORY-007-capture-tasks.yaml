@@ -14,11 +14,10 @@ user_story: |
   So that the Inbox Triage Agent can process captured content systematically
 
 acceptance_criteria:
-  - Create tasks/capture/ directory
-  - Implement classify-content-type.md task
-  - Implement extract-metadata.md task
-  - Implement create-inbox-note.md task
-  - Implement create-capture-event.md task (optional, Neo4j)
+  - Implement capture-classify-content-type.md task in tasks/ directory
+  - Implement capture-extract-metadata.md task in tasks/ directory
+  - Implement capture-create-inbox-note.md task in tasks/ directory
+  - Implement capture-create-capture-event.md task in tasks/ directory (optional, Neo4j)
   - All tasks follow BMAD task specification format
   - Tasks include step-by-step instructions
   - Tasks specify input/output expectations
@@ -74,7 +73,7 @@ testing:
   - Verify end-to-end capture workflow
 
 definition_of_done:
-  - All 4 task files created in tasks/capture/
+  - All 4 task files created in tasks/ with capture- prefix
   - Tasks follow BMAD specification format
   - Step-by-step instructions complete
   - Input/output expectations documented

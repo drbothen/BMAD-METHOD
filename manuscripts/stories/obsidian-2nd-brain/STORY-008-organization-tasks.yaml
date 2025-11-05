@@ -14,11 +14,10 @@ user_story: |
   So that agents can analyze, fragment, and link notes systematically
 
 acceptance_criteria:
-  - Create tasks/organization/ directory
-  - Implement analyze-atomicity.md task
-  - Implement fragment-note.md task
-  - Implement query-semantic-similarity.md task
-  - Implement create-bidirectional-link.md task
+  - Implement organize-analyze-atomicity.md task in tasks/ directory
+  - Implement organize-fragment-note.md task in tasks/ directory
+  - Implement organize-query-semantic-similarity.md task in tasks/ directory
+  - Implement organize-create-bidirectional-link.md task in tasks/ directory
   - All tasks follow BMAD task specification format
   - Tasks include algorithmic logic
   - Tasks specify quality thresholds
@@ -76,7 +75,7 @@ testing:
   - Test Neo4j relationship creation
 
 definition_of_done:
-  - All 4 task files created in tasks/organization/
+  - All 4 task files created in tasks/ with organize- prefix
   - Tasks follow BMAD specification format
   - Algorithmic logic documented
   - Quality thresholds specified

@@ -14,11 +14,10 @@ user_story: |
   So that Query Interpreter Agent can execute multi-source queries
 
 acceptance_criteria:
-  - Create tasks/retrieval/ directory
-  - Implement parse-natural-language-query.md task
-  - Implement execute-obsidian-query.md task
-  - Implement execute-neo4j-query.md task (optional, Neo4j)
-  - Implement merge-results.md task
+  - Implement retrieve-parse-natural-language-query.md task in tasks/ directory
+  - Implement retrieve-execute-obsidian-query.md task in tasks/ directory
+  - Implement retrieve-execute-neo4j-query.md task in tasks/ directory (optional, Neo4j)
+  - Implement retrieve-merge-results.md task in tasks/ directory
   - All tasks follow BMAD task specification format
   - Tasks include query patterns and examples
   - Tasks specify result formats
@@ -82,7 +81,7 @@ testing:
   - Detect contradictions in results
 
 definition_of_done:
-  - All 4 task files created in tasks/retrieval/
+  - All 4 task files created in tasks/ with retrieve- prefix
   - Tasks follow BMAD specification format
   - Query patterns documented with examples
   - Result formats specified
