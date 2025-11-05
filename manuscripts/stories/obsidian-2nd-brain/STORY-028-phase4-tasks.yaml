@@ -1,0 +1,719 @@
+---
+story_id: STORY-028
+title: Create Phase 4 Tasks (Gap Analysis)
+epic_id: EPIC-001
+phase: 4
+priority: high
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want executable task procedures for Phase 4 gap analysis operations
+  So that agents can systematically identify and prioritize knowledge gaps
+
+acceptance_criteria:
+  - Create 7 task files for Phase 4 gap analysis
+  - All tasks follow standard task format (purpose, inputs, process, outputs, quality)
+  - Gap Detection tasks: detect-gaps, classify-gap-type, calculate-gap-priority, create-gap-analysis, manage-research-queue, track-gap-lifecycle, detect-contradiction-gaps
+  - Tasks integrate with Gap Detector Agent
+  - Tasks specify priority calculation algorithms
+  - All tasks tested and validated
+
+tasks_subtasks: |
+  - [ ] Task 1: Create Gap Detection Tasks (AC2)
+
+    - [ ] Create detect-gaps.md:
+      - Purpose: Automatically detect knowledge gaps in vault
+      - Inputs:
+        * vault_path: text (Obsidian vault root)
+        * scan_scope: [full_vault, domain, topic, note]
+        * domain: text (if scan_scope = domain)
+        * topic: text (if scan_scope = topic)
+        * note_id: text (if scan_scope = note)
+      - Process:
+        1. Determine scan scope:
+           - full_vault: Scan all notes
+           - domain: Scan specific domain (via MOC)
+           - topic: Scan notes matching topic
+           - note: Scan single note
+        2. **Unresolved Question Detection**:
+           - Search for: ?, TODO, RESEARCH, INVESTIGATE, [?], FIXME
+           - Parse note content for question marks followed by text
+           - Extract TODO items
+           - Identify research requests
+           - For each: Create gap candidate (type: conceptual or coverage)
+        3. **Undeveloped Concept Detection**:
+           - Identify stub notes:
+             * Word count < 100
+             * Link density < 2 links
+             * No sources cited
+             * Created but never updated (last_modified = created)
+             * Age > 6 months
+           - For each: Create gap candidate (type: conceptual)
+        4. **Missing Prerequisite Detection**:
+           - Analyze concept dependencies:
+             * Advanced concepts without basics
+             * References to undefined concepts
+             * Broken links to foundational notes
+           - For each: Create gap candidate (type: prerequisite)
+        5. **Evidence Gap Detection**:
+           - Identify claims without sources:
+             * Assertions lacking citations
+             * Arguments without supporting notes
+             * Comparisons without data
+             * Definitions without references
+           - For each: Create gap candidate (type: evidence)
+        6. **Domain Boundary Detection**:
+           - Load MOCs in scan scope
+           - Identify unexplored adjacent areas:
+             * MOC has emerging questions
+             * Related domains not covered
+             * Incomplete domain coverage
+           - For each: Create gap candidate (type: coverage)
+        7. Deduplicate gap candidates (same gap appearing multiple times)
+        8. Generate gap detection report
+      - Outputs:
+        * gaps: list
+          - gap_id: UUID
+          - gap_description: text
+          - gap_type_candidate: [coverage, evidence, prerequisite, conceptual]
+          - detection_method: [question, stub, prerequisite, evidence, boundary]
+          - location: list (notes where gap appears)
+          - context: text (surrounding content)
+        * gap_count: number
+        * detection_report: text
+      - Quality Criteria:
+        * All detection methods executed
+        * Gaps deduplicated
+        * Context captured for each gap
+        * Locations documented
+      - Used by: Gap Detector Agent
+
+    - [ ] Create classify-gap-type.md:
+      - Purpose: Classify gaps into standard taxonomy
+      - Inputs:
+        * gap_candidate: dict (from detect-gaps)
+        * vault_path: text
+      - Process:
+        1. Review gap description and context
+        2. Classify gap type:
+           - **Coverage Gap**: Missing topic or domain entirely
+             * Indicators: Domain analysis reveals missing area, MOC has unexplored branch
+             * Example: "Notes on JS but nothing on TS"
+           - **Evidence Gap**: Claims without sufficient support
+             * Indicators: Assertion without citation, argument without supporting notes
+             * Example: "Note claims X but no sources"
+           - **Prerequisite Gap**: Missing foundational knowledge
+             * Indicators: Advanced concept without basics, broken links to foundational notes
+             * Example: "Can't understand advanced topic without basics"
+           - **Assumption Gap**: Implicit assumptions not examined
+             * Indicators: Unstated premise, implicit assumption in argument
+             * Example: "Argument relies on unstated premise P"
+           - **Conceptual Gap**: Incomplete or shallow understanding
+             * Indicators: Stub note, undeveloped concept, surface-level treatment
+             * Example: "Surface-level note without depth"
+        3. Classify gap location:
+           - **Within Notes**: Missing content in individual notes
+           - **Cross Domain**: Missing connections between domains
+           - **Foundational**: Missing basic concepts or frameworks
+           - **Methodological**: Missing research or analysis methods
+        4. Assign classification confidence (high/medium/low)
+        5. Generate classification report
+      - Outputs:
+        * gap_type: [coverage, evidence, prerequisite, assumption, conceptual]
+        * gap_location: [within_notes, cross_domain, foundational, methodological]
+        * classification_confidence: high|medium|low
+        * classification_reasoning: text
+      - Quality Criteria:
+        * Type accurately reflects gap nature
+        * Location correctly identified
+        * Reasoning clearly documented
+      - Used by: Gap Detector Agent
+
+    - [ ] Create calculate-gap-priority.md:
+      - Purpose: Calculate gap priority score based on importance and feasibility
+      - Inputs:
+        * gap: dict (gap with type and location)
+        * vault_path: text (for reference counting)
+        * use_neo4j: boolean (for graph queries)
+      - Process:
+        1. **Calculate Importance Score**:
+           - **Blocking Work Count**:
+             * Query for projects/content briefs mentioning gap
+             * Count blocking items
+             * Critical (≥3 items): +150 points
+             * High (1-2 items): +50-100 points
+             * Low (0 items): +0 points
+           - **Reference Count**:
+             * Count how many notes reference gap topic
+             * High (≥10 refs): +100 points
+             * Medium (5-9 refs): +50 points
+             * Low (1-4 refs): +10-40 points
+           - **Domain Centrality**:
+             * Assess gap's centrality within domain
+             * Central concept (core to domain): +100 points
+             * Supporting concept: +40 points
+             * Peripheral concept: +10 points
+           - Total Importance = Blocking + References + Centrality
+        2. **Assess Feasibility**:
+           - **Accessible Sources**:
+             * Easy (authoritative sources available): Feasibility = 1.0
+             * Moderate (sources exist, require access): Feasibility = 0.6
+             * Hard (sources scarce): Feasibility = 0.3
+           - **Estimated Hours**:
+             * Quick (<2 hours): Hours = 1
+             * Medium (2-8 hours): Hours = 5
+             * Long (>8 hours): Hours = 10
+           - **Expertise Match**:
+             * Within expertise: Expertise = 1.0
+             * Learnable (stretch): Expertise = 0.7
+             * Outside expertise: Expertise = 0.4
+           - Combined Feasibility = (Accessible Sources + (1 / Hours) + Expertise Match) / 3
+        3. **Calculate Net Priority**:
+           - Net Priority = Importance / (Feasibility * Hours)
+           - Normalize to 0-100 scale
+        4. **Assign Priority Level**:
+           - Critical: Net Priority ≥ 90
+           - High: Net Priority 70-89
+           - Medium: Net Priority 40-69
+           - Low: Net Priority 0-39
+        5. Generate priority calculation report
+      - Outputs:
+        * importance_score: number
+        * blocking_work_count: number
+        * reference_count: number
+        * domain_centrality_score: number
+        * feasibility_score: number [0.0-1.0]
+        * estimated_hours: number
+        * net_priority: number [0-100]
+        * priority_level: critical|high|medium|low
+        * priority_report: text (calculation breakdown)
+      - Quality Criteria:
+        * All factors calculated correctly
+        * Formula applied accurately
+        * Priority level assignment correct
+        * Calculation transparent and documented
+      - Used by: Gap Detector Agent
+
+    - [ ] Create create-gap-analysis.md:
+      - Purpose: Generate structured gap analysis document
+      - Inputs:
+        * gap: dict (with type, location, priority)
+        * vault_path: text
+      - Process:
+        1. Load gap-analysis-tmpl.yaml template
+        2. Populate frontmatter:
+           - gap_type
+           - gap_location
+           - discovery_date (today)
+           - priority (critical/high/medium/low)
+           - priority_score
+           - research_status (default: identified)
+           - blocking_work (list of links)
+        3. Populate Gap Description section:
+           - What is missing (clear description)
+           - Why it's a gap vs intentional boundary
+           - How gap manifests (errors, confusion, inability to proceed)
+        4. Populate Why This Gap Matters section:
+           - Impact on current understanding and work
+           - How gap limits current work
+           - Potential insights if gap filled
+           - Risks of leaving gap unaddressed
+        5. Populate Where Gap Appears section:
+           - List specific notes where gap creates problems
+           - Format: `- [[Note A]]: Can't complete argument due to missing X`
+        6. Populate Suggested Research Approach section:
+           - Recommended methods (reading, experimentation, consultation)
+           - Potential sources (books, experts, datasets)
+           - Estimated effort (hours or days)
+           - Required expertise level
+        7. Populate Success Criteria section:
+           - Questions that should be answerable
+           - Artifacts that should exist (notes, data)
+           - Validation method
+        8. Populate Related Gaps section (if applicable):
+           - Depends on: Prerequisites
+           - Blocks: Dependent gaps
+           - Related: Adjacent gaps
+        9. Populate Research Progress section (initial entry):
+           - [Date]: Gap identified via [detection method]
+        10. Validate using gap-identification-checklist.md
+        11. Validate using prioritization-checklist.md
+        12. Save gap analysis file
+      - Outputs:
+        * gap_analysis_path: text (file path)
+        * gap_analysis: dict (full content)
+        * validation_passed: boolean
+        * validation_report: text
+      - Quality Criteria:
+        * All sections populated
+        * Gap clearly described
+        * Priority justified
+        * Research approach feasible
+        * Success criteria specific
+      - Used by: Gap Detector Agent
+
+    - [ ] Create manage-research-queue.md:
+      - Purpose: Create prioritized research queue from identified gaps
+      - Inputs:
+        * gaps: list (all identified gaps with priorities)
+        * research_capacity_hours: number (available research time)
+      - Process:
+        1. Sort gaps by net priority (descending)
+        2. Group by priority level:
+           - Critical (≥90)
+           - High (70-89)
+           - Medium (40-69)
+           - Low (0-39)
+        3. **Identify Quick Wins**:
+           - High priority (≥70)
+           - Low effort (<2 hours)
+           - High feasibility (≥0.7)
+           - Quick wins list for immediate action
+        4. **Resolve Dependencies**:
+           - Identify prerequisite relationships
+           - Order: Prerequisite gaps before dependent gaps
+           - Group: Gaps that can be researched in parallel
+        5. **Allocate Capacity**:
+           - Sum estimated hours for all gaps
+           - Allocate research_capacity_hours across gaps
+           - Priority order: Critical → High → Medium → Low
+           - Mark gaps fitting within capacity as "planned"
+           - Mark remaining gaps as "backlog"
+        6. **Create Research Roadmap**:
+           - Sequence gaps based on dependencies and priorities
+           - Identify parallel research opportunities
+           - Estimate timeline (weeks or months)
+           - Plan research phases
+        7. Load research-priority-tmpl.yaml template
+        8. Populate priority queue sections:
+           - Priority Ranking (sorted list)
+           - Research Roadmap (sequenced with timeline)
+           - Capacity Allocation (hours per gap)
+           - Quick Wins (highlighted list)
+        9. Save research priority queue file
+      - Outputs:
+        * research_queue: list (sorted gaps with sequence numbers)
+        * quick_wins: list (high-value, low-effort gaps)
+        * planned_gaps: list (gaps within capacity)
+        * backlog_gaps: list (gaps deferred)
+        * total_hours: number (sum of estimated hours)
+        * capacity_utilization: number (planned_hours / capacity_hours)
+        * roadmap: dict (phases with timeline)
+        * queue_file_path: text
+      - Quality Criteria:
+        * Gaps correctly sorted by priority
+        * Dependencies respected
+        * Capacity allocation realistic
+        * Quick wins identified
+        * Roadmap sequenced logically
+      - Used by: Gap Detector Agent
+
+    - [ ] Create track-gap-lifecycle.md:
+      - Purpose: Update gap status through lifecycle transitions
+      - Inputs:
+        * gap_id: text (gap analysis file or UUID)
+        * new_status: [identified, researching, researched, closed]
+        * notes: text (lifecycle transition notes)
+        * use_neo4j: boolean
+      - Process:
+        1. Load gap analysis file
+        2. Validate status transition:
+           - identified → researching: Research initiated
+           - researching → researched: Research completed
+           - researched → closed: Notes integrated
+           - (Invalid transitions rejected)
+        3. Update gap analysis frontmatter:
+           - research_status = new_status
+           - Add status-specific fields:
+             * researching: research_started = date
+             * researched: research_completed = date
+             * closed: closed_date = date, filled_by_notes = [links]
+        4. Append to Research Progress section:
+           - [Date]: Status changed to [new_status]
+           - [Notes]: [transition notes]
+        5. If Neo4j enabled:
+           - Update gap node status
+           - Create status transition event
+           - Link to filled notes (if closed)
+        6. Save updated gap analysis
+        7. Generate lifecycle update report
+      - Outputs:
+        * status_updated: boolean
+        * old_status: text
+        * new_status: text
+        * transition_date: datetime
+        * gap_analysis_path: text
+        * lifecycle_report: text
+      - Quality Criteria:
+        * Status transition valid
+        * Frontmatter updated correctly
+        * Progress logged
+        * Neo4j updated (if enabled)
+        * Report clear and complete
+      - Used by: Gap Detector Agent, Research Coordinator Agent
+
+    - [ ] Create detect-contradiction-gaps.md:
+      - Purpose: Identify gaps arising from unresolvable contradictions
+      - Inputs:
+        * contradiction_id: text (contradiction record ID)
+        * contradictory_notes: list (notes with conflicting claims)
+        * contradiction_context: text
+        * vault_path: text
+      - Process:
+        1. Load contradiction record
+        2. Extract contradictory claims:
+           - Note A claims: X
+           - Note B claims: not-X (or Y, incompatible with X)
+        3. Analyze why contradiction exists:
+           - Different contexts? (both could be right in different contexts)
+           - Different definitions? (talking about different things)
+           - Missing knowledge? (need more info to resolve)
+           - Error? (one claim is simply wrong)
+        4. If missing knowledge identified:
+           - Describe missing knowledge clearly
+           - Determine gap type:
+             * assumption: Unstated premise causing confusion
+             * conceptual: Incomplete understanding of concept
+             * evidence: Need more data to determine truth
+           - Determine gap location: Usually within_notes or foundational
+        5. Create gap candidate:
+           ```yaml
+           gap_type: assumption|conceptual|evidence
+           gap_location: within_notes|foundational
+           trigger: contradiction_resolution
+           contradiction_id: "contra-123"
+           contradictory_claims:
+             - "[[Note A]]: Claims X"
+             - "[[Note B]]: Claims not-X"
+           missing_knowledge: "Need understanding of context C"
+           research_approach: "Investigate context C to resolve"
+           ```
+        6. Calculate priority:
+           - Contradiction-driven gaps = High priority (contradictions block understanding)
+           - Blocking work = notes with contradiction
+           - Execute calculate-gap-priority task
+        7. Create gap analysis:
+           - Execute create-gap-analysis task
+           - Link to contradiction record
+        8. Generate contradiction-gap report
+      - Outputs:
+        * contradiction_gap: dict (gap with contradiction context)
+        * gap_analysis_path: text
+        * missing_knowledge_description: text
+        * resolution_approach: text
+      - Quality Criteria:
+        * Missing knowledge clearly identified
+        * Gap type appropriate for contradiction
+        * Research approach addresses contradiction
+        * Link to contradiction record maintained
+      - Used by: Gap Detector Agent, Contradiction Resolution Workflow
+
+  - [ ] Task 2: Document task format and integration (AC11)
+    - [ ] Define standard task structure:
+      - Purpose statement
+      - Input requirements
+      - Step-by-step process
+      - Output specifications
+      - Quality criteria
+      - Used by (which agents)
+    - [ ] Document task integration patterns:
+      - How Gap Detector Agent orchestrates tasks
+      - Task dependencies (which tasks call other tasks)
+      - Neo4j integration points
+      - Validation integration
+    - [ ] Create task execution examples
+    - [ ] Document task versioning strategy
+
+technical_notes: |
+  ## Task Design Philosophy
+
+  Phase 4 tasks enable **systematic gap analysis**:
+  - detect-gaps: Automated detection from vault scanning
+  - classify-gap-type: Categorize into standard taxonomy
+  - calculate-gap-priority: Quantitative prioritization
+  - create-gap-analysis: Structured documentation
+  - manage-research-queue: Priority-based sequencing
+  - track-gap-lifecycle: Status management
+  - detect-contradiction-gaps: Contradiction-driven gap identification
+
+  All tasks are executable procedures with clear inputs/outputs.
+
+  ## Gap Detection Task Integration
+
+  **detect-gaps** is the foundation:
+  - Runs 5 detection methods (questions, stubs, prerequisites, evidence, boundaries)
+  - Produces gap candidates
+  - Feeds into classify-gap-type
+
+  **classify-gap-type** categorizes gaps:
+  - Input: Gap candidates from detect-gaps
+  - Output: Typed and located gaps
+  - Feeds into calculate-gap-priority
+
+  **calculate-gap-priority** scores gaps:
+  - Input: Typed gaps from classify-gap-type
+  - Output: Prioritized gaps with scores
+  - Feeds into create-gap-analysis
+
+  **create-gap-analysis** documents gaps:
+  - Input: Prioritized gaps from calculate-gap-priority
+  - Output: Gap analysis markdown files
+  - Feeds into manage-research-queue
+
+  **manage-research-queue** organizes research:
+  - Input: All gap analyses
+  - Output: Prioritized queue, quick wins, roadmap
+  - Used by Research Coordinator to plan research
+
+  ## Priority Calculation Algorithm
+
+  **Importance Score:**
+  ```
+  Importance = (Blocking Work × 50) + (Reference Count × 10) + (Domain Centrality × 20)
+  ```
+
+  **Feasibility Score:**
+  ```
+  Feasibility = (Source Accessibility + (1 / Hours) + Expertise Match) / 3
+  ```
+
+  **Net Priority:**
+  ```
+  Net Priority = Importance / (Feasibility × Hours)
+  Normalized to 0-100 scale
+  ```
+
+  **Priority Levels:**
+  - Critical: ≥90 (high importance, high feasibility)
+  - High: 70-89
+  - Medium: 40-69
+  - Low: 0-39
+
+  ## Gap Detection Methods
+
+  **1. Unresolved Questions:**
+  - Pattern: ?, TODO, RESEARCH, INVESTIGATE, FIXME
+  - Indicates: Explicit research need
+  - Gap type: Conceptual or coverage
+
+  **2. Undeveloped Concepts:**
+  - Criteria: <100 words, <2 links, no sources, >6 months old, never updated
+  - Indicates: Stub note needing development
+  - Gap type: Conceptual
+
+  **3. Missing Prerequisites:**
+  - Pattern: Advanced concepts without basics, broken foundational links
+  - Indicates: Learning order problem
+  - Gap type: Prerequisite
+
+  **4. Evidence Gaps:**
+  - Pattern: Claims without citations, arguments without support
+  - Indicates: Unsupported assertions
+  - Gap type: Evidence
+
+  **5. Domain Boundaries:**
+  - Pattern: MOC emerging questions, incomplete coverage
+  - Indicates: Unexplored areas
+  - Gap type: Coverage
+
+  ## Quick Wins Strategy
+
+  Quick wins = High priority (≥70) + Low effort (<2 hours) + High feasibility (≥0.7)
+
+  **Why prioritize quick wins?**
+  - Immediate value (unblock work quickly)
+  - Momentum (visible progress)
+  - Motivation (easy wins encourage more research)
+  - Efficiency (maximize value per hour)
+
+  Always highlight quick wins in research queue.
+
+  ## Dependency Management
+
+  **Prerequisite relationships:**
+  - Gap A depends on Gap B if:
+    * Gap A requires understanding from Gap B
+    * Gap B is foundational, Gap A is advanced
+    * Gap A references concepts in Gap B
+
+  **Sequencing rules:**
+  1. Identify all dependencies
+  2. Sort: Prerequisites before dependents
+  3. Group: Independent gaps can be researched in parallel
+  4. Optimize: Quick wins first within each dependency level
+
+  ## Contradiction-Driven Gap Detection
+
+  **When contradictions reveal gaps:**
+  - Note A: "X is true"
+  - Note B: "X is false"
+  - Analysis: Why contradiction?
+    * Different contexts? → Need context clarification (assumption gap)
+    * Different definitions? → Need definition standardization (conceptual gap)
+    * Missing knowledge? → Need more research (evidence gap)
+
+  **Contradiction Resolution Strategy B (Accept Both):**
+  - Used when both claims valid in different contexts
+  - Creates gap: "What context distinguishes when X vs not-X?"
+  - Gap type: assumption or conceptual
+  - Priority: High (contradiction blocks understanding)
+
+  ## Gap Lifecycle Management
+
+  **Status transitions:**
+  - **identified**: Gap created, prioritized, documented
+  - **researching**: Research initiated, sources being consulted
+  - **researched**: Research complete, ready for integration
+  - **closed**: Notes created, gap filled
+
+  **Tracking importance:**
+  - Maintain visibility (don't lose track of gaps)
+  - Measure progress (gaps closed per month)
+  - Prevent duplication (check existing gaps before creating new)
+  - Enable reporting (KB improvement metrics)
+
+  Update status in frontmatter and Neo4j (if enabled).
+
+  ## Research Queue Optimization
+
+  **Sequencing strategies:**
+  1. **Critical-first**: Do critical gaps before anything else
+  2. **Quick-wins-first**: Do easy wins for momentum
+  3. **Dependency-first**: Do prerequisites before dependents
+  4. **Blocking-first**: Do gaps blocking active work
+
+  **Recommended hybrid approach:**
+  1. Critical gaps (must do)
+  2. Quick wins among high-priority gaps (momentum)
+  3. Remaining high-priority gaps (value)
+  4. Medium-priority gaps blocking work
+  5. Other medium/low-priority gaps (backlog)
+
+  ## Capacity Allocation
+
+  **Research capacity = hours available for research per month**
+
+  Allocate capacity in priority order:
+  1. Sum estimated hours for all gaps
+  2. Allocate capacity to gaps in priority order
+  3. Mark gaps fitting within capacity as "planned"
+  4. Mark remaining gaps as "backlog"
+  5. Plan specific research schedule (which gaps when)
+
+  **Capacity utilization:**
+  - Target: 70-80% (leave buffer for unexpected complexity)
+  - Under-allocation (<50%): Add more gaps from backlog
+  - Over-allocation (>90%): Defer lower-priority gaps
+
+  ## Example Task Execution Flow
+
+  **User**: "Identify knowledge gaps in vault"
+
+  1. Gap Detector Agent activates
+  2. Execute: detect-gaps.md
+     - Input: scan_scope=full_vault
+     - Process: Run 5 detection methods
+     - Output: 23 gap candidates
+  3. For each gap candidate:
+     a. Execute: classify-gap-type.md
+        - Input: gap_candidate
+        - Output: gap_type, gap_location
+     b. Execute: calculate-gap-priority.md
+        - Input: typed gap
+        - Output: priority_score, priority_level
+     c. Execute: create-gap-analysis.md
+        - Input: prioritized gap
+        - Output: gap_analysis.md file
+  4. Execute: manage-research-queue.md
+     - Input: all gap analyses
+     - Output: research-priority-queue.md file
+  5. Result:
+     - 23 gaps identified
+     - 5 critical, 8 high, 7 medium, 3 low
+     - 4 quick wins identified
+     - Research queue created with roadmap
+
+  **User can now:**
+  - Review research queue
+  - Start with quick wins
+  - Research Coordinator uses queue to plan research
+
+  **Later, when researching:**
+  1. User: "Start researching gap-analysis-123"
+  2. Execute: track-gap-lifecycle.md
+     - Input: gap_id=123, new_status=researching
+     - Output: Status updated, progress logged
+
+  **After research complete:**
+  1. User: "Gap filled, notes created"
+  2. Execute: track-gap-lifecycle.md
+     - Input: gap_id=123, new_status=closed, filled_by_notes=[note-456]
+     - Output: Status closed, gap marked complete
+
+dependencies:
+  - STORY-027: Gap Detector Agent (uses gap detection tasks)
+  - STORY-032: Phase 4 Templates (gap-analysis-tmpl.yaml)
+  - STORY-034: Additional Templates (research-priority-tmpl.yaml)
+  - STORY-035: Phase 2-5 Checklists (gap-identification-checklist, prioritization-checklist, contradiction-resolution-checklist)
+  - STORY-038: Research Coordinator Agent (uses research queue)
+  - STORY-028: Contradiction Resolution Workflow (creates contradiction-driven gaps)
+  - STORY-024: Monthly Deep Review Workflow (triggers full vault gap detection)
+  - Neo4j integration - optional for gap tracking
+  - common/utils/bmad-doc-template.md (for task format)
+
+testing:
+  - Test detect-gaps with full_vault scan
+  - Test detect-gaps with domain-specific scan
+  - Test detect-gaps with topic-specific scan
+  - Test detect-gaps with single note scan
+  - Verify all 5 detection methods work (questions, stubs, prerequisites, evidence, boundaries)
+  - Test classify-gap-type for all 5 types
+  - Test classify-gap-type for all 4 locations
+  - Test calculate-gap-priority with various importance/feasibility combinations
+  - Verify priority formula calculations
+  - Test create-gap-analysis with all gap types
+  - Validate using gap-identification-checklist
+  - Validate using prioritization-checklist
+  - Test manage-research-queue with 0, 10, 50 gaps
+  - Verify quick wins identification
+  - Verify dependency ordering
+  - Test capacity allocation with various research budgets
+  - Test track-gap-lifecycle for all status transitions (identified → researching → researched → closed)
+  - Test detect-contradiction-gaps with various contradiction types
+  - Verify Neo4j integration (if enabled)
+  - Test task orchestration (full workflow from detection to queue)
+
+definition_of_done:
+  - All 7 task files created
+  - All tasks follow standard format (purpose, inputs, process, outputs, quality)
+  - Gap detection tasks fully specified
+  - Priority calculation algorithm documented
+  - Gap lifecycle management tasks defined
+  - Contradiction-driven gap detection specified
+  - Task dependencies documented
+  - Neo4j integration points documented (optional)
+  - Quick wins strategy documented
+  - Dependency management logic documented
+  - Capacity allocation algorithm specified
+  - Quality criteria defined for all tasks
+  - Task execution examples provided
+  - Integration patterns documented
+  - All tasks tested with various scenarios
+  - Task versioning strategy defined
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Phase 4 tasks
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

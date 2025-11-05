@@ -1,0 +1,570 @@
+---
+story_id: STORY-024
+title: Content Brief Agent (Phase 3)
+epic_id: EPIC-001
+phase: 3
+priority: high
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a content creator
+  I want an AI agent that creates content briefs from my knowledge base
+  So that I can systematically transform knowledge into external content
+
+acceptance_criteria:
+  - Content Brief Agent markdown file created
+  - Agent can query knowledge base for relevant notes
+  - Agent identifies core arguments with supporting evidence
+  - Agent finds unique angles and perspectives
+  - Agent detects knowledge gaps during brief creation
+  - Agent creates citation manifests for source attribution
+  - Agent validates briefs using brief-completeness-checklist
+  - Agent uses content-brief-tmpl.yaml for output
+  - Agent tracks content usage for feedback loop (usage-manifest)
+  - Agent integrates with Query Interpreter and Gap Detector
+
+tasks_subtasks: |
+  - [ ] Task 1: Define Content Brief Agent persona and capabilities (AC1)
+    - [ ] Create agent markdown file: content-brief-agent.md
+    - [ ] Define agent purpose:
+      - Transform knowledge base into content creation briefs
+      - Query and synthesize relevant notes
+      - Organize evidence and arguments
+      - Identify unique angles
+      - Detect gaps needing research
+      - Track knowledge base usage
+    - [ ] Define core capabilities:
+      - Knowledge base querying (semantic search, tag filtering, MOC traversal)
+      - Argument extraction (identify claims and supporting evidence)
+      - Evidence organization (categorize and prioritize sources)
+      - Angle identification (find unique perspectives)
+      - Gap detection (identify missing information)
+      - Citation manifest generation (track all used notes)
+      - Brief validation (completeness checking)
+      - Usage tracking (document KB utilization)
+    - [ ] Define activation triggers:
+      - User requests "Create content brief for topic X"
+      - Creation Project Workflow initiated
+      - User wants to write article/presentation/tutorial
+      - Periodic content planning review
+    - [ ] Define agent personality:
+      - Strategic content planner
+      - Synthesis-oriented researcher
+      - Audience-focused communicator
+      - Evidence-driven arguer
+
+  - [ ] Task 2: Define knowledge base querying process (AC2)
+    - [ ] Query Strategy:
+      - **Semantic Search**: Find notes by meaning/concepts
+        * Query: "machine learning optimization"
+        * Returns: Notes about gradient descent, loss functions, training
+      - **Tag Filtering**: Find notes by category
+        * Query: #machine-learning AND #neural-networks
+        * Returns: Notes tagged with both
+      - **MOC Traversal**: Navigate via Maps of Content
+        * Start: [[Machine Learning MOC]]
+        * Follow: Knowledge branches, core concepts
+        * Returns: All linked notes
+      - **Link Graph Queries**: Find connected notes
+        * Query: Notes linking to [[Gradient Descent]]
+        * Returns: All notes with relationships
+      - **Hybrid Queries**: Combine multiple strategies
+        * Example: Semantic search + tag filter + MOC traversal
+    - [ ] Query Optimization:
+      - Route queries via Query Interpreter Agent
+      - Use Neo4j for graph queries (if enabled)
+      - Fall back to Obsidian search if Neo4j unavailable
+      - Rank results by relevance
+      - Filter out private/excluded notes
+
+  - [ ] Task 3: Define argument extraction and organization (AC3)
+    - [ ] Argument Extraction:
+      - Identify core claims in retrieved notes
+      - Extract supporting evidence for each claim
+      - Categorize evidence types:
+        * Empirical: Data, experiments, observations
+        * Theoretical: Frameworks, models, principles
+        * Anecdotal: Examples, case studies
+        * Authority: Expert opinions, citations
+      - Assess evidence strength (strong/moderate/weak)
+      - Identify counterarguments (if present)
+    - [ ] Argument Organization:
+      - Primary argument (main thesis)
+      - Supporting arguments (2-5 key points)
+      - Evidence per argument (≥1 piece per argument)
+      - Counterarguments (acknowledge opposing views)
+      - Rebuttals (address counterarguments)
+    - [ ] Argument Structure:
+      ```yaml
+      primary_argument:
+        claim: "Machine learning is fundamentally optimization"
+        evidence:
+          - note: [[Gradient Descent]]
+            type: theoretical
+            strength: strong
+            snippet: "Training minimizes loss via gradient descent"
+          - note: [[Loss Functions]]
+            type: theoretical
+            strength: strong
+            snippet: "Loss defines optimization objective"
+      supporting_arguments:
+        - claim: "Loss functions define what models learn"
+          evidence: [...]
+        - claim: "Optimization requires differentiable models"
+          evidence: [...]
+      ```
+
+  - [ ] Task 4: Define unique angle identification (AC4)
+    - [ ] Angle Discovery:
+      - Compare topic to existing public content:
+        * What's commonly known? (avoid repetition)
+        * What's underexplored? (find gaps)
+        * What's misunderstood? (correct misconceptions)
+      - Identify KB-specific insights:
+        * Unique synthesis (combining ideas in novel ways)
+        * Counterintuitive findings (unexpected patterns)
+        * Practical applications (real-world usage)
+        * Personal experience (first-hand insights)
+      - Assess angle uniqueness:
+        * Novel: Rarely covered elsewhere
+        * Differentiated: Common topic, unique perspective
+        * Standard: Well-covered angle (avoid unless necessary)
+    - [ ] Angle Prioritization:
+      - Prioritize novel and differentiated angles
+      - Consider audience needs (what's valuable to them?)
+      - Align with KB strengths (where is KB most authoritative?)
+    - [ ] Example Angles:
+      - Topic: "Machine Learning"
+        * Standard: "Introduction to ML algorithms"
+        * Differentiated: "ML through the lens of optimization"
+        * Novel: "How ML loss functions encode inductive biases"
+
+  - [ ] Task 5: Define gap detection during brief creation (AC5)
+    - [ ] Gap Detection:
+      - Identify missing information during brief creation:
+        * Claim without evidence (need sources)
+        * Incomplete argument (missing premise)
+        * Unaddressed counterargument (need rebuttal)
+        * Unsupported comparison (need comparative analysis)
+        * Vague concept (need definition or explanation)
+      - Categorize gaps:
+        * Critical: Blocks content creation (must research before writing)
+        * High: Weakens argument (should research)
+        * Medium: Would improve content (nice to have)
+        * Low: Optional enrichment (defer)
+      - Document gaps in brief (research needed section)
+    - [ ] Gap Integration:
+      - Link to Gap Detector Agent (create gap-analysis if needed)
+      - Suggest research approach for each gap
+      - Block brief finalization if critical gaps present
+      - Allow brief creation with high/medium/low gaps (flag for future research)
+
+  - [ ] Task 6: Define citation manifest generation (AC6)
+    - [ ] Citation Manifest Purpose:
+      - Track all KB notes used in brief
+      - Enable source attribution in published content
+      - Support feedback loop (what notes were useful?)
+      - Facilitate bibliography generation
+    - [ ] Manifest Structure:
+      ```yaml
+      citation_manifest:
+        - note_id: "gradient-descent"
+          note_title: "Gradient Descent"
+          usage_context: "Primary evidence for optimization argument"
+          section: "Core Concepts"
+          citation_needed: true
+        - note_id: "loss-functions"
+          note_title: "Loss Functions"
+          usage_context: "Defines optimization objective"
+          section: "Core Concepts"
+          citation_needed: true
+      ```
+    - [ ] Manifest Usage:
+      - Publication Formatter Agent uses manifest to generate bibliography
+      - Usage-manifest template tracks content creation utilization
+      - Feedback loop: Which notes most useful? Which gaps emerged?
+
+  - [ ] Task 7: Define content brief generation workflow (AC7, AC8)
+    - [ ] Brief Creation Process:
+      1. User specifies content topic and type (article/presentation/video/tutorial)
+      2. Query knowledge base (semantic search + MOC traversal + tags)
+      3. Retrieve relevant notes (ranked by relevance)
+      4. Extract arguments (identify claims and evidence)
+      5. Organize evidence (categorize and assess strength)
+      6. Identify unique angles (novel/differentiated perspectives)
+      7. Detect knowledge gaps (missing info, weak arguments)
+      8. Create citation manifest (track all used notes)
+      9. Load content-brief-tmpl.yaml template
+      10. Populate brief sections:
+          - Topic definition
+          - Target audience
+          - Creation type (article/presentation/video/tutorial)
+          - Core arguments (with supporting notes)
+          - Supporting evidence (≥3 pieces)
+          - Unique angles (what makes this different)
+          - Counterarguments (if applicable)
+          - Knowledge gaps (research needed)
+          - Citation manifest (all used notes)
+          - Temporal context (if relevant)
+          - Tone and length targets
+      11. Validate using brief-completeness-checklist.md
+      12. Fix validation failures
+      13. Save final brief
+    - [ ] Output:
+      - Content brief markdown file
+      - Citation manifest
+      - Validation report
+      - Knowledge gaps identified (if any)
+
+  - [ ] Task 8: Define brief validation and quality checks (AC8)
+    - [ ] Validation using brief-completeness-checklist.md:
+      - ✓ Topic clearly defined
+      - ✓ Target audience specified
+      - ✓ Creation type identified (article/presentation/video/tutorial)
+      - ✓ At least one core argument with supporting note
+      - ✓ At least 3 pieces of supporting evidence
+      - ✓ At least one unique angle identified
+      - ✓ Citation manifest includes all used notes
+      - ✓ All wikilinks resolve to existing notes
+      - Counterarguments addressed (if applicable)
+      - Temporal context provided (if relevant)
+      - Research gaps identified (if any)
+      - Tone specified
+      - Length target defined
+      - Deadline set (if time-sensitive)
+    - [ ] Quality Thresholds:
+      - Pass criteria: All required items (✓) checked
+      - Warn if <3 pieces of evidence
+      - Warn if no unique angle identified
+      - Block if critical knowledge gaps unresolved
+      - Block if wikilinks broken
+
+  - [ ] Task 9: Define usage tracking and feedback loop (AC9)
+    - [ ] Usage Manifest Creation:
+      - After content created from brief, generate usage-manifest
+      - Document which notes were used (from citation manifest)
+      - Assess KB effectiveness:
+        * How well did KB support creation?
+        * Which notes were most valuable?
+        * Which gaps emerged during writing?
+        * What should be added to KB?
+      - Create usage-manifest from usage-manifest-tmpl.yaml
+    - [ ] Feedback Loop:
+      - Integrate feedback into KB:
+        * Add missing notes (fill gaps)
+        * Strengthen weak arguments (more evidence)
+        * Update outdated information (refresh sources)
+        * Connect related notes (improve linkage)
+      - Track KB utilization patterns:
+        * Which domains used most for content creation?
+        * Which MOCs most productive?
+        * Which notes underutilized? (potential cleanup candidates)
+
+  - [ ] Task 10: Define dependencies and integration points (AC10)
+    - [ ] Dependencies:
+      - Tasks: create-content-brief, query-knowledge-base, extract-arguments, identify-angles, detect-brief-gaps
+      - Templates: content-brief-tmpl.yaml, usage-manifest-tmpl.yaml
+      - Checklists: brief-completeness-checklist.md
+      - Data: Content type taxonomy, audience profiles
+    - [ ] Integration Points:
+      - **Query Interpreter Agent**: Routes KB queries
+      - **Gap Detector Agent**: Creates gap analyses for missing info
+      - **Publication Formatter Agent**: Uses briefs to format content
+      - **MOC Constructor Agent**: Briefs often start from MOCs
+      - **Research Coordinator Agent**: Fills gaps identified in briefs
+      - **Creation Project Workflow**: Orchestrates brief → content → publication
+      - **Neo4j**: Query graph for related notes (optional)
+
+  - [ ] Task 11: Define agent constraints and best practices (AC10)
+    - [ ] Constraints:
+      - Must have ≥1 core argument with evidence
+      - Must have ≥3 pieces of supporting evidence
+      - Must have ≥1 unique angle
+      - All wikilinks must resolve
+      - Citation manifest must include all used notes
+      - Critical knowledge gaps block brief finalization
+    - [ ] Best Practices:
+      - Start with MOCs (domain overviews) for broad topics
+      - Use semantic search for specific concepts
+      - Prioritize novel/differentiated angles over standard angles
+      - Address counterarguments proactively (strengthens credibility)
+      - Document gaps during brief creation (don't defer)
+      - Create usage manifest after publication (close feedback loop)
+      - Review briefs quarterly (update with new KB knowledge)
+    - [ ] Anti-Patterns to Avoid:
+      - Creating briefs without querying KB (defeats purpose)
+      - Using weak evidence (undermines arguments)
+      - Ignoring knowledge gaps (produces incomplete content)
+      - Not creating citation manifests (loses attribution)
+      - Not closing feedback loop (KB doesn't improve)
+      - Creating standard angle content (no differentiation)
+
+technical_notes: |
+  ## Content Brief Philosophy
+
+  Content briefs are **KB-to-content transformation plans**:
+  - Not outlines (those come later in writing process)
+  - Strategic synthesis (arguments + evidence + angles)
+  - Gap identification (research needs)
+  - Usage tracking (feedback loop)
+
+  ## Brief vs Outline
+
+  **Brief** (strategic):
+  - What arguments to make (core claims)
+  - What evidence supports them (KB notes)
+  - What angle to take (unique perspective)
+  - What's missing (knowledge gaps)
+
+  **Outline** (tactical):
+  - How to structure content (sections, flow)
+  - What to say in each section (specific content)
+  - Word count per section
+  - Transitions and narrative arc
+
+  Briefs precede outlines. Briefs determine **what** to create, outlines determine **how** to structure it.
+
+  ## Knowledge Base Query Strategies
+
+  **When to use each strategy:**
+  - **Semantic search**: Broad topics, concept exploration
+  - **Tag filtering**: Category-specific content (e.g., all ML notes)
+  - **MOC traversal**: Domain-based content (e.g., ML overview)
+  - **Link graph**: Relationship-focused content (e.g., how X relates to Y)
+  - **Hybrid**: Complex topics needing multiple perspectives
+
+  ## Unique Angle Importance
+
+  Content without unique angles is **commodity content**:
+  - Redundant (already well-covered elsewhere)
+  - Low value (readers gain little)
+  - Wastes KB potential (personal insights unused)
+
+  Content with unique angles is **differentiated content**:
+  - Novel insights (KB-specific synthesis)
+  - High value (readers gain new perspectives)
+  - Leverages KB strengths (personal expertise and connections)
+
+  ## Gap Detection Integration
+
+  Gaps discovered during brief creation are **high-priority research**:
+  - Context: You need this info to create content
+  - Motivation: Content creation provides research focus
+  - Urgency: Often time-sensitive (deadlines)
+
+  Integration with Gap Detector Agent:
+  1. Brief creation identifies gap
+  2. Gap Detector creates gap-analysis
+  3. Research Coordinator fills gap
+  4. Brief updated with new info
+  5. Content creation proceeds
+
+  ## Citation Manifest Purpose
+
+  Citation manifests enable:
+  - **Attribution**: Proper credit to original sources
+  - **Transparency**: Readers see knowledge provenance
+  - **Traceability**: Map published content back to KB notes
+  - **Feedback Loop**: Understand KB usage patterns
+  - **Bibliography Generation**: Auto-create citation lists
+
+  ## Usage Tracking Feedback Loop
+
+  **Usage manifest** captures:
+  - Which notes used (from citation manifest)
+  - How notes used (context, section)
+  - Effectiveness assessment (did notes support creation well?)
+  - Gaps emerged (what was missing during writing?)
+  - Recommendations (what to add to KB)
+
+  **Feedback loop**:
+  1. Create content from brief
+  2. Generate usage manifest during/after creation
+  3. Identify gaps and weaknesses
+  4. Research and add missing info to KB
+  5. Update related notes with new insights
+  6. Next content brief benefits from improved KB
+
+  ## Integration with Creation Project Workflow
+
+  Content Brief Agent is Phase 1 of content creation:
+  1. **Phase 1: Brief** (Content Brief Agent)
+     - Query KB, extract arguments, identify angles
+     - Output: Content brief
+  2. **Phase 2: Write** (External, or assisted)
+     - Transform brief into actual content (article/presentation/etc.)
+     - Output: Draft content
+  3. **Phase 3: Publish** (Publication Formatter Agent)
+     - Format for target platform
+     - Generate bibliography
+     - Apply privacy checks
+     - Output: Published content
+  4. **Phase 4: Feedback** (Content Brief Agent)
+     - Generate usage manifest
+     - Identify KB improvements
+     - Output: Usage manifest, KB updates
+
+  ## Example Content Brief Structure
+
+  ```markdown
+  ---
+  topic: Machine Learning as Optimization
+  audience: Intermediate developers with basic ML knowledge
+  creation_type: article
+  unique_angle: "Frame ML through optimization lens, not algorithm catalog"
+  estimated_length: 2000-2500 words
+  tone: Technical but accessible, use analogies
+  deadline: 2025-12-01
+  ---
+
+  # Content Brief: Machine Learning as Optimization
+
+  ## Core Argument
+  **Thesis**: Machine learning is fundamentally about optimization over hypothesis spaces, not memorizing algorithm catalogs.
+
+  **Supporting Notes**:
+  - [[Gradient Descent]]: All ML training is optimization via gradient descent
+  - [[Loss Functions]]: Loss functions define optimization objectives
+  - [[Hypothesis Spaces]]: Models are parameterized hypothesis spaces
+
+  ## Supporting Evidence
+
+  ### Evidence 1: Training = Optimization
+  - **Source**: [[Gradient Descent]]
+  - **Type**: Theoretical framework
+  - **Strength**: Strong
+  - **Snippet**: "Training minimizes loss function via iterative gradient descent updates"
+  - **Usage**: Explains core ML training loop
+
+  ### Evidence 2: Loss Functions Define Learning
+  - **Source**: [[Loss Functions]]
+  - **Type**: Theoretical + Practical
+  - **Strength**: Strong
+  - **Snippet**: "Different loss functions lead to different learned behaviors; loss defines objective"
+  - **Usage**: Shows how optimization target shapes model behavior
+
+  ### Evidence 3: Model Architecture = Hypothesis Space
+  - **Source**: [[Hypothesis Spaces]]
+  - **Type**: Theoretical
+  - **Strength**: Moderate
+  - **Snippet**: "Neural network architecture defines hypothesis space model can represent"
+  - **Usage**: Connects model design to optimization constraints
+
+  ### Evidence 4: Real-World Application
+  - **Source**: [[Project: Custom Loss for Segmentation]]
+  - **Type**: Anecdotal (personal experience)
+  - **Strength**: Moderate
+  - **Snippet**: "Switching from BCE to Dice loss dramatically improved segmentation performance"
+  - **Usage**: Concrete example of optimization framing in action
+
+  ## Unique Angles
+
+  ### Primary Angle: Optimization Framing
+  **Differentiation**: Most ML tutorials catalog algorithms (linear regression, decision trees, neural nets). This article frames all ML as optimization with different hypothesis spaces and objectives.
+
+  **Why Unique**: Provides unified mental model, reduces algorithm overwhelm, enables principled model selection.
+
+  ### Secondary Angle: Loss Function as Learning Specification
+  **Differentiation**: Emphasize loss function choice as primary design decision, not model architecture.
+
+  **Why Unique**: Most focus on architecture (CNNs vs Transformers), this focuses on objective (what are we optimizing for?).
+
+  ## Counterarguments
+
+  ### "But what about unsupervised learning?"
+  - **Rebuttal**: Still optimization! Clustering optimizes intra-cluster cohesion. PCA optimizes variance retention. Autoencoders optimize reconstruction error.
+  - **Evidence**: [[Unsupervised Learning as Optimization]]
+
+  ## Knowledge Gaps
+
+  ### Gap 1: Reinforcement Learning as Optimization
+  - **Priority**: Medium
+  - **Description**: Need to explain how RL fits optimization framing (optimize expected reward)
+  - **Research Needed**: Review RL notes, connect to optimization framework
+  - **Status**: Brief can proceed, but RL section will be weaker without this
+
+  ### Gap 2: Non-Gradient Optimization Methods
+  - **Priority**: Low
+  - **Description**: Evolutionary algorithms, Bayesian optimization - don't use gradient descent
+  - **Research Needed**: Brief mention or defer to future article
+  - **Status**: Optional, article focuses on gradient-based methods
+
+  ## Citation Manifest
+  - [[Gradient Descent]] - Core concept, optimization explanation
+  - [[Loss Functions]] - Defines optimization objectives
+  - [[Hypothesis Spaces]] - Model architecture as constraints
+  - [[Project: Custom Loss for Segmentation]] - Real-world example
+  - [[Bias-Variance Tradeoff]] - Generalization perspective
+  - [[Overfitting]] - Optimization pitfalls
+  - [[Regularization Techniques]] - Constraining optimization
+  - [[Deep Learning Book Notes]] - Theoretical foundation
+
+  ## Temporal Context
+  - Recent note: [[Loss Function Design Patterns]] (2025-10-15) - Fresh insights on loss engineering
+  - Consider mentioning recent transformer loss innovations
+
+  ## Next Steps
+  1. Resolve Gap 1 (RL as optimization) if time permits
+  2. Create article outline from this brief
+  3. Draft article sections
+  4. Generate bibliography from citation manifest
+  5. Publish and create usage manifest
+  ```
+
+dependencies:
+  - STORY-033: Phase 3 Templates (content-brief-tmpl.yaml)
+  - STORY-034: Additional Templates (usage-manifest-tmpl.yaml)
+  - STORY-035: Phase 2-5 Checklists (brief-completeness-checklist.md)
+  - STORY-003: Query Interpreter Agent (KB querying)
+  - STORY-040: Gap Detector Agent (gap analysis)
+  - STORY-025: Publication Formatter Agent (uses briefs)
+  - STORY-026: Creation Project Workflow (orchestrates brief → content → publication)
+  - Neo4j integration - optional for graph queries
+  - Tasks: create-content-brief.md, query-knowledge-base.md, extract-arguments.md, identify-angles.md, detect-brief-gaps.md
+
+testing:
+  - Test brief creation for article (long-form writing)
+  - Test brief creation for presentation (visual + talking points)
+  - Test brief creation for video (script + visual storyboard)
+  - Test brief creation for tutorial (step-by-step instructions)
+  - Verify knowledge base querying (semantic search, MOC traversal, tags)
+  - Test argument extraction (core claims + evidence)
+  - Verify unique angle identification
+  - Test gap detection (critical/high/medium/low)
+  - Verify citation manifest generation
+  - Validate using brief-completeness-checklist
+  - Test integration with Gap Detector Agent
+  - Test usage manifest creation after publication
+  - Verify feedback loop integration
+
+definition_of_done:
+  - content-brief-agent.md created with complete persona and capabilities
+  - Knowledge base querying strategies documented
+  - Argument extraction and organization process defined
+  - Unique angle identification framework documented
+  - Gap detection during brief creation defined
+  - Citation manifest generation specified
+  - Brief creation workflow defined (13 steps)
+  - Brief validation using brief-completeness-checklist integrated
+  - Usage tracking and feedback loop documented
+  - Dependencies and integration points specified
+  - Best practices and anti-patterns documented
+  - Example content brief structure provided
+  - Testing scenarios defined
+  - Agent tested with multiple content types
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Content Brief Agent
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

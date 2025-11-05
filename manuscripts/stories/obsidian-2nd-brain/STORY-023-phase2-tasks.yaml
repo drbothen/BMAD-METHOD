@@ -1,0 +1,608 @@
+---
+story_id: STORY-023
+title: Create Phase 2 Tasks (Synthesis & Temporal Analysis)
+epic_id: EPIC-001
+phase: 2
+priority: high
+estimated_effort: 20 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want executable task procedures for Phase 2 operations
+  So that agents can build MOCs and track temporal evolution systematically
+
+acceptance_criteria:
+  - Create 10 task files for Phase 2 (3 MOC tasks, 7 temporal tasks)
+  - All tasks follow standard task format (purpose, inputs, process, outputs, quality)
+  - MOC tasks: create-moc, analyze-domain-structure, validate-moc
+  - Temporal tasks: create-temporal-narrative, analyze-note-evolution, detect-shifts, identify-shift-triggers, generate-timeline-visualization, calculate-maturation-metrics, extract-learning-patterns
+  - Tasks integrate with MOC Constructor and Timeline Constructor agents
+  - Tasks specify Neo4j integration points (optional)
+  - All tasks tested and validated
+
+tasks_subtasks: |
+  - [ ] Task 1: Create MOC Construction Tasks (AC2)
+
+    - [ ] Create create-moc.md:
+      - Purpose: Build a Map of Content for a knowledge domain
+      - Inputs:
+        * domain: text (domain name, e.g., "Machine Learning")
+        * note_list: list (notes in domain, from analyze-domain-structure)
+        * maturity: nascent|developing|established
+      - Process:
+        1. Load moc-tmpl.yaml template
+        2. Populate frontmatter (domain, maturity, note_count, last_updated)
+        3. Generate overview (2-3 sentence synthesis of domain)
+        4. Extract core concepts (≥3 foundational concepts with definitions)
+        5. Organize knowledge branches (subcategories or aspects)
+        6. Add resources section (key sources, tools, references)
+        7. Add emerging questions (if maturity = nascent or developing)
+        8. Create bidirectional links (MOC → notes, notes → MOC)
+        9. Generate dataview queries (if applicable)
+        10. Save MOC file
+      - Outputs:
+        * MOC markdown file
+        * Bidirectional links established
+        * MOC file path
+      - Quality Criteria:
+        * ≥3 core concepts defined
+        * Overview is 2-3 sentences
+        * All wikilinks resolve
+        * Bidirectional links present
+        * Note count ≤50 (warn if exceeded, recommend sub-MOCs)
+      - Used by: MOC Constructor Agent
+
+    - [ ] Create analyze-domain-structure.md:
+      - Purpose: Analyze knowledge domain structure to prepare for MOC creation
+      - Inputs:
+        * domain: text (domain name or tag)
+        * vault_path: text (Obsidian vault root)
+      - Process:
+        1. Identify all notes in domain:
+           - Search by tags (e.g., #machine-learning)
+           - Search by folder (e.g., /ML/)
+           - Semantic search (notes mentioning domain concepts)
+        2. Extract concepts from notes:
+           - Parse headings
+           - Extract definitions
+           - Identify key terms
+        3. Identify conceptual clusters:
+           - Group related notes
+           - Find subcategories (potential knowledge branches)
+        4. Map note relationships:
+           - Analyze wikilinks between notes
+           - Identify hub notes (highly connected)
+           - Identify orphan notes (isolated)
+        5. Assess domain coverage:
+           - Comprehensive: Well-developed, many notes
+           - Sparse: Few notes, gaps evident
+           - Nascent: Just emerging, exploration phase
+        6. Recommend domain boundaries (what's in scope vs out of scope)
+        7. Suggest MOC maturity level
+        8. Generate domain analysis report
+      - Outputs:
+        * note_list: list (all notes in domain)
+        * concept_list: list (core concepts identified)
+        * cluster_map: dict (subcategories with note lists)
+        * coverage_assessment: comprehensive|moderate|sparse
+        * recommended_maturity: nascent|developing|established
+        * orphan_notes: list (isolated notes needing integration)
+      - Quality Criteria:
+        * All relevant notes discovered
+        * Core concepts accurately identified
+        * Clusters logically grouped
+        * Maturity recommendation justified
+      - Used by: MOC Constructor Agent
+
+    - [ ] Create validate-moc.md:
+      - Purpose: Validate MOC completeness and quality
+      - Inputs:
+        * moc_path: text (path to MOC file)
+      - Process:
+        1. Load moc-completeness-checklist.md
+        2. Parse MOC file
+        3. Check required items:
+           ✓ Domain clearly defined in frontmatter
+           ✓ Overview provides 2-3 sentence synthesis
+           ✓ Core concepts section has ≥3 concepts with definitions
+           ✓ At least one knowledge branch defined
+           ✓ All referenced notes exist and are accessible
+           ✓ Bidirectional links present (MOC links to notes, notes link back)
+           ✓ No broken wikilinks
+        4. Check optional items:
+           - Emerging questions section present (if nascent/developing)
+           - Dataview queries functional (if included)
+           - Maturity level appropriate for content coverage
+           - Last updated date within acceptable staleness threshold
+           - MOC not too broad (≤50 direct note links recommended)
+        5. Verify all wikilinks resolve
+        6. Check bidirectional links (for each note MOC links to, verify note links back)
+        7. Generate validation report
+      - Outputs:
+        * validation_passed: boolean
+        * required_items_passed: number / total
+        * optional_items_passed: number / total
+        * broken_links: list (if any)
+        * missing_backlinks: list (notes without bidirectional links)
+        * warnings: list (non-blocking issues, e.g., >50 links)
+        * recommendations: list (improvements suggested)
+      - Quality Criteria:
+        * All required items must pass
+        * Broken links flagged
+        * Clear recommendations provided
+      - Used by: MOC Constructor Agent
+
+  - [ ] Task 2: Create Temporal Analysis Tasks (AC3)
+
+    - [ ] Create create-temporal-narrative.md:
+      - Purpose: Generate temporal narrative showing concept evolution
+      - Inputs:
+        * concept: text (concept or note to analyze)
+        * note_id: text (primary note about concept)
+        * vault_path: text (Obsidian vault root)
+      - Process:
+        1. Collect temporal data (analyze-note-evolution output)
+        2. Identify initial understanding (earliest note/reference)
+        3. Detect shifts (detect-shifts output)
+        4. Identify shift triggers (identify-shift-triggers output)
+        5. Document current understanding (latest note state)
+        6. Generate timeline visualization (generate-timeline-visualization output)
+        7. Calculate maturation metrics (calculate-maturation-metrics output)
+        8. Extract learning patterns (extract-learning-patterns output)
+        9. Load temporal-narrative-tmpl.yaml
+        10. Populate narrative sections:
+            - Initial Understanding (date, claims, confidence, sources)
+            - Key Shifts (date, what changed, trigger, old vs new, confidence)
+            - Current Understanding (date, claims, confidence, sources, questions)
+            - Timeline Visualization (Mermaid diagram)
+            - Meta-Insights (learning patterns, maturation speed, recommendations)
+        11. Validate using temporal-accuracy-checklist.md
+        12. Validate using narrative-completeness-checklist.md
+        13. Fix validation failures
+        14. Save temporal narrative
+      - Outputs:
+        * Temporal narrative markdown file
+        * Timeline visualization (Mermaid)
+        * Maturation metrics
+        * Learning pattern insights
+      - Quality Criteria:
+        * Initial and current understanding documented
+        * All shifts have dates and triggers
+        * Timeline renders correctly
+        * Narrative flows chronologically
+        * No temporal paradoxes
+      - Used by: Timeline Constructor Agent
+
+    - [ ] Create analyze-note-evolution.md:
+      - Purpose: Extract temporal data about how a note has evolved
+      - Inputs:
+        * note_id: text (note to analyze)
+        * vault_path: text (Obsidian vault root)
+        * use_neo4j: boolean (whether to query Neo4j for events)
+      - Process:
+        1. Extract note metadata:
+           - Creation date (frontmatter or file creation timestamp)
+           - Last modified date (file modification timestamp)
+        2. Query git history (if available):
+           - All commits affecting this note
+           - Commit dates and messages
+           - File diffs (what changed)
+        3. Query Neo4j (if enabled):
+           - CaptureEvent: When note created
+           - ModificationEvent: When note edited
+           - SourceCitationEvent: When sources added
+           - LinkCreationEvent: When relationships established
+           - ShiftEvent: Explicit conceptual shifts
+        4. Build timeline of events (chronologically sorted)
+        5. Categorize events:
+           - Creation events
+           - Minor edits (typos, formatting)
+           - Major modifications (content changes)
+           - Source additions (evidence integration)
+           - Link additions (relationship establishment)
+        6. Identify related notes (versions, revisions, synthesis notes)
+        7. Generate evolution report
+      - Outputs:
+        * timeline: list (chronological events with dates and types)
+        * creation_date: datetime
+        * last_modified_date: datetime
+        * major_modification_count: number
+        * source_addition_events: list
+        * related_notes: list
+      - Quality Criteria:
+        * All temporal events captured
+        * Events chronologically ordered
+        * Event types correctly classified
+        * Related notes identified
+      - Used by: Timeline Constructor Agent
+
+    - [ ] Create detect-shifts.md:
+      - Purpose: Identify significant conceptual shifts in understanding
+      - Inputs:
+        * timeline: list (from analyze-note-evolution)
+        * note_id: text
+        * vault_path: text
+      - Process:
+        1. Analyze timeline for shift indicators:
+           - Major content changes (>30% rewrite in commit diff)
+           - Conceptual reframing (definition or core claims changed)
+           - Contradiction resolution (conflicting claims reconciled)
+           - New evidence integrated (sources added that change conclusion)
+           - Synthesis from multiple sources (combining prior separate notes)
+        2. For each potential shift:
+           - Extract date
+           - Identify what changed (specific content)
+           - Compare old vs new framing
+           - Assess significance (major vs minor)
+        3. Filter to significant shifts only (exclude typos, formatting, minor clarifications)
+        4. Sort shifts chronologically
+        5. Generate shift report
+      - Outputs:
+        * shifts: list (significant conceptual changes)
+          - shift_id: UUID
+          - date: datetime
+          - type: [reframing, evidence_integration, synthesis, contradiction_resolution]
+          - what_changed: text (description)
+          - old_framing: text
+          - new_framing: text
+          - significance: major|moderate
+      - Quality Criteria:
+        * Only significant shifts identified (no trivial edits)
+        * Shifts accurately categorized by type
+        * Old vs new framing clearly documented
+        * Shifts chronologically ordered
+      - Used by: Timeline Constructor Agent
+
+    - [ ] Create identify-shift-triggers.md:
+      - Purpose: Determine what caused each conceptual shift
+      - Inputs:
+        * shifts: list (from detect-shifts)
+        * timeline: list (from analyze-note-evolution)
+        * note_id: text
+        * vault_path: text
+      - Process:
+        1. For each shift:
+           - Look for events around shift date (±7 days window)
+           - Identify potential triggers:
+             * Source-Driven: New source added around shift date
+             * Contradiction-Driven: Contradiction resolution note created
+             * Synthesis-Driven: Multiple notes combined
+             * Experience-Driven: Project or application reference
+             * Question-Driven: Emerging question answered
+           - Check git commit messages for trigger hints
+           - Query Neo4j for trigger events (if enabled)
+        2. Classify trigger type (source/contradiction/synthesis/experience/question)
+        3. Document trigger details:
+           - What: Specific event or input
+           - When: Date of trigger
+           - How: Mechanism of change (what aspect shifted)
+           - Evidence: Link to source, note, or event
+        4. Assess trigger quality (did shift improve understanding?)
+        5. Generate trigger report
+      - Outputs:
+        * shifts_with_triggers: list
+          - shift_id: UUID
+          - trigger_type: [source, contradiction, synthesis, experience, question]
+          - trigger_what: text
+          - trigger_when: datetime
+          - trigger_how: text
+          - trigger_evidence: list (links to sources/notes)
+          - quality_assessment: improved|neutral|unclear
+      - Quality Criteria:
+        * All shifts have identified triggers
+        * Trigger types correctly classified
+        * Evidence provided for triggers
+        * Temporal proximity verified (trigger near shift date)
+      - Used by: Timeline Constructor Agent
+
+    - [ ] Create generate-timeline-visualization.md:
+      - Purpose: Create Mermaid timeline diagram of concept evolution
+      - Inputs:
+        * concept: text
+        * initial_understanding: dict (date, claims)
+        * shifts_with_triggers: list (from identify-shift-triggers)
+        * current_understanding: dict (date, claims)
+      - Process:
+        1. Build Mermaid timeline structure
+        2. Add initial understanding entry
+        3. For each shift:
+           - Add shift entry with date
+           - Include what changed
+           - Include trigger information
+        4. Add current understanding entry
+        5. Format timeline for readability
+        6. Validate Mermaid syntax
+        7. Generate visualization code
+      - Outputs:
+        * mermaid_code: text (Mermaid timeline diagram)
+        * visualization_valid: boolean
+      - Example Output:
+        ```mermaid
+        timeline
+          title Evolution of Machine Learning Understanding
+          2024-01-15 : Initial : "Algorithms that learn from data"
+          2024-02-03 : Shift #1 : "Optimization + representation learning"
+                       : Trigger: Deep Learning Book
+          2024-03-12 : Shift #2 : "Loss functions define learning"
+                       : Trigger: Implemented custom loss in project
+          2024-11-05 : Current : "Optimization over hypothesis spaces"
+        ```
+      - Quality Criteria:
+        * Valid Mermaid syntax
+        * All shifts included
+        * Triggers labeled
+        * Chronological order
+        * Renders correctly
+      - Used by: Timeline Constructor Agent
+
+    - [ ] Create calculate-maturation-metrics.md:
+      - Purpose: Calculate quantitative metrics about knowledge maturation
+      - Inputs:
+        * creation_date: datetime
+        * last_modified_date: datetime
+        * shifts: list (from detect-shifts)
+        * sources: list (sources cited in note)
+      - Process:
+        1. Calculate maturation days:
+           - Days from creation_date to last_modified_date
+        2. Count shifts:
+           - Total significant shifts
+        3. Calculate maturation speed:
+           - Fast: <30 days
+           - Medium: 30-180 days
+           - Slow: >180 days
+        4. Calculate shift frequency:
+           - Shifts per month
+        5. Assess maturation completeness:
+           - Complete: No shifts in last 90 days
+           - Active: Recent shifts detected
+           - Dormant: No activity in last 180 days
+        6. Count sources integrated over time
+        7. Generate maturation report
+      - Outputs:
+        * maturation_days: number
+        * shift_count: number
+        * maturation_speed: fast|medium|slow
+        * shift_frequency: number (shifts per month)
+        * maturation_status: complete|active|dormant
+        * source_count: number
+        * maturation_metrics: dict (all metrics)
+      - Quality Criteria:
+        * Accurate date calculations
+        * Correct categorization (fast/medium/slow)
+        * Meaningful metrics provided
+      - Used by: Timeline Constructor Agent
+
+    - [ ] Create extract-learning-patterns.md:
+      - Purpose: Identify personal learning patterns from temporal analysis
+      - Inputs:
+        * shifts_with_triggers: list (from identify-shift-triggers)
+        * maturation_metrics: dict (from calculate-maturation-metrics)
+        * concept: text
+      - Process:
+        1. Analyze trigger type distribution:
+           - Count: source-driven, synthesis-driven, experience-driven, etc.
+           - Identify dominant pattern
+        2. Assess learning speed:
+           - Compare maturation_days to concept complexity
+           - Fast/appropriate/slow assessment
+        3. Evaluate confidence calibration:
+           - Track confidence levels over time (if available)
+           - Assess if confidence matched understanding quality
+        4. Identify learning strengths:
+           - Which trigger types most effective?
+           - What learning modes work best?
+        5. Identify learning gaps:
+           - Missing trigger types (e.g., no synthesis-driven shifts)
+           - Potential improvements
+        6. Generate recommendations:
+           - Double down on effective learning modes
+           - Experiment with underutilized modes
+           - Domain-specific learning strategies
+        7. Generate learning pattern report
+      - Outputs:
+        * learning_pattern: text (e.g., "source-driven (60%), synthesis-driven (40%)")
+        * dominant_trigger: [source, synthesis, experience, question, contradiction]
+        * learning_speed_assessment: fast|appropriate|slow
+        * strengths: list (effective learning modes)
+        * gaps: list (underutilized modes)
+        * recommendations: list (improvement suggestions)
+      - Quality Criteria:
+        * Pattern accurately reflects trigger distribution
+        * Recommendations actionable and specific
+        * Strengths and gaps clearly identified
+      - Used by: Timeline Constructor Agent
+
+  - [ ] Task 3: Document task format and integration (AC11)
+    - [ ] Define standard task structure:
+      - Purpose statement
+      - Input requirements
+      - Step-by-step process
+      - Output specifications
+      - Quality criteria
+      - Used by (which agents)
+    - [ ] Document task integration patterns:
+      - How agents load and execute tasks
+      - Task dependencies (which tasks call other tasks)
+      - Neo4j integration points
+      - Validation integration
+    - [ ] Create task execution examples
+    - [ ] Document task versioning strategy
+
+technical_notes: |
+  ## Task Design Philosophy
+
+  Phase 2 tasks enable **synthesis and temporal analysis**:
+  - MOC tasks: Organize knowledge into navigational structures
+  - Temporal tasks: Reveal how understanding evolves over time
+  - All tasks are executable procedures with clear inputs/outputs
+
+  ## MOC Task Integration
+
+  **create-moc** depends on:
+  - analyze-domain-structure (provides note list and structure)
+  - validate-moc (ensures quality)
+
+  **Workflow:**
+  1. User: "Create MOC for Machine Learning"
+  2. MOC Constructor Agent → analyze-domain-structure.md
+  3. MOC Constructor Agent → create-moc.md (uses analysis results)
+  4. MOC Constructor Agent → validate-moc.md (checks quality)
+  5. If validation fails, fix issues and re-validate
+
+  ## Temporal Task Integration
+
+  **create-temporal-narrative** orchestrates other temporal tasks:
+  1. analyze-note-evolution.md → timeline of events
+  2. detect-shifts.md → significant conceptual changes
+  3. identify-shift-triggers.md → what caused shifts
+  4. generate-timeline-visualization.md → Mermaid diagram
+  5. calculate-maturation-metrics.md → quantitative metrics
+  6. extract-learning-patterns.md → meta-cognitive insights
+  7. Assemble all into temporal narrative document
+
+  ## Data Source Priority
+
+  **Temporal data sources** (in order of richness):
+  1. Neo4j (richest): Explicit temporal event nodes, typed relationships
+  2. Git history (good): Commit dates, messages, diffs
+  3. File metadata (minimal): Creation and modification timestamps
+
+  Tasks should gracefully degrade:
+  - If Neo4j available, use it
+  - Else if git history available, use it
+  - Else fall back to file metadata
+
+  ## Shift Detection Principles
+
+  **Significant shifts** vs trivial edits:
+  - Significant: Definition changes, framework shifts, evidence integration
+  - Trivial: Typos, formatting, minor clarifications
+
+  **Detection heuristics:**
+  - Content change >30% in single commit → potential shift
+  - Commit message contains "reframe", "realize", "shift", "change understanding" → likely shift
+  - Source addition with content change → evidence-driven shift
+  - Multiple note consolidation → synthesis-driven shift
+
+  ## Maturation Metrics Interpretation
+
+  **Maturation Days:**
+  - <30 days: Fast learning (quick synthesis, immediate understanding)
+  - 30-180 days: Normal learning (gradual exploration, iterative refinement)
+  - >180 days: Slow learning (complex concept, long-term research, or neglected topic)
+
+  **Shift Count:**
+  - 0 shifts: Stable from start (simple concept or surface-level understanding)
+  - 1-2 shifts: Normal learning (initial → refined understanding)
+  - 3-5 shifts: Complex concept (multiple perspectives integrated)
+  - >5 shifts: Either very complex concept OR unstable understanding (revisit frequently)
+
+  ## Learning Pattern Insights
+
+  **Trigger Type Distribution** reveals personal learning style:
+  - Source-driven learner (>60% source triggers): Reads extensively, integrates literature
+  - Synthesis-driven learner (>40% synthesis triggers): Connects ideas, finds patterns
+  - Experience-driven learner (>40% experience triggers): Learns by doing, applies knowledge
+  - Question-driven learner (>40% question triggers): Curiosity-led, explores unknowns
+
+  **Optimization strategy:**
+  - If source-driven: Optimize reading workflows, use research tools
+  - If synthesis-driven: Create more connection opportunities, use MOCs
+  - If experience-driven: Build projects, apply knowledge practically
+  - If question-driven: Maintain question logs, research gaps systematically
+
+  ## Neo4j Integration Points
+
+  **MOC tasks:**
+  - create-moc: Create MOC node, ORGANIZES relationships
+  - validate-moc: Query for broken relationships
+
+  **Temporal tasks:**
+  - analyze-note-evolution: Query TemporalEvent nodes
+  - detect-shifts: Create ShiftEvent nodes
+  - identify-shift-triggers: Create TRIGGERED_BY relationships
+
+  ## Example Task Execution Flow
+
+  **User**: "Create temporal narrative for Machine Learning concept"
+
+  1. Timeline Constructor Agent activates
+  2. Execute: analyze-note-evolution.md
+     - Input: note_id="machine-learning-note"
+     - Output: timeline with events
+  3. Execute: detect-shifts.md
+     - Input: timeline
+     - Output: 3 significant shifts identified
+  4. Execute: identify-shift-triggers.md
+     - Input: shifts
+     - Output: shifts with triggers (2 source-driven, 1 experience-driven)
+  5. Execute: generate-timeline-visualization.md
+     - Input: shifts_with_triggers
+     - Output: Mermaid diagram
+  6. Execute: calculate-maturation-metrics.md
+     - Input: timeline, shifts
+     - Output: 294 days, 3 shifts, medium speed
+  7. Execute: extract-learning-patterns.md
+     - Input: shifts_with_triggers, maturation_metrics
+     - Output: "Source-driven learner (67%), appropriate learning speed"
+  8. Execute: create-temporal-narrative.md
+     - Input: all above outputs
+     - Output: Complete temporal narrative document
+  9. Validate using temporal-accuracy-checklist.md
+  10. Validate using narrative-completeness-checklist.md
+  11. Save temporal narrative
+
+dependencies:
+  - STORY-021: MOC Constructor Agent (uses MOC tasks)
+  - STORY-022: Timeline Constructor Agent (uses temporal tasks)
+  - STORY-030: Phase 2 Templates (moc-tmpl, temporal-narrative-tmpl)
+  - STORY-035: Phase 2-5 Checklists (moc-completeness, temporal-accuracy, narrative-completeness)
+  - Neo4j integration - optional
+  - Git history - required for temporal analysis
+  - common/utils/bmad-doc-template.md (for task format)
+
+testing:
+  - Test create-moc with nascent domain (<10 notes)
+  - Test create-moc with established domain (>30 notes)
+  - Test create-moc with >50 notes (verify sub-MOC recommendation)
+  - Test analyze-domain-structure with various domain sizes
+  - Test validate-moc with passing and failing MOCs
+  - Test create-temporal-narrative for concept with 0, 1, 5+ shifts
+  - Test analyze-note-evolution with git history and without
+  - Test detect-shifts (verify only significant shifts identified)
+  - Test identify-shift-triggers (verify all triggers found)
+  - Test generate-timeline-visualization (verify Mermaid renders)
+  - Test calculate-maturation-metrics (verify correct calculations)
+  - Test extract-learning-patterns (verify accurate pattern identification)
+  - Verify task integration (create-temporal-narrative orchestrates subtasks)
+  - Test Neo4j integration points (if enabled)
+
+definition_of_done:
+  - All 10 task files created (3 MOC + 7 temporal)
+  - All tasks follow standard format (purpose, inputs, process, outputs, quality)
+  - MOC tasks fully specified and integrated
+  - Temporal tasks fully specified and integrated
+  - Task dependencies documented
+  - Neo4j integration points documented (optional)
+  - Quality criteria defined for all tasks
+  - Task execution examples provided
+  - Integration patterns documented
+  - All tasks tested with various scenarios
+  - Task versioning strategy defined
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Phase 2 tasks
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]
