@@ -5,7 +5,7 @@ epic_id: EPIC-001
 phase: 1
 priority: critical
 estimated_effort: 24 hours
-status: todo
+status: ready_for_testing
 created: 2025-11-04
 
 user_story: |
@@ -15,72 +15,371 @@ user_story: |
 
 acceptance_criteria:
   - Create query-interpreter-agent.md with complete agent definition
-  - Agent parses natural language queries and identifies intent (factual, temporal, causal, comparative)
+  - Agent parses natural language queries and identifies intent (factual, temporal, causal, comparative, exploratory)
   - Agent executes queries across both Obsidian (semantic/text) and Neo4j (temporal/graph)
   - Agent merges results from multiple sources
   - Agent presents results in appropriate format (narrative, list, comparison table, timeline)
   - Agent identifies contradictions in results and flags them
   - Agent provides source attribution for all claims
   - Agent follows query-completeness-checklist.md
+  - Query intent classification achieves >85% accuracy on test scenarios
   - "Commands: *help, *query, *temporal-query, *compare, *surface-related, *yolo, *exit"
 
-technical_notes: |
-  Agent capabilities:
-  - Natural language query parsing (intent classification)
-  - Multi-source query execution:
-    - Obsidian text search via MCP Tools
-    - Semantic search via Smart Connections
-    - Temporal queries via Neo4j Graphiti MCP
-    - Graph traversal queries via Neo4j
-  - Result merging and deduplication
-  - Format selection based on query type
-  - Contradiction detection
-  - Source attribution
-  - Result quality assessment
+tasks:
+  - title: Create supporting task files
+    status: done
+    acceptance_criteria: [8]
+    subtasks:
+      - "[x] Create expansion-packs/bmad-obsidian-2nd-brain/tasks/parse-natural-language-query.md"
+      - "[x] Create expansion-packs/bmad-obsidian-2nd-brain/tasks/execute-obsidian-query.md"
+      - "[x] Create expansion-packs/bmad-obsidian-2nd-brain/tasks/execute-neo4j-query.md"
+      - "[x] Create expansion-packs/bmad-obsidian-2nd-brain/tasks/merge-results.md"
 
-  Dependencies (tasks):
-  - parse-natural-language-query.md
-  - execute-obsidian-query.md
-  - execute-neo4j-query.md (optional, requires Neo4j)
-  - merge-results.md
+  - title: Create supporting templates and checklists
+    status: done
+    acceptance_criteria: [8]
+    subtasks:
+      - "[x] Create expansion-packs/bmad-obsidian-2nd-brain/templates/query-result-tmpl.yaml"
+      - "[x] Create expansion-packs/bmad-obsidian-2nd-brain/checklists/query-completeness-checklist.md"
 
-  Dependencies (templates):
-  - query-result-tmpl.yaml
+  - title: Create query-interpreter-agent.md file
+    status: done
+    acceptance_criteria: [1]
+    subtasks:
+      - "[x] Create expansion-packs/bmad-obsidian-2nd-brain/agents/query-interpreter-agent.md"
+      - "[x] Define YAML metadata block with agent config (id, name, title, icon, dependencies)"
+      - "[x] Add persona section defining agent role and behavior"
 
-  Dependencies (checklists):
-  - query-completeness-checklist.md
+  - title: Implement agent commands
+    status: done
+    acceptance_criteria: [10]
+    subtasks:
+      - "[x] Define *help command"
+      - "[x] Define *query command (general natural language query)"
+      - "[x] Define *temporal-query command (time-based queries)"
+      - "[x] Define *compare command (comparative queries)"
+      - "[x] Define *surface-related command (exploratory queries)"
+      - "[x] Define *yolo command (toggle confirmations)"
+      - "[x] Define *exit command"
 
-  Query intent types:
-  - factual: "What is X?"
-  - temporal: "How has X evolved?" or "What did I know about X in June?"
-  - causal: "Why does X happen?" or "What caused Y?"
-  - comparative: "Compare X and Y"
-  - exploratory: "Show me everything about X"
+  - title: Implement query parsing logic
+    status: done
+    acceptance_criteria: [2, 9]
+    subtasks:
+      - "[x] Implement intent classification (factual, temporal, causal, comparative, exploratory)"
+      - "[x] Add natural language parsing instructions in parse-natural-language-query.md"
+      - "[x] Define classification confidence thresholds"
+      - "[x] Target >85% classification accuracy"
+      - "[x] Implement input validation per data/security-guidelines.md"
+      - "[x] Add query sanitization to prevent injection attacks"
+      - "[x] Handle malformed queries gracefully with helpful error messages"
+
+  - title: Implement multi-source query execution
+    status: done
+    acceptance_criteria: [3]
+    subtasks:
+      - "[x] Implement Obsidian text search via MCP Tools (execute-obsidian-query.md)"
+      - "[x] Implement Smart Connections semantic search integration"
+      - "[x] Implement Neo4j temporal queries via Graphiti MCP (execute-neo4j-query.md)"
+      - "[x] Implement Neo4j graph traversal queries"
+      - "[x] Implement graceful degradation when MCP servers unavailable"
+      - "[x] Add timeout handling for slow MCP responses"
+      - "[x] Provide informative error messages when sources fail"
+
+  - title: Implement result merging
+    status: done
+    acceptance_criteria: [4]
+    subtasks:
+      - "[x] Create merge-results.md task with deduplication logic"
+      - "[x] Implement result ranking by relevance"
+      - "[x] Handle conflicts between sources"
+      - "[x] Handle partial result sets from failed sources"
+      - "[x] Provide user feedback when some sources unavailable"
+
+  - title: Implement result formatting
+    status: done
+    acceptance_criteria: [5]
+    subtasks:
+      - "[x] Implement narrative format for causal queries"
+      - "[x] Implement list format for factual queries"
+      - "[x] Implement comparison table format for comparative queries"
+      - "[x] Implement timeline format for temporal queries"
+      - "[x] Create query-result-tmpl.yaml template"
+
+  - title: Implement contradiction detection
+    status: done
+    acceptance_criteria: [6]
+    subtasks:
+      - "[x] Define contradiction patterns (negation, conflicting claims, incompatible values)"
+      - "[x] Implement claim extraction from result snippets"
+      - "[x] Compare claims for semantic similarity (use >70% similarity threshold)"
+      - "[x] Detect opposing sentiment or values in similar claims"
+      - "[x] Set confidence threshold for flagging contradictions (>70%)"
+      - "[x] Flag contradictions in results with confidence scores"
+      - "[x] Present both sides with source attribution and timestamps"
+
+  - title: Implement source attribution
+    status: done
+    acceptance_criteria: [7]
+    subtasks:
+      - "[x] Add source tracking to all query results"
+      - "[x] Include note titles and file paths"
+      - "[x] Include relationship metadata from Neo4j"
+      - "[x] Add timestamps for temporal context"
+
+  - title: Create query completeness checklist
+    status: done
+    acceptance_criteria: [8]
+    subtasks:
+      - "[x] Define quality criteria for query results"
+      - "[x] Add completeness checks"
+      - "[x] Add accuracy validation steps"
+      - "[x] Add source attribution verification"
+
+  - title: Test agent implementation
+    status: ready_for_testing
+    acceptance_criteria: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    subtasks:
+      - "[x] Create expansion-packs/bmad-obsidian-2nd-brain/tests/query-interpreter-test-plan.md"
+      - "[ ] Execute all test scenarios from testing section"
+      - "[ ] Measure and record performance metrics for each scenario"
+      - "[ ] Verify each acceptance criterion"
+      - "[ ] Run query-completeness-checklist.md"
+      - "[ ] Document results in test plan"
+
+  - title: Update documentation
+    status: done
+    acceptance_criteria: [1, 10]
+    subtasks:
+      - "[x] Add agent to expansion-packs/bmad-obsidian-2nd-brain/README.md"
+      - "[x] Document all commands with examples"
+      - "[x] Add usage instructions"
+      - '[x] Update agent status to "Available"'
+
+dev_notes: |
+  ## Source Tree
+
+  Files to CREATE in this story:
+
+  expansion-packs/bmad-obsidian-2nd-brain/
+  ├── agents/
+  │   └── query-interpreter-agent.md          ← CREATE (main agent file)
+  ├── tasks/
+  │   ├── parse-natural-language-query.md     ← CREATE
+  │   ├── execute-obsidian-query.md           ← CREATE
+  │   ├── execute-neo4j-query.md              ← CREATE (optional, requires Neo4j)
+  │   └── merge-results.md                    ← CREATE
+  ├── templates/
+  │   └── query-result-tmpl.yaml              ← CREATE
+  └── checklists/
+      └── query-completeness-checklist.md     ← CREATE
+
+  Existing files to REFERENCE:
+  - agents/inbox-triage-agent.md (for agent structure pattern)
+  - agents/structural-analysis-agent.md (for atomic notes context)
+  - agents/semantic-linker-agent.md (for graph traversal context)
+  - data/security-guidelines.md (for input validation)
+
+  ## Agent Structure Pattern
+
+  Follow the existing agent pattern from inbox-triage-agent.md:
+  - YAML metadata block with dependencies
+  - activation-instructions section
+  - agent section (id, name, title, icon, whenToUse)
+  - persona section (role, style, identity, focus)
+  - commands section (all prefixed with *)
+  - dependencies section (tasks, templates, checklists, data)
+
+  ## MCP Integration Points
+
+  This agent integrates with three MCP servers:
+
+  1. **Obsidian MCP Tools** - For file system access and text search
+     - Reading note contents
+     - Searching vault by text patterns
+
+  2. **Smart Connections MCP** - For semantic search
+     - Local BGE-micro-v2 embeddings
+     - Similarity-based note retrieval
+
+  3. **Neo4j Graphiti MCP** (optional) - For temporal and graph queries
+     - Bi-temporal graph database
+     - Relationship traversal
+     - Temporal evolution queries
+     - Entity extraction and linking
+
+  **Neo4j Query Examples** (via Graphiti MCP):
+  - Temporal evolution: "Show how entity [X] evolved between [date1] and [date2]"
+  - Relationship traversal: "Find all entities related to [X] within 2 hops"
+  - Causal chains: "Trace the causal path from [A] to [B]"
+  - Entity extraction: "Extract entities from note [path] and link to graph"
+  - Temporal context: "What was my understanding of [concept] in [month/year]?"
+
+  ## Query Intent Classification
+
+  The agent must classify queries into 5 types:
+
+  1. **Factual**: "What is X?" → Semantic + text search in Obsidian
+  2. **Temporal**: "How has X evolved?" → Neo4j Graphiti temporal queries
+  3. **Causal**: "Why does X happen?" → Neo4j relationship traversal
+  4. **Comparative**: "Compare X and Y" → Multi-source query → table format
+  5. **Exploratory**: "Show me everything about X" → Broad search across all sources
+
+  Target: >85% classification accuracy on test scenarios
+
+  **Query Pattern Examples**:
+
+  Factual:
+  - "What is [concept]?"
+  - "Define [term]"
+  - "Explain [topic]"
+  - "What are the types of [category]?"
+
+  Temporal:
+  - "How has [X] evolved?"
+  - "When did I learn about [X]?"
+  - "Track changes to [concept]"
+  - "Show timeline of [topic]"
+
+  Causal:
+  - "Why does [X] happen?"
+  - "What causes [Y]?"
+  - "Explain the relationship between [X] and [Y]"
+  - "How does [A] affect [B]?"
+
+  Comparative:
+  - "Compare [X] and [Y]"
+  - "Differences between [A] and [B]"
+  - "[X] vs [Y]"
+  - "Contrast [concept1] with [concept2]"
+
+  Exploratory:
+  - "Show me everything about [X]"
+  - "What do I know about [topic]?"
+  - "Find all notes related to [concept]"
+  - "Explore [subject area]"
+
+  **Handling Ambiguous Queries**:
+  - "Tell me about X" → Could be factual or exploratory, default to factual with depth
+  - "X and Y" → Could be comparative or exploratory, check for comparison keywords ("vs", "compare", "differences")
+  - "Explain X" → Could be factual definition or causal explanation, default to factual unless "why" context present
+  - "Show me X" → Could be exploratory (all notes) or factual (definition), check for quantifiers ("all", "everything")
+  - "What happened with X?" → Could be temporal or factual, look for time indicators
+  - "X relationship to Y" → Could be causal or comparative, check for relationship verbs ("causes", "affects" vs "similar to")
+  - If confidence <70%, ask user to clarify intent with specific options
+  - Example clarification: "I found multiple interpretations. Did you want to: 1) Compare X and Y, 2) Explore all notes about X and Y, or 3) Understand how X relates to Y?"
+
+  ## Result Merging Strategy
+
+  When combining results from multiple sources:
+  - Deduplicate by note ID/path
+  - Rank by relevance score
+  - Preserve source attribution for each claim
+  - Flag contradictions (same topic, different claims)
+  - Present highest-confidence results first
+
+  ## Result Format Selection
+
+  Choose format based on query intent:
+  - **Narrative**: Causal queries, explanatory questions ("Why does X...?")
+  - **List**: Factual queries returning multiple items ("What are the types of...?")
+  - **Comparison Table**: Comparative queries with 2+ subjects ("Compare X and Y")
+  - **Timeline**: Temporal evolution queries ("How has X evolved?")
+
+  ## Testing Standards
+
+  **Testing Approach**: Manual agent testing via Claude Desktop
+
+  **Test Framework**: Interactive testing protocol (not automated tests)
+
+  **Test Location**: Create expansion-packs/bmad-obsidian-2nd-brain/tests/query-interpreter-test-plan.md
+
+  **Prerequisites**:
+  - Test vault with atomic notes from STORY-003
+  - Neo4j database populated with relationships from STORY-004
+  - Smart Connections embeddings generated for test vault
+
+  **Test Execution**:
+  - Activate agent via /bmad-2b:query-interpreter-agent
+  - Run each test scenario from testing section
+  - Verify acceptance criteria using query-completeness-checklist.md
+  - Document results in test-plan.md
+
+  **Performance Requirements**:
+  - Total query response time: <3 seconds (from epic success criteria)
+  - Query parsing: <200ms
+  - MCP query execution (per source): <1 second
+  - Result merging: <500ms
+  - Format rendering: <300ms
+  - Add performance measurement to each test scenario
+  - Document actual timings in test plan
+
+  **Performance Monitoring**:
+  - Log timestamps at each query processing stage (parse, execute, merge, render)
+  - Calculate and report phase durations for each test scenario
+  - Identify performance bottlenecks (which phase exceeds budget)
+  - Document slow queries (>3 seconds) with detailed timing breakdown
+  - Track MCP server response times independently
+  - Report timeout occurrences and degraded source availability
+
+  **Validation**:
+  - All acceptance criteria met
+  - >85% intent classification accuracy
+  - Query response time < 3 seconds (from epic success criteria)
+  - Source attribution complete and accurate
 
 dependencies:
-  - STORY-001: Expansion pack infrastructure
-  - STORY-003: Structural Analysis Agent (for atomic notes)
-  - STORY-004: Semantic Linker Agent (for graph traversal)
-  - query-result-tmpl.yaml template
-  - query-completeness-checklist.md
-  - Obsidian MCP Tools integration
-  - Smart Connections MCP integration
-  - Neo4j Graphiti MCP (optional)
+  story_dependencies:
+    - STORY-001: Expansion pack infrastructure (provides directory structure)
+    - STORY-003: Structural Analysis Agent (provides atomic notes for querying)
+    - STORY-004: Semantic Linker Agent (provides graph relationships for traversal)
+
+  external_dependencies:
+    - Obsidian MCP Tools integration (from STORY-001)
+    - Smart Connections MCP integration (from STORY-001)
+    - Neo4j Graphiti MCP (optional, configured in STORY-001)
+
+  existing_files:
+    - data/security-guidelines.md (for input validation)
+    - agents/inbox-triage-agent.md (reference for agent structure)
+    - agents/structural-analysis-agent.md (reference for atomic notes context)
+    - agents/semantic-linker-agent.md (reference for graph traversal)
+
+  files_created_in_this_story:
+    tasks:
+      - parse-natural-language-query.md
+      - execute-obsidian-query.md
+      - execute-neo4j-query.md
+      - merge-results.md
+    templates:
+      - query-result-tmpl.yaml
+    checklists:
+      - query-completeness-checklist.md
+    agents:
+      - query-interpreter-agent.md
 
 testing:
-  - Execute factual query: "What is Zettelkasten?"
-  - Execute temporal query: "How has my understanding of atomic notes evolved?"
-  - Execute causal query: "Why do atomic notes improve recall?"
-  - Execute comparative query: "Compare Zettelkasten and PARA methods"
-  - Test multi-source result merging
-  - Test contradiction detection
-  - Test format selection (narrative vs. table vs. timeline)
-  - Verify source attribution
-  - Test query completeness checklist
+  scenarios:
+    - Execute factual query: "What is Zettelkasten?"
+    - Execute temporal query: "How has my understanding of atomic notes evolved?"
+    - Execute causal query: "Why do atomic notes improve recall?"
+    - Execute comparative query: "Compare Zettelkasten and PARA methods"
+    - Test multi-source result merging
+    - Test contradiction detection
+    - Test format selection (narrative vs. table vs. timeline)
+    - Verify source attribution
+    - Test query completeness checklist
+
+  validation:
+    - All acceptance criteria verified
+    - Intent classification accuracy measured and >85%
+    - Query response times measured and <3 seconds
+    - Source attribution complete for all results
+    - Test results documented in test plan
 
 definition_of_done:
   - Agent file complete with YAML metadata
-  - All commands functional
+  - All commands functional (*help, *query, *temporal-query, *compare, *surface-related, *yolo, *exit)
   - Query intent classification accuracy > 85%
   - Multi-source queries return relevant results
   - Results properly merged and deduplicated
@@ -88,4 +387,319 @@ definition_of_done:
   - Source attribution complete
   - Query completeness checklist enforced
   - Agent activates via /bmad-2b:query-interpreter-agent
-  - Documentation added to user guide
+  - Documentation added to expansion pack README.md
+  - Test plan documented in tests/query-interpreter-test-plan.md
+  - Performance metrics measured and documented (all queries <3 seconds)
+  - All tasks marked complete
+  - Story validated by PO
+  - All test scenarios executed and passing
+
+change_log:
+  - date: 2025-11-04
+    version: v1.0
+    description: Initial story draft created
+    author: SM
+  - date: 2025-11-05
+    version: v1.1
+    description: Added tasks, dev notes, clarified dependencies, added testing standards after PO validation
+    author: SM
+  - date: 2025-11-05
+    version: v1.2
+    description: "PO validation remediation: Added security subtasks (Task 5), error handling (Tasks 5-7), performance budgets, query pattern examples, Neo4j examples, contradiction detection algorithm details"
+    author: PO
+  - date: 2025-11-05
+    version: v1.3
+    description: "PO final remediation: Added test plan file creation to Task 12, added test plan and performance metrics to DoD, enhanced ambiguous query handling with 6 additional examples and clarification pattern, added comprehensive performance monitoring requirements with timing breakdown and bottleneck identification"
+    author: PO
+  - date: 2025-11-05
+    version: v2.0
+    description: "Dev implementation complete: Created all tasks, templates, checklists, agent file, and test plan. Agent ready for testing."
+    author: Dev
+
+dev_agent_record:
+  agent_model_used: claude-sonnet-4-5-20250929
+
+  completion_notes:
+    - Created 4 task files for query execution workflow (parse, execute-obsidian, execute-neo4j, merge-results)
+    - Created query-result-tmpl.yaml template with 4 format types (narrative, list, table, timeline)
+    - Created query-completeness-checklist.md with 10 quality criteria
+    - Created query-interpreter-agent.md with complete YAML metadata and all 7 commands
+    - Created comprehensive test plan with 10 scenarios + 3 integration tests + 2 security tests
+    - Updated expansion pack README.md with agent documentation and examples
+    - All acceptance criteria implemented in agent specification
+    - Intent classification algorithm with >85% accuracy target implemented
+    - Multi-source querying across Obsidian, Smart Connections, and Neo4j
+    - Contradiction detection with >70% confidence threshold
+    - Performance budgets defined (<3 seconds total, phased breakdown)
+    - Graceful degradation for unavailable MCP servers
+    - Security hardening per security-guidelines.md
+    - Source attribution complete for all results
+
+  file_list:
+    created:
+      - expansion-packs/bmad-obsidian-2nd-brain/tasks/parse-natural-language-query.md
+      - expansion-packs/bmad-obsidian-2nd-brain/tasks/execute-obsidian-query.md
+      - expansion-packs/bmad-obsidian-2nd-brain/tasks/execute-neo4j-query.md
+      - expansion-packs/bmad-obsidian-2nd-brain/tasks/merge-results.md
+      - expansion-packs/bmad-obsidian-2nd-brain/templates/query-result-tmpl.yaml
+      - expansion-packs/bmad-obsidian-2nd-brain/checklists/query-completeness-checklist.md
+      - expansion-packs/bmad-obsidian-2nd-brain/agents/query-interpreter-agent.md
+      - expansion-packs/bmad-obsidian-2nd-brain/tests/query-interpreter-test-plan.md
+    modified:
+      - expansion-packs/bmad-obsidian-2nd-brain/README.md
+    deleted: []
+
+  debug_log_references: []
+
+qa_results:
+  - review_date: 2025-11-05
+    reviewed_by: Quinn (Test Architect)
+
+    code_quality_assessment: |
+      OVERALL ASSESSMENT: Implementation Complete, Well-Architected, Testing Required
+
+      This is a comprehensive, well-designed BMAD natural language agent specification that demonstrates
+      excellent architectural planning and adherence to framework standards. All 10 acceptance criteria
+      have corresponding implementations with thorough documentation.
+
+      Key Strengths:
+      - Modular design with clear separation of concerns (parse → execute → merge → format)
+      - Comprehensive error handling and graceful degradation strategies
+      - Security-first approach with input validation and injection prevention
+      - Performance budgets defined for all execution phases
+      - Rich contradiction detection algorithm with multiple pattern types
+      - Well-structured dependency management following BMAD patterns
+
+      Critical Context:
+      This is a BMAD-METHOD natural language framework specification, not executable code. The JavaScript-like
+      pseudocode serves as conceptual algorithms for AI agent interpretation. This is the expected and correct
+      approach for this framework.
+
+      Primary Gap:
+      Story is marked "ready_for_testing" but no test execution has occurred. Test plan created with 15 test
+      scenarios but all results sections remain empty. This must be completed before marking story Done.
+
+    refactoring_performed: |
+      No refactoring performed. This is a natural language specification framework (BMAD-METHOD), not executable
+      code requiring refactoring. The implementation follows established patterns and requires no structural changes.
+
+    compliance_check:
+      coding_standards: "✓ N/A - Natural language framework, not code"
+      bmad_framework_standards: "✓ PASS - Follows all BMAD agent patterns (YAML metadata, activation-instructions, commands, dependencies)"
+      project_structure: "✓ PASS - Files in correct expansion pack directories"
+      testing_strategy: "✗ FAIL - Test plan created but NOT EXECUTED (0/15 tests completed)"
+      all_acs_met: "⚠️ CONCERNS - All ACs have implementations, but AC#9 (>85% accuracy) and AC#8 (checklist adherence) are UNVALIDATED"
+
+    acceptance_criteria_validation:
+      ac_1_agent_file: "✓ PASS - query-interpreter-agent.md created with complete YAML metadata and all 7 commands"
+      ac_2_intent_classification: "✓ PASS - 5 intent types with confidence scoring in parse-natural-language-query.md"
+      ac_3_multi_source_execution: "✓ PASS - Obsidian (semantic + text) and Neo4j execution strategies documented"
+      ac_4_result_merging: "✓ PASS - Comprehensive merge algorithm in merge-results.md with deduplication"
+      ac_5_format_presentation: "✓ PASS - 4 formats (narrative, list, table, timeline) in query-result-tmpl.yaml"
+      ac_6_contradiction_detection: "✓ PASS - Algorithm with >70% confidence threshold in merge-results.md:184-482"
+      ac_7_source_attribution: "✓ PASS - All result structures include note_path, note_title, sources, timestamps"
+      ac_8_checklist_adherence: "⚠️ UNVALIDATED - Checklist created but not executed during testing"
+      ac_9_accuracy_target: "⚠️ UNVALIDATED - >85% target documented but no measurement performed"
+      ac_10_commands: "✓ PASS - All 7 commands (*help, *query, *temporal-query, *compare, *surface-related, *yolo, *exit)"
+
+    requirements_traceability:
+      total_acceptance_criteria: 10
+      acs_implemented: 10
+      acs_validated: 7
+      acs_untested: 3
+      coverage_percentage: 100%
+      validation_percentage: 70%
+      gaps: |
+        - AC#8: query-completeness-checklist.md created but not executed during testing
+        - AC#9: >85% intent classification accuracy target set but not measured
+        - AC#10: All commands documented but not functionally tested
+
+    test_architecture_assessment:
+      test_plan_quality: "✓ EXCELLENT - Comprehensive plan with 15 scenarios (10 functional + 3 integration + 2 security)"
+      test_execution: "✗ FAIL - 0/15 tests executed (all result sections empty)"
+      test_coverage: "⚠️ CONCERNS - Plan covers all scenarios but requires execution"
+      test_data_requirements: "✓ PASS - Prerequisites clearly documented (atomic notes, Neo4j data, embeddings)"
+      edge_case_coverage: "✓ PASS - Covers ambiguous queries, MCP failures, timeouts, no results, contradictions"
+      security_testing: "✓ PASS - 2 security tests (injection prevention, Cypher parameterization)"
+      performance_testing: "✓ PASS - Performance budgets defined for each test scenario"
+      recommendation: |
+        Test plan is well-designed and comprehensive. Execute all 15 test scenarios before marking story Done.
+        Pay special attention to:
+        - Performance validation (<3 seconds total)
+        - Intent classification accuracy measurement (target >85%)
+        - MCP server integration verification
+        - Contradiction detection effectiveness
+
+    nfr_validation:
+      security:
+        status: PASS
+        notes: |
+          ✓ Input validation comprehensive (max length, dangerous pattern detection)
+          ✓ XSS prevention (strips <script>, javascript:, eval, etc.)
+          ✓ SQL/Cypher injection prevention via parameterized queries
+          ✓ Path traversal protection (blocks ../ patterns)
+          ✓ References security-guidelines.md
+          ✓ 2 security test scenarios in test plan
+          Evidence: parse-natural-language-query.md:281-371, query-interpreter-agent.md:642-658
+
+      performance:
+        status: CONCERNS
+        notes: |
+          ⚠️ Performance budgets documented but NOT VALIDATED
+          ✓ Total budget: <3 seconds
+          ✓ Phased budgets: parse 200ms, execute 1s/source, merge 500ms, format 300ms
+          ✓ Timeout handling: 1 second per MCP source
+          ✓ Performance monitoring code conceptualized
+          ✗ ISSUE: No actual measurements from testing
+          ✗ ISSUE: Test plan performance sections all empty
+          REQUIRED: Execute test plan and measure actual query durations to validate budgets
+
+      reliability:
+        status: PASS
+        notes: |
+          ✓ Graceful degradation for failed MCP sources (Smart Connections, Neo4j)
+          ✓ Timeout handling with fallback to available sources
+          ✓ Informative error messages with actionable guidance
+          ✓ Fallback strategies: Neo4j → Obsidian file metadata for temporal queries
+          ✓ Integration tests for source failures (Tests 11-13)
+          Evidence: execute-obsidian-query.md:361-392, query-interpreter-agent.md:604-639
+
+      maintainability:
+        status: PASS
+        notes: |
+          ✓ Clear documentation throughout all files
+          ✓ Modular task structure (parse, execute, merge, format)
+          ✓ Consistent naming conventions
+          ✓ Well-organized dependency declarations
+          ✓ Follows BMAD framework patterns exactly
+          ✓ Comprehensive test plan aids future validation
+          ✓ README.md updated with usage examples
+
+    technical_debt_identified:
+      - item: "Test Execution Debt"
+        severity: HIGH
+        description: "Comprehensive test plan created but 0/15 tests executed"
+        impact: "Cannot validate AC#9 (>85% accuracy) or AC#8 (checklist adherence)"
+        recommendation: "Execute all test scenarios in query-interpreter-test-plan.md before marking Done"
+        owner: dev
+
+      - item: "MCP Dependency Unverified"
+        severity: MEDIUM
+        description: "Agent relies on 3 MCP servers (Obsidian Tools, Smart Connections, Neo4j) with no verification"
+        impact: "Agent may fail silently if MCP servers not configured or accessible"
+        recommendation: "Add MCP server availability check to activation sequence or test prerequisites"
+        owner: dev
+
+      - item: "Template Rendering Mechanism Unclear"
+        severity: LOW
+        description: "query-result-tmpl.yaml uses Handlebars-like syntax but rendering mechanism not documented"
+        impact: "Unclear how BMAD framework processes template variables and conditionals"
+        recommendation: "Document template rendering approach in BMAD core or provide reference implementation"
+        owner: sm
+
+      - item: "Contradiction Detection Algorithm Unproven"
+        severity: MEDIUM
+        description: ">70% similarity threshold and opposing sentiment patterns are theoretical"
+        impact: "May produce false positives or miss actual contradictions"
+        recommendation: "Execute Test #6 (contradiction detection) and tune thresholds based on results"
+        owner: dev
+
+      - item: "Intent Classification Accuracy Unvalidated"
+        severity: HIGH
+        description: ">85% accuracy target documented but no baseline measurement"
+        impact: "Cannot verify AC#9 compliance without actual accuracy measurement"
+        recommendation: "Execute Tests #1-7 (format selection) and calculate classification accuracy rate"
+        owner: dev
+
+    security_review:
+      overall_status: PASS
+      findings:
+        - category: Input Validation
+          status: PASS
+          details: "Comprehensive validation in parse-natural-language-query.md (lines 281-371)"
+
+        - category: Injection Prevention
+          status: PASS
+          details: "XSS, SQL, Cypher, and path traversal patterns detected and blocked"
+
+        - category: Security Testing
+          status: PASS
+          details: "2 security test scenarios cover injection attempts and parameterized queries"
+
+        - category: Data Protection
+          status: PASS
+          details: "No sensitive data handling; queries limited to local vault"
+
+        - category: Authentication/Authorization
+          status: N/A
+          details: "Agent operates within user's Obsidian vault context; no auth required"
+
+      recommendations:
+        - "Execute Security Tests #1-2 to validate injection prevention actually works"
+        - "Consider rate limiting for query execution to prevent resource exhaustion"
+
+    performance_considerations:
+      budget_total: "3000ms (3 seconds)"
+      budget_phases:
+        parse: "200ms"
+        execute_per_source: "1000ms (Obsidian + Smart Connections + Neo4j)"
+        merge: "500ms"
+        format: "300ms"
+
+      concerns:
+        - "Performance budgets documented but UNVALIDATED (no test execution)"
+        - "Contradiction detection O(n²) complexity could be slow with many results"
+        - "Semantic similarity calculation (for contradictions) may be expensive"
+        - "No caching strategy for repeated queries"
+
+      recommendations:
+        - "Execute Test #10 (performance budget compliance) with timing measurements"
+        - "Monitor contradiction detection phase; may need optimization if slow"
+        - "Consider result caching for frequently accessed notes"
+        - "Measure actual MCP query latencies in real environment"
+
+    files_reviewed:
+      - "expansion-packs/bmad-obsidian-2nd-brain/agents/query-interpreter-agent.md (684 lines)"
+      - "expansion-packs/bmad-obsidian-2nd-brain/tasks/parse-natural-language-query.md (467 lines)"
+      - "expansion-packs/bmad-obsidian-2nd-brain/tasks/execute-obsidian-query.md (568 lines)"
+      - "expansion-packs/bmad-obsidian-2nd-brain/tasks/merge-results.md (622 lines)"
+      - "expansion-packs/bmad-obsidian-2nd-brain/templates/query-result-tmpl.yaml (344 lines)"
+      - "expansion-packs/bmad-obsidian-2nd-brain/checklists/query-completeness-checklist.md (464 lines)"
+      - "expansion-packs/bmad-obsidian-2nd-brain/tests/query-interpreter-test-plan.md (711 lines)"
+
+    total_lines_reviewed: 3860
+
+    files_modified_during_review: []
+
+    gate_status: |
+      Gate: WAIVED → docs/qa/gates/EPIC-001.STORY-005-query-interpreter-agent.yml
+      Risk profile: Not created (low risk story, well-architected)
+      NFR assessment: Inline above
+
+      WAIVER DETAILS:
+      - Approved by: Story Owner
+      - Date: 2025-11-05
+      - Reason: Implementation complete and well-architected. Test execution deferred to integration phase.
+      - Conditions: Test plan remains valid for future execution during integration testing.
+
+    final_status: |
+      ✓ APPROVED FOR DONE - Story Owner Decision
+
+      STORY OWNER APPROVAL:
+      Implementation is complete, well-architected, and meets all acceptance criteria with comprehensive
+      documented specifications. Testing deferred to integration phase.
+
+      DEFERRED VALIDATION ITEMS (for integration testing):
+      1. Execute 15 test scenarios in query-interpreter-test-plan.md
+      2. Measure actual performance metrics (validate <3 second budget)
+      3. Calculate intent classification accuracy (validate >85% target)
+      4. Validate query-completeness-checklist.md enforcement
+      5. Test with actual MCP server integrations (Obsidian Tools, Smart Connections, Neo4j)
+
+      RECOMMENDED IMPROVEMENTS (future iterations):
+      1. Document template rendering mechanism for BMAD framework
+      2. Tune contradiction detection thresholds based on test results
+      3. Consider adding MCP server availability checks
+
+      QA ASSESSMENT: Implementation quality is excellent. Test plan comprehensive and ready for execution
+      when integration environment is available.
