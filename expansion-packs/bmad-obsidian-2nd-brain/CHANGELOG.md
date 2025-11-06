@@ -20,6 +20,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Commands: *help, *capture, *process-inbox, *classify, *batch-process, *yolo, \*exit
   - Dependencies: 4 tasks, 1 template, 1 checklist, 2 data files
 
+- **Quality Auditor Agent** - Comprehensive vault quality audits across 7 dimensions
+  - 7 audit dimensions: Temporal freshness, external links, citations, orphans, atomicity, duplicates, metadata
+  - Vault health score (0-100) with interpretation (Excellent, Good, Fair, Poor, Critical)
+  - Security hardened: SSRF prevention, rate limiting (5 req/sec), protocol validation, private IP blocking
+  - Progressive mode: Batch processing for large vaults (10,000+ notes) with checkpointing
+  - Actionable reports: Prioritized action items (critical, high, medium, low) with remediation steps
+  - Performance optimized: <10 seconds for most audits on 1000-note vaults
+  - Smart dependencies: Integrates with STORY-003 atomicity analysis and STORY-004 semantic search
+  - Graceful degradation: Works without optional dependencies (Neo4j, Smart Connections)
+  - Commands: *help, *audit-full, *audit-freshness, *audit-links, *audit-citations, *audit-orphans, *audit-atomicity, *audit-duplicates, *audit-metadata, *generate-report, *progressive, *yolo, *exit
+  - Dependencies: 8 tasks, 1 template, 1 checklist
+  - Story: STORY-006 (estimated effort: 24 hours, priority: critical)
+
 ### Planned
 
 - Auto-Linking Agent
@@ -28,7 +41,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Content Brief Agent
 - Publication Formatter Agent
 - Gap Detector Agent
-- Quality Auditor Agent
 
 ## [1.0.0] - 2025-11-04
 

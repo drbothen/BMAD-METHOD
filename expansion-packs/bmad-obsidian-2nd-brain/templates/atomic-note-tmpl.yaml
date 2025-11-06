@@ -1,0 +1,268 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: atomic-note-template-v1
+  name: Atomic Note
+  version: 1.0
+  description: Template for atomic knowledge building blocks in Obsidian vault
+  output:
+    format: markdown
+    filename: "{{created_date}}-{{sanitized_title}}.md"
+
+variables:
+  - name: title
+    description: Descriptive title for the atomic note (should indicate core claim/concept)
+    required: true
+  - name: type
+    description: Synonym for building_block, kept for compatibility
+    required: true
+  - name: building_block
+    description: Building block type (concept, argument, model, question, claim, phenomenon)
+    required: true
+  - name: source_note
+    description: Link to original note if fragmented from another note
+    required: false
+    default: null
+  - name: created
+    description: Creation timestamp in ISO 8601 format
+    required: true
+  - name: tags
+    description: Array of tags for categorization
+    required: false
+    default: []
+  - name: atomic_score
+    description: Atomicity score from 0.0-1.0 (0.7+ considered atomic)
+    required: true
+  - name: content
+    description: Main note content (the single core idea)
+    required: true
+  - name: related_concepts
+    description: Newline-separated list of related concept links (e.g., "- [[Note 1]]\n- [[Note 2]]")
+    required: false
+    default: ""
+  - name: source_url
+    description: Original source URL if applicable
+    required: false
+  - name: source_author
+    description: Original author if applicable
+    required: false
+  - name: fragmented_from
+    description: Original note path if this is a fragment
+    required: false
+  - name: fragment_number
+    description: Fragment number if part of fragmentation (e.g., "1 of 3")
+    required: false
+  - name: created_date
+    description: Date for filename in YYYY-MM-DD format
+    required: true
+  - name: sanitized_title
+    description: Sanitized title for filename (lowercase, hyphens, no special chars)
+    required: true
+  - name: source_attribution_content
+    description: Pre-formatted source attribution content (constructed from source_url, source_author, fragmented_from, fragment_number)
+    required: false
+    default: ""
+
+workflow:
+  elicitation: false
+  mode: template
+
+sections:
+  - id: frontmatter
+    title: Frontmatter
+    type: template-text
+    instruction: |
+      Generate YAML frontmatter with complete metadata for the atomic note.
+      The atomic_score must be >= 0.7 for the note to be considered atomic.
+      Building block type must be one of: concept, argument, model, question, claim, phenomenon.
+    template: |
+      ---
+      title: {{title}}
+      type: {{type}}
+      building_block: {{building_block}}
+      source_note: {{source_note}}
+      created: {{created}}
+      tags: [{{tags}}]
+      atomic_score: {{atomic_score}}
+      ---
+
+  - id: content
+    title: Main Content
+    type: paragraphs
+    instruction: |
+      Insert the main note content - should contain exactly ONE complete knowledge building block.
+      This is the core idea, claim, concept, or observation that makes the note atomic.
+      Content should be self-contained and understandable without requiring external context.
+    template: |
+      # {{title}}
+
+      {{content}}
+
+  - id: related_concepts
+    title: Related Concepts
+    type: bullet-list
+    condition: related_concepts is not empty
+    instruction: |
+      Link to related atomic notes using [[WikiLink]] syntax.
+      These should be LINKS ONLY, not in-depth explanations.
+      If a related concept needs explanation, it should be its own atomic note.
+
+      IMPORTANT: Only include this section if related_concepts variable is provided and not empty.
+      The {{related_concepts}} variable contains a newline-separated list of links.
+    template: |
+      ## Related Concepts
+
+      {{related_concepts}}
+
+  - id: source_attribution
+    title: Source Attribution
+    type: paragraphs
+    condition: source_url or source_author or fragmented_from
+    instruction: |
+      Preserve provenance information about where this knowledge came from.
+      Include original source URLs, authors, or fragmentation metadata.
+      Source attribution is sacred - never lose provenance.
+
+      IMPORTANT: Only include this section if at least one of: source_url, source_author, or fragmented_from is provided.
+      Only include lines for variables that are actually provided (not null or empty).
+
+      Format rules:
+      - If source_url provided: Include "**Source:** {{source_url}}"
+      - If source_author provided: Include "**Author:** {{source_author}}"
+      - If fragmented_from provided: Include "**Fragmented from:** [[{{fragmented_from}}]]"
+      - If fragment_number provided (only with fragmented_from): Include "**Fragment:** {{fragment_number}}"
+    template: |
+      ## Source Attribution
+
+      {{source_attribution_content}}
+
+  - id: metadata
+    title: Metadata
+    type: paragraphs
+    condition: fragmented_from
+    instruction: |
+      Include fragmentation metadata if this note was created from splitting a complex note.
+      This helps maintain audit trail and understand note lineage.
+    template: |
+      ## Metadata
+
+      This note was created by fragmenting a non-atomic note into atomic building blocks.
+      Atomicity score: {{atomic_score}}
+      Building block type: {{building_block}}
+
+examples:
+  - |
+    ---
+    title: Zettelkasten Principle - Atomicity
+    type: concept
+    building_block: concept
+    source_note: null
+    created: 2025-11-05T10:00:00Z
+    tags: [zettelkasten, note-taking, atomicity, knowledge-management]
+    atomic_score: 0.95
+    ---
+
+    # Zettelkasten Principle - Atomicity
+
+    The atomicity principle in Zettelkasten states that each note should contain exactly one complete idea that can stand alone. An atomic note is a single knowledge building block that is:
+
+    1. **Self-contained** - Can be understood without extensive external context
+    2. **Complete** - Contains a full thought, not a fragment
+    3. **Singular** - Focuses on one concept, claim, or observation
+    4. **Recombinable** - Can be linked with other atomic notes in unlimited ways
+
+    Atomic notes prevent "note bloat" where large notes become unmanageable and enable flexible knowledge recombination through linking.
+
+    ## Related Concepts
+
+    - [[Bidirectional Links]]
+    - [[Evergreen Notes]]
+    - [[Building Block Types]]
+
+    ## Source Attribution
+
+    **Source:** https://zettelkasten.de/posts/create-zettel-from-reading-notes/
+    **Author:** Sascha Fast
+
+  - |
+    ---
+    title: Spaced Repetition Superior to Massed Practice
+    type: argument
+    building_block: argument
+    source_note: null
+    created: 2025-11-05T10:15:00Z
+    tags: [learning, spaced-repetition, memory, cognition]
+    atomic_score: 0.88
+    ---
+
+    # Spaced Repetition Superior to Massed Practice
+
+    Spaced repetition is demonstrably superior to massed practice (cramming) for long-term retention. Evidence:
+
+    **Thesis:** Distributing learning sessions over time produces better retention than concentrated practice.
+
+    **Evidence:**
+    1. Ebbinghaus forgetting curve shows exponential memory decay without reinforcement
+    2. Multiple spaced exposures create stronger neural pathway consolidation
+    3. Meta-analysis of 317 studies confirms spacing effect across domains (Cepeda et al., 2006)
+
+    **Logic:** The brain requires time between exposures to consolidate memories from short-term to long-term storage. Massed practice creates initial encoding but lacks the retrieval practice that strengthens long-term retention.
+
+    ## Related Concepts
+
+    - [[Ebbinghaus Forgetting Curve]]
+    - [[Active Recall]]
+    - [[Desirable Difficulties]]
+
+    ## Source Attribution
+
+    **Source:** Cognitive Psychology: A Student's Handbook
+    **Author:** Michael Eysenck & Mark Keane
+
+  - |
+    ---
+    title: PARA Method for Information Organization
+    type: model
+    building_block: model
+    source_note: null
+    created: 2025-11-05T10:30:00Z
+    tags: [organization, productivity, para, knowledge-management]
+    atomic_score: 0.92
+    ---
+
+    # PARA Method for Information Organization
+
+    PARA is a universal system for organizing digital information into four top-level categories:
+
+    **Components:**
+
+    1. **Projects** - Active work with deadlines and defined outcomes
+       - Example: "Launch new website by Q2"
+       - Characteristic: Has a finish line
+
+    2. **Areas** - Ongoing responsibilities with standards to maintain
+       - Example: "Health & Fitness"
+       - Characteristic: No end date, continuous maintenance
+
+    3. **Resources** - Topics of ongoing interest or reference material
+       - Example: "Web Development Resources"
+       - Characteristic: May be useful in future
+
+    4. **Archives** - Inactive items from the other three categories
+       - Example: "Completed projects from 2024"
+       - Characteristic: Cold storage for reference
+
+    **Relationships:** Information flows from Projects → Areas → Resources → Archives as relevance decreases.
+
+    **Boundaries:** The system is mutually exclusive (each item belongs to exactly one category) and collectively exhaustive (every item fits somewhere).
+
+    ## Related Concepts
+
+    - [[GTD Methodology]]
+    - [[Zettelkasten System]]
+    - [[Progressive Summarization]]
+
+    ## Source Attribution
+
+    **Source:** Building a Second Brain
+    **Author:** Tiago Forte

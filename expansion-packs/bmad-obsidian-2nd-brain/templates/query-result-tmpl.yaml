@@ -1,0 +1,343 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: query-result-template-v1
+  name: Query Result
+  version: 1.0
+  description: Structured template for presenting query results with source attribution and format selection
+  output:
+    format: markdown
+    filename: null  # Results displayed inline, not saved to file
+
+variables:
+  - name: query
+    description: Original user query text
+    required: true
+  - name: query_intent
+    description: Classified intent (factual, temporal, causal, comparative, exploratory)
+    required: true
+  - name: confidence
+    description: Classification confidence score (0.0-1.0)
+    required: true
+  - name: result_format
+    description: Selected format (narrative, list, table, timeline)
+    required: true
+  - name: results
+    description: Array of result objects with note_path, note_title, relevance_score, excerpt, sources
+    required: true
+  - name: contradictions
+    description: Array of contradiction objects (optional)
+    required: false
+    default: []
+  - name: sources_available
+    description: Array of data sources successfully queried
+    required: true
+  - name: sources_failed
+    description: Array of data sources that failed
+    required: false
+    default: []
+  - name: total_results
+    description: Total number of results found
+    required: true
+  - name: query_duration_ms
+    description: Total query execution time in milliseconds
+    required: true
+  - name: warnings
+    description: Array of warning messages (optional)
+    required: false
+    default: []
+
+workflow:
+  elicitation: false
+  mode: template
+
+sections:
+  - id: query_summary
+    title: Query Summary
+    type: template-text
+    instruction: |
+      Display query metadata including original query, intent, and confidence.
+      Show performance metrics (duration, result count).
+      Highlight warnings if any sources failed.
+    template: |
+      # Query Results
+
+      **Query:** "{{query}}"
+      **Intent:** {{query_intent}} (confidence: {{confidence}})
+      **Results:** {{total_results}} notes found
+      **Duration:** {{query_duration_ms}}ms
+
+  - id: warnings
+    title: Warnings
+    type: template-text
+    condition: sources_failed is not empty
+    instruction: |
+      Display warnings when data sources fail.
+      Inform user about degraded capabilities.
+      Only include if sources_failed array is not empty.
+    template: |
+      ---
+
+      ⚠️ **Warnings:**
+
+      {{#each sources_failed}}
+      - **{{this.source}}** unavailable: {{this.error}}
+        - Impact: {{this.impact}}
+      {{/each}}
+
+      Results shown are from available sources: {{sources_available}}
+
+      ---
+
+  - id: results_narrative
+    title: Results (Narrative Format)
+    type: paragraphs
+    condition: result_format equals "narrative"
+    instruction: |
+      Present results in narrative format for causal or explanatory queries.
+      Synthesize information from multiple notes into coherent explanation.
+      Include source attribution inline using footnotes.
+      Format: Flowing text with citations.
+    template: |
+      ## Answer
+
+      {{#narrative_synthesis results}}
+      {{synthesized_text}}
+
+      {{#each source_notes}}
+      [^{{@index}}]: [[{{this.note_title}}]] - {{this.excerpt}}
+      {{/each}}
+      {{/narrative_synthesis}}
+
+      ---
+
+      ## Sources
+
+      {{#each results}}
+      ### [[{{this.note_title}}]]
+      **Relevance:** {{this.composite_relevance}} | **Sources:** {{this.sources}}
+
+      > {{this.excerpt}}
+
+      {{/each}}
+
+  - id: results_list
+    title: Results (List Format)
+    type: list
+    condition: result_format equals "list"
+    instruction: |
+      Present results as bulleted list for factual queries.
+      Group by relevance tiers (Highly Relevant, Relevant, Somewhat Relevant).
+      Include source attribution and relevance scores.
+      Format: Tiered bullet list with metadata.
+    template: |
+      ## Results
+
+      ### Highly Relevant (score >= 0.8)
+
+      {{#each results}}
+      {{#if (gte this.composite_relevance 0.8)}}
+      - **[[{{this.note_title}}]]** ({{this.composite_relevance}})
+        - {{this.excerpt}}
+        - *Sources: {{this.sources}} | Created: {{this.metadata.created_date}}*
+      {{/if}}
+      {{/each}}
+
+      ### Relevant (score >= 0.6)
+
+      {{#each results}}
+      {{#if (and (gte this.composite_relevance 0.6) (lt this.composite_relevance 0.8))}}
+      - **[[{{this.note_title}}]]** ({{this.composite_relevance}})
+        - {{this.excerpt}}
+        - *Sources: {{this.sources}}*
+      {{/if}}
+      {{/each}}
+
+      ### Somewhat Relevant (score >= 0.4)
+
+      {{#each results}}
+      {{#if (and (gte this.composite_relevance 0.4) (lt this.composite_relevance 0.6))}}
+      - **[[{{this.note_title}}]]** ({{this.composite_relevance}})
+        - {{this.excerpt}}
+      {{/if}}
+      {{/each}}
+
+  - id: results_table
+    title: Results (Table Format)
+    type: table
+    condition: result_format equals "table"
+    instruction: |
+      Present results as comparison table for comparative queries.
+      Create columns for each compared subject.
+      Include rows for key attributes extracted from results.
+      Format: Markdown table with source attribution.
+    template: |
+      ## Comparison
+
+      {{#comparison_table results subjects}}
+      | Attribute | {{#each subjects}}{{this}}{{#unless @last}} | {{/unless}}{{/each}} |
+      |-----------|{{#each subjects}}--------{{#unless @last}}|{{/unless}}{{/each}}|
+      {{#each attributes}}
+      | {{this.name}} | {{#each this.values}}{{this}}{{#unless @last}} | {{/unless}}{{/each}} |
+      {{/each}}
+      {{/comparison_table}}
+
+      ---
+
+      ## Detailed Results by Subject
+
+      {{#each subjects}}
+      ### {{this}}
+
+      {{#each (filter results (subject_matches this))}}
+      - **[[{{this.note_title}}]]** ({{this.composite_relevance}})
+        - {{this.excerpt}}
+        - *Sources: {{this.sources}}*
+      {{/each}}
+
+      {{/each}}
+
+  - id: results_timeline
+    title: Results (Timeline Format)
+    type: timeline
+    condition: result_format equals "timeline"
+    instruction: |
+      Present results as timeline for temporal queries.
+      Sort chronologically by creation/modification date.
+      Group by time periods (years, months).
+      Show evolution and changes over time.
+      Format: Chronological list with date markers.
+    template: |
+      ## Timeline
+
+      {{#timeline results}}
+      {{#each time_periods}}
+      ### {{this.period_label}}
+
+      {{#each this.results}}
+      - **{{this.timestamp}}** - [[{{this.note_title}}]]
+        - {{this.excerpt}}
+        {{#if this.event_type}}
+        - *Event: {{this.event_type}}*
+        {{/if}}
+        - *Relevance: {{this.composite_relevance}}*
+      {{/each}}
+
+      {{/each}}
+      {{/timeline}}
+
+  - id: contradictions
+    title: Contradictions Detected
+    type: template-text
+    condition: contradictions is not empty
+    instruction: |
+      Display detected contradictions when present.
+      Show both sides with source attribution and timestamps.
+      Include confidence score and contradiction type.
+      Only show if contradictions array is not empty.
+    template: |
+      ---
+
+      ## ⚠️ Contradictions Detected
+
+      {{#each contradictions}}
+      ### Contradiction {{@index+1}}: {{this.type}} (confidence: {{this.confidence}})
+
+      **Note A:** [[{{this.note_a.title}}]] ({{this.note_a.timestamp}})
+      > {{this.note_a.claim}}
+
+      **Note B:** [[{{this.note_b.title}}]] ({{this.note_b.timestamp}})
+      > {{this.note_b.claim}}
+
+      **Analysis:**
+      - Semantic similarity: {{this.similarity}} (claims about same topic)
+      - Contradiction confidence: {{this.confidence}}
+      - Type: {{this.type}}
+
+      {{#if (gt this.note_a.timestamp this.note_b.timestamp)}}
+      *Note A is newer - this may reflect an updated understanding.*
+      {{else}}
+      *Note B is newer - this may reflect an updated understanding.*
+      {{/if}}
+
+      ---
+
+      {{/each}}
+
+  - id: metadata
+    title: Query Metadata
+    type: template-text
+    instruction: |
+      Display technical metadata about query execution.
+      Include performance metrics, sources used, and result statistics.
+      Show as collapsible details section at end of results.
+    template: |
+      ---
+
+      <details>
+      <summary><strong>Query Metadata</strong></summary>
+
+      **Query Details:**
+      - Original query: "{{query}}"
+      - Intent: {{query_intent}}
+      - Classification confidence: {{confidence}}
+      - Result format: {{result_format}}
+
+      **Performance:**
+      - Total duration: {{query_duration_ms}}ms
+      - Total results: {{total_results}}
+      - Deduplicated results: {{deduplicated_count}}
+      - Contradictions detected: {{contradictions.length}}
+
+      **Data Sources:**
+      - Available: {{sources_available}}
+      {{#if sources_failed}}
+      - Failed: {{sources_failed}}
+      {{/if}}
+
+      **Result Distribution:**
+      - Highly relevant (>= 0.8): {{highly_relevant_count}}
+      - Relevant (>= 0.6): {{relevant_count}}
+      - Somewhat relevant (>= 0.4): {{somewhat_relevant_count}}
+
+      </details>
+
+  - id: next_steps
+    title: Suggested Next Steps
+    type: paragraphs
+    instruction: |
+      Suggest follow-up actions based on query results.
+      Recommend related queries or exploration paths.
+      Offer to refine or expand the search.
+    template: |
+      ---
+
+      ## Suggested Next Steps
+
+      {{#if (eq query_intent "factual")}}
+      - Use `*surface-related` to explore connections to "{{query}}"
+      - Try `*temporal-query` to see how "{{query}}" evolved over time
+      {{/if}}
+
+      {{#if (eq query_intent "temporal")}}
+      - Use `*compare` to contrast earlier vs. later understanding
+      - Try `*query` for factual summary of current state
+      {{/if}}
+
+      {{#if (eq query_intent "comparative")}}
+      - Use `*surface-related` to find more related concepts
+      - Try individual `*query` for deeper dive into each subject
+      {{/if}}
+
+      {{#if (gt contradictions.length 0)}}
+      - **Resolve contradictions:** Review the conflicting notes to determine which is more accurate
+      - Consider adding a synthesis note reconciling the differences
+      {{/if}}
+
+      {{#if (eq total_results 0)}}
+      - Try broadening your search terms
+      - Use `*surface-related` for exploratory search
+      - Check spelling and phrasing
+      {{/if}}
+
+---

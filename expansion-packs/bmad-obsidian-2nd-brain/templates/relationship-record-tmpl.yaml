@@ -1,0 +1,356 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: relationship-record-template-v1
+  name: Relationship Record
+  version: 1.0
+  description: Template for Neo4j [:CONCEPTUALLY_RELATED] relationship with bi-temporal metadata
+  output:
+    format: cypher
+    filename: "relationship-{{link_id}}.cypher"
+
+variables:
+  - name: link_id
+    description: Unique identifier for this link (UUID)
+    required: true
+  - name: source_note_id
+    description: Note ID of the source note
+    required: false
+  - name: source_note_title
+    description: Title of the source note
+    required: true
+  - name: source_note_path
+    description: Vault path to the source note
+    required: true
+  - name: target_note_id
+    description: Note ID of the target note
+    required: false
+  - name: target_note_title
+    description: Title of the target note
+    required: true
+  - name: target_note_path
+    description: Vault path to the target note
+    required: true
+  - name: link_type
+    description: Type of relationship (supports, contradicts, elaborates, analogous_to, generalizes, specializes, influences)
+    required: true
+  - name: strength
+    description: Link strength from 0.0 to 1.0
+    required: true
+  - name: discovered_at
+    description: ISO 8601 timestamp when this relationship was discovered
+    required: true
+  - name: context
+    description: Context sentence explaining the relationship
+    required: true
+  - name: valid_time_start
+    description: ISO 8601 timestamp when this relationship became valid (typically same as discovered_at)
+    required: true
+  - name: transaction_time
+    description: ISO 8601 timestamp when this record was created in the database (auto-generated)
+    required: false
+    default: "datetime()"
+
+workflow:
+  elicitation: false
+  mode: template
+
+sections:
+  - id: cypher_query
+    title: Cypher Query
+    type: template-text
+    instruction: |
+      Generate a parameterized Cypher query to create a [:CONCEPTUALLY_RELATED] relationship
+      between two notes with complete bi-temporal metadata.
+
+      The query uses MATCH to find existing Note nodes by their path property,
+      then creates a directed relationship with all required properties.
+
+      Bi-temporal metadata includes:
+      - valid_time_start: When the relationship became true/valid (domain time)
+      - transaction_time: When the relationship was recorded in the database (system time)
+
+      This allows temporal queries like "what relationships existed at time T" (valid time)
+      vs "what did we know at time T" (transaction time).
+    template: |
+      // Create [:CONCEPTUALLY_RELATED] relationship between notes
+      // Link ID: {{link_id}}
+      // Type: {{link_type}}
+      // Strength: {{strength}}
+
+      MATCH (source:Note {path: $source_path})
+      MATCH (target:Note {path: $target_path})
+      CREATE (source)-[r:CONCEPTUALLY_RELATED {
+        link_id: $link_id,
+        link_type: $link_type,
+        strength: $strength,
+        discovered_at: datetime($discovered_at),
+        context: $context,
+        valid_time_start: datetime($valid_time_start),
+        transaction_time: datetime()
+      }]->(target)
+      RETURN r
+
+  - id: parameters
+    title: Query Parameters
+    type: template-text
+    instruction: |
+      Document the parameters that should be passed to this Cypher query.
+      These prevent Cypher injection by separating query structure from data.
+    template: |
+      // Parameters:
+      // {
+      //   "source_path": "{{source_note_path}}",
+      //   "target_path": "{{target_note_path}}",
+      //   "link_id": "{{link_id}}",
+      //   "link_type": "{{link_type}}",
+      //   "strength": {{strength}},
+      //   "discovered_at": "{{discovered_at}}",
+      //   "context": "{{context}}",
+      //   "valid_time_start": "{{valid_time_start}}"
+      // }
+
+  - id: metadata_documentation
+    title: Bi-Temporal Metadata Documentation
+    type: paragraphs
+    instruction: |
+      Explain the bi-temporal metadata model used for relationship tracking.
+    template: |
+      // Bi-Temporal Metadata:
+      //
+      // This relationship uses a bi-temporal data model with two independent time dimensions:
+      //
+      // 1. Valid Time (valid_time_start):
+      //    - Represents when the relationship became true in the real world
+      //    - Domain time - when did this conceptual relationship actually exist?
+      //    - Typically the time when the link was discovered/created
+      //    - Used for queries like "what relationships existed on 2025-11-01?"
+      //
+      // 2. Transaction Time (transaction_time):
+      //    - Represents when the relationship was recorded in the database
+      //    - System time - when did we learn about this relationship?
+      //    - Auto-generated at creation time using datetime()
+      //    - Used for queries like "what did we know as of 2025-11-01?"
+      //
+      // Together, these enable temporal analysis of knowledge graph evolution:
+      // - Retrospective correction (fixing past errors without losing audit trail)
+      // - Historical queries (what was the graph state at any past moment?)
+      // - Provenance tracking (when was each relationship discovered vs recorded?)
+
+examples:
+  - |
+    // Create [:CONCEPTUALLY_RELATED] relationship between notes
+    // Link ID: c3f5a921-4b2e-4d1a-9e8f-7c3d2b1a0f4e
+    // Type: supports
+    // Strength: 0.82
+
+    MATCH (source:Note {path: $source_path})
+    MATCH (target:Note {path: $target_path})
+    CREATE (source)-[r:CONCEPTUALLY_RELATED {
+      link_id: $link_id,
+      link_type: $link_type,
+      strength: $strength,
+      discovered_at: datetime($discovered_at),
+      context: $context,
+      valid_time_start: datetime($valid_time_start),
+      transaction_time: datetime()
+    }]->(target)
+    RETURN r
+
+    // Parameters:
+    // {
+    //   "source_path": "atomic/argument-01-spaced-repetition-superiority.md",
+    //   "target_path": "atomic/phenomenon-01-ebbinghaus-forgetting-curve.md",
+    //   "link_id": "c3f5a921-4b2e-4d1a-9e8f-7c3d2b1a0f4e",
+    //   "link_type": "supports",
+    //   "strength": 0.82,
+    //   "discovered_at": "2025-11-05T14:30:00Z",
+    //   "context": "The forgetting curve provides empirical evidence for why distributed practice outperforms cramming",
+    //   "valid_time_start": "2025-11-05T14:30:00Z"
+    // }
+
+  - |
+    // Create [:CONCEPTUALLY_RELATED] relationship between notes
+    // Link ID: a7b3c9e2-1f4d-4a8c-b5e3-9d2a7f1c8e4b
+    // Type: contradicts
+    // Strength: 0.68
+
+    MATCH (source:Note {path: $source_path})
+    MATCH (target:Note {path: $target_path})
+    CREATE (source)-[r:CONCEPTUALLY_RELATED {
+      link_id: $link_id,
+      link_type: $link_type,
+      strength: $strength,
+      discovered_at: datetime($discovered_at),
+      context: $context,
+      valid_time_start: datetime($valid_time_start),
+      transaction_time: datetime()
+    }]->(target)
+    RETURN r
+
+    // Parameters:
+    // {
+    //   "source_path": "atomic/argument-02-handwriting-vs-typing.md",
+    //   "target_path": "atomic/claim-01-memory-is-reconstructive.md",
+    //   "link_id": "a7b3c9e2-1f4d-4a8c-b5e3-9d2a7f1c8e4b",
+    //   "link_type": "contradicts",
+    //   "strength": 0.68,
+    //   "discovered_at": "2025-11-05T14:35:00Z",
+    //   "context": "This claim about memory reconstruction challenges the assumption that handwriting creates durable traces",
+    //   "valid_time_start": "2025-11-05T14:35:00Z"
+    // }
+
+  - |
+    // Create [:CONCEPTUALLY_RELATED] relationship between notes
+    // Link ID: e9f2d4a6-3c1b-4e8d-a7f3-2b5c9e1d4a8f
+    // Type: elaborates
+    // Strength: 0.74
+
+    MATCH (source:Note {path: $source_path})
+    MATCH (target:Note {path: $target_path})
+    CREATE (source)-[r:CONCEPTUALLY_RELATED {
+      link_id: $link_id,
+      link_type: $link_type,
+      strength: $strength,
+      discovered_at: datetime($discovered_at),
+      context: $context,
+      valid_time_start: datetime($valid_time_start),
+      transaction_time: datetime()
+    }]->(target)
+    RETURN r
+
+    // Parameters:
+    // {
+    //   "source_path": "atomic/concept-01-zettelkasten-atomicity.md",
+    //   "target_path": "atomic/concept-03-evergreen-notes.md",
+    //   "link_id": "e9f2d4a6-3c1b-4e8d-a7f3-2b5c9e1d4a8f",
+    //   "link_type": "elaborates",
+    //   "strength": 0.74,
+    //   "discovered_at": "2025-11-05T14:40:00Z",
+    //   "context": "Atomic notes are the foundation of evergreen notes which can stand alone and be continuously refined",
+    //   "valid_time_start": "2025-11-05T14:40:00Z"
+    // }
+
+  - |
+    // Create [:CONCEPTUALLY_RELATED] relationship between notes
+    // Link ID: b2d8e5f3-7a4c-4e9b-a1d6-3f8c2b5e9a7d
+    // Type: analogous_to
+    // Strength: 0.71
+
+    MATCH (source:Note {path: $source_path})
+    MATCH (target:Note {path: $target_path})
+    CREATE (source)-[r:CONCEPTUALLY_RELATED {
+      link_id: $link_id,
+      link_type: $link_type,
+      strength: $strength,
+      discovered_at: datetime($discovered_at),
+      context: $context,
+      valid_time_start: datetime($valid_time_start),
+      transaction_time: datetime()
+    }]->(target)
+    RETURN r
+
+    // Parameters:
+    // {
+    //   "source_path": "atomic/model-01-para-method.md",
+    //   "target_path": "atomic/model-02-gtd-workflow.md",
+    //   "link_id": "b2d8e5f3-7a4c-4e9b-a1d6-3f8c2b5e9a7d",
+    //   "link_type": "analogous_to",
+    //   "strength": 0.71,
+    //   "discovered_at": "2025-11-05T14:45:00Z",
+    //   "context": "Both provide systematic frameworks for organizing information and managing workflow",
+    //   "valid_time_start": "2025-11-05T14:45:00Z"
+    // }
+
+  - |
+    // Create [:CONCEPTUALLY_RELATED] relationship between notes
+    // Link ID: d5f9a3c1-2e7b-4d8a-b6f3-1c9e5a2d8b4f
+    // Type: generalizes
+    // Strength: 0.69
+
+    MATCH (source:Note {path: $source_path})
+    MATCH (target:Note {path: $target_path})
+    CREATE (source)-[r:CONCEPTUALLY_RELATED {
+      link_id: $link_id,
+      link_type: $link_type,
+      strength: $strength,
+      discovered_at: datetime($discovered_at),
+      context: $context,
+      valid_time_start: datetime($valid_time_start),
+      transaction_time: datetime()
+    }]->(target)
+    RETURN r
+
+    // Parameters:
+    // {
+    //   "source_path": "atomic/concept-04-active-recall.md",
+    //   "target_path": "atomic/concept-05-flashcard-technique.md",
+    //   "link_id": "d5f9a3c1-2e7b-4d8a-b6f3-1c9e5a2d8b4f",
+    //   "link_type": "generalizes",
+    //   "strength": 0.69,
+    //   "discovered_at": "2025-11-05T14:50:00Z",
+    //   "context": "Active recall is the general principle that flashcards implement as a specific technique",
+    //   "valid_time_start": "2025-11-05T14:50:00Z"
+    // }
+
+  - |
+    // Create [:CONCEPTUALLY_RELATED] relationship between notes
+    // Link ID: f8a2d6c4-3b9e-4f1c-a7d5-2e8b9c1f5a3d
+    // Type: specializes
+    // Strength: 0.73
+
+    MATCH (source:Note {path: $source_path})
+    MATCH (target:Note {path: $target_path})
+    CREATE (source)-[r:CONCEPTUALLY_RELATED {
+      link_id: $link_id,
+      link_type: $link_type,
+      strength: $strength,
+      discovered_at: datetime($discovered_at),
+      context: $context,
+      valid_time_start: datetime($valid_time_start),
+      transaction_time: datetime()
+    }]->(target)
+    RETURN r
+
+    // Parameters:
+    // {
+    //   "source_path": "atomic/model-03-zettelkasten-numeric-ids.md",
+    //   "target_path": "atomic/concept-06-unique-identifiers.md",
+    //   "link_id": "f8a2d6c4-3b9e-4f1c-a7d5-2e8b9c1f5a3d",
+    //   "link_type": "specializes",
+    //   "strength": 0.73,
+    //   "discovered_at": "2025-11-05T14:55:00Z",
+    //   "context": "Zettelkasten numeric IDs are a specific implementation of the broader unique identifier concept",
+    //   "valid_time_start": "2025-11-05T14:55:00Z"
+    // }
+
+  - |
+    // Create [:CONCEPTUALLY_RELATED] relationship between notes
+    // Link ID: c9e1f5a7-4d2b-4e8c-b3f6-9a1d7c2e5b8f
+    // Type: influences
+    // Strength: 0.66
+
+    MATCH (source:Note {path: $source_path})
+    MATCH (target:Note {path: $target_path})
+    CREATE (source)-[r:CONCEPTUALLY_RELATED {
+      link_id: $link_id,
+      link_type: $link_type,
+      strength: $strength,
+      discovered_at: datetime($discovered_at),
+      context: $context,
+      valid_time_start: datetime($valid_time_start),
+      transaction_time: datetime()
+    }]->(target)
+    RETURN r
+
+    // Parameters:
+    // {
+    //   "source_path": "atomic/phenomenon-02-baader-meinhof-effect.md",
+    //   "target_path": "atomic/question-02-confirmation-bias-vs-frequency-illusion.md",
+    //   "link_id": "c9e1f5a7-4d2b-4e8c-b3f6-9a1d7c2e5b8f",
+    //   "link_type": "influences",
+    //   "strength": 0.66,
+    //   "discovered_at": "2025-11-05T15:00:00Z",
+    //   "context": "Observing the Baader-Meinhof effect led to the question about its relationship to confirmation bias",
+    //   "valid_time_start": "2025-11-05T15:00:00Z"
+    // }

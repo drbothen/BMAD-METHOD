@@ -1,0 +1,328 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: link-suggestion-template-v1
+  name: Link Suggestion
+  version: 1.0
+  description: Template for semantic link suggestions between atomic notes
+  output:
+    format: markdown
+    filename: "link-suggestion-{{suggestion_id}}.md"
+
+variables:
+  - name: suggestion_id
+    description: Unique identifier for this link suggestion
+    required: true
+  - name: source_note_title
+    description: Title of the source note
+    required: true
+  - name: source_note_path
+    description: Vault path to the source note
+    required: true
+  - name: source_building_block
+    description: Building block type of source note (concept, argument, model, etc.)
+    required: true
+  - name: target_note_title
+    description: Title of the target note
+    required: true
+  - name: target_note_path
+    description: Vault path to the target note
+    required: true
+  - name: target_building_block
+    description: Building block type of target note (concept, argument, model, etc.)
+    required: true
+  - name: relationship_type
+    description: Type of relationship (supports, contradicts, elaborates, analogous_to, generalizes, specializes, influences)
+    required: true
+  - name: link_strength
+    description: Link strength score from 0.0 to 1.0
+    required: true
+  - name: strength_classification
+    description: Classification of strength (strong, medium, weak)
+    required: true
+  - name: strength_explanation
+    description: Explanation of why this link strength was calculated
+    required: true
+  - name: reasoning
+    description: Why these notes should be linked (conceptual relationship explanation)
+    required: true
+  - name: semantic_similarity_score
+    description: Semantic similarity score from Smart Connections (0.0-1.0)
+    required: true
+  - name: shared_concepts
+    description: Overlapping concepts between the notes
+    required: true
+  - name: suggested_context_forward
+    description: Context sentence for the link in source note pointing to target
+    required: true
+  - name: suggested_context_backward
+    description: Context sentence for the link in target note pointing back to source
+    required: true
+  - name: confidence_score
+    description: Overall confidence in this suggestion (0.0-1.0)
+    required: true
+  - name: discovered_at
+    description: ISO 8601 timestamp when this suggestion was generated
+    required: true
+
+workflow:
+  elicitation: false
+  mode: template
+
+sections:
+  - id: header
+    title: Link Suggestion Header
+    type: template-text
+    instruction: |
+      Generate header with suggestion metadata including ID and timestamp.
+    template: |
+      # Link Suggestion {{suggestion_id}}
+
+      **Generated:** {{discovered_at}}
+      **Confidence:** {{confidence_score}}
+
+  - id: source_note
+    title: Source Note Information
+    type: template-text
+    instruction: |
+      Provide complete information about the source note including title, path, and building block type.
+    template: |
+      ## Source Note
+
+      **Title:** {{source_note_title}}
+      **Path:** `{{source_note_path}}`
+      **Building Block:** {{source_building_block}}
+
+  - id: target_note
+    title: Target Note Information
+    type: template-text
+    instruction: |
+      Provide complete information about the target note including title, path, and building block type.
+    template: |
+      ## Target Note
+
+      **Title:** {{target_note_title}}
+      **Path:** `{{target_note_path}}`
+      **Building Block:** {{target_building_block}}
+
+  - id: relationship
+    title: Relationship Analysis
+    type: template-text
+    instruction: |
+      Document the identified relationship type and link strength with classification.
+      Relationship type must be one of: supports, contradicts, elaborates, analogous_to, generalizes, specializes, influences.
+      Strength classification: strong (>= 0.7), medium (0.5-0.7), weak (< 0.5).
+    template: |
+      ## Relationship Type
+
+      **Type:** {{relationship_type}}
+      **Link Strength:** {{link_strength}} ({{strength_classification}})
+
+      ### Strength Explanation
+
+      {{strength_explanation}}
+
+  - id: reasoning
+    title: Reasoning
+    type: paragraphs
+    instruction: |
+      Explain WHY these notes should be linked - what is the conceptual relationship?
+      Focus on the semantic meaning, not just keyword overlap.
+      This should convince the user that the link is valuable.
+    template: |
+      ## Reasoning
+
+      {{reasoning}}
+
+  - id: semantic_similarity
+    title: Semantic Similarity Analysis
+    type: template-text
+    instruction: |
+      Document the semantic similarity score from Smart Connections and the shared concepts.
+      This shows the technical basis for the suggestion.
+    template: |
+      ## Semantic Similarity
+
+      **Similarity Score:** {{semantic_similarity_score}}
+
+      **Shared Concepts:**
+      {{shared_concepts}}
+
+  - id: suggested_context
+    title: Suggested Context Sentences
+    type: template-text
+    instruction: |
+      Provide context sentences that explain the link for both directions.
+      These will be inserted next to the wikilinks in the actual notes.
+    template: |
+      ## Suggested Context
+
+      **In {{source_note_title}} → {{target_note_title}}:**
+      {{suggested_context_forward}}
+
+      **In {{target_note_title}} → {{source_note_title}}:**
+      {{suggested_context_backward}}
+
+examples:
+  - |
+    # Link Suggestion c3f5a921-4b2e-4d1a-9e8f-7c3d2b1a0f4e
+
+    **Generated:** 2025-11-05T14:30:00Z
+    **Confidence:** 0.85
+
+    ## Source Note
+
+    **Title:** Spaced Repetition Superior to Massed Practice
+    **Path:** `atomic/argument-01-spaced-repetition-superiority.md`
+    **Building Block:** argument
+
+    ## Target Note
+
+    **Title:** Ebbinghaus Forgetting Curve
+    **Path:** `atomic/phenomenon-01-ebbinghaus-forgetting-curve.md`
+    **Building Block:** phenomenon
+
+    ## Relationship Type
+
+    **Type:** supports
+    **Link Strength:** 0.82 (strong)
+
+    ### Strength Explanation
+
+    This link has strong strength (0.82) because:
+    - Semantic similarity: 0.76 (Smart Connections)
+    - Contextual relevance: 0.85 (shared concepts: memory, learning, retention, cognitive-psychology)
+    - Temporal proximity: 0.20 (both notes created within same week)
+    - Formula: (0.5 × 0.76) + (0.3 × 0.85) + (0.2 × 0.20) = 0.82
+
+    ## Reasoning
+
+    The argument about spaced repetition superiority is directly SUPPORTED by the Ebbinghaus forgetting curve phenomenon. The forgetting curve provides empirical evidence for why spaced repetition works - it shows that memory decays exponentially without reinforcement, which is exactly what spaced repetition addresses by providing reinforcement at strategic intervals. This is a classic evidence-supports-claim relationship where the phenomenon provides the scientific foundation for the argument's thesis.
+
+    ## Semantic Similarity
+
+    **Similarity Score:** 0.76
+
+    **Shared Concepts:**
+    - memory
+    - learning
+    - retention
+    - cognitive-psychology
+    - forgetting
+    - retrieval-practice
+
+    ## Suggested Context
+
+    **In Spaced Repetition Superior to Massed Practice → Ebbinghaus Forgetting Curve:**
+    The forgetting curve provides empirical evidence for why distributed practice outperforms cramming by showing exponential memory decay without reinforcement.
+
+    **In Ebbinghaus Forgetting Curve → Spaced Repetition Superior to Massed Practice:**
+    This phenomenon supports the argument for spaced repetition by demonstrating the natural decay of memory that spacing combats.
+
+  - |
+    # Link Suggestion a7b3c9e2-1f4d-4a8c-b5e3-9d2a7f1c8e4b
+
+    **Generated:** 2025-11-05T14:35:00Z
+    **Confidence:** 0.72
+
+    ## Source Note
+
+    **Title:** Handwriting vs Typing for Learning
+    **Path:** `atomic/argument-02-handwriting-vs-typing.md`
+    **Building Block:** argument
+
+    ## Target Note
+
+    **Title:** Memory is Reconstructive Not Reproductive
+    **Path:** `atomic/claim-01-memory-is-reconstructive.md`
+    **Building Block:** claim
+
+    ## Relationship Type
+
+    **Type:** contradicts
+    **Link Strength:** 0.68 (medium)
+
+    ### Strength Explanation
+
+    This link has medium strength (0.68) because:
+    - Semantic similarity: 0.64 (Smart Connections)
+    - Contextual relevance: 0.70 (shared concepts: memory, learning, cognition)
+    - Temporal proximity: 0.10 (notes created different weeks)
+    - Formula: (0.5 × 0.64) + (0.3 × 0.70) + (0.2 × 0.10) = 0.68
+
+    ## Reasoning
+
+    These notes present CONTRADICTORY views on learning mechanisms. The handwriting argument assumes that the motor encoding process creates more durable memory traces (implying reproductive memory), while the memory reconstruction claim argues that memories are actively rebuilt rather than retrieved intact. This contradiction highlights a tension between mechanistic encoding theories and constructivist memory theories. The relationship is valuable because it exposes an underlying theoretical conflict that users should be aware of when considering both notes.
+
+    ## Semantic Similarity
+
+    **Similarity Score:** 0.64
+
+    **Shared Concepts:**
+    - memory
+    - learning
+    - cognition
+    - encoding
+
+    ## Suggested Context
+
+    **In Handwriting vs Typing for Learning → Memory is Reconstructive Not Reproductive:**
+    However, this claim about memory reconstruction challenges the assumption that handwriting creates durable traces, suggesting memories are rebuilt rather than retrieved.
+
+    **In Memory is Reconstructive Not Reproductive → Handwriting vs Typing for Learning:**
+    This contradicts the encoding-focused handwriting argument by suggesting memories aren't preserved traces but active reconstructions.
+
+  - |
+    # Link Suggestion e9f2d4a6-3c1b-4e8d-a7f3-2b5c9e1d4a8f
+
+    **Generated:** 2025-11-05T14:40:00Z
+    **Confidence:** 0.78
+
+    ## Source Note
+
+    **Title:** Zettelkasten Principle - Atomicity
+    **Path:** `atomic/concept-01-zettelkasten-atomicity.md`
+    **Building Block:** concept
+
+    ## Target Note
+
+    **Title:** Evergreen Notes
+    **Path:** `atomic/concept-03-evergreen-notes.md`
+    **Building Block:** concept
+
+    ## Relationship Type
+
+    **Type:** elaborates
+    **Link Strength:** 0.74 (strong)
+
+    ### Strength Explanation
+
+    This link has strong strength (0.74) because:
+    - Semantic similarity: 0.78 (Smart Connections)
+    - Contextual relevance: 0.75 (shared concepts: knowledge-management, zettelkasten, note-taking, atomicity)
+    - Temporal proximity: 0.05 (notes created different months)
+    - Formula: (0.5 × 0.78) + (0.3 × 0.75) + (0.2 × 0.05) = 0.74
+
+    ## Reasoning
+
+    The atomicity concept ELABORATES on evergreen notes by explaining a foundational principle that makes evergreen notes possible. Evergreen notes are notes that stand alone and can be continuously refined, which requires them to be atomic - containing single, complete ideas. The atomicity principle provides the detailed mechanism (one idea per note, self-contained, recombinable) that enables the evergreen note paradigm. This is an elaboration relationship where one concept explains the underlying principle of another.
+
+    ## Semantic Similarity
+
+    **Similarity Score:** 0.78
+
+    **Shared Concepts:**
+    - knowledge-management
+    - zettelkasten
+    - note-taking
+    - atomicity
+    - linking
+    - evergreen
+
+    ## Suggested Context
+
+    **In Zettelkasten Principle - Atomicity → Evergreen Notes:**
+    Atomic notes are the foundation of evergreen notes, which can stand alone and be continuously refined because they contain single, complete ideas.
+
+    **In Evergreen Notes → Zettelkasten Principle - Atomicity:**
+    Evergreen notes depend on the atomicity principle to ensure each note contains exactly one idea that can evolve independently.

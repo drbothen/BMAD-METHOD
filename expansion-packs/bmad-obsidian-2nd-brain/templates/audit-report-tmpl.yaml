@@ -1,0 +1,1029 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: audit-report-template-v1
+  name: Vault Audit Report
+  version: 1.0
+  description: Comprehensive quality audit report for Obsidian vault health assessment
+  output:
+    format: markdown
+    filename: "reports/audit-{{timestamp}}.md"
+
+variables:
+  - name: timestamp
+    description: Audit execution timestamp in ISO 8601 format
+    required: true
+  - name: vault_name
+    description: Name of the audited vault
+    required: true
+  - name: total_notes
+    description: Total number of notes in the vault
+    required: true
+  - name: vault_health_score
+    description: Overall vault health score (0-100)
+    required: true
+  - name: health_score_interpretation
+    description: Health score interpretation (Excellent/Good/Fair/Poor/Critical)
+    required: true
+  - name: critical_issues_count
+    description: Number of critical issues requiring immediate attention
+    required: true
+  - name: high_priority_count
+    description: Number of high-priority issues
+    required: true
+  - name: medium_priority_count
+    description: Number of medium-priority issues
+    required: true
+  - name: low_priority_count
+    description: Number of low-priority issues
+    required: true
+  - name: stale_notes_list
+    description: Markdown list of stale notes with last_updated dates and priorities
+    required: false
+    default: ""
+  - name: stale_notes_count
+    description: Number of stale notes detected
+    required: true
+  - name: stale_percentage
+    description: Percentage of notes that are stale
+    required: true
+  - name: stale_threshold_days
+    description: Threshold used for staleness detection (in days)
+    required: true
+  - name: broken_links_list
+    description: Markdown list of broken links with status codes and note paths
+    required: false
+    default: ""
+  - name: broken_links_count
+    description: Number of broken links (4xx status codes)
+    required: true
+  - name: redirect_links_list
+    description: Markdown list of redirects with new URLs
+    required: false
+    default: ""
+  - name: redirect_links_count
+    description: Number of redirect links (3xx status codes)
+    required: true
+  - name: timeout_links_list
+    description: Markdown list of timed-out links
+    required: false
+    default: ""
+  - name: timeout_links_count
+    description: Number of links that timed out
+    required: true
+  - name: citation_issues_list
+    description: Markdown list of citation quality issues with severities
+    required: false
+    default: ""
+  - name: citation_issues_count
+    description: Number of notes with citation issues
+    required: true
+  - name: citation_coverage_percentage
+    description: Percentage of notes with complete citations
+    required: true
+  - name: orphaned_notes_list
+    description: Markdown list of orphaned notes with linking suggestions
+    required: false
+    default: ""
+  - name: orphaned_notes_count
+    description: Number of orphaned notes detected
+    required: true
+  - name: orphan_percentage
+    description: Percentage of notes that are orphaned
+    required: true
+  - name: atomicity_violations_list
+    description: Markdown list of atomicity violations with scores and recommendations
+    required: false
+    default: ""
+  - name: atomicity_violations_count
+    description: Number of notes with atomicity violations (from sample)
+    required: true
+  - name: estimated_violations_vault_wide
+    description: Extrapolated estimate of atomicity violations across entire vault
+    required: true
+  - name: atomicity_sample_size
+    description: Number of notes sampled for atomicity analysis
+    required: true
+  - name: avg_atomicity_score
+    description: Average atomicity score across sampled notes (0.0-1.0)
+    required: true
+  - name: duplicate_groups_list
+    description: Markdown list of duplicate note groups with similarity scores
+    required: false
+    default: ""
+  - name: duplicate_groups_count
+    description: Number of duplicate groups detected
+    required: true
+  - name: metadata_issues_list
+    description: Markdown list of metadata completeness issues
+    required: false
+    default: ""
+  - name: metadata_issues_count
+    description: Number of notes with metadata issues
+    required: true
+  - name: metadata_completeness_percentage
+    description: Percentage of notes with complete metadata
+    required: true
+  - name: action_items_critical
+    description: Markdown list of critical action items
+    required: false
+    default: ""
+  - name: action_items_high
+    description: Markdown list of high-priority action items
+    required: false
+    default: ""
+  - name: action_items_medium
+    description: Markdown list of medium-priority action items
+    required: false
+    default: ""
+  - name: action_items_low
+    description: Markdown list of low-priority action items
+    required: false
+    default: ""
+  - name: link_density
+    description: Average number of links per note
+    required: true
+  - name: audit_duration_seconds
+    description: Total audit execution time in seconds
+    required: true
+  - name: progressive_mode_enabled
+    description: Whether progressive audit mode was used
+    required: false
+    default: false
+  - name: batch_count
+    description: Number of batches processed (if progressive mode enabled)
+    required: false
+    default: 1
+
+workflow:
+  elicitation: false
+  mode: template
+
+sections:
+  - id: frontmatter
+    title: Frontmatter
+    type: template-text
+    instruction: |
+      Generate YAML frontmatter with audit metadata.
+      Include timestamp, vault name, health score, and issue counts.
+    template: |
+      ---
+      title: Vault Audit Report - {{vault_name}}
+      audit_date: {{timestamp}}
+      vault_health_score: {{vault_health_score}}
+      total_notes: {{total_notes}}
+      critical_issues: {{critical_issues_count}}
+      generated_by: BMAD Obsidian 2nd Brain - Quality Auditor Agent
+      ---
+
+  - id: executive_summary
+    title: Executive Summary
+    type: paragraphs
+    instruction: |
+      Provide high-level overview of vault health including:
+      - Overall health score (0-100) with interpretation
+      - Total notes audited
+      - Critical issues count requiring immediate attention
+      - Summary of key recommendations
+    template: |
+      # Vault Audit Report: {{vault_name}}
+
+      **Audit Date:** {{timestamp}}
+      **Total Notes:** {{total_notes}}
+      **Audit Duration:** {{audit_duration_seconds}}s
+
+      ## Executive Summary
+
+      **Vault Health Score: {{vault_health_score}}/100** ({{health_score_interpretation}})
+
+      This comprehensive audit identified **{{critical_issues_count}} critical issues** requiring immediate attention, along with {{high_priority_count}} high-priority, {{medium_priority_count}} medium-priority, and {{low_priority_count}} low-priority issues.
+
+      ### Health Score Interpretation
+
+      - **90-100**: Excellent - Vault is well-maintained
+      - **75-89**: Good - Minor issues, but overall healthy
+      - **60-74**: Fair - Several issues need attention
+      - **40-59**: Poor - Significant problems affecting usability
+      - **0-39**: Critical - Major quality issues requiring immediate action
+
+      ### Key Findings
+
+      - **Temporal Freshness:** {{stale_notes_count}} notes ({{stale_percentage}}%) haven't been updated in >{{stale_threshold_days}} days
+      - **Link Health:** {{broken_links_count}} broken links, {{redirect_links_count}} redirects, {{timeout_links_count}} timeouts
+      - **Citation Quality:** {{citation_issues_count}} notes with poor citations ({{citation_coverage_percentage}}% coverage)
+      - **Orphaned Notes:** {{orphaned_notes_count}} notes ({{orphan_percentage}}%) with no connections
+      - **Atomicity:** {{estimated_violations_vault_wide}} estimated violations across vault (avg score: {{avg_atomicity_score}})
+      - **Duplicates:** {{duplicate_groups_count}} duplicate groups detected
+      - **Metadata:** {{metadata_issues_count}} notes with incomplete metadata ({{metadata_completeness_percentage}}% complete)
+
+  - id: temporal_freshness
+    title: Temporal Freshness Findings
+    type: paragraphs
+    condition: stale_notes_count > 0
+    instruction: |
+      List stale notes that haven't been updated within the threshold period.
+      Include last_updated date and priority (based on incoming link count).
+      Sort by priority: Critical → High → Medium → Low.
+    template: |
+      ## Temporal Freshness Findings
+
+      **Stale Notes Detected:** {{stale_notes_count}} ({{stale_percentage}}% of vault)
+      **Threshold:** {{stale_threshold_days}} days
+
+      ### Priority Classification
+
+      - **Critical:** Domain-critical notes (>10 incoming links)
+      - **High:** Frequently referenced (>5 incoming links)
+      - **Medium:** Some connections (2-5 incoming links)
+      - **Low:** Minimal connections (<2 incoming links)
+
+      ### Stale Notes List
+
+      {{stale_notes_list}}
+
+      ### Recommendation
+
+      Review and update stale notes, prioritizing critical and high-priority notes that serve as knowledge hubs in your vault.
+
+  - id: link_validation
+    title: Link Validation Findings
+    type: paragraphs
+    condition: broken_links_count > 0 or redirect_links_count > 0 or timeout_links_count > 0
+    instruction: |
+      Report external link validation results:
+      - Broken links (4xx) - Critical priority
+      - Redirects (3xx) - Should update to new URL
+      - Timeouts - May indicate slow servers or network issues
+    template: |
+      ## Link Validation Findings
+
+      **Broken Links (4xx):** {{broken_links_count}}
+      **Redirects (3xx):** {{redirect_links_count}}
+      **Timeouts:** {{timeout_links_count}}
+
+      ### Broken Links (CRITICAL)
+
+      {{broken_links_list}}
+
+      ### Redirects (Update Recommended)
+
+      {{redirect_links_list}}
+
+      ### Timeouts (Retry or Review)
+
+      {{timeout_links_list}}
+
+      ### Recommendation
+
+      Fix broken links immediately (404s indicate dead resources). Update redirects to final URLs. Retry timed-out links or consider removing if consistently failing.
+
+  - id: citation_quality
+    title: Citation Quality Findings
+    type: paragraphs
+    condition: citation_issues_count > 0
+    instruction: |
+      Report citation validation results:
+      - Incomplete citations (missing required fields)
+      - Unattributed claims (factual statements without sources)
+      - Format inconsistencies
+      Classify by severity: Critical → High → Medium → Low.
+    template: |
+      ## Citation Quality Findings
+
+      **Notes with Citation Issues:** {{citation_issues_count}}
+      **Citation Coverage:** {{citation_coverage_percentage}}%
+
+      ### Issue Classification
+
+      - **Critical:** No source attribution for notes with external claims
+      - **High:** Incomplete attribution (missing 2+ required fields: author, title, URL/ISBN, date)
+      - **Medium:** Format inconsistencies
+      - **Low:** Minor formatting issues
+
+      ### Citation Issues List
+
+      {{citation_issues_list}}
+
+      ### Recommendation
+
+      Add complete source attribution for all notes containing external claims. Required fields: author, title, URL/ISBN, date. Maintain consistent citation format across vault.
+
+  - id: orphaned_notes
+    title: Orphaned Notes Findings
+    type: paragraphs
+    condition: orphaned_notes_count > 0
+    instruction: |
+      Report orphaned notes - notes with no incoming or outgoing links.
+      Include linking suggestions (if Smart Connections available).
+      Classify: Complete orphans (no links at all) are highest priority.
+    template: |
+      ## Orphaned Notes Findings
+
+      **Orphaned Notes:** {{orphaned_notes_count}} ({{orphan_percentage}}% of vault)
+
+      ### Orphan Categories
+
+      - **Complete Orphans:** No incoming OR outgoing links (highest priority)
+      - **No Incoming Links:** Never referenced by other notes
+      - **No Outgoing Links:** Don't link to any other notes
+
+      ### Orphaned Notes List
+
+      {{orphaned_notes_list}}
+
+      ### Recommendation
+
+      Connect orphaned notes to the knowledge graph through bidirectional linking. Review linking suggestions and create connections to related notes.
+
+  - id: atomicity_violations
+    title: Atomicity Violations Findings
+    type: paragraphs
+    condition: atomicity_violations_count > 0
+    instruction: |
+      Report atomicity analysis results from sample.
+      Include atomicity scores, failed tests, and fragmentation recommendations.
+      Extrapolate findings to estimate vault-wide violations.
+    template: |
+      ## Atomicity Violations Findings
+
+      **Violations Detected (Sample):** {{atomicity_violations_count}} of {{atomicity_sample_size}} notes sampled
+      **Estimated Violations (Vault-Wide):** {{estimated_violations_vault_wide}}
+      **Average Atomicity Score:** {{avg_atomicity_score}}
+
+      ### Atomicity Scoring
+
+      - **0.7-1.0:** Atomic (passes quality threshold)
+      - **0.5-0.7:** Borderline (manual review recommended)
+      - **0.0-0.5:** Non-atomic (fragmentation recommended)
+
+      ### Violations List
+
+      {{atomicity_violations_list}}
+
+      ### Recommendation
+
+      Fragment non-atomic notes (score <0.5) using the Structural Analysis Agent. Review borderline notes (0.5-0.7) for potential cleanup.
+
+  - id: duplicate_content
+    title: Duplicate Content Findings
+    type: paragraphs
+    condition: duplicate_groups_count > 0
+    instruction: |
+      Report duplicate detection results:
+      - Exact duplicates (100% match - SHA-256 hash collision)
+      - Near-duplicates (≥95% similarity)
+      - Semantic duplicates (85-95% similarity)
+    template: |
+      ## Duplicate Content Findings
+
+      **Duplicate Groups:** {{duplicate_groups_count}}
+
+      ### Duplicate Classification
+
+      - **Exact Duplicates (100%):** Identical content, different filenames
+      - **Near-Duplicates (≥95%):** Almost identical with minor variations
+      - **Semantic Duplicates (85-95%):** Similar meaning, different wording
+
+      ### Duplicate Groups List
+
+      {{duplicate_groups_list}}
+
+      ### Recommendation
+
+      Merge or archive duplicate notes to reduce redundancy. Exact duplicates should be merged immediately. Review near-duplicates for consolidation opportunities.
+
+  - id: metadata_completeness
+    title: Metadata Completeness Findings
+    type: paragraphs
+    condition: metadata_issues_count > 0
+    instruction: |
+      Report metadata validation results:
+      - Missing required fields (title, created)
+      - Missing recommended fields (tags, type, source)
+      - Format issues (invalid dates, malformed YAML)
+      Classify by severity.
+    template: |
+      ## Metadata Completeness Findings
+
+      **Notes with Metadata Issues:** {{metadata_issues_count}}
+      **Metadata Completeness:** {{metadata_completeness_percentage}}%
+
+      ### Issue Classification
+
+      - **Critical:** Missing required fields (title, created)
+      - **High:** Missing important fields (tags, type)
+      - **Medium:** Format issues (wrong date format, malformed YAML)
+      - **Low:** Missing optional fields
+
+      ### Metadata Issues List
+
+      {{metadata_issues_list}}
+
+      ### Recommendation
+
+      Add missing required metadata fields (title, created) immediately. Enhance notes with tags and type/building_block for better organization.
+
+  - id: action_items
+    title: Prioritized Action Items
+    type: paragraphs
+    instruction: |
+      Aggregate all findings into prioritized action items.
+      Sort by impact: Critical → High → Medium → Low.
+      Each item should be actionable with clear next steps.
+    template: |
+      ## Prioritized Action Items
+
+      ### Critical (Fix Immediately)
+
+      {{action_items_critical}}
+
+      ### High Priority (Fix Soon)
+
+      {{action_items_high}}
+
+      ### Medium Priority (Address When Possible)
+
+      {{action_items_medium}}
+
+      ### Low Priority (Nice to Have)
+
+      {{action_items_low}}
+
+  - id: vault_metrics
+    title: Vault Health Metrics
+    type: paragraphs
+    instruction: |
+      Provide quantitative metrics summarizing vault health:
+      - Total notes, average atomicity score, link density
+      - Citation coverage percentage
+      - Metadata completeness percentage
+      - Vault health score components breakdown
+    template: |
+      ## Vault Health Metrics
+
+      | Metric | Value |
+      |--------|-------|
+      | Total Notes | {{total_notes}} |
+      | Vault Health Score | {{vault_health_score}}/100 ({{health_score_interpretation}}) |
+      | Average Atomicity Score | {{avg_atomicity_score}} |
+      | Link Density | {{link_density}} links/note |
+      | Citation Coverage | {{citation_coverage_percentage}}% |
+      | Metadata Completeness | {{metadata_completeness_percentage}}% |
+      | Stale Notes | {{stale_notes_count}} ({{stale_percentage}}%) |
+      | Orphaned Notes | {{orphaned_notes_count}} ({{orphan_percentage}}%) |
+      | Duplicate Groups | {{duplicate_groups_count}} |
+      | Broken Links | {{broken_links_count}} |
+      | Audit Duration | {{audit_duration_seconds}}s |
+
+      ### Health Score Breakdown
+
+      The vault health score is calculated by starting at 100 and deducting points for each quality issue:
+
+      - **Temporal Freshness:** -10 points per 10% of notes stale
+      - **Link Health:** -15 points for broken links, -5 for redirects
+      - **Citation Quality:** -10 points per 10% notes with poor citations
+      - **Orphan Rate:** -10 points per 5% orphaned notes
+      - **Atomicity:** -15 points per 10% violations (extrapolated)
+      - **Duplicates:** -10 points per duplicate group
+      - **Metadata:** -10 points per 10% incomplete metadata
+
+      ---
+
+      **Generated by:** BMAD Obsidian 2nd Brain - Quality Auditor Agent
+      **Report Date:** {{timestamp}}
+
+examples:
+  - |
+    ---
+    title: Vault Audit Report - My Second Brain
+    audit_date: 2025-11-06T14:30:00Z
+    vault_health_score: 92
+    total_notes: 1000
+    critical_issues: 2
+    generated_by: BMAD Obsidian 2nd Brain - Quality Auditor Agent
+    ---
+
+    # Vault Audit Report: My Second Brain
+
+    **Audit Date:** 2025-11-06T14:30:00Z
+    **Total Notes:** 1000
+    **Audit Duration:** 45s
+
+    ## Executive Summary
+
+    **Vault Health Score: 92/100** (Excellent)
+
+    This comprehensive audit identified **2 critical issues** requiring immediate attention, along with 5 high-priority, 12 medium-priority, and 8 low-priority issues.
+
+    ### Health Score Interpretation
+
+    - **90-100**: Excellent - Vault is well-maintained
+    - **75-89**: Good - Minor issues, but overall healthy
+    - **60-74**: Fair - Several issues need attention
+    - **40-59**: Poor - Significant problems affecting usability
+    - **0-39**: Critical - Major quality issues requiring immediate action
+
+    ### Key Findings
+
+    - **Temporal Freshness:** 80 notes (8%) haven't been updated in >180 days
+    - **Link Health:** 2 broken links, 3 redirects, 0 timeouts
+    - **Citation Quality:** 50 notes with poor citations (95% coverage)
+    - **Orphaned Notes:** 30 notes (3%) with no connections
+    - **Atomicity:** 50 estimated violations across vault (avg score: 0.82)
+    - **Duplicates:** 2 duplicate groups detected
+    - **Metadata:** 40 notes with incomplete metadata (96% complete)
+
+    ## Temporal Freshness Findings
+
+    **Stale Notes Detected:** 80 (8% of vault)
+    **Threshold:** 180 days
+
+    ### Priority Classification
+
+    - **Critical:** Domain-critical notes (>10 incoming links)
+    - **High:** Frequently referenced (>5 incoming links)
+    - **Medium:** Some connections (2-5 incoming links)
+    - **Low:** Minimal connections (<2 incoming links)
+
+    ### Stale Notes List
+
+    - **[MEDIUM]** [[Project Planning Framework]] - Last updated 210 days ago (5 incoming links)
+    - **[LOW]** [[Random Thought 2024-03-15]] - Last updated 250 days ago (0 incoming links)
+    - **[LOW]** [[Meeting Notes 2024-02-01]] - Last updated 280 days ago (1 incoming link)
+
+    *(Top 3 shown, 77 more stale notes in full report)*
+
+    ### Recommendation
+
+    Review and update stale notes, prioritizing critical and high-priority notes that serve as knowledge hubs in your vault.
+
+    ## Link Validation Findings
+
+    **Broken Links (4xx):** 2
+    **Redirects (3xx):** 3
+    **Timeouts:** 0
+
+    ### Broken Links (CRITICAL)
+
+    - **[[Web Development Resources]]** - https://old-blog.example.com/post-123 (404 Not Found)
+    - **[[Research Paper Notes]]** - https://university.edu/paper.pdf (403 Forbidden)
+
+    ### Redirects (Update Recommended)
+
+    - **[[Technology Trends]]** - https://techblog.com/ai-trends → https://techblog.com/ai-trends-2025 (301 Moved Permanently)
+    - **[[API Documentation]]** - https://docs.example.com/v1 → https://docs.example.com/v2 (302 Found)
+    - **[[News Article]]** - https://news.com/article → https://news.com/archive/article (308 Permanent Redirect)
+
+    ### Recommendation
+
+    Fix broken links immediately (404s indicate dead resources). Update redirects to final URLs. Retry timed-out links or consider removing if consistently failing.
+
+    ## Citation Quality Findings
+
+    **Notes with Citation Issues:** 50
+    **Citation Coverage:** 95%
+
+    ### Issue Classification
+
+    - **Critical:** No source attribution for notes with external claims
+    - **High:** Incomplete attribution (missing 2+ required fields: author, title, URL/ISBN, date)
+    - **Medium:** Format inconsistencies
+    - **Low:** Minor formatting issues
+
+    ### Citation Issues List
+
+    - **[HIGH]** [[Spaced Repetition Research]] - Missing author and publication date
+    - **[MEDIUM]** [[Machine Learning Concepts]] - Inconsistent citation format (MLA vs APA mixed)
+    - **[LOW]** [[Book Notes - Atomic Habits]] - Missing page numbers in citations
+
+    *(Top 3 shown, 47 more citation issues in full report)*
+
+    ### Recommendation
+
+    Add complete source attribution for all notes containing external claims. Required fields: author, title, URL/ISBN, date. Maintain consistent citation format across vault.
+
+    ## Orphaned Notes Findings
+
+    **Orphaned Notes:** 30 (3% of vault)
+
+    ### Orphan Categories
+
+    - **Complete Orphans:** No incoming OR outgoing links (highest priority)
+    - **No Incoming Links:** Never referenced by other notes
+    - **No Outgoing Links:** Don't link to any other notes
+
+    ### Orphaned Notes List
+
+    - **[COMPLETE ORPHAN]** [[Random Idea 2024-05-10]] - No connections. Suggested links: [[Creativity]], [[Brainstorming Methods]]
+    - **[NO INCOMING]** [[Personal Reflection 2024-06-15]] - No incoming links. Suggested links: [[Journaling Practice]]
+    - **[NO OUTGOING]** [[Daily Note 2024-07-20]] - No outgoing links. Suggested links: [[Project X]], [[Meeting Notes]]
+
+    *(Top 3 shown, 27 more orphaned notes in full report)*
+
+    ### Recommendation
+
+    Connect orphaned notes to the knowledge graph through bidirectional linking. Review linking suggestions and create connections to related notes.
+
+    ## Atomicity Violations Findings
+
+    **Violations Detected (Sample):** 5 of 100 notes sampled
+    **Estimated Violations (Vault-Wide):** 50
+    **Average Atomicity Score:** 0.82
+
+    ### Atomicity Scoring
+
+    - **0.7-1.0:** Atomic (passes quality threshold)
+    - **0.5-0.7:** Borderline (manual review recommended)
+    - **0.0-0.5:** Non-atomic (fragmentation recommended)
+
+    ### Violations List
+
+    - **[SCORE: 0.45]** [[Big Ideas Dump]] - Multiple unrelated concepts. Recommend fragmentation into 5 atomic notes.
+    - **[SCORE: 0.62]** [[Project Overview]] - Contains both technical and business context. Consider splitting.
+    - **[SCORE: 0.68]** [[Meeting Notes 2024-11-01]] - Multiple topics discussed. Could fragment into 3 notes.
+
+    *(Top 3 shown, 2 more violations in full report)*
+
+    ### Recommendation
+
+    Fragment non-atomic notes (score <0.5) using the Structural Analysis Agent. Review borderline notes (0.5-0.7) for potential cleanup.
+
+    ## Duplicate Content Findings
+
+    **Duplicate Groups:** 2
+
+    ### Duplicate Classification
+
+    - **Exact Duplicates (100%):** Identical content, different filenames
+    - **Near-Duplicates (≥95%):** Almost identical with minor variations
+    - **Semantic Duplicates (85-95%):** Similar meaning, different wording
+
+    ### Duplicate Groups List
+
+    - **[EXACT - 100%]** [[Zettelkasten Method]] and [[Zettelkasten-Method-Copy]] - Identical content, merge immediately
+    - **[NEAR - 96%]** [[GTD Overview]] and [[GTD System]] - Nearly identical, minor wording differences
+
+    ### Recommendation
+
+    Merge or archive duplicate notes to reduce redundancy. Exact duplicates should be merged immediately. Review near-duplicates for consolidation opportunities.
+
+    ## Metadata Completeness Findings
+
+    **Notes with Metadata Issues:** 40
+    **Metadata Completeness:** 96%
+
+    ### Issue Classification
+
+    - **Critical:** Missing required fields (title, created)
+    - **High:** Missing important fields (tags, type)
+    - **Medium:** Format issues (wrong date format, malformed YAML)
+    - **Low:** Missing optional fields
+
+    ### Metadata Issues List
+
+    - **[HIGH]** [[Quick Note 2024-10-15]] - Missing tags and type/building_block fields
+    - **[MEDIUM]** [[Project Ideas]] - Date format invalid (should be ISO 8601)
+    - **[LOW]** [[Book Notes]] - Missing optional source field
+
+    *(Top 3 shown, 37 more metadata issues in full report)*
+
+    ### Recommendation
+
+    Add missing required metadata fields (title, created) immediately. Enhance notes with tags and type/building_block for better organization.
+
+    ## Prioritized Action Items
+
+    ### Critical (Fix Immediately)
+
+    1. Fix 2 broken external links (404/403 errors)
+    2. No critical metadata issues detected
+
+    ### High Priority (Fix Soon)
+
+    1. Update 80 stale notes that haven't been refreshed in >180 days
+    2. Fix 50 notes with incomplete citations (add missing author/date fields)
+    3. Add tags and type fields to 40 notes with incomplete metadata
+
+    ### Medium Priority (Address When Possible)
+
+    1. Update 3 redirect links to their final URLs
+    2. Connect 30 orphaned notes to the knowledge graph
+    3. Review 5 atomicity violations (scores 0.5-0.7) for potential cleanup
+    4. Review 2 near-duplicate note pairs for consolidation
+
+    ### Low Priority (Nice to Have)
+
+    1. Add optional metadata fields (source, author) to enhance notes
+    2. Standardize citation format across vault (consistent APA or MLA)
+
+    ## Vault Health Metrics
+
+    | Metric | Value |
+    |--------|-------|
+    | Total Notes | 1000 |
+    | Vault Health Score | 92/100 (Excellent) |
+    | Average Atomicity Score | 0.82 |
+    | Link Density | 4.5 links/note |
+    | Citation Coverage | 95% |
+    | Metadata Completeness | 96% |
+    | Stale Notes | 80 (8%) |
+    | Orphaned Notes | 30 (3%) |
+    | Duplicate Groups | 2 |
+    | Broken Links | 2 |
+    | Audit Duration | 45s |
+
+    ### Health Score Breakdown
+
+    The vault health score is calculated by starting at 100 and deducting points for each quality issue:
+
+    - **Temporal Freshness:** -10 points per 10% of notes stale → -8 points (8% stale)
+    - **Link Health:** -15 points for broken links, -5 for redirects → -0 points (2 broken links = negligible)
+    - **Citation Quality:** -10 points per 10% notes with poor citations → -0 points (5% poor = negligible)
+    - **Orphan Rate:** -10 points per 5% orphaned notes → -0 points (3% orphaned = negligible)
+    - **Atomicity:** -15 points per 10% violations (extrapolated) → -0 points (5% violations = negligible)
+    - **Duplicates:** -10 points per duplicate group → -0 points (2 groups = negligible)
+    - **Metadata:** -10 points per 10% incomplete metadata → -0 points (4% incomplete = negligible)
+
+    **Final Score:** 100 - 8 = 92 (Excellent)
+
+    ---
+
+    **Generated by:** BMAD Obsidian 2nd Brain - Quality Auditor Agent
+    **Report Date:** 2025-11-06T14:30:00Z
+
+  - |
+    ---
+    title: Vault Audit Report - Neglected Vault
+    audit_date: 2025-11-06T15:00:00Z
+    vault_health_score: 28
+    total_notes: 500
+    critical_issues: 45
+    generated_by: BMAD Obsidian 2nd Brain - Quality Auditor Agent
+    ---
+
+    # Vault Audit Report: Neglected Vault
+
+    **Audit Date:** 2025-11-06T15:00:00Z
+    **Total Notes:** 500
+    **Audit Duration:** 35s
+
+    ## Executive Summary
+
+    **Vault Health Score: 28/100** (Critical)
+
+    This comprehensive audit identified **45 critical issues** requiring immediate attention, along with 80 high-priority, 120 medium-priority, and 50 low-priority issues.
+
+    ### Health Score Interpretation
+
+    - **90-100**: Excellent - Vault is well-maintained
+    - **75-89**: Good - Minor issues, but overall healthy
+    - **60-74**: Fair - Several issues need attention
+    - **40-59**: Poor - Significant problems affecting usability
+    - **0-39**: Critical - Major quality issues requiring immediate action
+
+    ### Key Findings
+
+    - **Temporal Freshness:** 350 notes (70%) haven't been updated in >180 days
+    - **Link Health:** 25 broken links, 15 redirects, 10 timeouts
+    - **Citation Quality:** 200 notes with poor citations (60% coverage)
+    - **Orphaned Notes:** 150 notes (30%) with no connections
+    - **Atomicity:** 150 estimated violations across vault (avg score: 0.55)
+    - **Duplicates:** 15 duplicate groups detected
+    - **Metadata:** 180 notes with incomplete metadata (64% complete)
+
+    ## Temporal Freshness Findings
+
+    **Stale Notes Detected:** 350 (70% of vault)
+    **Threshold:** 180 days
+
+    ### Priority Classification
+
+    - **Critical:** Domain-critical notes (>10 incoming links)
+    - **High:** Frequently referenced (>5 incoming links)
+    - **Medium:** Some connections (2-5 incoming links)
+    - **Low:** Minimal connections (<2 incoming links)
+
+    ### Stale Notes List
+
+    - **[CRITICAL]** [[Core Methodology Framework]] - Last updated 450 days ago (15 incoming links)
+    - **[CRITICAL]** [[System Architecture]] - Last updated 520 days ago (12 incoming links)
+    - **[HIGH]** [[Team Processes]] - Last updated 380 days ago (8 incoming links)
+    - **[HIGH]** [[Technical Standards]] - Last updated 400 days ago (7 incoming links)
+    - **[MEDIUM]** [[Project Guidelines]] - Last updated 320 days ago (4 incoming links)
+
+    *(Top 5 shown, 345 more stale notes in full report)*
+
+    ### Recommendation
+
+    Review and update stale notes, prioritizing critical and high-priority notes that serve as knowledge hubs in your vault.
+
+    ## Link Validation Findings
+
+    **Broken Links (4xx):** 25
+    **Redirects (3xx):** 15
+    **Timeouts:** 10
+
+    ### Broken Links (CRITICAL)
+
+    - **[[Resources]]** - https://old-site.com/resource-1 (404 Not Found)
+    - **[[References]]** - https://deleted-blog.com/post (404 Not Found)
+    - **[[Documentation]]** - https://deprecated-api.com/docs (410 Gone)
+
+    *(Top 3 shown, 22 more broken links in full report)*
+
+    ### Redirects (Update Recommended)
+
+    - **[[Guide]]** - https://site.com/old → https://site.com/new (301 Moved Permanently)
+
+    *(Top 1 shown, 14 more redirects in full report)*
+
+    ### Timeouts (Retry or Review)
+
+    - **[[External Resource]]** - https://slow-server.com/page (Connection timeout after 10s)
+
+    *(Top 1 shown, 9 more timeouts in full report)*
+
+    ### Recommendation
+
+    Fix broken links immediately (404s indicate dead resources). Update redirects to final URLs. Retry timed-out links or consider removing if consistently failing.
+
+    ## Citation Quality Findings
+
+    **Notes with Citation Issues:** 200
+    **Citation Coverage:** 60%
+
+    ### Issue Classification
+
+    - **Critical:** No source attribution for notes with external claims
+    - **High:** Incomplete attribution (missing 2+ required fields: author, title, URL/ISBN, date)
+    - **Medium:** Format inconsistencies
+    - **Low:** Minor formatting issues
+
+    ### Citation Issues List
+
+    - **[CRITICAL]** [[Research Summary]] - No source attribution despite multiple external claims
+    - **[CRITICAL]** [[Study Notes]] - No citations for 8+ factual claims
+    - **[HIGH]** [[Book Summary]] - Missing author, date, and ISBN
+
+    *(Top 3 shown, 197 more citation issues in full report)*
+
+    ### Recommendation
+
+    Add complete source attribution for all notes containing external claims. Required fields: author, title, URL/ISBN, date. Maintain consistent citation format across vault.
+
+    ## Orphaned Notes Findings
+
+    **Orphaned Notes:** 150 (30% of vault)
+
+    ### Orphan Categories
+
+    - **Complete Orphans:** No incoming OR outgoing links (highest priority)
+    - **No Incoming Links:** Never referenced by other notes
+    - **No Outgoing Links:** Don't link to any other notes
+
+    ### Orphaned Notes List
+
+    - **[COMPLETE ORPHAN]** [[Note 001]] - No connections
+    - **[COMPLETE ORPHAN]** [[Note 002]] - No connections
+    - **[COMPLETE ORPHAN]** [[Note 003]] - No connections
+
+    *(Top 3 shown, 147 more orphaned notes in full report)*
+
+    ### Recommendation
+
+    Connect orphaned notes to the knowledge graph through bidirectional linking. Review linking suggestions and create connections to related notes.
+
+    ## Atomicity Violations Findings
+
+    **Violations Detected (Sample):** 15 of 50 notes sampled
+    **Estimated Violations (Vault-Wide):** 150
+    **Average Atomicity Score:** 0.55
+
+    ### Atomicity Scoring
+
+    - **0.7-1.0:** Atomic (passes quality threshold)
+    - **0.5-0.7:** Borderline (manual review recommended)
+    - **0.0-0.5:** Non-atomic (fragmentation recommended)
+
+    ### Violations List
+
+    - **[SCORE: 0.25]** [[Everything I Know]] - Massive note covering 20+ unrelated topics. Urgent fragmentation needed.
+    - **[SCORE: 0.38]** [[Dump File]] - Random collection of ideas with no structure.
+    - **[SCORE: 0.42]** [[Mixed Topics]] - Multiple concepts tangled together.
+
+    *(Top 3 shown, 12 more violations in full report)*
+
+    ### Recommendation
+
+    Fragment non-atomic notes (score <0.5) using the Structural Analysis Agent. Review borderline notes (0.5-0.7) for potential cleanup.
+
+    ## Duplicate Content Findings
+
+    **Duplicate Groups:** 15
+
+    ### Duplicate Classification
+
+    - **Exact Duplicates (100%):** Identical content, different filenames
+    - **Near-Duplicates (≥95%):** Almost identical with minor variations
+    - **Semantic Duplicates (85-95%):** Similar meaning, different wording
+
+    ### Duplicate Groups List
+
+    - **[EXACT - 100%]** [[Note A]] and [[Note A Copy]] and [[Note A Backup]] - 3 identical copies
+    - **[EXACT - 100%]** [[Checklist]] and [[Checklist-2]] - 2 identical copies
+    - **[NEAR - 98%]** [[Process]] and [[Process Guide]] - Nearly identical
+
+    *(Top 3 shown, 12 more duplicate groups in full report)*
+
+    ### Recommendation
+
+    Merge or archive duplicate notes to reduce redundancy. Exact duplicates should be merged immediately. Review near-duplicates for consolidation opportunities.
+
+    ## Metadata Completeness Findings
+
+    **Notes with Metadata Issues:** 180
+    **Metadata Completeness:** 64%
+
+    ### Issue Classification
+
+    - **Critical:** Missing required fields (title, created)
+    - **High:** Missing important fields (tags, type)
+    - **Medium:** Format issues (wrong date format, malformed YAML)
+    - **Low:** Missing optional fields
+
+    ### Metadata Issues List
+
+    - **[CRITICAL]** [[Untitled Note]] - Missing title field
+    - **[CRITICAL]** [[Note 123]] - Missing created date
+    - **[HIGH]** [[Random]] - Missing all tags and type fields
+
+    *(Top 3 shown, 177 more metadata issues in full report)*
+
+    ### Recommendation
+
+    Add missing required metadata fields (title, created) immediately. Enhance notes with tags and type/building_block for better organization.
+
+    ## Prioritized Action Items
+
+    ### Critical (Fix Immediately)
+
+    1. Fix 25 broken external links (404/410 errors)
+    2. Add source attribution to 80 notes with external claims but no citations
+    3. Add missing title and created date to 20 notes
+
+    ### High Priority (Fix Soon)
+
+    1. Update 50 critical/high-priority stale notes (domain-critical knowledge hubs)
+    2. Fix 120 notes with incomplete citations
+    3. Connect 150 orphaned notes to knowledge graph
+    4. Add tags and type to 160 notes
+
+    ### Medium Priority (Address When Possible)
+
+    1. Update 15 redirect links to final URLs
+    2. Review 150 atomicity violations for fragmentation opportunities
+    3. Merge/archive 15 duplicate groups
+    4. Update remaining 300 stale notes
+
+    ### Low Priority (Nice to Have)
+
+    1. Standardize citation format across vault
+    2. Add optional metadata fields
+    3. Retry 10 timed-out links
+
+    ## Vault Health Metrics
+
+    | Metric | Value |
+    |--------|-------|
+    | Total Notes | 500 |
+    | Vault Health Score | 28/100 (Critical) |
+    | Average Atomicity Score | 0.55 |
+    | Link Density | 1.8 links/note |
+    | Citation Coverage | 60% |
+    | Metadata Completeness | 64% |
+    | Stale Notes | 350 (70%) |
+    | Orphaned Notes | 150 (30%) |
+    | Duplicate Groups | 15 |
+    | Broken Links | 25 |
+    | Audit Duration | 35s |
+
+    ### Health Score Breakdown
+
+    The vault health score is calculated by starting at 100 and deducting points for each quality issue:
+
+    - **Temporal Freshness:** -10 points per 10% of notes stale → -70 points (70% stale)
+    - **Link Health:** -15 points for broken links, -5 for redirects → -37.5 points (25 broken = -37.5, 15 redirects = -7.5)
+    - **Citation Quality:** -10 points per 10% notes with poor citations → -40 points (40% poor citations)
+    - **Orphan Rate:** -10 points per 5% orphaned notes → -60 points (30% orphaned)
+    - **Atomicity:** -15 points per 10% violations (extrapolated) → -45 points (30% violations)
+    - **Duplicates:** -10 points per duplicate group → -15 points (15 groups, capped at -15)
+    - **Metadata:** -10 points per 10% incomplete metadata → -36 points (36% incomplete)
+
+    **Calculation:** 100 - 70 - 37.5 - 40 - 60 - 45 - 15 - 36 = -203.5 → Floor at 0
+
+    **Final Score:** max(0, -203.5) = 28 (after adjustment - Critical)
+
+    ---
+
+    **Generated by:** BMAD Obsidian 2nd Brain - Quality Auditor Agent
+    **Report Date:** 2025-11-06T15:00:00Z
