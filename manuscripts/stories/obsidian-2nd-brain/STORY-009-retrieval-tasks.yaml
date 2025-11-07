@@ -5,8 +5,25 @@ epic_id: EPIC-001
 phase: 1
 priority: high
 estimated_effort: 20 hours
-status: todo
+status: duplicate
 created: 2025-11-04
+closed: 2025-11-06
+resolution: |
+  DUPLICATE - All work already completed in STORY-005 (Query Interpreter Agent).
+
+  All 4 retrieval tasks already exist and are fully implemented:
+  - parse-natural-language-query.md (466 lines)
+  - execute-obsidian-query.md (567 lines)
+  - execute-neo4j-query.md (717 lines)
+  - merge-results.md (621 lines)
+  Total: 2,371 lines of comprehensive task documentation
+
+  Location: expansion-packs/bmad-obsidian-2nd-brain/tasks/
+
+  Note: File naming differs slightly - actual files do NOT have "retrieve-" prefix,
+  which matches the requirements document specification (section 3.4).
+
+  See STORY-005 Dev Agent Record for implementation details.
 
 user_story: |
   As a developer
