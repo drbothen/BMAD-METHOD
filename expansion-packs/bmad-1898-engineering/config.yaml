@@ -1,0 +1,11 @@
+# <!-- Powered by BMAD™ Core -->
+name: bmad-1898-engineering
+version: 0.1.0
+short-title: 1898 Security Engineering
+description: >-
+  Security-focused expansion pack providing specialized agents, workflows, and
+  tools for vulnerability management, CVE enrichment, and security operations.
+  Includes Security Analyst agent with AI-assisted research capabilities,
+  integrated JIRA ticket management, and multi-factor risk assessment framework.
+author: 1898 & Co.
+slashPrefix: bmad-1898
