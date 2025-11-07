@@ -5,8 +5,10 @@ epic_id: EPIC-001
 phase: 1
 priority: high
 estimated_effort: 20 hours
-status: todo
+status: obsolete
 created: 2025-11-04
+obsoleted: 2025-11-06
+resolution: superseded_by_other_stories
 
 user_story: |
   As a developer
@@ -82,3 +84,77 @@ definition_of_done:
   - MCP tool dependencies documented
   - Tasks tested individually and in workflows
   - Documentation added to developer guide
+
+obsolescence_note: |
+  ## Why This Story Is Obsolete
+
+  This story was superseded by implementation in STORY-003 and STORY-004, which created all 4 requested tasks
+  WITHOUT the "organize-" prefix. The functionality is 100% implemented, just with different naming.
+
+  ### Implementation Mapping
+
+  | STORY-008 Specification | Actual Implementation | Implemented By | Date |
+  |---|---|---|---|
+  | organize-analyze-atomicity.md | analyze-atomicity.md | STORY-003 | 2025-11-05 15:45 |
+  | organize-fragment-note.md | fragment-note.md | STORY-003 | 2025-11-05 15:46 |
+  | organize-query-semantic-similarity.md | query-semantic-similarity.md | STORY-004 | 2025-11-05 20:39 |
+  | organize-create-bidirectional-link.md | create-bidirectional-link.md | STORY-004 | 2025-11-05 20:42 |
+
+  ### Implementation Details
+
+  **STORY-003 (Structural Analysis Agent) - Status: Done**
+  - Created expansion-packs/bmad-obsidian-2nd-brain/tasks/analyze-atomicity.md (16KB)
+    - Implements all 5 atomicity tests specified in this story
+    - Includes composite scoring algorithm
+    - Identifies building block types (concept, argument, model, question, claim, phenomenon)
+  - Created expansion-packs/bmad-obsidian-2nd-brain/tasks/fragment-note.md (19KB)
+    - Implements fragmentation strategy with semantic clustering
+    - Handles boundary detection and claim clustering
+    - Creates bidirectional links between fragments
+
+  **STORY-004 (Semantic Linker Agent) - Status: Done**
+  - Created expansion-packs/bmad-obsidian-2nd-brain/tasks/query-semantic-similarity.md (10KB)
+    - Integrates Smart Connections MCP for semantic search
+    - Uses 0.6 similarity threshold as specified
+    - Returns ranked list of similar notes
+  - Created expansion-packs/bmad-obsidian-2nd-brain/tasks/create-bidirectional-link.md (10KB)
+    - Creates wikilinks in both source and target notes
+    - Integrates Neo4j relationship creation (optional, graceful degradation)
+    - Supports all 7 link types (includes "influences" in addition to the 6 in this story)
+
+  ### Naming Convention Decision
+
+  The "organize-" prefix specified in this story was not carried forward to implementation.
+  The actual task files use direct, action-oriented names:
+  - analyze-atomicity.md (not organize-analyze-atomicity.md)
+  - fragment-note.md (not organize-fragment-note.md)
+  - query-semantic-similarity.md (not organize-query-semantic-similarity.md)
+  - create-bidirectional-link.md (not organize-create-bidirectional-link.md)
+
+  This naming convention is consistent with other tasks in the expansion pack and follows BMAD
+  best practices for task naming (imperative verb form).
+
+  ### Validation Confirmation
+
+  - Validation Date: 2025-11-06
+  - Validated By: Sarah (Product Owner)
+  - Validation Method: File existence check, content review, cross-reference with STORY-003 and STORY-004
+  - Conclusion: All functionality implemented, story work complete, no additional implementation needed
+
+  ### Recommended Action
+
+  **No implementation required.** Mark story as obsolete and reference STORY-003 and STORY-004 for the
+  actual implementations. All acceptance criteria from this story were met by those two stories.
+
+change_log:
+  - date: 2025-11-04
+    version: 1.0
+    description: Initial story creation
+    author: Product Owner
+  - date: 2025-11-06
+    version: 2.0
+    description: |
+      Marked story as OBSOLETE. All 4 requested tasks were implemented by STORY-003 and STORY-004
+      without the "organize-" prefix. Functionality is 100% complete. Added obsolescence_note
+      documenting implementation mapping and naming convention decision.
+    author: Sarah (Product Owner) - Post-implementation validation
