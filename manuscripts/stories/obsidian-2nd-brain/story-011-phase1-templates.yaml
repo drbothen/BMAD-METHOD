@@ -45,9 +45,9 @@ tasks_subtasks:
     subtasks:
       - Read expansion-packs/bmad-obsidian-2nd-brain/templates/inbox-note-tmpl.yaml
       - Compare against requirements spec (lines 2058-2120 in bmad-obsidian-2nd-brain-requirements.md)
-      - Verify frontmatter fields: type, captured, source, author, content_type, status, confidence
-      - Verify sections: Content, Context, Initial Thoughts, Processing Notes
-      - Verify variable substitution: {{captured}}, {{source}}, {{content_type}}, {{confidence}}
+      - "Verify frontmatter fields: type, captured, source, author, content_type, status, confidence"
+      - "Verify sections: Content, Context, Initial Thoughts, Processing Notes"
+      - "Verify variable substitution: {{captured}}, {{source}}, {{content_type}}, {{confidence}}"
       - Update if needed to match Phase 1 requirements
 
   - task: Validate atomic-note-tmpl.yaml against Phase 1 requirements
@@ -55,10 +55,10 @@ tasks_subtasks:
     subtasks:
       - Read expansion-packs/bmad-obsidian-2nd-brain/templates/atomic-note-tmpl.yaml
       - Compare against requirements spec (lines 2123-2202 in bmad-obsidian-2nd-brain-requirements.md)
-      - Verify frontmatter fields: type, created, updated, atomized_from, status, confidence, building_block_type, related_mocs
-      - Verify building_block_type options: concept, argument, model, question, claim, phenomenon
-      - Verify sections: Core Claim, Evidence & Context, Related Concepts, Source & Attribution
-      - Verify variable substitution: {{created}}, {{updated}}, {{building_block_type}}, {{status}}, {{confidence}}
+      - "Verify frontmatter fields: type, created, updated, atomized_from, status, confidence, building_block_type, related_mocs"
+      - "Verify building_block_type options: concept, argument, model, question, claim, phenomenon"
+      - "Verify sections: Core Claim, Evidence & Context, Related Concepts, Source & Attribution"
+      - "Verify variable substitution: {{created}}, {{updated}}, {{building_block_type}}, {{status}}, {{confidence}}"
       - Update if needed to match Phase 1 requirements
 
   - task: Create moc-tmpl.yaml (Phase 1 basic version)
@@ -66,30 +66,18 @@ tasks_subtasks:
     subtasks:
       - Create expansion-packs/bmad-obsidian-2nd-brain/templates/moc-tmpl.yaml
       - Follow bmad-doc-template.md specification structure
-      - Implement frontmatter fields per requirements (lines 2205-2244 in requirements doc)
-        - type: [map_of_content, MOC]
-        - created, updated: datetime
-        - domain: text (required)
-        - status: [active, archived]
-        - last_review: datetime
-        - maturity_level: [nascent, developing, established, comprehensive]
-      - Implement sections per requirements (lines 2245-2283)
-        - Overview: 2-3 sentence synthesis
-        - Core Concepts: List with definitions and links
-        - Knowledge Branches: Dynamic subsections
-        - Emerging Questions: Open questions (optional)
-        - Dataview Queries: Dynamic content (optional)
-        - Last Updated: Maintenance history
-      - Define variable substitution: {{domain}}, {{updated}}, {{maturity_level}}
-      - Note: This is Phase 1 BASIC version - Phase 2 will enhance with full features
+      - "Implement frontmatter fields per requirements (lines 2205-2244): type, created, updated, domain, status, last_review, maturity_level"
+      - "Implement sections per requirements (lines 2245-2283): Overview, Core Concepts, Knowledge Branches, Emerging Questions, Dataview Queries, Last Updated"
+      - "Define variable substitution: {{domain}}, {{updated}}, {{maturity_level}}"
+      - "Note: This is Phase 1 BASIC version - Phase 2 will enhance with full features"
 
   - task: Validate query-result-tmpl.yaml against Phase 1 requirements
     ac: [5, 7, 8, 9]
     subtasks:
       - Read expansion-packs/bmad-obsidian-2nd-brain/templates/query-result-tmpl.yaml
       - Compare against merge-results task output spec (lines 1352-1387 in requirements doc)
-      - Verify variables: query, query_intent, confidence, result_format, results, contradictions, sources_available, sources_failed, total_results, query_duration_ms, warnings
-      - Verify sections support multiple formats: narrative, list, table, timeline
+      - "Verify variables: query, query_intent, confidence, result_format, results, contradictions, sources_available, sources_failed, total_results, query_duration_ms, warnings"
+      - "Verify sections support multiple formats: narrative, list, table, timeline"
       - Verify contradictions detection section
       - Verify metadata and suggested next steps sections
       - Update if needed to match Phase 1 requirements
@@ -99,9 +87,9 @@ tasks_subtasks:
     subtasks:
       - Read expansion-packs/bmad-obsidian-2nd-brain/templates/audit-report-tmpl.yaml
       - Compare against requirements spec (lines 2503-2579 in requirements doc)
-      - Verify frontmatter fields: audit_type, audit_date, audit_scope, issues_found, critical_issues, auditor_agent
-      - Verify sections: Executive Summary, Freshness Issues, Link Validation Issues, Citation Issues, Orphaned Notes, Action Items
-      - Note: This is Phase 1 BASIC version - Phase 2 will enhance with full audit features
+      - "Verify frontmatter fields: audit_type, audit_date, audit_scope, issues_found, critical_issues, auditor_agent"
+      - "Verify sections: Executive Summary, Freshness Issues, Link Validation Issues, Citation Issues, Orphaned Notes, Action Items"
+      - "Note: This is Phase 1 BASIC version - Phase 2 will enhance with full audit features"
       - Update if needed to match Phase 1 requirements
 
   - task: Create test samples for each template

@@ -713,6 +713,240 @@ Vault health: 73.2/100 (Fair). Analyzed 1,245 notes...
 - Test data specification: 1000 notes (200 stale, 50 with links, 10 orphans)
 - Performance benchmarks and validation criteria documented in test vault README
 
+## Templates
+
+The expansion pack provides standardized YAML templates for creating structured notes following Zettelkasten and PKM best practices. All templates comply with the BMAD document template specification (`common/utils/bmad-doc-template.md`) and support variable substitution using `{{variable_name}}` syntax.
+
+### Phase 1 Templates (Current Release)
+
+#### inbox-note-tmpl.yaml
+
+**Purpose:** Standardized structure for captured content in Obsidian inbox
+
+**Status:** ✅ Phase 1 Complete
+
+**Used By:** Inbox Triage Agent (`create-inbox-note` task)
+
+**Key Features:**
+- 6 content type classifications (quote, concept, reference, reflection, question, observation)
+- Processing status tracking (inbox, reviewed, processing, processed)
+- Confidence scoring (0.0-1.0)
+- Source attribution with author and timestamps
+- Sections: Content, Context, Initial Thoughts, Processing Notes, Next Actions
+
+**Frontmatter Fields:**
+```yaml
+type: [inbox, capture, highlight]
+captured: ISO8601 timestamp
+source: URL or reference
+author: Author name
+content_type: [quote, concept, reference, reflection, question, observation]
+status: [inbox, reviewed, processing, processed]
+confidence: 0.0-1.0
+```
+
+#### atomic-note-tmpl.yaml
+
+**Purpose:** Template for atomic notes containing single knowledge building blocks
+
+**Status:** ✅ Phase 1 Complete
+
+**Used By:** Structural Analysis Agent (`fragment-note` task)
+
+**Key Features:**
+- Atomic knowledge unit (single complete idea per note)
+- 6 building block types (concept, argument, model, question, claim, phenomenon)
+- Note maturity tracking (working, refined, established)
+- Confidence levels (high, medium, low)
+- MOC relationship tracking
+- Required source attribution
+
+**Frontmatter Fields:**
+```yaml
+type: [atomic_note, evergreen]
+created: ISO8601 timestamp
+updated: ISO8601 timestamp
+atomized_from: Link to original note if fragmented
+status: [working, refined, established]
+confidence: [high, medium, low]
+building_block_type: [concept, argument, model, question, claim, phenomenon]
+related_mocs: [List of MOC links]
+```
+
+**Sections:**
+- Core Claim: Single main idea (1-2 sentences)
+- Evidence & Context: Supporting details and examples
+- Related Concepts: Bidirectional links to adjacent notes
+- Source & Attribution: Original source reference
+
+#### moc-tmpl.yaml
+
+**Purpose:** Map of Content structure for knowledge domain navigation
+
+**Status:** ✅ Phase 1 Basic (Phase 2 enhancements planned)
+
+**Used By:** MOC Constructor Agent (manual creation in Phase 1)
+
+**Key Features:**
+- Domain-specific knowledge organization
+- Maturity level tracking (nascent, developing, established, comprehensive)
+- Core concepts list with definitions
+- Dynamic knowledge branches
+- Optional Dataview queries for automatic note surfacing
+
+**Frontmatter Fields:**
+```yaml
+type: [map_of_content, MOC]
+created: ISO8601 timestamp
+updated: ISO8601 timestamp
+domain: Topic domain covered
+status: [active, archived]
+last_review: Last comprehensive review date
+maturity_level: [nascent, developing, established, comprehensive]
+```
+
+**Sections:**
+- Overview: 2-3 sentence domain synthesis
+- Core Concepts: Foundational ideas with links
+- Knowledge Branches: Dynamic subsections per branch
+- Emerging Questions: Open questions for research (optional)
+- Dynamic Content: Dataview queries (optional)
+- Last Updated: Maintenance history
+
+**Phase 2 Enhancements Planned:**
+- Advanced Dataview query templates
+- Automatic concept clustering
+- MOC relationship graphs
+- Suggested knowledge branch templates
+
+#### query-result-tmpl.yaml
+
+**Purpose:** Structured template for presenting query results
+
+**Status:** ✅ Phase 1 Complete
+
+**Used By:** Query Interpreter Agent (`merge-results` task)
+
+**Key Features:**
+- Multiple format support (narrative, list, table, timeline) based on query intent
+- Contradiction detection and flagging
+- Source attribution with relevance scores
+- Performance metadata
+- Suggested next steps
+
+**Variables:**
+```yaml
+query: Original user query
+query_intent: [factual, temporal, causal, comparative, exploratory]
+confidence: Classification confidence (0.0-1.0)
+result_format: [narrative, list, table, timeline]
+results: Array of result objects
+contradictions: Detected contradictions (optional)
+sources_available: Successfully queried sources
+sources_failed: Failed sources (optional)
+```
+
+**Sections:**
+- Query Summary: Query metadata and performance
+- Results: Format-specific presentation (narrative/list/table/timeline)
+- Contradictions: Flagged conflicts (if detected)
+- Metadata: Collapsible query details
+- Suggested Next Steps: Follow-up recommendations
+
+#### audit-report-tmpl.yaml
+
+**Purpose:** Comprehensive vault quality audit results
+
+**Status:** ✅ Phase 1 Complete (Phase 2 enhancements planned)
+
+**Used By:** Quality Auditor Agent (`generate-audit-report` task)
+
+**Key Features:**
+- Vault health score (0-100) with interpretation
+- 7 audit dimensions (freshness, links, citations, orphans, atomicity, duplicates, metadata)
+- Prioritized action items (critical, high, medium, low)
+- Weighted health score calculation
+- Performance metrics
+
+**Frontmatter Fields:**
+```yaml
+audit_date: ISO8601 timestamp
+vault_health_score: 0-100
+total_notes: Note count
+critical_issues: Critical issue count
+audit_scope: Domain/tag filter or "entire vault"
+```
+
+**Sections:**
+- Executive Summary: High-level findings
+- Temporal Freshness: Stale notes requiring updates
+- Link Validation: Broken/redirect/timeout links
+- Citation Quality: Source attribution issues
+- Orphaned Notes: Disconnected notes
+- Atomicity Violations: Multi-concept notes (from sample)
+- Duplicate Content: Similar/identical notes
+- Metadata Completeness: Missing/incomplete metadata
+- Prioritized Action Items: Ranked remediation steps
+- Vault Health Metrics: Score breakdown
+
+**Phase 2 Enhancements Planned:**
+- Advanced graph metrics (betweenness centrality, clustering coefficient)
+- Predictive staleness modeling
+- Automated link suggestion quality scoring
+- Content quality sentiment analysis
+
+### Template Usage
+
+**Via Agents (Recommended):**
+```bash
+# Templates are automatically used by agents
+/bmad-2b:inbox-triage-agent
+*capture https://example.com "Your content"  # Uses inbox-note-tmpl.yaml
+
+/bmad-2b:structural-analysis-agent
+*fragment /path/to/note.md                   # Uses atomic-note-tmpl.yaml
+
+/bmad-2b:quality-auditor-agent
+*audit-full                                   # Uses audit-report-tmpl.yaml
+```
+
+**Direct Task Execution:**
+```bash
+# Reference templates in task parameters
+*create-doc --template=atomic-note-tmpl.yaml
+```
+
+### Template Development
+
+**Location:** `expansion-packs/bmad-obsidian-2nd-brain/templates/`
+
+**Test Samples:** `tests/test-vaults/phase1-templates/`
+
+**Validation:**
+```bash
+# Validate YAML syntax
+npm run validate
+
+# Test samples available:
+# - sample-inbox-note.md
+# - sample-atomic-note.md
+# - sample-moc.md
+# - sample-query-result.md
+# - sample-audit-report.md
+```
+
+### Phase 1 vs Phase 2 Distinctions
+
+**Phase 1 (Current):**
+- All templates functional for core workflows
+- Basic/MVP feature sets
+- Proven patterns from Zettelkasten and PKM
+- Extensible for Phase 2 enhancements
+
+**Phase 2 (Planned):**
+- moc-tmpl.yaml: Advanced query templates, automatic clustering, relationship graphs
+- audit-report-tmpl.yaml: Graph analytics, predictive modeling, quality scoring
+
 ## Available Workflows
 
 Workflows will be populated in future releases:
