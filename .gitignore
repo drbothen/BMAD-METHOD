@@ -39,6 +39,9 @@ CLAUDE.md
 .gemini
 .iflow
 
+# Workflow state files (may contain sensitive ticket data)
+.workflow-state/
+
 # Project-specific
 .bmad-core
 .bmad-creator-tools

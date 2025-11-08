@@ -1,0 +1,208 @@
+workflow:
+  id: security-alert-enrichment-v1
+  name: Security Alert Enrichment Workflow
+  version: 1.0
+  description: End-to-end workflow for enriching security alert tickets with AI-assisted research
+  estimated_duration: 10-15 minutes
+  prerequisites:
+    - JIRA ticket with security alert
+    - Atlassian MCP configured
+    - Perplexity MCP configured
+    - Security Analyst agent activated
+
+  # Referenced from Epic 1 (lines 60-71) which defines MCP server requirements and usage
+
+  # Time estimates: Based on Epic 1 goal of "90% reduction in enrichment time (30 min → 3 min)"
+  # and practical workflow breakdown. To be validated during implementation and adjusted based on
+  # actual performance metrics.
+
+  stages:
+    - id: stage1-triage
+      name: Triage & Context Extraction
+      duration: 1-2 minutes
+      inputs:
+        - JIRA ticket ID
+      actions:
+        - Read JIRA ticket via Atlassian MCP (mcp__atlassian__getJiraIssue - Epic 1:63)
+        - Extract CVE ID from summary/description
+        - Identify affected systems from custom fields
+        - Extract initial severity and context
+      outputs:
+        - CVE ID
+        - Affected systems list
+        - Initial context
+      success_criteria:
+        - CVE ID extracted successfully
+        - Affected systems identified
+      error_handling:
+        - If no CVE ID: Prompt user for CVE ID or description
+        - If ticket not found: Verify ticket ID and retry
+
+    - id: stage2-cve-research
+      name: AI-Assisted CVE Research
+      duration: 3-5 minutes
+      inputs:
+        - CVE ID
+      actions:
+        - Determine CVSS severity (if available)
+        - Select Perplexity tool based on severity (Epic 1:68-70: Critical→deep_research, High→reason, Medium/Low→search)
+        - Construct comprehensive research query (using mcp__perplexity__* tools)
+        - Execute Perplexity research
+        - Parse and structure research findings
+      outputs:
+        - CVSS score and vector
+        - EPSS score
+        - CISA KEV status
+        - Affected versions
+        - Patched versions
+        - Exploit status
+        - MITRE ATT&CK suggestions
+        - Authoritative source links
+      success_criteria:
+        - CVSS score obtained
+        - Patch status determined
+        - Authoritative sources cited
+      error_handling:
+        - If Perplexity timeout: Retry with simpler query
+        - If no data: Use manual research fallback
+
+    - id: stage3-business-context
+      name: Business Context Assessment
+      duration: 2-3 minutes
+      inputs:
+        - Affected systems
+        - CVE intelligence
+      actions:
+        - Retrieve Asset Criticality Rating (ACR) from JIRA or config
+        - Determine system exposure (Internet/Internal/Isolated)
+        - Assess business impact (availability, confidentiality, integrity)
+        - Identify affected business processes
+      outputs:
+        - ACR rating
+        - System exposure classification
+        - Business impact analysis
+      success_criteria:
+        - ACR rating determined
+        - System exposure classified
+      error_handling:
+        - If ACR unknown: Prompt user or default to Medium
+
+    - id: stage4-remediation-planning
+      name: Remediation Planning
+      duration: 2-3 minutes
+      inputs:
+        - CVE intelligence
+        - Business context
+      actions:
+        - Identify patch availability and version
+        - Research workarounds if no patch
+        - Identify compensating controls
+        - Create actionable remediation steps
+      outputs:
+        - Patch information
+        - Workaround procedures
+        - Compensating controls
+        - Remediation steps
+      success_criteria:
+        - Remediation guidance provided
+        - Specific action items included
+
+    - id: stage5-attack-mapping
+      name: MITRE ATT&CK Mapping
+      duration: 1-2 minutes
+      inputs:
+        - CVE intelligence
+        - Vulnerability type
+      actions:
+        - Map vulnerability to MITRE ATT&CK tactics
+        - Identify relevant techniques (T-numbers)
+        - Add detection and defense guidance
+      outputs:
+        - ATT&CK tactics
+        - ATT&CK techniques with T-numbers
+        - Detection implications
+      success_criteria:
+        - At least one tactic identified
+        - At least one technique mapped
+
+    - id: stage6-priority-assessment
+      name: Multi-Factor Priority Assessment
+      duration: 1-2 minutes
+      inputs:
+        - CVSS score
+        - EPSS score
+        - KEV status
+        - ACR rating
+        - System exposure
+        - Exploit status
+      actions:
+        - Calculate priority score using algorithm
+        - Determine priority level (P1-P5)
+        - Generate priority rationale
+        - Calculate SLA deadline
+      outputs:
+        - Priority level (P1-P5)
+        - Priority rationale
+        - SLA deadline
+      success_criteria:
+        - Priority level assigned
+        - Rationale explains decision
+
+    - id: stage7-documentation
+      name: Structured Documentation
+      duration: 1 minute
+      inputs:
+        - All enrichment data from previous stages
+      actions:
+        - Use templates/security-enrichment-tmpl.yaml (Story 1.4)
+        - Populate all template sections
+        - Generate markdown document
+        - Validate completeness
+      outputs:
+        - Enrichment markdown document
+      success_criteria:
+        - All 12 template sections populated
+        - Executive summary present
+
+    - id: stage8-jira-update
+      name: JIRA Update & Validation
+      duration: 1-2 minutes
+      inputs:
+        - Enrichment document
+        - Priority level
+        - Structured data (CVSS, EPSS, KEV)
+      actions:
+        - Post enrichment as JIRA comment (mcp__atlassian__addCommentToJiraIssue - Story 1.5)
+        - Update custom fields (mcp__atlassian__updateJiraIssue - Story 1.6)
+        - Save enrichment to local directory
+        - Validate ticket updated successfully
+      outputs:
+        - Enriched JIRA ticket
+        - Local enrichment file
+      success_criteria:
+        - Comment posted successfully
+        - Custom fields updated
+        - Local file saved
+
+  success_metrics:
+    - Total time: <15 minutes
+    - All 8 stages completed
+    - JIRA ticket enriched
+    - Quality score >75%
+
+  integration_points:
+    - Atlassian MCP (JIRA)
+    - Perplexity MCP (Research)
+    - Local file system (Documentation storage)
+
+  mermaid_diagram: |
+    graph TD
+      A[Start: JIRA Ticket ID] --> B[Stage 1: Triage]
+      B --> C[Stage 2: CVE Research]
+      C --> D[Stage 3: Business Context]
+      D --> E[Stage 4: Remediation Planning]
+      E --> F[Stage 5: MITRE ATT&CK]
+      F --> G[Stage 6: Priority Assessment]
+      G --> H[Stage 7: Documentation]
+      H --> I[Stage 8: JIRA Update]
+      I --> J[End: Enriched Ticket]
