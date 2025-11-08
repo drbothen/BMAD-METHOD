@@ -1,0 +1,261 @@
+workflow:
+  id: security-analysis-review-v1
+  name: Security Analysis Review Workflow
+  version: 1.0
+  description: Systematic peer review workflow for security enrichments
+  estimated_duration: 15-20 minutes
+  prerequisites:
+    - JIRA ticket with analyst enrichment
+    - Security Reviewer agent activated
+    - Atlassian MCP configured
+    - (Optional) Perplexity MCP for fact verification
+
+  stages:
+    - id: stage1-preparation
+      name: Review Preparation
+      duration: 2-3 minutes
+      inputs:
+        - JIRA ticket ID
+      actions:
+        - Read JIRA ticket via Atlassian MCP
+        - Extract analyst enrichment comment
+        - Parse enrichment structure
+        - Extract factual claims for verification
+      outputs:
+        - Enrichment document
+        - Claims list (CVSS, EPSS, KEV, etc.)
+        - Analyst name
+      success_criteria:
+        - Enrichment successfully extracted
+        - Claims identified
+      error_handling:
+        - If Atlassian MCP unavailable: HALT with message "Atlassian MCP required for review workflow"
+        - If ticket not found: Prompt user to verify ticket ID
+        - If enrichment comment not found: HALT with message "No enrichment found - ensure Story 3.1 workflow completed"
+
+    - id: stage2-evaluation
+      name: Systematic Quality Evaluation
+      duration: 5-7 minutes
+      inputs:
+        - Enrichment document
+      actions:
+        - Execute technical-accuracy-checklist.md
+        - Execute completeness-checklist.md
+        - Execute actionability-checklist.md
+        - Execute contextualization-checklist.md
+        - Execute documentation-quality-checklist.md
+        - Execute attack-mapping-validation-checklist.md
+        - Execute cognitive-bias-checklist.md
+        - Execute source-citation-checklist.md
+        - Calculate scores per dimension
+        - Calculate overall quality score
+      outputs:
+        - 8 dimension scores (percentages)
+        - Overall quality score
+        - Quality classification (Excellent/Good/Needs Improvement/Inadequate)
+      success_criteria:
+        - All 8 checklists executed
+        - Overall score calculated
+      scoring:
+        weights:
+          technical_accuracy: 25
+          completeness: 20
+          actionability: 15
+          contextualization: 15
+          documentation_quality: 10
+          attack_mapping: 5
+          cognitive_bias: 5
+          source_citation: 5
+        classification:
+          excellent: ">=90"
+          good: "75-89"
+          needs_improvement: "60-74"
+          inadequate: "<60"
+      error_handling:
+        - If checklist file missing: HALT with message specifying which checklist is missing
+        - If checklist execution fails: Log error and continue with remaining checklists
+
+    - id: stage3-gap-identification
+      name: Gap Identification & Categorization
+      duration: 3-4 minutes
+      inputs:
+        - Checklist results
+        - Failed checklist items
+      actions:
+        - Categorize each gap as Critical/Significant/Minor
+        - Specify location for each gap
+        - Explain impact of each gap
+        - Provide recommended fixes
+        - Link to learning resources
+      outputs:
+        - Critical issues list
+        - Significant gaps list
+        - Minor improvements list
+      success_criteria:
+        - All gaps categorized
+        - Recommendations provided
+      categorization_rules:
+        critical:
+          - Factual errors (incorrect CVSS, EPSS, KEV status)
+          - Missing priority assessment
+          - Incorrect or misleading security metrics
+          - Dangerous remediation advice
+        significant:
+          - Missing business context
+          - Incomplete remediation guidance
+          - MITRE ATT&CK mapping errors
+          - Missing or weak source citations
+        minor:
+          - Formatting inconsistencies
+          - Spelling/grammar errors
+          - Optional enhancements
+          - Style improvements
+
+    - id: stage4-bias-detection
+      name: Cognitive Bias Detection
+      duration: 2-3 minutes
+      inputs:
+        - Enrichment document
+      actions:
+        - Check for confirmation bias
+        - Check for anchoring bias
+        - Check for availability heuristic
+        - Check for overconfidence bias
+        - Check for recency bias
+        - Provide specific examples
+        - Suggest debiasing strategies
+      outputs:
+        - Detected biases with examples
+        - Debiasing recommendations
+      success_criteria:
+        - Bias assessment complete
+        - Constructive feedback provided
+      bias_types:
+        confirmation_bias: "Selectively emphasizing evidence that confirms initial assessment"
+        anchoring_bias: "Over-relying on first piece of information (e.g., CVSS score)"
+        availability_heuristic: "Overweighting recent or memorable incidents"
+        overconfidence_bias: "Excessive certainty without sufficient evidence"
+        recency_bias: "Giving too much weight to recent events"
+
+    - id: stage5-fact-verification
+      name: Fact Verification (Optional)
+      duration: 3-5 minutes
+      optional: true
+      inputs:
+        - Claims list (CVSS, EPSS, KEV, patches)
+      actions:
+        - Verify CVSS score against NVD
+        - Verify EPSS score against FIRST
+        - Verify KEV status against CISA
+        - Verify patch versions against vendor
+        - Compare analyst claims with authoritative data
+        - Document discrepancies
+      outputs:
+        - Accuracy score (% correct)
+        - Discrepancies list with corrections
+      success_criteria:
+        - Critical claims verified
+        - Discrepancies documented
+      error_handling:
+        - If Perplexity MCP unavailable: Skip stage gracefully and document in review report
+        - If verification timeout: Skip individual claim and mark as "Not Verified"
+      authoritative_sources:
+        cvss: "https://nvd.nist.gov/"
+        epss: "https://www.first.org/epss/"
+        kev: "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+        mitre_attack: "https://attack.mitre.org/"
+
+    - id: stage6-documentation
+      name: Review Report Documentation
+      duration: 2-3 minutes
+      inputs:
+        - Quality scores
+        - Gap findings
+        - Bias detection results
+        - Fact verification results (if performed)
+      actions:
+        - Load templates/security-review-report-tmpl.yaml
+        - Acknowledge strengths first
+        - Document findings constructively
+        - Provide prioritized recommendations
+        - Link learning resources
+        - Maintain blameless tone
+      outputs:
+        - Constructive review report (markdown)
+      success_criteria:
+        - All sections populated
+        - Constructive tone maintained
+      required_sections:
+        - Review Metadata
+        - Executive Summary
+        - Strengths
+        - Quality Scores
+        - Critical Issues (if any)
+        - Significant Gaps (if any)
+        - Minor Improvements (if any)
+        - Cognitive Bias Assessment
+        - Fact Verification Results (if performed)
+        - Recommendations
+        - Learning Resources
+        - Next Steps
+      tone_guidelines:
+        - Start with strengths (positive acknowledgment)
+        - Use "consider" instead of "must"
+        - Explain "why" not just "what"
+        - Provide examples and learning resources
+        - Maintain blameless culture
+        - Focus on improvement, not criticism
+
+    - id: stage7-feedback-loop
+      name: Feedback & Improvement Loop
+      duration: 1 minute
+      inputs:
+        - Review report
+      actions:
+        - Post review report as JIRA comment
+        - If Critical Issues: Change ticket status to "Needs Revision"
+        - Assign ticket back to analyst
+        - Save review report to artifacts/ directory
+        - Save workflow metrics to metrics/ directory
+      outputs:
+        - Review comment in JIRA
+        - Ticket assigned to analyst
+        - Local review file
+        - Performance metrics logged
+      success_criteria:
+        - Review posted successfully
+        - Analyst notified
+        - Files saved locally
+      error_handling:
+        - If JIRA comment post fails: Retry once, then save review locally and notify user
+        - If status update fails: Log warning but continue (manual status update may be needed)
+        - If file save fails: HALT with file system error message
+      status_change_rules:
+        critical_issues_found: "Needs Revision"
+        significant_gaps_only: "In Review"
+        minor_improvements_only: "Approved"
+        no_issues: "Approved"
+
+  success_metrics:
+    - Total time: <20 minutes
+    - All stages completed (optional stage skippable)
+    - Review report posted to JIRA
+    - Feedback actionable and constructive
+
+  integration_points:
+    - Atlassian MCP (JIRA) - REQUIRED
+    - Perplexity MCP (Fact Verification) - OPTIONAL
+    - Local file system (artifacts/ and metrics/ directories)
+
+  mermaid_diagram: |
+    graph TD
+      A[Start: Enriched Ticket] --> B[Stage 1: Preparation]
+      B --> C[Stage 2: Systematic Evaluation]
+      C --> D[Stage 3: Gap Identification]
+      D --> E[Stage 4: Bias Detection]
+      E --> F{Perform Fact Verification?}
+      F -->|Yes| G[Stage 5: Fact Verification]
+      F -->|No| H[Stage 6: Documentation]
+      G --> H
+      H --> I[Stage 7: Feedback Loop]
+      I --> J[End: Review Posted]

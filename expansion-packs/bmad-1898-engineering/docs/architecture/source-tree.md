@@ -15,15 +15,15 @@ expansion-packs/bmad-1898-engineering/
 ├── agent-teams/                      # Agent team bundles
 │   └── security-team.txt            # Bundled team for web UI
 │
-├── checklists/                       # Quality assurance checklists
-│   ├── accuracy-checklist.md        # Fact verification checklist
-│   ├── clarity-checklist.md         # Communication clarity checklist
-│   ├── completeness-checklist.md    # Information completeness checklist
-│   ├── consistency-checklist.md     # Internal consistency checklist
-│   ├── priority-checklist.md        # Priority assessment checklist
-│   ├── remediation-checklist.md     # Remediation guidance checklist
-│   ├── security-context-checklist.md # Security context checklist
-│   └── sourcing-checklist.md        # Source attribution checklist
+├── checklists/                       # Quality assurance checklists (Story 2.2)
+│   ├── technical-accuracy-checklist.md        # CVE validation, CVSS/EPSS/KEV accuracy (10 items)
+│   ├── completeness-checklist.md              # Required sections presence (12 items)
+│   ├── actionability-checklist.md             # Remediation guidance, priority/SLA (8 items)
+│   ├── contextualization-checklist.md         # Business, threat, environmental context (10 items)
+│   ├── documentation-quality-checklist.md     # Structure, clarity, readability (8 items)
+│   ├── attack-mapping-validation-checklist.md # MITRE ATT&CK tactics/techniques (4 items)
+│   ├── cognitive-bias-checklist.md            # 5 bias types detection (5 biases)
+│   └── source-citation-checklist.md           # Authoritative sources, URL validation (5 items)
 │
 ├── data/                             # Knowledge bases and reference materials
 │   ├── bmad-kb.md                   # Vulnerability management KB (Story 4.1)
@@ -66,10 +66,17 @@ expansion-packs/bmad-1898-engineering/
 │   └── (template files - TBD based on agent needs)
 │
 ├── workflows/                        # Project workflow definitions
-│   └── (workflow files - TBD)
+│   ├── security-alert-enrichment-workflow.yaml   # Story 3.1 enrichment workflow
+│   └── security-analysis-review-workflow.yaml    # Story 3.2 review workflow
+│
+├── metrics/                          # Workflow performance metrics (Story 3.2)
+│   └── (workflow execution times, quality scores)
+│
+├── artifacts/                        # Review document storage (Story 3.2)
+│   └── (enrichment and review reports)
 │
 ├── tests/                            # Test files for expansion pack
-│   └── (test files - TBD)
+│   └── workflows/                    # Workflow integration tests
 │
 ├── config.yaml                       # Expansion pack configuration
 └── README.md                         # Expansion pack overview
