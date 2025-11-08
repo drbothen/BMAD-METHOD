@@ -1,9 +1,11 @@
 # Read JIRA Ticket Task
 
 ## Purpose
+
 Read a JIRA security alert ticket via Atlassian MCP, extract CVE IDs and affected system metadata for vulnerability analysis.
 
 ## Prerequisites
+
 - Atlassian MCP server configured and connected
 - JIRA configuration in `config.yaml` with required fields
 - Valid JIRA ticket ID to read
@@ -14,13 +16,13 @@ This task requires JIRA configuration in `expansion-packs/bmad-1898-engineering/
 
 ```yaml
 jira:
-  cloud_id: "YOUR_CLOUD_ID_HERE"
-  project_key: "YOUR_PROJECT_KEY"
+  cloud_id: 'YOUR_CLOUD_ID_HERE'
+  project_key: 'YOUR_PROJECT_KEY'
   custom_fields:
-    cve_id: "customfield_XXXXX"
-    affected_systems: "customfield_XXXXX"
-    asset_criticality_rating: "customfield_XXXXX"
-    system_exposure: "customfield_XXXXX"
+    cve_id: 'customfield_XXXXX'
+    affected_systems: 'customfield_XXXXX'
+    asset_criticality_rating: 'customfield_XXXXX'
+    system_exposure: 'customfield_XXXXX'
 ```
 
 ## Task Steps
@@ -38,6 +40,7 @@ jira:
    - `jira.custom_fields.system_exposure` - Custom field ID for exposure level
 
 **If validation fails:**
+
 - Missing config file: "❌ Config file not found at expansion-packs/bmad-1898-engineering/config.yaml"
 - Missing required field: "❌ Missing required field: jira.cloud_id" (or specific field name)
 - HALT and request user to configure
@@ -59,6 +62,7 @@ mcp__atlassian__getJiraIssue
 ```
 
 **Handle errors gracefully:**
+
 - **Ticket not found:** "❌ Ticket {ticket_id} not found. Verify ticket ID and try again."
 - **Authentication failure:** "❌ JIRA authentication failed. Check Atlassian MCP configuration."
 - **Network error:** "❌ Cannot connect to JIRA. Check network connection and try again."
@@ -72,17 +76,20 @@ If error occurs, prompt user to retry or exit.
 Search for CVE IDs using pattern: `CVE-\d{4}-\d{4,7}` (case-insensitive)
 
 **Search locations (in order):**
+
 1. Ticket summary field: `fields.summary`
 2. Ticket description field: `fields.description`
 3. Custom CVE ID field: `fields[config.jira.custom_fields.cve_id]`
 
 **Extract ALL CVE IDs found:**
+
 - Use regex with case-insensitive flag
 - Collect all matches (may find multiple)
 - Designate first CVE as "primary CVE"
 - Store all CVEs for processing
 
 **Example extraction:**
+
 ```
 Summary: "Apache Struts 2 RCE (CVE-2024-1234) and Log4j (CVE-2024-5678)"
 Result:
@@ -91,6 +98,7 @@ Result:
 ```
 
 **If no CVE IDs found:**
+
 - Display: "⚠️ No CVE ID found in ticket {ticket_id}."
 - Prompt: "Please provide CVE ID manually, or type 'skip' to proceed with generic vulnerability research:"
 - If user provides CVE: Add to CVE list as primary
@@ -150,29 +158,31 @@ Labels: {labels}
 Return the following data structure for use by subsequent tasks:
 
 ```yaml
-ticket_id: "{ticket_id}"
-summary: "{ticket_summary}"
-description: "{ticket_description}"
+ticket_id: '{ticket_id}'
+summary: '{ticket_summary}'
+description: '{ticket_description}'
 cve_ids:
-  primary: "{primary_cve}"
-  all: ["{cve_1}", "{cve_2}", ...]
-affected_systems: ["{system_1}", "{system_2}", ...]
-asset_criticality: "{criticality_rating}"
-system_exposure: "{exposure_level}"
-priority: "{jira_priority}"
-components: ["{component_1}", "{component_2}", ...]
-labels: ["{label_1}", "{label_2}", ...]
+  primary: '{primary_cve}'
+  all: ['{cve_1}', '{cve_2}', ...]
+affected_systems: ['{system_1}', '{system_2}', ...]
+asset_criticality: '{criticality_rating}'
+system_exposure: '{exposure_level}'
+priority: '{jira_priority}'
+components: ['{component_1}', '{component_2}', ...]
+labels: ['{label_1}', '{label_2}', ...]
 ```
 
 ## Security Considerations
 
 **DO NOT:**
+
 - Log JIRA credentials or API tokens
 - Display cloud_id in error messages
 - Expose internal system names in public logs
 - Include stack traces with file paths in user-facing errors
 
 **DO:**
+
 - CVE IDs are public - safe to log
 - Sanitize error messages
 - Cache ticket data to minimize API calls
@@ -181,20 +191,24 @@ labels: ["{label_1}", "{label_2}", ...]
 ## Error Recovery
 
 **Rate Limiting:**
+
 - Implement exponential backoff: 60s, 120s, 240s
 - Max 3 retries before failing
 
 **Authentication Failures:**
+
 - Guide user to verify MCP configuration
 - Check `~/.config/mcp/config.json` or equivalent
 
 **Network Timeouts:**
+
 - Retry once after 30 seconds
 - Offer offline mode or alternative input
 
 ## Success Criteria
 
 Task completes successfully when:
+
 1. ✅ Config validated and loaded
 2. ✅ Ticket read from JIRA via MCP
 3. ✅ At least one CVE ID extracted (or user chose to skip)
@@ -204,6 +218,7 @@ Task completes successfully when:
 ## Next Steps
 
 After this task completes, the extracted data will be used by:
+
 - CVE research tasks (enrichment via NVD/CISA)
 - Risk assessment workflows
 - Remediation planning

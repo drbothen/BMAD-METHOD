@@ -28,10 +28,67 @@ slashPrefix: bmad-1898
 #   OR inspect issue JSON via API: GET /rest/api/3/issue/{issueKey}
 #
 jira:
-  cloud_id: "YOUR_CLOUD_ID_HERE"  # JIRA Cloud instance ID (UUID format, see above)
-  project_key: "YOUR_PROJECT_KEY"  # Project key visible in issue IDs (e.g., AOD-123 → use "AOD")
+  cloud_id: "YOUR_CLOUD_ID_HERE" # JIRA Cloud instance ID (UUID format, see above)
+  project_key: "YOUR_PROJECT_KEY" # Project key visible in issue IDs (e.g., AOD-123 → use "AOD")
+
   custom_fields:
-    cve_id: "customfield_XXXXX"              # Field storing CVE identifier(s)
-    affected_systems: "customfield_XXXXX"     # Field listing impacted systems/assets
-    asset_criticality_rating: "customfield_XXXXX"  # Field showing Critical/High/Medium/Low rating
-    system_exposure: "customfield_XXXXX"      # Field showing Internet-Facing/Internal/Isolated
+    # Ticket Metadata Fields
+    cve_id:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "text"
+      label: "CVE ID"
+      validation: "^CVE-\\d{4}-\\d{4,7}$"
+
+    affected_systems:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "text"
+      label: "Affected Systems"
+
+    asset_criticality_rating:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "select"
+      label: "Asset Criticality Rating"
+      options: ["Critical", "High", "Medium", "Low"]
+
+    system_exposure:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "select"
+      label: "System Exposure"
+      options: ["Internet-Facing", "Internal", "Isolated"]
+
+    # Security Enrichment Fields (Story 1.6)
+    cvss_score:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "number"
+      label: "CVSS Base Score"
+      min: 0.0
+      max: 10.0
+      decimals: 1
+
+    epss_score:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "number"
+      label: "EPSS Score"
+      min: 0.0
+      max: 1.0
+      decimals: 2
+
+    kev_status:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "select"
+      label: "CISA KEV Status"
+      options: ["Listed", "Not Listed"]
+
+    exploit_status:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "select"
+      label: "Exploit Availability"
+      options: ["None", "PoC", "Public Exploit", "Active Exploitation"]
+
+  # Priority Mapping for Multi-factor Assessment (Story 1.7)
+  priority_mapping:
+    P1: "Critical" # Highest priority
+    P2: "High"
+    P3: "Medium"
+    P4: "Low"
+    P5: "Trivial" # Lowest priority

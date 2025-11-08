@@ -1,0 +1,320 @@
+# Security Enrichment Template
+# Powered by BMAD™ Core
+#
+# This template structures CVE research findings into comprehensive security enrichment
+# documents for JIRA ticket updates. It consumes YAML output from the research-cve task
+# and produces formatted markdown enrichment comments.
+
+template:
+  id: security-enrichment-template-v1
+  name: Security Alert Enrichment
+  version: 1.0
+  output:
+    format: markdown
+    filename: enrichment-{{cve_id}}.md
+    title: "Security Enrichment: {{cve_id}} - {{vulnerability_title}}"
+
+workflow:
+  mode: automated
+  # No elicitation - template processes data directly from research-cve task output
+
+sections:
+  - id: executive-summary
+    title: Executive Summary
+    instruction: |
+      Provide a concise executive summary in 2-3 sentences:
+      - Sentence 1: CVE ID, severity, vulnerability type, affected product/versions
+      - Sentence 2: CVSS/EPSS scores and KEV status
+      - Sentence 3: Recommended priority and SLA timeline
+
+      Variables used:
+      - cve_id: CVE identifier
+      - cvss.severity: Critical/High/Medium/Low
+      - vulnerability_type: RCE/SQLi/XSS/etc
+      - affected_product: Product name
+      - affected_versions_summary: Version range summary
+      - cvss.score: CVSS base score (0.0-10.0)
+      - epss.score: EPSS probability (0.0-1.0)
+      - kev_status_text: "Listed" or "Not Listed"
+      - priority: P1-P5
+      - sla_timeline: Remediation deadline
+    template: |
+      {{cve_id}} is a **{{cvss.severity}}** severity {{vulnerability_type}} affecting {{affected_product}} versions {{affected_versions_summary}}. The vulnerability has a CVSS score of {{cvss.score}}, EPSS score of {{epss.score}}, and is {{kev_status_text}} on the CISA KEV catalog. Recommended priority: **{{priority}}** ({{sla_timeline}}).
+
+  - id: vulnerability-details
+    title: Vulnerability Details
+    instruction: |
+      Provide detailed vulnerability information:
+      - CVE identifier and full vulnerability title
+      - Vulnerability type/category (RCE, SQLi, XSS, etc.)
+      - Affected product name and version ranges
+      - Patched versions if available
+      - Technical description of the vulnerability
+
+      Variables used:
+      - cve_id: CVE identifier
+      - vulnerability_title: Full CVE title
+      - vulnerability_type: Vulnerability category
+      - affected_product: Product name
+      - affected_versions_list: Formatted version list
+      - patched_versions_list: Formatted patch list or "Not available"
+      - vulnerability_description: Technical description
+    template: |
+      **CVE ID:** {{cve_id}}
+
+      **Vulnerability Title:** {{vulnerability_title}}
+
+      **Type:** {{vulnerability_type}}
+
+      **Affected Product:** {{affected_product}}
+
+      **Affected Versions:**
+      {{affected_versions_list}}
+
+      **Patched Versions:** {{patched_versions_list}}
+
+      **Description:**
+      {{vulnerability_description}}
+
+  - id: severity-metrics
+    title: Severity Metrics
+    instruction: |
+      Present severity metrics in a markdown table with three columns: Metric, Value, Context.
+      Include CVSS, EPSS, KEV status, and exploit availability.
+      Provide interpretation context for each metric.
+
+      Variables used:
+      - cvss.score: CVSS base score
+      - cvss.severity: Severity rating
+      - cvss.vector: CVSS vector string
+      - epss.score: EPSS probability
+      - epss.percentile: EPSS percentile rank
+      - epss_interpretation: High/Medium/Low
+      - kev.status: Listed/Not Listed
+      - kev_context: KEV details or "Not in KEV catalog"
+      - exploit_availability_text: Exploit status summary
+      - exploit_context: Exploit maturity description
+    template: |
+      | Metric | Value | Context |
+      |--------|-------|---------|
+      | **CVSS Base Score** | {{cvss.score}} ({{cvss.severity}}) | {{cvss.vector}} |
+      | **EPSS Score** | {{epss.score}} ({{epss.percentile}}th percentile) | Exploitation probability: {{epss_interpretation}} |
+      | **CISA KEV Status** | {{kev.status}} | {{kev_context}} |
+      | **Exploit Availability** | {{exploit_availability_text}} | {{exploit_context}} |
+
+  - id: affected-systems
+    title: Affected Systems
+    instruction: |
+      List affected systems from JIRA custom field.
+      For each system, include:
+      - System name/identifier
+      - Installed version
+      - Asset Criticality Rating (ACR)
+      - System Exposure classification
+
+      Variables used:
+      - affected_systems_table: Pre-formatted markdown table from JIRA data
+
+      Example format:
+      | System | Version | ACR | Exposure |
+      |--------|---------|-----|----------|
+      | prod-web-01 | Apache Struts 2.5.30 | Critical | Internet-Facing |
+    template: |
+      {{affected_systems_table}}
+
+  - id: exploit-intelligence
+    title: Exploit Intelligence
+    instruction: |
+      Provide exploit intelligence from research-cve task output:
+      - PoC availability (Yes/No)
+      - Public exploit code availability (Yes/No)
+      - Active exploitation in the wild (Yes/No)
+      - Exploit maturity assessment
+
+      Variables used:
+      - exploit_status.poc_available_text: "Yes" or "No"
+      - exploit_status.exploit_code_public_text: "Yes" or "No"
+      - exploit_status.active_exploitation_text: "Yes" or "No"
+      - exploit_maturity: Maturity assessment
+    template: |
+      **PoC Available:** {{exploit_status.poc_available_text}}
+
+      **Public Exploit Code:** {{exploit_status.exploit_code_public_text}}
+
+      **Active Exploitation:** {{exploit_status.active_exploitation_text}}
+
+      **Exploit Maturity:** {{exploit_maturity}}
+
+  - id: business-impact-assessment
+    title: Business Impact Assessment
+    instruction: |
+      Assess business impact based on:
+      - Vulnerability type and CVSS impact metrics (C/I/A)
+      - Affected systems' business criticality (ACR)
+      - Potential compliance implications
+      - Overall business risk rating
+
+      Variables used:
+      - confidentiality_impact: Derived from CVSS C score
+      - integrity_impact: Derived from CVSS I score
+      - availability_impact: Derived from CVSS A score
+      - compliance_implications: Compliance context
+      - business_risk_rating: Critical/High/Medium/Low
+    template: |
+      **Confidentiality Impact:** {{confidentiality_impact}}
+
+      **Integrity Impact:** {{integrity_impact}}
+
+      **Availability Impact:** {{availability_impact}}
+
+      **Compliance Implications:** {{compliance_implications}}
+
+      **Business Risk Rating:** {{business_risk_rating}}
+
+  - id: mitre-attack-mapping
+    title: MITRE ATT&CK Mapping
+    instruction: |
+      Map vulnerability to MITRE ATT&CK framework using research output.
+      List tactics as bullet points.
+      List techniques as bullet points with T-numbers.
+      Provide detection implications and defensive recommendations.
+
+      Variables used:
+      - attack_tactics_list: Pre-formatted bullet list of tactics
+      - attack_techniques_list: Pre-formatted bullet list with T-numbers
+      - detection_implications: What to monitor
+      - defensive_recommendations: Actionable defense measures
+
+      Note: Lists must be pre-formatted strings (no iteration syntax).
+    template: |
+      **Tactics:**
+      {{attack_tactics_list}}
+
+      **Techniques:**
+      {{attack_techniques_list}}
+
+      **Detection Implications:**
+      {{detection_implications}}
+
+      **Defensive Recommendations:**
+      {{defensive_recommendations}}
+
+  - id: remediation-guidance
+    title: Remediation Guidance
+    instruction: |
+      Provide remediation guidance:
+      - Patch application steps
+      - Upgrade path recommendations
+      - Vendor advisory links from research sources
+      - Remediation complexity (Low/Medium/High)
+
+      Variables used:
+      - patch_availability: Status from patched_versions
+      - recommended_action: Specific remediation steps
+      - upgrade_path: Version upgrade recommendations
+      - vendor_advisory_links: Links from sources
+      - remediation_complexity: Difficulty assessment
+    template: |
+      **Patch Availability:** {{patch_availability}}
+
+      **Recommended Action:** {{recommended_action}}
+
+      **Upgrade Path:** {{upgrade_path}}
+
+      **Vendor Advisory:**
+      {{vendor_advisory_links}}
+
+      **Remediation Complexity:** {{remediation_complexity}}
+
+  - id: compensating-controls
+    title: Compensating Controls
+    instruction: |
+      Provide compensating controls if patch is not available or cannot be immediately applied:
+      - Network-based mitigations
+      - Access control adjustments
+      - Monitoring enhancements
+      - Configuration changes
+
+      Note: If patch is available and easily applied, set content to "Not applicable - patch available"
+
+      Variables used:
+      - compensating_controls_content: Conditional content based on patch availability
+    template: |
+      {{compensating_controls_content}}
+
+  - id: priority-assessment
+    title: Priority Assessment
+    instruction: |
+      Provide priority assessment based on multi-factor analysis:
+      - Priority level (P1-P5) from priority assessment task
+      - Detailed rationale
+      - Factor breakdown showing CVSS, EPSS, KEV, ACR, Exposure
+      - SLA remediation deadline
+
+      Variables used:
+      - priority: P1-P5
+      - priority_label: Critical/High/Medium/Low/Informational
+      - priority_rationale: Explanation of priority factors
+      - cvss.severity, cvss.score: Severity metrics
+      - epss_interpretation, epss.score: Exploitation probability
+      - kev.status: KEV listing status
+      - acr_rating: Asset criticality from JIRA
+      - system_exposure: Exposure classification from JIRA
+      - exploit_availability_text: Exploit status
+      - sla_deadline: Remediation deadline
+    template: |
+      **Priority Level:** {{priority}} ({{priority_label}})
+
+      **Rationale:**
+      {{priority_rationale}}
+
+      **Factor Analysis:**
+      - CVSS Severity: {{cvss.severity}} ({{cvss.score}})
+      - EPSS Exploitation Probability: {{epss_interpretation}} ({{epss.score}})
+      - CISA KEV Status: {{kev.status}}
+      - Asset Criticality Rating: {{acr_rating}}
+      - System Exposure: {{system_exposure}}
+      - Exploit Availability: {{exploit_availability_text}}
+
+      **SLA Remediation Timeline:** {{sla_deadline}}
+
+  - id: references
+    title: References
+    instruction: |
+      List all authoritative sources used in research.
+      Include all sources from research-cve task output.
+      Format as bullet list with links.
+
+      Variables used:
+      - references_list: Pre-formatted bullet list with markdown links
+
+      Example format:
+      - [NIST NVD - CVE-2024-1234](https://nvd.nist.gov/vuln/detail/CVE-2024-1234)
+      - [CISA KEV Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
+    template: |
+      {{references_list}}
+
+  - id: enrichment-metadata
+    title: Enrichment Metadata
+    instruction: |
+      Provide enrichment metadata:
+      - Timestamp of enrichment
+      - Agent identifier
+      - Research tools used
+      - Confidence level in findings
+
+      Variables used:
+      - enrichment_timestamp: Current date/time
+      - research_tools_used: "Perplexity AI (search/reason/deep_research)"
+      - confidence_level: High/Medium/Low based on data completeness
+      - data_sources_count: Count of authoritative sources
+    template: |
+      **Enrichment Date:** {{enrichment_timestamp}}
+
+      **Enriched By:** Security Analyst Agent (BMAD-1898)
+
+      **Research Tools:** {{research_tools_used}}
+
+      **Confidence Level:** {{confidence_level}}
+
+      **Data Sources:** {{data_sources_count}} authoritative sources

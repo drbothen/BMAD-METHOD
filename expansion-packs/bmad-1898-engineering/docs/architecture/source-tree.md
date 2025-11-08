@@ -83,10 +83,12 @@ expansion-packs/bmad-1898-engineering/
 **Location:** All knowledge base and reference materials go in `data/`
 
 **Naming Convention:**
+
 - Descriptive kebab-case names
 - Examples: `bmad-kb.md`, `cognitive-bias-patterns.md`, `mitre-attack-mapping-guide.md`
 
 **Purpose:**
+
 - Reference materials for agents
 - Knowledge bases loaded by Security Analyst and Security Reviewer
 - Standalone documents that don't require external dependencies
@@ -96,10 +98,12 @@ expansion-packs/bmad-1898-engineering/
 **Location:** AI agent persona definitions go in `agents/`
 
 **Naming Convention:**
+
 - Kebab-case role names
 - Examples: `security-analyst.md`, `security-reviewer.md`
 
 **Purpose:**
+
 - Define agent personas, capabilities, and activation instructions
 - Reference dependencies (tasks, templates, checklists, data)
 - Used in IDE environments (Cursor, VS Code, Claude Code)
@@ -109,10 +113,12 @@ expansion-packs/bmad-1898-engineering/
 **Location:** User stories go in `docs/stories/`
 
 **Naming Convention:**
+
 - Format: `{epic}.{story}.{short-title}.md`
 - Examples: `4.1.vulnerability-management-knowledge-base.md`
 
 **Purpose:**
+
 - Implementation specifications for Dev agent
 - Include tasks, acceptance criteria, dev notes, testing guidance
 - Track implementation progress and QA results
@@ -122,10 +128,12 @@ expansion-packs/bmad-1898-engineering/
 **Location:** QA checklists go in `checklists/`
 
 **Naming Convention:**
+
 - Descriptive kebab-case names with `-checklist.md` suffix
 - Examples: `accuracy-checklist.md`, `priority-checklist.md`
 
 **Purpose:**
+
 - Quality dimension checklists for Security Reviewer
 - Systematic evaluation criteria
 - Reusable across multiple review scenarios
@@ -135,11 +143,13 @@ expansion-packs/bmad-1898-engineering/
 When implementing Story 4.3 (MITRE ATT&CK Mapping Guide):
 
 **Full path for knowledge base file:**
+
 ```
 expansion-packs/bmad-1898-engineering/data/mitre-attack-mapping-guide.md
 ```
 
 **Related files:**
+
 - Epic definition: `expansion-packs/bmad-1898-engineering/docs/prd/epic-4-knowledge-base.md`
 - Story specification: `expansion-packs/bmad-1898-engineering/docs/stories/4.3.mitre-attack-mapping-guide.md`
 - Related KB: `expansion-packs/bmad-1898-engineering/data/bmad-kb.md` (Story 4.1)
@@ -147,10 +157,12 @@ expansion-packs/bmad-1898-engineering/data/mitre-attack-mapping-guide.md
 ## Integration Points
 
 **JIRA Configuration** (`config.yaml`):
+
 - Custom fields for CVE enrichment
 - Integration with Security Analyst agent workflows
 
 **Core BMAD Framework:**
+
 - Inherits core tasks from `.bmad-core/tasks/`
 - Inherits core templates from `.bmad-core/templates/`
 - Can override or extend with expansion-specific tasks/templates
@@ -160,6 +172,7 @@ expansion-packs/bmad-1898-engineering/data/mitre-attack-mapping-guide.md
 **Distribution directory:** `dist/expansion-packs/bmad-1898-engineering/`
 
 **Build process:**
+
 - Bundles agents with dependencies into `.txt` files for web UI
 - Resolves dependency chains (tasks → templates → checklists → data)
 - Creates team bundles in `agent-teams/`

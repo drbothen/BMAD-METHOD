@@ -15,6 +15,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Definition:** Immediate action required. Critical vulnerabilities with high exploitability affecting critical systems. War room may be needed.
 
 **Criteria (ANY of the following):**
+
 1. **CVSS ≥9.0 + EPSS ≥0.75 + KEV Listed**
    - Critical severity + very high exploitation probability + active exploitation confirmed
 
@@ -27,6 +28,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Examples:**
 
 **Example 1: Apache Struts 2 RCE**
+
 - CVE-2024-1234
 - CVSS: 9.8 (Critical)
 - EPSS: 0.85 (97th percentile - very high exploitation probability)
@@ -36,6 +38,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 - **Priority: P1** (All factors indicate immediate high risk)
 
 **Example 2: Zero-Day RCE with Active Exploitation**
+
 - CVE-2024-5678
 - CVSS: 8.5 (High)
 - EPSS: 0.95 (99th percentile)
@@ -48,6 +51,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **SLA Timeline:** 24 hours from enrichment completion
 
 **Actions Required:**
+
 - Immediate notification to security leadership
 - Emergency change approval (bypass standard CAB)
 - Deploy patch or workaround within 24 hours
@@ -63,6 +67,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Definition:** Urgent action required. High severity vulnerabilities with significant exploitability or important systems affected.
 
 **Criteria (ANY of the following):**
+
 1. **CVSS ≥7.0 + EPSS ≥0.50 + (KEV Listed OR Public Exploit)**
    - High severity + high exploitation probability + exploit available
 
@@ -75,6 +80,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Examples:**
 
 **Example 1: SQL Injection with Public PoC**
+
 - CVE-2024-7890
 - CVSS: 8.0 (High)
 - EPSS: 0.65 (85th percentile)
@@ -85,6 +91,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 - **Priority: P2** (High severity + public exploit + important system)
 
 **Example 2: Internal Critical System, High CVSS**
+
 - CVE-2024-1111
 - CVSS: 9.5 (Critical)
 - EPSS: 0.20 (low exploitation probability)
@@ -97,6 +104,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **SLA Timeline:** 7 days from enrichment completion
 
 **Actions Required:**
+
 - Notify security team and system owners
 - Schedule patch deployment within 7 days
 - Implement monitoring and compensating controls until patched
@@ -112,6 +120,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Definition:** Important but not urgent. Moderate severity or exploitability. Planned patching in regular maintenance window.
 
 **Criteria (ANY of the following):**
+
 1. **CVSS 4.0-6.9 + EPSS 0.25-0.49 + Internal Exposure**
    - Medium severity + moderate exploitability + internal system
 
@@ -124,6 +133,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Examples:**
 
 **Example 1: Medium Severity Internal System**
+
 - CVE-2024-2222
 - CVSS: 6.5 (Medium)
 - EPSS: 0.30 (moderate)
@@ -134,6 +144,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 - **Priority: P3** (Moderate risk, internal system)
 
 **Example 2: High CVSS but Low Exploitability with WAF**
+
 - CVE-2024-3333
 - CVSS: 8.0 (High)
 - EPSS: 0.15 (low)
@@ -146,6 +157,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **SLA Timeline:** 30 days from enrichment completion
 
 **Actions Required:**
+
 - Schedule patch deployment in next monthly maintenance window
 - Implement monitoring and basic compensating controls
 - No emergency change required
@@ -159,7 +171,10 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 
 **Definition:** Routine patching. Low severity or low exploitability. Minimal business impact.
 
+**Score Threshold:** 6-9 points
+
 **Criteria (ANY of the following):**
+
 1. **CVSS <4.0 + Any EPSS + Any System**
    - Low severity regardless of other factors
 
@@ -172,6 +187,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Examples:**
 
 **Example 1: Low Severity, Any System**
+
 - CVE-2024-4444
 - CVSS: 3.5 (Low)
 - EPSS: 0.10
@@ -181,6 +197,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 - **Priority: P4** (CVSS <4.0 = Low priority despite critical system)
 
 **Example 2: Dev Environment, Moderate Severity**
+
 - CVE-2024-5555
 - CVSS: 6.0 (Medium)
 - EPSS: 0.05
@@ -192,6 +209,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **SLA Timeline:** 90 days from enrichment completion
 
 **Actions Required:**
+
 - Schedule patch in quarterly maintenance
 - No compensating controls required
 - Low monitoring priority
@@ -205,7 +223,10 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 
 **Definition:** Awareness only. Very low or theoretical risk. Optional patching.
 
+**Score Threshold:** 0-5 points
+
 **Criteria (ANY of the following):**
+
 1. **CVSS <2.0 + No Exploit + Test Environment**
    - Very low severity in non-production
 
@@ -218,6 +239,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Examples:**
 
 **Example 1: Theoretical Risk, Test System**
+
 - CVE-2024-6666
 - CVSS: 1.5 (Low)
 - EPSS: 0.01
@@ -227,6 +249,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 - **Priority: P5** (Minimal risk, test environment)
 
 **Example 2: Decommissioning Planned**
+
 - CVE-2024-7777
 - CVSS: 7.0 (High)
 - System: Legacy server scheduled for decommission in 2 weeks
@@ -235,6 +258,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **SLA Timeline:** No SLA
 
 **Actions Required:**
+
 - Awareness only
 - No patching required
 - Optional patching if convenient
@@ -318,7 +342,7 @@ def calculate_priority(vuln, system):
         return "P2"
     elif score >= 10:
         return "P3"
-    elif score >= 5:
+    elif score >= 6:
         return "P4"
     else:
         return "P5"
@@ -326,14 +350,14 @@ def calculate_priority(vuln, system):
 
 ### Factor Weights Summary
 
-| Factor | Weight | Rationale |
-|--------|--------|-----------|
-| CVSS | 4 points | Severity matters, but not alone |
-| EPSS | 4 points | Exploitability is equally important as severity |
-| KEV | 5 points | Active exploitation is strongest signal (override) |
-| ACR | 4 points | Business impact is critical |
-| Exposure | 3 points | Internet-facing = higher risk |
-| Exploit | 4 points | Exploit availability = imminent risk |
+| Factor   | Weight   | Rationale                                          |
+| -------- | -------- | -------------------------------------------------- |
+| CVSS     | 4 points | Severity matters, but not alone                    |
+| EPSS     | 4 points | Exploitability is equally important as severity    |
+| KEV      | 5 points | Active exploitation is strongest signal (override) |
+| ACR      | 4 points | Business impact is critical                        |
+| Exposure | 3 points | Internet-facing = higher risk                      |
+| Exploit  | 4 points | Exploit availability = imminent risk               |
 
 **Total Max Score:** 24 points
 
@@ -344,18 +368,22 @@ def calculate_priority(vuln, system):
 ### Automatic Priority Elevation (+1 or +2 levels)
 
 **Compliance Requirement:**
+
 - PCI-DSS Critical vulnerability: Elevate to P1 or P2
 - HIPAA-regulated system: Elevate +1 level
 
 **Previous Breach:**
+
 - Similar vulnerability exploited in past: Elevate +1 level
 - Same product/vendor as previous breach: Elevate +1 level
 
 **Executive Mandate:**
+
 - CEO/CIO/CISO mandate: Elevate to specified priority
 - Board-level concern: Elevate to P1 or P2
 
 **Ransomware Threat:**
+
 - KEV with known ransomware use: Elevate to P1
 
 ---
@@ -363,15 +391,18 @@ def calculate_priority(vuln, system):
 ### Priority Reduction (-1 level)
 
 **Effective Compensating Controls:**
+
 - WAF with virtual patching: Reduce -1 level
 - Network segmentation isolates vulnerable system: Reduce -1 level
 - System not accessible to attackers: Reduce -1 level
 
 **Scheduled Decommissioning:**
+
 - System decommissioning within 30 days: Reduce to P5
 - System decommissioning within 90 days: Reduce -1 level
 
 **Vendor End-of-Life (No Patch):**
+
 - No patch available, vendor EOL: Consider risk acceptance (P5)
 - Migration to supported version planned: Maintain current priority
 
@@ -381,22 +412,24 @@ def calculate_priority(vuln, system):
 
 ### SLA Deadlines
 
-| Priority | SLA Timeline | Calculation |
-|----------|-------------|-------------|
-| P1 | 24 hours | Enrichment timestamp + 24 hours |
-| P2 | 7 days | Enrichment timestamp + 7 days |
-| P3 | 30 days | Enrichment timestamp + 30 days |
-| P4 | 90 days | Enrichment timestamp + 90 days |
-| P5 | No SLA | N/A |
+| Priority | SLA Timeline | Calculation                     |
+| -------- | ------------ | ------------------------------- |
+| P1       | 24 hours     | Enrichment timestamp + 24 hours |
+| P2       | 7 days       | Enrichment timestamp + 7 days   |
+| P3       | 30 days      | Enrichment timestamp + 30 days  |
+| P4       | 90 days      | Enrichment timestamp + 90 days  |
+| P5       | No SLA       | N/A                             |
 
 ### SLA Tracking
 
 **Deadline Calculation Example:**
+
 - Enrichment completed: 2025-11-06 10:30:00 UTC
 - Priority: P1 (24 hours)
 - SLA Deadline: 2025-11-07 10:30:00 UTC
 
 **SLA Breach:**
+
 - Definition: Remediation not completed by deadline
 - Action: Escalate to management, document reason for delay
 
@@ -404,10 +437,10 @@ def calculate_priority(vuln, system):
 
 ## Quick Reference Table
 
-| Priority | CVSS | EPSS | KEV | ACR | Exposure | SLA | Review |
-|----------|------|------|-----|-----|----------|-----|--------|
-| P1 | 9.0+ | 0.75+ | Listed | Critical | Internet | 24h | 100% |
-| P2 | 7.0+ | 0.50+ | Listed or Exploit | High | Internet/Internal | 7d | 100% |
-| P3 | 4.0-6.9 | 0.25-0.49 | Not Listed | Medium | Internal | 30d | 25% |
-| P4 | <4.0 | Any | Not Listed | Low | Any | 90d | 10% |
-| P5 | <2.0 | Any | Not Listed | Low | Test/Decom | None | 5% |
+| Priority | CVSS    | EPSS      | KEV               | ACR      | Exposure          | SLA  | Review |
+| -------- | ------- | --------- | ----------------- | -------- | ----------------- | ---- | ------ |
+| P1       | 9.0+    | 0.75+     | Listed            | Critical | Internet          | 24h  | 100%   |
+| P2       | 7.0+    | 0.50+     | Listed or Exploit | High     | Internet/Internal | 7d   | 100%   |
+| P3       | 4.0-6.9 | 0.25-0.49 | Not Listed        | Medium   | Internal          | 30d  | 25%    |
+| P4       | <4.0    | Any       | Not Listed        | Low      | Any               | 90d  | 10%    |
+| P5       | <2.0    | Any       | Not Listed        | Low      | Test/Decom        | None | 5%     |

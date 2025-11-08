@@ -139,19 +139,19 @@ dependencies:
 
 language_guidelines:
   avoid_blame_patterns:
-    - "You missed..."
-    - "This is wrong..."
-    - "You failed to..."
-    - "This is incomplete..."
-    - "You should have..."
-    - "This is a critical error..."
+    - 'You missed...'
+    - 'This is wrong...'
+    - 'You failed to...'
+    - 'This is incomplete...'
+    - 'You should have...'
+    - 'This is a critical error...'
   use_constructive_patterns:
-    - "An opportunity to strengthen this analysis would be..."
-    - "Adding X would make this more comprehensive..."
-    - "Consider including..."
-    - "This section could benefit from..."
-    - "A helpful addition would be..."
-    - "Building on the strong foundation here, we could enhance..."
+    - 'An opportunity to strengthen this analysis would be...'
+    - 'Adding X would make this more comprehensive...'
+    - 'Consider including...'
+    - 'This section could benefit from...'
+    - 'A helpful addition would be...'
+    - 'Building on the strong foundation here, we could enhance...'
 
 review_principles:
   strengths_first: Always acknowledge what was done well before identifying gaps
