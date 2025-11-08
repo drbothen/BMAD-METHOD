@@ -1,0 +1,336 @@
+# Security Review Report Template
+# Powered by BMAD™ Core
+#
+# This template structures security enrichment review findings into comprehensive
+# constructive feedback reports. It provides blameless, educational feedback that
+# acknowledges strengths first, identifies gaps, and provides specific recommendations.
+
+template:
+  id: security-review-report-v1
+  name: Security Enrichment Review Report
+  version: 1.0
+  output:
+    format: markdown
+    filename: review-{{ticket_id}}.md
+    title: 'Security Review: {{ticket_id}} - {{cve_id}}'
+
+workflow:
+  mode: automated
+  # No elicitation - template processes data from quality evaluation outputs
+
+sections:
+  - id: review_metadata
+    title: Review Metadata
+    instruction: |
+      Provide review metadata including ticket/CVE identifiers, analyst/reviewer names,
+      review date, and overall quality score with classification.
+
+      Variables used:
+      - ticket_id: JIRA ticket identifier
+      - cve_id: CVE identifier being reviewed
+      - analyst_name: Name of the analyst who created the enrichment
+      - reviewer_name: Name of the reviewer
+      - review_date: Date of review (YYYY-MM-DD)
+      - quality_score: Overall quality score (0-100)
+      - quality_classification: Excellent/Good/Needs Improvement/Poor
+    template: |
+      **Ticket:** {{ticket_id}}
+      **CVE:** {{cve_id}}
+      **Analyst:** {{analyst_name}}
+      **Reviewer:** {{reviewer_name}}
+      **Review Date:** {{review_date}}
+      **Overall Quality Score:** {{quality_score}}% ({{quality_classification}})
+
+  - id: executive_summary
+    title: Executive Summary
+    instruction: |
+      Provide a 2-3 sentence summary of review findings. Start positive by acknowledging
+      what was done well, then note key areas for improvement. Maintain constructive tone.
+
+      Variables used:
+      - executive_summary: Pre-written summary text
+    template: |
+      {{executive_summary}}
+
+  - id: strengths
+    title: Strengths & What Went Well
+    instruction: |
+      Acknowledge what the analyst did well to set a constructive tone. Start reviews
+      with positives. Use checkmark emoji (✅) for each strength.
+
+      This section is critical for blameless feedback - it demonstrates that the reviewer
+      recognizes good work before identifying gaps.
+
+      Variables used:
+      - strengths: Array of strength statements
+
+      Note: Use {{#each}} syntax for iteration, access items with {{this}}
+    template: |
+      {{#each strengths}}
+      - ✅ {{this}}
+      {{/each}}
+
+  - id: quality_scores
+    title: Quality Dimension Scores
+    instruction: |
+      Display quality dimension scores in a markdown table with three columns:
+      Dimension, Score, Assessment. Include all eight quality dimensions from
+      Story 2.2 systematic evaluation.
+
+      Variables used:
+      - technical_accuracy_score: Score 0-100
+      - technical_accuracy_assessment: Excellent/Good/Needs Improvement/Poor
+      - completeness_score: Score 0-100
+      - completeness_assessment: Text assessment
+      - actionability_score: Score 0-100
+      - actionability_assessment: Text assessment
+      - contextualization_score: Score 0-100
+      - contextualization_assessment: Text assessment
+      - documentation_quality_score: Score 0-100
+      - documentation_quality_assessment: Text assessment
+      - attack_mapping_score: Score 0-100
+      - attack_mapping_assessment: Text assessment
+      - cognitive_bias_score: Score 0-100
+      - cognitive_bias_assessment: Text assessment
+      - source_citation_score: Score 0-100
+      - source_citation_assessment: Text assessment
+    template: |
+      | Dimension | Score | Assessment |
+      |-----------|-------|------------|
+      | Technical Accuracy | {{technical_accuracy_score}}% | {{technical_accuracy_assessment}} |
+      | Completeness | {{completeness_score}}% | {{completeness_assessment}} |
+      | Actionability | {{actionability_score}}% | {{actionability_assessment}} |
+      | Contextualization | {{contextualization_score}}% | {{contextualization_assessment}} |
+      | Documentation Quality | {{documentation_quality_score}}% | {{documentation_quality_assessment}} |
+      | MITRE ATT&CK | {{attack_mapping_score}}% | {{attack_mapping_assessment}} |
+      | Cognitive Bias | {{cognitive_bias_score}}% | {{cognitive_bias_assessment}} |
+      | Source Citation | {{source_citation_score}}% | {{source_citation_assessment}} |
+
+  - id: critical_issues
+    title: Critical Issues (Must Fix)
+    instruction: |
+      List Critical severity issues that must be fixed before the enrichment can proceed.
+      These are typically:
+      - Factual errors that lead to incorrect priority assessment
+      - Missing critical security context (CISA KEV, EPSS)
+      - Incorrect CVSS scores or severity ratings
+
+      Use constructive language: describe the issue, explain the impact, provide the fix,
+      and link to learning resources. Use red circle emoji (🔴) to indicate severity.
+
+      Variables used:
+      - critical_issues: Array of issue objects with properties:
+        - title: Brief issue description
+        - location: Where in the enrichment (section name)
+        - description: What is wrong (factual, not blaming)
+        - impact: Why this matters / business impact
+        - fix: Specific actionable fix
+        - resource_title: Learning resource title
+        - resource_url: Learning resource URL
+
+      Note: Use {{#each}} with {{this.property}} to access object properties
+      Note: Use {{@index}} to get current iteration number (0-based)
+    template: |
+      {{#each critical_issues}}
+      ### 🔴 Critical Issue {{@index}}: {{this.title}}
+      **Location:** {{this.location}}
+      **Issue:** {{this.description}}
+      **Impact:** {{this.impact}}
+      **Recommended Fix:** {{this.fix}}
+      **Learn More:** [{{this.resource_title}}]({{this.resource_url}})
+
+      {{/each}}
+
+  - id: significant_gaps
+    title: Significant Gaps (Should Fix)
+    instruction: |
+      List Significant severity gaps that should be addressed to improve quality.
+      These are typically:
+      - Missing recommended context (vendor advisories, exploit intelligence)
+      - Incomplete sections that reduce actionability
+      - Gaps in MITRE ATT&CK mapping
+
+      Use constructive language: frame as opportunities for improvement. Use yellow
+      circle emoji (🟡) to indicate severity.
+
+      Variables used:
+      - significant_gaps: Array of gap objects with same structure as critical_issues
+    template: |
+      {{#each significant_gaps}}
+      ### 🟡 Significant Gap {{@index}}: {{this.title}}
+      **Location:** {{this.location}}
+      **Issue:** {{this.description}}
+      **Impact:** {{this.impact}}
+      **Recommended Fix:** {{this.fix}}
+      **Learn More:** [{{this.resource_title}}]({{this.resource_url}})
+
+      {{/each}}
+
+  - id: minor_improvements
+    title: Minor Improvements (Nice to Have)
+    instruction: |
+      List Minor improvements that would enhance clarity or completeness but are
+      not critical. These are typically:
+      - Additional context that would be helpful
+      - Formatting improvements
+      - Additional references
+
+      Use blue circle emoji (🔵) to indicate severity. Structure is simpler than
+      Critical/Significant - just suggestion and benefit.
+
+      Variables used:
+      - minor_improvements: Array of improvement objects with properties:
+        - title: Brief description
+        - description: Suggestion text
+        - benefit: Why this would help
+    template: |
+      {{#each minor_improvements}}
+      ### 🔵 Minor Improvement {{@index}}: {{this.title}}
+      **Suggestion:** {{this.description}}
+      **Benefit:** {{this.benefit}}
+
+      {{/each}}
+
+  - id: cognitive_bias_findings
+    title: Cognitive Bias Assessment
+    instruction: |
+      Display cognitive bias assessment results from Story 2.4. If biases were detected,
+      list each with type, description, example from the enrichment, and debiasing strategy.
+      If no biases detected, show positive confirmation.
+
+      Use conditional rendering with {{#if}} to check if biases were detected.
+
+      Variables used:
+      - cognitive_biases_detected: Boolean (true/false)
+      - cognitive_biases: Array of bias objects with properties:
+        - type: Bias name (Confirmation Bias, Availability Heuristic, etc.)
+        - description: What this bias is
+        - example: Specific example from the enrichment
+        - mitigation: Debiasing strategy
+    template: |
+      {{#if cognitive_biases_detected}}
+      **Biases Detected:**
+      {{#each cognitive_biases}}
+      - **{{this.type}}:** {{this.description}}
+        - **Example:** {{this.example}}
+        - **Debiasing Strategy:** {{this.mitigation}}
+      {{/each}}
+      {{else}}
+      ✅ No systematic cognitive biases detected. Analysis appears objective and data-driven.
+      {{/if}}
+
+  - id: fact_verification
+    title: Fact Verification Results
+    instruction: |
+      Display fact verification results from Story 2.5. Show accuracy score, claims
+      verified, and any discrepancies found. If discrepancies exist, list each with
+      the analyst's claim, correct value, and authoritative source.
+
+      Use conditional rendering to check if verification was performed and if
+      discrepancies were found.
+
+      Variables used:
+      - fact_verification_performed: Boolean
+      - accuracy_score: Percentage 0-100
+      - accuracy_classification: Excellent/Good/Needs Improvement/Poor
+      - claims_verified: Count of claims checked
+      - discrepancies_found: Count of discrepancies
+      - discrepancies: Array of discrepancy objects with properties:
+        - claim_type: Type of claim (CVSS Score, Version Range, etc.)
+        - analyst_claim: What analyst stated
+        - correct_value: Authoritative source value
+        - source_name: Source name
+        - source_url: Source URL
+    template: |
+      {{#if fact_verification_performed}}
+      **Accuracy Score:** {{accuracy_score}}% ({{accuracy_classification}})
+      **Claims Verified:** {{claims_verified}}
+      **Discrepancies:** {{discrepancies_found}}
+
+      {{#if discrepancies}}
+      **Discrepancies Found:**
+      {{#each discrepancies}}
+      - **{{this.claim_type}}:** Analyst claimed {{this.analyst_claim}}, authoritative source states {{this.correct_value}}
+        - **Source:** [{{this.source_name}}]({{this.source_url}})
+      {{/each}}
+      {{/if}}
+      {{else}}
+      ℹ️ Fact verification not performed for this review.
+      {{/if}}
+
+  - id: recommendations
+    title: Recommended Actions
+    instruction: |
+      Provide prioritized action items organized into three priority levels:
+      - Priority 1 (Do First): Critical fixes, must complete before proceeding
+      - Priority 2 (Do Next): Significant improvements, should complete for quality
+      - Priority 3 (When Time Permits): Minor enhancements, nice to have
+
+      Variables used:
+      - priority1_actions: Array of action strings
+      - priority2_actions: Array of action strings
+      - priority3_actions: Array of action strings
+    template: |
+      **Priority 1 (Do First):**
+      {{#each priority1_actions}}
+      - {{this}}
+      {{/each}}
+
+      **Priority 2 (Do Next):**
+      {{#each priority2_actions}}
+      - {{this}}
+      {{/each}}
+
+      **Priority 3 (When Time Permits):**
+      {{#each priority3_actions}}
+      - {{this}}
+      {{/each}}
+
+  - id: learning_resources
+    title: Learning Resources
+    instruction: |
+      Provide curated learning resources relevant to the identified gaps. Link to:
+      - NIST, CISA, FIRST authoritative sources
+      - BMAD-1898 knowledge base articles
+      - Best practice guides
+      - Training materials
+
+      Variables used:
+      - learning_resources: Array of resource objects with properties:
+        - title: Resource title
+        - url: Resource URL
+        - description: Brief description of what this resource teaches
+    template: |
+      {{#each learning_resources}}
+      - [{{this.title}}]({{this.url}}) - {{this.description}}
+      {{/each}}
+
+  - id: next_steps
+    title: Next Steps
+    instruction: |
+      Provide clear next steps for the analyst. This section uses static content
+      to guide the workflow after review completion.
+
+      No variables - static content.
+    template: |
+      1. Address Critical Issues (must-fix before ticket proceeds)
+      2. Address Significant Gaps (improve quality)
+      3. Consider Minor Improvements (enhance clarity)
+      4. Update enrichment comment in JIRA
+      5. Re-submit for review if Critical Issues found
+
+  - id: reviewer_notes
+    title: Reviewer Notes
+    instruction: |
+      Optional free-form notes from the reviewer. Use this for:
+      - Additional context not captured in structured sections
+      - Encouragement and coaching
+      - Process improvement suggestions
+      - Acknowledgment of challenging CVEs
+
+      Maintain supportive, constructive tone. This is the personal touch.
+
+      Variables used:
+      - reviewer_notes: Free-form text from reviewer
+    template: |
+      {{reviewer_notes}}
