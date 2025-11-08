@@ -9,3 +9,29 @@ description: >-
   integrated JIRA ticket management, and multi-factor risk assessment framework.
 author: 1898 & Co.
 slashPrefix: bmad-1898
+
+# JIRA Integration Configuration
+# Configure these values for your JIRA instance
+#
+# How to find your JIRA Cloud ID:
+#   1. Go to https://admin.atlassian.com/
+#   2. Select your organization
+#   3. Go to Products → Your Jira site
+#   4. Cloud ID is shown in the site details (UUID format)
+#   OR use Atlassian API: GET https://api.atlassian.com/oauth/token/accessible-resources
+#
+# How to find Custom Field IDs:
+#   1. Go to JIRA → Settings (gear icon) → Issues → Custom Fields
+#   2. Find your field name (e.g., "CVE ID", "Affected Systems")
+#   3. Click "..." menu → "Edit" or hover to see field ID
+#   4. Field ID format: customfield_10001, customfield_10002, etc.
+#   OR inspect issue JSON via API: GET /rest/api/3/issue/{issueKey}
+#
+jira:
+  cloud_id: "YOUR_CLOUD_ID_HERE"  # JIRA Cloud instance ID (UUID format, see above)
+  project_key: "YOUR_PROJECT_KEY"  # Project key visible in issue IDs (e.g., AOD-123 → use "AOD")
+  custom_fields:
+    cve_id: "customfield_XXXXX"              # Field storing CVE identifier(s)
+    affected_systems: "customfield_XXXXX"     # Field listing impacted systems/assets
+    asset_criticality_rating: "customfield_XXXXX"  # Field showing Critical/High/Medium/Low rating
+    system_exposure: "customfield_XXXXX"      # Field showing Internet-Facing/Internal/Isolated

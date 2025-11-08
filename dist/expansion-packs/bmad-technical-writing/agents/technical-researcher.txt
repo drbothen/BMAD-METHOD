@@ -1401,6 +1401,8 @@ Before starting this task:
 
 ## Workflow Steps
 
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
+
 ### 1. Organize Research Questions
 
 Structure your research approach:
@@ -1820,7 +1822,7 @@ When research includes code:
 
 **Save tested examples:**
 
-- Organize in `research/code-examples/` folder
+- Organize in `research/{{config.codeExamples.root}}/` folder
 - Include comments noting source
 - Mark which examples to include in book
 

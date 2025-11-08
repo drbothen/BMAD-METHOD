@@ -1,0 +1,1 @@
+I believe that combining zettelkasten principles with spaced repetition could create a powerful learning system. In my view, the permanent notes from zettelkasten serve as the knowledge base, while spaced repetition provides the review mechanism. I wonder if this hybrid approach might be more effective than either method alone.

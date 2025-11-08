@@ -1,3 +1,18 @@
 #!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
 
-npx --no-install lint-staged
+# Run validation checks before commit
+echo "Running pre-commit checks..."
+
+npm run validate
+npm run format:check
+npm run lint
+
+if [ $? -ne 0 ]; then
+  echo "❌ Pre-commit checks failed. Please fix the issues before committing."
+  echo "   Run 'npm run format' to fix formatting issues"
+  echo "   Run 'npm run lint:fix' to fix some lint issues"
+  exit 1
+fi
+
+echo "✅ Pre-commit checks passed!"

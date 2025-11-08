@@ -59,9 +59,9 @@ agent:
   customization: null
 persona:
   role: Technical communication expert and professional copy editor
-  style: Reader-focused, clarity-driven, detail-oriented, polished
-  identity: Expert in technical writing style, clarity, consistency, flow, and publisher requirements
-  focus: Ensuring content is clear, accessible, consistent, and publication-ready
+  style: Reader-focused, clarity-driven, detail-oriented, polished. Improves clarity while preserving natural, human-sounding voice—never makes content sound more robotic. Recognizes and removes AI vocabulary markers (delve, leverage, robust, harness, facilitate). Ensures sentence variation exists (burstiness). Maintains natural transitions—removes formulaic "Furthermore," "Moreover," "Additionally."
+  identity: Expert in technical writing style, clarity, consistency, flow, publisher requirements, and AI pattern detection who polishes content while preserving authenticity
+  focus: Ensuring content is clear, accessible, consistent, publication-ready, and sounds authentically human-written—not AI-generated
 core_principles:
   - Clarity trumps brevity
   - Consistency in terminology and style
@@ -70,6 +70,13 @@ core_principles:
   - Publisher style guide compliance
   - Accessibility for diverse readers
   - Professional polish without losing author voice
+  - Remove AI vocabulary markers during editing (delve, leverage, robust, harness, underscore, facilitate, pivotal, holistic)
+  - Ensure natural sentence variation exists—flag uniformity (all sentences 15-20 words as problematic pattern)
+  - Replace formulaic transitions ("Furthermore," "Moreover," "Additionally") with natural flow or context-specific transitions
+  - Preserve contractions and conversational elements—don't make content more formal/robotic during editing
+  - Apply formatting humanization (em-dash reduction, purposeful bold/italic usage)
+  - Apply heading humanization (flatten hierarchy, break parallelism, create density asymmetry)
+  - Technical accuracy always takes precedence over stylistic preferences
   - Numbered Options Protocol - Always use numbered lists for user selections
 commands:
   - '*help - Show numbered list of available commands for selection'
@@ -106,6 +113,10 @@ dependencies:
     - technical-writing-standards.md
     - writing-voice-guides.md
     - publisher-specific-ai-patterns.md
+    - humanization-techniques.md
+    - ai-detection-patterns.md
+    - formatting-humanization-patterns.md
+    - heading-humanization-patterns.md
 ```
 
 ## Startup Context
@@ -116,12 +127,17 @@ You are the Technical Editor, a professional focused on clarity, consistency, to
 
 **AI Pattern Validation:** Step 10 of `*edit-chapter` requires final AI pattern validation using humanization-checklist.md. Target <5% AI patterns remaining for publication-ready quality. This final check ensures content sounds authentically human-written, not AI-generated, which is critical for publisher acceptance and reader trust.
 
+**Formatting Humanization:** During copy editing, apply formatting humanization patterns to remove distinctive AI tells. Key focus areas include em-dash reduction (target 1-2 per page maximum), purposeful bold/italic usage (remove 50-70% of excessive formatting), and natural formatting distribution variation across sections. The "ChatGPT dash" pattern (excessive em-dashes) is the strongest signal of AI-generated content and must be systematically corrected using the substitution test.
+
+**Heading Humanization:** Validate heading hierarchy during copy editing to ensure natural, human-like structure. Key focus areas include flattening excessive hierarchy depth (target 3 levels maximum for 15-20 page chapters), breaking mechanical parallelism in heading structures (avoid "Understanding X", "Understanding Y" patterns), creating argumentative asymmetry (0-6 subsections per section based on complexity, not uniform counts), and shortening verbose headings (target 3-7 words). AI systems create 4-6 heading levels with mechanical consistency; human writers use 3-4 levels with natural variation.
+
 Think in terms of:
 
 - **Clarity** - Every sentence should be easily understood by the target audience
 - **Consistency** - Terminology, style, and formatting must be uniform
 - **Tone alignment** - Voice matches specification throughout chapter
 - **Flow** - Smooth transitions guide readers through complex material
+- **Heading structure** - Natural hierarchy depth and variation, not mechanical patterns
 - **Accessibility** - Content should be inclusive and screen-reader friendly
 - **Publisher requirements** - Format must match specific publisher guidelines
 - **AI pattern removal** - Content sounds authentically human, not AI-generated
@@ -135,6 +151,7 @@ Always consider:
 - Is this sentence as clear as it could be?
 - Are we using terms consistently throughout?
 - Do transitions flow naturally between sections?
+- Does the heading hierarchy feel natural (3 levels max, varied subsection counts)?
 - Does this meet the publisher's style requirements?
 - Is this accessible to all readers?
 - Does this sound authentically human-written, not AI-generated?
@@ -296,6 +313,8 @@ Transform technically accurate content into professionally polished, publication
 - Access to technical-writing-standards.md knowledge base
 
 ## Workflow Steps
+
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
 
 ### 1. Review Grammar and Spelling
 
@@ -526,10 +545,12 @@ Identify which tone document applies to this project:
 **Project Type:** [Greenfield / Brownfield]
 
 **Tone Reference:**
+
 - File: [tone-specification.md OR extracted-tone-patterns.md]
-- Location: [docs/ OR manuscript/planning/]
+- Location: [docs/ OR {{config.manuscript.planning}}/]
 
 **Key Tone Characteristics to Validate:**
+
 1. [Characteristic 1 from specification]
 2. [Characteristic 2 from specification]
 3. [Characteristic 3 from specification]
@@ -547,6 +568,7 @@ Run the comprehensive tone validation checklist:
 **Execute:** Use execute-checklist.md task with tone-consistency-checklist.md
 
 This checklist validates:
+
 - Voice consistency (perspective, active/passive)
 - Formality level alignment
 - Publisher-specific requirements
@@ -567,6 +589,7 @@ Reviewer: [Name]
 **Violations Found:** [Number]
 
 **Category Breakdown:**
+
 - Voice consistency: [Number] issues
 - Formality level: [Number] issues
 - Publisher alignment: [Number] issues
@@ -585,6 +608,7 @@ List specific tone issues discovered:
 **Tone Violations Log:**
 
 **Violation 1: Formality Level Inconsistency**
+
 - Location: Lines 145-167
 - Issue: Level 5 formality (no contractions, passive voice)
 - Expected: Level 3 (moderate contractions, active voice)
@@ -592,6 +616,7 @@ List specific tone issues discovered:
 - Correction needed: "You'll need to configure the service before deployment"
 
 **Violation 2: Missing Tone Characteristic**
+
 - Location: Section 3.4 (Lines 200-250)
 - Issue: "Encouraging" characteristic absent
 - Expected: Matter-of-fact encouragement at milestones
@@ -599,6 +624,7 @@ List specific tone issues discovered:
 - Correction needed: Add milestone encouragement per specification
 
 **Violation 3: Code Comment Tone Mismatch**
+
 - Location: Code block, lines 300-325
 - Issue: Comments too formal for Level 3 prose
 - Expected: Comments match prose formality
@@ -622,16 +648,19 @@ Systematically fix documented violations:
 **Example Corrections:**
 
 **Before (Violation):**
+
 ```markdown
 One must ensure that the authentication mechanism has been properly configured prior to initiating the deployment sequence. The configuration file should be edited to include the necessary credentials.
 ```
 
 **After (Corrected to Level 3, Second Person, Active Voice):**
+
 ```markdown
 You'll need to configure authentication before deploying. Edit the configuration file to include your credentials.
 ```
 
 **Before (Missing Encouragement):**
+
 ```markdown
 Section 3.4 Summary
 
@@ -639,6 +668,7 @@ This section covered JWT structure, signature validation, and token expiration h
 ```
 
 **After (Added Encouragement Pattern):**
+
 ```markdown
 Section 3.4 Summary
 
@@ -705,11 +735,13 @@ Validate that all AI-generated content patterns have been removed (final quality
 **Purpose**: This is the FINAL validation that humanization was successful. More stringent than humanization step (target: <5% vs <20%).
 
 **When to Execute**:
+
 - ALL chapters, regardless of whether AI was used (defensive check)
 - After all other copy-editing steps complete
 - Before chapter marked "Ready for Publication"
 
 **Critical Context**:
+
 - If chapter was AI-assisted: humanize-ai-drafted-chapter.md should have been executed earlier
 - This step validates humanization was effective
 - Catches any residual AI patterns missed during humanization
@@ -765,6 +797,7 @@ Date: {{date}}
    - No formulaic language
 
 **Calculate Pass Rate:**
+
 - (Items Passed / 45 Total Items) × 100 = Pass Rate %
 - AI Pattern Score = 100 - Pass Rate
 
@@ -773,6 +806,7 @@ Date: {{date}}
 **Copy-Edit Target**: <5% AI patterns remaining (more stringent than humanization target of <20%)
 
 **Scoring:**
+
 ```markdown
 **Final AI Pattern Check Results:**
 
@@ -781,6 +815,7 @@ Pass Rate: {{percentage}}%
 AI Pattern Score: {{100 - percentage}}%
 
 **Status:**
+
 - [ ] ✅ EXCELLENT (<5% AI patterns) - Publication ready
 - [ ] ⚠️ ACCEPTABLE (5-10% AI patterns) - Minor patterns acceptable, document justification
 - [ ] ❌ NEEDS REWORK (>10% AI patterns) - Return to humanization step
@@ -789,12 +824,14 @@ AI Pattern Score: {{100 - percentage}}%
 ```
 
 **If >10% AI Patterns:**
+
 - HALT - Do not proceed to finalization
 - Return chapter to tutorial-architect for additional humanization
 - Re-execute humanize-ai-drafted-chapter.md focusing on failing categories
 - Do not finalize until <10% threshold met
 
 **If 5-10% AI Patterns:**
+
 - Document specific residual patterns with justification
 - Example: "Residual 'robust testing framework' (1 occurrence) is industry-standard term, acceptable"
 - Obtain author approval for residual patterns
@@ -807,6 +844,7 @@ Beyond checklist scoring, validate specific critical patterns:
 **AI Vocabulary Spot Check:**
 
 Search and count:
+
 - "sophisticated": {{count}} (target: ≤1)
 - "delve": {{count}} (target: 0)
 - "leverage": {{count}} (target: ≤1)
@@ -818,6 +856,7 @@ Search and count:
 **Generic Example Check:**
 
 Search for:
+
 - "company X" or "a company": 0 allowed
 - "financial institution": 0 allowed (use specific company names)
 - Uncited case studies: All examples must be cited or author's own
@@ -827,6 +866,7 @@ Search for:
 **First-Person Perspective Check:**
 
 Count instances per section:
+
 - Sections with 0 first-person: Acceptable if technical reference material
 - Sections with 0 first-person + no author voice: Flag for voice injection
 - Target: ≥1 personal insight per major section (H2)
@@ -836,24 +876,28 @@ Count instances per section:
 Apply additional scrutiny based on target publisher:
 
 **PacktPub Chapters:**
+
 - Extra attention to "sophisticated" (documented 36x case)
 - All examples specific and cited (no "financial institution")
 - Conversational tone (Level 2-3) maintained
 - Personal voice evident throughout
 
 **O'Reilly Chapters:**
+
 - Authoritative expert voice present
 - Production context and real-world scale included
 - Architectural reasoning ("why") explained
 - No generic technical explanations
 
 **Manning Chapters:**
+
 - Author personality and humor present
 - Strong first/second person voice
 - Personal opinions stated clearly
 - Not impersonal corporate-speak
 
 **Self-Publishing:**
+
 - All publisher patterns combined
 - ≥95% pass rate recommended (higher standard)
 - Beta reader feedback validation
@@ -868,12 +912,14 @@ Apply additional scrutiny based on target publisher:
 ## Final AI Pattern Check (Step 10)
 
 **Humanization Checklist Results:**
+
 - Pass Rate: {{percentage}}% ({{passed}}/45 items)
 - AI Pattern Score: {{ai_score}}% (target: <5%)
 
 **Status**: {{EXCELLENT / ACCEPTABLE / NEEDS REWORK}}
 
 **AI Vocabulary Counts:**
+
 - sophisticated: {{count}}
 - delve: {{count}}
 - leverage: {{count}}
@@ -881,14 +927,17 @@ Apply additional scrutiny based on target publisher:
 - seamless: {{count}}
 
 **Critical Validations:**
+
 - Generic examples: {{count}} (target: 0)
 - First-person perspective: {{sections_with_personal_voice}}/{{total_sections}} sections
 - Metaphor density: {{average_per_section}} per section (target: ≤2)
 
 **Residual Patterns (if any):**
+
 - [List any patterns >threshold with justification for acceptance]
 
 **Publisher-Specific Notes:**
+
 - [Any publisher-specific pattern concerns or validations]
 
 **Recommendation**: {{APPROVE FOR PUBLICATION / RETURN FOR ADDITIONAL HUMANIZATION}}
@@ -897,17 +946,20 @@ Apply additional scrutiny based on target publisher:
 #### Step 10.6: Handle Results
 
 **If EXCELLENT (<5% AI patterns):**
+
 - Proceed to Step 11 (Create Summary of Changes)
 - Chapter ready for finalization
 - Document validation in chapter metadata
 
 **If ACCEPTABLE (5-10% AI patterns):**
+
 - Document residual patterns with clear justification
 - Obtain author approval for exceptions
 - May proceed to finalization with documented acceptance
 - Note residual patterns in change summary
 
 **If NEEDS REWORK (>10% AI patterns):**
+
 - HALT finalization process
 - Document failing categories in detail
 - Return to tutorial-architect with specific rework guidance
@@ -3607,24 +3659,14 @@ After generating cross-reference suggestions:
 ---
 
 task:
-  id: extract-tone-patterns
-  name: Extract Tone Patterns from Existing Book
-  description: Analyze existing book chapters to extract voice, tone, and style patterns for maintaining consistency in new editions or added chapters
-  persona_default: technical-editor
-  inputs:
-    - existing-chapters (multiple chapters for pattern accuracy)
-    - book-context (title, edition, publisher)
-  steps:
-    - Load multiple existing chapters (minimum 3-5 for accuracy)
-    - Analyze voice characteristics (formal/casual, active/passive, perspective)
-    - Extract common phrase patterns (transitions, introductions, conclusions)
-    - Analyze code comment style and density
-    - Identify formality indicators (contractions, vocabulary, sentence complexity)
-    - Extract author personality markers (humor, encouragement, directness)
-    - Document excluded patterns (what author avoids)
-    - Generate extracted-tone-patterns.md document
-  output: extracted-tone-patterns.md
-  use_case: brownfield
+id: extract-tone-patterns
+name: Extract Tone Patterns from Existing Book
+description: Analyze existing book chapters to extract voice, tone, and style patterns for maintaining consistency in new editions or added chapters
+persona_default: technical-editor
+inputs: - existing-chapters (multiple chapters for pattern accuracy) - book-context (title, edition, publisher)
+steps: - Load multiple existing chapters (minimum 3-5 for accuracy) - Analyze voice characteristics (formal/casual, active/passive, perspective) - Extract common phrase patterns (transitions, introductions, conclusions) - Analyze code comment style and density - Identify formality indicators (contractions, vocabulary, sentence complexity) - Extract author personality markers (humor, encouragement, directness) - Document excluded patterns (what author avoids) - Generate extracted-tone-patterns.md document
+output: extracted-tone-patterns.md
+use_case: brownfield
 
 ---
 
@@ -3661,6 +3703,8 @@ Before starting this task:
 
 ## Workflow Steps
 
+**Note:** This task references config paths (e.g., {{config.manuscript.*}}). Load `.bmad-technical-writing/config.yaml` at the start to resolve these paths, or use defaults: `manuscript/{type}`, `code-examples`.
+
 ### 1. Select Representative Chapters
 
 Choose chapters that best represent the book's typical voice:
@@ -3668,6 +3712,7 @@ Choose chapters that best represent the book's typical voice:
 **Selection Criteria:**
 
 **Include (3-5 chapters minimum):**
+
 - Middle chapters (not introduction, not appendix)
 - Teaching chapters (explanations + code + exercises)
 - Chapters you consider "well-written" examples of book's voice
@@ -3675,6 +3720,7 @@ Choose chapters that best represent the book's typical voice:
 - Chapters representing core book content (not edge cases)
 
 **Avoid:**
+
 - Preface or foreword (often different tone)
 - Highly mathematical/formal sections (may not represent general tone)
 - Appendices or reference sections (usually more terse)
@@ -3684,6 +3730,7 @@ Choose chapters that best represent the book's typical voice:
 **Example Selection:**
 
 For "Kubernetes in Action, 2nd Edition":
+
 - Chapter 3: "Deploying your first application" (practical teaching)
 - Chapter 7: "Managing pod networking" (technical depth)
 - Chapter 11: "Security best practices" (mixed practical + conceptual)
@@ -3709,6 +3756,7 @@ Read through chapters and identify:
 
 ```markdown
 **Extracted Perspective Pattern:**
+
 - Primary: Second person ("You'll deploy the application")
 - Secondary: First person plural in collaborative contexts ("Let's troubleshoot this together")
 - Rare: Third person only for general statements ("Most teams prefer...")
@@ -3728,6 +3776,7 @@ Analyze sentence construction:
 
 ```markdown
 **Voice Construction:**
+
 - Active voice dominant: ~85% of sentences
 - Passive voice for system actions: "The pod is scheduled by Kubernetes"
 - Passive voice avoided for reader actions: NOT "The configuration file should be edited by you"
@@ -3749,6 +3798,7 @@ Map to 1-5 scale:
 **Formality Level: 3 (Professional/Conversational)**
 
 Evidence:
+
 - Contractions: ~15 per 1000 words ("you'll", "we'll", "it's")
 - Vocabulary: Technical but accessible (not overly academic)
 - Average sentence length: 18 words (moderately complex)
@@ -3790,21 +3840,25 @@ Extract transition phrases used between sections:
 **Transition Patterns:**
 
 Between related concepts:
+
 - "Building on this..."
 - "Now that you understand [X], let's explore [Y]"
 - "This leads us to..."
 
 From theory to practice:
+
 - "Let's put this into practice"
 - "Time to see this in action"
 - "Let's implement this concept"
 
 From explanation to code:
+
 - "Here's how to implement this:"
 - "The following example demonstrates:"
 - "Let's write the code:"
 
 From problem to solution:
+
 - "Here's how to fix this:"
 - "The solution is straightforward:"
 - "You can resolve this by..."
@@ -3867,20 +3921,22 @@ Extract actual comment styles from existing code:
 **Comment Style Patterns:**
 
 Style 1 - Explanation (most common):
+
 ```yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: web-service  # Service name used by other pods for discovery
+  name: web-service # Service name used by other pods for discovery
 spec:
   selector:
-    app: web  # Routes traffic to pods with this label
+    app: web # Routes traffic to pods with this label
   ports:
-    - port: 80  # External port clients connect to
-      targetPort: 8080  # Internal port the app listens on
+    - port: 80 # External port clients connect to
+      targetPort: 8080 # Internal port the app listens on
 ```
 
 Style 2 - Warning/Caution:
+
 ```yaml
 # IMPORTANT: Don't change this selector without updating pod labels
 selector:
@@ -3888,12 +3944,14 @@ selector:
 ```
 
 Style 3 - Context/Rationale:
+
 ```yaml
 # We use ClusterIP here because this service is internal-only
 type: ClusterIP
 ```
 
 Style 4 - Step-by-step for complex logic:
+
 ```python
 # Step 1: Load configuration from environment
 config = load_env_config()
@@ -3935,16 +3993,19 @@ Chapter 15: 14 contractions
 Average: 12.75 per 1000 words = Moderate use
 
 **Most common:**
+
 - "you'll" (future actions)
 - "we'll" (collaborative actions)
 - "don't" (warnings/cautions)
 - "it's" (explanations)
 
 **Rarely used:**
+
 - "shouldn't" (prefers "avoid" or "don't")
 - "would've" (too casual)
 
 **Never used:**
+
 - "gonna", "wanna" (too informal)
 ```
 
@@ -3954,17 +4015,20 @@ Average: 12.75 per 1000 words = Moderate use
 **Vocabulary Patterns:**
 
 Technical terms:
+
 - Used directly with brief explanation on first use
 - Example: "Kubernetes uses etcd (a distributed key-value store) for cluster state."
 - No dumbing down: "pod", "ingress", "daemonset" used throughout (not "container group", etc.)
 
 Explanatory style:
+
 - Prefers "Because [reason]" over "due to the fact that"
 - Uses "use" not "utilize"
 - Uses "help" not "facilitate"
 - Practical vocabulary, not academic
 
 Jargon approach:
+
 - Kubernetes-specific terms: Used freely (assumes reader learning K8s)
 - General tech terms: Defined briefly on first use
 - Acronyms: Spelled out once, then abbreviated
@@ -3979,6 +4043,7 @@ Average sentence length: 16-18 words (moderately simple)
 Average paragraph length: 3-4 sentences
 
 Patterns:
+
 - Short sentences for emphasis: "This is critical."
 - Longer sentences for explanation: "The Service abstraction provides a stable IP address and DNS name for accessing a set of pods, even as individual pods are created and destroyed."
 - Varies length deliberately for readability
@@ -3998,11 +4063,13 @@ Humor frequency: Occasional (1-2 instances per chapter)
 Humor style: Light technical humor, self-deprecating
 
 Examples extracted:
+
 - "If you're thinking this seems complicated, you're right. Kubernetes doesn't do simple."
 - "After a 3am debugging session, you'll appreciate this logging configuration."
 - "Yes, the acronym TLS actually makes sense. Rare for our industry."
 
 Personality markers:
+
 - Real-world war stories: References "production incidents", "debugging sessions"
 - Empathy: Acknowledges difficulties ("This is confusing at first")
 - Experience: "After deploying hundreds of applications..."
@@ -4018,16 +4085,19 @@ Frequency: Moderate (2-3 instances per chapter, usually at milestones)
 Style: Confident and matter-of-fact, not cheerleading
 
 Patterns:
+
 - Progress acknowledgment: "You've now deployed a production-ready service."
 - Capability building: "You can now troubleshoot networking issues independently."
 - Forward-looking: "With this foundation, you're ready for advanced topics."
 
 Avoids:
+
 - ❌ "Great job!" or "Awesome!" (too cheerful)
 - ❌ "This is easy!" (dismissive of legitimate difficulty)
 - ❌ "Don't worry!" (patronizing)
 
 Uses:
+
 - ✓ "You've mastered [specific skill]"
 - ✓ "This prepares you for [next challenge]"
 - ✓ "You now understand [complex concept]"
@@ -4039,17 +4109,20 @@ Uses:
 **Authority Tone:**
 
 Prescriptive language:
+
 - Uses "Don't" frequently: "Don't hard-code credentials"
 - Offers clear guidance: "Use environment variables for configuration"
 - States best practices directly: "Always run security scanning before deployment"
 - Explains rationale: "Use X because Y. Avoid Z because it causes W."
 
 Avoids hedging:
+
 - Rare: "might want to consider possibly"
 - Common: "Use this approach"
 - When uncertain: Explicit: "This depends on your use case. If [condition], choose [option]."
 
 Authority without arrogance:
+
 - Acknowledges complexity: "This is genuinely difficult"
 - Admits limitations: "Kubernetes doesn't handle this well"
 - Shares experience: "I've learned this through painful production issues"
@@ -4065,31 +4138,37 @@ Identify what the author intentionally AVOIDS:
 **Excluded Tones/Patterns (What Author Doesn't Do):**
 
 ❌ **Overly Academic:**
+
 - Never uses: "herein", "aforementioned", "utilize", "facilitate"
 - Avoids passive academic construction: "It is recommended that..."
 - Skips: "This paper presents", "We propose", "In conclusion"
 
 ❌ **Marketing Hype:**
+
 - Never: "Revolutionary", "game-changing", "amazing", "incredible"
 - Avoids: Exclamation points (except in warnings)
 - Skips: Superlatives without evidence
 
 ❌ **Apologetic/Uncertain:**
+
 - Never: "I think maybe you could possibly..."
 - Avoids: "Sorry for the complexity"
 - Skips: Unnecessary hedging
 
 ❌ **Condescending:**
+
 - Never: "Obviously", "clearly", "simply", "just" (dismissive usage)
 - Avoids: "Even beginners know"
 - Skips: "This is trivial"
 
 ❌ **Overly Casual:**
+
 - Never: "gonna", "wanna", "yeah"
 - Avoids: Excessive exclamation points
 - Skips: Internet slang or memes
 
 ❌ **Excessive Formality:**
+
 - Never: "One must ensure", "It is imperative that"
 - Avoids: Completely eliminating contractions
 - Skips: Latin phrases (except common tech terms like "e.g.")
@@ -4118,102 +4197,126 @@ Compile analysis into structured document:
 ## Voice Profile
 
 ### Perspective
+
 [First/second/third person patterns]
 
 ### Active vs. Passive Voice
+
 [Ratio, patterns, when each is used]
 
 ### Formality Level
+
 **Level [1-5]: [Description]**
 [Evidence, examples, metrics]
 
 ## Common Phrases and Patterns
 
 ### Chapter Introductions
+
 [Patterns with examples]
 
 ### Section Transitions
+
 [Transition phrases extracted]
 
 ### Chapter Conclusions
+
 [Conclusion patterns]
 
 ### Technical Explanations
+
 [Explanation structure patterns]
 
 ## Code Comment Style
 
 ### Comment Density
+
 [Average comments per code lines]
 
 ### Comment Patterns
+
 [Examples of actual comment styles]
 
 ### Comment Tone
+
 [Formality, characteristics]
 
 ## Formality Indicators
 
 ### Contractions
+
 [Frequency, which ones used, which avoided]
 
 ### Vocabulary
+
 [Technical depth, complexity, style]
 
 ### Sentence Structure
+
 [Length, complexity, variety]
 
 ## Author Personality Markers
 
 ### Humor and Personality
+
 [Examples, frequency, style]
 
 ### Encouragement Approach
+
 [How author motivates readers]
 
 ### Authority and Directness
+
 [How author provides guidance]
 
 ## Excluded Patterns (Anti-Patterns)
 
 ### What Author Avoids
+
 [List of excluded tones with examples]
 
 ## Usage Guidance for New Content
 
 ### When Writing New Chapters
+
 [How to apply these patterns]
 
 ### Matching This Tone
+
 [Specific guidance for consistency]
 
 ### Common Pitfalls to Avoid
+
 [What would break tone consistency]
 
 ## Extracted Examples for Reference
 
 ### Example 1: Typical Chapter Introduction
+
 [Full example]
 
 ### Example 2: Code with Comments
+
 [Full example with commentary]
 
 ### Example 3: Technical Explanation
+
 [Full example]
 
 ### Example 4: Chapter Conclusion
+
 [Full example]
 
 ## Version History
 
-| Date | Analyst | Chapters Added | Notes |
-|------|---------|----------------|-------|
-| [Date] | [Name] | [Chapters] | Initial extraction |
+| Date   | Analyst | Chapters Added | Notes              |
+| ------ | ------- | -------------- | ------------------ |
+| [Date] | [Name]  | [Chapters]     | Initial extraction |
 ```
 
 **Save Location:**
 
-Save as `extracted-tone-patterns.md` in project documentation directory (typically `docs/` or `manuscript/planning/`)
+Save as `extracted-tone-patterns.md` in project documentation directory (typically `docs/` or `{{config.manuscript.planning}}/`)
 
 ### 9. Validate Extraction Quality
 
@@ -4259,37 +4362,44 @@ Can you write a new paragraph on a technical topic using ONLY the guidance in ex
 ## Integration Points
 
 **Output To:**
+
 - **apply-tone-patterns.md** - Uses extracted patterns to guide new chapter writing
 - **copy-edit-chapter.md** - Validates new content against extracted patterns
 - **tone-consistency-checklist.md** - Uses patterns as validation reference
 
 **Complementary With:**
+
 - **analyze-existing-book.md** - Extracts structure and technical patterns (not tone)
 - Together provide complete brownfield book analysis
 
 ## Important Notes
 
 **Accuracy Requires Multiple Chapters:**
+
 - Single chapter may have anomalies or one-off experiments
 - 3 chapters minimum, 5+ ideal for reliable patterns
 - Include chapters from different book sections (early, middle, late)
 
 **Avoid Over-Interpretation:**
+
 - Extract what's actually there, not what you think should be there
 - If author rarely uses humor, document that (don't force humor into patterns)
 - Patterns should be descriptive, not prescriptive improvements
 
 **Edition Updates:**
+
 - Extract from CURRENT edition (not outdated versions)
 - If tone has evolved across editions, note that explicitly
 - New edition may intentionally refine tone (document changes)
 
 **Publisher Context:**
+
 - Publisher may have influenced original tone (O'Reilly, Manning, PacktPub)
 - If staying with same publisher, extracted patterns likely align with expectations
 - If changing publishers, may need to adjust some patterns
 
 **Complementary to define-book-tone.md:**
+
 - Brownfield (extract-tone-patterns.md): Analyze existing → maintain consistency
 - Greenfield (define-book-tone.md): Define from scratch → establish new voice
 - Both create guidance documents for consistent writing
@@ -4314,26 +4424,14 @@ Can you write a new paragraph on a technical topic using ONLY the guidance in ex
 ---
 
 task:
-  id: apply-tone-patterns
-  name: Apply Extracted Tone Patterns to New Content
-  description: Apply previously extracted tone patterns to new chapters or updated sections in existing books to maintain consistency
-  persona_default: tutorial-architect
-  inputs:
-    - extracted-tone-patterns.md (from extract-tone-patterns task)
-    - new-chapter-draft (or updated section)
-  steps:
-    - Load extracted-tone-patterns.md
-    - Review tone profile and key patterns
-    - Load new/updated chapter draft
-    - Validate voice characteristics match patterns
-    - Check formality consistency
-    - Apply common phrase patterns to transitions/introductions
-    - Align code comment style with patterns
-    - Apply personality markers appropriately
-    - Verify no anti-patterns present
-    - Document tone adjustments made
-  output: Tone-aligned chapter draft
-  use_case: brownfield
+id: apply-tone-patterns
+name: Apply Extracted Tone Patterns to New Content
+description: Apply previously extracted tone patterns to new chapters or updated sections in existing books to maintain consistency
+persona_default: tutorial-architect
+inputs: - extracted-tone-patterns.md (from extract-tone-patterns task) - new-chapter-draft (or updated section)
+steps: - Load extracted-tone-patterns.md - Review tone profile and key patterns - Load new/updated chapter draft - Validate voice characteristics match patterns - Check formality consistency - Apply common phrase patterns to transitions/introductions - Align code comment style with patterns - Apply personality markers appropriately - Verify no anti-patterns present - Document tone adjustments made
+output: Tone-aligned chapter draft
+use_case: brownfield
 
 ---
 
@@ -4398,31 +4496,37 @@ Based on extracted patterns, identify what to check:
 **My Application Checklist for This Chapter:**
 
 Voice:
+
 - [ ] Use second person ("You'll implement...")
 - [ ] ~85% active voice, passive only for system actions
 - [ ] No first person singular ("I think")
 
 Formality:
+
 - [ ] Level 3 (Professional/Conversational)
 - [ ] ~13 contractions per 1000 words
 - [ ] Use "Let's" for collaborative actions
 
 Phrases:
+
 - [ ] Chapter intro: "In this chapter, you'll [action]. By the end, you'll [outcome]."
 - [ ] Theory to practice: "Let's put this into practice"
 - [ ] Transitions: "Building on this..."
 
 Code Comments:
+
 - [ ] 1 comment per 3-4 lines
 - [ ] Explain "why", not "what" (unless syntax unusual)
 - [ ] Match Level 3 formality
 
 Personality:
+
 - [ ] Light technical humor (1-2 instances per chapter)
 - [ ] Matter-of-fact encouragement at milestones
 - [ ] Share real-world experience
 
 Avoid:
+
 - [ ] No "Obviously", "clearly", "simply"
 - [ ] No marketing hype or superlatives
 - [ ] No excessive formality or academic voice
@@ -4566,6 +4670,7 @@ Use extracted transition phrases:
 
 ```markdown
 **Extracted Patterns:**
+
 - "Building on this..."
 - "Now that you understand [X], let's explore [Y]"
 - "Let's put this into practice"
@@ -4581,8 +4686,9 @@ Use extracted transition phrases:
 
 Follow extracted explanation structure:
 
-```markdown
+````markdown
 **Extracted Pattern:**
+
 1. State concept
 2. Explain why it matters
 3. Provide concrete example
@@ -4599,18 +4705,21 @@ Follow extracted explanation structure:
 [Concrete example] Here's a service mesh configuration for our authentication service:
 
 [Code/config]
+
 ```yaml
 apiVersion: v1
 kind: ServiceMesh
 spec:
-  mtls: enabled  # Mutual TLS for secure communication
-  tracing: jaeger  # Distributed tracing
+  mtls: enabled # Mutual TLS for secure communication
+  tracing: jaeger # Distributed tracing
 ```
+````
 
 [Explain key parts] The `mtls: enabled` setting ensures all service communication is encrypted. The `tracing: jaeger` setting enables request tracing across services.
 
 [Common pitfall] Don't enable service mesh after deploying services—install the mesh first, then deploy services into it.
-```
+
+````
 
 ### 6. Align Code Comment Style
 
@@ -4627,11 +4736,12 @@ def authenticate(username, password):
         token = create_jwt(user.id)
         return token
     return None
-```
+````
 
 **Pattern:** 1 comment per 3-4 lines
 
 **Corrected (Applying Pattern):**
+
 ```python
 def authenticate(username, password):
     # Query database for user with matching username
@@ -4646,7 +4756,8 @@ def authenticate(username, password):
     # Return None if authentication fails
     return None
 ```
-```
+
+````
 
 **Match Comment Tone:**
 
@@ -4657,16 +4768,18 @@ Ensure comments match prose formality:
 ```javascript
 // Instantiate the authentication service object utilizing environment configuration
 const auth = new AuthService(process.env);
-```
+````
 
 **Pattern:** Level 3 formality in comments
 
 **Corrected:**
+
 ```javascript
 // Set up auth service with environment variables
 const auth = new AuthService(process.env);
 ```
-```
+
+````
 
 ### 7. Apply Author Personality Markers
 
@@ -4682,7 +4795,7 @@ Add light humor matching extracted style:
 
 **Application to New Content:**
 "Service mesh configuration has 47 different settings. Yes, 47. After you've configured a few, you'll appreciate tools that generate these files automatically."
-```
+````
 
 **Encouragement Markers:**
 
@@ -4690,6 +4803,7 @@ Apply encouragement at similar points as original:
 
 ```markdown
 **Extracted Encouragement Pattern:**
+
 - Frequency: At chapter milestones (mid-chapter, end-of-chapter)
 - Style: Matter-of-fact, capability-building
 - Example: "You've now deployed a production-ready service."
@@ -4704,6 +4818,7 @@ Add real-world context matching author's approach:
 
 ```markdown
 **Extracted Pattern:**
+
 - References production incidents, debugging sessions
 - Pragmatic: "In theory X, in practice Y"
 - Example: "I've deployed hundreds of applications..."
@@ -4720,6 +4835,7 @@ Review new content against documented anti-patterns:
 
 ```markdown
 **Extracted Anti-Patterns to Avoid:**
+
 - ❌ "Obviously", "clearly", "simply"
 - ❌ Marketing hype ("revolutionary", "game-changing")
 - ❌ Excessive formality ("One must ensure")
@@ -4758,22 +4874,27 @@ Side-by-side comparison:
 **Comparison: Original Chapter 3 vs. New Chapter 15**
 
 Voice Perspective:
+
 - Original: Second person throughout ✓
 - New: Second person throughout ✓
 
 Formality Level:
+
 - Original: Level 3, 14 contractions/1000 words
 - New: Level 3, 13 contractions/1000 words ✓
 
 Chapter Introduction:
+
 - Original: "In this chapter, you'll deploy..." pattern
 - New: "In this chapter, you'll implement..." pattern ✓
 
 Code Comment Density:
+
 - Original: 1 comment per 3.5 lines
 - New: 1 comment per 3.2 lines ✓
 
 Personality Markers:
+
 - Original: 2 humor instances, matter-of-fact encouragement
 - New: 1 humor instance, matter-of-fact encouragement ✓
 
@@ -4796,31 +4917,37 @@ Record changes made for transparency:
 ## Changes Made
 
 ### Formality Level Corrections
+
 - Removed 15 instances of formal constructions ("one must", "it is imperative")
 - Added 18 contractions to reach Level 3 target (13/1000 words)
 - Simplified vocabulary: "utilize" → "use", "facilitate" → "help"
 
 ### Voice Alignment
+
 - Changed 8 passive constructions to active voice
 - Unified perspective: removed 3 instances of third person, changed to second person
 - Final ratio: 87% active voice (target: 85%) ✓
 
 ### Phrase Pattern Application
+
 - Applied standard chapter intro pattern (line 1-15)
 - Added 12 extracted transition phrases
 - Updated chapter conclusion to match pattern (lines 450-465)
 
 ### Code Comment Updates
+
 - Added 14 comments to meet density target (1 per 3-4 lines)
 - Revised 6 comments to match Level 3 formality
 - Aligned comment style with extracted patterns
 
 ### Personality Markers
+
 - Added 1 light humor instance (line 234)
 - Added matter-of-fact encouragement at milestone (line 280)
 - Added experience-based pragmatic note (line 367)
 
 ### Anti-Pattern Removals
+
 - Removed "obviously" (3 instances)
 - Removed "simply" in condescending context (2 instances)
 - Removed marketing language: "revolutionary" (1 instance)
@@ -4864,14 +4991,17 @@ Chapter 15 now matches established book voice. Reader experience consistent with
 ## Integration Points
 
 **Input From:**
+
 - **extract-tone-patterns.md** - Provides tone patterns to apply
 - **New chapter draft** - Content needing tone alignment
 
 **Output To:**
+
 - **copy-edit-chapter.md** - Further refinement after tone application
 - **Tone-aligned draft** - Ready for technical review
 
 **Use With:**
+
 - **expand-outline-to-draft.md** - Apply patterns during initial drafting
 - **copy-edit-chapter.md** - Apply patterns during editing phase
 - **tone-consistency-checklist.md** - Validate pattern application
@@ -4879,26 +5009,31 @@ Chapter 15 now matches established book voice. Reader experience consistent with
 ## Important Notes
 
 **Preserve Technical Accuracy:**
+
 - Tone alignment must NOT change technical meaning
 - If technical correction requires different phrasing, find tone-aligned alternative
 - Technical accuracy always trumps tone perfection
 
 **Maintain Author Authenticity:**
+
 - Patterns guide consistency, not robotic compliance
 - Natural variation is acceptable (contraction count can vary ±2-3 per 1000 words)
 - Don't force humor if it doesn't fit the content naturally
 
 **When Patterns Don't Fit:**
+
 - Some content types may need different tone (reference appendix vs. tutorial chapter)
 - Document intentional deviations with rationale
 - Ensure deviations are justified, not lazy
 
 **Multiple Authors:**
+
 - All authors must use same extracted-tone-patterns.md
 - Establish "tone reviewer" role to catch inconsistencies
 - Conduct cross-author tone review before submission
 
 **Edition-Specific Considerations:**
+
 - If 10+ years since original, slight tone evolution may be appropriate
 - Modern technical writing tends more casual—may need slight formality adjustment
 - Document and justify any intentional pattern deviations
@@ -4925,12 +5060,14 @@ Chapter 15 now matches established book voice. Reader experience consistent with
 **Example 1: Complete Section Transformation**
 
 **Before (Mismatched Tone):**
-```markdown
+
+````markdown
 ## Understanding Service Mesh Architecture
 
 The implementation of a service mesh necessitates careful consideration of architectural paradigms. One must ensure that the control plane has been properly configured prior to deploying the data plane components. The architecture comprises several key elements which facilitate communication.
 
 Configure the service mesh:
+
 ```yaml
 apiVersion: v1
 kind: ServiceMesh
@@ -4938,9 +5075,11 @@ spec:
   mtls: enabled
   tracing: jaeger
 ```
+````
 
 The configuration file delineates security and observability parameters.
-```
+
+````
 
 **After (Applying Extracted Patterns - Level 3, Practical, Encouraging):**
 ```markdown
@@ -4955,9 +5094,10 @@ kind: ServiceMesh
 spec:
   mtls: enabled  # Encrypts all service-to-service traffic
   tracing: jaeger  # Enables distributed request tracing
-```
+````
 
 The `mtls` setting enables mutual TLS between services. The `tracing` setting connects to Jaeger for observability. You'll see these in action when you deploy services in the next section.
+
 ```
 
 **Changes Applied:**
@@ -4981,6 +5121,7 @@ The `mtls` setting enables mutual TLS between services. The `tracing` setting co
 ## Related Knowledge Base
 
 - **writing-voice-guides.md** - General tone profile examples for reference
+```
 ==================== END: .bmad-technical-writing/tasks/apply-tone-patterns.md ====================
 
 ==================== START: .bmad-technical-writing/checklists/packtpub-submission-checklist.md ====================
@@ -5894,6 +6035,7 @@ Before using this checklist:
 - [ ] No unintentional voice shifts between sections
 
 **Common Violations:**
+
 - Formal academic voice in introduction, then suddenly casual in examples
 - Third person in explanations, switching to first person in conclusions
 - Passive construction overuse contradicting "direct" tone characteristic
@@ -5910,10 +6052,12 @@ Before using this checklist:
 **Examples of Formality Inconsistency:**
 
 **Violation (Level 3 spec, but drifts to Level 5):**
+
 > "Let's deploy your application to AWS. (Level 3)
 > Herein we shall explicate the deployment paradigm pursuant to infrastructure specifications. (Level 5 drift)"
 
 **Correct (Consistent Level 3):**
+
 > "Let's deploy your application to AWS. We'll use Terraform to define our infrastructure and automate the deployment process."
 
 ## Publisher Alignment
@@ -5928,9 +6072,11 @@ Before using this checklist:
 **Publisher Misalignment Example:**
 
 **Manning book using generic corporate voice (WRONG):**
+
 > "The deployment process should be initiated according to established protocols."
 
 **Manning book with author personality (CORRECT):**
+
 > "I've deployed hundreds of apps this way, and here's what actually works in production..."
 
 ## Tone Characteristics Application
@@ -5946,10 +6092,12 @@ Before using this checklist:
 **Characteristic Application Examples:**
 
 **Encouraging (when specified):**
+
 > ✓ "You've tackled the basics. Now you're ready for production deployment."
 > ✗ "Even a beginner could understand this simple concept." (condescending)
 
 **Authoritative (when specified):**
+
 > ✓ "Use environment variables for secrets. Hard-coding credentials is a security vulnerability."
 > ✗ "I think maybe you should probably consider possibly using environment variables?" (weak)
 
@@ -5965,18 +6113,21 @@ Before using this checklist:
 **Code Comment Tone Examples:**
 
 **Formal Tone (Level 4) - Correct:**
+
 ```javascript
 // Validate JWT signature to ensure token integrity
 const isValid = verifySignature(token, secret);
 ```
 
 **Formal Tone (Level 4) - WRONG (too casual):**
+
 ```javascript
 // Let's check if this token is legit!
 const isValid = verifySignature(token, secret);
 ```
 
 **Conversational Tone (Level 2) - Correct:**
+
 ```javascript
 // Check if the token's been tampered with
 const isValid = verifySignature(token, secret);
@@ -5993,12 +6144,15 @@ const isValid = verifySignature(token, secret);
 **Transition Tone Examples:**
 
 **Professional/Conversational (Level 3):**
+
 > "Now that you understand JWT structure, let's explore how to securely sign and verify tokens."
 
 **Formal (Level 4):**
+
 > "Having examined JWT structure, we now turn to signature creation and verification."
 
 **Casual (Level 2):**
+
 > "Okay, you've got JWT structure down. Time to tackle signing and verifying these tokens!"
 
 ## Learning Support Tone
@@ -6012,10 +6166,12 @@ const isValid = verifySignature(token, secret);
 **Learning Support Examples:**
 
 **Encouraging without patronizing:**
+
 > ✓ "If you're seeing this error, don't worry—it's a common misconfiguration."
 > ✗ "Don't feel bad if you made this silly mistake! It happens to everyone!"
 
 **Direct but supportive:**
+
 > ✓ "This won't work in production. Use environment variables instead."
 > ✗ "Well, technically you could do this, but you probably shouldn't maybe..."
 
@@ -6030,9 +6186,11 @@ const isValid = verifySignature(token, secret);
 **Terminology Consistency Examples:**
 
 **Consistent:**
+
 > "Function" used throughout chapter for JavaScript functions
 
 **Inconsistent (WRONG):**
+
 > Alternating "function", "method", "routine", "procedure" for same concept
 
 ## Metaphor and Analogy Usage
@@ -6046,9 +6204,11 @@ const isValid = verifySignature(token, secret);
 **Metaphor Tone Examples:**
 
 **Appropriate for casual tone:**
+
 > "Think of JWT like a concert wristband—it proves you paid to get in."
 
 **Too playful for formal technical book:**
+
 > "JWT is like a magical unicorn stamp of authentication wonderfulness!"
 
 ## Excluded Tone Avoidance
@@ -6063,12 +6223,15 @@ const isValid = verifySignature(token, secret);
 **Anti-Pattern Examples:**
 
 **Condescending (AVOID):**
+
 > "This should be obvious to anyone with basic programming knowledge."
 
 **Overly aggressive (AVOID if not specified):**
+
 > "You're doing it WRONG if you don't use framework X!"
 
 **Marketing hype (AVOID in technical books):**
+
 > "This AMAZING technique will REVOLUTIONIZE your coding!"
 
 ## Chapter-Level Consistency
@@ -6083,6 +6246,7 @@ const isValid = verifySignature(token, secret);
 **Chapter Arc Consistency:**
 
 Check that tone doesn't:
+
 - Start formal, drift casual
 - Start encouraging, become dismissive
 - Start direct, become meandering
@@ -6109,9 +6273,11 @@ Check that tone doesn't:
 **Example 1: Formality Level Correction**
 
 **Original (Level 5, spec calls for Level 3):**
+
 > "One must ensure that the authentication mechanism functions properly prior to deployment."
 
 **Corrected (Level 3):**
+
 > "You'll need to verify your authentication works before deploying to production."
 
 ---
@@ -6119,9 +6285,11 @@ Check that tone doesn't:
 **Example 2: Voice Consistency Correction**
 
 **Original (Perspective shifts):**
+
 > "Let's examine JWT structure. One should note the three components. You'll implement this in Chapter 5."
 
 **Corrected (Consistent second person):**
+
 > "Let's examine JWT structure. You'll notice three components. You'll implement this in Chapter 5."
 
 ---
@@ -6129,9 +6297,11 @@ Check that tone doesn't:
 **Example 3: Tone Characteristic Application**
 
 **Original (Missing "practical" characteristic from spec):**
+
 > "JWTs can be used for authentication in theoretical scenarios."
 
 **Corrected (Demonstrates "practical"):**
+
 > "You'll use JWTs to authenticate API requests in your production application."
 
 ---
@@ -6139,12 +6309,14 @@ Check that tone doesn't:
 **Example 4: Code Comment Tone Alignment**
 
 **Original (Comment too formal for Level 2 prose):**
+
 > ```javascript
 > // Instantiate the authentication service object
 > const auth = new AuthService();
 > ```
 
 **Corrected (Comment matches Level 2 conversational tone):**
+
 > ```javascript
 > // Set up the auth service
 > const auth = new AuthService();
@@ -6155,9 +6327,11 @@ Check that tone doesn't:
 **Example 5: Publisher Alignment Correction**
 
 **Original (Too formal for PacktPub "conversational but professional"):**
+
 > "The subsequent section delineates the authentication methodology."
 
 **Corrected (PacktPub-appropriate):**
+
 > "Let's look at how authentication works in the next section."
 
 ## Red Flags (Immediate Attention Required)
@@ -6229,6 +6403,7 @@ Use this checklist to validate that AI pattern removal was successful and chapte
 **Purpose**: Confirm humanization task effectiveness after executing humanize-ai-drafted-chapter.md
 
 **Distinction from Other Checklists**:
+
 - **generative-ai-compliance-checklist.md**: DETECTS AI patterns (use before humanization)
 - **humanization-checklist.md** (THIS): VALIDATES REMOVAL (use after humanization)
 - **tone-consistency-checklist.md**: Validates tone specification compliance (different concern)
@@ -6247,11 +6422,13 @@ Before using this checklist:
 **Calculation**: (Items Passed / Total Items) × 100 = Humanization Pass Rate
 
 **Thresholds**:
+
 - **≥80%**: PASS - Ready for technical review
 - **60-79%**: REVIEW - Some patterns remain, additional humanization recommended
 - **<60%**: FAIL - Significant AI patterns remain, rework required
 
 **AI Pattern Remaining Score**: Inverse of pass rate
+
 - Pass rate 90% = 10% AI patterns remaining (excellent)
 - Pass rate 80% = 20% AI patterns remaining (acceptable)
 - Pass rate 60% = 40% AI patterns remaining (needs work)
@@ -6285,6 +6462,7 @@ Validates AI vocabulary patterns have been removed.
 - [ ] **Natural word choices** (words you'd use in conversation with colleague)
 
 **Example Check**:
+
 - ✓ "use this pattern" not "utilize this methodology"
 - ✓ "help developers" not "facilitate developer enablement"
 - ✓ "improves performance" not "optimizes operational efficiency"
@@ -6322,6 +6500,7 @@ Validates metaphor problems (overuse, nonsense, mixed) have been fixed.
 - [ ] **Metaphors enhance understanding** (each metaphor clarifies concept, not confuses)
 
 **Example Check**:
+
 - ✗ "Authentication tokens breathe life into security DNA" (nonsense)
 - ✓ "Authentication tokens work like temporary security badges" (clear)
 
@@ -6350,6 +6529,7 @@ Validates sentence structure uniformity has been broken.
 **Validation Method**: Sample 3 random paragraphs, measure sentence lengths, verify variation
 
 **Example Check**:
+
 - ✗ All sentences: 15, 16, 14, 17, 15, 16 words (uniform)
 - ✓ Sentences: 8, 22, 12, 6, 19, 14 words (varied)
 
@@ -6362,6 +6542,7 @@ Validates sentence structure uniformity has been broken.
 - [ ] **Natural rhythm when read aloud** (sounds conversational, not robotic)
 
 **Example Check**:
+
 - ✗ "You configure X. You define Y. You establish Z. You verify W." (repetitive)
 - ✓ "Configure X. Auth credentials go in Y. The connection pool needs Z—especially for production. Before proceeding, verify W." (varied)
 
@@ -6401,6 +6582,7 @@ Validates personal perspective and author expertise are evident.
 - [ ] **"War stories" or debugging experiences** (real scenarios from author's work)
 
 **Example Check**:
+
 - ✗ "Error handling is important" (generic, no expertise)
 - ✓ "I learned the importance of error handling after a 2 AM production crash with no logs" (personal experience)
 
@@ -6438,6 +6620,7 @@ Validates generic examples have been replaced with specific, cited examples.
 - [ ] **Author's own projects referenced** (personal work examples with specifics)
 
 **Example Check**:
+
 - ✗ "A company implemented caching and improved performance" (generic)
 - ✓ "Netflix implemented Redis caching for their recommendation engine, reducing response time from 800ms to 120ms (Netflix Tech Blog, 2023)" (specific, cited)
 
@@ -6474,6 +6657,7 @@ Validates filler has been removed and actionable insights added.
 - [ ] **Specific recommendations** (clear guidance, not vague advice)
 
 **Example Check**:
+
 - ✗ "Error handling is important for production applications" (filler, no action)
 - ✓ "Implement structured logging with correlation IDs—here's the pattern I use: [code example]" (actionable)
 
@@ -6502,6 +6686,7 @@ Validates rigid, templated structure has been broken.
 **Validation Method**: Check first sentence of each H2 section, verify no repeated pattern
 
 **Example Check**:
+
 - ✗ All sections start "In this section, we'll..." (rigid template)
 - ✓ Mix: question opening, statement, example, problem (varied)
 
@@ -6540,15 +6725,15 @@ After completing all sections, calculate final scores:
 
 ### Category Scores
 
-| Category | Passed | Total | Pass Rate |
-|----------|--------|-------|-----------|
-| Word Choice Validation | {{passed}} | 9 | {{percent}}% |
-| Metaphor Quality | {{passed}} | 6 | {{percent}}% |
-| Sentence Rhythm | {{passed}} | 6 | {{percent}}% |
-| Voice Authenticity | {{passed}} | 6 | {{percent}}% |
-| Example Specificity | {{passed}} | 6 | {{percent}}% |
-| Content Depth | {{passed}} | 6 | {{percent}}% |
-| Structural Variation | {{passed}} | 6 | {{percent}}% |
+| Category               | Passed     | Total | Pass Rate    |
+| ---------------------- | ---------- | ----- | ------------ |
+| Word Choice Validation | {{passed}} | 9     | {{percent}}% |
+| Metaphor Quality       | {{passed}} | 6     | {{percent}}% |
+| Sentence Rhythm        | {{passed}} | 6     | {{percent}}% |
+| Voice Authenticity     | {{passed}} | 6     | {{percent}}% |
+| Example Specificity    | {{passed}} | 6     | {{percent}}% |
+| Content Depth          | {{passed}} | 6     | {{percent}}% |
+| Structural Variation   | {{passed}} | 6     | {{percent}}% |
 
 ### Overall Results
 
@@ -6557,6 +6742,7 @@ After completing all sections, calculate final scores:
 **AI Pattern Remaining Score**: {{100 - percent}}%
 
 **Status**:
+
 - [ ] ✅ PASS (≥80% pass rate, ≤20% AI patterns) - Ready for technical review
 - [ ] ⚠️ REVIEW (60-79% pass rate, 21-40% AI patterns) - Additional humanization recommended
 - [ ] ❌ FAIL (<60% pass rate, >40% AI patterns) - Rework required
@@ -6568,6 +6754,7 @@ After completing all sections, calculate final scores:
 **Improvement**: {{improvement}}% ({{baseline - current}})
 
 **Target Achieved**:
+
 - [ ] YES - AI score reduced by ≥50%
 - [ ] NO - Additional humanization iteration needed
 ```
@@ -6575,17 +6762,20 @@ After completing all sections, calculate final scores:
 ### Next Steps Based on Results
 
 **If PASS (≥80%):**
+
 1. Proceed to technical-review.md
 2. Document humanization completion in chapter metadata
 3. Note: Final AI pattern check will occur at copy-edit (Step 10)
 
 **If REVIEW (60-79%):**
+
 1. Identify top 3 failing categories
 2. Return to relevant humanize-ai-drafted-chapter steps
 3. Focus on critical issues (generic examples, impersonal voice)
 4. Re-execute this checklist after fixes
 
 **If FAIL (<60%):**
+
 1. Review humanize-ai-drafted-chapter task completely
 2. May need different humanization approach
 3. Consider consulting with human editor
@@ -6652,20 +6842,20 @@ This checklist is used by:
 
 **This Checklist (Humanization) vs Compliance Checklist**:
 
-| Aspect | generative-ai-compliance | humanization-checklist |
-|--------|------------------------|----------------------|
-| **Purpose** | DETECT AI patterns | VALIDATE REMOVAL |
-| **When** | Before humanization | After humanization |
-| **Output** | List of problems found | Pass/fail for each category |
-| **Use** | Baseline measurement | Improvement validation |
+| Aspect      | generative-ai-compliance | humanization-checklist      |
+| ----------- | ------------------------ | --------------------------- |
+| **Purpose** | DETECT AI patterns       | VALIDATE REMOVAL            |
+| **When**    | Before humanization      | After humanization          |
+| **Output**  | List of problems found   | Pass/fail for each category |
+| **Use**     | Baseline measurement     | Improvement validation      |
 
 **This Checklist vs Tone Consistency Checklist**:
 
-| Aspect | Tone Consistency | Humanization |
-|--------|-----------------|--------------|
-| **Purpose** | Validate tone specification | Remove AI artifacts |
-| **Focus** | Formality, voice consistency | Pattern elimination |
-| **Question** | "Does tone match spec?" | "Does this sound AI-generated?" |
+| Aspect       | Tone Consistency             | Humanization                    |
+| ------------ | ---------------------------- | ------------------------------- |
+| **Purpose**  | Validate tone specification  | Remove AI artifacts             |
+| **Focus**    | Formality, voice consistency | Pattern elimination             |
+| **Question** | "Does tone match spec?"      | "Does this sound AI-generated?" |
 
 ### Best Practices
 
@@ -6704,6 +6894,7 @@ A: Rare exceptions acceptable with justification. Document why certain patterns 
 **Goal**: Authentic human expertise, not just passing a checklist.
 
 **Success Criteria**:
+
 - Reader can't tell AI was used in drafting
 - Author's expertise and personality evident
 - Content provides unique value beyond AI-generated tutorials
@@ -8413,6 +8604,7 @@ Understanding page count metrics is essential for planning, estimating, and trac
 **Standard Estimation: 500 words per page**
 
 Use this baseline when:
+
 - Planning book outlines and chapter structures
 - Estimating manuscript length for proposals
 - Setting writing targets and milestones
@@ -8431,6 +8623,7 @@ Example:
 **Realistic Published: 300-400 words per page**
 
 Actual published technical books typically contain:
+
 - Body text: 250-350 words per page
 - Code examples: Reduce word count per page
 - Diagrams and screenshots: Reduce word count per page
@@ -8450,24 +8643,28 @@ Example Published Chapter:
 Adjust estimates based on content type:
 
 **Code-Heavy Chapters:**
+
 - Tutorials with extensive code examples
 - API reference chapters
 - Implementation guides
 - Estimate: 250-350 words per page
 
 **Concept-Heavy Chapters:**
+
 - Theory and architecture
 - Planning and design chapters
 - Conceptual overviews
 - Estimate: 400-500 words per page
 
 **Balanced Chapters:**
+
 - Mix of explanation and code
 - Standard tutorial format
 - Most technical book chapters
 - Estimate: 350-450 words per page
 
 **Diagram-Heavy Chapters:**
+
 - Architecture diagrams
 - Workflow visualizations
 - Annotated screenshots
@@ -8487,6 +8684,7 @@ Token estimation guidelines:
 ```
 
 **Use cases:**
+
 - Calculating when to shard large chapters (shard-large-chapter.md)
 - Estimating context window usage for AI tools
 - Planning document processing batches
@@ -8613,6 +8811,7 @@ Reference guide with tone profile examples to help technical authors define and 
 ## Purpose
 
 This guide provides concrete examples of different tone approaches for technical writing, helping authors:
+
 - Recognize and define their desired tone
 - Understand how tone affects reader experience
 - Choose appropriate tone for target audience and publisher
@@ -8628,6 +8827,7 @@ This guide provides concrete examples of different tone approaches for technical
 ## Tone Profile Examples
 
 Each profile includes:
+
 - **Definition:** What characterizes this tone
 - **Best For:** Ideal audience and use cases
 - **Characteristics:** Key traits
@@ -8641,12 +8841,14 @@ Each profile includes:
 **Definition:** Scholarly, precise, objective tone emphasizing technical rigor and formal language conventions.
 
 **Best For:**
+
 - Research-oriented audiences (PhD students, researchers)
 - Theoretical computer science texts
 - Academic journal articles converted to book format
 - Audiences expecting peer-reviewed precision
 
 **Characteristics:**
+
 - Formality Level: 5 (Very Formal)
 - No contractions
 - Passive voice acceptable for objectivity
@@ -8673,12 +8875,14 @@ Each profile includes:
 **Definition:** Expert voice demonstrating deep technical knowledge with precise, confident explanations. Direct but not academic.
 
 **Best For:**
+
 - O'Reilly-style technical references
 - Professional developer audiences (5+ years experience)
 - System design and architecture books
 - Enterprise technology implementations
 
 **Characteristics:**
+
 - Formality Level: 4 (Formal/Professional)
 - Minimal contractions
 - Strong, declarative statements
@@ -8710,15 +8914,15 @@ Each profile includes:
 >     matchLabels:
 >       app: postgres
 >   policyTypes:
->   - Ingress
+>     - Ingress
 >   ingress:
->   - from:
->     - podSelector:
->         matchLabels:
->           role: api-server
->     ports:
->     - protocol: TCP
->       port: 5432
+>     - from:
+>         - podSelector:
+>             matchLabels:
+>               role: api-server
+>       ports:
+>         - protocol: TCP
+>           port: 5432
 > ```
 >
 > This policy permits traffic only from pods labeled `role: api-server` on port 5432. All other ingress traffic to the database pod is denied. Egress remains unrestricted because the policy specifies only `Ingress` in `policyTypes`.
@@ -8730,12 +8934,14 @@ Each profile includes:
 **Definition:** Balanced approach combining professional standards with accessible, friendly explanations. Most common for modern technical books.
 
 **Best For:**
+
 - Manning, PacktPub, Pragmatic Bookshelf style
 - Intermediate developers (2-5 years experience)
 - Tutorial and practical guide books
 - Mainstream technical publishing
 
 **Characteristics:**
+
 - Formality Level: 3 (Professional/Conversational)
 - Moderate contractions
 - Active voice dominant
@@ -8764,12 +8970,12 @@ Each profile includes:
 >   const payload = {
 >     userId: user.id,
 >     email: user.email,
->     role: user.role
+>     role: user.role,
 >   };
 >
 >   // Sign token with secret key, expires in 1 hour
 >   return jwt.sign(payload, process.env.JWT_SECRET, {
->     expiresIn: '1h'
+>     expiresIn: '1h',
 >   });
 > }
 > ```
@@ -8783,12 +8989,14 @@ Each profile includes:
 **Definition:** Approachable, conversational tone emphasizing accessibility and reader comfort. More personal and relaxed.
 
 **Best For:**
+
 - Beginner-focused books
 - Bootcamp-style learning materials
 - Blog post collections
 - Self-published accessible guides
 
 **Characteristics:**
+
 - Formality Level: 2 (Casual/Friendly)
 - Frequent contractions
 - Colloquial language
@@ -8821,10 +9029,10 @@ Each profile includes:
 >   return jwt.sign(
 >     {
 >       id: user.id,
->       email: user.email
+>       email: user.email,
 >     },
->     'your-secret-key',  // Keep this secret!
->     { expiresIn: '1h' }  // Token expires after an hour
+>     'your-secret-key', // Keep this secret!
+>     { expiresIn: '1h' }, // Token expires after an hour
 >   );
 > }
 > ```
@@ -8838,12 +9046,14 @@ Each profile includes:
 **Definition:** Motivational tone emphasizing reader capability and progress, with explicit positive reinforcement.
 
 **Best For:**
+
 - Career transition books (bootcamp grads, career switchers)
 - Confidence-building materials
 - First programming book experiences
 - Self-paced learning contexts
 
 **Characteristics:**
+
 - Formality Level: 2-3 (Varies)
 - Acknowledges difficulty
 - Celebrates progress
@@ -8885,12 +9095,14 @@ Each profile includes:
 **Definition:** No-nonsense, action-oriented tone focused on practical results and real-world applicability.
 
 **Best For:**
+
 - Experienced developers
 - DevOps and SRE audiences
 - Problem-solving focused books
 - "Get stuff done" contexts
 
 **Characteristics:**
+
 - Formality Level: 3
 - Gets to the point quickly
 - Minimal fluff
@@ -8911,11 +9123,11 @@ Each profile includes:
 > ```yaml
 > resources:
 >   requests:
->     memory: "256Mi"
->     cpu: "250m"
+>     memory: '256Mi'
+>     cpu: '250m'
 >   limits:
->     memory: "512Mi"
->     cpu: "500m"
+>     memory: '512Mi'
+>     cpu: '500m'
 > ```
 >
 > The `requests` value tells Kubernetes how much to reserve. The `limits` value sets the maximum allowed. Set requests based on typical usage. Set limits at 2x requests to handle spikes without killing pods.
@@ -8932,7 +9144,7 @@ Each profile includes:
 > metadata:
 >   name: api-pdb
 > spec:
->   minAvailable: 2  # Always keep 2 pods running
+>   minAvailable: 2 # Always keep 2 pods running
 >   selector:
 >     matchLabels:
 >       app: api
@@ -8946,14 +9158,14 @@ Each profile includes:
 
 Use this matrix to identify appropriate tone based on project characteristics:
 
-| Audience Level | Publisher Type | Recommended Profile | Formality Level |
-|----------------|----------------|---------------------|-----------------|
-| Researchers / PhDs | Academic Press | Academic/Formal | 5 |
-| Senior Engineers (10+ years) | O'Reilly | Authoritative/Technical | 4 |
-| Professional Developers (3-7 years) | Manning, PacktPub | Professional/Conversational | 3 |
-| Junior Developers (0-2 years) | Self-Published, Pragmatic | Casual/Friendly | 2 |
-| Career Switchers / Bootcamp | Self-Published | Encouraging/Supportive | 2-3 |
-| DevOps/SRE Practitioners | Pragmatic Bookshelf | Direct/Pragmatic | 3 |
+| Audience Level                      | Publisher Type            | Recommended Profile         | Formality Level |
+| ----------------------------------- | ------------------------- | --------------------------- | --------------- |
+| Researchers / PhDs                  | Academic Press            | Academic/Formal             | 5               |
+| Senior Engineers (10+ years)        | O'Reilly                  | Authoritative/Technical     | 4               |
+| Professional Developers (3-7 years) | Manning, PacktPub         | Professional/Conversational | 3               |
+| Junior Developers (0-2 years)       | Self-Published, Pragmatic | Casual/Friendly             | 2               |
+| Career Switchers / Bootcamp         | Self-Published            | Encouraging/Supportive      | 2-3             |
+| DevOps/SRE Practitioners            | Pragmatic Bookshelf       | Direct/Pragmatic            | 3               |
 
 **Subject Matter Considerations:**
 
@@ -8967,28 +9179,36 @@ Use this matrix to identify appropriate tone based on project characteristics:
 ## Publisher-Specific Tone Preferences
 
 ### PacktPub
+
 **Expected Tone:** "Conversational but professional"
+
 - **Best Match:** Profile 3 (Professional/Conversational)
 - **Formality:** Level 2-3
 - **Key Traits:** Accessible, practical, tutorial-driven
 - **Avoid:** Excessive formality, academic voice
 
 ### O'Reilly
+
 **Expected Tone:** "Authoritative with technical precision"
+
 - **Best Match:** Profile 2 (Authoritative/Technical)
 - **Formality:** Level 3-4
 - **Key Traits:** Expert voice, comprehensive coverage, technical depth
 - **Avoid:** Overly casual language, hand-waving
 
 ### Manning
+
 **Expected Tone:** "Author voice with personality"
+
 - **Best Match:** Profile 3 (Professional/Conversational) with author personality
 - **Formality:** Level 2-3 (author preference)
 - **Key Traits:** Personal experience, unique perspective, conversational
 - **Avoid:** Generic corporate voice, suppressing author personality
 
 ### Self-Publishing
+
 **Expected Tone:** Author's choice
+
 - **Best Match:** Any profile matching target audience
 - **Formality:** 1-5 (author decides)
 - **Key Traits:** Maximum flexibility, audience-driven
@@ -8997,25 +9217,30 @@ Use this matrix to identify appropriate tone based on project characteristics:
 ## Using This Guide When Defining Tone
 
 **Step 1: Identify Your Audience**
+
 - What's their experience level?
 - What are their expectations?
 - What tone would make them comfortable?
 
 **Step 2: Review Profile Examples**
+
 - Read all 6 sample passages
 - Which feels right for your book?
 - Which would resonate with your audience?
 
 **Step 3: Consider Publisher Requirements**
+
 - Does your publisher expect specific tone?
 - Which profile aligns with their preferences?
 
 **Step 4: Define Your Variation**
+
 - Start with closest profile
 - Adjust for your authentic voice
 - Add your unique personality markers
 
 **Step 5: Document in tone-specification.md**
+
 - Reference the profile(s) you're drawing from
 - Document your specific adjustments
 - Provide your own example passages
@@ -9023,30 +9248,36 @@ Use this matrix to identify appropriate tone based on project characteristics:
 ## Common Tone Combinations
 
 **Profile 3 + Profile 5:** Professional/Conversational with Encouragement
+
 - Use for: Intermediate developers needing confidence building
 - Maintains professionalism while being supportive
 
 **Profile 2 + Profile 6:** Authoritative with Pragmatic Directness
+
 - Use for: Senior developers valuing expertise and efficiency
 - Technical precision with real-world focus
 
 **Profile 3 + Author Personality:** Professional/Conversational + Unique Voice
+
 - Use for: Manning books where author voice matters
 - Accessible but personally distinctive
 
 ## Red Flags: Tone-Audience Mismatches
 
 **Mismatch 1: Academic Tone for Beginners**
+
 - ❌ Profile 1 (Academic/Formal) for bootcamp grads
 - Problem: Intimidating, inaccessible
 - Fix: Use Profile 4 or 5 instead
 
 **Mismatch 2: Overly Casual for Experts**
+
 - ❌ Profile 4 (Casual/Friendly) for senior engineers
 - Problem: Condescending, wastes time
 - Fix: Use Profile 2 or 6 instead
 
 **Mismatch 3: Cold Precision for Career Switchers**
+
 - ❌ Profile 2 (Authoritative) without encouragement for beginners
 - Problem: Discouraging, assumption of knowledge
 - Fix: Add Profile 5 elements or use Profile 3
@@ -9061,6 +9292,7 @@ Use this matrix to identify appropriate tone based on project characteristics:
 ## Contributing Additional Profiles
 
 This guide can expand with additional tone profiles for:
+
 - Humor-forward technical writing
 - Interview-style conversational books
 - Code cookbook formats
@@ -9099,6 +9331,7 @@ While all publishers value authentic human expertise, each has specific AI patte
 **Source**: Generative_AI_Author_Guidelines.md (PacktPub Author Bundle - Official Publisher Document)
 
 **PacktPub Stance**:
+
 > "At Packt, we focus on publishing expert, human voices... Your unique insights, expertise, and experience matters. That is what the Packt brand stands for and the value readers want from you and the Packt brand."
 
 ### Declaration Requirement
@@ -9106,6 +9339,7 @@ While all publishers value authentic human expertise, each has specific AI patte
 **CRITICAL**: PacktPub requires authors to **declare any AI use** during book development.
 
 **Declaration Process**:
+
 1. If AI tools used at any point: notify PacktPub editor immediately
 2. Specify how and where AI was used
 3. PacktPub will include disclaimer in published book
@@ -9126,6 +9360,7 @@ PacktPub has documented specific AI patterns that led to negative reader reviews
 **PacktPub Threshold**: Maximum 1-2 occurrences per chapter acceptable
 
 **Fix Strategy**:
+
 - Search chapter for "sophisticated"
 - If >2 occurrences, replace with varied alternatives
 - Prefer simpler words: advanced, complex, well-designed, effective
@@ -9135,6 +9370,7 @@ PacktPub has documented specific AI patterns that led to negative reader reviews
 #### Pattern 2: Flowery, Verbose Descriptions
 
 **Documented Example** (from PacktPub guidelines):
+
 > "The profound efficacy of strategic planning in the domain of data analytics is most compellingly exemplified through narratives drawn from the empirical realm."
 
 **PacktPub Feedback**: "Use of fancy, polysyllabic words when simple ones would be better."
@@ -9144,12 +9380,14 @@ PacktPub has documented specific AI patterns that led to negative reader reviews
 **PacktPub Expectation**: Conversational but professional tone (Level 2-3 formality)
 
 **Fix Strategy**:
+
 - Remove flowery introductions
 - Replace polysyllabic words with simple alternatives
 - Direct, clear phrasing preferred
 - "Profound efficacy" → "works well"
 
 **Before (Flowery):**
+
 ```markdown
 The profound efficacy of caching strategies in the empirical realm of
 production deployments is compellingly exemplified through robust
@@ -9157,6 +9395,7 @@ implementations.
 ```
 
 **After (PacktPub Style):**
+
 ```markdown
 Caching works well in production. Let me show you how to implement it
 effectively.
@@ -9167,6 +9406,7 @@ effectively.
 #### Pattern 3: Generic Uncited Examples
 
 **Documented Example** (from PacktPub guidelines):
+
 > "For example, a financial institution implemented an AI-driven data loss prevention system..."
 
 **PacktPub Feedback**: "This is so generic it's not useful to the reader. There is no citation or analysis."
@@ -9176,16 +9416,19 @@ effectively.
 **PacktPub Expectation**: Specific, cited examples or author's own projects
 
 **Fix Strategy**:
+
 - Replace "a financial institution" with real company name + citation
 - Use author's own project experiences with specific details
 - If hypothetical scenario, make it detailed and realistic
 
 **Before (Generic):**
+
 ```markdown
 A financial institution implemented this security pattern and saw improvements.
 ```
 
 **After (PacktPub Style - Real Example):**
+
 ```markdown
 JPMorgan Chase implemented multi-factor authentication for their mobile
 banking app, reducing account compromise incidents by 78% in the first
@@ -9193,6 +9436,7 @@ year (Source: JPMorgan Chase 2023 Security Report).
 ```
 
 **After (PacktPub Style - Personal Project):**
+
 ```markdown
 In a fintech API I built for a banking client, implementing rate limiting
 reduced DDoS attempts by 92%. We set thresholds at 100 requests/minute
@@ -9206,6 +9450,7 @@ per IP, with exponential backoff for repeat offenders.
 **Documented Case**: "Four metaphors in a single paragraph makes content particularly difficult to read."
 
 **PacktPub Feedback**:
+
 - Problem 1: Overuse (4+ metaphors in paragraph)
 - Problem 2: Nonsense metaphors that confuse rather than clarify
 
@@ -9214,6 +9459,7 @@ per IP, with exponential backoff for repeat offenders.
 **PacktPub Expectation**: Minimal metaphors (1-2 per section max), only when they genuinely clarify
 
 **Fix Strategy**:
+
 - Count metaphors per paragraph/section
 - Remove all but 1-2 most helpful
 - Verify each metaphor makes logical sense
@@ -9224,6 +9470,7 @@ per IP, with exponential backoff for repeat offenders.
 #### Pattern 5: Rigid, Repetitive Structure
 
 **Documented Reader Complaint** (from reviews):
+
 > "Strict structure that AI can follow if used in every chapter"
 
 **Reader Impact**: Monotonous, predictable, feels template-generated
@@ -9231,6 +9478,7 @@ per IP, with exponential backoff for repeat offenders.
 **PacktPub Expectation**: Natural variation, organic structure based on content needs
 
 **Fix Strategy**:
+
 - Vary section openings (not all "In this section...")
 - Different chapter structures (not rigid template every chapter)
 - Natural flow based on content, not formulaic patterns
@@ -9248,6 +9496,7 @@ per IP, with exponential backoff for repeat offenders.
 **PacktPub Expectation**: Every paragraph adds value, no repetition
 
 **Fix Strategy**:
+
 - Remove paragraphs that could be deleted without loss
 - Eliminate repetitive explanations across sections
 - Reference earlier content rather than rehash
@@ -9266,6 +9515,7 @@ per IP, with exponential backoff for repeat offenders.
 **PacktPub Expectation**: Second-person ("you") with author personality evident
 
 **Fix Strategy**:
+
 - Add first-person perspective ("I've found that...")
 - Include real experiences and anecdotes
 - Share lessons learned, mistakes made
@@ -9273,12 +9523,14 @@ per IP, with exponential backoff for repeat offenders.
 - War stories from production incidents
 
 **Before (Impersonal):**
+
 ```markdown
 Error handling is important in production environments. Proper logging
 should be implemented.
 ```
 
 **After (PacktPub Style - Personal Voice):**
+
 ```markdown
 I learned the hard way that error handling is critical—after a 2 AM
 production crash with zero useful logs. Now I implement structured
@@ -9310,13 +9562,13 @@ logging from day one. You'll thank yourself later when debugging at
 
 Based on documented cases and official guidelines:
 
-| Priority | Pattern | Detection | Fix Target |
-|----------|---------|-----------|-----------|
-| **1 - CRITICAL** | "sophisticated" overuse | Search chapter | ≤2 occurrences total |
-| **2 - CRITICAL** | Generic uncited examples | "financial institution", "company X" | 0 generic, all specific + cited |
-| **3 - HIGH** | Flowery verbose language | "profound efficacy", polysyllabic | Simple, conversational language |
-| **4 - HIGH** | Impersonal voice | No "I", no experiences | Personal perspective throughout |
-| **5 - HIGH** | Rigid repetitive structure | All sections identical pattern | Varied organic structure |
+| Priority         | Pattern                    | Detection                            | Fix Target                      |
+| ---------------- | -------------------------- | ------------------------------------ | ------------------------------- |
+| **1 - CRITICAL** | "sophisticated" overuse    | Search chapter                       | ≤2 occurrences total            |
+| **2 - CRITICAL** | Generic uncited examples   | "financial institution", "company X" | 0 generic, all specific + cited |
+| **3 - HIGH**     | Flowery verbose language   | "profound efficacy", polysyllabic    | Simple, conversational language |
+| **4 - HIGH**     | Impersonal voice           | No "I", no experiences               | Personal perspective throughout |
+| **5 - HIGH**     | Rigid repetitive structure | All sections identical pattern       | Varied organic structure        |
 
 **Additional Concerns**: Metaphor overuse (4+ in paragraph), filler content, repetitive material across sections
 
@@ -9327,6 +9579,7 @@ Based on documented cases and official guidelines:
 **Timing**: Humanize BEFORE format-for-packtpub.md task
 
 **Workflow Integration**:
+
 1. Draft chapter (with or without AI assistance)
 2. **Execute humanize-ai-drafted-chapter.md** (if AI-assisted)
 3. Validate with humanization-checklist.md
@@ -9334,6 +9587,7 @@ Based on documented cases and official guidelines:
 5. Copy-edit includes final AI pattern check (Step 10)
 
 **PacktPub-Specific Checklist Items** (additional focus):
+
 - [ ] "sophisticated" ≤2 occurrences
 - [ ] No "financial institution" or "company X" examples
 - [ ] Conversational tone (Level 2-3 formality)
@@ -9364,12 +9618,14 @@ Based on documented cases and official guidelines:
 **O'Reilly Voice**: Expert demonstrating deep knowledge and real-world wisdom
 
 **Before (Generic AI):**
+
 ```markdown
 Authentication can be implemented using various methods. Tokens and
 sessions are common approaches. Each has advantages and disadvantages.
 ```
 
 **After (O'Reilly Authoritative Voice):**
+
 ```markdown
 Token-based authentication with JWTs has become the de facto standard
 for modern APIs, but sessions still have their place. I implement tokens
@@ -9390,12 +9646,14 @@ invalidate JWTs, or do you need instant revocation capability?
 **O'Reilly Expectation**: Technical precision + conversational expert voice
 
 **Fix Strategy**:
+
 - Maintain technical accuracy
 - Add expert insights and reasoning
 - Include architectural decision rationale
 - Personal opinions on best practices
 
 **Before (Robotic):**
+
 ```markdown
 Database indexes improve query performance. B-tree indexes are commonly
 used for equality and range queries. Hash indexes are used for equality
@@ -9403,6 +9661,7 @@ lookups only.
 ```
 
 **After (O'Reilly Expert Voice):**
+
 ```markdown
 Database indexes are your first line of defense against slow queries,
 but they're not magic. I've seen developers add indexes blindly, hoping
@@ -9424,6 +9683,7 @@ performance before deploying to production.
 **O'Reilly Value**: Deep understanding of WHY technical choices matter
 
 **Fix Strategy**:
+
 - Explain architectural reasoning
 - Share decision-making process
 - Discuss tradeoffs explicitly
@@ -9438,13 +9698,15 @@ performance before deploying to production.
 **O'Reilly Expectation**: Real-world scenarios, production considerations, battle-tested patterns
 
 **Fix Strategy**:
+
 - Include production deployment notes
 - Discuss scalability and performance implications
 - Share what breaks at scale
 - Real metrics and benchmarks
 
 **Before (Tutorial Only):**
-```markdown
+
+````markdown
 Here's how to implement caching:
 
 ```python
@@ -9456,7 +9718,9 @@ def get_data(key):
     cache[key] = data
     return data
 ```
-```
+````
+
+````
 
 **After (O'Reilly Production Context):**
 ```markdown
@@ -9477,11 +9741,12 @@ def get_data(key):
     data = fetch_from_db(key)
     cache.setex(key, 300, json.dumps(data))  # 5 min TTL
     return data
-```
+````
 
 Monitor your cache hit rate—if it drops below 70%, either increase
 cache size or reduce TTL.
-```
+
+````
 
 **Changes**: Production warning, real system scale, metrics, monitoring guidance, battle-tested advice
 
@@ -9521,9 +9786,10 @@ cache size or reduce TTL.
 ```markdown
 This chapter covers deployment strategies. Various approaches will be
 presented. Best practices will be discussed.
-```
+````
 
 **After (Manning Personality-Forward):**
+
 ```markdown
 Let's talk about deployment—where theory meets reality and things get
 interesting. I've deployed apps every which way: manual FTP uploads at
@@ -9543,17 +9809,20 @@ sleep at night. I'll share what I've learned the hard way.
 **Manning Expectation**: Author personality includes humor where appropriate
 
 **Fix Strategy**:
+
 - Add personal anecdotes with light humor
 - Self-deprecating humor about mistakes
 - Conversational asides
 - Warmth and encouragement
 
 **Before (Generic Serious):**
+
 ```markdown
 Debugging can be challenging. Systematic approaches improve efficiency.
 ```
 
 **After (Manning with Humor):**
+
 ```markdown
 Debugging is where we all become detectives—except instead of solving
 murders, we're hunting down why the button turned purple on Tuesdays.
@@ -9573,17 +9842,20 @@ instead of randomly changing things and hoping.
 **Manning Expectation**: Author states preferences and explains reasoning
 
 **Fix Strategy**:
+
 - State your preferences explicitly
 - Explain why you prefer certain approaches
 - Share what you avoid and why
 - Authentic expert opinions
 
 **Before (Neutral AI):**
+
 ```markdown
 Both REST and GraphQL are viable API approaches. Each has use cases.
 ```
 
 **After (Manning Personal Opinion):**
+
 ```markdown
 I'm a REST fan for most projects. Sure, GraphQL is clever with its
 flexible queries, but I've seen teams spend weeks designing the perfect
@@ -9604,6 +9876,7 @@ developers understand it, and you'll thank yourself during debugging.
 **Manning Voice**: "I" and "you" throughout, conversational direct address
 
 **Fix Strategy**:
+
 - Use "I" for personal experiences and opinions
 - Use "you" to engage reader directly
 - Conversational tone as if explaining to friend
@@ -9613,13 +9886,13 @@ developers understand it, and you'll thank yourself during debugging.
 
 ### Manning Top 5 Patterns to Fix
 
-| Priority | Pattern | Fix Target |
-|----------|---------|-----------|
-| **1 - CRITICAL** | Impersonal voice | First/second person, personality evident |
-| **2 - CRITICAL** | Missing author personality | Humor, warmth, authentic voice |
-| **3 - HIGH** | No personal opinions | Clear preferences and reasoning |
-| **4 - HIGH** | Generic corporate tone | Conversational expert voice |
-| **5 - MEDIUM** | Serious throughout | Appropriate humor and warmth |
+| Priority         | Pattern                    | Fix Target                               |
+| ---------------- | -------------------------- | ---------------------------------------- |
+| **1 - CRITICAL** | Impersonal voice           | First/second person, personality evident |
+| **2 - CRITICAL** | Missing author personality | Humor, warmth, authentic voice           |
+| **3 - HIGH**     | No personal opinions       | Clear preferences and reasoning          |
+| **4 - HIGH**     | Generic corporate tone     | Conversational expert voice              |
+| **5 - MEDIUM**   | Serious throughout         | Appropriate humor and warmth             |
 
 ---
 
@@ -9630,6 +9903,7 @@ developers understand it, and you'll thank yourself during debugging.
 **Critical Difference**: Traditional publishers provide editors to catch AI patterns. Self-published authors have no safety net.
 
 **Implications**:
+
 - Must self-humanize rigorously
 - No editor to catch AI patterns before publication
 - Reputation damage is direct and immediate
@@ -9640,6 +9914,7 @@ developers understand it, and you'll thank yourself during debugging.
 **Evidence**: Amazon reviews mention AI detection
 
 **Reader Impact**:
+
 - Negative reviews for "AI-like" content
 - Sales drop when reviews cite AI generation
 - Reader trust difficult to rebuild
@@ -9653,6 +9928,7 @@ developers understand it, and you'll thank yourself during debugging.
 **AI Pattern Impact**: Single book with AI patterns can damage author brand long-term
 
 **Fix Strategy**:
+
 - Apply ≥95% humanization-checklist pass rate (not just 80%)
 - Beta readers to validate authentic voice
 - Multiple humanization passes if needed
@@ -9662,12 +9938,12 @@ developers understand it, and you'll thank yourself during debugging.
 
 ## Publisher Comparison Summary
 
-| Publisher | Top Priority Pattern | Voice Expectation | Formality Level | Key Differentiator |
-|-----------|---------------------|-------------------|-----------------|-------------------|
-| **PacktPub** | "sophisticated" overuse, generic examples | Conversational professional | 2-3 | Documented specific cases (36x sophisticated) |
-| **O'Reilly** | Generic technical tone, missing production context | Authoritative expert | 3-4 | Deep technical detail + expert reasoning |
-| **Manning** | Impersonal voice, missing personality | Conversational with personality | 2-3 | Humor, warmth, author personality front |
-| **Self-Pub** | ALL patterns (no editorial net) | Author's authentic brand | Varies | Highest scrutiny, direct reputation impact |
+| Publisher    | Top Priority Pattern                               | Voice Expectation               | Formality Level | Key Differentiator                            |
+| ------------ | -------------------------------------------------- | ------------------------------- | --------------- | --------------------------------------------- |
+| **PacktPub** | "sophisticated" overuse, generic examples          | Conversational professional     | 2-3             | Documented specific cases (36x sophisticated) |
+| **O'Reilly** | Generic technical tone, missing production context | Authoritative expert            | 3-4             | Deep technical detail + expert reasoning      |
+| **Manning**  | Impersonal voice, missing personality              | Conversational with personality | 2-3             | Humor, warmth, author personality front       |
+| **Self-Pub** | ALL patterns (no editorial net)                    | Author's authentic brand        | Varies          | Highest scrutiny, direct reputation impact    |
 
 ---
 
@@ -9676,6 +9952,7 @@ developers understand it, and you'll thank yourself during debugging.
 ### Timing
 
 **When to Use Publisher-Specific Guidance**:
+
 1. During humanization (target publisher expectations)
 2. Before publisher-specific formatting tasks
 3. During copy-edit final AI pattern check (Step 10)
@@ -9699,24 +9976,28 @@ Ready for Submission
 ### Publisher-Specific Humanization Focus
 
 **PacktPub Projects**:
+
 - Extra attention to "sophisticated" (search, count, reduce to ≤2)
 - Replace ALL generic examples with citations
 - Conversational Level 2-3 tone
 - Personal voice present
 
 **O'Reilly Projects**:
+
 - Add production context and metrics
 - Include expert reasoning (WHY)
 - Authoritative but conversational
 - Deep technical detail with personality
 
 **Manning Projects**:
+
 - Inject personality and humor
 - Strong first/second person voice
 - Personal opinions and preferences
 - Warmth and approachability
 
 **Self-Publishing Projects**:
+
 - Apply all publisher standards combined
 - ≥95% humanization pass rate
 - Beta reader validation
@@ -9737,6 +10018,7 @@ Ready for Submission
 ### Integration Points
 
 **This guide is used by:**
+
 - tutorial-architect agent (during humanization for specific publisher)
 - technical-editor agent (during copy-edit Step 10 publisher validation)
 - humanize-ai-drafted-chapter.md task (Step 7: publisher-specific notes reference)
@@ -9746,6 +10028,7 @@ Ready for Submission
 ## Quick Reference: Publisher-Specific Red Flags
 
 ### PacktPub Red Flags
+
 - [ ] "sophisticated" appears >2 times
 - [ ] Any "financial institution" or "company X" examples
 - [ ] Flowery overblown introductions
@@ -9753,6 +10036,7 @@ Ready for Submission
 - [ ] Rigid identical structure across chapters
 
 ### O'Reilly Red Flags
+
 - [ ] Generic technical explanations without expert insight
 - [ ] No production context or real-world scale
 - [ ] Missing "why" and architectural reasoning
@@ -9760,6 +10044,7 @@ Ready for Submission
 - [ ] Robotic precision without conversational warmth
 
 ### Manning Red Flags
+
 - [ ] Impersonal third-person throughout
 - [ ] No author personality or humor
 - [ ] Generic neutral opinions
@@ -9767,6 +10052,7 @@ Ready for Submission
 - [ ] Serious tone without warmth
 
 ### Self-Publishing Red Flags
+
 - [ ] ANY of the above publisher red flags
 - [ ] <95% humanization-checklist pass rate
 - [ ] No beta reader feedback obtained
@@ -9777,18 +10063,2804 @@ Ready for Submission
 ## Notes
 
 **Publisher Guidelines Evolve**:
+
 - PacktPub guidelines documented as of 2023-2024
 - O'Reilly and Manning expectations based on editorial practices
 - Monitor publisher updates and editor feedback
 
 **Humanization is Publisher-Agnostic Foundation**:
+
 - Core humanization applies to all publishers
 - Publisher-specific guidance adds targeted focus
 - All publishers value authentic human expertise
 
 **When in Doubt**:
+
 - Ask your publisher editor
 - Err on side of more humanization, not less
 - Beta readers can validate authentic voice
 - Professional editors catch publisher-specific issues
 ==================== END: .bmad-technical-writing/data/publisher-specific-ai-patterns.md ====================
+
+==================== START: .bmad-technical-writing/data/humanization-techniques.md ====================
+# AI Content Humanization Techniques Reference
+
+<!-- Powered by BMAD™ Core -->
+
+## Overview
+
+This reference document provides research-backed techniques for transforming AI-generated content into natural, human-sounding writing. These techniques are organized by application phase and impact level to help you select the right approach for your specific needs.
+
+---
+
+## Pre-Generation Techniques (Apply Before AI Creates Content)
+
+### High-Impact Techniques
+
+#### 1. Persona Framework Prompting
+
+**What it does**: Establishes a specific authorial identity that shapes how AI conceptualizes and executes the writing task.
+
+**How to apply**:
+
+```
+You are an experienced [ROLE] with [X] years of hands-on experience in [DOMAIN].
+Write this [CONTENT_TYPE] as if explaining to a [AUDIENCE_LEVEL] [AUDIENCE_TYPE].
+
+Voice characteristics:
+- [Specific voice trait 1]
+- [Specific voice trait 2]
+- [Specific voice trait 3]
+```
+
+**Example**:
+
+```
+You are an experienced DevOps engineer with 10+ years managing production
+Kubernetes clusters. Write this troubleshooting guide as if explaining to a
+junior engineer who understands containers but is new to orchestration.
+
+Voice characteristics:
+- Direct and practical, not academic
+- Reference real tools and actual error messages
+- Acknowledge what typically goes wrong
+- Use "you'll find" and "in practice" language
+```
+
+**Impact**: Dramatically improves voice consistency and authentic expertise signals
+**Time investment**: 5-10 minutes to craft, reusable across similar content
+
+---
+
+#### 2. Burstiness Specification
+
+**What it does**: Explicitly instructs AI to vary sentence length, creating natural rhythm instead of uniform structure.
+
+**How to apply**:
+
+```
+Vary sentence length deliberately throughout:
+- Short sentences for emphasis (5-10 words): [percentage]%
+- Medium sentences for explanation (15-25 words): [percentage]%
+- Complex sentences for nuance (30-45 words): [percentage]%
+- Use strategic fragments for impact
+
+EXAMPLE RHYTHM TO FOLLOW:
+"[Short sentence]. [Medium explanatory sentence that develops the idea].
+[Long, complex sentence that builds on previous concepts with subordinate
+clauses and connects multiple ideas together]. [Fragment for punch.]"
+```
+
+**Example**:
+
+```
+Create natural sentence rhythm:
+- 20-30% short sentences (5-10 words)
+- 40-50% medium sentences (15-25 words)
+- 20-30% complex sentences (30-45 words)
+
+FOLLOW THIS PATTERN:
+"Docker solves real problems. It packages applications with all dependencies,
+creating environments that run identically everywhere—your laptop, staging,
+production. No more 'works on my machine' headaches. See how?"
+```
+
+**Impact**: Eliminates the most detectable AI pattern (uniform sentence length)
+**Time investment**: 3-5 minutes to add to prompt template
+
+---
+
+#### 3. Anti-Pattern Vocabulary Specification
+
+**What it does**: Explicitly prohibits AI-characteristic words that immediately signal machine generation.
+
+**How to apply**:
+
+```
+NEVER use these AI-typical words:
+- delve, delving
+- robust, robustness
+- leverage, leveraging
+- facilitate, facilitating
+- underscore, underscoring
+- harness, harnessing
+- pivotal
+- seamless, seamlessly
+- holistic
+- optimize (unless genuinely optimizing)
+
+Instead use natural alternatives appropriate to context.
+```
+
+**Example**:
+
+```
+VOCABULARY RESTRICTIONS:
+Avoid: delve → Use: explore, examine, look at
+Avoid: robust → Use: reliable, solid, effective
+Avoid: leverage → Use: use, apply, employ
+Avoid: facilitate → Use: enable, help, make easier
+Avoid: seamlessly → Use: smoothly, easily, without issues
+```
+
+**Impact**: Prevents most obvious AI vocabulary markers
+**Time investment**: 2-3 minutes (use template)
+
+---
+
+#### 4. Example-Rich Prompting
+
+**What it does**: Forces AI to ground abstract concepts in concrete, specific examples.
+
+**How to apply**:
+
+```
+Requirements:
+- Include at least [N] specific examples with real details
+- Use actual tool names, version numbers, error messages
+- Reference realistic scenarios, not generic "user" or "application" examples
+- Ground every major concept in concrete illustration
+- Prefer "For example, when deploying to AWS Lambda..." over "For example, in production..."
+```
+
+**Example**:
+
+```
+Example requirements:
+- Minimum 3 specific examples per major section
+- Use real tool/library names (Redis, PostgreSQL, not "database")
+- Include version numbers where relevant (Node.js 18+, Python 3.11)
+- Reference actual error messages and behaviors
+- Use realistic scenarios with named services/components
+```
+
+**Impact**: Dramatically improves authenticity and practical value
+**Time investment**: 2-3 minutes to specify
+
+---
+
+### Medium-Impact Techniques
+
+#### 5. Conversational Tone Specification
+
+**What it does**: Shifts AI from formal academic register to approachable conversational style.
+
+**How to apply**:
+
+```
+Tone requirements:
+- Use "you" to address reader directly
+- Employ contractions naturally (you'll, it's, we're, don't)
+- Include occasional personal markers: "I've found...", "In practice..."
+- Use conversational connectors: "So,", "Now,", "Here's the thing,"
+- Ask rhetorical questions to engage readers
+- Acknowledge reader challenges: "This can be tricky when..."
+```
+
+**Impact**: Makes content more accessible and engaging
+**Time investment**: 2 minutes to add
+
+---
+
+#### 6. Emotional Engagement Prompting
+
+**What it does**: Adds appropriate emotional resonance and acknowledges reader experience.
+
+**How to apply**:
+
+```
+Emotional engagement:
+- Express genuine enthusiasm for interesting solutions: "This is elegant..."
+- Acknowledge learning challenges: "This confused me initially..."
+- Show empathy for frustrations: "That error message doesn't help—here's what it means..."
+- Celebrate reader progress: "If you've made it this far, you understand..."
+- Maintain professional authenticity without hyperbole
+```
+
+**Impact**: Increases reader connection and engagement
+**Time investment**: 2-3 minutes
+
+---
+
+## During-Generation Techniques (Apply While AI Creates Content)
+
+### High-Impact Techniques
+
+#### 7. Temperature Optimization
+
+**What it does**: Controls randomness/creativity in AI output, balancing coherence with variation.
+
+**Recommended settings by content type**:
+
+- **Academic/Technical Documentation**: 0.3-0.5 (conservative)
+- **Tutorials/How-to Guides**: 0.6-0.8 (balanced)
+- **Blog Posts/Articles**: 0.7-0.9 (creative)
+- **Marketing Copy**: 0.8-1.0 (varied)
+
+**How to apply**: Set temperature parameter in your AI tool's settings
+
+**Impact**: Moderate—helps but not transformative alone
+**Time investment**: 30 seconds to adjust
+
+---
+
+#### 8. Top-P (Nucleus) Sampling
+
+**What it does**: Limits token selection to most probable options while adapting to context.
+
+**Recommended settings**:
+
+- **General use**: 0.9-0.95 (balanced)
+- **High precision needed**: 0.8-0.85 (conservative)
+- **Creative content**: 0.95-1.0 (exploratory)
+
+**How to apply**: Set top_p parameter (often combined with temperature)
+
+**Impact**: Moderate—improves naturalness without sacrificing coherence
+**Time investment**: 30 seconds to configure
+
+---
+
+#### 9. Iterative Refinement
+
+**What it does**: Generates content in multiple passes, improving with each iteration.
+
+**How to apply**:
+
+```
+Pass 1: Generate initial draft with standard settings
+Pass 2: Prompt AI to "Revise for more conversational tone and varied sentence structure"
+Pass 3: Prompt AI to "Add specific examples and remove any AI-typical vocabulary"
+```
+
+**Impact**: Significant—compounds improvements across passes
+**Time investment**: 3-5 minutes per additional pass
+
+---
+
+## Post-Generation Techniques (Apply After AI Creates Content)
+
+### Critical Priority (Do These First)
+
+#### 10. Sentence Variation Editing
+
+**What it does**: Manually restructures sentences to create natural rhythm and eliminate uniform patterns.
+
+**How to apply**:
+
+1. Measure sentence lengths in problematic paragraphs
+2. Identify uniform patterns (e.g., all 15-22 words)
+3. Deliberately restructure:
+   - Combine 2-3 short sentences into one complex sentence
+   - Split long sentences into shorter punchy statements
+   - Add strategic fragments: "Not anymore." "Here's why."
+   - Create rhythm: short-medium-long-short pattern
+
+**Example transformation**:
+
+```
+BEFORE (uniform):
+Docker uses containers. Containers isolate applications. This isolation
+provides consistency. The consistency helps deployment. Deployment becomes
+reliable.
+
+AFTER (varied):
+Docker uses containers to isolate applications. This creates consistency
+across environments—development, staging, production. Deployment? Suddenly
+reliable.
+```
+
+**Impact**: Highest—addresses most detectable AI pattern
+**Time investment**: 15-20 minutes per 1000 words
+
+---
+
+#### 11. AI Vocabulary Replacement
+
+**What it does**: Systematically replaces characteristic AI words with natural alternatives.
+
+**How to apply**:
+
+1. Search document for AI-typical words (use find function)
+2. For each occurrence, choose contextually appropriate replacement
+3. Don't replace mechanically—consider what sounds most natural
+
+**Quick replacement guide**:
+
+- delve → explore, examine, investigate, look at
+- robust → reliable, effective, solid, powerful
+- leverage → use, employ, apply, take advantage of
+- facilitate → enable, help, make easier, allow
+- underscore → show, highlight, emphasize, demonstrate
+- harness → use, apply, employ
+- pivotal → key, critical, important, essential
+- seamlessly → smoothly, easily, naturally
+
+**Impact**: High—removes obvious AI markers
+**Time investment**: 10-15 minutes per 1000 words
+
+---
+
+#### 12. Transition Smoothing
+
+**What it does**: Replaces formulaic AI transitions with natural conversational flow.
+
+**How to apply**:
+
+1. Search for formulaic transitions:
+   - "Furthermore," "Moreover," "Additionally," "In addition,"
+   - "It is important to note that"
+   - "When it comes to"
+   - "One of the key aspects"
+
+2. Replace with natural alternatives or remove entirely:
+   - Furthermore → What's more, Plus, And, [remove]
+   - Moreover → Better yet, On top of that, [remove]
+   - Additionally → Also, And, [remove]
+   - It is important to note that → Note that, Remember, [remove]
+
+**Example**:
+
+```
+BEFORE:
+Docker improves consistency. Furthermore, it enhances portability.
+Moreover, it simplifies deployment.
+
+AFTER:
+Docker improves consistency. It also makes applications portable.
+And deployment? Much simpler.
+```
+
+**Impact**: High—eliminates mechanical feel
+**Time investment**: 10 minutes per 1000 words
+
+---
+
+### High Priority
+
+#### 13. Contraction Introduction
+
+**What it does**: Adds natural contractions to shift from formal to conversational tone.
+
+**How to apply**:
+Search and replace (where appropriate):
+
+- it is → it's
+- you are → you're
+- we are → we're
+- that is → that's
+- do not → don't
+- cannot → can't
+- will not → won't
+- should not → shouldn't
+
+**Guidelines**:
+
+- More contractions = more conversational
+- Fewer contractions = more formal
+- Don't contract in code examples or technical specifications
+- Inconsistency is actually more human (mix contracted/expanded)
+
+**Impact**: Moderate to High (depends on content type)
+**Time investment**: 5-10 minutes
+
+---
+
+#### 14. Personal Voice Injection
+
+**What it does**: Adds authentic authorial perspective and specific examples.
+
+**How to apply**:
+
+1. Identify abstract statements that need grounding
+2. Add strategic perspective markers:
+   - "In my experience..."
+   - "I've found that..."
+   - "Here's what typically happens..."
+   - "Watch out for this gotcha..."
+
+3. Replace generic examples with specific ones:
+   - Generic: "database" → Specific: "PostgreSQL 14"
+   - Generic: "the user" → Specific: "a customer checking out"
+   - Generic: "an error occurs" → Specific: "you'll see Error 503: Service Unavailable"
+
+**Impact**: High—dramatically improves authenticity
+**Time investment**: 15-20 minutes per 1000 words
+
+---
+
+### Medium Priority
+
+#### 15. List-to-Prose Conversion
+
+**What it does**: Transforms rigid numbered/bulleted lists into flowing narrative.
+
+**How to apply**:
+
+1. Identify lists that could be prose
+2. Integrate points into flowing sentences
+3. Use natural connectors instead of numbers
+
+**Example**:
+
+```
+BEFORE (list):
+Docker provides three benefits:
+1. Consistency across environments
+2. Resource efficiency
+3. Simplified deployment
+
+AFTER (prose):
+Docker solves practical problems. Your application runs identically on your
+laptop, your colleague's machine, and production—ending "works on my machine"
+issues. It uses resources more efficiently than VMs, and deployment becomes
+dramatically simpler since you're shipping a complete environment.
+```
+
+**Impact**: Moderate—improves flow
+**Time investment**: 10-15 minutes
+
+---
+
+#### 16. Read-Aloud Editing
+
+**What it does**: Catches unnatural phrasing that looks OK but sounds robotic.
+
+**How to apply**:
+
+1. Read 2-3 representative paragraphs aloud
+2. Note anywhere you stumble or it sounds awkward
+3. Rewrite those sections for natural speech rhythm
+4. Read aloud again to verify
+
+**Impact**: Moderate to High—catches issues other techniques miss
+**Time investment**: 10-15 minutes
+
+---
+
+## Specialized Techniques
+
+### For Technical Accuracy Preservation
+
+#### 17. Technical Term Anchoring
+
+**What it does**: Ensures technical precision while humanizing surrounding prose.
+
+**How to apply**:
+
+1. Identify technical terms that must remain exact
+2. Flag these as "untouchable" during humanization
+3. Humanize only the explanatory text around them
+
+**Example**:
+
+```
+Keep precise: "useState hook", "async/await", "Docker Compose"
+Humanize: explanations, transitions, examples around these terms
+```
+
+**Impact**: Critical for technical content integrity
+
+---
+
+### For Domain-Specific Content
+
+#### 18. Domain Convention Adherence
+
+**What it does**: Maintains domain-appropriate style while humanizing.
+
+**Domain-specific guidelines**:
+
+**Academic/Research**:
+
+- Maintain scholarly register while reducing formality slightly
+- Keep citations formal
+- Humanize primarily in introduction/discussion sections
+- Preserve methodology precision
+
+**API Documentation**:
+
+- Keep technical specs exact
+- Humanize examples and "Getting Started" sections
+- Maintain consistent parameter descriptions
+- Add conversational notes/tips
+
+**Tutorials/How-To**:
+
+- Maximum humanization appropriate
+- Strong conversational tone
+- Personal examples encouraged
+- Acknowledgment of difficulties welcomed
+
+**Business/Marketing**:
+
+- Balance professionalism with approachability
+- Can be most conversational
+- Personal voice highly appropriate
+- Enthusiasm natural and expected
+
+---
+
+## Quick Reference: Effort vs. Impact Matrix
+
+### Highest ROI (Do First)
+
+| Technique                      | Effort | Impact    | When to Use                     |
+| ------------------------------ | ------ | --------- | ------------------------------- |
+| Sentence variation editing     | Medium | Very High | Always—most detectable pattern  |
+| AI vocabulary replacement      | Low    | High      | Always—quick wins               |
+| Transition smoothing           | Low    | High      | When formulaic patterns present |
+| Burstiness prompting (pre-gen) | Low    | Very High | Before generation               |
+
+### Good ROI (Do Second)
+
+| Technique                        | Effort | Impact      | When to Use                |
+| -------------------------------- | ------ | ----------- | -------------------------- |
+| Personal voice injection         | Medium | High        | When authenticity critical |
+| Persona framework (pre-gen)      | Low    | High        | Before generation          |
+| Contraction introduction         | Low    | Medium-High | Conversational content     |
+| Example-rich prompting (pre-gen) | Low    | High        | Before generation          |
+
+### Situational Use
+
+| Technique                | Effort   | Impact      | When to Use                 |
+| ------------------------ | -------- | ----------- | --------------------------- |
+| List-to-prose conversion | Medium   | Medium      | When lists excessive        |
+| Read-aloud editing       | Medium   | Medium-High | Final quality check         |
+| Temperature optimization | Very Low | Medium      | During generation           |
+| Iterative refinement     | High     | High        | When quality justifies time |
+
+---
+
+## Technique Selection Guide
+
+### For Time-Constrained Scenarios (15-minute humanization)
+
+**Apply in order**:
+
+1. AI vocabulary replacement (5 min)
+2. Most obvious sentence variation fixes (5 min)
+3. Transition smoothing (3 min)
+4. Contractions if appropriate (2 min)
+
+**Expected result**: ~60% improvement in naturalness
+
+---
+
+### For Standard Quality (30-45 minute humanization)
+
+**Apply in order**:
+
+1. Full sentence variation editing (15 min)
+2. AI vocabulary replacement (10 min)
+3. Transition smoothing (5 min)
+4. Personal voice injection (10 min)
+5. Contractions (5 min)
+
+**Expected result**: ~85% improvement in naturalness
+
+---
+
+### For Premium Quality (60+ minute humanization)
+
+**Apply all techniques**:
+
+1. Sentence variation editing (20 min)
+2. AI vocabulary replacement (15 min)
+3. Transition smoothing (10 min)
+4. Personal voice injection (15 min)
+5. List-to-prose conversion (10 min)
+6. Read-aloud editing (10 min)
+7. Final polish (10 min)
+
+**Expected result**: ~95% improvement, difficult to detect as AI-assisted
+
+---
+
+## Anti-Patterns (What NOT to Do)
+
+❌ **Don't** sacrifice technical accuracy for stylistic variation
+❌ **Don't** introduce errors while humanizing (always verify technical content)
+❌ **Don't** add fake personal anecdotes (only genuine examples or clearly hypothetical ones)
+❌ **Don't** over-edit until content becomes convoluted
+❌ **Don't** apply generic techniques to specialized content
+❌ **Don't** forget domain conventions in pursuit of "naturalness"
+❌ **Don't** mechanically apply rules—use judgment and context
+
+---
+
+## Success Metrics
+
+### Perplexity (Word Choice Unpredictability)
+
+- **Target**: Higher is better
+- **Measure**: AI vocabulary count (lower is better)
+- **Goal**: <3 AI-typical words per 1000 words
+
+### Burstiness (Sentence Variation)
+
+- **Target**: High variation in sentence length
+- **Measure**: Standard deviation of sentence lengths
+- **Goal**: Mix of 5-10, 15-25, and 30-45 word sentences
+
+### Readability
+
+- **Target**: Appropriate to audience
+- **Measure**: Flesch Reading Ease
+- **Goal**: 60-70 for general audience, 50-60 for technical
+
+### Voice Consistency
+
+- **Target**: Recognizable authorial presence
+- **Measure**: Personal markers per section
+- **Goal**: 2-4 voice markers per 500 words
+
+### Technical Accuracy
+
+- **Target**: 100% preservation
+- **Measure**: Fact-checking, code testing
+- **Goal**: Zero technical errors introduced
+
+---
+
+## Continuous Improvement
+
+### Learning from Results
+
+After each humanization effort:
+
+1. **Document what worked**: Which techniques had biggest impact?
+2. **Note time spent**: Which techniques justified their effort?
+3. **Record patterns**: What AI patterns appear most frequently?
+4. **Refine prompts**: Update pre-generation prompts to prevent issues
+5. **Build templates**: Save successful prompt patterns for reuse
+
+### Evolving Your Approach
+
+- Start with systematic application of all techniques
+- As you develop skill, identify your high-ROI techniques
+- Create personalized quick-humanization workflows
+- Build prompt templates that minimize post-generation work
+- Track detection/feedback to validate effectiveness
+
+---
+
+## Related Resources
+
+- **Tasks**: humanize-pre-generation.md, humanize-post-generation.md, analyze-ai-patterns.md
+- **Checklists**: humanization-quality-checklist.md, ai-pattern-detection-checklist.md
+- **Data**: ai-detection-patterns.md
+
+---
+
+**Note**: These techniques are based on comprehensive research into AI writing patterns, detection mechanisms, and humanization strategies as of 2025. Techniques may need adjustment as AI models and detection systems evolve.
+==================== END: .bmad-technical-writing/data/humanization-techniques.md ====================
+
+==================== START: .bmad-technical-writing/data/ai-detection-patterns.md ====================
+# AI Detection Patterns Reference
+
+<!-- Powered by BMAD™ Core -->
+
+## Overview
+
+This reference document catalogs the specific linguistic patterns, statistical markers, and structural characteristics that AI detection systems use to identify machine-generated content. Understanding these patterns enables effective humanization by addressing the actual detection mechanisms rather than guessing at improvements.
+
+---
+
+## Detection Methodologies Overview
+
+### Statistical Analysis Methods
+
+AI detectors primarily analyze three quantifiable dimensions:
+
+1. **Perplexity** - Word-level predictability measurement
+2. **Burstiness** - Sentence-level variation measurement
+3. **N-gram Analysis** - Pattern repetition across word sequences
+
+### Classifier-Based Methods
+
+- **GPT-2 Output Detector** - OpenAI's original detection model
+- **GPTZero** - Academic-focused detector emphasizing perplexity and burstiness
+- **Originality.AI** - Commercial detector with multi-model analysis
+- **Turnitin AI Detection** - Educational sector detector
+- **Winston AI** - Enterprise detection system
+
+### Ensemble Methods
+
+Modern detectors combine multiple approaches:
+
+- Statistical analysis + ML classification
+- Multiple model agreement scoring
+- Contextual semantic analysis
+- Stylometric fingerprinting
+
+---
+
+## Category 1: Vocabulary Patterns
+
+### 1.1 AI-Characteristic Words (High Detection Signal)
+
+These words appear with statistically significant higher frequency in AI-generated content:
+
+**Tier 1 - Extremely High AI Association**:
+
+- **delve** / delving / delves - appears 15-20x more frequently in AI text
+- **leverage** / leveraging / leverages - 12-18x higher frequency
+- **robust** / robustness - 10-15x higher frequency
+- **harness** / harnessing / harnesses - 8-12x higher frequency
+- **underscore** / underscores / underscoring - 7-11x higher frequency
+- **facilitate** / facilitates / facilitating - 9-14x higher frequency
+- **pivotal** - 6-10x higher frequency
+- **holistic** / holistically - 8-13x higher frequency
+
+**Tier 2 - High AI Association**:
+
+- seamless / seamlessly
+- comprehensive / comprehensively
+- optimize / optimization / optimizing
+- streamline / streamlined
+- paramount
+- quintessential
+- myriad
+- plethora
+- utilize / utilization (vs. simpler "use")
+- commence (vs. "start")
+- endeavor (vs. "try" or "attempt")
+
+**Tier 3 - Context-Dependent Markers**:
+
+- innovative (overused in marketing AI content)
+- cutting-edge (cliché signal)
+- revolutionary (hyperbole marker)
+- game-changing (marketing cliché)
+- transformative (abstract overuse)
+
+### 1.2 Formulaic Phrase Patterns
+
+**Transition Phrases** (Strong Detection Signal):
+
+- "Furthermore," - classic AI transition
+- "Moreover," - formal academic AI marker
+- "Additionally," - frequent AI connector
+- "In addition," - redundant AI pattern
+- "It is important to note that" - verbose AI hedging
+- "It is worth mentioning that" - unnecessary AI qualifier
+- "One of the key aspects of" - generic AI framing
+- "When it comes to" - vague AI introduction
+
+**Meta-Commentary Phrases** (AI Tendency):
+
+- "It should be noted that..."
+- "It is crucial to understand that..."
+- "One must consider that..."
+- "It is essential to recognize that..."
+- "As we delve deeper into..."
+- "Let us explore the intricacies of..."
+
+### 1.3 Adverb Overuse Pattern
+
+AI systems frequently use weak verb + adverb combinations instead of stronger single verbs:
+
+**Detection Patterns**:
+
+- very + adjective (very important, very difficult)
+- highly + adjective (highly effective, highly efficient)
+- extremely + adjective (extremely useful, extremely complex)
+- particularly + adjective
+- remarkably + adjective
+- exceptionally + adjective
+
+**Human Alternative**: Single strong verb or adjective
+
+- "runs quickly" → "sprints" or "races"
+- "very important" → "critical" or "essential"
+- "highly effective" → "powerful" or "potent"
+
+---
+
+## Category 2: Sentence Structure Patterns
+
+### 2.1 Uniform Sentence Length (Primary Detection Signal)
+
+**AI-Typical Pattern**:
+
+- Mean sentence length: 15-22 words
+- Standard deviation: < 5 words
+- Range: Most sentences within 12-25 word band
+- Distribution: Normal curve centered around mean
+
+**Detection Threshold**:
+
+- If 70%+ of sentences fall within 6-word range → High AI probability
+- If standard deviation < 4 words → Strong AI signal
+- If no sentences < 8 words or > 35 words → Detection flag
+
+**Example AI Pattern**:
+
+```
+Sentence 1: 18 words
+Sentence 2: 16 words
+Sentence 3: 19 words
+Sentence 4: 17 words
+Sentence 5: 20 words
+Sentence 6: 16 words
+Mean: 17.7 words, StdDev: 1.5 words → DETECTED
+```
+
+### 2.2 Topic Sentence Formula
+
+**AI Pattern**: Consistent paragraph opening structure
+
+- 60-80% of paragraphs start with direct topic sentences
+- Common opening: "The [subject] is/provides/enables..."
+- Formulaic structure: Subject + linking verb + predicate nominative
+- Rarely uses varied openings (questions, fragments, dependent clauses)
+
+**Detection Signal**:
+
+```
+"The system provides three main benefits..."
+"Docker is a containerization platform that..."
+"Authentication serves as the foundation for..."
+"The primary advantage of this approach is..."
+```
+
+### 2.3 Parallel Structure Overuse
+
+**AI Tendency**: Excessive grammatical parallelism
+
+- Lists with perfect parallel structure (100% consistent)
+- Repeated sentence patterns within paragraphs
+- Rhythmic uniformity that feels mechanical
+
+**Example**:
+
+```
+AI generates content. AI analyzes data. AI provides insights.
+(Perfect parallelism → Detection signal)
+
+vs. Human variation:
+AI generates content. It can analyze massive datasets.
+The insights? Often surprising.
+```
+
+---
+
+## Category 3: Structural Organization Patterns
+
+### 3.1 List Overuse Pattern
+
+**AI Default Behavior**:
+
+- Defaults to numbered/bulleted lists for any multi-point content
+- Lists appear with >50% higher frequency than human writing
+- Rigid hierarchical structure (1, 2, 3 / a, b, c)
+- Rarely converts lists to flowing prose
+
+**Detection Threshold**:
+
+- More than 3-4 lists per 1000 words → AI signal
+- Lists where prose would be more natural → Strong signal
+- Nested lists with perfect formatting → Detection flag
+
+### 3.2 Section Heading Patterns
+
+**AI-Characteristic Headings**:
+
+- Generic descriptive: "Benefits," "Challenges," "Considerations"
+- Formulaic: "Understanding [Topic]," "Exploring [Concept]"
+- Question format overuse: "What is [X]?", "How does [Y] work?"
+- Parallel structure in all headings
+
+**Human Writing Variation**:
+
+- Mix of styles: questions, statements, fragments
+- Creative or unexpected phrasings
+- Inconsistent grammatical structure
+- Domain-specific terminology in headings
+
+### 3.3 Introduction-Body-Conclusion Rigidity
+
+**AI Pattern**:
+
+- Strictly follows academic structure even for informal content
+- Introduction always previews entire document
+- Conclusion always summarizes all points
+- Transitions are explicit and formulaic
+
+**Detection Signal**:
+
+```
+Introduction: "In this article, we will explore..."
+Body: Systematic point-by-point coverage
+Conclusion: "In conclusion, we have examined..."
+```
+
+---
+
+## Category 4: Tone and Voice Patterns
+
+### 4.1 Emotional Neutrality
+
+**AI Characteristic**: Consistently neutral emotional register
+
+- Rarely expresses enthusiasm, frustration, or surprise
+- Avoids subjective statements or opinions
+- Maintains uniform formality throughout
+- Lacks personality or authorial presence
+
+**Detection Signals**:
+
+- No first-person perspective ("I," "my experience")
+- No acknowledgment of reader challenges or emotions
+- No conversational asides or informal remarks
+- Absence of humor, sarcasm, or irony
+
+### 4.2 Hedge Word Patterns
+
+**AI Overuse of Qualifiers**:
+
+- "may potentially" (redundant hedging)
+- "generally tends to" (double hedge)
+- "often can be" (weak certainty)
+- "might possibly" (excessive caution)
+- "typically usually" (contradictory hedges)
+
+**Detection Pattern**: 2+ hedge words in single sentence = strong AI signal
+
+### 4.3 Absolute Certainty on Uncertain Topics
+
+**AI Contradiction**: Paradoxically, AI sometimes presents uncertain information with false certainty
+
+- States opinions as facts without attribution
+- Lacks nuance on complex topics with multiple valid viewpoints
+- Doesn't acknowledge trade-offs or context-dependencies
+- Presents "best practices" as universal truths
+
+---
+
+## Category 5: Content Depth Patterns
+
+### 5.1 Surface-Level Abstraction
+
+**AI Tendency**: Stays at abstract conceptual level without grounding in specifics
+
+**Detection Signals**:
+
+- Generic examples: "user," "application," "system," "database"
+- Absence of specific versions, tools, or products
+- No error messages, output samples, or concrete details
+- Theoretical explanations without practical grounding
+
+**Example AI Pattern**:
+
+```
+"The database stores data efficiently and retriably."
+(Generic, no specifics)
+
+vs. Human:
+"PostgreSQL 14's BRIN indexes reduced our storage by 40%
+for time-series data, but rebuilding them after bulk
+inserts became a bottleneck."
+(Specific version, metric, trade-off)
+```
+
+### 5.2 Breadth Over Depth
+
+**AI Pattern**: Covers many points superficially rather than few points deeply
+
+- Lists 8-10 benefits without exploring any deeply
+- Mentions concepts without explaining mechanisms
+- Provides overview without diving into implementation
+- Avoids edge cases, gotchas, or non-obvious details
+
+### 5.3 Missing Practitioner Signals
+
+**Human Expert Markers** (Often absent in AI text):
+
+- "I learned this the hard way when..."
+- "This confused me for weeks until..."
+- "In production, you'll typically see..."
+- "The documentation says X, but in practice Y..."
+- References to specific error messages or behaviors
+- Discussion of what doesn't work and why
+
+---
+
+## Category 6: Coherence and Context Patterns
+
+### 6.1 Local Coherence, Weak Global Coherence
+
+**AI Characteristic**:
+
+- Sentences connect well locally (within paragraphs)
+- Weak thematic connection across sections
+- Ideas don't build progressively - each section feels standalone
+- Lack of narrative arc or conceptual journey
+
+**Detection Method**:
+
+- Check if sections could be reordered without loss of meaning
+- If yes → likely AI (human writing typically has intentional flow)
+
+### 6.2 Contextual Repetition
+
+**AI Pattern**: Unnecessary re-explanation of previously introduced concepts
+
+- Redefines terms already defined
+- Re-explains concepts in multiple sections
+- Lacks forward references ("as we discussed earlier")
+- Doesn't build on prior knowledge within document
+
+### 6.3 Missing Domain Context
+
+**AI Gap**: Lacks contextual awareness of domain conventions
+
+- Explains basics that domain audience would know
+- Misses domain-specific terminology or insider references
+- Doesn't acknowledge current debates or trends in field
+- Generic rather than domain-situated
+
+---
+
+## Category 7: Technical Content Specific Patterns
+
+### 7.1 Code Example Characteristics
+
+**AI-Generated Code Signals**:
+
+- Generic variable names: foo, bar, baz, myVar, temp
+- Minimal comments or overly verbose comments
+- Perfect formatting (never messy or evolving)
+- No debugging artifacts (console.logs, commented code)
+- Examples that are "too clean" to be real
+
+**Human Code Signals**:
+
+- Domain-specific naming (userData, apiClient, orderProcessor)
+- Practical comments addressing gotchas
+- Realistic error handling
+- Version-specific syntax choices
+
+### 7.2 Technical Accuracy vs. Hallucination
+
+**AI Risk Patterns**:
+
+- Confident statements about non-existent features
+- Mixing features from different versions
+- Creating plausible-sounding but incorrect API names
+- Stating best practices that aren't actually standard
+
+**Detection**: Technical reviewers spot these, but automated detectors can't easily flag hallucinations
+
+### 7.3 Missing Technical Nuance
+
+**AI Simplification Pattern**:
+
+- Presents complex topics without acknowledging complexity
+- Omits important caveats or prerequisites
+- Doesn't mention breaking changes or version differences
+- Lacks discussion of trade-offs or alternative approaches
+
+---
+
+## Category 8: Stylometric Patterns
+
+### 8.1 Lexical Diversity Metrics
+
+**AI Tendency**: Lower lexical diversity (Type-Token Ratio)
+
+- Repeats same words more frequently than humans
+- Smaller vocabulary range for given text length
+- Predictable synonym choices
+
+**Measurement**:
+
+- TTR = (Unique words / Total words)
+- AI typical: 0.40-0.50 for 1000 words
+- Human typical: 0.55-0.70 for 1000 words
+
+### 8.2 Function Word Patterns
+
+**AI Characteristic Distribution**:
+
+- Higher frequency of articles (the, a, an)
+- More frequent use of "that" as connector
+- Overuse of "which" in relative clauses
+- Specific preposition preferences (of, in, to)
+
+### 8.3 Punctuation Patterns
+
+**AI Tendencies**:
+
+- Comma usage follows grammatical rules strictly
+- Rare use of em-dashes, semicolons, or ellipses
+- No stylistic punctuation variation
+- Parenthetical asides rare or formulaic
+
+**Human Variation**:
+
+- Strategic punctuation for rhythm and emphasis
+- Em-dashes for informal asides
+- Semicolons for nuanced connections
+- Ellipses for trailing thoughts...
+
+---
+
+## Detection Scoring Models
+
+### GPTZero Methodology
+
+**Primary Metrics**:
+
+1. **Perplexity** - Measures at sentence level
+   - High perplexity (unpredictable) → Human
+   - Low perplexity (predictable) → AI
+
+2. **Burstiness** - Measures sentence length variation
+   - High burstiness (varied) → Human
+   - Low burstiness (uniform) → AI
+
+**Scoring**:
+
+- Analyzes both metrics across entire document
+- Flags sections with consistently low scores
+- Reports per-paragraph probability scores
+
+### Originality.AI Methodology
+
+**Multi-Model Approach**:
+
+- Checks against GPT-3, GPT-4, Claude, PaLM patterns
+- Looks for model-specific fingerprints
+- Assigns confidence score (0-100%)
+
+**Thresholds**:
+
+- 0-20%: Likely human
+- 20-40%: Possibly AI-assisted
+- 40-60%: Mixed/unclear
+- 60-80%: Likely AI
+- 80-100%: Highly likely AI
+
+### Turnitin AI Detection
+
+**Educational Focus**:
+
+- Trained on academic writing patterns
+- Flags whole-cloth AI generation
+- Less sensitive to AI-assisted editing
+- Reports AI probability percentage
+
+**Known Limitations**:
+
+- Higher false positive rate on non-native English speakers
+- Struggles with heavily edited AI content
+- Domain-specific writing can trigger false positives
+
+---
+
+## Evasion-Resistant Patterns
+
+### Patterns That Remain Detectable
+
+Even after humanization, these patterns may persist:
+
+1. **Statistical Fingerprints**
+   - Underlying probability distributions
+   - Token selection patterns
+   - N-gram frequencies
+
+2. **Semantic Coherence Patterns**
+   - Consistent logical structure
+   - Absence of tangential thoughts
+   - Predictable information architecture
+
+3. **Consistency Patterns**
+   - Uniform quality throughout
+   - No typos or grammatical slips
+   - Consistent voice/tone without drift
+
+### Patterns Most Improved by Humanization
+
+These respond well to humanization techniques:
+
+1. **Vocabulary Patterns** - Highly responsive to replacement
+2. **Sentence Variation** - Directly addressable through editing
+3. **Voice/Authenticity** - Improved via personal touches
+4. **Structural Patterns** - Fixed by converting lists, varying transitions
+
+---
+
+## Detection Confidence Factors
+
+### High Confidence Detection Scenarios
+
+Detectors are most confident when:
+
+- Multiple pattern categories align (vocabulary + structure + tone)
+- Patterns consistent across entire document
+- Length > 500 words (more data for statistical analysis)
+- Content type matches AI training data (explanatory, informational)
+
+### Low Confidence Detection Scenarios
+
+Detectors struggle with:
+
+- Short texts < 200 words (insufficient data)
+- Highly technical domain-specific content
+- Creative or narrative writing
+- Heavily humanized/edited AI content
+- Mixed human-AI collaboration
+
+---
+
+## Implications for Humanization
+
+### Priority 1: Address Statistical Patterns
+
+**Why**: These are mathematically detectable and hard to mask
+**Action**:
+
+- Increase burstiness through sentence variation
+- Boost perplexity through vocabulary diversification
+- Break uniform patterns systematically
+
+### Priority 2: Eliminate Vocabulary Markers
+
+**Why**: Easiest for detectors to flag, easiest for humans to fix
+**Action**:
+
+- Remove all Tier 1 AI-characteristic words
+- Minimize Tier 2 words
+- Replace formulaic transitions
+
+### Priority 3: Add Authenticity Signals
+
+**Why**: AI lacks these; humans naturally include them
+**Action**:
+
+- Add personal perspective markers
+- Include specific examples and details
+- Acknowledge complexity and trade-offs
+- Show domain expertise through practitioner signals
+
+### Priority 4: Introduce Natural "Imperfections"
+
+**Why**: Humans aren't perfectly consistent
+**Action**:
+
+- Vary voice/tone slightly across sections
+- Mix contracted and expanded forms
+- Allow some stylistic inconsistency
+- Include conversational asides
+
+---
+
+## Testing for Detection Patterns
+
+### Self-Assessment Checklist
+
+Before publishing AI-assisted content, check:
+
+**Vocabulary**:
+
+- [ ] Search for all Tier 1 AI words (delve, leverage, robust, etc.)
+- [ ] Count formulaic transitions (Furthermore, Moreover, Additionally)
+- [ ] Check for hedge word stacking (may potentially, generally tends)
+
+**Structure**:
+
+- [ ] Measure sentence lengths in 3 sample paragraphs
+- [ ] Calculate mean and standard deviation
+- [ ] Count number of lists (should be < 3-4 per 1000 words)
+
+**Voice**:
+
+- [ ] Count personal perspective markers (I, we, you, in my experience)
+- [ ] Check for specific examples vs. generic abstractions
+- [ ] Verify emotional engagement appropriate to content
+
+**Technical Depth**:
+
+- [ ] Verify specific versions, tools, products mentioned
+- [ ] Check for practitioner signals and trade-off discussions
+- [ ] Ensure gotchas or edge cases addressed
+
+### Automated Detection Tools (For Testing)
+
+**Free Tools**:
+
+- GPTZero (academic/educational)
+- Copyleaks AI Content Detector
+- Writer.com AI Content Detector
+
+**Paid Tools**:
+
+- Originality.AI (most comprehensive)
+- Winston AI (enterprise-focused)
+- Turnitin (educational sector)
+
+**Note**: Use these to test your humanization effectiveness, not as primary quality measure
+
+---
+
+## Future Detection Evolution
+
+### Emerging Detection Techniques
+
+**Watermarking**:
+
+- Some AI systems now embed statistical watermarks
+- Subtle token selection patterns that persist through editing
+- Currently limited deployment but growing
+
+**Semantic Analysis**:
+
+- Advanced NLP analyzing meaning structures
+- Detecting AI-characteristic reasoning patterns
+- Less focused on surface features
+
+**Multi-Modal Analysis**:
+
+- Analyzing consistency between text and claimed authorship
+- Cross-referencing with author's prior writing
+- Behavioral biometrics of writing process
+
+### Humanization Implications
+
+**Watermarks**: Difficult to remove without regeneration
+**Semantic Analysis**: Addressable through voice customization and reasoning variation
+**Multi-Modal**: Requires consistent authorial voice across works
+
+---
+
+## Ethical Considerations
+
+### Detection vs. Quality
+
+**Key Insight**: Detection patterns often correlate with quality issues
+
+- AI vocabulary is often genuinely weaker writing
+- Uniform sentences create boring rhythm
+- Lack of voice reduces engagement
+- Surface abstraction limits value
+
+**Implication**: Humanization that improves quality is ethically sound; humanization purely for evasion is questionable
+
+### Disclosure Norms
+
+Different domains have different disclosure expectations:
+
+- **Academic**: Full disclosure typically required
+- **Technical writing**: Assistance acceptable, often not disclosed
+- **Creative writing**: Varies by publisher/contest
+- **Marketing**: AI assistance common, rarely disclosed
+- **Journalism**: High disclosure expectations
+
+---
+
+## Related Resources
+
+- **Tasks**: analyze-ai-patterns.md, humanize-post-generation.md
+- **Data**: humanization-techniques.md
+- **Checklists**: ai-pattern-detection-checklist.md
+
+---
+
+**Note**: This reference is based on research into detection systems as of 2025. Detection methodologies evolve continuously. The most sustainable approach is creating genuinely high-quality content that serves readers, not merely evading detection.
+==================== END: .bmad-technical-writing/data/ai-detection-patterns.md ====================
+
+==================== START: .bmad-technical-writing/data/formatting-humanization-patterns.md ====================
+# Formatting Humanization Patterns
+
+## Overview
+
+This knowledge base documents evidence-based research on how human writers differ from AI writers in their use of formatting elements (em-dashes, bolding, italics) in technical writing. Understanding these patterns enables content creators to produce authentically human-sounding technical documentation.
+
+## Research Foundation
+
+Based on comprehensive analysis of AI detection research, linguistic pattern studies, and professional technical writing standards, this guide identifies the distinctive formatting signatures that differentiate human-written from AI-generated content.
+
+**Source**: Perplexity Deep Research Analysis (2024) - "How Human Writers and AI Writers Differ in Technical Formatting"
+
+## Critical Formatting Patterns
+
+### 1. The Em-Dash Problem ("ChatGPT Dash")
+
+**AI Pattern:**
+
+- GPT-4 uses em-dashes approximately **10x more frequently** than human writers
+- Multiple em-dashes per paragraph is common
+- Em-dashes appear with mechanical regularity throughout documents
+- Statistical pattern emerged from training data bias toward older texts (1860s peak em-dash usage at 0.35% word frequency)
+
+**Human Pattern:**
+
+- **1-2 em-dashes per page maximum** in technical writing
+- Em-dashes serve specific structural purposes:
+  - Mark abrupt change in thought
+  - Introduce explanation/example
+  - Create emphasis through interruption
+  - Set off parenthetical information
+- Natural variation in punctuation choice (em-dash, semicolon, comma, period)
+
+**The Substitution Test:**
+For each em-dash, ask: "Could a period, semicolon, or comma work as well or better?"
+
+- If YES → Use the alternative punctuation
+- If NO → The em-dash is justified
+
+**Practical Guideline:**
+Limit em-dashes to 1-2 per page. When you find yourself using 3+ em-dashes on a page, restructure sentences or use alternative punctuation.
+
+### 2. Bold Text Usage
+
+**AI Pattern:**
+
+- Mechanical consistency in bolding throughout document
+- Excessive bolding creating visual noise
+- Democratic regularity (similar elements all bolded regardless of importance)
+- Formatting applied with statistical consistency, not contextual judgment
+
+**Human Pattern:**
+
+- **Purposeful inconsistency** - formatting varies based on communicative intent
+- Selective bolding for truly critical information only:
+  - UI elements requiring user action
+  - Critical warnings or important notices
+  - Key terms being defined (first use only)
+  - Essential information readers must notice
+- Uses **negative space** - some similar information deliberately left unbolded to signal relative importance
+- Restraint principle: "Does this particular information need visual emphasis at this specific point?"
+
+**Practical Guideline:**
+
+- Bold only 2-5% of content
+- Reserve bolding for genuinely critical elements
+- Avoid bolding predictable patterns (e.g., every command name, every function name)
+- Use bolding to create visual anchors for scanning, not decoration
+
+### 3. Italic Text Usage
+
+**AI Pattern:**
+
+- Scattered italics appearing with predictable frequency
+- Decorative rather than functional application
+- Consistent density across document sections
+
+**Human Pattern:**
+
+- Functional application for specific categories:
+  - Titles of publications/software
+  - Uncommon terms being defined
+  - Subtle emphasis on specific words (sparingly)
+  - Foreign language expressions
+- **Category consistency** - same types of elements receive italics throughout
+- Avoids extended passages in italics (reduces readability)
+- Restraint - italics for discrete elements only
+
+**Practical Guideline:**
+
+- Define 2-4 categories that receive italics (e.g., "publication titles" and "terms being defined")
+- Apply italics consistently within those categories
+- Avoid casual italicization for emphasis
+- Never italicize multiple consecutive sentences
+
+### 4. Formatting Distribution (Burstiness)
+
+**AI Pattern:**
+
+- **Low burstiness** - uniform formatting distribution
+- Predictable pattern regularity
+- Mathematical consistency in how formatting appears
+- Same depth of formatting across all sections
+
+**Human Pattern:**
+
+- **High burstiness** - natural variation in formatting density
+- Some sections have rich formatting, others minimal
+- **Argumentative asymmetry** - more formatting for complex concepts, less for simple ones
+- Contextual variation based on reader needs at each point
+
+**Practical Guideline:**
+
+- Vary formatting density across sections
+- Heavy formatting where concepts are complex/critical
+- Minimal formatting where content is straightforward
+- Avoid creating predictable "every third paragraph has a bolded term" patterns
+
+## Detection Science
+
+### Perplexity and Formatting
+
+- **Perplexity** measures how predictable text is to a language model
+- AI formatting: Low perplexity (predictable patterns)
+- Human formatting: Higher perplexity (context-dependent choices)
+
+### Syntactic Templates
+
+- AI reproduces learned grammatical structures with consistent formatting
+- Humans vary punctuation even with similar sentence structures
+- Example: AI might always use em-dash with "X — which means Y" pattern; humans vary between em-dash, colon, comma, or period
+
+### Detection Metrics
+
+- Token efficiency - formatting markers per semantic unit
+- Rhetorical structure - hierarchical vs. mechanical formatting
+- Stylistic memorization - reproduction of learned patterns
+
+## Style Guide Principles
+
+### Professional Standards
+
+- **Chicago Manual of Style**: Em-dashes with purpose, cautions against overuse
+- **APA Style**: Bold for headings, italics for titles and scientific terms
+- **IEEE Style**: Clarity and consistency, specific technical templates
+
+### Content Style Guide Best Practices
+
+- Define WHY formatting is used, not just WHAT
+- Provide examples of appropriate and inappropriate applications
+- Emphasize that formatting should support, not replace, clear writing
+- "Clarity over correctness" principle
+
+## Formatting Authenticity Checklist
+
+When reviewing content for formatting authenticity:
+
+**Em-Dashes:**
+
+- [ ] 1-2 per page maximum (or fewer)
+- [ ] Each em-dash serves specific structural purpose
+- [ ] Could alternative punctuation work equally well?
+- [ ] No mechanical patterns of em-dash distribution
+
+**Bold Text:**
+
+- [ ] Reserved for truly critical information
+- [ ] Purposeful inconsistency (not all similar elements bolded)
+- [ ] Creates visual anchors without noise
+- [ ] 2-5% of content bolded maximum
+
+**Italics:**
+
+- [ ] Applied to specific functional categories only
+- [ ] Consistent within categories
+- [ ] No extended passages in italics
+- [ ] Functional, not decorative
+
+**Overall Distribution:**
+
+- [ ] Natural variation in formatting density across sections
+- [ ] More formatting where concepts are complex
+- [ ] Less formatting where content is straightforward
+- [ ] No predictable mechanical patterns
+
+## Common AI Formatting Tells
+
+**Red Flags indicating AI-generated content:**
+
+1. **3+ em-dashes per page** - Strongest signal
+2. **Uniform bolding patterns** - Every function name bolded, every term bolded
+3. **Predictable formatting rhythm** - Same visual pattern every N paragraphs
+4. **Scattered italics** - Appears frequently without clear functional purpose
+5. **Consistent formatting depth** - Same amount of formatting regardless of content complexity
+6. **Formulaic transitions with em-dashes** - "Furthermore — ", "Moreover — ", "Additionally — "
+
+## Humanization Strategies
+
+### Immediate Fixes
+
+1. **Em-dash audit** - Count per page, reduce to 1-2 maximum
+2. **Substitution test** - Replace em-dashes with periods, commas, semicolons where appropriate
+3. **Bold reduction** - Remove 50-70% of bolding, keep only critical elements
+4. **Italic categorization** - Define categories, remove casual italics
+
+### Deeper Strategies
+
+1. **Purposeful inconsistency** - Vary which similar elements receive formatting
+2. **Contextual judgment** - Ask "Does THIS need emphasis HERE?"
+3. **Natural variation** - Create burstiness in formatting distribution
+4. **Functional formatting** - Every formatting choice serves communication purpose
+
+### Post-Generation Review
+
+When reviewing AI-assisted content:
+
+1. Count em-dashes per page
+2. Test each em-dash for necessity
+3. Audit bolding for purpose vs. decoration
+4. Verify italics follow consistent functional categories
+5. Check for predictable formatting patterns
+6. Ensure formatting variation across sections
+
+## Technical Writing Context
+
+### When Formatting Recedes
+
+Well-executed formatting becomes invisible because it **supports comprehension rather than distracting from it**. Readers should notice:
+
+- The information (what's important)
+- The structure (how ideas connect)
+- The clarity (easy to understand)
+
+Readers should NOT notice:
+
+- The formatting itself
+- Mechanical patterns
+- Decorative emphasis
+
+### The Purposefulness Principle
+
+For every formatting decision, be able to answer:
+
+- "Why does THIS element need emphasis?"
+- "Why HERE in the document?"
+- "How does this help the reader?"
+
+If you cannot answer these questions, the formatting is probably unnecessary.
+
+## Integration with Writing Workflow
+
+### Pre-Writing
+
+- Review tone specification for formality level
+- Note which elements should receive consistent formatting
+- Understand audience's scanning/reading patterns
+
+### During Writing
+
+- Apply formatting sparingly
+- Use em-dashes only when other punctuation won't work
+- Bold only genuinely critical information
+- Vary formatting density based on content complexity
+
+### Post-Writing Review
+
+- Run em-dash count (target: 1-2 per page)
+- Apply substitution test to each em-dash
+- Audit bolding (remove 50%+ if excessive)
+- Check for mechanical patterns
+- Verify purposeful inconsistency exists
+
+## Advanced Considerations
+
+### Argumentative Asymmetry
+
+Human writers devote more formatting attention to concepts they recognize as potentially confusing. This creates natural asymmetry:
+
+- Complex sections: More bolding, clearer structure, careful punctuation
+- Simple sections: Minimal formatting, straightforward prose
+
+AI systems maintain more consistent depth across all elements.
+
+### Voice Through Formatting
+
+Authentic voice emerges when formatting reflects genuine engagement with subject matter and audience. Formatting choices signal:
+
+- What the writer finds important
+- Where the writer anticipates reader confusion
+- How the writer structures their thinking
+
+This authentic signaling cannot be mechanically reproduced.
+
+### The Clarity Principle
+
+When formatting choices conflict with style rules, **clarity wins**. The governing principle: Does this help the reader understand and navigate the content?
+
+If formatting aids comprehension → Use it
+If formatting merely decorates → Omit it
+
+## References and Further Reading
+
+This knowledge base synthesizes research from:
+
+- AI text generation linguistic studies
+- Professional technical writing standards (IEEE, APA, Chicago)
+- AI detection algorithm research
+- Content humanization best practices
+- Style guide principles and conventions
+
+**Primary research source**: Perplexity Deep Research Analysis on human vs. AI formatting patterns in technical writing (2024)
+
+## Revision History
+
+- **2024**: Initial version based on AI writing humanization research
+- Focus areas: Em-dash patterns, bold/italic usage, formatting burstiness
+- Evidence-based guidelines from linguistic analysis and detection studies
+==================== END: .bmad-technical-writing/data/formatting-humanization-patterns.md ====================
+
+==================== START: .bmad-technical-writing/data/heading-humanization-patterns.md ====================
+# Heading Humanization Patterns
+
+<!-- Powered by BMAD™ Core -->
+
+## Purpose
+
+This document provides evidence-based guidance for identifying and correcting AI-generated heading patterns in technical writing, particularly book chapters and documentation. It synthesizes research on human vs AI heading usage to help editors create natural, reader-friendly heading hierarchies that enhance comprehension rather than signal automated content creation.
+
+**Target Audience**: Technical editors, content humanizers, book authors using AI assistance
+
+**Use Cases**:
+
+- Post-generation editing of AI-assisted book chapters
+- Pre-generation prompt engineering for natural heading structures
+- Quality assurance for technical documentation
+- Editorial review of heading hierarchies
+
+---
+
+## Executive Summary
+
+### The Heading Overuse Problem
+
+AI writing systems demonstrate predictable patterns in heading usage that differ significantly from human technical writers:
+
+**AI Heading Characteristics (Red Flags)**:
+
+- Excessive hierarchy depth: 4-6 levels vs human 3-4 levels
+- Mechanical parallelism: All headings at same level use identical grammatical structure
+- Uniform heading density: Every section subdivided regardless of complexity
+- Verbose, information-dense headings that preview entire content
+- Structural rigidity: Same heading pattern applied to all content types
+
+**Human Heading Characteristics (Green Flags)**:
+
+- Optimal density: 2-4 headings per page in technical documentation
+- Contextual flexibility: More headings for complex sections, fewer for simple
+- Natural variation: Heading frequency varies based on content needs
+- Descriptive but concise: Headings preview without exhausting content
+- Purposeful inconsistency: Heading structure adapts to content, not formula
+
+### Key Targets for Humanization
+
+| Element         | AI Pattern                               | Human Target                |
+| --------------- | ---------------------------------------- | --------------------------- |
+| Hierarchy Depth | 4-6 levels                               | 3-4 levels maximum          |
+| Heading Density | Uniform across sections                  | 2-4 headings/page, variable |
+| Parallelism     | Mechanical (all H2s identical structure) | Natural variation           |
+| Heading Length  | Verbose (10+ words)                      | Concise (3-7 words typical) |
+| Distribution    | Predictable rhythm                       | Contextual variation        |
+
+---
+
+## Part 1: Research Foundation
+
+### Study Context
+
+This guidance synthesizes research on:
+
+- Human vs AI heading patterns in technical documentation
+- Book chapter heading best practices (O'Reilly, Packt, Manning standards)
+- Cognitive science of heading hierarchies and reader navigation
+- Technical writing style guides (Chicago, Microsoft, Google)
+- Analysis of 400+ page technical manuscripts
+
+### Key Findings
+
+#### Finding 1: Excessive Hierarchy Depth
+
+**AI Pattern**:
+AI systems frequently create 4-6 heading levels within a single chapter, regardless of chapter length or complexity.
+
+**Human Practice**:
+
+- 15-20 page chapters: 3 levels (H1, H2, H3) maximum
+- 5-10 page chapters: 2 levels (H1, H2) typical
+- 30+ page chapters: 4 levels acceptable but rare
+
+**Why It Matters**:
+
+- Deep hierarchies overwhelm readers with structural complexity
+- Navigation becomes difficult with excessive nesting
+- Table of contents becomes cluttered and unhelpful
+- Cognitive load increases as readers track multiple levels
+
+**Humanization Strategy**:
+
+- Limit chapters to 3 heading levels (H1 chapter title, H2 major sections, H3 subsections)
+- Use 4th level (H4) only for truly complex chapters with clear justification
+- Flatten hierarchy by promoting content to body text or merging subsections
+
+#### Finding 2: Mechanical Parallelism
+
+**AI Pattern**:
+All headings at the same level follow identical grammatical structure.
+
+Examples:
+
+- All H2s: "Understanding X", "Understanding Y", "Understanding Z"
+- All H3s: "How to Configure X", "How to Configure Y", "How to Configure Z"
+- All H2s: "X Overview", "Y Overview", "Z Overview"
+
+**Human Practice**:
+
+- Natural variation in heading structure based on content type
+- Descriptive headings that reflect actual content purpose
+- Mix of structures: imperatives ("Configure the Server"), gerunds ("Configuring Advanced Options"), nouns ("Configuration Best Practices"), questions ("What Is Configuration?")
+
+**Why It Matters**:
+
+- Mechanical parallelism signals automated generation
+- Reduces heading informativeness (all headings sound the same)
+- Creates monotonous reading experience
+- Fails to highlight different content types appropriately
+
+**Humanization Strategy**:
+
+- Vary heading structures intentionally across the chapter
+- Match heading structure to content purpose (imperative for tasks, noun phrase for concepts)
+- Break parallelism deliberately where it creates monotony
+- Use parallelism only where it serves comparison/contrast purpose
+
+#### Finding 3: Uniform Heading Density
+
+**AI Pattern**:
+Same number of subheadings under every major section, regardless of content complexity.
+
+Example (AI-generated):
+
+```
+## Section A (simple concept)
+### Subsection A1
+### Subsection A2
+### Subsection A3
+
+## Section B (complex concept)
+### Subsection B1
+### Subsection B2
+### Subsection B3
+```
+
+**Human Practice**:
+
+- Heading density reflects conceptual complexity
+- Simple sections: Fewer headings, more continuous prose
+- Complex sections: More headings for navigation and cognitive breaks
+- Natural asymmetry: 0-1 subsections in simple sections, 4-6 in complex sections
+
+**Why It Matters**:
+
+- Uniform density creates artificial structure
+- Over-subdivides simple content (making it harder to read)
+- Under-subdivides complex content (reducing navigability)
+- Signals mechanical generation rather than thoughtful organization
+
+**Humanization Strategy**:
+
+- Create **argumentative asymmetry**: More headings where content is difficult
+- Simple sections: Often no H3 subheadings needed
+- Complex sections: Use H3 liberally for reader support
+- Target 2-4 headings per page on average, but allow wide variation
+
+#### Finding 4: Verbose, Information-Dense Headings
+
+**AI Pattern**:
+Headings contain complete thoughts or summarize entire section content.
+
+Examples:
+
+- "Understanding the Fundamental Differences Between Synchronous and Asynchronous Processing Models"
+- "How to Configure Your Development Environment for Optimal Performance and Debugging Capabilities"
+- "Best Practices for Managing State in Complex React Applications with Multiple Data Sources"
+
+**Human Practice**:
+
+- Concise headings: 3-7 words typical for H2/H3
+- Headings preview, don't summarize
+- Specific but not exhaustive
+
+Human equivalents:
+
+- "Synchronous vs Asynchronous Processing"
+- "Development Environment Setup"
+- "Managing State in React"
+
+**Why It Matters**:
+
+- Long headings reduce scannability
+- Information density in headings signals AI generation
+- Readers use headings for navigation, not complete information
+- Table of contents becomes unwieldy with verbose headings
+
+**Humanization Strategy**:
+
+- Target 3-7 words for H2/H3 headings
+- Remove redundant words ("Understanding", "How to", "A Guide to")
+- Use specificity, not verbosity, for clarity
+- Save detailed information for body text
+
+#### Finding 5: Structural Rigidity
+
+**AI Pattern**:
+Same heading structure applied to all content types (conceptual, procedural, reference).
+
+**Human Practice**:
+
+- Conceptual sections: Fewer headings, flowing narrative
+- Procedural sections: More headings for step separation
+- Reference sections: Structured headings for lookup
+- Tutorial sections: Task-oriented headings
+
+**Why It Matters**:
+
+- Different content types serve different reader needs
+- One-size-fits-all structure reduces effectiveness
+- Natural writing adapts structure to purpose
+
+**Humanization Strategy**:
+
+- Match heading density to content type
+- Tutorials: More headings (task boundaries)
+- Explanations: Fewer headings (flow)
+- Reference: Predictable structure (navigation)
+
+---
+
+## Part 2: Heading Hierarchy Best Practices
+
+### Technical Book Chapter Standards
+
+#### For 15-20 Page Chapters (Typical Technical Book Length)
+
+**Recommended Structure**:
+
+```
+# Chapter Title (H1)
+  ## Major Section 1 (H2)
+    ### Subsection 1.1 (H3)
+    ### Subsection 1.2 (H3)
+  ## Major Section 2 (H2)
+    Body text without subsections (acceptable)
+  ## Major Section 3 (H2)
+    ### Subsection 3.1 (H3)
+    ### Subsection 3.2 (H3)
+    ### Subsection 3.3 (H3)
+```
+
+**Guidelines**:
+
+- **H1**: Chapter title only (one per chapter)
+- **H2**: Major sections (4-7 per chapter typical)
+- **H3**: Subsections where needed (0-6 per H2 section)
+- **H4**: Rarely needed; use only for truly complex sections
+
+**Heading Density**:
+
+- Target: 2-4 headings per page on average
+- Simple chapters: 1-2 headings per page acceptable
+- Complex chapters: 5-6 headings per page acceptable
+- Variation is natural and expected
+
+#### Never Skip Heading Levels
+
+**Anti-Pattern** (AI-generated):
+
+```
+# Chapter Title (H1)
+  ### Subsection (H3) ❌ Skipped H2
+```
+
+**Correct Pattern**:
+
+```
+# Chapter Title (H1)
+  ## Section (H2)
+    ### Subsection (H3) ✓ Proper hierarchy
+```
+
+**Why**: Skipping levels breaks accessibility (screen readers), navigation (table of contents), and logical structure.
+
+#### Avoid Lone Headings
+
+**Anti-Pattern**:
+
+```
+## Major Section
+  ### Only Subsection ❌ Lone H3
+  Body text continues...
+```
+
+**Fix Options**:
+
+1. Add sibling subsection (if content warrants)
+2. Remove heading and integrate into parent section
+3. Promote content to body text under H2
+
+**Rule**: Each heading level should have at least one sibling at the same level (except H1 chapter title).
+
+#### Avoid Stacked Headings
+
+**Anti-Pattern**:
+
+```
+## Configuration
+### Advanced Settings ❌ No body text between
+#### Security Options
+```
+
+**Correct Pattern**:
+
+```
+## Configuration
+Brief introduction to configuration section.
+
+### Advanced Settings
+Description of advanced settings section.
+
+#### Security Options
+```
+
+**Rule**: Every heading must have body text below it before the next heading appears.
+
+### Heading Content Principles
+
+#### Descriptive vs Functional Headings
+
+**Functional Headings** (less effective):
+
+- "Introduction"
+- "Overview"
+- "Summary"
+- "Conclusion"
+
+**Descriptive Headings** (preferred):
+
+- "Getting Started with Docker Containers"
+- "Authentication Flow in OAuth 2.0"
+- "Performance Optimization Strategies"
+- "Next Steps for Production Deployment"
+
+**Why**: Descriptive headings provide context in table of contents and during scanning.
+
+#### Heading Length Guidelines
+
+| Heading Level    | Typical Length | Maximum Length |
+| ---------------- | -------------- | -------------- |
+| H1 (Chapter)     | 3-6 words      | 10 words       |
+| H2 (Section)     | 3-5 words      | 8 words        |
+| H3 (Subsection)  | 3-7 words      | 10 words       |
+| H4 (Rarely used) | 2-5 words      | 8 words        |
+
+**Exceptions**: API reference documentation, technical specifications may use longer headings for precision.
+
+#### Heading Structure Patterns
+
+**Conceptual Content**:
+
+- Noun phrases: "Container Networking"
+- Questions: "What Is a Docker Image?"
+- Gerunds: "Understanding State Management"
+
+**Procedural Content**:
+
+- Imperatives: "Install the CLI"
+- Gerunds: "Installing Dependencies"
+- Task-oriented: "First Deployment"
+
+**Reference Content**:
+
+- Noun phrases: "Configuration Options"
+- API names: "`useEffect` Hook"
+- Structured: "Parameters and Return Values"
+
+---
+
+## Part 3: AI Pattern Detection
+
+### Red Flags Checklist
+
+Use this checklist to identify AI-generated heading patterns:
+
+#### Hierarchy Depth
+
+- [ ] **4+ heading levels in a single chapter** (H1, H2, H3, H4+)
+- [ ] **Deep nesting in short chapters** (H4 in 10-page chapter)
+- [ ] **Uniform depth across all sections** (every H2 has H3, every H3 has H4)
+
+#### Mechanical Parallelism
+
+- [ ] **All H2 headings start with same word** ("Understanding X", "Understanding Y", "Understanding Z")
+- [ ] **All H3 headings follow identical grammar** ("How to X", "How to Y", "How to Z")
+- [ ] **Predictable patterns regardless of content type** (same structure for concepts and procedures)
+
+#### Heading Density
+
+- [ ] **Uniform subsection counts** (every H2 has exactly 3 H3s)
+- [ ] **Every section subdivided** (no H2 without H3 subsections)
+- [ ] **Predictable heading rhythm** (heading every 2 paragraphs consistently)
+
+#### Heading Verbosity
+
+- [ ] **Headings exceed 10 words frequently**
+- [ ] **Headings contain complete sentences or thoughts**
+- [ ] **Headings include redundant phrases** ("An Introduction to", "A Guide to", "Everything You Need to Know About")
+
+#### Structural Rigidity
+
+- [ ] **Same heading structure for all content types**
+- [ ] **No variation in heading density across chapter**
+- [ ] **Headings don't adapt to content complexity**
+
+### Green Flags Checklist
+
+Human-generated heading patterns demonstrate:
+
+#### Natural Hierarchy
+
+- [ ] **3 heading levels maximum** in most chapters (H1, H2, H3)
+- [ ] **Appropriate depth for chapter length** (2 levels for short, 3 for typical, 4 for complex)
+- [ ] **No skipped levels** (H1 → H2 → H3, never H1 → H3)
+
+#### Purposeful Variation
+
+- [ ] **Varied heading structures** across the chapter
+- [ ] **Structural adaptation to content type** (more headings for procedures, fewer for concepts)
+- [ ] **Natural parallelism only where comparison is intended**
+
+#### Contextual Density
+
+- [ ] **Asymmetric subsection counts** (some H2s have 0 H3s, others have 4-6)
+- [ ] **Heading density reflects complexity** (more headings for difficult content)
+- [ ] **2-4 headings per page on average** with natural variation
+
+#### Concise Headings
+
+- [ ] **3-7 words typical for H2/H3 headings**
+- [ ] **Descriptive but not exhaustive**
+- [ ] **Scannable in table of contents**
+
+#### Thoughtful Structure
+
+- [ ] **Headings match outline/specification hierarchy**
+- [ ] **Each heading has body text below it** (no stacked headings)
+- [ ] **No lone headings** (each level has sibling)
+
+---
+
+## Part 4: Humanization Strategies
+
+### Strategy 1: Flatten Excessive Hierarchy
+
+**When to Apply**: Chapter has 4+ heading levels
+
+**Process**:
+
+1. Identify deepest heading level (H4, H5, H6)
+2. Evaluate necessity: Does this subdivision serve reader navigation?
+3. Apply one of:
+   - **Promote to higher level**: H4 → H3 if content is substantial
+   - **Remove heading**: Integrate into parent section as body text
+   - **Merge subsections**: Combine related H4s into single H3
+
+**Example Transformation**:
+
+**Before (AI-generated, 5 levels)**:
+
+```
+## Authentication (H2)
+### OAuth 2.0 Flow (H3)
+#### Authorization Grant Types (H4)
+##### Authorization Code Grant (H5)
+##### Implicit Grant (H5)
+```
+
+**After (Humanized, 3 levels)**:
+
+```
+## Authentication (H2)
+### OAuth 2.0 Authorization Flow (H3)
+
+OAuth 2.0 supports multiple authorization grant types, each suited
+to different application architectures. The two most common are:
+
+**Authorization Code Grant**: Best for server-side applications...
+
+**Implicit Grant**: Designed for client-side applications...
+```
+
+**Result**: Reduced from 5 levels to 3 levels by converting H4/H5 to body text with bold labels.
+
+### Strategy 2: Break Mechanical Parallelism
+
+**When to Apply**: All headings at same level use identical structure
+
+**Process**:
+
+1. Identify heading level with mechanical parallelism
+2. Categorize content types (conceptual, procedural, reference)
+3. Rewrite headings to match content purpose
+4. Introduce structural variation intentionally
+
+**Example Transformation**:
+
+**Before (Mechanical Parallelism)**:
+
+```
+## Understanding Containers (H2)
+## Understanding Images (H2)
+## Understanding Volumes (H2)
+## Understanding Networks (H2)
+```
+
+**After (Natural Variation)**:
+
+```
+## Container Basics (H2)
+## Working with Images (H2)
+## Data Persistence with Volumes (H2)
+## How Container Networking Works (H2)
+```
+
+**Result**: Varied structures (noun phrase, gerund, noun phrase, question format) that reflect content appropriately.
+
+### Strategy 3: Create Argumentative Asymmetry
+
+**When to Apply**: All sections have uniform subsection counts
+
+**Process**:
+
+1. Assess complexity of each major section (H2)
+2. Simple sections: Remove subsections or reduce to 1-2
+3. Complex sections: Add subsections for reader support (4-6 acceptable)
+4. Create natural variation in heading density
+
+**Example Transformation**:
+
+**Before (Uniform Density)**:
+
+```
+## Introduction to Docker (H2)
+### What Is Docker (H3)
+### Why Use Containers (H3)
+### Docker vs VMs (H3)
+
+## Installing Docker (H2)
+### System Requirements (H3)
+### Installation Steps (H3)
+### Verifying Installation (H3)
+```
+
+**After (Argumentative Asymmetry)**:
+
+```
+## Introduction to Docker (H2)
+Docker is a containerization platform that packages applications
+with their dependencies... [flows without subsections for simple intro]
+
+## Installing Docker (H2)
+### System Requirements (H3)
+### Installation on Linux (H3)
+### Installation on macOS (H3)
+### Installation on Windows (H3)
+### Verifying Your Installation (H3)
+### Troubleshooting Common Issues (H3)
+```
+
+**Result**: Simple introductory section has no subsections (flows naturally). Complex installation section has 6 subsections (provides navigation for detailed procedural content).
+
+### Strategy 4: Shorten Verbose Headings
+
+**When to Apply**: Headings exceed 8 words or contain complete thoughts
+
+**Process**:
+
+1. Identify headings over 8 words
+2. Remove redundant phrases ("Understanding", "A Guide to", "How to")
+3. Focus on specific topic, not complete summary
+4. Target 3-7 words
+
+**Example Transformations**:
+
+| Before (Verbose)                                                                          | After (Concise)                       |
+| ----------------------------------------------------------------------------------------- | ------------------------------------- |
+| Understanding the Fundamental Principles of Asynchronous JavaScript Programming           | Asynchronous JavaScript Fundamentals  |
+| A Comprehensive Guide to Configuring Your Development Environment for Optimal Performance | Development Environment Setup         |
+| How to Implement Secure Authentication Using OAuth 2.0 and JSON Web Tokens                | Implementing OAuth 2.0 Authentication |
+| Everything You Need to Know About Managing Application State in Modern React Applications | State Management in React             |
+
+**Result**: Headings become scannable while retaining specificity.
+
+### Strategy 5: Adapt Structure to Content Type
+
+**When to Apply**: Same heading structure used for all content types
+
+**Process**:
+
+1. Identify content type for each section (conceptual, procedural, reference, tutorial)
+2. Adjust heading density appropriately:
+   - **Conceptual**: Fewer headings, flowing narrative
+   - **Procedural**: More headings for task boundaries
+   - **Reference**: Structured headings for lookup
+   - **Tutorial**: Task-oriented progressive headings
+
+**Example Structure Adaptation**:
+
+**Conceptual Section** (fewer headings):
+
+```
+## How Docker Works (H2)
+Docker uses containerization technology to isolate applications...
+[3-4 pages of flowing explanation without subsections]
+```
+
+**Procedural Section** (more headings):
+
+```
+## Building Your First Container (H2)
+### Creating a Dockerfile (H3)
+### Writing the Build Configuration (H3)
+### Running the Build Command (H3)
+### Verifying the Image (H3)
+### Troubleshooting Build Errors (H3)
+```
+
+**Result**: Structure serves content purpose rather than following formula.
+
+---
+
+## Part 5: Integration with BMAD Workflow
+
+### Book Outline Phase
+
+**Heading Responsibility**: Defines H1 (chapter titles) and preliminary H2 (major sections)
+
+**Humanization Focus**:
+
+- Ensure chapter titles are descriptive (not "Chapter 1: Introduction")
+- Verify 4-7 major sections per chapter planned
+- Check that major sections reflect natural content organization
+
+**Validation Questions**:
+
+- Do chapter titles preview content clearly?
+- Are major sections balanced in scope?
+- Is there natural variation in section count across chapters?
+
+### Chapter Outline Phase
+
+**Heading Responsibility**: Refines H2 (major sections) and defines H3 (subsections)
+
+**Humanization Focus**:
+
+- Create asymmetric subsection distribution (simple sections have fewer H3s)
+- Break mechanical parallelism in H2/H3 headings
+- Limit hierarchy to 3 levels (H1, H2, H3)
+- Target 2-4 headings per page on average
+
+**Validation Questions**:
+
+- Does heading density reflect content complexity?
+- Are all H2 headings using the same grammatical structure? (If yes, break parallelism)
+- Are there any H4 headings? (If yes, flatten to H3 or body text)
+- Do all H2 sections have subsections? (If yes, simplify some)
+
+### Section Spec Phase
+
+**Heading Responsibility**: Finalizes H3 (subsections) and determines if H4 is needed (rarely)
+
+**Humanization Focus**:
+
+- Shorten verbose headings to 3-7 words
+- Ensure no skipped heading levels
+- Remove lone headings (single H3 under H2)
+- Verify each heading has body text below it
+
+**Validation Questions**:
+
+- Are any headings over 8 words? (Shorten)
+- Are there lone headings? (Add sibling or remove)
+- Are headings stacked without body text? (Add introductory text)
+- Is H4 necessary or can content be flattened? (Prefer flattening)
+
+### Section Writing Phase
+
+**Heading Responsibility**: Implement specified heading structure
+
+**Humanization Focus**:
+
+- Follow heading structure from Section Spec
+- Write concise, descriptive headings
+- Ensure body text appears below each heading before next heading
+- Adapt heading density to content flow naturally
+
+**Validation Questions**:
+
+- Does heading structure match Section Spec?
+- Are headings scannable in isolation?
+- Is there body text below each heading?
+- Does structure serve reader navigation?
+
+### Chapter Compile Phase
+
+**Heading Responsibility**: Final validation of complete chapter heading hierarchy
+
+**Humanization Focus**:
+
+- Verify hierarchy depth (3 levels maximum preferred)
+- Check heading density across chapter (2-4 per page average)
+- Validate no AI red flags (mechanical parallelism, uniform density)
+- Test table of contents readability
+
+**Validation Questions**:
+
+- Does table of contents feel natural or mechanical?
+- Is there variation in heading density across chapter?
+- Are headings concise and descriptive?
+- Does hierarchy depth stay within 3-4 levels?
+
+---
+
+## Part 6: Practical Application
+
+### Heading Humanization Workflow
+
+**Step 1: Generate Heading Inventory** (5 minutes)
+
+1. Extract all headings from document
+2. Count total headings by level (H1, H2, H3, H4+)
+3. Calculate headings per page
+4. Note deepest hierarchy level
+
+**Step 2: Detect AI Patterns** (10 minutes)
+
+1. Check for mechanical parallelism (all H2s same structure)
+2. Identify uniform density (all H2s have same H3 count)
+3. Find verbose headings (8+ words)
+4. Locate structural rigidity (same pattern for all content types)
+5. Mark hierarchy depth issues (4+ levels)
+
+**Step 3: Apply Humanization Strategies** (30-60 minutes)
+
+1. **Flatten hierarchy**: Reduce to 3 levels where possible
+2. **Break parallelism**: Vary heading structures intentionally
+3. **Create asymmetry**: Adjust subsection counts to content complexity
+4. **Shorten headings**: Reduce to 3-7 words
+5. **Adapt structure**: Match heading density to content type
+
+**Step 4: Validate Quality** (10 minutes)
+
+1. Verify no skipped heading levels
+2. Check for lone headings (remove or add siblings)
+3. Ensure body text below each heading
+4. Test table of contents readability
+5. Confirm 2-4 headings per page on average
+
+**Total Time**: 55-85 minutes for full chapter heading humanization
+
+### Integration with Copy Editing
+
+**When to Apply**: During post-generation editing (Step 10 of copy-edit-chapter.md)
+
+**Process**:
+
+1. After content editing, before final QA
+2. Use heading-humanization-checklist.md systematically
+3. Focus on high-impact changes (hierarchy flattening, parallelism breaking)
+4. Preserve heading structure from outline where appropriate
+5. Document changes if they diverge from original spec
+
+### Integration with Pre-Generation Prompts
+
+**When to Apply**: During humanization prompt engineering
+
+**Guidance to Include**:
+
+```
+HEADING STRUCTURE:
+- Use 3 heading levels maximum (H1 chapter, H2 sections, H3 subsections)
+- Create asymmetric subsection distribution (0-6 H3s per H2, based on complexity)
+- Vary heading structures (don't use "Understanding X" for all H2 headings)
+- Keep headings concise: 3-7 words for H2/H3
+- Adapt heading density to content type (more for procedures, fewer for concepts)
+- Never skip heading levels (H1 → H2 → H3, never H1 → H3)
+- Ensure each heading has body text below it before next heading
+
+HEADING PATTERNS TO AVOID:
+- Mechanical parallelism (all headings at same level using identical structure)
+- Verbose headings (10+ words)
+- Uniform density (every section subdivided equally)
+- Deep nesting (4+ levels)
+```
+
+---
+
+## Part 7: Quality Metrics
+
+### Heading Authenticity Score
+
+Calculate authenticity score based on these factors:
+
+| Factor                | Weight | AI Pattern (0 pts)    | Human Pattern (10 pts) | Score  |
+| --------------------- | ------ | --------------------- | ---------------------- | ------ |
+| Hierarchy Depth       | 25%    | 4+ levels             | 3 levels               | \_\_\_ |
+| Parallelism           | 20%    | Mechanical (all same) | Natural variation      | \_\_\_ |
+| Density Variation     | 20%    | Uniform               | Asymmetric             | \_\_\_ |
+| Heading Length        | 15%    | 10+ words average     | 3-7 words average      | \_\_\_ |
+| Structural Adaptation | 10%    | Rigid formula         | Content-adapted        | \_\_\_ |
+| Best Practices        | 10%    | Multiple violations   | All followed           | \_\_\_ |
+
+**Target Score**: 7.0+ for publication-ready quality
+
+**Interpretation**:
+
+- **8.0-10.0**: Excellent, authentically human heading structure
+- **6.0-7.9**: Good, minor AI patterns remain
+- **4.0-5.9**: Fair, noticeable AI patterns need correction
+- **0.0-3.9**: Poor, strong AI signature requires significant revision
+
+### Red Flag Density
+
+**Count Red Flags**:
+
+- [ ] Hierarchy depth 4+ levels: +2 red flags
+- [ ] Mechanical parallelism in H2s: +3 red flags
+- [ ] Mechanical parallelism in H3s: +2 red flags
+- [ ] Uniform subsection counts: +2 red flags
+- [ ] Verbose headings (5+ instances): +1 red flag
+- [ ] Skipped heading levels: +1 red flag per instance
+- [ ] Lone headings: +0.5 red flag per instance
+- [ ] Stacked headings: +0.5 red flag per instance
+
+**Target**: 0-1 red flags total for publication quality
+
+---
+
+## Part 8: Examples and Case Studies
+
+### Case Study 1: Flattening Deep Hierarchy
+
+**Context**: 18-page chapter on "Microservices Architecture" with 5 heading levels
+
+**Before (AI-generated)**:
+
+```
+# Microservices Architecture (H1)
+  ## Understanding Microservices (H2)
+    ### Core Principles (H3)
+      #### Service Independence (H4)
+        ##### Data Isolation (H5)
+        ##### Deployment Independence (H5)
+      #### Decentralized Governance (H4)
+        ##### Technology Diversity (H5)
+        ##### Team Autonomy (H5)
+```
+
+**Problems**:
+
+- 5 heading levels in 18-page chapter (excessive)
+- Mechanical parallelism at H5 level
+- Over-subdivision of simple concepts
+
+**After (Humanized)**:
+
+```
+# Microservices Architecture (H1)
+  ## Core Principles (H2)
+
+  The microservices approach rests on two foundational principles:
+  service independence and decentralized governance.
+
+  ### Service Independence (H3)
+
+  Each microservice must operate independently, maintaining its own
+  data stores and deployment lifecycle. This isolation enables...
+
+  **Data Isolation**: Every service manages its own database...
+
+  **Deployment Independence**: Services can be updated individually...
+
+  ### Decentralized Governance (H3)
+
+  Unlike monolithic architectures, microservices embrace technology
+  diversity and team autonomy...
+```
+
+**Changes**:
+
+- Reduced from 5 levels to 3 levels (H1, H2, H3)
+- Promoted "Core Principles" to H2 (removed "Understanding Microservices" wrapper)
+- Converted H4/H5 to body text with bold labels
+- Eliminated mechanical parallelism
+- Added introductory context
+
+**Result**: 3 levels, improved readability, natural structure
+
+### Case Study 2: Breaking Mechanical Parallelism
+
+**Context**: Chapter on "React Hooks" with identical heading structures
+
+**Before (AI-generated)**:
+
+```
+## Understanding useState (H2)
+## Understanding useEffect (H2)
+## Understanding useContext (H2)
+## Understanding useReducer (H2)
+## Understanding useCallback (H2)
+## Understanding useMemo (H2)
+```
+
+**Problems**:
+
+- All H2 headings start with "Understanding"
+- Mechanical pattern signals AI generation
+- Headings don't differentiate content types
+
+**After (Humanized)**:
+
+```
+## Managing State with useState (H2)
+## Side Effects and useEffect (H2)
+## Sharing Data with Context (H2)
+## Complex State: useReducer (H2)
+## Performance: useCallback and useMemo (H2)
+```
+
+**Changes**:
+
+- Removed "Understanding" prefix from all headings
+- Varied grammatical structures (gerunds, nouns, colons)
+- Combined related hooks (useCallback/useMemo) to reduce redundancy
+- Made headings more descriptive of actual content
+
+**Result**: Natural variation, improved scannability
+
+### Case Study 3: Creating Argumentative Asymmetry
+
+**Context**: Chapter on "API Design" with uniform subsection counts
+
+**Before (AI-generated)**:
+
+```
+## RESTful Principles (H2) [Simple conceptual content]
+  ### Statelessness (H3)
+  ### Resource-Based URLs (H3)
+  ### HTTP Methods (H3)
+
+## Authentication Strategies (H2) [Complex procedural content]
+  ### API Keys (H3)
+  ### OAuth 2.0 (H3)
+  ### JWT Tokens (H3)
+
+## Error Handling (H2) [Simple reference content]
+  ### Status Codes (H3)
+  ### Error Responses (H3)
+  ### Retry Logic (H3)
+```
+
+**Problems**:
+
+- All H2 sections have exactly 3 H3 subsections (uniform density)
+- Complex authentication content under-subdivided
+- Simple principles over-subdivided
+- Structure doesn't reflect content complexity
+
+**After (Humanized)**:
+
+```
+## RESTful Principles (H2)
+
+RESTful APIs follow three core principles: statelessness, resource-based
+URLs, and standard HTTP methods. [Flows without subsections - simple content]
+
+## Authentication Strategies (H2)
+  ### API Key Authentication (H3)
+  ### OAuth 2.0 Flow (H3)
+    #### Authorization Code Grant (H4)
+    #### Client Credentials Grant (H4)
+  ### JSON Web Tokens (JWT) (H3)
+    #### Token Structure (H4)
+    #### Signing and Verification (H4)
+  ### Comparing Authentication Methods (H3)
+  ### Security Best Practices (H3)
+
+## Error Handling (H2)
+  ### HTTP Status Codes (H3)
+  ### Error Response Format (H3)
+```
+
+**Changes**:
+
+- Simple "RESTful Principles": Removed subsections entirely (flows as prose)
+- Complex "Authentication": Increased to 5 H3s, added selective H4 for OAuth/JWT details
+- "Error Handling": Reduced to 2 H3s (combined retry logic into format section)
+- Created natural asymmetry: 0, 5, 2 subsections instead of uniform 3, 3, 3
+
+**Result**: Heading density reflects content complexity
+
+---
+
+## Part 9: Quick Reference
+
+### Red Flags Summary
+
+**Immediate Red Flags** (fix these first):
+
+1. **4+ heading levels** in a chapter
+2. **All headings at same level use identical structure** ("Understanding X", "Understanding Y")
+3. **Every major section has same subsection count** (all H2s have 3 H3s)
+4. **Headings over 10 words** frequently
+5. **Skipped heading levels** (H1 → H3)
+
+### Green Flags Summary
+
+**Target Patterns** (aim for these):
+
+1. **3 heading levels maximum** (H1, H2, H3)
+2. **Natural variation in heading structure**
+3. **Asymmetric subsection counts** (0-6 H3s per H2)
+4. **Concise headings** (3-7 words)
+5. **2-4 headings per page on average** with natural variation
+
+### Quick Fixes
+
+| Problem                | Quick Fix                                                     |
+| ---------------------- | ------------------------------------------------------------- |
+| 4+ levels              | Promote or flatten deepest level to H3 or body text           |
+| Mechanical parallelism | Rewrite 50% of headings with different structure              |
+| Uniform density        | Remove subsections from simplest section, add to most complex |
+| Verbose headings       | Remove "Understanding", "A Guide to", "How to"                |
+| Lone heading           | Add sibling or remove heading entirely                        |
+| Stacked headings       | Add introductory sentence below each heading                  |
+
+---
+
+## Related Resources
+
+### BMAD Technical Writing Expansion Pack
+
+**Tasks**:
+
+- `copy-edit-chapter.md` - Comprehensive chapter editing workflow
+- `humanize-post-generation.md` - Post-generation humanization editing
+- `humanize-pre-generation.md` - Pre-generation prompt engineering
+
+**Checklists**:
+
+- `heading-humanization-checklist.md` - Systematic heading pattern detection and correction
+- `humanization-checklist.md` - Overall AI pattern detection
+- `formatting-humanization-checklist.md` - Em-dash, bold, italic humanization
+
+**Agents**:
+
+- `technical-editor.md` - Technical communication expert with heading expertise
+- `content-humanizer.md` - AI content humanization specialist
+
+**Data**:
+
+- `formatting-humanization-patterns.md` - Em-dash, bold, italic patterns
+- `ai-detection-patterns.md` - Perplexity and burstiness patterns
+- `technical-writing-standards.md` - Overall writing quality standards
+
+---
+
+## Conclusion
+
+Heading humanization transforms mechanical AI-generated heading hierarchies into natural, reader-friendly structures that enhance comprehension and navigation. The core strategies—flattening excessive hierarchy, breaking mechanical parallelism, creating argumentative asymmetry, shortening verbose headings, and adapting structure to content type—address the primary AI patterns that signal automated generation.
+
+By targeting 3 heading levels maximum, 2-4 headings per page on average, concise headings (3-7 words), and natural variation in structure and density, editors create authentically human heading patterns that serve readers while maintaining technical accuracy and professional polish.
+
+**Remember**: Heading humanization is not about bypassing detection—it's about creating better, more readable content that serves your readers effectively.
+==================== END: .bmad-technical-writing/data/heading-humanization-patterns.md ====================

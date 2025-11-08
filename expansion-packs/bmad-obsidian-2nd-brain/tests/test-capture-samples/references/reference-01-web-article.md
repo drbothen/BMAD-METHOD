@@ -1,0 +1,1 @@
+See https://zettelkasten.de/posts/overview/ for a comprehensive guide to the Zettelkasten method. Also check out https://notes.andymatuschak.org/ for Andy Matuschak's excellent public notes on note-taking and knowledge work. For academic research, read more at https://scholar.google.com/scholar?q=spaced+repetition+memory.

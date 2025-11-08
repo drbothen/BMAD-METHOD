@@ -1,0 +1,328 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: moc-template-v1
+  name: Map of Content (MOC)
+  version: 1.0
+  description: Template for Maps of Content - knowledge domain navigation structures (Phase 1 Basic)
+  output:
+    format: markdown
+    filename: "{{domain}}-moc.md"
+
+variables:
+  - name: title
+    description: MOC title (usually domain name + " MOC")
+    required: true
+  - name: type
+    description: Note type (map_of_content, MOC)
+    required: true
+    default: "map_of_content"
+  - name: created
+    description: Creation timestamp in ISO 8601 format
+    required: true
+  - name: updated
+    description: Last modification timestamp in ISO 8601 format
+    required: true
+  - name: domain
+    description: Topic domain this MOC covers
+    required: true
+  - name: status
+    description: MOC status (active, archived)
+    required: true
+    default: "active"
+  - name: last_review
+    description: Last comprehensive review date
+    required: false
+    default: null
+  - name: maturity_level
+    description: MOC development stage (nascent, developing, established, comprehensive)
+    required: true
+    default: "nascent"
+  - name: overview
+    description: 2-3 sentence synthesis of domain
+    required: true
+  - name: core_concepts
+    description: "Newline-separated list of core concepts with definitions (Format - [[Concept]]: definition)"
+    required: false
+    default: ""
+  - name: knowledge_branches
+    description: Content for knowledge branches section
+    required: false
+    default: ""
+  - name: emerging_questions
+    description: List of open questions needing research
+    required: false
+    default: ""
+  - name: dataview_queries
+    description: Optional Dataview queries for dynamic note lists
+    required: false
+    default: ""
+  - name: maintenance_history
+    description: Date and summary of last update
+    required: false
+    default: ""
+
+workflow:
+  elicitation: false
+  mode: template
+
+sections:
+  - id: frontmatter
+    title: Frontmatter
+    type: template-text
+    instruction: |
+      Generate YAML frontmatter with metadata about the MOC.
+      Type indicates this is a map_of_content or MOC.
+      Status is active for working MOCs, archived for retired ones.
+      Maturity level tracks development: nascent, developing, established, comprehensive.
+    template: |
+      ---
+      title: {{title}}
+      type: {{type}}
+      created: {{created}}
+      updated: {{updated}}
+      domain: {{domain}}
+      status: {{status}}
+      last_review: {{last_review}}
+      maturity_level: {{maturity_level}}
+      ---
+
+  - id: overview
+    title: Overview
+    type: paragraphs
+    instruction: |
+      Provide a 2-3 sentence synthesis of the knowledge domain.
+      This should give readers a clear understanding of what this MOC covers
+      and how it fits into the broader knowledge landscape.
+    template: |
+      # {{title}}
+
+      ## Overview
+
+      {{overview}}
+
+  - id: core_concepts
+    title: Core Concepts
+    type: bullet-list
+    condition: core_concepts is not empty
+    instruction: |
+      List core concepts with 1-sentence definitions and links.
+      Format: - [[Concept Name]]: Brief definition
+      These are the foundational ideas that make up this knowledge domain.
+
+      IMPORTANT: Only include this section if core_concepts variable is provided and not empty.
+    template: |
+      ## Core Concepts
+
+      {{core_concepts}}
+
+  - id: knowledge_branches
+    title: Knowledge Branches
+    type: paragraphs
+    condition: knowledge_branches is not empty
+    instruction: |
+      Dynamic subsections for each branch of knowledge within this domain.
+      For each branch, use ### for the branch name, then provide summary and links.
+
+      Format:
+      ### Branch Name
+      Summary and links to related notes
+
+      IMPORTANT: Only include this section if knowledge_branches variable is provided and not empty.
+    template: |
+      ## Knowledge Branches
+
+      {{knowledge_branches}}
+
+  - id: emerging_questions
+    title: Emerging Questions
+    type: bullet-list
+    condition: emerging_questions is not empty
+    instruction: |
+      List open questions that need research or investigation.
+      These represent gaps in knowledge or areas for future exploration.
+
+      IMPORTANT: Only include this section if emerging_questions variable is provided and not empty.
+    placeholder: |
+      ## Emerging Questions
+
+      - What questions remain unanswered in this domain?
+      - Where are the knowledge gaps?
+    template: |
+      ## Emerging Questions
+
+      {{emerging_questions}}
+
+  - id: dataview_queries
+    title: Dynamic Content
+    type: paragraphs
+    condition: dataview_queries is not empty
+    instruction: |
+      Optional Dataview queries for dynamic note lists.
+      These queries automatically surface relevant notes based on tags, metadata, or other criteria.
+
+      Example format:
+      ```dataview
+      TABLE status, updated
+      FROM #domain AND -#archived
+      SORT updated DESC
+      ```
+
+      IMPORTANT: Only include this section if dataview_queries variable is provided and not empty.
+      Note: Phase 1 BASIC - Phase 2 will add more advanced query capabilities.
+    placeholder: |
+      ## Dynamic Content
+
+      ```dataview
+      LIST
+      FROM #{{domain}}
+      SORT file.mtime DESC
+      ```
+    template: |
+      ## Dynamic Content
+
+      {{dataview_queries}}
+
+  - id: maintenance_history
+    title: Last Updated
+    type: paragraphs
+    owner: user
+    editors: [user]
+    instruction: |
+      Date and summary of last update.
+      This helps track MOC evolution and maintenance activities.
+
+      Format: **{{updated}}**: Brief description of what changed
+    placeholder: |
+      ## Last Updated
+
+      **{{updated}}**: MOC created
+    template: |
+      ## Last Updated
+
+      {{maintenance_history}}
+
+examples:
+  - |
+    ---
+    title: Knowledge Management MOC
+    type: map_of_content
+    created: 2025-11-06T12:00:00Z
+    updated: 2025-11-06T12:00:00Z
+    domain: knowledge-management
+    status: active
+    last_review: null
+    maturity_level: nascent
+    ---
+
+    # Knowledge Management MOC
+
+    ## Overview
+
+    Knowledge management encompasses systems, practices, and philosophies for capturing, organizing, and utilizing information effectively. This MOC connects concepts from personal knowledge management (PKM), organizational KM, and cognitive science to create a comprehensive framework for working with knowledge.
+
+    ## Core Concepts
+
+    - [[Zettelkasten System]]: Atomic note-taking method emphasizing linking and emergence
+    - [[Second Brain]]: External system for storing and processing information
+    - [[PARA Method]]: Organizational framework (Projects, Areas, Resources, Archives)
+    - [[Evergreen Notes]]: Notes that evolve and improve over time
+    - [[Building Blocks]]: Atomic units of knowledge (concepts, arguments, models, etc.)
+
+    ## Knowledge Branches
+
+    ### Note-Taking Systems
+    Structured approaches to capturing and organizing information:
+    - [[Zettelkasten System]]
+    - [[Cornell Notes]]
+    - [[Bullet Journaling]]
+
+    ### Organizational Frameworks
+    Methods for structuring digital information:
+    - [[PARA Method]]
+    - [[Johnny Decimal System]]
+    - [[P.A.C.T. Framework]]
+
+    ### Cognitive Principles
+    Understanding how we learn and remember:
+    - [[Spaced Repetition]]
+    - [[Active Recall]]
+    - [[Cognitive Load Theory]]
+
+    ## Emerging Questions
+
+    - How do different note-taking systems complement each other?
+    - What's the optimal balance between structure and emergence?
+    - How can we measure PKM system effectiveness?
+
+    ## Last Updated
+
+    **2025-11-06T12:00:00Z**: MOC created with foundational structure
+
+  - |
+    ---
+    title: Software Architecture MOC
+    type: map_of_content
+    created: 2025-11-06T12:15:00Z
+    updated: 2025-11-06T12:15:00Z
+    domain: software-architecture
+    status: active
+    last_review: null
+    maturity_level: developing
+    ---
+
+    # Software Architecture MOC
+
+    ## Overview
+
+    Software architecture defines the fundamental structures of software systems, encompassing patterns, principles, and practices for designing scalable, maintainable, and robust applications. This MOC connects architectural patterns, design principles, and real-world implementation strategies.
+
+    ## Core Concepts
+
+    - [[Layered Architecture]]: Separation of concerns through horizontal layers
+    - [[Microservices]]: Distributed architecture with independent services
+    - [[Event-Driven Architecture]]: Asynchronous communication via events
+    - [[Domain-Driven Design]]: Modeling software around business domains
+    - [[SOLID Principles]]: Five principles for object-oriented design
+
+    ## Knowledge Branches
+
+    ### Architectural Patterns
+    Common structural solutions:
+    - [[Layered Architecture]]
+    - [[Microservices Architecture]]
+    - [[Event-Driven Architecture]]
+    - [[Hexagonal Architecture]]
+
+    ### Design Principles
+    Foundational guidelines:
+    - [[SOLID Principles]]
+    - [[DRY Principle]]
+    - [[YAGNI]]
+    - [[Separation of Concerns]]
+
+    ### Quality Attributes
+    Non-functional requirements:
+    - [[Scalability]]
+    - [[Reliability]]
+    - [[Maintainability]]
+    - [[Performance]]
+
+    ## Emerging Questions
+
+    - When should monolith architectures be preferred over microservices?
+    - How do we balance architectural purity with pragmatic delivery?
+    - What metrics best capture architectural quality?
+
+    ## Dynamic Content
+
+    ```dataview
+    TABLE status, building_block_type, updated
+    FROM #software-architecture AND #atomic_note
+    SORT updated DESC
+    LIMIT 20
+    ```
+
+    ## Last Updated
+
+    **2025-11-06T12:15:00Z**: Added dynamic Dataview query for recent notes

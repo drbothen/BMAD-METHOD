@@ -1,0 +1,1 @@
+This is a test file for handling paths with spaces in the filename. The content is normal, but the filename itself "path-with-spaces.md" contains spaces that need to be handled correctly during note creation.

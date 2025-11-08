@@ -61,7 +61,7 @@ commands:
       description: Complete enrichment workflow for a security ticket
       usage: '*enrich-ticket {ticket-id}'
       workflow:
-        - Fetch ticket from JIRA using mcp__atlassian__getJiraIssue
+        - Execute read-jira-ticket.md task to fetch ticket and extract CVEs
         - Execute enrich-security-ticket.md task
         - Research CVEs using Perplexity tools
         - Assess priority using multi-factor framework
@@ -105,6 +105,7 @@ commands:
 
 dependencies:
   tasks:
+    - read-jira-ticket.md
     - enrich-security-ticket.md
     - research-cve.md
     - assess-vulnerability-priority.md

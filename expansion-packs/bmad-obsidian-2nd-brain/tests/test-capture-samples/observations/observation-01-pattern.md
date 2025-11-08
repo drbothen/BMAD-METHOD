@@ -1,0 +1,1 @@
+I noticed that my notes cluster around three main themes: cognitive science (35% of notes), knowledge management methodology (40%), and productivity systems (25%). Most of the cognitive science notes relate to memory, attention, and learning mechanisms. The clustering suggests I'm developing expertise in overlapping domains rather than a single narrow field.

@@ -1,0 +1,1 @@
+Looking back on my note-taking journey, I realize that I spent years optimizing tools when I should have been focusing on consistent habits. I feel like the tool doesn't matter nearly as much as the daily practice of capturing and processing ideas. My biggest insight: start simple and let complexity emerge naturally rather than building elaborate systems upfront.

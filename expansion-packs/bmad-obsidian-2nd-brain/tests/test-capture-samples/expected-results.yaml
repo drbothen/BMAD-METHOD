@@ -1,0 +1,259 @@
+# Expected Classification Results for Test Samples
+# This file contains ground truth for validating capture task implementations
+
+quotes:
+  quote-01-cal-newport:
+    expected_content_type: quote
+    expected_confidence_min: 0.90
+    expected_matched_patterns:
+      - quotation marks
+      - attribution keyword
+      - author name
+    notes: "Clear quote with attribution to Cal Newport and source title"
+
+  quote-02-research-paper:
+    expected_content_type: quote
+    expected_confidence_min: 0.90
+    expected_matched_patterns:
+      - quotation marks
+      - source citation
+      - page number
+    notes: "Academic citation with full bibliographic information"
+
+  quote-03-tweet:
+    expected_content_type: quote
+    expected_confidence_min: 0.85
+    expected_matched_patterns:
+      - quotation marks
+      - attribution
+      - social media handle
+    notes: "Social media quote with handle attribution"
+
+concepts:
+  concept-01-atomic-notes:
+    expected_content_type: concept
+    expected_confidence_min: 0.85
+    expected_matched_patterns:
+      - definition structure
+      - explanatory language
+    notes: "Clear concept definition with explanation"
+
+  concept-02-zettelkasten:
+    expected_content_type: concept
+    expected_confidence_min: 0.90
+    expected_matched_patterns:
+      - "is defined as"
+      - concept explanation
+    notes: "Explicit definition with 'is defined as' pattern"
+
+  concept-03-spaced-repetition:
+    expected_content_type: concept
+    expected_confidence_min: 0.90
+    expected_matched_patterns:
+      - "refers to"
+      - definition structure
+    notes: "Strong concept definition with 'refers to' pattern"
+
+  concept-04-progressive-summarization:
+    expected_content_type: concept
+    expected_confidence_min: 0.85
+    expected_matched_patterns:
+      - definition
+      - "in other words"
+    notes: "Concept with clarifying language"
+
+references:
+  reference-01-web-article:
+    expected_content_type: reference
+    expected_confidence_min: 0.90
+    expected_matched_patterns:
+      - URLs present
+      - "see" language
+      - "check out" language
+      - multiple links
+    notes: "Multiple URLs with 'see' and 'check out' referential language"
+
+  reference-02-resource-list:
+    expected_content_type: reference
+    expected_confidence_min: 0.90
+    expected_matched_patterns:
+      - URLs present
+      - multiple links
+      - "visit" language
+    notes: "Resource list with multiple links and 'visit' language"
+
+  reference-03-documentation:
+    expected_content_type: reference
+    expected_confidence_min: 0.85
+    expected_matched_patterns:
+      - URLs present
+      - "see" language
+    notes: "Documentation links with 'see' referential language"
+
+reflections:
+  reflection-01-personal-insight:
+    expected_content_type: reflection
+    expected_confidence_min: 0.90
+    expected_matched_patterns:
+      - "I think"
+      - first-person pronoun
+      - "In my experience"
+    notes: "Strong first-person opinion with personal experience"
+
+  reflection-02-process-review:
+    expected_content_type: reflection
+    expected_confidence_min: 0.85
+    expected_matched_patterns:
+      - "I've noticed"
+      - "My sense is"
+      - first-person pronoun
+    notes: "Personal process reflection with opinion markers"
+
+  reflection-03-hypothesis:
+    expected_content_type: reflection
+    expected_confidence_min: 0.90
+    expected_matched_patterns:
+      - "I believe"
+      - "In my view"
+      - "I wonder"
+    notes: "Personal hypothesis with multiple opinion markers"
+
+  reflection-04-retrospective:
+    expected_content_type: reflection
+    expected_confidence_min: 0.90
+    expected_matched_patterns:
+      - "I realize"
+      - "I feel"
+      - first-person pronoun
+    notes: "Retrospective reflection with strong personal perspective"
+
+questions:
+  question-01-why-question:
+    expected_content_type: question
+    expected_confidence_min: 0.95
+    expected_matched_patterns:
+      - question mark
+      - "Why"
+      - "What"
+      - multiple questions
+    notes: "Multiple investigative questions with why/what keywords"
+
+  question-02-how-question:
+    expected_content_type: question
+    expected_confidence_min: 0.95
+    expected_matched_patterns:
+      - question mark
+      - "How"
+      - "Should"
+    notes: "How-question with follow-up"
+
+  question-03-what-if:
+    expected_content_type: question
+    expected_confidence_min: 0.95
+    expected_matched_patterns:
+      - question mark
+      - "What if"
+      - "Could"
+    notes: "What-if hypothetical question"
+
+observations:
+  observation-01-pattern:
+    expected_content_type: observation
+    expected_confidence_min: 0.85
+    expected_matched_patterns:
+      - "I noticed"
+      - descriptive structure
+      - data points
+    notes: "Factual observation with data clustering patterns"
+
+  observation-02-behavior:
+    expected_content_type: observation
+    expected_confidence_min: 0.85
+    expected_matched_patterns:
+      - "I observed"
+      - descriptive structure
+      - factual reporting
+    notes: "Behavioral observation with time-based patterns"
+
+  observation-03-data:
+    expected_content_type: observation
+    expected_confidence_min: 0.90
+    expected_matched_patterns:
+      - "Looking at"
+      - data points
+      - factual reporting
+      - statistics
+    notes: "Data-driven observation with specific metrics"
+
+edge_cases:
+  empty-content:
+    expected_behavior: error
+    expected_error: "Content cannot be empty"
+    notes: "Should return error for empty content"
+
+  very-short:
+    expected_content_type: concept
+    expected_confidence_min: 0.40
+    expected_confidence_penalty: true
+    notes: "Very short content (< 10 words) should apply -0.1 penalty and fallback to concept"
+
+  unicode-content:
+    expected_content_type: concept
+    expected_confidence_min: 0.70
+    notes: "Should handle Unicode (emoji, Chinese, Arabic, Japanese) correctly"
+    expected_metadata:
+      encoding: UTF-8
+      special_chars_preserved: true
+
+  malicious-xss:
+    expected_content_type: concept
+    expected_confidence_min: 0.50
+    notes: "Should sanitize <script>, <iframe>, <object> tags"
+    expected_security:
+      script_tags_removed: true
+      iframe_tags_removed: true
+      object_tags_removed: true
+
+  malformed-url:
+    expected_content_type: reference
+    expected_confidence_min: 0.70
+    notes: "Should classify as reference but reject malicious URLs"
+    expected_metadata:
+      source_url: "Unknown"
+      url_validation: blocked
+      blocked_schemes:
+        - javascript:
+        - data:
+        - file:
+        - vbscript:
+      valid_url: "https://example.com"
+
+  path-with-spaces:
+    expected_content_type: concept
+    expected_confidence_min: 0.80
+    notes: "Should handle filenames with spaces correctly"
+    expected_metadata:
+      sanitized_filename: "path-with-spaces.md"
+
+# Target Metrics
+accuracy_targets:
+  overall_accuracy_min: 0.85  # At least 85% correct (17 out of 20 normal samples)
+  quote_accuracy_min: 0.90
+  concept_accuracy_min: 0.85
+  reference_accuracy_min: 0.85
+  reflection_accuracy_min: 0.85
+  question_accuracy_min: 0.95
+  observation_accuracy_min: 0.85
+
+performance_targets:
+  classification_time_max_seconds: 2
+  extraction_time_max_seconds: 1
+  note_creation_time_max_seconds: 3
+  end_to_end_time_max_seconds: 30
+
+security_requirements:
+  - XSS prevention: script tags must be stripped or escaped
+  - URL validation: malicious schemes must be blocked
+  - Path sanitization: directory traversal must be prevented
+  - Size limits: content > 10MB must be rejected
+  - YAML escaping: special characters must be properly escaped

@@ -1,0 +1,1 @@
+I've noticed that my workflow for processing inbox notes has evolved significantly over the past three months. Initially, I felt overwhelmed by the volume of captures, but now I realize that the key is setting aside dedicated triage time each morning. My sense is that batching the processing work is more efficient than trying to perfect each note as it comes in.

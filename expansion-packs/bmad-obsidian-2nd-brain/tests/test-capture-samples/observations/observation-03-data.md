@@ -1,0 +1,1 @@
+Looking at my note statistics over the past quarter: My permanent note count increased from 487 to 623 notes (28% growth). About 60% of new notes are concept definitions, 25% are quotes, and 15% are personal reflections. The average number of bidirectional links per note increased from 3.2 to 4.7, suggesting my knowledge graph is becoming denser and more interconnected.

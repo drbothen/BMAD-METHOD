@@ -1,0 +1,1 @@
+I think this atomic notes approach works because it aligns with how memory consolidation happens during sleep. When ideas are discrete and well-bounded, the brain can more easily form connections between them. In my experience, trying to maintain large monolithic notes leads to cognitive overload and makes it harder to see the relationships between concepts.

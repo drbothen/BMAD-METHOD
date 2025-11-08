@@ -10,6 +10,10 @@ template:
     filename: "{{timestamp}}-{{sanitized_title}}.md"
 
 variables:
+  - name: type
+    description: Type of inbox item (inbox, capture, highlight)
+    required: true
+    default: "inbox"
   - name: content_type
     description: Classification type (quote, concept, reference, reflection, question, observation)
     required: true
@@ -26,10 +30,10 @@ variables:
   - name: captured
     description: Capture timestamp in ISO 8601 format
     required: true
-  - name: tags
-    description: Array of tags for categorization
-    required: false
-    default: []
+  - name: status
+    description: Processing status (inbox, reviewed, processing, processed)
+    required: true
+    default: "inbox"
   - name: content
     description: The captured content text
     required: true
@@ -54,18 +58,17 @@ sections:
     instruction: |
       Generate YAML frontmatter with metadata about the captured content.
       All variables should be populated from the capture process.
-      Status is always 'unprocessed' for new inbox items.
-      Flag for review if confidence < 0.7.
+      Type indicates the kind of inbox item (inbox, capture, highlight).
+      Status tracks processing state (inbox, reviewed, processing, processed).
     template: |
       ---
-      status: unprocessed
-      content_type: {{content_type}}
-      confidence: {{confidence}}
+      type: {{type}}
+      captured: {{captured}}
       source: {{source}}
       author: {{author}}
-      captured: {{captured}}
-      tags: [{{tags}}]
-      flagged_for_review: {{flagged_for_review}}
+      content_type: {{content_type}}
+      status: {{status}}
+      confidence: {{confidence}}
       ---
 
   - id: content
@@ -92,6 +95,19 @@ sections:
       ## Context
 
       {{context}}
+
+  - id: initial_thoughts
+    title: Initial Thoughts
+    type: paragraphs
+    owner: user
+    editors: [user, inbox-triage-agent]
+    instruction: |
+      First impressions or connections noticed during capture.
+      This section is optional and left empty for user to fill in.
+    placeholder: |
+      ## Initial Thoughts
+
+      *First impressions or connections noticed*
 
   - id: processing_notes
     title: Processing Notes
@@ -128,14 +144,13 @@ sections:
 examples:
   - |
     ---
-    status: unprocessed
-    content_type: concept
-    confidence: 0.85
+    type: capture
+    captured: 2025-11-04T15:30:00Z
     source: https://zettelkasten.de/posts/create-zettel-from-reading-notes/
     author: Sascha Fast
-    captured: 2025-11-04T15:30:00Z
-    tags: [zettelkasten, note-taking, atomicity]
-    flagged_for_review: false
+    content_type: concept
+    status: inbox
+    confidence: 0.85
     ---
 
     # Concept: Atomic Notes
@@ -149,6 +164,10 @@ examples:
     This concept was introduced in the context of explaining the fundamental
     principles of effective Zettelkasten note-taking.
 
+    ## Initial Thoughts
+
+    *First impressions or connections noticed*
+
     ## Processing Notes
 
     *To be filled by triage agent or user during processing*
@@ -159,20 +178,23 @@ examples:
 
   - |
     ---
-    status: unprocessed
-    content_type: quote
-    confidence: 0.95
+    type: capture
+    captured: 2025-11-04T16:45:00Z
     source: https://example.com/article
     author: Cal Newport
-    captured: 2025-11-04T16:45:00Z
-    tags: [productivity, attention, deep-work]
-    flagged_for_review: false
+    content_type: quote
+    status: inbox
+    confidence: 0.95
     ---
 
     # Quote: Knowledge Work and Attention
 
     "Knowledge work is about managing your attention, not your time."
 
+    ## Initial Thoughts
+
+    *First impressions or connections noticed*
+
     ## Processing Notes
 
     *To be filled by triage agent or user during processing*
@@ -183,19 +205,22 @@ examples:
 
   - |
     ---
-    status: unprocessed
-    content_type: observation
-    confidence: 0.60
+    type: inbox
+    captured: 2025-11-04T18:20:00Z
     source: personal tracking
     author: Unknown
-    captured: 2025-11-04T18:20:00Z
-    tags: [metrics, progress]
-    flagged_for_review: true
+    content_type: observation
+    status: inbox
+    confidence: 0.60
     ---
 
     # Observation: Note Count Increase
 
     My note count increased from 487 to 523 notes this month.
+
+    ## Initial Thoughts
+
+    *First impressions or connections noticed*
 
     ## Processing Notes
 

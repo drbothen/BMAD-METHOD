@@ -1,0 +1,1 @@
+How can I effectively integrate zettelkasten principles with the PARA method for organizing digital notes? Should the Projects, Areas, Resources, and Archives be separate vaults, or can they coexist with bidirectional linking?

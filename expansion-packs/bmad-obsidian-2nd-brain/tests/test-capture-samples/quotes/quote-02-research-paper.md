@@ -1,0 +1,1 @@
+As stated by Ebbinghaus in his seminal 1885 work "Memory: A Contribution to Experimental Psychology" (p. 67): "The curve of forgetting shows that we forget approximately 50% of newly learned information within the first hour, and up to 90% within the first month without review."

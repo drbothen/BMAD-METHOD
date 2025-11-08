@@ -1,0 +1,1 @@
+I observed that I'm most productive with note processing in the morning between 8-10 AM, when my cognitive energy is highest. During this time, I can process 15-20 inbox notes with good quality connections. After 2 PM, my processing rate drops to 5-8 notes per hour, and the quality of connections decreases noticeably.

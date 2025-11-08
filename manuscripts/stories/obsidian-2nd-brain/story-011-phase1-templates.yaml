@@ -1,0 +1,282 @@
+---
+story_id: STORY-011
+title: Create moc-tmpl.yaml and Validate Phase 1 Templates
+epic_id: EPIC-001
+phase: 1
+priority: high
+estimated_effort: 8 hours
+status: In Progress
+created: 2025-11-04
+updated: 2025-11-06
+
+user_story: |
+  As a developer
+  I want to create the missing moc-tmpl.yaml template and validate existing Phase 1 templates
+  So that all Phase 1 agents have consistently structured document templates available
+
+acceptance_criteria:
+  - Verify templates/ directory exists at expansion-packs/bmad-obsidian-2nd-brain/templates/
+  - Validate inbox-note-tmpl.yaml meets Phase 1 requirements and bmad-doc-template.md spec
+  - Validate atomic-note-tmpl.yaml meets Phase 1 requirements and bmad-doc-template.md spec
+  - Create moc-tmpl.yaml (basic Phase 1 version) following bmad-doc-template.md spec
+  - Validate query-result-tmpl.yaml meets Phase 1 requirements and bmad-doc-template.md spec
+  - Validate audit-report-tmpl.yaml meets Phase 1 requirements and bmad-doc-template.md spec
+  - All templates include proper frontmatter field definitions with types and descriptions
+  - All templates include section instructions for LLM guidance
+  - All templates support variable substitution using {{variable_name}} syntax
+  - Templates validated with test sample documents
+
+tasks_subtasks:
+  - task: Review bmad-doc-template.md specification
+    ac: [7, 8, 9]
+    subtasks:
+      - Load and read common/utils/bmad-doc-template.md to understand template structure requirements
+      - Note required sections: template metadata, variables, workflow, sections with instructions
+      - Understand variable substitution syntax and patterns
+
+  - task: Verify templates directory structure
+    ac: [1]
+    subtasks:
+      - Confirm expansion-packs/bmad-obsidian-2nd-brain/templates/ directory exists
+      - List existing template files
+
+  - task: Validate inbox-note-tmpl.yaml against Phase 1 requirements
+    ac: [2, 7, 8, 9]
+    subtasks:
+      - Read expansion-packs/bmad-obsidian-2nd-brain/templates/inbox-note-tmpl.yaml
+      - Compare against requirements spec (lines 2058-2120 in bmad-obsidian-2nd-brain-requirements.md)
+      - Verify frontmatter fields: type, captured, source, author, content_type, status, confidence
+      - Verify sections: Content, Context, Initial Thoughts, Processing Notes
+      - Verify variable substitution: {{captured}}, {{source}}, {{content_type}}, {{confidence}}
+      - Update if needed to match Phase 1 requirements
+
+  - task: Validate atomic-note-tmpl.yaml against Phase 1 requirements
+    ac: [3, 7, 8, 9]
+    subtasks:
+      - Read expansion-packs/bmad-obsidian-2nd-brain/templates/atomic-note-tmpl.yaml
+      - Compare against requirements spec (lines 2123-2202 in bmad-obsidian-2nd-brain-requirements.md)
+      - Verify frontmatter fields: type, created, updated, atomized_from, status, confidence, building_block_type, related_mocs
+      - Verify building_block_type options: concept, argument, model, question, claim, phenomenon
+      - Verify sections: Core Claim, Evidence & Context, Related Concepts, Source & Attribution
+      - Verify variable substitution: {{created}}, {{updated}}, {{building_block_type}}, {{status}}, {{confidence}}
+      - Update if needed to match Phase 1 requirements
+
+  - task: Create moc-tmpl.yaml (Phase 1 basic version)
+    ac: [4, 7, 8, 9]
+    subtasks:
+      - Create expansion-packs/bmad-obsidian-2nd-brain/templates/moc-tmpl.yaml
+      - Follow bmad-doc-template.md specification structure
+      - Implement frontmatter fields per requirements (lines 2205-2244 in requirements doc)
+        - type: [map_of_content, MOC]
+        - created, updated: datetime
+        - domain: text (required)
+        - status: [active, archived]
+        - last_review: datetime
+        - maturity_level: [nascent, developing, established, comprehensive]
+      - Implement sections per requirements (lines 2245-2283)
+        - Overview: 2-3 sentence synthesis
+        - Core Concepts: List with definitions and links
+        - Knowledge Branches: Dynamic subsections
+        - Emerging Questions: Open questions (optional)
+        - Dataview Queries: Dynamic content (optional)
+        - Last Updated: Maintenance history
+      - Define variable substitution: {{domain}}, {{updated}}, {{maturity_level}}
+      - Note: This is Phase 1 BASIC version - Phase 2 will enhance with full features
+
+  - task: Validate query-result-tmpl.yaml against Phase 1 requirements
+    ac: [5, 7, 8, 9]
+    subtasks:
+      - Read expansion-packs/bmad-obsidian-2nd-brain/templates/query-result-tmpl.yaml
+      - Compare against merge-results task output spec (lines 1352-1387 in requirements doc)
+      - Verify variables: query, query_intent, confidence, result_format, results, contradictions, sources_available, sources_failed, total_results, query_duration_ms, warnings
+      - Verify sections support multiple formats: narrative, list, table, timeline
+      - Verify contradictions detection section
+      - Verify metadata and suggested next steps sections
+      - Update if needed to match Phase 1 requirements
+
+  - task: Validate audit-report-tmpl.yaml against Phase 1 requirements
+    ac: [6, 7, 8, 9]
+    subtasks:
+      - Read expansion-packs/bmad-obsidian-2nd-brain/templates/audit-report-tmpl.yaml
+      - Compare against requirements spec (lines 2503-2579 in requirements doc)
+      - Verify frontmatter fields: audit_type, audit_date, audit_scope, issues_found, critical_issues, auditor_agent
+      - Verify sections: Executive Summary, Freshness Issues, Link Validation Issues, Citation Issues, Orphaned Notes, Action Items
+      - Note: This is Phase 1 BASIC version - Phase 2 will enhance with full audit features
+      - Update if needed to match Phase 1 requirements
+
+  - task: Create test samples for each template
+    ac: [10]
+    subtasks:
+      - Create test-vaults/phase1-templates/ directory if needed
+      - Generate sample inbox-note using template
+      - Generate sample atomic-note using template
+      - Generate sample moc using template
+      - Generate sample query-result using template
+      - Generate sample audit-report using template
+      - Verify all samples render correctly
+
+  - task: Validate YAML syntax and variable substitution
+    ac: [9, 10]
+    subtasks:
+      - Run YAML syntax validator on all 5 templates
+      - Test variable substitution works for each template
+      - Verify frontmatter field validation works
+      - Document any issues found
+
+  - task: Update developer documentation
+    ac: [1-10]
+    subtasks:
+      - Update expansion-packs/bmad-obsidian-2nd-brain/README.md with template documentation
+      - Document which templates are Phase 1 basic vs. full featured
+      - Note Phase 2 enhancements planned for moc-tmpl and audit-report-tmpl
+
+dev_notes:
+  project_structure: |
+    expansion-packs/bmad-obsidian-2nd-brain/
+    ├── templates/                           # Template YAML files location
+    │   ├── inbox-note-tmpl.yaml            # EXISTS - validate only
+    │   ├── atomic-note-tmpl.yaml           # EXISTS - validate only
+    │   ├── moc-tmpl.yaml                   # MISSING - create this
+    │   ├── query-result-tmpl.yaml          # EXISTS - validate only
+    │   ├── audit-report-tmpl.yaml          # EXISTS - validate only
+    │   ├── link-suggestion-tmpl.yaml       # EXISTS - not part of Phase 1
+    │   └── relationship-record-tmpl.yaml   # EXISTS - not part of Phase 1
+    ├── agents/                              # Agent definitions that use templates
+    ├── tasks/                               # Tasks that reference templates
+    ├── tests/                               # Test files and sample vaults
+    │   └── test-vaults/                    # Test vault for template validation
+    └── README.md                            # Documentation to update
+
+    common/utils/bmad-doc-template.md       # Template specification (must load)
+
+  template_specification: |
+    Load and read: common/utils/bmad-doc-template.md
+
+    This file contains the complete specification for BMAD template structure:
+    - Template metadata block (id, name, version, description, output)
+    - Variables section (name, description, required, default)
+    - Workflow section (mode, elicitation)
+    - Sections array (id, title, type, instruction, template)
+    - Variable substitution syntax: {{variable_name}}
+    - Conditional sections: condition field
+    - Section types: template-text, paragraphs, list, table, timeline
+
+  requirements_source: |
+    All template specifications sourced from:
+    manuscripts/bmad-obsidian-2nd-brain-requirements.md
+
+    Template locations in requirements doc:
+    - inbox-note-tmpl.yaml: lines 2058-2120
+    - atomic-note-tmpl.yaml: lines 2123-2202
+    - moc-tmpl.yaml: lines 2205-2290
+    - query-result-tmpl.yaml: referenced at lines 440, 1352-1387 (merge-results task output)
+    - audit-report-tmpl.yaml: lines 2503-2579
+
+  current_status: |
+    IMPORTANT: 4 out of 5 templates already exist in the codebase!
+    - ✓ inbox-note-tmpl.yaml (created Nov 4, 5514 bytes)
+    - ✓ atomic-note-tmpl.yaml (created Nov 5, 9442 bytes)
+    - ✗ moc-tmpl.yaml (MISSING - primary work for this story)
+    - ✓ query-result-tmpl.yaml (created Nov 5, 10395 bytes)
+    - ✓ audit-report-tmpl.yaml (created Nov 6, 38167 bytes)
+
+    This story is primarily about:
+    1. Creating the missing moc-tmpl.yaml
+    2. Validating existing templates meet Phase 1 requirements
+    3. Making any necessary updates to existing templates
+
+  phase_1_vs_phase_2: |
+    Phase 1 Templates (Basic/MVP):
+    - moc-tmpl.yaml: Basic structure for MOCs (Phase 2 will add advanced features)
+    - audit-report-tmpl.yaml: Basic audit reporting (Phase 2 will add comprehensive audits)
+
+    Ensure Phase 1 versions are:
+    - Functional for core workflows
+    - Simple enough for MVP
+    - Extensible for Phase 2 enhancements
+
+    Do NOT over-engineer Phase 1 templates with Phase 2 features
+
+  agent_consumers: |
+    Templates are used by these Phase 1 agents:
+    - Inbox Triage Agent: inbox-note-tmpl.yaml (create-inbox-note task)
+    - Structural Analysis Agent: atomic-note-tmpl.yaml (fragment-note task)
+    - MOC Constructor Agent: moc-tmpl.yaml (manual creation in Phase 1)
+    - Query Interpreter Agent: query-result-tmpl.yaml (merge-results task)
+    - Quality Auditor Agent: audit-report-tmpl.yaml (generate-audit-report task)
+
+  testing_standards:
+    test_file_location: expansion-packs/bmad-obsidian-2nd-brain/tests/test-vaults/
+    test_approach: |
+      1. YAML Syntax Validation:
+         - Use Node.js yaml parser or online validator
+         - Ensure all templates are valid YAML
+         - Check for proper indentation and structure
+
+      2. Sample Document Generation:
+         - Create realistic sample for each template
+         - Test variable substitution with real values
+         - Verify output renders correctly as markdown
+
+      3. Field Validation:
+         - Test that frontmatter fields have correct types
+         - Verify required vs optional fields
+         - Check default values work
+
+      4. Section Completeness:
+         - Verify all required sections present
+         - Check section instructions are clear
+         - Ensure conditional sections work
+
+testing:
+  validation_approach:
+    - YAML syntax validation using Node.js yaml package
+    - Sample generation for each template with realistic data
+    - Variable substitution verification
+    - Frontmatter field type checking
+    - Section instruction clarity review
+    - bmad-doc-template.md spec compliance check
+
+  test_cases:
+    - Create sample inbox note from web clip
+    - Create sample atomic note for a concept
+    - Create sample MOC for a knowledge domain
+    - Create sample query result with contradictions
+    - Create sample audit report with issues
+
+  success_criteria:
+    - All 5 templates pass YAML validation
+    - All samples render correctly as markdown
+    - Variable substitution works in all templates
+    - Frontmatter fields match requirements exactly
+    - All templates follow bmad-doc-template.md specification
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure must exist
+  - common/utils/bmad-doc-template.md: Template specification
+  - manuscripts/bmad-obsidian-2nd-brain-requirements.md: Source requirements
+  - All Phase 1 agents that consume these templates
+
+definition_of_done:
+  - moc-tmpl.yaml created in expansion-packs/bmad-obsidian-2nd-brain/templates/
+  - All 5 templates validated against bmad-doc-template.md specification
+  - All 5 templates validated against Phase 1 requirements
+  - Frontmatter fields defined with types and descriptions for all templates
+  - Section instructions complete and clear for all templates
+  - Variable substitution patterns documented and tested
+  - Test samples created for all 5 templates
+  - Test samples render correctly
+  - YAML syntax validated for all templates
+  - Developer documentation updated in README.md
+  - Phase 1 vs Phase 2 differences documented
+  - All acceptance criteria met
+
+change_log:
+  - date: 2025-11-04
+    version: 1.0
+    description: Initial story creation
+    author: Scrum Master
+  - date: 2025-11-06
+    version: 2.0
+    description: Story remediated - updated to reflect 4 existing templates, added Tasks/Subtasks, Dev Notes, Testing sections
+    author: Product Owner (Sarah)

@@ -1,0 +1,1 @@
+Atomic notes are single-idea notes that can stand alone and be recombined with other notes to form new insights. Each atomic note focuses on one specific concept, making it easier to link related ideas and discover unexpected connections. The atomic principle prevents "note bloat" where large notes become unmanageable and difficult to reuse.

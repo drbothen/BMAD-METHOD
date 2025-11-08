@@ -1,0 +1,1 @@
+What if we combined bidirectional linking with temporal tracking to show not just what concepts are connected, but when those connections were made and how they evolved over time? Could this reveal patterns in how our understanding develops?

@@ -1,0 +1,1 @@
+For technical implementation details, see the official Obsidian API documentation at https://docs.obsidian.md/Plugins/Getting+started/Build+a+plugin. Additional plugin development resources can be found at https://github.com/obsidianmd/obsidian-sample-plugin.

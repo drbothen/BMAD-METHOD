@@ -13,7 +13,7 @@ IDE-FILE-RESOLUTION:
   - FOR LATER USE ONLY - NOT FOR ACTIVATION, when executing commands that reference dependencies
   - Dependencies map to {root}/{type}/{name}
   - type=folder (tasks|templates|checklists|data|utils|etc...), name=file-name
-  - Example: classify-content-type.md → {root}/tasks/classify-content-type.md
+  - Example: capture-classify-content-type.md → {root}/tasks/capture-classify-content-type.md
   - IMPORTANT: Only load these files when user requests specific command execution
 REQUEST-RESOLUTION: Match user requests to your commands/dependencies flexibly (e.g., "process my inbox"→*process-inbox, "capture this quote"→*capture), ALWAYS ask for clarification if no clear match.
 activation-instructions:
@@ -59,10 +59,10 @@ commands:
   - '*exit - Exit agent mode'
 dependencies:
   tasks:
-    - classify-content-type.md
-    - extract-metadata.md
-    - create-inbox-note.md
-    - create-capture-event.md
+    - capture-classify-content-type.md
+    - capture-extract-metadata.md
+    - capture-create-inbox-note.md
+    - capture-create-capture-event.md
   templates:
     - inbox-note-tmpl.yaml
   checklists:
