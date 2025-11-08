@@ -1,0 +1,12 @@
+# Python dependencies for bmad-1898-engineering expansion pack
+# Story 3.4: Priority-Based Review Triggering
+
+# Core dependencies
+pyyaml>=6.0
+requests>=2.31.0
+
+# Testing dependencies
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Note: smtplib and email.mime are Python standard library modules

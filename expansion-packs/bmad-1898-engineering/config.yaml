@@ -92,3 +92,126 @@ jira:
     P3: "Medium"
     P4: "Low"
     P5: "Trivial" # Lowest priority
+
+# Review Triggering Configuration (Story 3.4)
+# Controls which tickets require QA review based on priority
+review_triggers:
+  P1:
+    review_required: true
+    sampling_rate: 100
+    rationale: "Critical vulnerabilities require 100% QA to prevent high-impact errors"
+    assignment: "senior-reviewer"
+    blocking: true
+
+  P2:
+    review_required: true
+    sampling_rate: 100
+    rationale: "High vulnerabilities require 100% QA to ensure quality remediation"
+    assignment: "senior-reviewer"
+    blocking: true
+
+  P3:
+    review_required: false
+    sampling_rate: 25
+    rationale: "Medium vulnerabilities benefit from 25% sampling to maintain quality while managing resources"
+    assignment: "any-reviewer"
+    blocking: false
+
+  P4:
+    review_required: false
+    sampling_rate: 10
+    rationale: "Low vulnerabilities need minimal QA (10% sampling) to detect systemic issues"
+    assignment: "any-reviewer"
+    blocking: false
+
+  P5:
+    review_required: false
+    sampling_rate: 5
+    rationale: "Informational items need very low QA (5% sampling) for process improvement"
+    assignment: "any-reviewer"
+    blocking: false
+
+# Reviewer Assignment Configuration (Story 3.4)
+# Customize reviewer names, specializations, and notification settings for your team
+reviewer_assignment:
+  method: "priority-weighted-round-robin"
+
+  reviewers:
+    - name: "Alex"
+      role: "senior-reviewer"
+      specializations: ["web-vulnerabilities", "infrastructure"]
+      max_concurrent: 5
+      priorities: ["P1", "P2", "P3", "P4", "P5"]
+
+    - name: "Jordan"
+      role: "senior-reviewer"
+      specializations: ["application-security", "cryptography"]
+      max_concurrent: 5
+      priorities: ["P1", "P2", "P3", "P4", "P5"]
+
+    - name: "Taylor"
+      role: "reviewer"
+      specializations: ["network-security"]
+      max_concurrent: 8
+      priorities: ["P3", "P4", "P5"]
+
+  assignment_rules:
+    P1:
+      pool: ["Alex", "Jordan"]
+      method: "least-loaded"
+      fallback: "any-senior-reviewer"
+
+    P2:
+      pool: ["Alex", "Jordan"]
+      method: "least-loaded"
+      fallback: "any-senior-reviewer"
+
+    P3:
+      pool: ["Alex", "Jordan", "Taylor"]
+      method: "round-robin"
+      fallback: "any-available-reviewer"
+
+    P4:
+      pool: ["Taylor"]
+      method: "round-robin"
+      fallback: "any-available-reviewer"
+
+    P5:
+      pool: ["Taylor"]
+      method: "round-robin"
+      fallback: "any-available-reviewer"
+
+  notification:
+    method: "jira-assignment" # Primary: JIRA ticket assignment with auto-notification
+    additional: ["email", "slack"] # Optional: Additional notification channels
+
+    email:
+      enabled: false # Set to true to enable email notifications
+      smtp_server: "smtp.example.com"
+      from_address: "security-ops@example.com"
+      subject_template: "[JIRA] {ticket_id} ({priority}) assigned for review"
+      body_template: |
+        You have been assigned to review security ticket {ticket_id}.
+
+        Priority: {priority}
+        CVE: {cve_id}
+        Review Type: {review_type}
+
+        Access ticket: {jira_url}
+
+    slack:
+      enabled: false # Set to true to enable Slack notifications
+      webhook_url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+      channel: "#security-reviews"
+      message_template: |
+        🔍 *Review Assignment*
+
+        *Ticket:* <{jira_url}|{ticket_id}>
+        *Priority:* {priority}
+        *Reviewer:* @{reviewer_name}
+        *Type:* {review_type}
+
+    error_handling:
+      fallback_to_jira_only: true # If email/Slack fail, still assign in JIRA
+      retry_count: 2
+      log_failures: true
