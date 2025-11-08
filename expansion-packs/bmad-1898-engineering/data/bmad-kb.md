@@ -112,16 +112,22 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 
 **Percentile:** Ranks vulnerability against all CVEs
 
-**Interpretation:**
+**Understanding EPSS Scores:**
+
+EPSS provides two values:
+- **Score (0.0-1.0)**: Probability of exploitation (e.g., 0.85 = 85% probability)
+- **Percentile**: Ranking against all CVEs (e.g., 85th percentile = scores higher than 85% of CVEs)
+
+**BMAD-1898 Interpretation Guidance:**
 - 0.00-0.25: Low exploitation probability
 - 0.26-0.49: Moderate exploitation probability
 - 0.50-0.75: High exploitation probability
 - 0.76-1.00: Very high exploitation probability
 
 **Example:**
-- EPSS Score: 0.85 (85th percentile)
-- Meaning: 85% probability of exploitation in next 30 days
-- Context: In top 15% of most exploitable vulnerabilities
+- CVE-2024-5678: EPSS Score 0.85, Percentile 92.5
+- Meaning: 85% probability of exploitation within 30 days
+- Context: Scores higher than 92.5% of all CVEs (top 7.5% most likely to be exploited)
 
 **Update Frequency:** Daily
 
@@ -204,7 +210,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 
 ### Priority Levels (P1-P5)
 
-**Note:** SLA timelines below represent industry-standard practices. Organizations should adjust based on their specific risk tolerance and operational capabilities.
+**Note:** The priority criteria and SLA timelines below are BMAD-1898 recommendations based on industry-standard practices. Organizations should adjust thresholds, factor weights, and timelines based on their specific risk tolerance and operational capabilities.
 
 **P1 - Critical (24 hour SLA):**
 - Criteria: CVSS ≥9.0 + EPSS ≥0.75 + KEV Listed, OR Active Exploitation + Internet-Facing + Critical ACR

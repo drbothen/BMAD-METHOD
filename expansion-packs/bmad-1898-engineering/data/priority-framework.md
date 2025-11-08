@@ -250,30 +250,55 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 
 ```python
 def calculate_priority(vuln, system):
+    """
+    Calculate vulnerability priority using multi-factor risk assessment.
+
+    Args:
+        vuln: Vulnerability object with cvss, epss, kev_status, exploit_status
+        system: System object with acr (Asset Criticality Rating), exposure
+
+    Returns:
+        Priority level: "P1", "P2", "P3", "P4", or "P5"
+    """
     score = 0
 
+    # Input validation and defensive defaults
+    cvss = getattr(vuln, 'cvss', None)
+    epss = getattr(vuln, 'epss', None)
+    kev_status = getattr(vuln, 'kev_status', 'Not Listed')
+    exploit_status = getattr(vuln, 'exploit_status', 'Theoretical')
+    acr = getattr(system, 'acr', 'Low')
+    exposure = getattr(system, 'exposure', 'Isolated')
+
+    # Validate critical inputs
+    if cvss is None:
+        raise ValueError("CVSS score is required for priority calculation")
+    if epss is None:
+        epss = 0.0  # Default to lowest exploitability if unavailable
+
     # Factor 1: CVSS (0-4 points)
-    if vuln.cvss >= 9.0: score += 4
-    elif vuln.cvss >= 7.0: score += 3
-    elif vuln.cvss >= 4.0: score += 2
+    if cvss >= 9.0: score += 4
+    elif cvss >= 7.0: score += 3
+    elif cvss >= 4.0: score += 2
     else: score += 1
 
     # Factor 2: EPSS (0-4 points)
-    if vuln.epss >= 0.75: score += 4
-    elif vuln.epss >= 0.50: score += 3
-    elif vuln.epss >= 0.25: score += 2
+    if epss >= 0.75: score += 4
+    elif epss >= 0.50: score += 3
+    elif epss >= 0.25: score += 2
     else: score += 1
 
-    # Factor 3: KEV (0-5 points, OVERRIDE)
-    if vuln.kev_status == "Listed": score += 5
+    # Factor 3: KEV (0-5 points)
+    if kev_status == "Listed":
+        score += 5
 
     # Factor 4: Asset Criticality Rating (0-4 points)
     acr_points = {"Critical": 4, "High": 3, "Medium": 2, "Low": 1}
-    score += acr_points[system.acr]
+    score += acr_points.get(acr, 1)  # Default to Low if invalid
 
     # Factor 5: System Exposure (0-3 points)
     exposure_points = {"Internet": 3, "Internal": 2, "Isolated": 1}
-    score += exposure_points[system.exposure]
+    score += exposure_points.get(exposure, 1)  # Default to Isolated if invalid
 
     # Factor 6: Exploit Availability (0-4 points)
     exploit_points = {
@@ -282,12 +307,14 @@ def calculate_priority(vuln, system):
         "PoC": 2,
         "Theoretical": 1
     }
-    score += exploit_points[vuln.exploit_status]
+    score += exploit_points.get(exploit_status, 1)  # Default to Theoretical if invalid
 
     # Map score to priority (max 24 points)
-    if score >= 20 or vuln.kev_status == "Listed":
+    # KEV-listed vulnerabilities are elevated but nuanced by context
+    if score >= 20:
         return "P1"
-    elif score >= 15:
+    elif score >= 15 or kev_status == "Listed":
+        # KEV elevates to at least P2 (matches P2 criteria #3: KEV + Internal + High ACR)
         return "P2"
     elif score >= 10:
         return "P3"

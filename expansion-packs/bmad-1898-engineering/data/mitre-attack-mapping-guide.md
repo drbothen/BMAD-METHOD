@@ -26,6 +26,10 @@ This guide helps security analysts map vulnerabilities (CVEs) to ATT&CK tactics 
 
 ## Common Tactics for Vulnerability Types
 
+**Scope Note:** This guide focuses on tactics most relevant to vulnerability exploitation: Initial Access (TA0001), Execution (TA0002), Privilege Escalation (TA0004), and Impact (TA0040). While we also cover T1210 (Exploitation of Remote Services) which belongs to Lateral Movement (TA0008), we do not provide comprehensive Lateral Movement coverage as it extends beyond vulnerability-focused analysis into post-compromise behavior.
+
+---
+
 ### Tactic: Initial Access (TA0001)
 
 **Definition:** Adversaries gain initial entry into the network through vulnerable systems.
@@ -213,13 +217,17 @@ This guide helps security analysts map vulnerabilities (CVEs) to ATT&CK tactics 
 
 ### T1210 - Exploitation of Remote Services
 
-**Description:** Adversaries exploit vulnerabilities in network services for lateral movement or initial access.
+**Description:** Adversaries exploit vulnerabilities in network services to move laterally within a network after initial compromise.
+
+**MITRE Tactic:** Lateral Movement (TA0008)
+
+**Important Note:** T1210 specifically models lateral movement behavior (post-compromise exploitation of internal services). For initial access via exploitation of internet-facing remote services, use T1190 (Exploit Public-Facing Application). For initial access via VPN/remote access vulnerabilities, use T1133 (External Remote Services).
 
 **Common CVE Types:**
-- SMB vulnerabilities (EternalBlue, SMBGhost)
-- RDP vulnerabilities (BlueKeep)
-- SSH vulnerabilities
-- Database vulnerabilities (PostgreSQL, MySQL)
+- SMB vulnerabilities (EternalBlue, SMBGhost) used for lateral spread
+- RDP vulnerabilities exploited for lateral movement
+- SSH vulnerabilities on internal networks
+- Database vulnerabilities (PostgreSQL, MySQL) for lateral access
 
 **Detection Indicators:**
 - Unusual SMB/RDP traffic patterns
@@ -685,10 +693,11 @@ This guide helps security analysts map vulnerabilities (CVEs) to ATT&CK tactics 
 | **Kernel Vulnerability** | Privilege Escalation | T1068 - Exploitation for Privilege Escalation | Kernel module loading, authentication escalation | Auditd, kernel logs, EDR |
 | **Browser Exploit** | Execution | T1203 - Exploitation for Client Execution | Browser crashes, unusual process creation | EDR, browser logs, sandboxing |
 | **Office Exploit** | Execution | T1203 - Exploitation for Client Execution | Macros, Office spawning scripts, outbound connections | EDR, email gateway, sandbox |
-| **SMB Vulnerability** | Initial Access / Lateral Movement | T1210 - Exploitation of Remote Services | SMB authentication, lateral movement, service crashes | Network IDS, Sysmon, SIEM |
-| **RDP Vulnerability** | Initial Access | T1210 - Exploitation of Remote Services | RDP authentication, unusual connections | Network IDS, Windows logs, SIEM |
+| **SMB Vulnerability (internal)** | Lateral Movement | T1210 - Exploitation of Remote Services | SMB authentication, lateral movement, service crashes | Network IDS, Sysmon, SIEM |
+| **RDP Vulnerability (internal)** | Lateral Movement | T1210 - Exploitation of Remote Services | RDP authentication, unusual connections | Network IDS, Windows logs, SIEM |
 | **VPN Vulnerability** | Initial Access | T1133 - External Remote Services | VPN logs, geo-location anomalies, MFA events | VPN logs, SIEM, MFA logs |
-| **SSH Vulnerability** | Initial Access | T1210 - Exploitation of Remote Services | SSH authentication, unusual sources | SSH logs, auditd, SIEM |
+| **SSH Vulnerability (internal)** | Lateral Movement | T1210 - Exploitation of Remote Services | SSH authentication, unusual sources | SSH logs, auditd, SIEM |
+| **RDP/SSH/SMB (internet-facing)** | Initial Access | T1190 - Exploit Public-Facing Application | Exploitation from external IPs, service crashes | Network IDS, firewall logs, SIEM |
 | **DoS Vulnerability** | Impact | T1498 - Network Denial of Service | Traffic spikes, service crashes, resource exhaustion | Network monitoring, IDS, service logs |
 | **Auth Bypass** | Initial Access | T1190 + T1078 - Exploit + Valid Accounts | Authentication logs, unusual access patterns | SIEM, authentication logs, EDR |
 | **Deserialization** | Execution | T1059 - Command and Scripting Interpreter | Unusual object creation, code execution from data | Application logs, EDR, RASP |
@@ -725,6 +734,11 @@ When analyzing a CVE, use this mapping process:
 
 ---
 
-**Document Version:** 1.0
-**Last Updated:** 2025-11-07
+**Document Version:** 1.1
+**Last Updated:** 2025-11-08
+**Based on:** MITRE ATT&CK v15 (October 2024)
 **Maintained By:** Security Operations Team
+
+**Changelog:**
+- v1.1 (2025-11-08): Corrected T1210 tactic mapping to Lateral Movement; clarified context-dependent mapping for internal vs internet-facing services
+- v1.0 (2025-11-07): Initial release
