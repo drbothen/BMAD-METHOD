@@ -32,11 +32,11 @@ atomicity_analysis:
   violations: [] # List of failed test names
   suggestions: [] # List of remediation suggestions
   test_results:
-    single_claim: {score: float, pass: bool, issues: []}
-    evidence: {score: float, pass: bool, issues: []}
-    self_contained: {score: float, pass: bool, issues: []}
-    title: {score: float, pass: bool, issues: []}
-    related_concepts: {score: float, pass: bool, issues: []}
+    single_claim: { score: float, pass: bool, issues: [] }
+    evidence: { score: float, pass: bool, issues: [] }
+    self_contained: { score: float, pass: bool, issues: [] }
+    title: { score: float, pass: bool, issues: [] }
+    related_concepts: { score: float, pass: bool, issues: [] }
   verdict: 'ATOMIC|BORDERLINE|NON-ATOMIC'
 ```
 
@@ -60,6 +60,7 @@ atomicity_analysis:
    - Multiple standalone assertions = multiple claims ✗
 
 3. **Score calculation:**
+
    ```
    score = 1.0
    for each additional_independent_claim:
@@ -84,26 +85,32 @@ atomicity_analysis:
   - Lists of unrelated items
 
 **Example - PASS:**
+
 ```
 "Zettelkasten uses atomic notes. Atomic notes contain one idea.
 This enables flexible recombination."
 ```
+
 → 1 core claim (Zettelkasten uses atomic notes) + supporting details
 → Score: 1.0 ✓
 
 **Example - FAIL:**
+
 ```
 "Zettelkasten uses atomic notes. GTD uses context lists.
 Both are productivity systems."
 ```
+
 → 3 independent claims (Zettelkasten, GTD, productivity systems)
 → Score: 1.0 - 0.3 - 0.3 = 0.4 ✗
 
 **Violations to report:**
+
 - "Multiple independent claims detected: [claim 1], [claim 2]"
 - "Topic shifts indicate separate ideas"
 
 **Remediation suggestions:**
+
 - "Fragment note into N separate notes (one per claim)"
 - "Extract claims: [list of claims to extract]"
 
@@ -129,6 +136,7 @@ Both are productivity systems."
    - Is it an example illustrating the core? → Related ✓
 
 4. **Score calculation:**
+
    ```
    score = 1.0
    for each divergent_idea:
@@ -153,29 +161,35 @@ Both are productivity systems."
   - Comparisons that become full explanations
 
 **Example - PASS:**
+
 ```
 Core: "Spaced repetition improves retention"
 Support: "Ebbinghaus curve shows memory decay without review"
 Support: "Multiple exposures strengthen neural pathways"
 ```
+
 → All support directly relates to retention/memory
 → Score: 1.0 ✓
 
 **Example - FAIL:**
+
 ```
 Core: "Spaced repetition improves retention"
 Support: "Anki is better than SuperMemo for implementing this"
 Support: "SuperMemo was created in 1987 by Piotr Wozniak"
 ```
+
 → Introduces tool comparison (new topic)
 → Introduces software history (new topic)
 → Score: 1.0 - 0.3 - 0.3 = 0.4 ✗
 
 **Violations to report:**
+
 - "Divergent ideas detected: [list]"
 - "Supporting evidence introduces new topics"
 
 **Remediation suggestions:**
+
 - "Extract tool comparison into separate note"
 - "Link to related notes instead of explaining in-depth"
 
@@ -203,6 +217,7 @@ Support: "SuperMemo was created in 1987 by Piotr Wozniak"
    - Depends on other notes to make sense
 
 4. **Score calculation:**
+
    ```
    score = 1.0
    for each undefined_critical_term:
@@ -229,28 +244,34 @@ Support: "SuperMemo was created in 1987 by Piotr Wozniak"
   - References to other notes without summary
 
 **Example - PASS:**
+
 ```
 "The PARA method organizes information into Projects, Areas,
 Resources, Archives. Projects are active work with deadlines.
 Areas are ongoing responsibilities."
 ```
+
 → Defines all terms inline
 → Score: 1.0 ✓
 
 **Example - FAIL:**
+
 ```
 "Using the P.A.R.A. categories, my project list is getting cleaner.
 The GTD weekly review helps identify Areas vs Projects."
 ```
+
 → Assumes knowledge of PARA (undefined)
 → Assumes knowledge of GTD (undefined)
 → Score: 1.0 - 0.2 - 0.2 = 0.6 ✗
 
 **Violations to report:**
+
 - "Undefined terms: [list]"
 - "Assumed context: [list]"
 
 **Remediation suggestions:**
+
 - "Define 'PARA' inline or link with brief summary"
 - "Add context about GTD weekly review"
 
@@ -273,6 +294,7 @@ The GTD weekly review helps identify Areas vs Projects."
    - Unique if no duplicates/near-duplicates
 
 3. **Score calculation:**
+
    ```
    score = 1.0
    if not descriptive:
@@ -301,27 +323,33 @@ The GTD weekly review helps identify Areas vs Projects."
   - "Ideas", "Notes", "Observations" alone
 
 **Example - PASS:**
+
 ```
 Title: "Zettelkasten Principle: Atomicity"
 Content: Explains atomic notes concept
 ```
+
 → Descriptive (indicates concept and topic) ✓
 → Unique (no duplicates) ✓
 → Score: 1.0 ✓
 
 **Example - FAIL:**
+
 ```
 Title: "Notes on Productivity"
 Content: Discusses Zettelkasten, GTD, PARA, time-blocking, deep work
 ```
+
 → Not descriptive (too generic, doesn't indicate specific topics) ✗
 → Score: 1.0 - 0.4 = 0.6 ✗
 
 **Violations to report:**
+
 - "Title is too generic"
 - "Duplicate title found: [path]"
 
 **Remediation suggestions:**
+
 - "Make title more specific: suggest '[Specific Topic] - [Aspect]'"
 - "Add context to differentiate from: [duplicate note]"
 
@@ -343,6 +371,7 @@ Content: Discusses Zettelkasten, GTD, PARA, time-blocking, deep work
    - Does explanation become main focus? → In-depth ✗
 
 3. **Score calculation:**
+
    ```
    score = 1.0
    for each in_depth_explanation:
@@ -367,14 +396,17 @@ Content: Discusses Zettelkasten, GTD, PARA, time-blocking, deep work
   - Explains mechanism/structure of related concept
 
 **Example - PASS:**
+
 ```
 "Atomic notes enable flexible linking.
 See also [[Bidirectional Links]] and [[Evergreen Notes]]."
 ```
+
 → Related concepts linked only, not explained
 → Score: 1.0 ✓
 
 **Example - FAIL:**
+
 ```
 "Atomic notes enable flexible linking. Bidirectional links
 connect notes in both directions, creating a web of knowledge.
@@ -382,13 +414,16 @@ Each link represents a semantic relationship between ideas.
 When you link Note A to Note B, Note B automatically shows
 the backlink from Note A, revealing unexpected connections..."
 ```
+
 → Explains bidirectional links in depth (4+ sentences)
 → Score: 1.0 - 0.3 = 0.7 (borderline) ⚠
 
 **Violations to report:**
+
 - "In-depth explanations of related concepts: [list]"
 
 **Remediation suggestions:**
+
 - "Extract [[Bidirectional Links]] explanation into separate note"
 - "Replace explanation with brief link and 1-sentence summary"
 
@@ -532,7 +567,7 @@ atomicity_analysis:
     evidence:
       score: 0.7
       pass: true
-      issues: ["Minor divergent idea about tool selection"]
+      issues: ['Minor divergent idea about tool selection']
     self_contained:
       score: 1.0
       pass: true
@@ -544,9 +579,9 @@ atomicity_analysis:
     related_concepts:
       score: 0.8
       pass: true
-      issues: ["One concept explained in 3 sentences"]
-  verdict: "ATOMIC"
-  recommendation: "Note is atomic - ready for permanent collection"
+      issues: ['One concept explained in 3 sentences']
+  verdict: 'ATOMIC'
+  recommendation: 'Note is atomic - ready for permanent collection'
 ```
 
 ## Usage Notes

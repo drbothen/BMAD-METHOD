@@ -58,6 +58,7 @@ link_validation_audit:
 This task handles **external network requests** which are a primary attack vector. Security measures are **non-negotiable** and **always enforced**.
 
 **Attack Vectors Mitigated:**
+
 1. **SSRF (Server-Side Request Forgery)** - Attacker tricks auditor into requesting private resources
 2. **Rate Limiting Bypass** - Attacker overwhelms target servers with requests
 3. **Timeout DoS** - Attacker hangs auditor with slow-responding URLs
@@ -118,6 +119,7 @@ This task handles **external network requests** which are a primary attack vecto
 **Whitelist:** ONLY `http://` and `https://` protocols allowed
 
 **Blocked Protocols:**
+
 - `file://` - Local file access (critical security risk)
 - `javascript:` - JavaScript injection
 - `data:` - Data URI injection
@@ -227,6 +229,7 @@ def sanitize_url(url):
 **Objective:** Test each validated URL with HTTP HEAD request, enforcing rate limits
 
 **Rate Limiting:**
+
 - **Max 5 requests per second** (user-configurable)
 - Prevents overwhelming target servers
 - Prevents abuse of this audit feature
@@ -290,14 +293,14 @@ for url in validated_urls[:max_links]:
 
 **Status Classification:**
 
-| Status Code | Category | Severity | Description | Action |
-|-------------|----------|----------|-------------|--------|
-| **2xx** | Valid | N/A (no issue) | Link is working | No action needed |
-| **3xx** | Redirect | MEDIUM | Link redirects to new URL | Update link to redirect_url |
-| **4xx** | Broken | **CRITICAL** | Resource not found or forbidden | Fix or remove link |
-| **5xx** | Server Error | HIGH | Server-side issue (may be temporary) | Retry later or contact site owner |
-| **TIMEOUT** | Timeout | HIGH | Connection timed out | Retry or remove if persistent |
-| **SECURITY_BLOCKED** | Security | **CRITICAL** | SSRF or protocol violation | Remove link immediately |
+| Status Code          | Category     | Severity       | Description                          | Action                            |
+| -------------------- | ------------ | -------------- | ------------------------------------ | --------------------------------- |
+| **2xx**              | Valid        | N/A (no issue) | Link is working                      | No action needed                  |
+| **3xx**              | Redirect     | MEDIUM         | Link redirects to new URL            | Update link to redirect_url       |
+| **4xx**              | Broken       | **CRITICAL**   | Resource not found or forbidden      | Fix or remove link                |
+| **5xx**              | Server Error | HIGH           | Server-side issue (may be temporary) | Retry later or contact site owner |
+| **TIMEOUT**          | Timeout      | HIGH           | Connection timed out                 | Retry or remove if persistent     |
+| **SECURITY_BLOCKED** | Security     | **CRITICAL**   | SSRF or protocol violation           | Remove link immediately           |
 
 **Implementation:**
 
@@ -378,7 +381,7 @@ Sort link_issues by:
 ```yaml
 link_validation_audit:
   total_links_found: 75
-  total_links_tested: 50  # Capped at max_links
+  total_links_tested: 50 # Capped at max_links
   broken_links_count: 10
   redirect_links_count: 5
   server_error_count: 2
@@ -434,6 +437,7 @@ link_validation_audit:
 **Scenario:** Identify broken external links (404s) in knowledge base
 
 **Workflow:**
+
 1. Run `*audit-links`
 2. Review CRITICAL issues (4xx status codes)
 3. Fix or remove broken links
@@ -446,6 +450,7 @@ link_validation_audit:
 **Scenario:** Find and update outdated URLs that redirect to new locations
 
 **Workflow:**
+
 1. Run `*audit-links`
 2. Filter results to 3xx status codes
 3. For each redirect:
@@ -459,6 +464,7 @@ link_validation_audit:
 **Scenario:** Detect potential SSRF attempts or malicious links
 
 **Workflow:**
+
 1. Run `*audit-links`
 2. Check security_violations_count
 3. If > 0, review SECURITY_BLOCKED entries
@@ -471,8 +477,8 @@ link_validation_audit:
 
 **Target Performance:**
 
-| Links Tested | Expected Time | Rate Limit Impact |
-|--------------|---------------|-------------------|
+| Links Tested | Expected Time | Rate Limit Impact     |
+| ------------ | ------------- | --------------------- |
 | 10 links     | ~2 seconds    | Rate limit: 0.2s/link |
 | 50 links     | ~10 seconds   | Rate limit: 0.2s/link |
 | 100 links    | ~20 seconds   | Rate limit: 0.2s/link |
@@ -490,6 +496,7 @@ link_validation_audit:
 **Error:** "Network unreachable - check internet connection"
 
 **Remediation:**
+
 - Verify internet connection
 - Test with simple curl/ping command
 - Check firewall settings
@@ -501,6 +508,7 @@ link_validation_audit:
 **Error:** "SSRF attempt detected: URL resolves to private IP 192.168.1.1"
 
 **Remediation:**
+
 - Remove the malicious URL from the note
 - Investigate who added the URL
 - This is a security incident - log for audit
@@ -512,6 +520,7 @@ link_validation_audit:
 **Error:** "Rate limit exceeded - max 5 requests/second"
 
 **Remediation:**
+
 - This is expected behavior (security measure)
 - Audit will automatically wait between requests
 - Increase max_links if too slow
@@ -523,10 +532,12 @@ link_validation_audit:
 ### Test Case 1: Broken Link Detection
 
 **Setup:**
+
 - 50 notes with external links
 - 10 links with 404 status codes (broken)
 
 **Expected Results:**
+
 - broken_links_count = 10
 - All 10 broken links reported with severity: CRITICAL
 
@@ -537,10 +548,12 @@ link_validation_audit:
 ### Test Case 2: Redirect Detection
 
 **Setup:**
+
 - 50 notes with external links
 - 5 links with 301/302 status codes (redirects)
 
 **Expected Results:**
+
 - redirect_links_count = 5
 - All 5 redirects reported with redirect_url populated
 
@@ -551,10 +564,12 @@ link_validation_audit:
 ### Test Case 3: Security - SSRF Prevention
 
 **Setup:**
+
 - Note with link: `http://localhost:8080/admin`
 - Run audit
 
 **Expected Results:**
+
 - status_code: 'SECURITY_BLOCKED'
 - severity: 'CRITICAL'
 - error_message: 'SSRF attempt: private IP'
@@ -567,10 +582,12 @@ link_validation_audit:
 ### Test Case 4: Security - Invalid Protocol
 
 **Setup:**
+
 - Note with link: `file:///etc/passwd`
 - Run audit
 
 **Expected Results:**
+
 - status_code: 'SECURITY_BLOCKED'
 - severity: 'CRITICAL'
 - error_message: 'Invalid protocol - only http/https allowed'
@@ -583,10 +600,12 @@ link_validation_audit:
 ### Test Case 5: Rate Limiting Enforced
 
 **Setup:**
+
 - 50 links to validate
 - Run audit
 
 **Expected Results:**
+
 - Rate limiting enforced (5 requests/second)
 - Execution time >= 10 seconds (50 links × 0.2s/link)
 
@@ -597,10 +616,12 @@ link_validation_audit:
 ### Test Case 6: Timeout Handling
 
 **Setup:**
+
 - Note with link to slow server (>10s response time)
 - Run audit
 
 **Expected Results:**
+
 - status_code: 'TIMEOUT'
 - severity: 'HIGH'
 - error_message: 'Connection timeout after 10s'

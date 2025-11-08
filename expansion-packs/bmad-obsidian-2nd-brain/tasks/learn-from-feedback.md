@@ -31,8 +31,8 @@ learning_result:
   total_feedback_count: 125
   acceptance_rate: 0.78
   adjustments_applied:
-    threshold_adjustment: +0.05  # Raised or lowered
-    type_preferences: {'supports': 0.92, 'elaborates': 0.74, ...}
+    threshold_adjustment: +0.05 # Raised or lowered
+    type_preferences: { 'supports': 0.92, 'elaborates': 0.74, ... }
   recommendations:
     - 'Acceptance rate high (78%), consider lowering threshold to 0.55'
 ```
@@ -74,21 +74,21 @@ learning_result:
 ### Step 1: Load Existing Feedback
 
 ```javascript
-feedback_file_path = '.bmad-obsidian-2nd-brain/link-feedback.json'
+feedback_file_path = '.bmad-obsidian-2nd-brain/link-feedback.json';
 
 try {
-  feedback_data = read_json(feedback_file_path)
+  feedback_data = read_json(feedback_file_path);
 } catch (error) {
   // File doesn't exist → initialize
   feedback_data = {
     version: '1.0',
     created: current_iso_timestamp(),
     last_updated: current_iso_timestamp(),
-    threshold_history: [{date: today(), value: 0.6, reason: 'initial'}],
+    threshold_history: [{ date: today(), value: 0.6, reason: 'initial' }],
     current_threshold: 0.6,
     feedback_entries: [],
-    type_statistics: initialize_type_stats()
-  }
+    type_statistics: initialize_type_stats(),
+  };
 }
 ```
 
@@ -102,11 +102,11 @@ new_entry = {
   link_type: link_type,
   link_strength: link_strength,
   semantic_similarity: semantic_similarity,
-  rejection_reason: rejection_reason
-}
+  rejection_reason: rejection_reason,
+};
 
-feedback_data.feedback_entries.push(new_entry)
-feedback_data.last_updated = current_iso_timestamp()
+feedback_data.feedback_entries.push(new_entry);
+feedback_data.last_updated = current_iso_timestamp();
 ```
 
 ### Step 3: Update Type Statistics
@@ -118,24 +118,24 @@ if (!feedback_data.type_statistics[link_type]) {
     approved: 0,
     rejected: 0,
     deferred: 0,
-    acceptance_rate: 0.0
-  }
+    acceptance_rate: 0.0,
+  };
 }
 
-stats = feedback_data.type_statistics[link_type]
+stats = feedback_data.type_statistics[link_type];
 
 if (decision == 'approved') {
-  stats.approved += 1
+  stats.approved += 1;
 } else if (decision == 'rejected') {
-  stats.rejected += 1
+  stats.rejected += 1;
 } else if (decision == 'deferred') {
-  stats.deferred += 1
+  stats.deferred += 1;
 }
 
 // Recalculate acceptance rate
-total = stats.approved + stats.rejected  // Don't count deferred
+total = stats.approved + stats.rejected; // Don't count deferred
 if (total > 0) {
-  stats.acceptance_rate = stats.approved / total
+  stats.acceptance_rate = stats.approved / total;
 }
 ```
 
@@ -168,20 +168,20 @@ rejection_patterns = group_by(feedback_entries where decision == 'rejected', 're
 ```javascript
 // Only adjust if sufficient data (>= 20 decisions)
 if (total_decided >= 20) {
-  current_threshold = feedback_data.current_threshold
+  current_threshold = feedback_data.current_threshold;
 
-  if (overall_acceptance_rate < 0.60) {
+  if (overall_acceptance_rate < 0.6) {
     // Low acceptance → raise threshold (be more selective)
-    new_threshold = min(1.0, current_threshold + 0.05)
-    adjustment_reason = 'acceptance_low'
-  } else if (overall_acceptance_rate > 0.90) {
+    new_threshold = min(1.0, current_threshold + 0.05);
+    adjustment_reason = 'acceptance_low';
+  } else if (overall_acceptance_rate > 0.9) {
     // High acceptance → lower threshold (more suggestions)
-    new_threshold = max(0.5, current_threshold - 0.05)
-    adjustment_reason = 'acceptance_high'
+    new_threshold = max(0.5, current_threshold - 0.05);
+    adjustment_reason = 'acceptance_high';
   } else {
     // Acceptance in good range (60%-90%) → no change
-    new_threshold = current_threshold
-    adjustment_reason = 'no_change'
+    new_threshold = current_threshold;
+    adjustment_reason = 'no_change';
   }
 
   // Record threshold change
@@ -191,9 +191,9 @@ if (total_decided >= 20) {
       value: new_threshold,
       reason: adjustment_reason,
       previous_value: current_threshold,
-      acceptance_rate: overall_acceptance_rate
-    })
-    feedback_data.current_threshold = new_threshold
+      acceptance_rate: overall_acceptance_rate,
+    });
+    feedback_data.current_threshold = new_threshold;
   }
 }
 ```
@@ -243,13 +243,15 @@ try {
   feedback_recorded: true,
   total_feedback_count: feedback_data.feedback_entries.length,
   acceptance_rate: overall_acceptance_rate,
-  adjustments_applied: {
-    threshold_adjustment: new_threshold - current_threshold,
-    new_threshold: new_threshold,
-    type_preferences: feedback_data.type_statistics
-  },
+  adjustments_applied:
+    {
+      threshold_adjustment: new_threshold - current_threshold,
+      new_threshold: new_threshold,
+      type_preferences: feedback_data.type_statistics,
+    },
   rejection_filters: rejection_filters,
-  recommendations: generate_recommendations(overall_acceptance_rate, type_statistics)
+  recommendations: generate_recommendations(overall_acceptance_rate,
+  type_statistics),
 }
 ```
 
@@ -258,6 +260,7 @@ try {
 ### Example 1: First Feedback (Initialization)
 
 **Input:**
+
 ```yaml
 suggestion_id: 'abc123'
 decision: 'approved'
@@ -267,12 +270,13 @@ semantic_similarity: 0.76
 ```
 
 **Output:**
+
 ```yaml
 feedback_recorded: true
 total_feedback_count: 1
 acceptance_rate: 1.0
 adjustments_applied:
-  threshold_adjustment: 0.0  # Insufficient data
+  threshold_adjustment: 0.0 # Insufficient data
   new_threshold: 0.6
 recommendations:
   - 'Insufficient data (1 decision). Need 20+ decisions for threshold adjustment'
@@ -283,6 +287,7 @@ recommendations:
 **Input:** (after 25 decisions, 12 approved, 13 rejected → 48% acceptance)
 
 **Output:**
+
 ```yaml
 feedback_recorded: true
 total_feedback_count: 25
@@ -292,7 +297,7 @@ adjustments_applied:
   new_threshold: 0.65
   type_preferences:
     supports: 0.85
-    elaborates: 0.42  # Low acceptance
+    elaborates: 0.42 # Low acceptance
     analogous_to: 0.60
 recommendations:
   - 'Acceptance rate low (48%), raised threshold from 0.60 to 0.65'
@@ -304,6 +309,7 @@ recommendations:
 **Input:** (after 50 decisions, 46 approved, 4 rejected → 92% acceptance)
 
 **Output:**
+
 ```yaml
 feedback_recorded: true
 total_feedback_count: 50
@@ -318,17 +324,20 @@ recommendations:
 ## Privacy & Reset
 
 **Privacy:**
+
 - All feedback stored locally in `.bmad-obsidian-2nd-brain/link-feedback.json`
 - No data sent to external services
 - User has full control and visibility
 
 **Reset Learning:**
+
 ```bash
 # Delete feedback file to reset
 rm .bmad-obsidian-2nd-brain/link-feedback.json
 ```
 
 **View Stats:**
+
 ```javascript
 // User can view learning stats via command
 *review-feedback-stats
@@ -346,4 +355,4 @@ rm .bmad-obsidian-2nd-brain/link-feedback.json
 ## Integration Points
 
 **Called by:** *accept-suggestion, *reject-suggestion
-**Outputs to:** *suggest-links (applies learned threshold and filters)
+**Outputs to:** \*suggest-links (applies learned threshold and filters)

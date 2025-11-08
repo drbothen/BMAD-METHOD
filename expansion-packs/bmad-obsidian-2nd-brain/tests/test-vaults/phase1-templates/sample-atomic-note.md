@@ -25,6 +25,7 @@ The Feynman Technique is a learning method where you explain a concept in simple
 5. **Organize and tell a story** - Create a coherent narrative using analogies
 
 **Why it works:**
+
 - Forces active retrieval rather than passive review
 - Exposes illusion of competence (thinking you know when you don't)
 - Simplification reveals true understanding versus memorization

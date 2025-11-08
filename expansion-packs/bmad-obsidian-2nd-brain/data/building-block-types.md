@@ -19,6 +19,7 @@ This taxonomy defines the 6 fundamental building block types used to classify at
 **Structure:** Definition + Characteristics + Examples (optional)
 
 **Key Characteristics:**
+
 - Defines what something **is** or **means**
 - Explains the nature or essence of an idea
 - Provides boundaries (what it includes/excludes)
@@ -26,6 +27,7 @@ This taxonomy defines the 6 fundamental building block types used to classify at
 - May include examples to clarify meaning
 
 **Linguistic Signals:**
+
 - "is defined as", "refers to", "means that"
 - "the concept of", "the idea of"
 - "in other words", "essentially"
@@ -40,6 +42,7 @@ This taxonomy defines the 6 fundamental building block types used to classify at
 [Concept] is defined as [definition].
 
 Key characteristics:
+
 - [Characteristic 1]
 - [Characteristic 2]
 - [Characteristic 3]
@@ -77,6 +80,7 @@ This concept is important because [significance].
 **Structure:** Thesis/Claim + Evidence + Logic/Reasoning
 
 **Key Characteristics:**
+
 - Makes a clear, arguable claim
 - Provides evidence to support the claim
 - Explains the logical connection between evidence and claim
@@ -84,6 +88,7 @@ This concept is important because [significance].
 - Has a persuasive or analytical intent
 
 **Linguistic Signals:**
+
 - "therefore", "thus", "consequently"
 - "because", "since", "given that"
 - "this shows that", "this proves that"
@@ -98,6 +103,7 @@ This concept is important because [significance].
 **Thesis:** [Clear statement of claim]
 
 **Evidence:**
+
 1. [Evidence point 1]
 2. [Evidence point 2]
 3. [Evidence point 3]
@@ -135,6 +141,7 @@ This concept is important because [significance].
 **Structure:** Components + Relationships + Boundaries
 
 **Key Characteristics:**
+
 - Describes a system with multiple interrelated parts
 - Shows how components interact or relate
 - Defines boundaries (what's in/out of scope)
@@ -142,6 +149,7 @@ This concept is important because [significance].
 - Simplifies complexity for understanding
 
 **Linguistic Signals:**
+
 - "consists of", "comprises", "is made up of"
 - "framework", "system", "model", "structure"
 - "the relationship between", "how X connects to Y"
@@ -156,6 +164,7 @@ This concept is important because [significance].
 [Model] is a [framework/system] for [purpose].
 
 **Components:**
+
 1. [Component 1] - [Description and role]
 2. [Component 2] - [Description and role]
 3. [Component 3] - [Description and role]
@@ -195,6 +204,7 @@ This concept is important because [significance].
 **Structure:** Question + Context + Significance
 
 **Key Characteristics:**
+
 - Explicitly interrogative (ends with ?)
 - Expresses uncertainty or curiosity
 - Provides context for why the question matters
@@ -202,6 +212,7 @@ This concept is important because [significance].
 - Often evolves into claims or arguments when answered
 
 **Linguistic Signals:**
+
 - Interrogative words: "what", "why", "how", "when", "where"
 - "?" punctuation
 - "I wonder", "unclear whether"
@@ -222,6 +233,7 @@ This concept is important because [significance].
 **Possible Approaches:** [How to investigate]
 
 **Related Questions:**
+
 - [[Related Question 1]]
 - [[Related Question 2]]
 ```
@@ -254,6 +266,7 @@ This concept is important because [significance].
 **Structure:** Declarative Statement + Scope + Falsifiability
 
 **Key Characteristics:**
+
 - Makes a specific, contestable assertion
 - Presents a belief or hypothesis
 - Falsifiable (could be proven wrong)
@@ -261,6 +274,7 @@ This concept is important because [significance].
 - May evolve into arguments with evidence
 
 **Linguistic Signals:**
+
 - "I believe", "I think", "I suspect"
 - "hypothesis", "assertion", "conjecture"
 - Declarative statements without extensive evidence
@@ -311,6 +325,7 @@ This concept is important because [significance].
 **Structure:** Observation + Context + Data/Evidence
 
 **Key Characteristics:**
+
 - Reports what was observed or measured
 - Empirical (based on observation/experience)
 - Descriptive rather than explanatory
@@ -318,6 +333,7 @@ This concept is important because [significance].
 - May later be explained by arguments or models
 
 **Linguistic Signals:**
+
 - "observed", "noticed", "witnessed"
 - "data shows", "research found", "study demonstrated"
 - "pattern", "trend", "occurrence"
@@ -398,10 +414,12 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Large concepts may have components (e.g., "Democracy")
 
 **Disambiguation:**
+
 - CONCEPT: Focuses on definition and meaning
 - MODEL: Focuses on components and relationships
 
 **Example:**
+
 - Concept: "Democracy is a system of government by the people"
 - Model: "Democracy consists of: elections, representation, separation of powers, rule of law"
 
@@ -410,6 +428,7 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Both make assertions, difference is evidence depth
 
 **Disambiguation:**
+
 - CLAIM: Statement with minimal evidence (belief, hypothesis)
 - ARGUMENT: Statement with substantial evidence and reasoning
 
@@ -420,10 +439,12 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Explained observations could be either
 
 **Disambiguation:**
+
 - PHENOMENON: Reports what happened (descriptive)
 - ARGUMENT: Explains why it happened (analytical)
 
 **Example:**
+
 - Phenomenon: "My note count increased from 487 to 523 this month"
 - Argument: "My note count increased because I implemented daily capture habits"
 
@@ -432,6 +453,7 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Questions can imply claims ("Isn't X true?")
 
 **Disambiguation:**
+
 - QUESTION: Genuinely seeks answer, open inquiry
 - CLAIM: Rhetorical question that asserts a belief
 
@@ -442,10 +464,12 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Defining concepts can involve argumentation
 
 **Disambiguation:**
+
 - CONCEPT: Establishes what something means
 - ARGUMENT: Defends why a claim is true
 
 **Example:**
+
 - Concept: "Atomic notes are notes containing one idea"
 - Argument: "Atomic notes are superior to long-form notes"
 
@@ -454,6 +478,7 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Note contains concept definition AND argument
 
 **Solution:** This indicates the note is NOT atomic. Fragment it:
+
 1. Extract the concept definition into one note
 2. Extract the argument into another note
 3. Link them: "[[Concept]] enables [[Argument about concept]]"
@@ -470,6 +495,7 @@ Based on typical knowledge work, expect this distribution:
 - **CLAIM:** 5-10% (hypotheses and beliefs)
 
 Significant deviations may indicate:
+
 - Too many concepts: Consuming more than creating
 - Too many phenomena: Capturing without synthesizing
 - Too many claims: Asserting without evidencing
@@ -508,7 +534,7 @@ The structural analysis agent uses this taxonomy to:
 
 ## References
 
-- Ahrens, S. (2017). *How to Take Smart Notes*
-- Luhmann, N. (1992). *Communicating with Slip Boxes*
-- Schmidt, J. (2016). *Niklas Luhmann's Card Index: The Fabrication of Serendipity*
-- Matuschak, A. (2019). *Evergreen Notes*
+- Ahrens, S. (2017). _How to Take Smart Notes_
+- Luhmann, N. (1992). _Communicating with Slip Boxes_
+- Schmidt, J. (2016). _Niklas Luhmann's Card Index: The Fabrication of Serendipity_
+- Matuschak, A. (2019). _Evergreen Notes_

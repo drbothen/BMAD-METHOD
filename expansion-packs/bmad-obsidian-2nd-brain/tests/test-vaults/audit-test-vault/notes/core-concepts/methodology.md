@@ -37,6 +37,7 @@ This is a critical knowledge hub referenced by 15 other notes.
 ---
 
 **Test Characteristics:**
+
 - `days_stale`: ~300 days (as of Nov 2025)
 - `staleness_score`: 300/180 ≈ 1.67
 - `importance`: 15 (high incoming links)

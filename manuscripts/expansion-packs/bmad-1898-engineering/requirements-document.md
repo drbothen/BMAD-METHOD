@@ -1,4 +1,5 @@
 # BMAD-1898: Engineering Expansion Pack
+
 ## Requirements Document v1.0
 
 **Prepared by:** Mary (Business Analyst)
@@ -48,6 +49,7 @@
 This requirements document defines the BMAD-1898 Engineering Expansion Pack, a comprehensive AI-assisted system for enriching security vulnerability tickets and ensuring quality assurance of security analysis work. The expansion pack addresses the critical challenge of managing the 50,000+ annual CVE disclosures while maintaining analyst productivity and reducing alert fatigue.
 
 **Key Deliverables:**
+
 - **2 specialized security agents** (Security Analyst, Security Reviewer)
 - **7 focused tasks** for vulnerability research and quality assurance
 - **5 professional templates** for structured security reporting
@@ -57,6 +59,7 @@ This requirements document defines the BMAD-1898 Engineering Expansion Pack, a c
 - **1 expansion pack configuration** for JIRA and Perplexity MCP integration
 
 **Business Impact:**
+
 - **90% faster vulnerability analysis** through AI-assisted research
 - **60-70% more defects identified** through structured peer review
 - **Reduced alert fatigue** by focusing on CVSS + EPSS + KEV prioritization
@@ -73,6 +76,7 @@ Security operations teams face unprecedented vulnerability volume, with 2025 CVE
 ### Existing Process (As-Is)
 
 Currently, Project AOD security analysts manually:
+
 1. Read JIRA security alert tickets with minimal context
 2. Research CVE details across multiple sources (NVD, CISA, vendor sites)
 3. Copy/paste fragmented information into JIRA comments
@@ -85,6 +89,7 @@ Currently, Project AOD security analysts manually:
 ### Proposed Solution (To-Be)
 
 The BMAD-1898 expansion pack transforms vulnerability management through:
+
 - **AI-Assisted Research:** Leverage Perplexity MCP for comprehensive CVE intelligence gathering
 - **Structured Enrichment:** Standardized templates ensuring complete analysis coverage
 - **Multi-Dimensional Prioritization:** CVSS + EPSS + KEV + Business Context = Accurate Risk
@@ -139,6 +144,7 @@ The BMAD-1898 expansion pack transforms vulnerability management through:
 ### In Scope
 
 **Functional Requirements:**
+
 - AI-assisted CVE research using Perplexity MCP
 - Structured vulnerability enrichment workflows
 - JIRA ticket integration (reading, commenting, custom fields)
@@ -152,6 +158,7 @@ The BMAD-1898 expansion pack transforms vulnerability management through:
 - Compensating controls identification
 
 **Technical Requirements:**
+
 - Integration with Atlassian MCP (JIRA Cloud)
 - Integration with Perplexity MCP (search, reason, deep_research)
 - BMAD framework agent system
@@ -160,6 +167,7 @@ The BMAD-1898 expansion pack transforms vulnerability management through:
 - Workflow orchestration
 
 **Documentation Requirements:**
+
 - Agent definitions (2 agents)
 - Task procedures (7 tasks)
 - Templates (5 templates)
@@ -184,6 +192,7 @@ The BMAD-1898 expansion pack transforms vulnerability management through:
 ### Success Criteria
 
 **Must Have (MVP):**
+
 - ✅ Security Analyst agent enriches tickets using Perplexity research
 - ✅ Security Reviewer agent performs systematic QA reviews
 - ✅ All 8 quality dimensions covered by checklists
@@ -194,6 +203,7 @@ The BMAD-1898 expansion pack transforms vulnerability management through:
 - ✅ Complete review report template
 
 **Should Have (v1.1):**
+
 - Automated metrics tracking and reporting
 - Dashboard templates for vulnerability trends
 - Integration with additional threat intelligence sources
@@ -201,6 +211,7 @@ The BMAD-1898 expansion pack transforms vulnerability management through:
 - Bulk enrichment capabilities
 
 **Could Have (v2.0):**
+
 - Machine learning-based priority prediction
 - Custom CVSS calculator integration
 - Automated MITRE ATT&CK mapping using AI
@@ -250,6 +261,7 @@ The BMAD-1898 expansion pack transforms vulnerability management through:
 ### Data Flow
 
 **Enrichment Workflow:**
+
 1. User activates Security Analyst agent
 2. Agent reads JIRA ticket via Atlassian MCP
 3. Agent extracts CVE ID and initial context
@@ -260,6 +272,7 @@ The BMAD-1898 expansion pack transforms vulnerability management through:
 8. Ticket ready for review or remediation
 
 **Review Workflow:**
+
 1. User activates Security Reviewer agent
 2. Agent reads JIRA ticket and analyst enrichment
 3. Agent evaluates using 8 quality dimension checklists
@@ -271,14 +284,14 @@ The BMAD-1898 expansion pack transforms vulnerability management through:
 
 ### Integration Points
 
-| System | Purpose | Integration Method |
-|--------|---------|-------------------|
-| JIRA Cloud | Ticket management | Atlassian MCP (getJiraIssue, editJiraIssue, addCommentToJiraIssue) |
-| Perplexity AI | CVE research & fact-checking | Perplexity MCP (search, reason, deep_research) |
-| NIST NVD | CVE details, CVSS scores | Via Perplexity research |
-| CISA KEV | Active exploitation status | Via Perplexity research |
-| FIRST EPSS | Exploitation probability | Via Perplexity research |
-| MITRE ATT&CK | Tactic/technique mapping | Via Perplexity research + manual mapping |
+| System        | Purpose                      | Integration Method                                                 |
+| ------------- | ---------------------------- | ------------------------------------------------------------------ |
+| JIRA Cloud    | Ticket management            | Atlassian MCP (getJiraIssue, editJiraIssue, addCommentToJiraIssue) |
+| Perplexity AI | CVE research & fact-checking | Perplexity MCP (search, reason, deep_research)                     |
+| NIST NVD      | CVE details, CVSS scores     | Via Perplexity research                                            |
+| CISA KEV      | Active exploitation status   | Via Perplexity research                                            |
+| FIRST EPSS    | Exploitation probability     | Via Perplexity research                                            |
+| MITRE ATT&CK  | Tactic/technique mapping     | Via Perplexity research + manual mapping                           |
 
 ---
 
@@ -435,11 +448,13 @@ project-aod-security/                      # Root project directory
 **Purpose:** Contains the complete BMAD-1898 expansion pack installation (agents, tasks, templates, etc.)
 
 **Usage:**
+
 - Installed via `npx bmad-method install`
 - Read-only during normal operations
 - Updated only when upgrading expansion pack versions
 
 **Key Files:**
+
 - `config.yaml` - JIRA Cloud ID, custom field mappings, Perplexity settings
 - `agents/*.md` - Security Analyst and Security Reviewer agent definitions
 - `data/bmad-kb.md` - Vulnerability management methodology
@@ -451,6 +466,7 @@ project-aod-security/                      # Root project directory
 **Purpose:** Working directory for all active vulnerability tickets, organized by month and ticket ID.
 
 **Usage:**
+
 - **Create ticket directory:** When enriching AOD-1234, create `security-alerts/2025-11/AOD-1234-<short-name>/`
 - **Subdirectories:**
   - `enrichment/` - All enrichment artifacts (CVE research, business impact, remediation plan, final enrichment)
@@ -459,16 +475,18 @@ project-aod-security/                      # Root project directory
 - **metadata.yaml** - Captures ticket metadata (CVE ID, CVSS, EPSS, KEV, priority, dates)
 
 **Workflow Integration:**
+
 - Security Analyst agent saves all artifacts here during enrichment workflow
 - Security Reviewer agent saves review reports here
 - DevOps team documents remediation progress here
 - Archived to `archive/` when ticket closed
 
 **Example metadata.yaml:**
+
 ```yaml
 ticket:
   id: AOD-1234
-  summary: "Apache Struts 2 RCE Vulnerability"
+  summary: 'Apache Struts 2 RCE Vulnerability'
   created: 2025-11-06
   updated: 2025-11-07
   status: Remediation In Progress
@@ -502,16 +520,19 @@ remediation:
 **Purpose:** Centralized, reusable CVE research library indexed by CVE ID.
 
 **Usage:**
+
 - **Research once, reference many:** If multiple tickets reference CVE-2024-1234, research is stored here and can be linked from multiple ticket directories
 - **Track CVE evolution:** As new exploits emerge or patches release, update the CVE research document
 - **index.yaml** - Quick lookup of all researched CVEs with metadata
 
 **Workflow Integration:**
+
 - `research-cve.md` task saves output here
 - Enrichment workflow references existing research before conducting new research
 - Enables consistency across tickets referencing same CVE
 
 **Example index.yaml:**
+
 ```yaml
 CVE-2024-1234:
   researched_date: 2025-11-06
@@ -529,16 +550,19 @@ CVE-2024-1234:
 **Purpose:** Reusable MITRE ATT&CK technique mappings organized by tactic, technique, and CWE.
 
 **Usage:**
+
 - **By Tactic:** Browse vulnerabilities mapped to Initial Access, Privilege Escalation, etc.
 - **By Technique:** See all vulnerabilities mapped to T1190 (Exploit Public-Facing Application)
 - **By CWE:** Understand which ATT&CK techniques correspond to specific weakness types (CWE-94, CWE-79, etc.)
 
 **Workflow Integration:**
+
 - `map-to-attack.md` task references and updates these mappings
 - Detection engineering team uses mappings to design detection rules
 - Threat hunting team identifies attack patterns
 
 **Example T1190-exploit-public-facing-app.md:**
+
 ```markdown
 # T1190: Exploit Public-Facing Application
 
@@ -572,10 +596,12 @@ CVE-2024-1234:
 **Purpose:** Track enrichment speed, quality scores, MTTR, analyst productivity, and program effectiveness.
 
 **Usage:**
+
 - **CSV files:** Structured data for analysis and dashboards
 - **Dashboard markdown:** Weekly/monthly human-readable summaries
 
 **Key Metrics:**
+
 - `enrichment-metrics.csv` - Time per ticket, research depth, completion rate
 - `review-metrics.csv` - Review time, quality scores, defects found
 - `quality-scores.csv` - Overall quality assessments, trend analysis
@@ -583,6 +609,7 @@ CVE-2024-1234:
 - `analyst-productivity.csv` - Tickets per analyst per day, improvement trends
 
 **Workflow Integration:**
+
 - Agents automatically log timing and quality data
 - Weekly script aggregates metrics for leadership reporting
 - Continuous improvement team uses trends to identify gaps
@@ -594,11 +621,13 @@ CVE-2024-1234:
 **Purpose:** Historical record of all peer reviews and quality assessments.
 
 **Usage:**
+
 - Organized by month
 - Includes individual review reports + monthly quality summaries
 - `bias-detection-log.csv` - Tracks cognitive bias patterns for training
 
 **Workflow Integration:**
+
 - Security Reviewer agent saves reports here
 - Monthly QA meetings review quality trends
 - Analyst skill development uses review feedback
@@ -610,11 +639,13 @@ CVE-2024-1234:
 **Purpose:** Centralized remediation planning and execution tracking.
 
 **Usage:**
+
 - `active/` - Current remediation efforts
 - `completed/` - Historical remediation records
 - `templates/` - Standardized remediation plan formats
 
 **Workflow Integration:**
+
 - `create-remediation-plan.md` task outputs here
 - DevOps team tracks implementation progress
 - Post-remediation retrospectives document lessons learned
@@ -626,12 +657,14 @@ CVE-2024-1234:
 **Purpose:** Internal procedures, vendor advisories, asset inventory, and institutional knowledge.
 
 **Usage:**
+
 - **vendor-advisories/** - Downloaded vendor security bulletins
 - **internal-procedures/** - Patch management, SLAs, escalation paths
 - **lessons-learned/** - Retrospectives and incident post-mortems
 - **asset-inventory/** - Critical systems, ACR ratings, dependency maps
 
 **Workflow Integration:**
+
 - Business impact assessment references ACR ratings
 - Priority assessment uses internal procedures
 - New analysts onboard using knowledge base
@@ -643,12 +676,14 @@ CVE-2024-1234:
 **Purpose:** Weekly, monthly, quarterly reports for leadership and compliance.
 
 **Usage:**
+
 - **weekly/** - Vulnerability summary for security team standup
 - **monthly/** - Security posture report for management
 - **quarterly/** - Trend analysis for leadership
 - **compliance/** - PCI-DSS, HIPAA, SOC2 reporting artifacts
 
 **Workflow Integration:**
+
 - Automated script generates reports from metrics/
 - Compliance auditors reference reports for audit evidence
 
@@ -711,15 +746,15 @@ CVE-2024-1234:
 
 Each BMAD-1898 task is designed to work with this directory structure:
 
-| Task | Input Directory | Output Directory | Artifacts Created |
-|------|----------------|------------------|-------------------|
-| `enrich-security-alert.md` | `security-alerts/YYYY-MM/AOD-XXXX/` | `enrichment/` | security-enrichment-AOD-XXXX-DATE.md |
-| `research-cve.md` | N/A | `cve-research/CVE-YYYY-NNNNN/` | cve-research-report.md |
-| `verify-security-claims.md` | `enrichment/` | `review/` | fact-verification-DATE.md |
-| `map-to-attack.md` | N/A | `attack-mappings/by-technique/` | TXXXX-technique-name.md |
-| `assess-business-impact.md` | `knowledge-base/asset-inventory/` | `enrichment/` | business-impact-assessment-DATE.md |
-| `create-remediation-plan.md` | `enrichment/` | `remediation-plans/active/` | remediation-plan-AOD-XXXX-DATE.md |
-| `review-security-analysis.md` | `enrichment/` + `review/` | `reviews/YYYY-MM/` | security-review-AOD-XXXX-DATE.md |
+| Task                          | Input Directory                     | Output Directory                | Artifacts Created                    |
+| ----------------------------- | ----------------------------------- | ------------------------------- | ------------------------------------ |
+| `enrich-security-alert.md`    | `security-alerts/YYYY-MM/AOD-XXXX/` | `enrichment/`                   | security-enrichment-AOD-XXXX-DATE.md |
+| `research-cve.md`             | N/A                                 | `cve-research/CVE-YYYY-NNNNN/`  | cve-research-report.md               |
+| `verify-security-claims.md`   | `enrichment/`                       | `review/`                       | fact-verification-DATE.md            |
+| `map-to-attack.md`            | N/A                                 | `attack-mappings/by-technique/` | TXXXX-technique-name.md              |
+| `assess-business-impact.md`   | `knowledge-base/asset-inventory/`   | `enrichment/`                   | business-impact-assessment-DATE.md   |
+| `create-remediation-plan.md`  | `enrichment/`                       | `remediation-plans/active/`     | remediation-plan-AOD-XXXX-DATE.md    |
+| `review-security-analysis.md` | `enrichment/` + `review/`           | `reviews/YYYY-MM/`              | security-review-AOD-XXXX-DATE.md     |
 
 ---
 
@@ -728,6 +763,7 @@ Each BMAD-1898 task is designed to work with this directory structure:
 **Prerequisite:** Before using BMAD-1898 agents, initialize the project directory structure.
 
 **Setup Script (Recommended):**
+
 ```bash
 #!/bin/bash
 # setup-bmad-1898-workspace.sh
@@ -747,6 +783,7 @@ echo "Next step: Run 'npx bmad-method install' and select BMAD-1898-Engineering 
 ```
 
 **Manual Setup:**
+
 1. Create root project directory: `project-aod-security/`
 2. Run `npx bmad-method install` and select BMAD-1898-Engineering
 3. Create remaining directories per structure above
@@ -777,6 +814,7 @@ echo "Next step: Run 'npx bmad-method install' and select BMAD-1898-Engineering 
 **Purpose:** Enriches security vulnerability tickets with comprehensive CVE intelligence using AI-assisted research.
 
 **Persona:**
+
 - **Name:** Alex
 - **Title:** Senior Security Analyst
 - **Icon:** 🔒
@@ -785,6 +823,7 @@ echo "Next step: Run 'npx bmad-method install' and select BMAD-1898-Engineering 
 - **Focus:** CVE research, threat intelligence, risk assessment, actionable remediation
 
 **Core Principles:**
+
 - Multi-factor risk assessment (CVSS + EPSS + KEV + Business Context)
 - Evidence-based analysis with authoritative sources
 - Actionable remediation guidance
@@ -793,6 +832,7 @@ echo "Next step: Run 'npx bmad-method install' and select BMAD-1898-Engineering 
 - Numbered options protocol for user selections
 
 **Commands:**
+
 ```yaml
 commands:
   - '*help' - Show available commands
@@ -807,6 +847,7 @@ commands:
 ```
 
 **Dependencies:**
+
 ```yaml
 dependencies:
   tasks:
@@ -841,6 +882,7 @@ dependencies:
 **Purpose:** Performs systematic quality assurance review of security analyst enrichment work, identifying gaps, biases, and accuracy issues.
 
 **Persona:**
+
 - **Name:** Jordan
 - **Title:** Senior Security QA Specialist
 - **Icon:** ✅
@@ -849,6 +891,7 @@ dependencies:
 - **Focus:** Accuracy validation, completeness verification, bias detection, peer review
 
 **Core Principles:**
+
 - Systematic review using 8 quality dimensions
 - Cognitive bias detection
 - Blameless, constructive feedback
@@ -857,6 +900,7 @@ dependencies:
 - Numbered options protocol for user selections
 
 **Commands:**
+
 ```yaml
 commands:
   - '*help' - Show available commands
@@ -870,6 +914,7 @@ commands:
 ```
 
 **Dependencies:**
+
 ```yaml
 dependencies:
   tasks:
@@ -903,6 +948,7 @@ dependencies:
 **Purpose:** Complete workflow for enriching security vulnerability JIRA tickets with comprehensive CVE intelligence.
 
 **Workflow:**
+
 ```yaml
 workflow:
   elicitation: true
@@ -931,15 +977,18 @@ steps:
 ```
 
 **Inputs:**
+
 - JIRA ticket ID (e.g., AOD-1234)
 - Optional: Specific research focus areas
 
 **Outputs:**
+
 - Structured enrichment comment in JIRA
 - Updated JIRA custom fields
 - Enrichment completeness confirmation
 
 **Dependencies:**
+
 - Atlassian MCP (getJiraIssue, addCommentToJiraIssue, editJiraIssue)
 - Perplexity MCP (search, reason, deep_research)
 - security-enrichment-tmpl.yaml
@@ -952,6 +1001,7 @@ steps:
 **Purpose:** Systematic peer review of analyst vulnerability enrichment work using 8 quality dimensions.
 
 **Workflow:**
+
 ```yaml
 workflow:
   elicitation: false
@@ -960,8 +1010,7 @@ workflow:
 steps:
   - Read JIRA ticket and analyst enrichment comments
   - Extract enrichment content for analysis
-  - Evaluate using 8 quality dimension checklists:
-      1. Technical Accuracy (10 criteria)
+  - Evaluate using 8 quality dimension checklists: 1. Technical Accuracy (10 criteria)
       2. Completeness (12 criteria)
       3. Actionability (8 criteria)
       4. Contextualization (10 criteria)
@@ -981,15 +1030,18 @@ steps:
 ```
 
 **Inputs:**
+
 - JIRA ticket ID with analyst enrichment
 
 **Outputs:**
+
 - Structured review report comment in JIRA
 - Quality score (percentage)
 - Specific improvement recommendations
 - Cognitive bias assessment
 
 **Dependencies:**
+
 - Atlassian MCP (getJiraIssue, addCommentToJiraIssue)
 - Perplexity MCP (search - optional for fact-checking)
 - security-review-report-tmpl.yaml
@@ -1002,6 +1054,7 @@ steps:
 **Purpose:** Focused CVE research using Perplexity AI to gather comprehensive vulnerability intelligence.
 
 **Workflow:**
+
 ```yaml
 workflow:
   elicitation: true
@@ -1032,15 +1085,18 @@ steps:
 ```
 
 **Inputs:**
+
 - CVE ID (e.g., CVE-2024-1234)
 - Research depth (quick/moderate/comprehensive)
 
 **Outputs:**
+
 - Structured CVE research report
 - Source citations
 - Key findings summary
 
 **Dependencies:**
+
 - Perplexity MCP (search, reason, deep_research)
 - cve-research-report-tmpl.yaml
 
@@ -1051,6 +1107,7 @@ steps:
 **Purpose:** Fact-check security assertions in analyst work against authoritative sources.
 
 **Workflow:**
+
 ```yaml
 workflow:
   elicitation: true
@@ -1079,16 +1136,19 @@ steps:
 ```
 
 **Inputs:**
+
 - Analyst enrichment content
 - Specific claims to verify
 
 **Outputs:**
+
 - Verification results (Confirmed / Incorrect / Unverifiable)
 - Discrepancies identified
 - Authoritative source citations
 - Correction recommendations
 
 **Dependencies:**
+
 - Perplexity MCP (search, reason)
 
 ---
@@ -1098,6 +1158,7 @@ steps:
 **Purpose:** Map vulnerabilities to MITRE ATT&CK tactics and techniques.
 
 **Workflow:**
+
 ```yaml
 workflow:
   elicitation: true
@@ -1118,10 +1179,12 @@ steps:
 ```
 
 **Inputs:**
+
 - CVE ID or vulnerability description
 - Vulnerability type
 
 **Outputs:**
+
 - ATT&CK Tactic(s)
 - ATT&CK Technique(s) with T-numbers
 - Sub-Techniques (if applicable)
@@ -1129,6 +1192,7 @@ steps:
 - Mapping justification
 
 **Dependencies:**
+
 - Perplexity MCP (search, reason)
 - mitre-attack-mapping-guide.md
 - attack-mapping-checklist.md
@@ -1140,6 +1204,7 @@ steps:
 **Purpose:** Analyze organizational business impact of vulnerability exploitation.
 
 **Workflow:**
+
 ```yaml
 workflow:
   elicitation: true
@@ -1164,11 +1229,13 @@ steps:
 ```
 
 **Inputs:**
+
 - Affected system details
 - Vulnerability characteristics
 - Organizational context
 
 **Outputs:**
+
 - Business impact rating (Critical/High/Medium/Low)
 - Consequence analysis
 - Regulatory implications
@@ -1176,6 +1243,7 @@ steps:
 - Business impact narrative
 
 **Dependencies:**
+
 - None (uses elicitation and analysis)
 
 ---
@@ -1185,6 +1253,7 @@ steps:
 **Purpose:** Develop specific, actionable remediation guidance for vulnerabilities.
 
 **Workflow:**
+
 ```yaml
 workflow:
   elicitation: true
@@ -1215,11 +1284,13 @@ steps:
 ```
 
 **Inputs:**
+
 - CVE ID
 - Affected system details
 - Current software versions
 
 **Outputs:**
+
 - Recommended remediation approach
 - Step-by-step implementation procedures
 - Testing requirements
@@ -1229,6 +1300,7 @@ steps:
 - Structured remediation plan document
 
 **Dependencies:**
+
 - Perplexity MCP (search, reason)
 - remediation-plan-tmpl.yaml
 - remediation-best-practices.md
@@ -1243,6 +1315,7 @@ steps:
 **Purpose:** Structured format for comprehensive vulnerability enrichment comments in JIRA.
 
 **Sections:**
+
 1. Executive Summary (2-3 sentences)
 2. Vulnerability Classification (CVE, CWE, Type, Published Date)
 3. Severity Metrics (CVSS v3.1/v4.0, EPSS, KEV Status)
@@ -1267,6 +1340,7 @@ steps:
 **Purpose:** Structured format for peer review findings and feedback.
 
 **Sections:**
+
 1. Review Summary (Ticket, Analyst, Reviewer, Date, Overall Assessment)
 2. Strengths (What analyst did well)
 3. Critical Issues (Must-fix issues)
@@ -1291,6 +1365,7 @@ steps:
 **Purpose:** Structured format for standalone CVE research findings.
 
 **Sections:**
+
 1. CVE Summary (ID, Description, Published Date)
 2. Severity Assessment (CVSS, EPSS, KEV)
 3. Technical Details (CWE, Vulnerability Type, Attack Vector)
@@ -1311,6 +1386,7 @@ steps:
 **Purpose:** Structured format for vulnerability remediation guidance.
 
 **Sections:**
+
 1. Remediation Overview (CVE, Affected Systems, Approach)
 2. Patch Information (Version, Release Date, Vendor Advisory, Download)
 3. Implementation Steps (Detailed procedures)
@@ -1334,6 +1410,7 @@ steps:
 **Purpose:** Structured format for vulnerability priority determination.
 
 **Sections:**
+
 1. Priority Summary (Recommended Level P1-P5)
 2. Factor Analysis:
    - CVSS Severity (Critical/High/Medium/Low)
@@ -1361,6 +1438,7 @@ steps:
 **Purpose:** Verify all required enrichment sections are complete.
 
 **Categories:**
+
 - **CVE Details** (5 items)
 - **Severity Metrics** (4 items: CVSS, EPSS, KEV, Vector)
 - **Affected Software** (4 items)
@@ -1379,6 +1457,7 @@ steps:
 **Purpose:** Verify technical claims are factually correct.
 
 **Categories:**
+
 - **CVE Accuracy** (CVE ID correct, Description accurate)
 - **CVSS Accuracy** (Score correct, Vector accurate)
 - **EPSS Accuracy** (Current score, Trend)
@@ -1396,6 +1475,7 @@ steps:
 **Purpose:** Ensure comprehensive coverage of all enrichment factors.
 
 **Categories:**
+
 - **Severity Metrics Complete** (CVSS, EPSS, KEV all researched)
 - **Exploit Intelligence** (Public exploits, Maturity, Active exploitation)
 - **Attack Context** (Vector, Complexity, Prerequisites)
@@ -1414,6 +1494,7 @@ steps:
 **Purpose:** Ensure remediation guidance is specific and implementable.
 
 **Categories:**
+
 - **Patch Specificity** (Exact versions, Sources)
 - **Implementation Steps** (Concrete, ordered procedures)
 - **Testing Requirements** (What testing needed)
@@ -1432,6 +1513,7 @@ steps:
 **Purpose:** Verify organizational business context is incorporated.
 
 **Categories:**
+
 - **System Criticality** (Business importance assessed)
 - **Exposure Assessment** (Internet-facing vs internal)
 - **Data Sensitivity** (PII/PHI/PCI considerations)
@@ -1452,6 +1534,7 @@ steps:
 **Purpose:** Ensure clear, well-structured documentation.
 
 **Categories:**
+
 - **Executive Summary** (2-3 sentence overview present)
 - **Structured Format** (Clear section headings)
 - **Readability** (Formatting aids scanning)
@@ -1470,6 +1553,7 @@ steps:
 **Purpose:** Validate MITRE ATT&CK mapping accuracy.
 
 **Categories:**
+
 - **Tactic Identified** (Correct ATT&CK tactic)
 - **Technique Specified** (Specific T-number provided)
 - **Technique Appropriate** (Accurately reflects vulnerability)
@@ -1484,6 +1568,7 @@ steps:
 **Purpose:** Detect cognitive biases in security analysis.
 
 **Bias Types:**
+
 - **Confirmation Bias** (Seeking only confirming evidence)
 - **Anchoring Bias** (Over-relying on initial information)
 - **Availability Heuristic** (Overweighting recent/publicized events)
@@ -1501,6 +1586,7 @@ steps:
 **Purpose:** Complete end-to-end vulnerability enrichment process.
 
 **Stages:**
+
 ```yaml
 stages:
   - name: Alert Triage
@@ -1596,6 +1682,7 @@ stages:
 **Purpose:** Systematic peer review and quality assurance of analyst work.
 
 **Stages:**
+
 ```yaml
 stages:
   - name: Review Preparation
@@ -1611,8 +1698,7 @@ stages:
   - name: Systematic Evaluation
     agent: Security Reviewer
     tasks:
-      - Evaluate using 8 quality dimension checklists:
-          1. Technical Accuracy (10 items)
+      - Evaluate using 8 quality dimension checklists: 1. Technical Accuracy (10 items)
           2. Completeness (12 items)
           3. Actionability (8 items)
           4. Contextualization (10 items)
@@ -1695,6 +1781,7 @@ stages:
 **Purpose:** Complete vulnerability management from alert through remediation.
 
 **Stages:**
+
 ```yaml
 stages:
   - name: Alert Detection
@@ -1767,6 +1854,7 @@ stages:
 **Purpose:** BMAD-1898 specific methodology and best practices.
 
 **Content:**
+
 - Security vulnerability management methodology
 - AI-assisted research best practices
 - Quality assurance principles
@@ -1780,6 +1868,7 @@ stages:
 **Purpose:** Comprehensive vulnerability management frameworks and standards.
 
 **Content:**
+
 - NIST NVD and CVE system overview
 - CVSS v3.1 and v4.0 scoring methodology
 - EPSS (Exploit Prediction Scoring System) framework
@@ -1799,6 +1888,7 @@ stages:
 **Purpose:** Common cognitive biases in security analysis and mitigation strategies.
 
 **Content:**
+
 - Confirmation bias in vulnerability assessment
 - Anchoring bias (over-relying on CVSS)
 - Availability heuristic (overweighting recent threats)
@@ -1817,6 +1907,7 @@ stages:
 **Purpose:** How to map vulnerabilities to MITRE ATT&CK framework.
 
 **Content:**
+
 - ATT&CK framework overview (v18 updates)
 - Common tactics for vulnerability types:
   - Initial Access (RCE, network vulnerabilities)
@@ -1843,6 +1934,7 @@ stages:
 **Purpose:** Multi-factor vulnerability priority determination framework.
 
 **Content:**
+
 - Priority Levels (P1-P5) with criteria
 - **P1 (Immediate <24hrs):** CVSS 9-10 + Internet-facing OR EPSS >0.9 OR KEV + Active Exploitation
 - **P2 (Urgent <7 days):** CVSS 7-8.9 + Business-Critical OR EPSS 0.7-0.9 OR KEV Listed
@@ -1863,6 +1955,7 @@ stages:
 **Purpose:** Vulnerability remediation approaches and implementation guidance.
 
 **Content:**
+
 - Four remediation approaches:
   1. Rip and Replace (component substitution)
   2. Patching (targeted fixes)
@@ -1890,6 +1983,7 @@ stages:
 **Purpose:** Expansion pack configuration for JIRA and Perplexity integration.
 
 **Structure:**
+
 ```yaml
 expansion_pack:
   id: bmad-1898-engineering
@@ -1898,48 +1992,48 @@ expansion_pack:
   description: AI-assisted vulnerability enrichment and quality assurance for Project AOD
 
 jira:
-  cloud_id: "934c63a0-0b96-4d46-b906-0f8c1c85c5d7"  # AOD project
-  project_key: "AOD"
-  issue_type: "Security Alert"
+  cloud_id: '934c63a0-0b96-4d46-b906-0f8c1c85c5d7' # AOD project
+  project_key: 'AOD'
+  issue_type: 'Security Alert'
 
   custom_fields:
-    cve_id: "customfield_10050"
-    cvss_score: "customfield_10051"
-    epss_score: "customfield_10052"
-    kev_status: "customfield_10053"
-    priority_level: "priority"  # Standard field
-    affected_product: "customfield_10054"
-    affected_versions: "customfield_10055"
-    patch_status: "customfield_10056"
-    patch_version: "customfield_10057"
+    cve_id: 'customfield_10050'
+    cvss_score: 'customfield_10051'
+    epss_score: 'customfield_10052'
+    kev_status: 'customfield_10053'
+    priority_level: 'priority' # Standard field
+    affected_product: 'customfield_10054'
+    affected_versions: 'customfield_10055'
+    patch_status: 'customfield_10056'
+    patch_version: 'customfield_10057'
 
 perplexity:
-  default_model: "sonar-reasoning-pro"  # For complex analysis
-  quick_model: "sonar-pro"  # For quick lookups
-  research_model: "sonar-deep-research"  # For critical vulnerabilities
+  default_model: 'sonar-reasoning-pro' # For complex analysis
+  quick_model: 'sonar-pro' # For quick lookups
+  research_model: 'sonar-deep-research' # For critical vulnerabilities
 
   research_depth:
-    critical: "deep_research"  # CVSS 9-10
-    high: "reason"  # CVSS 7-8.9
-    medium: "search"  # CVSS 4-6.9
-    low: "search"  # CVSS 0-3.9
+    critical: 'deep_research' # CVSS 9-10
+    high: 'reason' # CVSS 7-8.9
+    medium: 'search' # CVSS 4-6.9
+    low: 'search' # CVSS 0-3.9
 
 priority_framework:
   sla_timelines:
-    p1: "< 24 hours"
-    p2: "< 7 days"
-    p3: "< 30 days"
-    p4: "< 60 days"
-    p5: "< 90 days (monitoring)"
+    p1: '< 24 hours'
+    p2: '< 7 days'
+    p3: '< 30 days'
+    p4: '< 60 days'
+    p5: '< 90 days (monitoring)'
 
   mandatory_review:
-    - "p1"  # Critical
-    - "p2"  # High
+    - 'p1' # Critical
+    - 'p2' # High
 
   sampling_review:
-    p3: 0.25  # 25% of Medium priority
-    p4: 0.10  # 10% of Standard priority
-    p5: 0.05  # 5% of Low priority
+    p3: 0.25 # 25% of Medium priority
+    p4: 0.10 # 10% of Standard priority
+    p5: 0.05 # 5% of Low priority
 
 enrichment:
   required_sections:
@@ -1954,10 +2048,10 @@ enrichment:
     - priority_recommendation
 
   authoritative_sources:
-    - "https://nvd.nist.gov"  # NVD
-    - "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"  # KEV
-    - "https://www.first.org/epss"  # EPSS
-    - "https://attack.mitre.org"  # MITRE ATT&CK
+    - 'https://nvd.nist.gov' # NVD
+    - 'https://www.cisa.gov/known-exploited-vulnerabilities-catalog' # KEV
+    - 'https://www.first.org/epss' # EPSS
+    - 'https://attack.mitre.org' # MITRE ATT&CK
 
 quality_assurance:
   review_dimensions:
@@ -1969,10 +2063,10 @@ quality_assurance:
     - attack_mapping
 
   quality_thresholds:
-    excellent: 0.90  # 90%+
-    good: 0.75  # 75-89%
-    needs_improvement: 0.60  # 60-74%
-    significant_gaps: 0.00  # <60%
+    excellent: 0.90 # 90%+
+    good: 0.75 # 75-89%
+    needs_improvement: 0.60 # 60-74%
+    significant_gaps: 0.00 # <60%
 
   cognitive_biases:
     - confirmation_bias
@@ -1993,44 +2087,52 @@ quality_assurance:
 #### User Stories:
 
 **Story 1.1:** Security Analyst Agent Creation
+
 - **As a** security analyst
 - **I want** a specialized BMAD agent persona
 - **So that** I can activate consistent enrichment workflows with a single command
 
 **Acceptance Criteria:**
+
 - Security Analyst agent definition complete with commands, dependencies, persona
 - Agent can be activated via `/security-analyst` or equivalent
 - Agent displays available commands on activation
 - Agent greets user and runs `*help` on startup
 
 **Story 1.2:** JIRA Ticket Reading
+
 - **As a** Security Analyst agent
 - **I want** to read JIRA security alert tickets via Atlassian MCP
 - **So that** I can extract CVE IDs and initial context
 
 **Acceptance Criteria:**
+
 - Agent can read JIRA tickets using `mcp__atlassian__getJiraIssue`
 - Agent extracts CVE ID from ticket summary or description
 - Agent identifies affected systems from ticket fields
 - Agent handles tickets without CVE IDs gracefully
 
 **Story 1.3:** AI-Assisted CVE Research
+
 - **As a** Security Analyst agent
 - **I want** to research CVEs using Perplexity MCP
 - **So that** I can gather comprehensive vulnerability intelligence in minutes
 
 **Acceptance Criteria:**
+
 - Agent constructs research queries including CVSS, EPSS, KEV, exploits, patches, ATT&CK
 - Agent selects appropriate Perplexity tool (search/reason/deep_research) based on severity
 - Agent receives structured research findings
 - Agent cites authoritative sources (NVD, CISA, vendor advisories)
 
 **Story 1.4:** Structured Enrichment Documentation
+
 - **As a** Security Analyst agent
 - **I want** to structure research findings using the enrichment template
 - **So that** all enrichment comments follow consistent, comprehensive format
 
 **Acceptance Criteria:**
+
 - Agent uses security-enrichment-tmpl.yaml
 - All 12 sections of template completed
 - Executive summary provides 2-3 sentence overview
@@ -2039,11 +2141,13 @@ quality_assurance:
 - Priority recommendation with rationale
 
 **Story 1.5:** JIRA Enrichment Comment
+
 - **As a** Security Analyst agent
 - **I want** to add structured enrichment as JIRA comment
 - **So that** stakeholders can review findings in familiar JIRA interface
 
 **Acceptance Criteria:**
+
 - Agent adds comment using `mcp__atlassian__addCommentToJiraIssue`
 - Comment formatted in markdown with structured sections
 - Emojis used for visual scanning (✅/❌/⚠️)
@@ -2051,11 +2155,13 @@ quality_assurance:
 - Timestamp and generator attribution included
 
 **Story 1.6:** JIRA Custom Field Updates
+
 - **As a** Security Analyst agent
 - **I want** to update JIRA custom fields for CVSS, EPSS, KEV, Priority
 - **So that** JIRA queries and automation can leverage structured data
 
 **Acceptance Criteria:**
+
 - Agent updates custom fields using `mcp__atlassian__editJiraIssue`
 - CVSS score (number field)
 - EPSS score (number field)
@@ -2064,11 +2170,13 @@ quality_assurance:
 - CVE ID (text field)
 
 **Story 1.7:** Multi-Factor Priority Assessment
+
 - **As a** Security Analyst agent
 - **I want** to calculate vulnerability priority using CVSS + EPSS + KEV + Business Context
 - **So that** remediation efforts focus on genuine exploitable threats
 
 **Acceptance Criteria:**
+
 - Agent considers all priority factors:
   - CVSS severity (Critical/High/Medium/Low)
   - EPSS exploitation probability
@@ -2089,22 +2197,26 @@ quality_assurance:
 #### User Stories:
 
 **Story 2.1:** Security Reviewer Agent Creation
+
 - **As a** security team lead
 - **I want** a specialized QA reviewer agent
 - **So that** I can ensure consistent, thorough review of analyst work
 
 **Acceptance Criteria:**
+
 - Security Reviewer agent definition complete
 - Agent can be activated and displays commands
 - Agent persona is constructive, not punitive
 - Blameless review principles embedded
 
 **Story 2.2:** Systematic Quality Evaluation
+
 - **As a** Security Reviewer agent
 - **I want** to evaluate enrichments using 8 quality dimension checklists
 - **So that** reviews are comprehensive and consistent
 
 **Acceptance Criteria:**
+
 - Agent runs all 8 checklists:
   1. Technical Accuracy (10 items)
   2. Completeness (12 items)
@@ -2118,11 +2230,13 @@ quality_assurance:
 - Agent calculates overall quality score
 
 **Story 2.3:** Gap Identification and Categorization
+
 - **As a** Security Reviewer agent
 - **I want** to categorize findings as Critical/Significant/Minor
 - **So that** analysts know what to prioritize
 
 **Acceptance Criteria:**
+
 - Critical Issues: Must-fix before ticket can proceed
 - Significant Gaps: Should-fix, impacts quality
 - Minor Improvements: Nice-to-have enhancements
@@ -2133,11 +2247,13 @@ quality_assurance:
   - Recommended fix
 
 **Story 2.4:** Cognitive Bias Detection
+
 - **As a** Security Reviewer agent
 - **I want** to identify cognitive biases in analyst work
 - **So that** systematic bias patterns can be corrected
 
 **Acceptance Criteria:**
+
 - Agent runs cognitive-bias-checklist.md
 - Agent detects 5 bias types:
   - Confirmation bias
@@ -2149,11 +2265,13 @@ quality_assurance:
 - Agent suggests debiasing strategies
 
 **Story 2.5:** Fact Verification
+
 - **As a** Security Reviewer agent
 - **I want** to verify factual claims using Perplexity
 - **So that** critical assertions are validated against authoritative sources
 
 **Acceptance Criteria:**
+
 - Agent can optionally verify claims
 - Agent checks: CVSS scores, EPSS scores, KEV status, patch availability
 - Agent compares analyst claims with authoritative sources
@@ -2161,11 +2279,13 @@ quality_assurance:
 - Agent provides corrections with sources
 
 **Story 2.6:** Constructive Feedback Documentation
+
 - **As a** Security Reviewer agent
 - **I want** to structure review findings using review template
 - **So that** feedback is clear, actionable, and blameless
 
 **Acceptance Criteria:**
+
 - Agent uses security-review-report-tmpl.yaml
 - Acknowledges strengths first
 - Identifies gaps with impact explanation
@@ -2182,44 +2302,52 @@ quality_assurance:
 #### User Stories:
 
 **Story 3.1:** Security Alert Enrichment Workflow
+
 - **As a** security operations team
 - **I want** a complete end-to-end enrichment workflow
 - **So that** enrichment is consistent and comprehensive
 
 **Acceptance Criteria:**
+
 - Workflow includes all stages: Triage → Research → Business Context → Remediation → ATT&CK → Priority → Documentation → Validation
 - Each stage has clear inputs/outputs
 - Workflow takes 10-15 minutes with AI assistance
 - Workflow produces enriched JIRA ticket
 
 **Story 3.2:** Security Analysis Review Workflow
+
 - **As a** security operations team
 - **I want** a systematic peer review workflow
 - **So that** quality assurance is thorough and consistent
 
 **Acceptance Criteria:**
+
 - Workflow includes: Preparation → Evaluation → Gap Identification → Bias Detection → (Optional) Fact Verification → Documentation → Feedback Loop
 - Workflow takes 15-20 minutes
 - Workflow produces review report in JIRA
 - Workflow triggers analyst improvements
 
 **Story 3.3:** Vulnerability Lifecycle Workflow
+
 - **As a** security operations team
 - **I want** complete lifecycle tracking from alert to closure
 - **So that** vulnerabilities are systematically managed
 
 **Acceptance Criteria:**
+
 - Workflow stages: Detection → Enrichment → Review → Remediation Planning → Execution → Verification → Closure
 - Integration with existing ticketing workflows
 - Metrics captured at each stage
 - Audit trail maintained
 
 **Story 3.4:** Priority-Based Review Triggering
+
 - **As a** security operations team
 - **I want** mandatory review for Critical/High vulnerabilities and sampling for Medium/Low
 - **So that** QA resources focus on highest-risk tickets
 
 **Acceptance Criteria:**
+
 - P1/P2 vulnerabilities trigger mandatory review
 - P3 vulnerabilities: 25% sampling review
 - P4 vulnerabilities: 10% sampling review
@@ -2235,44 +2363,52 @@ quality_assurance:
 #### User Stories:
 
 **Story 4.1:** Vulnerability Management Knowledge Base
+
 - **As a** security analyst
 - **I want** comprehensive vulnerability management best practices
 - **So that** I understand frameworks like CVSS, EPSS, KEV, ACR
 
 **Acceptance Criteria:**
+
 - Knowledge base includes NIST NVD, CVSS, EPSS, KEV, ACR frameworks
 - Industry statistics (2025 CVE volume, alert fatigue data)
 - Remediation approaches explained
 - Multi-factor risk assessment methodology
 
 **Story 4.2:** Cognitive Bias Patterns Guide
+
 - **As a** security analyst
 - **I want** to understand cognitive biases in security analysis
 - **So that** I can recognize and avoid systematic errors
 
 **Acceptance Criteria:**
+
 - Guide covers 5 bias types with definitions
 - Real-world examples from security operations
 - Debiasing techniques explained
 - Self-assessment guidance
 
 **Story 4.3:** MITRE ATT&CK Mapping Guide
+
 - **As a** security analyst
 - **I want** clear guidance on mapping vulnerabilities to ATT&CK
 - **So that** I can accurately identify tactics and techniques
 
 **Acceptance Criteria:**
+
 - Common tactics for vulnerability types
 - Common techniques with T-numbers
 - Mapping examples
 - Detection implications per technique
 
 **Story 4.4:** Priority Framework Documentation
+
 - **As a** security analyst
 - **I want** clear priority level definitions and criteria
 - **So that** I consistently apply the same framework
 
 **Acceptance Criteria:**
+
 - P1-P5 levels defined with criteria
 - Factor weighting explained
 - SLA timelines per priority
@@ -2285,18 +2421,21 @@ quality_assurance:
 ### Atlassian MCP (JIRA Integration)
 
 **Required Tools:**
+
 - `mcp__atlassian__getJiraIssue` - Read ticket details
 - `mcp__atlassian__editJiraIssue` - Update custom fields
 - `mcp__atlassian__addCommentToJiraIssue` - Add enrichment/review comments
 - `mcp__atlassian__getAccessibleAtlassianResources` - Verify access
 
 **Configuration:**
+
 - JIRA Cloud ID: `934c63a0-0b96-4d46-b906-0f8c1c85c5d7` (Project AOD)
 - Project Key: `AOD`
 - Issue Type: `Security Alert`
 - Custom field mappings defined in config.yaml
 
 **Error Handling:**
+
 - Graceful degradation if MCP unavailable (manual workflow)
 - Clear error messages if JIRA access fails
 - Fallback to console output if ticket update fails
@@ -2306,23 +2445,27 @@ quality_assurance:
 ### Perplexity MCP (AI Research)
 
 **Required Tools:**
+
 - `mcp__perplexity__search` - Quick CVE lookups, simple queries
 - `mcp__perplexity__reason` - Complex analysis, remediation planning
 - `mcp__perplexity__deep_research` - Critical vulnerabilities, comprehensive intel
 
 **Research Strategy:**
+
 - **Critical (CVSS 9-10):** Use `deep_research` for comprehensive analysis
 - **High (CVSS 7-8.9):** Use `reason` for moderate complexity
 - **Medium (CVSS 4-6.9):** Use `search` for quick lookups
 - **Low (CVSS 0-3.9):** Use `search` for basic information
 
 **Query Construction:**
+
 - Always request specific authoritative sources (NVD, CISA, EPSS, vendor)
 - Include exact information needed (CVSS vector, EPSS score, KEV status, patches)
 - Request source citations for all factual claims
 - Specify exploit intelligence requirements
 
 **Error Handling:**
+
 - Retry with simpler query if deep_research times out
 - Fall back to manual research if Perplexity unavailable
 - Validate AI outputs against authoritative sources
@@ -2333,30 +2476,35 @@ quality_assurance:
 ### Authoritative Data Sources
 
 **NIST NVD (National Vulnerability Database):**
+
 - Purpose: CVE details, CVSS scores, affected products
 - URL: https://nvd.nist.gov
 - Access: Via Perplexity research (no direct API)
 - Update Frequency: Real-time
 
 **CISA KEV Catalog:**
+
 - Purpose: Known Exploited Vulnerabilities listing
 - URL: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 - Access: Via Perplexity research
 - Update Frequency: Continuous
 
 **FIRST EPSS (Exploit Prediction Scoring System):**
+
 - Purpose: Exploitation probability scores
 - URL: https://www.first.org/epss
 - Access: Via Perplexity research
 - Update Frequency: Daily
 
 **MITRE ATT&CK:**
+
 - Purpose: Adversary tactics and techniques
 - URL: https://attack.mitre.org
 - Access: Via Perplexity research
 - Version: v18 (2025)
 
 **Vendor Security Advisories:**
+
 - Purpose: Official patches, workarounds, affected versions
 - Access: Via Perplexity research (vendor-specific URLs)
 - Examples: Microsoft Security Response Center, Red Hat Security, Ubuntu Security
@@ -2368,6 +2516,7 @@ quality_assurance:
 ### Enrichment Quality Gates
 
 **Required Elements (Must Have):**
+
 - ✅ CVE ID correctly identified
 - ✅ CVSS score with vector string
 - ✅ EPSS score (current)
@@ -2382,12 +2531,14 @@ quality_assurance:
 - ✅ Source citations (authoritative links)
 
 **Quality Thresholds:**
+
 - **Excellent (90-100%):** All required elements + comprehensive context, minimal gaps
 - **Good (75-89%):** All required elements + some gaps in depth/context
 - **Needs Improvement (60-74%):** Missing some required elements or significant quality gaps
 - **Significant Gaps (<60%):** Major rework needed, many missing elements
 
 **Review Requirements:**
+
 - **Mandatory Review:** P1 (Critical) and P2 (High) vulnerabilities
 - **Sampling Review:** P3 (25%), P4 (10%), P5 (5%)
 - **Review SLA:** Within 24 hours for P1/P2, within 1 week for P3/P4/P5
@@ -2397,6 +2548,7 @@ quality_assurance:
 ### Documentation Standards
 
 **Markdown Formatting:**
+
 - Structured sections with clear headings
 - Emojis for visual scanning (✅/❌/⚠️)
 - Code blocks for technical commands/snippets
@@ -2405,12 +2557,14 @@ quality_assurance:
 - Links to authoritative sources
 
 **Source Citation:**
+
 - Every factual claim must cite source
 - Prefer authoritative sources (NVD, CISA, vendor)
 - Include URLs as markdown links
 - Document research date for time-sensitive info
 
 **Readability:**
+
 - Executive summary (2-3 sentences) for busy stakeholders
 - Logical flow from problem → impact → solution
 - Avoid jargon where possible; define when necessary
@@ -2424,18 +2578,21 @@ quality_assurance:
 ### Performance Metrics
 
 **Enrichment Speed:**
+
 - **Baseline:** 2-4 hours per ticket (manual research)
 - **Target:** 10-15 minutes per ticket (AI-assisted)
 - **Measurement:** Average time from agent activation to enrichment completion
 - **Goal:** 90% reduction in enrichment time
 
 **Review Speed:**
+
 - **Baseline:** 1-2 hours per review (ad-hoc)
 - **Target:** 15-20 minutes per review (systematic)
 - **Measurement:** Average time from review start to report completion
 - **Goal:** 75% reduction in review time
 
 **Analyst Productivity:**
+
 - **Baseline:** 2-4 tickets enriched per day
 - **Target:** 10-20 tickets enriched per day
 - **Measurement:** Tickets enriched per analyst per day
@@ -2446,21 +2603,25 @@ quality_assurance:
 ### Quality Metrics
 
 **Enrichment Completeness:**
+
 - **Metric:** % of enrichments with all 12 required sections complete
 - **Target:** ≥95% completeness
 - **Measurement:** Run security-enrichment-completeness-checklist.md
 
 **Review Coverage:**
+
 - **Metric:** % of P1/P2 vulnerabilities receiving peer review
 - **Target:** 100% of P1/P2, 25% of P3, 10% of P4, 5% of P5
 - **Measurement:** Count of reviewed vs. total tickets by priority
 
 **Quality Score:**
+
 - **Metric:** Average quality score from systematic reviews
 - **Target:** ≥80% (Good or Excellent)
 - **Measurement:** Average of all review quality scores
 
 **Defect Detection:**
+
 - **Metric:** % increase in gaps/errors identified through systematic review
 - **Target:** 60-70% increase vs. ad-hoc review
 - **Measurement:** Compare findings before/after systematic review implementation
@@ -2470,17 +2631,20 @@ quality_assurance:
 ### Risk Reduction Metrics
 
 **Mean Time to Remediation (MTTR):**
+
 - **Baseline:** Unknown (establish baseline)
 - **Target:** Reduce by 30% (through better prioritization)
 - **Measurement:** Average time from enrichment to remediation completion
 - **Goal:** Faster remediation of genuinely high-risk vulnerabilities
 
 **Priority Accuracy:**
+
 - **Metric:** % of vulnerabilities correctly prioritized (validated retrospectively)
 - **Target:** ≥90% priority accuracy
 - **Measurement:** Retrospective analysis of priority vs. actual exploitation/impact
 
 **False Positive Reduction:**
+
 - **Metric:** % reduction in low-priority alerts escalated unnecessarily
 - **Target:** 40% reduction in false escalations
 - **Measurement:** Track escalations that were later downgraded
@@ -2490,16 +2654,19 @@ quality_assurance:
 ### Learning & Improvement Metrics
 
 **Analyst Skill Development:**
+
 - **Metric:** Quality score improvement over time
 - **Target:** 10% improvement per quarter for analysts receiving regular feedback
 - **Measurement:** Track individual analyst quality scores over time
 
 **Cognitive Bias Reduction:**
+
 - **Metric:** % of reviews identifying cognitive bias
 - **Target:** Reduce bias detection rate from 30% to <10% over 6 months
 - **Measurement:** Track bias detection in reviews over time
 
 **Knowledge Base Usage:**
+
 - **Metric:** Agent dependency file access frequency
 - **Target:** Increasing trend (indicates knowledge base value)
 - **Measurement:** Log knowledge base file access by agents
@@ -2511,20 +2678,24 @@ quality_assurance:
 ### Technical Prerequisites
 
 **BMAD Core Framework:**
+
 - Version: 4.0+
 - Components: Agent system, task framework, template engine, checklist execution
 
 **Atlassian MCP Server:**
+
 - Status: Must be installed and configured
 - Cloud ID: `934c63a0-0b96-4d46-b906-0f8c1c85c5d7`
 - Permissions: Read/Write JIRA tickets, Add comments, Edit custom fields
 
 **Perplexity MCP Server:**
+
 - Status: Must be installed and configured
 - API Access: Valid Perplexity API key
 - Tools: search, reason, deep_research
 
 **JIRA Custom Fields:**
+
 - Must be created in JIRA project before agent use:
   - CVE ID (text field)
   - CVSS Score (number field, decimal)
@@ -2540,17 +2711,20 @@ quality_assurance:
 ### Organizational Prerequisites
 
 **Security Operations Team:**
+
 - Minimum 2 security analysts trained on BMAD framework
 - 1 senior analyst/lead for quality review
 - Access to JIRA Project AOD
 
 **Process Alignment:**
+
 - Vulnerability management process defined
 - Remediation workflows established
 - SLA timelines approved by leadership
 - Escalation procedures documented
 
 **Knowledge Requirements:**
+
 - Basic understanding of CVE/CVSS systems
 - Familiarity with JIRA ticketing
 - Willingness to adopt AI-assisted workflows
@@ -2561,12 +2735,14 @@ quality_assurance:
 ### Data Prerequisites
 
 **JIRA Project Setup:**
+
 - Project Key: AOD
 - Issue Type: Security Alert
 - Custom fields configured (see above)
 - Workflows defined for alert lifecycle
 
 **Initial Baseline:**
+
 - Sample of historical enrichments for comparison
 - Current MTTR measurements
 - Current analyst productivity metrics
@@ -2578,12 +2754,14 @@ quality_assurance:
 ### Technical Risks
 
 **Risk 1: Perplexity MCP Availability**
+
 - **Probability:** Medium
 - **Impact:** High
 - **Mitigation:** Graceful degradation to manual research; clear error messaging; fallback workflows documented
 - **Contingency:** Maintain manual enrichment procedures as backup
 
 **Risk 2: AI Hallucinations**
+
 - **Probability:** Medium
 - **Impact:** High (incorrect vulnerability assessments)
 - **Mitigation:**
@@ -2594,6 +2772,7 @@ quality_assurance:
 - **Contingency:** Human validation of all critical claims
 
 **Risk 3: JIRA MCP Integration Failures**
+
 - **Probability:** Low
 - **Impact:** Medium
 - **Mitigation:**
@@ -2607,6 +2786,7 @@ quality_assurance:
 ### Process Risks
 
 **Risk 4: Analyst Resistance to AI Tools**
+
 - **Probability:** Medium
 - **Impact:** Medium
 - **Mitigation:**
@@ -2617,6 +2797,7 @@ quality_assurance:
 - **Contingency:** Opt-in pilot program before mandatory adoption
 
 **Risk 5: Over-Reliance on AI Without Validation**
+
 - **Probability:** Medium
 - **Impact:** High
 - **Mitigation:**
@@ -2627,6 +2808,7 @@ quality_assurance:
 - **Contingency:** Increase review sampling rates if quality declines
 
 **Risk 6: Alert Fatigue Despite Improvements**
+
 - **Probability:** Low
 - **Impact:** Medium
 - **Mitigation:**
@@ -2640,6 +2822,7 @@ quality_assurance:
 ### Security Risks
 
 **Risk 7: Prompt Injection Attacks**
+
 - **Probability:** Low
 - **Impact:** Medium
 - **Mitigation:**
@@ -2649,6 +2832,7 @@ quality_assurance:
 - **Contingency:** Manual review of suspicious AI outputs
 
 **Risk 8: Data Exposure Through AI Research**
+
 - **Probability:** Low
 - **Impact:** High
 - **Mitigation:**
@@ -2664,6 +2848,7 @@ quality_assurance:
 ### Phase 1: Foundation (Weeks 1-2)
 
 **Deliverables:**
+
 - ✅ Agent definitions (Security Analyst, Security Reviewer)
 - ✅ Core task procedures (7 tasks)
 - ✅ Templates (5 templates)
@@ -2672,6 +2857,7 @@ quality_assurance:
 - ✅ Knowledge bases (6 knowledge bases)
 
 **Activities:**
+
 - Define agent personas and commands
 - Write task procedures and workflows
 - Create YAML templates
@@ -2680,6 +2866,7 @@ quality_assurance:
 - Create expansion pack configuration
 
 **Success Criteria:**
+
 - All artifacts written and validated
 - BMAD framework integration tested
 - No build/validation errors
@@ -2689,6 +2876,7 @@ quality_assurance:
 ### Phase 2: Integration & Testing (Weeks 3-4)
 
 **Deliverables:**
+
 - ✅ JIRA MCP integration working
 - ✅ Perplexity MCP integration working
 - ✅ JIRA custom fields configured
@@ -2696,6 +2884,7 @@ quality_assurance:
 - ✅ Documentation (README, user guide)
 
 **Activities:**
+
 - Configure JIRA custom fields in Project AOD
 - Test Atlassian MCP tools (read/write/comment)
 - Test Perplexity MCP tools (search/reason/deep_research)
@@ -2704,6 +2893,7 @@ quality_assurance:
 - Document setup procedures and user guide
 
 **Success Criteria:**
+
 - Successful enrichment of 5 test tickets
 - Successful review of 5 test enrichments
 - Average enrichment time <15 minutes
@@ -2715,6 +2905,7 @@ quality_assurance:
 ### Phase 3: Pilot Program (Weeks 5-6)
 
 **Deliverables:**
+
 - ✅ 2 analysts trained and using agents
 - ✅ 20 real tickets enriched
 - ✅ 10 real reviews completed
@@ -2722,6 +2913,7 @@ quality_assurance:
 - ✅ Feedback collected and incorporated
 
 **Activities:**
+
 - Train 2 security analysts on BMAD-1898
 - Enrich 20 real security alert tickets
 - Review 10 enriched tickets (P1/P2 mandatory)
@@ -2730,6 +2922,7 @@ quality_assurance:
 - Refine workflows based on feedback
 
 **Success Criteria:**
+
 - 90% reduction in enrichment time vs. baseline
 - ≥80% average quality score
 - Positive analyst feedback (net promoter score ≥7/10)
@@ -2741,6 +2934,7 @@ quality_assurance:
 ### Phase 4: Full Deployment (Weeks 7-8)
 
 **Deliverables:**
+
 - ✅ All analysts trained
 - ✅ BMAD-1898 as standard enrichment process
 - ✅ Metrics dashboard implemented
@@ -2748,6 +2942,7 @@ quality_assurance:
 - ✅ Retrospective completed
 
 **Activities:**
+
 - Train remaining security analysts
 - Transition all enrichment to BMAD-1898 workflow
 - Implement metrics tracking dashboard
@@ -2756,6 +2951,7 @@ quality_assurance:
 - Plan future enhancements (v1.1, v2.0)
 
 **Success Criteria:**
+
 - 100% of new security alerts enriched via BMAD-1898
 - 100% of P1/P2 vulnerabilities peer reviewed
 - Metrics show sustained improvement
@@ -2767,6 +2963,7 @@ quality_assurance:
 ### Phase 5: Continuous Improvement (Ongoing)
 
 **Activities:**
+
 - Weekly quality metrics review
 - Monthly analyst skill development sessions
 - Quarterly knowledge base updates
@@ -2774,6 +2971,7 @@ quality_assurance:
 - Annual expansion pack version upgrade
 
 **Success Criteria:**
+
 - Quality scores trending upward
 - MTTR trending downward
 - Analyst satisfaction maintained
@@ -2839,17 +3037,17 @@ expansion-packs/bmad-1898-engineering/
 
 ### Appendix B: JIRA Custom Field Definitions
 
-| Field Name | Field Type | Field ID (Example) | Values/Format | Purpose |
-|-----------|-----------|-------------------|--------------|---------|
-| CVE ID | Text (single line) | customfield_10050 | CVE-YYYY-NNNNN | Primary vulnerability identifier |
-| CVSS Score | Number | customfield_10051 | 0.0 - 10.0 | CVSS v3.1 Base Score |
-| EPSS Score | Number | customfield_10052 | 0.00 - 1.00 | Exploitation probability |
-| KEV Status | Select (dropdown) | customfield_10053 | Listed / Not Listed | CISA KEV catalog status |
-| Affected Product | Text (single line) | customfield_10054 | Product name | Software affected |
-| Affected Versions | Text (multi-line) | customfield_10055 | Version ranges | Vulnerable versions |
-| Patch Status | Select (dropdown) | customfield_10056 | Available / Not Available / Vendor Investigating | Patch availability |
-| Patch Version | Text (single line) | customfield_10057 | Version number | Patched version |
-| Priority | Priority (standard) | priority | Critical / High / Medium / Low | Remediation priority |
+| Field Name        | Field Type          | Field ID (Example) | Values/Format                                    | Purpose                          |
+| ----------------- | ------------------- | ------------------ | ------------------------------------------------ | -------------------------------- |
+| CVE ID            | Text (single line)  | customfield_10050  | CVE-YYYY-NNNNN                                   | Primary vulnerability identifier |
+| CVSS Score        | Number              | customfield_10051  | 0.0 - 10.0                                       | CVSS v3.1 Base Score             |
+| EPSS Score        | Number              | customfield_10052  | 0.00 - 1.00                                      | Exploitation probability         |
+| KEV Status        | Select (dropdown)   | customfield_10053  | Listed / Not Listed                              | CISA KEV catalog status          |
+| Affected Product  | Text (single line)  | customfield_10054  | Product name                                     | Software affected                |
+| Affected Versions | Text (multi-line)   | customfield_10055  | Version ranges                                   | Vulnerable versions              |
+| Patch Status      | Select (dropdown)   | customfield_10056  | Available / Not Available / Vendor Investigating | Patch availability               |
+| Patch Version     | Text (single line)  | customfield_10057  | Version number                                   | Patched version                  |
+| Priority          | Priority (standard) | priority           | Critical / High / Medium / Low                   | Remediation priority             |
 
 **Note:** Field IDs must be updated in `.bmad-1898/config.yaml` to match actual JIRA instance.
 
@@ -2857,15 +3055,15 @@ expansion-packs/bmad-1898-engineering/
 
 ### Appendix C: Priority Framework Decision Matrix
 
-| Factor | P1 (Critical) | P2 (High) | P3 (Medium) | P4 (Standard) | P5 (Low) |
-|--------|---------------|-----------|-------------|---------------|----------|
-| **CVSS** | 9.0-10.0 | 7.0-8.9 | 6.0-6.9 | 4.0-5.9 | 0.1-3.9 |
-| **EPSS** | >0.9 (90%+) | 0.7-0.9 | 0.4-0.7 | 0.1-0.4 | <0.1 |
-| **KEV** | Listed + Active | Listed | Not Listed | Not Listed | Not Listed |
-| **Exposure** | Internet-facing | Internet/Critical Internal | Internal | Internal | Isolated |
-| **Criticality** | Critical systems | High-value systems | Important systems | Standard systems | Low-value systems |
-| **Exploit** | Weaponized | Public exploit | PoC available | No exploit | No exploit |
-| **SLA** | <24 hours | <7 days | <30 days | <60 days | <90 days (monitoring) |
+| Factor          | P1 (Critical)    | P2 (High)                  | P3 (Medium)       | P4 (Standard)    | P5 (Low)              |
+| --------------- | ---------------- | -------------------------- | ----------------- | ---------------- | --------------------- |
+| **CVSS**        | 9.0-10.0         | 7.0-8.9                    | 6.0-6.9           | 4.0-5.9          | 0.1-3.9               |
+| **EPSS**        | >0.9 (90%+)      | 0.7-0.9                    | 0.4-0.7           | 0.1-0.4          | <0.1                  |
+| **KEV**         | Listed + Active  | Listed                     | Not Listed        | Not Listed       | Not Listed            |
+| **Exposure**    | Internet-facing  | Internet/Critical Internal | Internal          | Internal         | Isolated              |
+| **Criticality** | Critical systems | High-value systems         | Important systems | Standard systems | Low-value systems     |
+| **Exploit**     | Weaponized       | Public exploit             | PoC available     | No exploit       | No exploit            |
+| **SLA**         | <24 hours        | <7 days                    | <30 days          | <60 days         | <90 days (monitoring) |
 
 **Note:** Priority is determined by HIGHEST applicable category, not all factors. One P1 factor elevates to P1 priority.
 
@@ -2908,15 +3106,18 @@ expansion-packs/bmad-1898-engineering/
 ## Security Alert Enrichment
 
 ### Executive Summary
+
 CVE-2024-1234 is a critical remote code execution vulnerability in Apache Struts 2.5.30 allowing unauthenticated network attackers to execute arbitrary code. CISA KEV-listed with active exploitation observed. Patch available in version 2.5.33. **Immediate remediation required (P1).**
 
 ### Vulnerability Classification
+
 - **CVE ID**: CVE-2024-1234
 - **CWE**: CWE-94 (Improper Control of Generation of Code)
 - **Type**: Remote Code Execution (RCE)
 - **Published**: 2024-03-15
 
 ### Severity Metrics
+
 - **CVSS v3.1 Base Score**: 9.8 (Critical)
 - **CVSS Vector**: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 - **EPSS Score**: 0.85 (85% exploitation probability within 30 days)
@@ -2924,6 +3125,7 @@ CVE-2024-1234 is a critical remote code execution vulnerability in Apache Struts
 - **CISA KEV**: ✅ Listed (Added: 2024-03-20, Due Date: 2024-04-10)
 
 ### Affected Software
+
 - **Product**: Apache Struts 2
 - **Vendor**: Apache Software Foundation
 - **Vulnerable Versions**: 2.5.0 through 2.5.30
@@ -2931,6 +3133,7 @@ CVE-2024-1234 is a critical remote code execution vulnerability in Apache Struts
 - **Configuration Requirements**: Default configuration vulnerable
 
 ### Exploitation Context
+
 - **Attack Vector**: Network (remotely exploitable)
 - **Attack Complexity**: Low (easy to exploit)
 - **Privileges Required**: None (unauthenticated)
@@ -2942,6 +3145,7 @@ CVE-2024-1234 is a critical remote code execution vulnerability in Apache Struts
   - **Availability**: High (complete system compromise)
 
 ### Exploit Intelligence
+
 - **Public Exploits**: ✅ Available
   - Exploit-DB: https://www.exploit-db.com/exploits/51234
   - Metasploit module: exploit/multi/http/struts2_rce
@@ -2952,6 +3156,7 @@ CVE-2024-1234 is a critical remote code execution vulnerability in Apache Struts
   - Honeypot data shows widespread scanning for vulnerable instances
 
 ### Business Impact Assessment
+
 - **Potential Impact**: Complete server compromise enabling data exfiltration, lateral movement, ransomware deployment
 - **Affected Systems**:
   - Production web application servers (5 instances)
@@ -2961,13 +3166,16 @@ CVE-2024-1234 is a critical remote code execution vulnerability in Apache Struts
 - **Regulatory Implications**: PCI-DSS compliance violation if breached, potential GDPR fines
 
 ### Remediation Guidance
+
 #### Patch Information
+
 - **Patched Version**: Apache Struts 2.5.33
 - **Release Date**: 2024-03-18
 - **Vendor Advisory**: https://cwiki.apache.org/confluence/display/WW/S2-062
 - **Patch Download**: https://struts.apache.org/download.cgi
 
 #### Remediation Steps
+
 1. **Backup:** Take full backup of affected servers
 2. **Testing:** Test upgrade to 2.5.33 in staging environment
 3. **Deployment:** Deploy to production during maintenance window
@@ -2975,26 +3183,31 @@ CVE-2024-1234 is a critical remote code execution vulnerability in Apache Struts
 5. **Monitoring:** Enable WAF rules for Struts2 exploit attempts
 
 #### Workarounds (if patch cannot be immediately deployed)
+
 - **Temporary Mitigation**: Implement WAF rules blocking OGNL expression patterns
 - **Limitations**: Workaround may not block all exploitation variants
 
 #### Verification
+
 1. Confirm running version: `java -jar struts2-core-*.jar --version` shows 2.5.33
 2. Vulnerability scan confirms CVE-2024-1234 resolved
 3. No suspicious activity in application logs
 
 ### MITRE ATT&CK Mapping
+
 - **Tactic**: Initial Access (TA0001)
 - **Technique**: Exploit Public-Facing Application (T1190)
 - **Detection**: Monitor web server logs for OGNL expressions, unusual POST parameters, error messages indicating code execution attempts
 
 ### Attack Surface Analysis
+
 - **Exposure**: Internet-Facing (all 5 instances publicly accessible)
 - **Access Requirements**: HTTP/HTTPS access to vulnerable endpoints
 - **Lateral Movement Risk**: High (compromised web servers can pivot to internal network)
 - **Dependencies**: Database servers, authentication services
 
 ### Priority Recommendation
+
 - **Recommended Priority**: **P1 (Critical - Immediate Remediation)**
 - **Remediation Timeline**: < 24 hours
 - **Rationale**:
@@ -3006,6 +3219,7 @@ CVE-2024-1234 is a critical remote code execution vulnerability in Apache Struts
   - Active Exploitation: ✅ Confirmed
 
 ### Related Information
+
 - **Similar CVEs**: CVE-2023-XXXX (previous Struts2 RCE), CVE-2022-XXXX
 - **Vendor Track Record**: History of RCE vulnerabilities in Struts2
 - **References**:
@@ -3015,11 +3229,12 @@ CVE-2024-1234 is a critical remote code execution vulnerability in Apache Struts
   - EPSS: https://www.first.org/epss
 
 ---
-🤖 *Enrichment generated using Perplexity AI research*
-*Generated by*: Security Analyst Agent (BMAD-1898)
-*Date*: 2025-11-06
-*Sources*: NVD, CISA KEV, FIRST EPSS, Apache Software Foundation
-*Review Status*: Pending Review
+
+🤖 _Enrichment generated using Perplexity AI research_
+_Generated by_: Security Analyst Agent (BMAD-1898)
+_Date_: 2025-11-06
+_Sources_: NVD, CISA KEV, FIRST EPSS, Apache Software Foundation
+_Review Status_: Pending Review
 ```
 
 ---
@@ -3060,6 +3275,7 @@ Security Operations Lead - Technical feasibility and resource allocation
 BMAD Framework Architect - Integration and dependency validation
 
 **Next Steps:**
+
 1. Schedule requirements review meeting with PO
 2. Create epic and user story tickets in JIRA
 3. Estimate story points and sprint allocation

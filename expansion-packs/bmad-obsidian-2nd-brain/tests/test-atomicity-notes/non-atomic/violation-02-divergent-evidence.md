@@ -25,6 +25,7 @@ SuperMemo was the original SRS software, created in 1987 by Piotr Wozniak. It in
 Anki uses a modified version of SM-2 that adjusts interval calculations based on user performance. The algorithm has been refined through millions of user reviews.
 
 ## Expected Test Results
+
 - Single Claim Test: FAIL (main claim about spaced repetition + tool comparison is separate claim)
 - Evidence Test: FAIL (tool comparison introduces new topics: software history, algorithm details, interface design)
 - Self-Contained Test: PASS (defines terms)

@@ -9,21 +9,10 @@
 ---
 
 checklist:
-  id: atomicity-checklist
-  name: Atomicity Checklist
-  description: Quality gates for atomic note validation - ensures notes contain exactly one complete knowledge building block
-  items:
-    - "[ ] Single claim test: Note expresses exactly one core claim/concept"
-    - "[ ] Evidence test: Evidence supports core claim without introducing new claims"
-    - "[ ] Self-contained test: Note understandable without extensive external context"
-    - "[ ] Title test: Title is descriptive and unique"
-    - "[ ] Related concepts test: Related concepts linked but not explained in detail"
-    - "[ ] Building block test: Clear identification of building block type"
-    - "[ ] Completeness test: Note contains complete thought (not fragment)"
-    - "[ ] Independence test: Note can be moved/reorganized without breaking system"
-    - "[ ] Link quality test: Links are bidirectional and meaningful"
-    - "[ ] Metadata test: All required metadata present"
-    - "[ ] Security test: No dangerous content or path traversal attempts"
+id: atomicity-checklist
+name: Atomicity Checklist
+description: Quality gates for atomic note validation - ensures notes contain exactly one complete knowledge building block
+items: - "[ ] Single claim test: Note expresses exactly one core claim/concept" - "[ ] Evidence test: Evidence supports core claim without introducing new claims" - "[ ] Self-contained test: Note understandable without extensive external context" - "[ ] Title test: Title is descriptive and unique" - "[ ] Related concepts test: Related concepts linked but not explained in detail" - "[ ] Building block test: Clear identification of building block type" - "[ ] Completeness test: Note contains complete thought (not fragment)" - "[ ] Independence test: Note can be moved/reorganized without breaking system" - "[ ] Link quality test: Links are bidirectional and meaningful" - "[ ] Metadata test: All required metadata present" - "[ ] Security test: No dangerous content or path traversal attempts"
 
 ---
 
@@ -46,6 +35,7 @@ This checklist ensures every note meets atomicity standards - containing exactly
 **Check:** Note expresses exactly one core claim, concept, or observation (not multiple independent claims)
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.3 per additional independent claim
 - Min: 0.0
@@ -53,6 +43,7 @@ This checklist ensures every note meets atomicity standards - containing exactly
 **Pass Criteria:** Score >= 0.7 (max 1 additional claim allowed)
 
 **Remediation if failed:**
+
 - Identify each independent claim in the note
 - Create separate notes for each claim
 - Keep only one claim in the current note
@@ -71,6 +62,7 @@ This checklist ensures every note meets atomicity standards - containing exactly
 **Check:** All supporting statements directly support the core claim without introducing new independent claims requiring explanation
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.3 per divergent idea requiring separate explanation
 - Min: 0.0
@@ -78,6 +70,7 @@ This checklist ensures every note meets atomicity standards - containing exactly
 **Pass Criteria:** Score >= 0.7 (max 1 divergent idea allowed)
 
 **Remediation if failed:**
+
 - Identify supporting statements that introduce new topics
 - Extract divergent ideas into separate notes
 - Keep only direct support in the current note
@@ -98,6 +91,7 @@ Support: "Anki is better than SuperMemo for this"
 **Check:** Note is understandable without requiring extensive external context or undefined terms
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.2 per undefined critical term
 - Deduct: -0.2 per assumed context element
@@ -106,6 +100,7 @@ Support: "Anki is better than SuperMemo for this"
 **Pass Criteria:** Score >= 0.7 (max 2 missing elements allowed)
 
 **Remediation if failed:**
+
 - Define all critical terms inline
 - Add necessary context to make note self-contained
 - Or link to definition notes with brief inline summary
@@ -124,6 +119,7 @@ Support: "Anki is better than SuperMemo for this"
 **Check:** Title is descriptive (indicates core concept) AND unique (no duplicates in vault)
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.4 if not descriptive
 - Deduct: -0.4 if not unique
@@ -132,6 +128,7 @@ Support: "Anki is better than SuperMemo for this"
 **Pass Criteria:** Score >= 0.7 (must pass one of two criteria)
 
 **Remediation if failed:**
+
 - Make title more specific and descriptive
 - Add context to differentiate from similar titles
 - Use pattern: "Topic - Specific Aspect" or "Concept: Detail"
@@ -152,6 +149,7 @@ Content: Discusses 5 concepts
 **Check:** Related concepts are linked only (not explained in depth >2 sentences)
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.3 per in-depth explanation (>2 sentences)
 - Min: 0.0
@@ -159,6 +157,7 @@ Content: Discusses 5 concepts
 **Pass Criteria:** Score >= 0.7 (max 1 in-depth explanation allowed)
 
 **Remediation if failed:**
+
 - Extract in-depth explanations into separate notes
 - Replace explanations with links [[Concept]]
 - Add brief 1-sentence context if needed
@@ -177,18 +176,21 @@ Content: Discusses 5 concepts
 **Check:** Note clearly identifies its building block type (concept, argument, model, question, claim, phenomenon)
 
 **Scoring:**
+
 - Pass: 1.0 if type identified correctly
 - Fail: 0.0 if no type or wrong type
 
 **Pass Criteria:** Score >= 0.7 (must identify type correctly)
 
 **Remediation if failed:**
+
 - Analyze note structure and content
 - Classify as one of 6 building block types
 - Add type to frontmatter metadata
 - Restructure note if type is ambiguous
 
 **Building Block Types:**
+
 1. **Concept** - Definition/explanation of idea
 2. **Argument** - Claim + evidence + reasoning
 3. **Model** - Framework/system with components
@@ -201,12 +203,14 @@ Content: Discusses 5 concepts
 **Check:** Note contains a complete thought, not just a fragment or partial idea
 
 **Scoring:**
+
 - Pass: 1.0 if complete
 - Fail: 0.0 if incomplete fragment
 
 **Pass Criteria:** Score >= 0.7 (must be complete)
 
 **Remediation if failed:**
+
 - Expand fragment into complete thought
 - Add missing context, evidence, or explanation
 - Combine with related fragments if necessary
@@ -225,12 +229,14 @@ Content: Discusses 5 concepts
 **Check:** Note can be moved, renamed, or reorganized without breaking the knowledge system
 
 **Scoring:**
+
 - Pass: 1.0 if independent
 - Fail: 0.0 if tightly coupled to location/structure
 
 **Pass Criteria:** Score >= 0.7 (must be independent)
 
 **Remediation if failed:**
+
 - Remove dependencies on folder structure
 - Replace relative references with absolute [[links]]
 - Ensure note makes sense out of context
@@ -249,6 +255,7 @@ Note refers to "the previous section" or "parent folder"
 **Check:** Links are bidirectional and meaningful (not just random connections)
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.2 per broken or one-way link
 - Deduct: -0.3 per meaningless/random link
@@ -257,6 +264,7 @@ Note refers to "the previous section" or "parent folder"
 **Pass Criteria:** Score >= 0.7 (max 2 link quality issues)
 
 **Remediation if failed:**
+
 - Ensure all outgoing links have backlinks
 - Add context to links (why are they related?)
 - Remove random or weak connections
@@ -275,6 +283,7 @@ Links to 20 random notes without context
 **Check:** All required metadata fields are present and valid
 
 **Required Fields:**
+
 - title (non-empty string)
 - type (one of 6 building block types)
 - building_block (matches type)
@@ -283,6 +292,7 @@ Links to 20 random notes without context
 - tags (array, can be empty)
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.2 per missing required field
 - Min: 0.0
@@ -290,6 +300,7 @@ Links to 20 random notes without context
 **Pass Criteria:** Score >= 0.7 (max 2 missing fields allowed)
 
 **Remediation if failed:**
+
 - Add missing metadata fields
 - Validate field formats (timestamps, types, scores)
 - Ensure frontmatter YAML is valid
@@ -337,11 +348,13 @@ is_atomic = (total_score >= 0.7)
 **FAIL (Non-Atomic):** Score < 0.6
 
 **Blocking Failures (auto-fail regardless of score):**
+
 - Building block type not identified (test 6)
 - Note is incomplete fragment (test 7)
 - Note is location-dependent (test 8)
 
 **Critical Warnings (fail if not addressed):**
+
 - Multiple independent claims (test 1)
 - Extensive undefined context (test 3)
 - No metadata present (test 10)
@@ -390,24 +403,24 @@ All test scenarios documented in STORY-003 testing section.
 ## Example Validation Report
 
 ```yaml
-note: "2025-11-05-zettelkasten-atomicity.md"
+note: '2025-11-05-zettelkasten-atomicity.md'
 is_atomic: true
 total_score: 0.92
 tests:
-  single_claim: {score: 1.0, pass: true}
-  evidence: {score: 1.0, pass: true}
-  self_contained: {score: 0.8, pass: true, issues: ["Term 'evergreen' not defined"]}
-  title: {score: 1.0, pass: true}
-  related_concepts: {score: 1.0, pass: true}
-  building_block: {score: 1.0, pass: true, type: "concept"}
-  completeness: {score: 1.0, pass: true}
-  independence: {score: 1.0, pass: true}
-  link_quality: {score: 0.8, pass: true, issues: ["1 one-way link detected"]}
-  metadata: {score: 1.0, pass: true}
-verdict: "PASS - Note is atomic"
+  single_claim: { score: 1.0, pass: true }
+  evidence: { score: 1.0, pass: true }
+  self_contained: { score: 0.8, pass: true, issues: ["Term 'evergreen' not defined"] }
+  title: { score: 1.0, pass: true }
+  related_concepts: { score: 1.0, pass: true }
+  building_block: { score: 1.0, pass: true, type: 'concept' }
+  completeness: { score: 1.0, pass: true }
+  independence: { score: 1.0, pass: true }
+  link_quality: { score: 0.8, pass: true, issues: ['1 one-way link detected'] }
+  metadata: { score: 1.0, pass: true }
+verdict: 'PASS - Note is atomic'
 recommendations:
   - "Define term 'evergreen' inline or link to definition"
-  - "Add backlink from [[Evergreen Notes]]"
+  - 'Add backlink from [[Evergreen Notes]]'
 ```
 
 ### 11. Security Test
@@ -415,6 +428,7 @@ recommendations:
 **Check:** Note paths and content do not contain dangerous patterns or security risks
 
 **Security Checks:**
+
 - Path validation: No directory traversal (../) attempts
 - Content scanning: No script tags, JavaScript injection, eval()
 - Link safety: All generated links are safe wikilinks
@@ -422,12 +436,14 @@ recommendations:
 - Fragment limits: Max 20 fragments per note
 
 **Scoring:**
+
 - Pass: 1.0 if all security checks pass
 - Fail: 0.0 if any security violation detected
 
 **Pass Criteria:** Score >= 0.7 (must pass security validation)
 
 **Remediation if failed:**
+
 - Block dangerous content immediately
 - Sanitize paths and filenames
 - Strip unsafe HTML/JavaScript
@@ -440,4 +456,3 @@ Valid markdown content with safe wikilinks [[Note]]
 **Example FAIL:**
 Content contains: <script>alert('xss')</script>
 → JavaScript injection attempt ✗
-

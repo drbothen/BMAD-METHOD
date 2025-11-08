@@ -378,6 +378,7 @@ def validate_note_created(note_path):
 **Common Errors:**
 
 1. **Vault Not Found:**
+
    ```python
    if error.message.contains("vault not found"):
        return error(
@@ -387,6 +388,7 @@ def validate_note_created(note_path):
    ```
 
 2. **Permission Denied:**
+
    ```python
    if error.message.contains("permission denied"):
        return error(
@@ -396,6 +398,7 @@ def validate_note_created(note_path):
    ```
 
 3. **File Already Exists:**
+
    ```python
    if error.message.contains("file exists"):
        # Collision handling should prevent this, but handle anyway
@@ -404,6 +407,7 @@ def validate_note_created(note_path):
    ```
 
 4. **Invalid Path:**
+
    ```python
    if error.message.contains("invalid path"):
        return error(

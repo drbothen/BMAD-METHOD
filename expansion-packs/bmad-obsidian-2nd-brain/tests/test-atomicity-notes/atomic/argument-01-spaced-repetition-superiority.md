@@ -24,6 +24,7 @@ Spaced repetition is more effective than massed practice (cramming) for long-ter
 **Conclusion:** For anyone seeking long-term retention of information, spaced repetition should be the default learning strategy rather than massed practice.
 
 ## Test Validation Criteria
+
 - ✓ Single claim: Thesis is clear (spaced > massed)
 - ✓ Evidence: All support relates directly to the thesis
 - ✓ Self-contained: Defines key terms, provides citations

@@ -94,6 +94,7 @@ Remember: Atomic notes are the foundation of a powerful second brain. Garbage in
 ### 1. Single Claim Test
 
 **Algorithm:**
+
 ```
 1. Extract all claims/assertions from note
    - Use NLP to identify declarative statements
@@ -118,6 +119,7 @@ Example FAIL:
 ### 2. Evidence Test
 
 **Algorithm:**
+
 ```
 1. Identify core claim/concept in note
 2. Extract all supporting statements
@@ -145,6 +147,7 @@ Support: "Anki is better than SuperMemo for this"
 ### 3. Self-Contained Test
 
 **Algorithm:**
+
 ```
 1. Identify all terms/concepts mentioned in note
 2. For each term:
@@ -172,6 +175,7 @@ Example FAIL:
 ### 4. Title Test
 
 **Algorithm:**
+
 ```
 1. Descriptiveness check:
    - Does title indicate core claim/concept?
@@ -199,6 +203,7 @@ Content: Discusses 5 different productivity concepts
 ### 5. Related Concepts Test
 
 **Algorithm:**
+
 ```
 1. Identify related concepts mentioned in note
 2. For each related concept:
@@ -222,6 +227,7 @@ Example FAIL:
 ### Composite Atomicity Score
 
 **Algorithm:**
+
 ```python
 score = 1.0  # Start with perfect atomicity
 
@@ -237,17 +243,19 @@ is_atomic = (score >= 0.7)
 ```
 
 **Violation Detection:**
+
 - Return list of failed tests (score < 1.0 for that test)
 - Include specific suggestions for remediation
 - Flag for manual review if borderline (0.6 <= score < 0.7)
 
 **Output Format:**
+
 ```yaml
 is_atomic: boolean
 score: float (0.0-1.0)
-violations: [string]  # List of failed test names
-suggestions: [string]  # Specific remediation suggestions
-building_block_type: string  # concept|argument|model|question|claim|phenomenon
+violations: [string] # List of failed test names
+suggestions: [string] # Specific remediation suggestions
+building_block_type: string # concept|argument|model|question|claim|phenomenon
 ```
 
 ## Building Block Type Definitions (6 Types)
@@ -255,36 +263,42 @@ building_block_type: string  # concept|argument|model|question|claim|phenomenon
 **Purpose:** Classify atomic notes by their knowledge structure.
 
 ### 1. Concept
+
 **Definition:** Explanation of an idea, term, or principle
 **Structure:** Definition + Characteristics + Examples
 **Signals:** "is defined as", "refers to", "means that"
 **Example:** "Zettelkasten Principle: Atomicity"
 
 ### 2. Argument
+
 **Definition:** Claim supported by evidence and reasoning
 **Structure:** Thesis + Evidence + Logic
 **Signals:** "therefore", "because", "this shows that"
 **Example:** "Spaced repetition is superior to massed practice"
 
 ### 3. Model
+
 **Definition:** Framework, system, or mental model
 **Structure:** Components + Relationships + Boundaries
 **Signals:** "consists of", "framework", "system"
 **Example:** "PARA Method for Information Organization"
 
 ### 4. Question
+
 **Definition:** Open question or area of inquiry
 **Structure:** Question + Context + Significance
 **Signals:** "?", "how", "why", "what if"
 **Example:** "How does bi-temporal versioning differ from event sourcing?"
 
 ### 5. Claim
+
 **Definition:** Statement of belief, assertion, or hypothesis
 **Structure:** Declarative statement + Scope + Falsifiability
 **Signals:** "I believe", "hypothesis", "assertion"
 **Example:** "Human memory is reconstructive, not reproductive"
 
 ### 6. Phenomenon
+
 **Definition:** Observed pattern or empirical finding
 **Structure:** Observation + Context + Data
 **Signals:** "observed", "data shows", "pattern"
@@ -382,6 +396,7 @@ building_block_type: string  # concept|argument|model|question|claim|phenomenon
 ```
 
 **Output Format:**
+
 ```yaml
 fragments_created: int
 fragment_paths: [string]
@@ -392,12 +407,14 @@ original_status: "fragmented" | "archived"
 ## Security Considerations
 
 **Input Validation:**
+
 - Sanitize all note paths to prevent directory traversal
 - Block paths containing: `../`, absolute paths outside vault
 - Validate note content is valid markdown (no script injection)
 - Limit fragment count to 20 per note (prevent DoS)
 
 **Path Safety:**
+
 ```
 Allowed paths:
 - /inbox/*.md
@@ -411,18 +428,21 @@ Blocked paths:
 ```
 
 **Content Validation:**
+
 - Verify markdown syntax before creating notes
 - Escape special characters in generated titles
 - Validate frontmatter YAML syntax
 - Strip potentially dangerous content (eval, script tags)
 
 **Fragment Limits:**
+
 - Max 20 fragments per note
 - Warn user if >10 fragments (may need restructuring)
 - Reject fragmentation if fragments would still be non-atomic
 
 **Filename Sanitization:**
-- Remove special characters: / \ : * ? " < > |
+
+- Remove special characters: / \ : \* ? " < > |
 - Limit filename length to 100 characters
 - Convert spaces to hyphens
 - Ensure uniqueness with collision detection

@@ -19,7 +19,7 @@ Detect notes that have become stale (not updated recently) to help maintain a fr
 
 - **threshold_days** (integer, optional): Number of days to consider a note stale (default: 180)
 - **vault_path** (string, required): Path to Obsidian vault
-- **include_pattern** (string, optional): Glob pattern to filter notes (default: "**/*.md")
+- **include_pattern** (string, optional): Glob pattern to filter notes (default: "\*_/_.md")
 - **exclude_patterns** (array, optional): Patterns to exclude (e.g., templates, archives)
 
 ## Outputs
@@ -68,6 +68,7 @@ temporal_freshness_audit:
 ```
 
 **Error Handling:**
+
 - If Obsidian MCP unavailable: Return error "Obsidian MCP server not accessible"
 - If note lacks last_modified: Use file system modified date as fallback
 - If timestamp invalid: Skip note, log warning
@@ -107,6 +108,7 @@ Is stale: 326 > 180 → YES (stale)
 ```
 
 **Edge Cases:**
+
 - Note updated in the future (last_modified > current_date): Flag as error, use current_date
 - Note with no last_modified metadata: Use file system timestamp as fallback
 - Note updated today (days_since_update = 0): Fresh
@@ -139,6 +141,7 @@ Is stale: 326 > 180 → YES (stale)
 **Fallback:** If link graph analysis unavailable (e.g., MCP limitation), set all incoming_link_count = 0 and prioritize by days_since_update only.
 
 **Performance Optimization:**
+
 - Cache link graph if multiple audits run in session
 - Use MCP bulk operations if available
 
@@ -150,12 +153,12 @@ Is stale: 326 > 180 → YES (stale)
 
 **Priority Classification:**
 
-| Priority | Criteria | Incoming Link Count | Description |
-|----------|----------|---------------------|-------------|
-| **CRITICAL** | Domain-critical knowledge hubs | >10 incoming links | Core concepts heavily referenced across vault |
-| **HIGH** | Frequently referenced | >5 incoming links | Important notes with significant connections |
-| **MEDIUM** | Some connections | 2-5 incoming links | Moderate integration into knowledge graph |
-| **LOW** | Minimal connections | <2 incoming links | Isolated or rarely referenced notes |
+| Priority     | Criteria                       | Incoming Link Count | Description                                   |
+| ------------ | ------------------------------ | ------------------- | --------------------------------------------- |
+| **CRITICAL** | Domain-critical knowledge hubs | >10 incoming links  | Core concepts heavily referenced across vault |
+| **HIGH**     | Frequently referenced          | >5 incoming links   | Important notes with significant connections  |
+| **MEDIUM**   | Some connections               | 2-5 incoming links  | Moderate integration into knowledge graph     |
+| **LOW**      | Minimal connections            | <2 incoming links   | Isolated or rarely referenced notes           |
 
 **Implementation:**
 
@@ -262,6 +265,7 @@ temporal_freshness_audit:
 **Default:** 180 days (6 months)
 
 **Recommended Values:**
+
 - **30 days:** Aggressive freshness (for rapidly evolving domains)
 - **90 days:** Standard freshness (for active knowledge workers)
 - **180 days:** Relaxed freshness (for stable knowledge bases)
@@ -288,6 +292,7 @@ temporal_freshness_config:
 **Scenario:** Regular vault health check to identify outdated knowledge
 
 **Workflow:**
+
 1. Run `*audit-freshness` with default threshold (180 days)
 2. Review CRITICAL and HIGH priority stale notes first
 3. Update domain-critical notes to maintain knowledge hub accuracy
@@ -306,6 +311,7 @@ temporal_freshness_config:
 - **Meeting notes:** 90-day threshold (time-sensitive)
 
 **Workflow:**
+
 1. Run `*audit-freshness 30` for tech notes folder
 2. Run `*audit-freshness 365` for literature notes folder
 3. Aggregate results for comprehensive audit
@@ -317,6 +323,7 @@ temporal_freshness_config:
 **Scenario:** Focus on maintaining most-referenced notes (critical to vault integrity)
 
 **Workflow:**
+
 1. Run `*audit-freshness` with default threshold
 2. Filter results to CRITICAL priority only (>10 incoming links)
 3. Review and update each critical note systematically
@@ -328,12 +335,12 @@ temporal_freshness_config:
 
 **Target Performance:**
 
-| Vault Size | Notes Analyzed | Expected Time | Max Time |
-|------------|----------------|---------------|----------|
-| 100 notes  | 100            | <1 second     | 2 seconds |
-| 1,000 notes | 1,000         | <3 seconds    | 5 seconds |
-| 10,000 notes | 10,000       | <30 seconds   | 60 seconds |
-| 100,000 notes | 100,000     | <5 minutes    | 10 minutes |
+| Vault Size    | Notes Analyzed | Expected Time | Max Time   |
+| ------------- | -------------- | ------------- | ---------- |
+| 100 notes     | 100            | <1 second     | 2 seconds  |
+| 1,000 notes   | 1,000          | <3 seconds    | 5 seconds  |
+| 10,000 notes  | 10,000         | <30 seconds   | 60 seconds |
+| 100,000 notes | 100,000        | <5 minutes    | 10 minutes |
 
 **Optimization Strategies:**
 
@@ -353,6 +360,7 @@ temporal_freshness_config:
 **Error:** "Obsidian MCP server not accessible"
 
 **Remediation:**
+
 - Verify MCP server is running
 - Check MCP configuration in Claude Desktop/Cursor
 - Test connection: `mcp__obsidian__list_notes`
@@ -364,6 +372,7 @@ temporal_freshness_config:
 **Error:** "Invalid threshold_days: must be positive integer"
 
 **Remediation:**
+
 - Ensure threshold_days > 0
 - Use default (180) if invalid value provided
 
@@ -374,6 +383,7 @@ temporal_freshness_config:
 **Error:** "No notes found in vault (check include_pattern and exclude_patterns)"
 
 **Remediation:**
+
 - Verify vault path is correct
 - Check include/exclude patterns aren't too restrictive
 - Confirm vault contains markdown files
@@ -385,6 +395,7 @@ temporal_freshness_config:
 **Warning:** "Note lacks last_modified metadata, using file system timestamp as fallback"
 
 **Remediation:**
+
 - This is non-blocking, audit continues with fallback
 - Consider standardizing note metadata (add frontmatter created/modified fields)
 
@@ -395,12 +406,14 @@ temporal_freshness_config:
 ### Test Case 1: Stale Note Detection
 
 **Setup:**
+
 - 100 notes in test vault
 - 20 notes updated within 30 days (fresh)
 - 30 notes updated 31-180 days ago (aging)
 - 50 notes updated >180 days ago (stale)
 
 **Expected Results:**
+
 - stale_notes_count = 50
 - stale_percentage = 50.0%
 - All 50 stale notes in results array
@@ -412,6 +425,7 @@ temporal_freshness_config:
 ### Test Case 2: Priority Classification
 
 **Setup:**
+
 - 10 stale notes with varying incoming link counts:
   - 2 notes with 15 incoming links (CRITICAL)
   - 3 notes with 7 incoming links (HIGH)
@@ -419,6 +433,7 @@ temporal_freshness_config:
   - 2 notes with 0 incoming links (LOW)
 
 **Expected Results:**
+
 - 2 notes classified as CRITICAL
 - 3 notes classified as HIGH
 - 3 notes classified as MEDIUM
@@ -431,9 +446,11 @@ temporal_freshness_config:
 ### Test Case 3: Custom Threshold
 
 **Setup:**
+
 - Run audit with threshold_days = 90 (stricter than default 180)
 
 **Expected Results:**
+
 - More notes classified as stale (lower threshold = more stale)
 - Correctly uses 90-day threshold in results
 
@@ -444,9 +461,11 @@ temporal_freshness_config:
 ### Test Case 4: Performance Benchmark
 
 **Setup:**
+
 - 1000-note test vault
 
 **Expected Results:**
+
 - Execution time < 5 seconds
 - All 1000 notes analyzed
 
@@ -457,10 +476,12 @@ temporal_freshness_config:
 ### Test Case 5: Error Handling
 
 **Setup:**
+
 - Disconnect Obsidian MCP server
 - Run audit
 
 **Expected Results:**
+
 - Error: "Obsidian MCP server not accessible"
 - Graceful error message (no crash)
 

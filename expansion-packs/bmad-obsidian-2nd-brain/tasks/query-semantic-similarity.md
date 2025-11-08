@@ -68,18 +68,20 @@ similarity_query_result:
 ### Step 2: Check Smart Connections Availability
 
 1. **Query MCP Server:**
+
    ```javascript
    // Attempt to call Smart Connections MCP
    try {
-     mcp_available = check_smart_connections_mcp()
+     mcp_available = check_smart_connections_mcp();
    } catch (error) {
      // Graceful degradation
      return {
        mcp_available: false,
-       error: "Smart Connections MCP not available. Install Smart Connections plugin and configure MCP server.",
+       error:
+         'Smart Connections MCP not available. Install Smart Connections plugin and configure MCP server.',
        results: [],
-       suggestion: "Manual linking available via *create-link command"
-     }
+       suggestion: 'Manual linking available via *create-link command',
+     };
    }
    ```
 
@@ -91,6 +93,7 @@ similarity_query_result:
 ### Step 3: Load Source Note Content
 
 1. **Read source note via Obsidian MCP:**
+
    ```javascript
    source_note = read_note(note_id)
    if (!source_note) {
@@ -100,7 +103,7 @@ similarity_query_result:
 
 2. **Parse existing wikilinks (if exclude_already_linked=true):**
    ```javascript
-   existing_links = extract_wikilinks(source_note.content)
+   existing_links = extract_wikilinks(source_note.content);
    // Example: ["[[Note 1]]", "[[Note 2]]"]
    // Convert to paths: ["path/to/note-1.md", "path/to/note-2.md"]
    ```
@@ -108,17 +111,19 @@ similarity_query_result:
 ### Step 4: Execute Smart Connections Query
 
 1. **Call Smart Connections MCP:**
+
    ```javascript
    // MCP Call Example
    results = smart_connections.search_similar({
      content: note_content,
      threshold: similarity_threshold,
      limit: result_limit,
-     exclude_current: true // Don't return the source note itself
-   })
+     exclude_current: true, // Don't return the source note itself
+   });
    ```
 
 2. **Smart Connections returns:**
+
    ```json
    [
      {
@@ -162,25 +167,28 @@ similarity_query_result:
 ### Step 5: Filter Results
 
 1. **Apply similarity threshold:**
+
    ```javascript
-   filtered = results.filter(r => r.similarity_score >= similarity_threshold)
+   filtered = results.filter((r) => r.similarity_score >= similarity_threshold);
    ```
 
 2. **Exclude already-linked notes (if requested):**
+
    ```javascript
    if (exclude_already_linked) {
-     filtered = filtered.filter(r => !existing_links.includes(r.note_path))
+     filtered = filtered.filter((r) => !existing_links.includes(r.note_path));
    }
    ```
 
 3. **Exclude source note itself:**
+
    ```javascript
-   filtered = filtered.filter(r => r.note_id !== source_note.id)
+   filtered = filtered.filter((r) => r.note_id !== source_note.id);
    ```
 
 4. **Sort by similarity descending:**
    ```javascript
-   filtered.sort((a, b) => b.similarity_score - a.similarity_score)
+   filtered.sort((a, b) => b.similarity_score - a.similarity_score);
    ```
 
 ### Step 6: Extract Shared Concepts
@@ -188,17 +196,19 @@ similarity_query_result:
 For each result, analyze shared concepts:
 
 1. **Extract concepts from both notes:**
+
    ```javascript
-   source_concepts = extract_concepts(source_note.content)
+   source_concepts = extract_concepts(source_note.content);
    // Extract: tags, heading keywords, linked concepts
 
-   target_concepts = extract_concepts(result.note_content)
+   target_concepts = extract_concepts(result.note_content);
    ```
 
 2. **Calculate overlap:**
+
    ```javascript
-   shared_concepts = intersection(source_concepts, target_concepts)
-   result.shared_concepts = shared_concepts
+   shared_concepts = intersection(source_concepts, target_concepts);
+   result.shared_concepts = shared_concepts;
    ```
 
 3. **Example:**
@@ -211,6 +221,7 @@ For each result, analyze shared concepts:
 ### Step 7: Format and Return Results
 
 1. **Build output structure:**
+
    ```yaml
    {
      source_note: note_id,
@@ -240,15 +251,17 @@ For each result, analyze shared concepts:
 ### Example 1: Successful Query
 
 **Input:**
+
 ```yaml
-note_id: "concepts/zettelkasten-atomicity.md"
-note_content: "The atomicity principle states that each note should contain exactly one complete idea..."
+note_id: 'concepts/zettelkasten-atomicity.md'
+note_content: 'The atomicity principle states that each note should contain exactly one complete idea...'
 similarity_threshold: 0.6
 result_limit: 20
 exclude_already_linked: true
 ```
 
 **Output:**
+
 ```yaml
 similarity_query_result:
   source_note: 'concepts/zettelkasten-atomicity.md'
@@ -282,12 +295,14 @@ similarity_query_result:
 ### Example 2: Smart Connections Unavailable
 
 **Input:**
+
 ```yaml
-note_id: "concepts/zettelkasten-atomicity.md"
-note_content: "..."
+note_id: 'concepts/zettelkasten-atomicity.md'
+note_content: '...'
 ```
 
 **Output:**
+
 ```yaml
 similarity_query_result:
   source_note: 'concepts/zettelkasten-atomicity.md'
@@ -297,30 +312,32 @@ similarity_query_result:
   results: []
   execution_time_ms: 45
   mcp_available: false
-  error: "Smart Connections MCP not available. Install Smart Connections plugin and configure MCP server."
-  suggestion: "Manual linking available via *create-link command"
+  error: 'Smart Connections MCP not available. Install Smart Connections plugin and configure MCP server.'
+  suggestion: 'Manual linking available via *create-link command'
 ```
 
 ### Example 3: No Results Above Threshold
 
 **Input:**
+
 ```yaml
-note_id: "unique-topic.md"
+note_id: 'unique-topic.md'
 similarity_threshold: 0.6
 ```
 
 **Output:**
+
 ```yaml
 similarity_query_result:
   source_note: 'unique-topic.md'
   query_timestamp: '2025-11-05T14:35:00Z'
   total_candidates: 8
-  filtered_count: 0  # All below 0.6 threshold
+  filtered_count: 0 # All below 0.6 threshold
   results: []
   execution_time_ms: 1834
   mcp_available: true
   error: null
-  message: "No notes found with similarity >= 0.6. Source note may be on unique topic or vault is too small."
+  message: 'No notes found with similarity >= 0.6. Source note may be on unique topic or vault is too small.'
 ```
 
 ## Error Handling
@@ -328,29 +345,29 @@ similarity_query_result:
 ### Error: Source Note Not Found
 
 ```yaml
-error: "Source note not found: {note_id}"
-action: "Verify note exists in vault"
+error: 'Source note not found: {note_id}'
+action: 'Verify note exists in vault'
 ```
 
 ### Error: Smart Connections Timeout
 
 ```yaml
-error: "Smart Connections timeout after 3 retries"
-action: "Check Smart Connections plugin status, reduce vault size, or increase timeout"
+error: 'Smart Connections timeout after 3 retries'
+action: 'Check Smart Connections plugin status, reduce vault size, or increase timeout'
 ```
 
 ### Error: Invalid Threshold
 
 ```yaml
-error: "Invalid similarity_threshold: {value}. Must be 0.0-1.0"
-action: "Using default 0.6"
+error: 'Invalid similarity_threshold: {value}. Must be 0.0-1.0'
+action: 'Using default 0.6'
 ```
 
 ### Error: Empty Note Content
 
 ```yaml
-error: "Note content empty, cannot perform semantic search"
-action: "Ensure note has content before querying"
+error: 'Note content empty, cannot perform semantic search'
+action: 'Ensure note has content before querying'
 ```
 
 ## Performance Targets
@@ -362,15 +379,18 @@ action: "Ensure note has content before querying"
 ## Integration Points
 
 **Called by:**
-- *suggest-links command
-- *create-links command (to find candidates)
-- *batch-approve workflow
+
+- \*suggest-links command
+- \*create-links command (to find candidates)
+- \*batch-approve workflow
 
 **Calls:**
+
 - Smart Connections MCP: `search_similar()`
 - Obsidian MCP: `read_note()`
 
 **References:**
+
 - connection-patterns.md (for relationship context)
 - linking-quality-checklist.md (for threshold validation)
 

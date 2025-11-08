@@ -24,6 +24,7 @@ Students who take notes by hand retain information better than students who type
 **Conclusion:** For learning and retention purposes, handwriting forces beneficial cognitive processing that typing bypasses.
 
 ## Test Validation Criteria
+
 - ✓ Single claim: Clear thesis (handwriting > typing for retention)
 - ✓ Evidence: All evidence directly supports the claim
 - ✓ Self-contained: Provides context and definitions

@@ -78,15 +78,16 @@ Overall vault health: **Good (78/100)**. The vault demonstrates solid knowledge 
 
 **Orphaned Notes:** 26 notes (5.3% of vault)
 
-| Note | Created | Modified | Length | Action |
-|------|---------|----------|--------|--------|
-| [[Random Observation About Focus]] | 2025-09-12 | 2025-09-12 | 145 words | Link or Archive |
-| [[Meeting Notes 2025-08-15]] | 2025-08-15 | 2025-08-15 | 89 words | Archive |
-| [[Quick Thought on Memory]] | 2025-07-22 | 2025-07-22 | 52 words | Delete or Expand |
+| Note                               | Created    | Modified   | Length    | Action           |
+| ---------------------------------- | ---------- | ---------- | --------- | ---------------- |
+| [[Random Observation About Focus]] | 2025-09-12 | 2025-09-12 | 145 words | Link or Archive  |
+| [[Meeting Notes 2025-08-15]]       | 2025-08-15 | 2025-08-15 | 89 words  | Archive          |
+| [[Quick Thought on Memory]]        | 2025-07-22 | 2025-07-22 | 52 words  | Delete or Expand |
 
-*Showing 3 of 26 orphaned notes*
+_Showing 3 of 26 orphaned notes_
 
 **Recommendations:**
+
 - Review orphans created >90 days ago for archival
 - Expand notes <100 words or merge into related notes
 - Create MOC links for domain-relevant orphans
@@ -113,6 +114,7 @@ Overall vault health: **Good (78/100)**. The vault demonstrates solid knowledge 
 **Duplicate Groups:** 2 groups detected
 
 **Group 1: Spaced Repetition** (similarity: 0.87)
+
 - [[Spaced Repetition Basics]]
 - [[How Spaced Repetition Works]]
 - Recommendation: Merge into single authoritative note, redirect links
@@ -123,6 +125,7 @@ Overall vault health: **Good (78/100)**. The vault demonstrates solid knowledge 
 **Metadata Coverage:** 95.3%
 
 **Issues:**
+
 - 15 notes missing `created` timestamp
 - 8 notes missing `building_block_type` field
 - 5 notes have incomplete frontmatter
@@ -160,6 +163,7 @@ Overall vault health: **Good (78/100)**. The vault demonstrates solid knowledge 
 **Overall Score:** 78/100 (Good)
 
 **Breakdown:**
+
 - Connectivity: 85/100 (5.3% orphans, 4.2 avg links/note)
 - Freshness: 72/100 (2.5% stale notes)
 - Link Quality: 81/100 (9 problematic links of 2,047 total)
@@ -168,6 +172,7 @@ Overall vault health: **Good (78/100)**. The vault demonstrates solid knowledge 
 - Metadata: 92/100 (95.3% complete)
 
 **Audit Performance:**
+
 - Duration: 47 seconds
 - Notes Processed: 487
 - Batches: 1 (progressive mode: disabled)

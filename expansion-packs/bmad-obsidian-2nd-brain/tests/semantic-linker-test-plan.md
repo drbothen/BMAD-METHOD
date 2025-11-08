@@ -19,6 +19,7 @@ Test plan for validating all functionality of the Semantic Linker Agent (STORY-0
    - Graphiti Neo4j MCP (optional, for Neo4j tests)
 
 3. **Sample Notes:**
+
    ```
    /inbox/
    /atomic/
@@ -37,6 +38,7 @@ Test plan for validating all functionality of the Semantic Linker Agent (STORY-0
 ### Test Data
 
 **Sample Note 1: atomic/argument-01-spaced-repetition.md**
+
 ```markdown
 ---
 building_block: argument
@@ -53,6 +55,7 @@ The empirical evidence comes from Ebbinghaus's research on memory decay, which d
 ```
 
 **Sample Note 2: atomic/phenomenon-01-forgetting-curve.md**
+
 ```markdown
 ---
 building_block: phenomenon
@@ -69,6 +72,7 @@ This empirical finding provides the foundation for understanding why distributed
 ```
 
 **Sample Note 3: atomic/concept-01-desirable-difficulty.md**
+
 ```markdown
 ---
 building_block: concept
@@ -93,11 +97,13 @@ The principle explains why spaced repetition, though more effortful than crammin
 **Objective:** Verify Smart Connections MCP returns semantically similar notes
 
 **Procedure:**
+
 1. Load note: `atomic/argument-01-spaced-repetition.md`
 2. Execute: `*suggest-links atomic/argument-01-spaced-repetition.md`
 3. Verify Smart Connections query with threshold 0.6
 
 **Expected Results:**
+
 - Returns 5+ similar notes
 - `phenomenon-01-forgetting-curve.md` in results (similarity >= 0.7)
 - `concept-01-desirable-difficulty.md` in results (similarity >= 0.6)
@@ -105,6 +111,7 @@ The principle explains why spaced repetition, though more effortful than crammin
 - No self-reference (source note excluded)
 
 **Pass Criteria:**
+
 - [x] Smart Connections MCP called successfully
 - [x] Minimum 5 results returned
 - [x] All results have similarity >= 0.6
@@ -116,10 +123,12 @@ The principle explains why spaced repetition, though more effortful than crammin
 **Objective:** Verify graceful handling when Smart Connections MCP unavailable
 
 **Procedure:**
+
 1. Disable Smart Connections MCP
 2. Execute: `*suggest-links atomic/argument-01-spaced-repetition.md`
 
 **Expected Results:**
+
 ```
 Smart Connections MCP not available. Install Smart Connections plugin and configure MCP server.
 
@@ -127,6 +136,7 @@ Alternative: Use *create-link command for manual linking.
 ```
 
 **Pass Criteria:**
+
 - [x] Error message clear and actionable
 - [x] No hard failure/crash
 - [x] Suggests manual alternative
@@ -137,10 +147,12 @@ Alternative: Use *create-link command for manual linking.
 **Objective:** Verify handling when no notes meet similarity threshold
 
 **Procedure:**
+
 1. Create highly unique note with no semantic matches
 2. Execute: `*suggest-links {unique_note_path}`
 
 **Expected Results:**
+
 ```
 No semantically related notes found (minimum similarity: 0.6)
 
@@ -150,6 +162,7 @@ Suggestions:
 ```
 
 **Pass Criteria:**
+
 - [x] Empty results handled gracefully
 - [x] User informed of threshold
 - [x] Suggestions provided
@@ -161,14 +174,17 @@ Suggestions:
 **Objective:** Verify correct identification of support relationships
 
 **Test Data:**
+
 - Source: `atomic/phenomenon-01-forgetting-curve.md`
 - Target: `atomic/argument-01-spaced-repetition.md`
 
 **Procedure:**
+
 1. Execute: `*suggest-links atomic/phenomenon-01-forgetting-curve.md`
 2. Verify link type for argument-01
 
 **Expected Results:**
+
 ```
 Link Type: supports
 Confidence: >= 0.85
@@ -176,6 +192,7 @@ Reasoning: "Phenomenon provides empirical evidence for argument's thesis. 3+ sup
 ```
 
 **Pass Criteria:**
+
 - [x] Link type = 'supports'
 - [x] Confidence >= 0.7
 - [x] Reasoning mentions evidence/support pattern
@@ -186,13 +203,16 @@ Reasoning: "Phenomenon provides empirical evidence for argument's thesis. 3+ sup
 **Objective:** Verify correct identification of elaboration relationships
 
 **Test Data:**
+
 - Source: `atomic/concept-01-desirable-difficulty.md`
 - Target: `atomic/argument-01-spaced-repetition.md`
 
 **Procedure:**
+
 1. Execute: `*suggest-links atomic/concept-01-desirable-difficulty.md`
 
 **Expected Results:**
+
 ```
 Link Type: elaborates
 Confidence: >= 0.7
@@ -200,6 +220,7 @@ Reasoning: "Concept explains underlying mechanism of spaced repetition principle
 ```
 
 **Pass Criteria:**
+
 - [x] Link type = 'elaborates'
 - [x] Confidence >= 0.7
 - [x] Reasoning mentions explanation/elaboration
@@ -209,13 +230,16 @@ Reasoning: "Concept explains underlying mechanism of spaced repetition principle
 **Objective:** Verify detection of contradictory claims
 
 **Test Data:**
+
 - Source: `atomic/claim-01-multitasking-improves-productivity.md`
 - Target: `atomic/argument-01-multitasking-reduces-performance.md`
 
 **Procedure:**
+
 1. Execute: `*suggest-links atomic/claim-01-multitasking-improves-productivity.md`
 
 **Expected Results:**
+
 ```
 Link Type: contradicts
 Confidence: >= 0.8
@@ -223,6 +247,7 @@ Reasoning: "Claims conflict. 3+ contradiction signals detected: 'however', 'cont
 ```
 
 **Pass Criteria:**
+
 - [x] Link type = 'contradicts'
 - [x] Confidence >= 0.7
 - [x] Reasoning mentions conflict/contradiction
@@ -232,13 +257,16 @@ Reasoning: "Claims conflict. 3+ contradiction signals detected: 'however', 'cont
 **Objective:** Verify influences type requires temporal precedence
 
 **Test Data:**
+
 - Source: `atomic/phenomenon-01-ebbinghaus-1885.md` (created: 1885-01-01)
 - Target: `atomic/model-01-modern-srs.md` (created: 2020-01-01)
 
 **Procedure:**
+
 1. Execute: `*suggest-links atomic/phenomenon-01-ebbinghaus-1885.md`
 
 **Expected Results:**
+
 ```
 Link Type: influences
 Confidence: >= 0.8
@@ -246,6 +274,7 @@ Reasoning: "Source predates target (temporal precedence verified). 2+ influence 
 ```
 
 **Pass Criteria:**
+
 - [x] Link type = 'influences'
 - [x] Temporal precedence verified (source < target date)
 - [x] Confidence >= 0.7
@@ -255,17 +284,21 @@ Reasoning: "Source predates target (temporal precedence verified). 2+ influence 
 **Objective:** Verify influences type rejected if temporal order violated
 
 **Test Data:**
+
 - Source: `atomic/model-01-modern-srs.md` (created: 2020-01-01)
 - Target: `atomic/phenomenon-01-ebbinghaus-1885.md` (created: 1885-01-01)
 
 **Procedure:**
+
 1. Execute: `*suggest-links atomic/model-01-modern-srs.md`
 
 **Expected Results:**
+
 - Link type should NOT be 'influences' (source > target)
 - Should fallback to different type (e.g., 'elaborates' or 'specializes')
 
 **Pass Criteria:**
+
 - [x] Link type ≠ 'influences' (temporal violation detected)
 - [x] Alternative type selected
 - [x] Warning logged about temporal violation
@@ -275,13 +308,16 @@ Reasoning: "Source predates target (temporal precedence verified). 2+ influence 
 **Objective:** Verify fallback when no clear signals detected
 
 **Test Data:**
+
 - Source: Generic note with minimal signals
 - Target: Unrelated note
 
 **Procedure:**
+
 1. Execute: `*suggest-links {generic_note_path}`
 
 **Expected Results:**
+
 ```
 Link Type: elaborates
 Confidence: 0.5 (fallback)
@@ -289,6 +325,7 @@ Reasoning: "No clear relationship signals detected. Defaulting to 'elaborates' a
 ```
 
 **Pass Criteria:**
+
 - [x] Link type = 'elaborates' (fallback)
 - [x] Confidence = 0.5
 - [x] Reasoning mentions fallback
@@ -301,6 +338,7 @@ Reasoning: "No clear relationship signals detected. Defaulting to 'elaborates' a
 **Objective:** Verify strong link calculation
 
 **Test Data:**
+
 - Semantic similarity: 0.76
 - Tag overlap: 4 shared tags / 6 total = 0.67
 - Same MOC: true (+0.3)
@@ -308,9 +346,11 @@ Reasoning: "No clear relationship signals detected. Defaulting to 'elaborates' a
 - Temporal proximity: 1 day apart (+0.2)
 
 **Procedure:**
+
 1. Execute link strength calculation
 
 **Expected Results:**
+
 ```
 Strength: 0.82
 Classification: strong
@@ -370,6 +410,7 @@ Components:
 ```
 
 **Pass Criteria:**
+
 - [x] Strength >= 0.7
 - [x] Classification = 'strong'
 - [x] All components calculated correctly
@@ -380,17 +421,20 @@ Components:
 **Objective:** Verify medium strength classification
 
 **Test Data:**
+
 - Semantic similarity: 0.62
 - Contextual relevance: 0.40 (minimal tag overlap, different MOCs)
 - Temporal proximity: 0.0 (distant)
 
 **Expected Results:**
+
 ```
 Strength: 0.43
 Classification: medium
 ```
 
 **Pass Criteria:**
+
 - [x] Strength 0.5 <= x < 0.7
 - [x] Classification = 'medium'
 
@@ -399,11 +443,13 @@ Classification: medium
 **Objective:** Verify weak links flagged or rejected
 
 **Test Data:**
+
 - Semantic similarity: 0.52
 - Contextual relevance: 0.0 (no overlap)
 - Temporal proximity: 0.0
 
 **Expected Results:**
+
 ```
 Strength: 0.26
 Classification: weak
@@ -411,6 +457,7 @@ Action: Rejected (below minimum threshold)
 ```
 
 **Pass Criteria:**
+
 - [x] Strength < 0.5
 - [x] Classification = 'weak'
 - [x] Link rejected or flagged for manual review
@@ -422,6 +469,7 @@ Action: Rejected (below minimum threshold)
 **Objective:** Verify links created in both directions
 
 **Test Data:**
+
 - Source: `atomic/argument-01-spaced-repetition.md`
 - Target: `atomic/phenomenon-01-forgetting-curve.md`
 - Type: supports
@@ -429,14 +477,17 @@ Action: Rejected (below minimum threshold)
 - Context backward: "This phenomenon supports the argument..."
 
 **Procedure:**
+
 1. Execute: `*accept-suggestion abc123`
 
 **Expected Results:**
+
 - Source note updated with: `- [[Ebbinghaus Forgetting Curve]] - The forgetting curve provides empirical evidence...`
 - Target note updated with: `- [[Spaced Repetition Superior to Massed Practice]] - This phenomenon supports the argument...`
 - Both links in "Related Concepts" section
 
 **Pass Criteria:**
+
 - [x] Source note contains wikilink to target
 - [x] Target note contains wikilink to source
 - [x] Both links have context sentences
@@ -447,16 +498,19 @@ Action: Rejected (below minimum threshold)
 **Objective:** Verify duplicate links prevented
 
 **Procedure:**
+
 1. Create link: A → B
 2. Attempt to create link: A → B again
 
 **Expected Results:**
+
 ```
 Error: Link already exists: source already links to {target}
 Action: Skipped duplicate link creation
 ```
 
 **Pass Criteria:**
+
 - [x] Duplicate detected
 - [x] Link creation skipped
 - [x] User informed
@@ -466,14 +520,17 @@ Action: Skipped duplicate link creation
 **Objective:** Verify note cannot link to itself
 
 **Procedure:**
+
 1. Execute: `*create-link atomic/note-a.md atomic/note-a.md supports`
 
 **Expected Results:**
+
 ```
 Error: Cannot link note to itself
 ```
 
 **Pass Criteria:**
+
 - [x] Self-link detected
 - [x] Link creation rejected
 - [x] Clear error message
@@ -483,10 +540,12 @@ Error: Cannot link note to itself
 **Objective:** Verify atomic rollback if second link creation fails
 
 **Procedure:**
+
 1. Simulate: Source link created successfully
 2. Simulate: Target link fails (read-only file, locked, etc.)
 
 **Expected Results:**
+
 ```
 Error: Target update failed (permission denied)
 Rollback: Source link removed, note restored to original state
@@ -494,6 +553,7 @@ Result: Both notes unchanged
 ```
 
 **Pass Criteria:**
+
 - [x] Source link rolled back
 - [x] Both notes in original state
 - [x] User notified of rollback
@@ -504,11 +564,13 @@ Result: Both notes unchanged
 **Objective:** Verify critical error handling when rollback itself fails
 
 **Procedure:**
+
 1. Simulate: Source link created
 2. Simulate: Target link fails
 3. Simulate: Rollback fails (file locked)
 
 **Expected Results:**
+
 ```
 CRITICAL ERROR: Target update failed AND rollback failed.
 Source note modified but target not updated.
@@ -518,6 +580,7 @@ Manual intervention required:
 ```
 
 **Pass Criteria:**
+
 - [x] Critical error detected
 - [x] User notified with urgent warning
 - [x] Manual intervention instructions provided
@@ -532,9 +595,11 @@ Manual intervention required:
 **Prerequisite:** Neo4j enabled in config.yaml
 
 **Procedure:**
+
 1. Execute: `*accept-suggestion abc123`
 
 **Expected Results:**
+
 ```
 Neo4j relationship created:
 - Relationship ID: rel-xyz789
@@ -544,6 +609,7 @@ Neo4j relationship created:
 ```
 
 **Pass Criteria:**
+
 - [x] Cypher query executed successfully
 - [x] Relationship created in Neo4j
 - [x] Bi-temporal metadata present (valid_time, transaction_time)
@@ -556,15 +622,18 @@ Neo4j relationship created:
 **Prerequisite:** Neo4j disabled in config.yaml
 
 **Procedure:**
+
 1. Execute: `*accept-suggestion abc123`
 
 **Expected Results:**
+
 ```
 Neo4j disabled in config, skipping relationship creation
 Obsidian-only mode: Link created successfully in notes
 ```
 
 **Pass Criteria:**
+
 - [x] Neo4j skipped gracefully
 - [x] Obsidian link still created
 - [x] No error thrown
@@ -577,9 +646,11 @@ Obsidian-only mode: Link created successfully in notes
 **Prerequisite:** Neo4j enabled but unreachable
 
 **Procedure:**
+
 1. Execute: `*accept-suggestion abc123`
 
 **Expected Results:**
+
 ```
 Warning: Neo4j connection failed, continuing in Obsidian-only mode
 Obsidian link created successfully
@@ -587,6 +658,7 @@ Neo4j: Temporal graph not updated
 ```
 
 **Pass Criteria:**
+
 - [x] Connection failure detected
 - [x] Warning logged
 - [x] Obsidian link still created
@@ -599,14 +671,17 @@ Neo4j: Temporal graph not updated
 **Objective:** Verify feedback recorded for approved suggestions
 
 **Procedure:**
+
 1. Execute: `*accept-suggestion abc123`
 
 **Expected Results:**
+
 ```
 Feedback recorded (total: 23 decisions, acceptance rate: 78%)
 ```
 
 **Pass Criteria:**
+
 - [x] Feedback entry created in .bmad-obsidian-2nd-brain/link-feedback.json
 - [x] Entry includes: suggestion_id, timestamp, decision='approved', link_type, link_strength, semantic_similarity
 - [x] Type statistics updated
@@ -616,16 +691,19 @@ Feedback recorded (total: 23 decisions, acceptance rate: 78%)
 **Objective:** Verify threshold raised when acceptance < 60%
 
 **Test Data:**
+
 - 25 total decisions
 - 12 approved, 13 rejected
 - Acceptance rate: 48%
 
 **Expected Results:**
+
 ```
 Learning update: Acceptance rate low (48%), raised threshold from 0.60 to 0.65
 ```
 
 **Pass Criteria:**
+
 - [x] Threshold raised by 0.05
 - [x] Threshold history updated
 - [x] User notified
@@ -635,16 +713,19 @@ Learning update: Acceptance rate low (48%), raised threshold from 0.60 to 0.65
 **Objective:** Verify threshold lowered when acceptance > 90%
 
 **Test Data:**
+
 - 50 total decisions
 - 46 approved, 4 rejected
 - Acceptance rate: 92%
 
 **Expected Results:**
+
 ```
 Learning update: Acceptance rate high (92%), lowered threshold from 0.60 to 0.55
 ```
 
 **Pass Criteria:**
+
 - [x] Threshold lowered by 0.05
 - [x] Threshold history updated
 - [x] User notified
@@ -654,15 +735,18 @@ Learning update: Acceptance rate high (92%), lowered threshold from 0.60 to 0.55
 **Objective:** Verify low-acceptance types deprioritized
 
 **Test Data:**
+
 - 'elaborates' type: 8 approved, 11 rejected (42% acceptance)
 - Meets criteria: < 30% acceptance would trigger filter, but 42% just flags for review
 
 **Expected Results:**
+
 ```
 Warning: 'elaborates' type has low acceptance (42%), consider manual review
 ```
 
 **Pass Criteria:**
+
 - [x] Low acceptance detected
 - [x] User warned about type
 - [x] Type not completely blocked (>30%)
@@ -674,19 +758,23 @@ Warning: 'elaborates' type has low acceptance (42%), consider manual review
 **Objective:** Verify directory traversal attacks blocked
 
 **Test Data:**
+
 - Path: `../../etc/passwd`
 - Path: `../../../sensitive/data.md`
 
 **Procedure:**
+
 1. Execute: `*create-link ../../etc/passwd atomic/note-b.md supports`
 
 **Expected Results:**
+
 ```
 Error: Directory traversal detected in path
 Path validation failed: ../../etc/passwd
 ```
 
 **Pass Criteria:**
+
 - [x] Directory traversal detected
 - [x] Path rejected
 - [x] Operation blocked
@@ -697,17 +785,21 @@ Path validation failed: ../../etc/passwd
 **Objective:** Verify parameterized queries prevent injection
 
 **Test Data:**
+
 - Context: `"}]->(n) MATCH (secret:Note) RETURN secret //`
 
 **Procedure:**
+
 1. Create link with malicious context
 
 **Expected Results:**
+
 - Context treated as literal string (parameterized)
 - No Cypher execution of injected code
 - Relationship created safely with context as-is
 
 **Pass Criteria:**
+
 - [x] Injection attempt neutralized
 - [x] Parameterized query used
 - [x] No unauthorized Cypher execution
@@ -717,16 +809,19 @@ Path validation failed: ../../etc/passwd
 **Objective:** Verify max link limit enforced
 
 **Procedure:**
+
 1. Create note with 50 existing links
 2. Attempt to add 51st link
 
 **Expected Results:**
+
 ```
 Error: Note has reached max link limit (50)
 Link creation rejected
 ```
 
 **Pass Criteria:**
+
 - [x] Link count checked
 - [x] 51st link rejected
 - [x] User notified of limit
@@ -736,13 +831,16 @@ Link creation rejected
 **Objective:** Verify circular reasoning chains rejected
 
 **Test Data:**
+
 - Existing: A supports B, B supports C
 - Proposed: C supports A
 
 **Procedure:**
+
 1. Execute: `*create-link atomic/note-c.md atomic/note-a.md supports`
 
 **Expected Results:**
+
 ```
 Error: Circular reasoning detected
 Chain: A supports B → B supports C → C supports A
@@ -750,18 +848,21 @@ Circular reasoning not allowed for 'supports' relationships
 ```
 
 **Pass Criteria:**
+
 - [x] Cycle detected
 - [x] Link rejected
 - [x] Chain path shown to user
 
 ### Category 8: Command Tests
 
-#### Test 8.1: *help Command
+#### Test 8.1: \*help Command
 
 **Procedure:**
+
 1. Execute: `*help`
 
 **Expected Results:**
+
 ```
 Available Commands:
 
@@ -778,81 +879,96 @@ Available Commands:
 ```
 
 **Pass Criteria:**
-- [x] All 11 commands listed (including *help)
+
+- [x] All 11 commands listed (including \*help)
 - [x] Each command has description
 - [x] Examples provided
 
-#### Test 8.2: *suggest-links Command
+#### Test 8.2: \*suggest-links Command
 
 **Procedure:**
+
 1. Execute: `*suggest-links atomic/argument-01-spaced-repetition.md`
 
 **Expected Results:**
+
 - 5+ semantic suggestions
 - Sorted by strength
 - Each with type, strength, confidence, context preview
 
 **Pass Criteria:**
+
 - [x] Suggestions generated
 - [x] Sorted correctly
 - [x] All metadata present
 
-#### Test 8.3: *review-suggestions Command
+#### Test 8.3: \*review-suggestions Command
 
 **Procedure:**
+
 1. Execute: `*suggest-links atomic/note-a.md` (generate suggestions)
 2. Execute: `*review-suggestions`
 
 **Expected Results:**
+
 - All pending suggestions displayed
 - Full details (type, strength, contexts, reasoning)
 - Actions listed per suggestion
 
 **Pass Criteria:**
+
 - [x] All pending shown
 - [x] Full details present
 - [x] Actions clear
 
-#### Test 8.4: *accept-suggestion Command
+#### Test 8.4: \*accept-suggestion Command
 
 **Procedure:**
+
 1. Execute: `*accept-suggestion abc123`
 
 **Expected Results:**
+
 - Bidirectional link created
 - Neo4j relationship created (if enabled)
 - Feedback recorded
 - Suggestion removed from pending
 
 **Pass Criteria:**
+
 - [x] Link created
 - [x] Neo4j updated
 - [x] Feedback logged
 - [x] Pending cleared
 
-#### Test 8.5: *reject-suggestion Command
+#### Test 8.5: \*reject-suggestion Command
 
 **Procedure:**
+
 1. Execute: `*reject-suggestion def456 "irrelevant"`
 
 **Expected Results:**
+
 - Feedback recorded with reason
 - Type statistics updated
 - Learning analysis shown
 - Suggestion removed from pending
 
 **Pass Criteria:**
+
 - [x] Rejection logged
 - [x] Reason stored
 - [x] Learning updated
 - [x] Pending cleared
 
-#### Test 8.6: *analyze-graph Command
+#### Test 8.6: \*analyze-graph Command
 
 **Procedure:**
+
 1. Execute: `*analyze-graph atomic/argument-01-spaced-repetition.md`
 
 **Expected Results:**
+
 ```
 Graph Metrics:
 - Degree centrality: 12 (8 outgoing, 4 incoming)
@@ -866,83 +982,98 @@ Relationship Types:
 ```
 
 **Pass Criteria:**
+
 - [x] Metrics calculated
 - [x] Type distribution shown
 - [x] Strength distribution shown
 - [x] Suggestions provided
 
-#### Test 8.7: *batch-approve Command
+#### Test 8.7: \*batch-approve Command
 
 **Procedure:**
+
 1. Execute: `*batch-approve 0.8`
 
 **Expected Results:**
+
 - All suggestions with strength >= 0.8 shown
 - User confirmation requested
 - Batch processed if confirmed
 
 **Pass Criteria:**
+
 - [x] Correct filtering (>= 0.8)
 - [x] Preview shown
 - [x] Confirmation required
 - [x] Batch processed correctly
 
-#### Test 8.8: *yolo Command (Toggle)
+#### Test 8.8: \*yolo Command (Toggle)
 
 **Procedure:**
+
 1. Execute: `*yolo` (enable)
 2. Execute: `*suggest-links atomic/note-a.md`
 3. Execute: `*yolo` (disable)
 
 **Expected Results:**
+
 - Yolo mode enabled with warning
 - Suggestions auto-approved
 - Yolo mode disabled
 
 **Pass Criteria:**
+
 - [x] Mode toggled correctly
 - [x] Warning shown on enable
 - [x] Auto-approval works
 - [x] Mode can be disabled
 
-#### Test 8.9: *create-link Manual Command
+#### Test 8.9: \*create-link Manual Command
 
 **Procedure:**
+
 1. Execute: `*create-link atomic/note-a.md atomic/note-b.md supports`
 
 **Expected Results:**
+
 - Link type validated
 - Strength calculated
 - Context prompted (or auto-generated)
 - Bidirectional link created
 
 **Pass Criteria:**
+
 - [x] Type validated
 - [x] Strength calculated
 - [x] Link created
 - [x] Both directions present
 
-#### Test 8.10: *create-links Bulk Command
+#### Test 8.10: \*create-links Bulk Command
 
 **Procedure:**
+
 1. Execute: `*create-links atomic/note-a.md atomic/note-b.md atomic/note-c.md atomic/note-d.md`
 
 **Expected Results:**
+
 - All 3 target links proposed
 - User confirmation requested
 - All links created if confirmed
 
 **Pass Criteria:**
+
 - [x] All targets processed
 - [x] Confirmation shown
 - [x] Batch creation works
 
-#### Test 8.11: *exit Command
+#### Test 8.11: \*exit Command
 
 **Procedure:**
+
 1. Execute: `*exit`
 
 **Expected Results:**
+
 ```
 Session Summary:
 - Links created: 12
@@ -955,6 +1086,7 @@ Exit Semantic Linker Agent? (y/n)
 ```
 
 **Pass Criteria:**
+
 - [x] Session summary shown
 - [x] Pending suggestions warning
 - [x] Confirmation required
@@ -965,15 +1097,18 @@ Exit Semantic Linker Agent? (y/n)
 #### Test 9.1: Unicode and Special Characters in Note Titles
 
 **Test Data:**
+
 - Title: `概念-01-间隔重复.md` (Chinese)
 - Title: `Concept-01-Spaced-Repetition-🎯.md` (emoji)
 
 **Expected Results:**
+
 - Titles handled correctly
 - Wikilinks created properly
 - No encoding issues
 
 **Pass Criteria:**
+
 - [x] Unicode supported
 - [x] Emoji supported
 - [x] No corruption
@@ -981,13 +1116,16 @@ Exit Semantic Linker Agent? (y/n)
 #### Test 9.2: Note Path with Spaces
 
 **Test Data:**
+
 - Path: `atomic/My Concept 01 Spaced Repetition.md`
 
 **Expected Results:**
+
 - Path handled correctly (escaped/quoted)
 - Link creation succeeds
 
 **Pass Criteria:**
+
 - [x] Spaces handled
 - [x] Path properly escaped
 - [x] Link created
@@ -995,14 +1133,17 @@ Exit Semantic Linker Agent? (y/n)
 #### Test 9.3: Malformed Wikilinks in Existing Notes
 
 **Test Data:**
+
 - Existing link: `[[Broken Link]` (missing closing bracket)
 - Existing link: `[[Nested [[Link]]]]` (nested brackets)
 
 **Expected Results:**
+
 - Parsing robust, skips malformed links
 - New link creation succeeds
 
 **Pass Criteria:**
+
 - [x] Malformed links ignored
 - [x] No parsing crash
 - [x] New links work
@@ -1010,31 +1151,37 @@ Exit Semantic Linker Agent? (y/n)
 #### Test 9.4: Concurrent Link Creation (Race Condition)
 
 **Procedure:**
+
 1. Simultaneously create: A → B and A → C
 
 **Expected Results:**
+
 - Both links created successfully
 - No file corruption
 - No lost updates
 
 **Pass Criteria:**
+
 - [x] Both links present
 - [x] File integrity maintained
 
 #### Test 9.5: Orphaned Suggestion (Note Deleted After Suggestion)
 
 **Procedure:**
+
 1. Generate suggestion: A → B
 2. Delete note B
 3. Execute: `*accept-suggestion abc123`
 
 **Expected Results:**
+
 ```
 Error: Target note not found: atomic/note-b.md
 Suggestion abc123 removed (orphaned)
 ```
 
 **Pass Criteria:**
+
 - [x] Missing note detected
 - [x] Suggestion cleaned up
 - [x] User notified
@@ -1044,16 +1191,19 @@ Suggestion abc123 removed (orphaned)
 #### Test 10.1: Basic Workflow (Suggest → Review → Accept)
 
 **Procedure:**
+
 1. `*suggest-links atomic/note-a.md`
 2. `*review-suggestions`
 3. `*accept-suggestion abc123`
 
 **Expected Results:**
+
 - Suggestions generated
 - Review shows full details
 - Link created successfully
 
 **Pass Criteria:**
+
 - [x] Full workflow completes
 - [x] Link created
 - [x] Feedback logged
@@ -1061,15 +1211,18 @@ Suggestion abc123 removed (orphaned)
 #### Test 10.2: Bulk Workflow (Suggest → Batch Approve)
 
 **Procedure:**
+
 1. `*suggest-links atomic/note-a.md`
 2. `*batch-approve 0.8`
 3. Confirm: y
 
 **Expected Results:**
+
 - Strong suggestions (>= 0.8) auto-approved
 - Multiple links created in batch
 
 **Pass Criteria:**
+
 - [x] Batch filtering correct
 - [x] Multiple links created
 - [x] All feedback logged
@@ -1077,14 +1230,17 @@ Suggestion abc123 removed (orphaned)
 #### Test 10.3: Manual Workflow (Direct Link Creation)
 
 **Procedure:**
+
 1. `*create-link atomic/note-a.md atomic/note-b.md supports`
 
 **Expected Results:**
+
 - No suggestion needed
 - Direct link creation
 - Manual approval
 
 **Pass Criteria:**
+
 - [x] Link created directly
 - [x] Validation still applied
 - [x] Feedback logged
@@ -1092,15 +1248,18 @@ Suggestion abc123 removed (orphaned)
 #### Test 10.4: Graph Analysis Workflow
 
 **Procedure:**
+
 1. `*analyze-graph atomic/note-a.md`
 2. Review metrics
 3. `*suggest-links atomic/note-a.md` based on analysis
 
 **Expected Results:**
+
 - Graph metrics inform next actions
 - Targeted suggestions based on structure
 
 **Pass Criteria:**
+
 - [x] Metrics accurate
 - [x] Actionable insights
 
@@ -1158,24 +1317,25 @@ Suggestion abc123 removed (orphaned)
 ## Test Results Summary
 
 **Total Tests:** 67
-**Passed:** ___
-**Failed:** ___
-**Skipped:** ___
+**Passed:** **\_
+**Failed:** \_**
+**Skipped:** \_\_\_
 
-**Critical Failures:** ___
-**Security Issues:** ___
+**Critical Failures:** **\_
+**Security Issues:** \_**
 
 **Test Coverage:**
-- [ ] Smart Connections Integration: ___%
-- [ ] Link Type Identification: ___%
-- [ ] Link Strength: ___%
-- [ ] Bidirectional Linking: ___%
-- [ ] Neo4j: ___%
-- [ ] Feedback Learning: ___%
-- [ ] Security: ___%
-- [ ] Commands: ___%
-- [ ] Edge Cases: ___%
-- [ ] Workflows: ___%
+
+- [ ] Smart Connections Integration: \_\_\_%
+- [ ] Link Type Identification: \_\_\_%
+- [ ] Link Strength: \_\_\_%
+- [ ] Bidirectional Linking: \_\_\_%
+- [ ] Neo4j: \_\_\_%
+- [ ] Feedback Learning: \_\_\_%
+- [ ] Security: \_\_\_%
+- [ ] Commands: \_\_\_%
+- [ ] Edge Cases: \_\_\_%
+- [ ] Workflows: \_\_\_%
 
 ## Acceptance Criteria Validation
 

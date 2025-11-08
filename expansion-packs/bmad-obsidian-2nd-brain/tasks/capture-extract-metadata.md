@@ -27,6 +27,7 @@ Extract structured metadata from captured content and source context to enable r
 **Priority 1:** Extract from `source_context.url` if present
 
 **Priority 2:** Extract URLs from `raw_content` if `source_context.url` not provided:
+
 - Use URL pattern matching: `https?://[^\s]+`
 - Extract first valid URL found in content
 - If multiple URLs, prefer the first one
@@ -73,17 +74,20 @@ Apply URL validation algorithm:
 **Priority 1:** Use `source_context.author` if present and non-empty
 
 **Priority 2:** Parse from `raw_content` using byline patterns:
+
 - Look for "by [Author Name]" pattern (case-insensitive)
 - Look for "author: [Author Name]" pattern
 - Look for "-- [Author Name]" or "- [Author Name]" at end
 - Look for "[Author Name] writes:" or "[Author Name] says:"
 
 **Priority 3:** Parse from `source_context.title` if it contains author info:
+
 - Pattern: "Title by Author" or "Title - Author"
 
 **Priority 4:** Default to "Unknown" if no author found
 
 **Sanitization:**
+
 - Trim whitespace
 - Capitalize first letter of each word (proper noun formatting)
 - Limit to 100 characters maximum
@@ -94,17 +98,20 @@ Apply URL validation algorithm:
 **Priority 1:** Use `source_context.title` if present and non-empty
 
 **Priority 2:** Parse from `raw_content` using heading patterns:
+
 - Look for markdown heading: `# Heading Text` (first heading)
 - Look for first line if it's short (< 100 chars) and not a sentence
 - Look for HTML `<title>` tags if content contains HTML
 
 **Priority 3:** Auto-generate from first 50 characters:
+
 - Take first 50 chars of `raw_content`
 - Break at word boundary (don't cut mid-word)
 - Append "..." if truncated
 - Example: "Deep work is the ability to focus without distr..."
 
 **Sanitization:**
+
 - Trim whitespace
 - Remove markdown formatting: `#`, `*`, `_`, `[`, `]`
 - Limit to 200 characters maximum
@@ -117,11 +124,13 @@ Apply URL validation algorithm:
 **Priority 2:** Use current time as fallback
 
 **Format requirements:**
+
 - Must be ISO8601 format: `YYYY-MM-DDTHH:MM:SSZ`
 - Must be in UTC timezone
 - Example: `2025-11-06T10:30:00Z`
 
 **Validation:**
+
 - Parse timestamp to verify valid format
 - If invalid format, use current time and log warning
 - Ensure timezone is UTC (convert if necessary)
@@ -133,20 +142,24 @@ Apply URL validation algorithm:
 **Extraction logic:**
 
 **If `source_context.surrounding_context` exists:**
+
 - Use provided value directly
 - Sanitize for YAML injection
 - Limit to 2000 characters
 
 **If `source_context.highlight_range` exists:**
+
 - Extract text before highlight (up to 500 chars)
 - Extract highlighted text
 - Extract text after highlight (up to 500 chars)
 - Format: `...before... [HIGHLIGHTED TEXT] ...after...`
 
 **If neither exists:**
+
 - Set to empty string (not applicable for quick captures)
 
 **Sanitization:**
+
 - Trim excessive whitespace
 - Preserve paragraph breaks (convert to `\n\n`)
 - Escape YAML special characters
@@ -157,15 +170,18 @@ Apply URL validation algorithm:
 Apply sanitization to all metadata fields:
 
 **YAML escaping:**
+
 - Escape special characters that break YAML: `:`, `#`, `-`, `[`, `]`, `{`, `}`, `|`, `>`
 - Quote string values containing special chars
 - Handle multiline strings properly (use `|` or `>` indicators)
 
 **HTML escaping:**
+
 - Escape entities: `&lt;`, `&gt;`, `&amp;`, `&quot;`
 - Strip dangerous HTML tags: `<script>`, `<iframe>`, `<object>`
 
 **Character encoding:**
+
 - Ensure UTF-8 encoding
 - Handle emoji, international characters properly
 - No encoding-based exploits
@@ -175,15 +191,18 @@ Apply sanitization to all metadata fields:
 Verify metadata object has required structure:
 
 **Required fields (must be present, can be defaults):**
+
 - `source_url`: String (can be "Unknown")
 - `author`: String (can be "Unknown")
 - `title`: String (must be non-empty, auto-generated if needed)
 - `timestamp`: String (must be valid ISO8601)
 
 **Optional fields:**
+
 - `surrounding_context`: String (can be empty)
 
 **Validation checks:**
+
 - All required fields present: ✓
 - `timestamp` is valid ISO8601: ✓
 - `title` is non-empty: ✓
@@ -191,6 +210,7 @@ Verify metadata object has required structure:
 - Total metadata size < 1MB: ✓
 
 **If validation fails:**
+
 - Log validation errors
 - Return error with details
 
@@ -221,6 +241,7 @@ Return complete metadata object with all fields:
 ### Example 1: Web Article with Full Metadata
 
 **Input:**
+
 ```json
 {
   "raw_content": "Deep work is the ability to focus without distraction on a cognitively demanding task.",
@@ -234,6 +255,7 @@ Return complete metadata object with all fields:
 ```
 
 **Extraction Process:**
+
 1. source_url: From source_context.url → "https://example.com/deep-work-guide"
 2. Validate URL: https:// scheme → VALID ✓
 3. author: From source_context.author → "Cal Newport"
@@ -242,6 +264,7 @@ Return complete metadata object with all fields:
 6. surrounding_context: Not provided → ""
 
 **Output:**
+
 ```json
 {
   "source_url": "https://example.com/deep-work-guide",
@@ -255,6 +278,7 @@ Return complete metadata object with all fields:
 ### Example 2: Reading Highlight with Surrounding Context
 
 **Input:**
+
 ```json
 {
   "raw_content": "Deep work is the ability to focus without distraction on a cognitively demanding task.",
@@ -266,6 +290,7 @@ Return complete metadata object with all fields:
 ```
 
 **Extraction Process:**
+
 1. source_url: From source_context.url → "https://example.com/deep-work"
 2. Validate URL: VALID ✓
 3. author: Not in source_context, not in content → "Unknown"
@@ -274,6 +299,7 @@ Return complete metadata object with all fields:
 6. surrounding_context: From source_context.surrounding_context → Provided value (sanitized)
 
 **Output:**
+
 ```json
 {
   "source_url": "https://example.com/deep-work",
@@ -287,6 +313,7 @@ Return complete metadata object with all fields:
 ### Example 3: Quick Note with Minimal Metadata
 
 **Input:**
+
 ```json
 {
   "raw_content": "Spaced repetition works because it aligns with the spacing effect - our brain remembers better when learning is distributed over time.",
@@ -295,6 +322,7 @@ Return complete metadata object with all fields:
 ```
 
 **Extraction Process:**
+
 1. source_url: No source_context, no URLs in content → "Unknown"
 2. author: No source_context, no byline → "Unknown"
 3. title: No source_context, auto-generate from first 50 chars → "Spaced repetition works because it aligns with th..."
@@ -302,6 +330,7 @@ Return complete metadata object with all fields:
 5. surrounding_context: No source_context → ""
 
 **Output:**
+
 ```json
 {
   "source_url": "Unknown",
@@ -315,6 +344,7 @@ Return complete metadata object with all fields:
 ### Example 4: Social Media Capture
 
 **Input:**
+
 ```json
 {
   "raw_content": "The best productivity system is the one you'll actually use consistently. Don't get lost in the tools. by @productivityguru on Twitter",
@@ -326,6 +356,7 @@ Return complete metadata object with all fields:
 ```
 
 **Extraction Process:**
+
 1. source_url: From source_context.url → "https://twitter.com/productivityguru/status/123456789"
 2. Validate URL: VALID ✓
 3. author: Not in source_context, parse from content "by @productivityguru" → "Productivityguru"
@@ -334,6 +365,7 @@ Return complete metadata object with all fields:
 6. surrounding_context: Not provided → ""
 
 **Output:**
+
 ```json
 {
   "source_url": "https://twitter.com/productivityguru/status/123456789",
@@ -390,18 +422,21 @@ Reject URLs with dangerous schemes:
 ### Step 4: Sanitize Query Parameters
 
 **Optional tracking parameter removal (if configured):**
+
 - Remove `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`
 - Remove `fbclid` (Facebook click ID)
 - Remove `gclid` (Google click ID)
 - Remove `msclkid` (Microsoft click ID)
 
 **Preserve functional parameters:**
+
 - Keep query parameters needed for content access
 - Keep parameters that affect page content
 
 ### Step 5: Strip Authentication Tokens
 
 Remove sensitive parameters that contain credentials:
+
 - Remove `?token=*`
 - Remove `?auth=*`
 - Remove `?key=*`
@@ -434,6 +469,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** `source_context` is null or undefined
 
 **Response:** Continue processing with defaults
+
 - source_url: Extract from content or "Unknown"
 - author: "Unknown"
 - title: Auto-generate from content
@@ -447,6 +483,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** URL fails validation (malicious scheme, invalid format)
 
 **Response:**
+
 - Set source_url to "Unknown"
 - Log warning: "Invalid URL detected: [reason], set to 'Unknown'"
 - Continue processing other metadata
@@ -459,6 +496,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** Unable to parse author, title, or other fields from content
 
 **Response:**
+
 - Use fallback values:
   - author: "Unknown"
   - title: First 50 chars of content
@@ -472,6 +510,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** `raw_content` exceeds 10MB or metadata exceeds 1MB
 
 **Response:**
+
 - Truncate content to 10MB: Log warning: "Content truncated to 10MB limit"
 - Truncate metadata fields to stay under 1MB total
 - Continue processing with truncated content
@@ -483,6 +522,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** `source_context.timestamp` is not valid ISO8601 format
 
 **Response:**
+
 - Use current time as fallback
 - Log warning: "Invalid timestamp format '[value]', using current time"
 - Continue processing
@@ -494,6 +534,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** Metadata fields contain unescaped YAML special characters
 
 **Response:**
+
 - Apply YAML escaping to all fields
 - Quote string values containing special chars
 - Log warning: "YAML special characters detected and escaped"
@@ -508,7 +549,7 @@ Remove sensitive parameters that contain credentials:
 - **Block malicious schemes:** javascript:, data:, file:, vbscript:
 - **Validate domain format:** No malformed domains, valid TLD required
 - **Block localhost access:** Prevent localhost, 127.0.0.1 unless explicitly allowed
-- **Block private IPs:** Prevent 192.168.*.*, 10.*.*.*, 172.16-31.*.* unless allowed
+- **Block private IPs:** Prevent 192.168._._, 10._._._, 172.16-31._.\* unless allowed
 - **Strip auth tokens:** Remove ?token=, ?auth=, ?key= parameters
 
 ### Metadata Sanitization (Injection Prevention)
@@ -542,6 +583,7 @@ Remove sensitive parameters that contain credentials:
 **Target execution time:** < 1 second per metadata extraction
 
 **Performance considerations:**
+
 - Simple pattern matching (no complex NLP)
 - Minimal regex usage (use string operations where possible)
 - No external API calls
@@ -549,6 +591,7 @@ Remove sensitive parameters that contain credentials:
 - Memory-efficient field extraction
 
 **Monitoring:**
+
 - Log extraction time for each execution
 - Alert if average time exceeds target
 - Identify slow operations for optimization

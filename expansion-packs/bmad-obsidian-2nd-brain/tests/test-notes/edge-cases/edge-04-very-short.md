@@ -11,6 +11,7 @@ Evergreen notes are continuously refined as understanding deepens, unlike static
 ## Test Expectations
 
 **Expected atomicity analysis:**
+
 - is_atomic: true (edge case: very short but complete)
 - score: 0.85-0.95
 - building_block_type: concept
@@ -21,6 +22,7 @@ Evergreen notes are continuously refined as understanding deepens, unlike static
 This tests whether very short notes (single sentence) can still be atomic.
 
 Edge case characteristics:
+
 - Extremely concise (15 words of content)
 - Single complete claim
 - Self-contained (defines "evergreen notes" implicitly through context)

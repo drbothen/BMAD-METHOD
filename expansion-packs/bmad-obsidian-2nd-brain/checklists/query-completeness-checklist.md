@@ -9,20 +9,10 @@
 ---
 
 checklist:
-  id: query-completeness-checklist
-  name: Query Completeness Checklist
-  description: Quality gates for query result validation - ensures query results are complete, accurate, and properly attributed
-  items:
-    - "[ ] Intent classification test: Query intent correctly classified with >85% confidence"
-    - "[ ] Result relevance test: Top 5 results directly relevant to query (composite score >= 0.7)"
-    - "[ ] Source attribution test: All results include source attribution (note title, path, date)"
-    - "[ ] Multi-source test: Results queried from all available sources (Obsidian + Smart Connections + Neo4j if available)"
-    - "[ ] Deduplication test: No duplicate results (same note_path)"
-    - "[ ] Format selection test: Result format matches query intent (narrative/list/table/timeline)"
-    - "[ ] Contradiction detection test: Contradictions identified if present (>70% similarity + opposing claims)"
-    - "[ ] Performance test: Query completed in <3 seconds total"
-    - "[ ] Error handling test: Graceful degradation if sources unavailable with informative warnings"
-    - "[ ] Completeness test: Query answered the user's question adequately"
+id: query-completeness-checklist
+name: Query Completeness Checklist
+description: Quality gates for query result validation - ensures query results are complete, accurate, and properly attributed
+items: - "[ ] Intent classification test: Query intent correctly classified with >85% confidence" - "[ ] Result relevance test: Top 5 results directly relevant to query (composite score >= 0.7)" - "[ ] Source attribution test: All results include source attribution (note title, path, date)" - "[ ] Multi-source test: Results queried from all available sources (Obsidian + Smart Connections + Neo4j if available)" - "[ ] Deduplication test: No duplicate results (same note_path)" - "[ ] Format selection test: Result format matches query intent (narrative/list/table/timeline)" - "[ ] Contradiction detection test: Contradictions identified if present (>70% similarity + opposing claims)" - "[ ] Performance test: Query completed in <3 seconds total" - "[ ] Error handling test: Graceful degradation if sources unavailable with informative warnings" - "[ ] Completeness test: Query answered the user's question adequately"
 
 ---
 
@@ -45,17 +35,20 @@ This checklist ensures query results meet quality standards - providing complete
 **Check:** Query intent correctly classified with confidence score >85%
 
 **Pass Criteria:**
+
 - Intent classification matches expected intent for query pattern
 - Confidence score >= 0.85
 - Ambiguous queries (confidence < 0.70) prompt user clarification
 
 **Remediation if failed:**
+
 - Review query patterns in parse-natural-language-query.md
 - Check for missing pattern signals
 - Verify confidence scoring algorithm
 - Add clarification prompt for ambiguous queries
 
 **Example PASS:**
+
 ```
 Query: "What is Zettelkasten?"
 Intent: factual
@@ -64,6 +57,7 @@ Confidence: 0.92
 ```
 
 **Example FAIL:**
+
 ```
 Query: "Tell me about productivity"
 Intent: factual
@@ -76,17 +70,20 @@ Confidence: 0.65
 **Check:** Top 5 results directly relevant to query with composite relevance >= 0.7
 
 **Pass Criteria:**
+
 - At least 3 of top 5 results have composite_relevance >= 0.7
 - Results contain query concepts in title or content
 - Results ranked by relevance (highest first)
 
 **Remediation if failed:**
+
 - Review semantic search threshold (may be too low)
 - Check text search pattern matching
 - Verify relevance scoring algorithm in merge-results.md
 - Consider broadening search if no results found
 
 **Example PASS:**
+
 ```
 Top 5 results:
 1. "Zettelkasten Definition" (0.95)
@@ -98,6 +95,7 @@ Top 5 results:
 ```
 
 **Example FAIL:**
+
 ```
 Top 5 results:
 1. "Zettelkasten Definition" (0.90)
@@ -113,6 +111,7 @@ Top 5 results:
 **Check:** All results include complete source attribution
 
 **Required Fields:**
+
 - note_title
 - note_path
 - excerpt (content snippet)
@@ -120,16 +119,19 @@ Top 5 results:
 - metadata.created_date (or modified_date)
 
 **Pass Criteria:**
+
 - 100% of results have all required fields
 - Source attribution accurate and traceable
 - Timestamps in ISO 8601 format
 
 **Remediation if failed:**
+
 - Check result structure in execute-obsidian-query.md
 - Verify metadata extraction
 - Ensure fallback values for missing metadata
 
 **Example PASS:**
+
 ```
 {
   note_title: "Zettelkasten Method",
@@ -144,6 +146,7 @@ Top 5 results:
 ```
 
 **Example FAIL:**
+
 ```
 {
   note_title: "Zettelkasten Method",
@@ -158,23 +161,27 @@ Top 5 results:
 **Check:** Results queried from all available data sources
 
 **Available Sources:**
+
 - Obsidian MCP Tools (text search)
 - Smart Connections MCP (semantic search)
 - Neo4j Graphiti MCP (temporal/graph queries) - optional
 
 **Pass Criteria:**
+
 - Query attempted against all configured sources
 - sources_available list includes all active sources
 - sources_failed list only includes truly unavailable sources
 - Warnings generated for failed sources
 
 **Remediation if failed:**
+
 - Check MCP server configuration
 - Verify MCP server status (running/accessible)
 - Review timeout settings
 - Ensure graceful degradation logic
 
 **Example PASS:**
+
 ```
 sources_available: ["smart_connections", "obsidian_text_search"]
 sources_failed: []
@@ -182,6 +189,7 @@ sources_failed: []
 ```
 
 **Example FAIL:**
+
 ```
 sources_available: ["obsidian_text_search"]
 sources_failed: ["smart_connections"]
@@ -193,16 +201,19 @@ sources_failed: ["smart_connections"]
 **Check:** No duplicate results with same note_path
 
 **Pass Criteria:**
+
 - All result note_path values are unique
 - Duplicate sources merged into single result
 - Metadata from all sources preserved in merged result
 
 **Remediation if failed:**
+
 - Review deduplication logic in merge-results.md
 - Check note_path normalization (path separators, case)
 - Verify merge_result_metadata function
 
 **Example PASS:**
+
 ```
 results:
   - note_path: "atomic/zettelkasten.md" (sources: ["smart_connections", "text_search"])
@@ -212,6 +223,7 @@ results:
 ```
 
 **Example FAIL:**
+
 ```
 results:
   - note_path: "atomic/zettelkasten.md" (source: "smart_connections")
@@ -224,6 +236,7 @@ results:
 **Check:** Result format matches query intent appropriately
 
 **Format Mapping:**
+
 - factual → list (or narrative for single result)
 - temporal → timeline
 - causal → narrative
@@ -231,16 +244,19 @@ results:
 - exploratory → list (with categories)
 
 **Pass Criteria:**
+
 - Format selection logic matches intent
 - Format renders correctly in template
 - Results structured appropriately for format
 
 **Remediation if failed:**
+
 - Review format selection in query-interpreter-agent.md
 - Check query-result-tmpl.yaml template rendering
 - Verify result structure matches format requirements
 
 **Example PASS:**
+
 ```
 Query: "Compare Zettelkasten and PARA"
 Intent: comparative
@@ -249,6 +265,7 @@ Format: table
 ```
 
 **Example FAIL:**
+
 ```
 Query: "How has Zettelkasten evolved?"
 Intent: temporal
@@ -261,23 +278,27 @@ Format: list
 **Check:** Contradictions identified when present in results
 
 **Detection Criteria:**
+
 - Semantic similarity between claims >70%
 - Opposing sentiment or values detected
 - Contradiction confidence score >70%
 
 **Pass Criteria:**
+
 - Contradictions array includes all detected conflicts
 - Each contradiction has both note_a and note_b
 - Confidence scores and types included
 - False positive rate <10%
 
 **Remediation if failed:**
+
 - Review contradiction detection in merge-results.md
 - Adjust similarity threshold
 - Refine opposing sentiment detection patterns
 - Test with known contradictory notes
 
 **Example PASS:**
+
 ```
 Query: "Do atomic notes improve recall?"
 Results include:
@@ -295,6 +316,7 @@ Contradictions: [
 ```
 
 **Example FAIL:**
+
 ```
 Same query and contradictory results
 Contradictions: []
@@ -306,6 +328,7 @@ Contradictions: []
 **Check:** Query completed within performance budget (<3 seconds total)
 
 **Performance Budget:**
+
 - Query parsing: <200ms
 - Obsidian queries: <1 second per source
 - Neo4j queries: <1 second
@@ -313,17 +336,20 @@ Contradictions: []
 - **Total: <3 seconds**
 
 **Pass Criteria:**
+
 - query_duration_ms < 3000
 - No timeout errors
 - Phase durations within budget
 
 **Remediation if failed:**
+
 - Identify slow phase (check performance log)
 - Optimize slow queries (reduce scope, add indexes)
 - Adjust timeout settings if needed
 - Consider caching for repeated queries
 
 **Example PASS:**
+
 ```
 Performance:
   parse_ms: 120
@@ -335,6 +361,7 @@ Performance:
 ```
 
 **Example FAIL:**
+
 ```
 Performance:
   parse_ms: 150
@@ -350,18 +377,21 @@ Performance:
 **Check:** Graceful degradation with informative warnings when sources fail
 
 **Pass Criteria:**
+
 - System continues with available sources
 - Warnings array populated with error details
 - User informed about degraded capabilities
 - Error messages actionable (what to check/fix)
 
 **Remediation if failed:**
+
 - Add try-catch blocks around MCP calls
 - Populate warnings array on failures
 - Provide actionable error messages
 - Ensure user communication in result template
 
 **Example PASS:**
+
 ```
 sources_available: ["obsidian_text_search"]
 sources_failed: ["smart_connections"]
@@ -376,6 +406,7 @@ warnings: [
 ```
 
 **Example FAIL:**
+
 ```
 sources_available: ["obsidian_text_search"]
 sources_failed: ["smart_connections"]
@@ -388,23 +419,27 @@ warnings: []
 **Check:** Query adequately answered the user's question
 
 **Pass Criteria:**
+
 - Results address the query topic
 - Sufficient context provided (>= 3 relevant results)
 - Follow-up suggestions included if results incomplete
 - User can take action with information provided
 
 **Subjective Assessment:**
+
 - Does this answer the question posed?
 - Would a human find this response helpful?
 - Are there obvious gaps in coverage?
 
 **Remediation if failed:**
+
 - Broaden search if too narrow (lower threshold)
 - Improve query parsing if misunderstood
 - Add related queries in "Next Steps" section
 - Consider rephrasing query
 
 **Example PASS:**
+
 ```
 Query: "What is Zettelkasten?"
 Results: 8 notes including:
@@ -416,6 +451,7 @@ Results: 8 notes including:
 ```
 
 **Example FAIL:**
+
 ```
 Query: "What is Zettelkasten?"
 Results: 1 note:

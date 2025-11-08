@@ -27,6 +27,7 @@ violations:
 **Model Components:** The Zettelkasten workflow consists of: (1) Fleeting notes for quick capture, (2) Literature notes from reading, (3) Permanent notes as atomic knowledge units, (4) Index notes as entry points, and (5) Hub notes connecting themes.
 
 ## Expected Test Results
+
 - Single Claim Test: FAIL (5 distinct ideas across different building block types)
 - Evidence Test: FAIL (each section is self-contained, not supporting a single claim)
 - Self-Contained Test: PASS (defines concepts)

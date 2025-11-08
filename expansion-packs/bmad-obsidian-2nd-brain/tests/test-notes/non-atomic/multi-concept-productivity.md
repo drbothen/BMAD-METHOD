@@ -19,6 +19,7 @@ Deep work requires eliminating distractions. Turn off notifications, close unnec
 ## Test Expectations
 
 **Expected atomicity analysis:**
+
 - is_atomic: false
 - score: <= 0.3
 - building_block_type: concept (first detected concept)
@@ -26,7 +27,8 @@ Deep work requires eliminating distractions. Turn off notifications, close unnec
 - verdict: NON-ATOMIC
 
 **Reasoning:**
-- Single claim: FAIL - 5 independent claims (Zettelkasten, GTD, PARA, time blocking, deep work) → score: 1.0 - 0.3*4 = -0.2 → 0.0 ✗
+
+- Single claim: FAIL - 5 independent claims (Zettelkasten, GTD, PARA, time blocking, deep work) → score: 1.0 - 0.3\*4 = -0.2 → 0.0 ✗
 - Evidence: FAIL - Each concept introduces new topic ✗
 - Self-contained: PASS - Terms mostly defined ✓
 - Title: FAIL - Too generic "Notes on Productivity" ✗
@@ -34,6 +36,7 @@ Deep work requires eliminating distractions. Turn off notifications, close unnec
 
 **Expected fragmentation:**
 Should fragment into 5 atomic notes:
+
 1. "Zettelkasten Principle - Atomicity" (concept)
 2. "GTD Context Lists" (concept)
 3. "PARA Method for Information Organization" (model)

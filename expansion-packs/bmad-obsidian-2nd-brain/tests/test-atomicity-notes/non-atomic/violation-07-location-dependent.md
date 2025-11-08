@@ -27,6 +27,7 @@ This approach, combined with the three principles outlined earlier, ensures your
 See the related resources in /resources/knowledge-management/ for more details.
 
 ## Expected Test Results
+
 - Single Claim Test: FAIL (multiple claims about note-taking, linking, templates)
 - Evidence Test: FAIL (divergent topics)
 - Self-Contained Test: FAIL (references "above", "previous section", assumes prior context)

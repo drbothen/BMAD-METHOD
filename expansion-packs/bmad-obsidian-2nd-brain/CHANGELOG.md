@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Performance optimized: <10 seconds for most audits on 1000-note vaults
   - Smart dependencies: Integrates with STORY-003 atomicity analysis and STORY-004 semantic search
   - Graceful degradation: Works without optional dependencies (Neo4j, Smart Connections)
-  - Commands: *help, *audit-full, *audit-freshness, *audit-links, *audit-citations, *audit-orphans, *audit-atomicity, *audit-duplicates, *audit-metadata, *generate-report, *progressive, *yolo, *exit
+  - Commands: *help, *audit-full, *audit-freshness, *audit-links, *audit-citations, *audit-orphans, *audit-atomicity, *audit-duplicates, *audit-metadata, *generate-report, *progressive, *yolo, \*exit
   - Dependencies: 8 tasks, 1 template, 1 checklist
   - Story: STORY-006 (estimated effort: 24 hours, priority: critical)
 

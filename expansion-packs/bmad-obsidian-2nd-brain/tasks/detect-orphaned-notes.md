@@ -72,11 +72,11 @@ orphan_detection_audit:
 
 **Orphan Categories:**
 
-| Category | Condition | Priority |
-|----------|-----------|----------|
+| Category            | Condition                   | Priority |
+| ------------------- | --------------------------- | -------- |
 | **Complete Orphan** | No incoming AND no outgoing | CRITICAL |
-| **No Incoming** | incoming_link_count == 0 | HIGH |
-| **No Outgoing** | outgoing_link_count == 0 | MEDIUM |
+| **No Incoming**     | incoming_link_count == 0    | HIGH     |
+| **No Outgoing**     | outgoing_link_count == 0    | MEDIUM   |
 
 ```
 For each note:
@@ -134,6 +134,7 @@ orphan_categories:
 ### Step 5: Sort and Return
 
 Sort orphaned_notes by:
+
 1. priority (CRITICAL → HIGH → MEDIUM)
 2. note_title (alphabetically)
 
@@ -144,14 +145,17 @@ Sort orphaned_notes by:
 ## Use Cases
 
 **1. Knowledge Graph Integration**
+
 - Connect isolated notes to vault
 - Build bidirectional link network
 
 **2. Note Discovery**
+
 - Find forgotten or underutilized notes
 - Surface hidden knowledge
 
 **3. Structural Health**
+
 - Maintain connected knowledge graph
 - Prevent knowledge silos
 
@@ -174,6 +178,7 @@ ORDER BY incoming_count DESC
 ## Testing
 
 **Test Case:** 100-note vault
+
 - 70 well-connected (>2 links)
 - 15 no incoming links
 - 10 no outgoing links
@@ -184,6 +189,7 @@ Expected: 30 orphans detected, 30% orphan rate
 ## Integration
 
 Executed by:
+
 - `*audit-orphans` command
 - `*audit-full` command
 - Progressive audit batch processing

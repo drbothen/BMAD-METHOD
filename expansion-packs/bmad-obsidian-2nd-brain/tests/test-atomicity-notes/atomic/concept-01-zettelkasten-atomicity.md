@@ -16,10 +16,12 @@ Each note in a Zettelkasten should contain exactly one complete knowledge buildi
 Atomic notes enable flexible recombination because each note is an independent unit. When notes are atomic, they can be linked in unlimited ways to create new connections and insights. This is the foundation of emergent thinking in a Zettelkasten system.
 
 ## Related Concepts
+
 - [[Evergreen Notes]] - related principle
 - [[Bidirectional Links]] - enables connection discovery
 
 ## Test Validation Criteria
+
 - ✓ Single claim: One core concept (atomicity principle)
 - ✓ Evidence: Supporting details relate to core claim only
 - ✓ Self-contained: Defines "atomicity" and "Zettelkasten" inline

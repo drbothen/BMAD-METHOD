@@ -26,6 +26,7 @@ This approach is particularly effective for...
 Research by Ebbinghaus showed...
 
 ## Expected Test Results
+
 - Single Claim Test: PASS (one topic: spaced repetition)
 - Evidence Test: FAIL (incomplete evidence statements)
 - Self-Contained Test: FAIL (undefined concepts, incomplete sentences)

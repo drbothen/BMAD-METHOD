@@ -17,6 +17,7 @@ Priority: High
 ## Related Concepts
 
 Links to core concepts:
+
 - [[methodology]]
 - [[framework]]
 - [[workflow]]

@@ -58,6 +58,7 @@ citation_validation_audit:
 For each note:
 
 **2.1 Detect Citation Section**
+
 - Look for "## Source Attribution" or "## Sources" or "## References" section
 - Check frontmatter for: source, author, url, date fields
 - Parse inline citations (e.g., "(Author, Year)")
@@ -65,12 +66,14 @@ For each note:
 **2.2 Validate Required Fields**
 
 Required fields (if external claims present):
+
 - author (required)
 - title (required)
 - url OR isbn (required for external sources)
 - date (required for time-sensitive content)
 
 **Classification:**
+
 - **Complete:** All 4 required fields present
 - **Incomplete:** Missing 2+ required fields → Issue severity: HIGH
 - **Missing:** No attribution at all → Issue severity: CRITICAL
@@ -80,6 +83,7 @@ Required fields (if external claims present):
 **Heuristic:** Identify declarative factual statements without nearby citations
 
 **Algorithm:**
+
 ```
 1. Extract declarative statements (sentences ending with period, no questions)
 2. Identify factual claims (avoid opinions, personal observations)
@@ -89,6 +93,7 @@ Required fields (if external claims present):
 ```
 
 **Signals for Factual Claims:**
+
 - Statistics, percentages, numbers
 - Historical facts, dates, events
 - Scientific findings, research results
@@ -98,12 +103,14 @@ Required fields (if external claims present):
 ### Step 4: Format Consistency Check
 
 **Detect Citation Format:**
+
 - APA: (Author, Year) or Author (Year)
 - MLA: (Author Page) or (Author)
 - Chicago: Footnotes or (Author Year, Page)
 - Custom: Vault-specific format
 
 **Check Consistency:**
+
 - If mixed formats detected: Issue severity: MEDIUM
 - If no consistent format: Issue severity: LOW
 
@@ -111,15 +118,16 @@ Required fields (if external claims present):
 
 **Issue Classification:**
 
-| Issue Type | Severity | Condition |
-|------------|----------|-----------|
-| NO_ATTRIBUTION | CRITICAL | Note has external claims but no source attribution |
-| INCOMPLETE | HIGH | Missing 2+ required fields (author, title, url/isbn, date) |
-| UNATTRIBUTED_CLAIMS | HIGH | >3 factual claims without citations |
-| FORMAT_ERROR | MEDIUM | Mixed or inconsistent citation formats |
-| MINOR_FORMAT | LOW | Minor format issues (punctuation, spacing) |
+| Issue Type          | Severity | Condition                                                  |
+| ------------------- | -------- | ---------------------------------------------------------- |
+| NO_ATTRIBUTION      | CRITICAL | Note has external claims but no source attribution         |
+| INCOMPLETE          | HIGH     | Missing 2+ required fields (author, title, url/isbn, date) |
+| UNATTRIBUTED_CLAIMS | HIGH     | >3 factual claims without citations                        |
+| FORMAT_ERROR        | MEDIUM   | Mixed or inconsistent citation formats                     |
+| MINOR_FORMAT        | LOW      | Minor format issues (punctuation, spacing)                 |
 
 **Calculate Coverage:**
+
 ```
 citation_coverage_percentage = (notes_complete / total_notes) * 100
 ```
@@ -131,14 +139,17 @@ citation_coverage_percentage = (notes_complete / total_notes) * 100
 ## Use Cases
 
 **1. Academic Integrity Audit**
+
 - Detect notes lacking proper source attribution
 - Ensure all research properly cited
 
 **2. Knowledge Provenance**
+
 - Prevent loss of source information
 - Maintain attribution chain for claims
 
 **3. Citation Format Standardization**
+
 - Detect format inconsistencies
 - Guide users to consistent format
 
@@ -151,6 +162,7 @@ citation_coverage_percentage = (notes_complete / total_notes) * 100
 ## Testing
 
 **Test Case 1:** 30 notes
+
 - 10 complete citations → Pass
 - 10 incomplete (missing author+date) → HIGH severity
 - 10 no attribution with claims → CRITICAL severity
@@ -160,6 +172,7 @@ Expected: 20 issues detected, 33% coverage
 ## Integration
 
 Executed by:
+
 - `*audit-citations` command
 - `*audit-full` command
 - Progressive audit batch processing

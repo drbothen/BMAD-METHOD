@@ -162,6 +162,7 @@ Execute natural language queries across your Obsidian vault and Neo4j knowledge 
 - (Optional) Neo4j Graphiti MCP for temporal and graph queries
 
 **Performance:**
+
 - Query parsing: <200ms
 - Source queries: <1 second per source
 - Result merging: <500ms
@@ -231,13 +232,14 @@ Performs comprehensive vault quality audits across 7 dimensions to detect stale 
 
 **Performance Benchmarks:**
 
-| Vault Size | Audit Time | Notes |
-|------------|------------|-------|
-| 100 notes  | ~5 seconds | Single batch |
-| 1,000 notes | ~10 seconds | Single batch |
-| 10,000 notes | ~2 minutes | Progressive mode (10 batches) |
+| Vault Size   | Audit Time  | Notes                         |
+| ------------ | ----------- | ----------------------------- |
+| 100 notes    | ~5 seconds  | Single batch                  |
+| 1,000 notes  | ~10 seconds | Single batch                  |
+| 10,000 notes | ~2 minutes  | Progressive mode (10 batches) |
 
 **Security Features:**
+
 - SSRF prevention: Blocks requests to private IP ranges (127.0.0.0/8, 10.0.0.0/8, 192.168.0.0/16, etc.)
 - Rate limiting: Max 5 external link requests per second
 - Protocol validation: Only http/https allowed (blocks file://, javascript:, data: protocols)
@@ -263,16 +265,19 @@ The capture workflow consists of 4 foundational tasks that power the Inbox Triag
 **Purpose:** Classify captured content into one of 6 semantic types using pattern matching and contextual analysis
 
 **Inputs:**
+
 - `raw_content` (String): Captured text to classify
 - `source_context` (Object, optional): URL, timestamp, and other context
 
 **Outputs:**
+
 - `content_type` (String): One of 6 types (quote, concept, reference, reflection, question, observation)
 - `confidence` (Float): 0.0-1.0 confidence score
 - `reasoning` (String): Explanation of classification
 - `matched_patterns` (Array<String>): Patterns that matched
 
 **Content Types:**
+
 1. **Quote** - Quoted text with source attribution (e.g., "According to Cal Newport...")
 2. **Concept** - Definition or explanation of an idea (e.g., "Atomic notes are single-idea notes...")
 3. **Reference** - Link to external resource (e.g., "See https://example.com...")
@@ -281,6 +286,7 @@ The capture workflow consists of 4 foundational tasks that power the Inbox Triag
 6. **Observation** - Factual statement or data (e.g., "I noticed my notes cluster around...")
 
 **Features:**
+
 - 8-step classification procedure with pattern matching
 - Confidence scoring algorithm (starts at 1.0, applies penalties for ambiguity)
 - Fallback to "concept" if confidence < 0.5
@@ -292,10 +298,12 @@ The capture workflow consists of 4 foundational tasks that power the Inbox Triag
 **Purpose:** Extract structured metadata from captured content and source context
 
 **Inputs:**
+
 - `raw_content` (String): Captured text
 - `source_context` (Object, optional): URL, author, title, timestamp, surrounding context
 
 **Outputs:**
+
 - `source_url` (String): Validated URL or "Unknown"
 - `author` (String): Extracted author or "Unknown"
 - `title` (String): Extracted or auto-generated title
@@ -303,6 +311,7 @@ The capture workflow consists of 4 foundational tasks that power the Inbox Triag
 - `surrounding_context` (String): Context for highlights (optional)
 
 **Features:**
+
 - 10-step extraction procedure with priority fallbacks
 - URL validation: Blocks malicious schemes (javascript:, data:, file:, vbscript:)
 - Domain validation: Blocks localhost/private IPs unless explicitly allowed
@@ -316,17 +325,20 @@ The capture workflow consists of 4 foundational tasks that power the Inbox Triag
 **Purpose:** Create inbox note in Obsidian vault using classified content and extracted metadata
 
 **Inputs:**
+
 - `classified_content` (Object): Classification result with content_type, confidence, raw_content
 - `metadata` (Object): Extracted metadata (source_url, author, title, timestamp, context)
 - `vault_path` (String): Obsidian vault root path
 
 **Outputs:**
+
 - `inbox_note_path` (String): Full path to created note
 - `creation_timestamp` (String): ISO8601 timestamp
 - `success` (Boolean): Creation status
 - `error` (String): Error message if failed
 
 **Features:**
+
 - 10-step note creation procedure using inbox-note-tmpl.yaml template
 - Filename generation: `YYYY-MM-DD-HHMM-sanitized-title.md`
 - Collision handling: Appends random suffix if file exists
@@ -336,6 +348,7 @@ The capture workflow consists of 4 foundational tasks that power the Inbox Triag
 - Performance: < 3 seconds per note creation
 
 **Example note structure:**
+
 ```markdown
 ---
 status: unprocessed
@@ -358,11 +371,11 @@ flagged_for_review: false
 
 ## Processing Notes
 
-*To be filled by triage agent or user during processing*
+_To be filled by triage agent or user during processing_
 
 ## Next Actions
 
-- [ ] *To be filled by user or organization agent*
+- [ ] _To be filled by user or organization agent_
 ```
 
 ### 4. capture-create-capture-event.md (OPTIONAL)
@@ -370,18 +383,21 @@ flagged_for_review: false
 **Purpose:** Create temporal CaptureEvent node in Neo4j graph database for evolution tracking (requires Neo4j enabled)
 
 **Inputs:**
+
 - `inbox_note_path` (String): Path to created inbox note
 - `metadata` (Object): Extracted metadata
 - `content_type` (String): Classification result
 - `config` (Object): Neo4j configuration
 
 **Outputs:**
+
 - `capture_event_id` (String): Episode ID from Neo4j/Graphiti, or null if disabled
 - `success` (Boolean): Always true (graceful degradation)
 - `skipped` (Boolean): True if Neo4j disabled or error occurred
 - `error` (String): Error message if applicable
 
 **Features:**
+
 - 10-step episode creation procedure (if Neo4j enabled)
 - Graphiti MCP integration: Uses `graphiti.add_episode` tool
 - Bi-temporal metadata: Tracks both valid_time (when captured) and transaction_time (when recorded)
@@ -391,11 +407,13 @@ flagged_for_review: false
 - Performance: < 1 second per episode creation
 
 **Bi-temporal tracking use cases:**
+
 - "Show me what I captured last week" (valid_time query)
 - "Show me what was added to the graph today" (transaction_time query)
 - "How has my understanding of X evolved over time?" (temporal evolution query)
 
 **Graceful degradation scenarios:**
+
 - Neo4j disabled in config → Skip with info message
 - Graphiti MCP unavailable → Skip with warning, operate in Obsidian-only mode
 - Connection failed → Skip with warning, note saved to Obsidian successfully
@@ -403,6 +421,7 @@ flagged_for_review: false
 ### Using Capture Tasks
 
 **Manual execution:**
+
 ```bash
 # Activate Inbox Triage Agent
 /bmad-2b:inbox-triage-agent
@@ -412,12 +431,14 @@ flagged_for_review: false
 ```
 
 **Automated workflow:**
+
 1. Classify content type (Task 1) → confidence score
 2. Extract metadata (Task 2) → source, author, title, timestamp
 3. Create inbox note (Task 3) → Obsidian note with YAML frontmatter
 4. Create capture event (Task 4, optional) → Neo4j episode with temporal metadata
 
 **Performance:**
+
 - Classification: < 2 seconds
 - Metadata extraction: < 1 second
 - Inbox note creation: < 3 seconds
@@ -425,6 +446,7 @@ flagged_for_review: false
 - **Total end-to-end: < 7 seconds** (well under 30s target)
 
 **Security features:**
+
 - XSS prevention: Script tags stripped/escaped
 - URL validation: Malicious schemes blocked
 - Path sanitization: Directory traversal prevented
@@ -432,6 +454,7 @@ flagged_for_review: false
 - YAML escaping: Special characters properly handled
 
 **Test data:**
+
 - 20 sample captures covering all 6 content types
 - 6 edge case samples (empty, short, Unicode, XSS, malformed URLs, paths with spaces)
 - Ground truth validation in `tests/test-capture-samples/expected-results.yaml`
@@ -446,10 +469,12 @@ The review workflow consists of 3 quality audit tasks that power the Quality Aud
 **Purpose:** Audit vault notes for temporal freshness by identifying stale notes that haven't been updated within a configured threshold, prioritized by importance.
 
 **Inputs:**
+
 - `vault_path` (String): Absolute path to Obsidian vault
 - `freshness_threshold_days` (Integer, default: 180): Days after which note is considered stale
 
 **Outputs:**
+
 - `stale_notes` (Array<Object>): Stale notes with priority scores
   - `path`, `last_updated`, `days_stale`, `staleness_score`, `importance`, `priority_score`, `severity`
 - `metrics` (Object): Aggregated statistics
@@ -458,6 +483,7 @@ The review workflow consists of 3 quality audit tasks that power the Quality Aud
   - `query_time`, `processing_time`, `total_time`
 
 **Features:**
+
 - **12-step sequential procedure** for comprehensive freshness analysis
 - **Priority scoring:** Combines staleness_score × importance (incoming links + domain critical bonus)
 - **Severity classification:** critical (>365 days), high (180-365), medium (90-180)
@@ -466,6 +492,7 @@ The review workflow consists of 3 quality audit tasks that power the Quality Aud
 - **Progressive mode:** Batch processing for vaults exceeding 100,000 notes
 
 **Algorithm:**
+
 ```python
 staleness_score = days_stale / threshold_days
 importance = incoming_link_count + (is_domain_critical ? 10 : 0)
@@ -473,11 +500,13 @@ priority_score = staleness_score × importance  # Higher = more urgent to update
 ```
 
 **Example usage:**
+
 ```bash
 *audit-freshness 180  # Default 180-day threshold
 ```
 
 **Example output:**
+
 ```json
 {
   "stale_notes": [
@@ -493,7 +522,7 @@ priority_score = staleness_score × importance  # Higher = more urgent to update
   "metrics": {
     "total_notes": 1000,
     "stale_notes": 200,
-    "stale_ratio": 0.20,
+    "stale_ratio": 0.2,
     "avg_staleness": 245.5,
     "health_impact": "medium"
   }
@@ -505,11 +534,13 @@ priority_score = staleness_score × importance  # Higher = more urgent to update
 **Purpose:** Validate external links in notes by checking HTTP status codes, identifying broken links (4xx), redirects (3xx), and timeouts with comprehensive security hardening.
 
 **Inputs:**
+
 - `note_paths` (Array<String>, optional): Specific notes to check (default: all notes)
 - `max_links` (Integer, default: 50): Maximum links to validate per execution
 - `rate_limit` (Integer, default: 5): Maximum requests per second (1-10 allowed)
 
 **Outputs:**
+
 - `validation_results` (Array<Object>): Complete validation results for all tested links
   - `note_path`, `url`, `status_code`, `classification`, `response_time`, `reason`
 - `broken_links` (Array<Object>): Links returning 4xx/5xx status codes
@@ -519,6 +550,7 @@ priority_score = staleness_score × importance  # Higher = more urgent to update
   - `total_links`, `broken_count`, `redirect_count`, `timeout_count`, `success_count`, `success_rate`
 
 **Features:**
+
 - **15-step sequential procedure** with comprehensive security validation
 - **SSRF prevention:** Blocks private IPs (127.0.0.0/8, 10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12, localhost)
 - **Protocol validation:** Only http/https allowed (blocks javascript:, data:, file://, vbscript:)
@@ -528,10 +560,12 @@ priority_score = staleness_score × importance  # Higher = more urgent to update
 - **Performance:** <15s for 50 links with rate limiting
 
 **URL Extraction:**
+
 - Markdown links: `[text](url)`
 - Plain URLs: `https?://...`
 
 **Classification:**
+
 - **2xx:** Success
 - **3xx:** Redirect (with Location header)
 - **4xx/5xx:** Broken
@@ -539,11 +573,13 @@ priority_score = staleness_score × importance  # Higher = more urgent to update
 - **Blocked:** Private IP or invalid protocol
 
 **Example usage:**
+
 ```bash
 *audit-links 50  # Validate up to 50 links
 ```
 
 **Example output:**
+
 ```json
 {
   "broken_links": [
@@ -566,6 +602,7 @@ priority_score = staleness_score × importance  # Higher = more urgent to update
 ```
 
 **Security features:**
+
 - Private IP blocking prevents internal network access
 - Protocol filtering prevents XSS and file access exploits
 - Credential stripping protects sensitive auth tokens
@@ -576,6 +613,7 @@ priority_score = staleness_score × importance  # Higher = more urgent to update
 **Purpose:** Generate comprehensive vault health audit report by aggregating results from multiple audit dimensions, calculating weighted health score, and creating prioritized action items.
 
 **Inputs:**
+
 - `audit_results` (Object): Combined audit results from all dimensions
   - `freshness` (Object, required): Temporal freshness results
   - `links` (Object, required): Link validation results
@@ -584,6 +622,7 @@ priority_score = staleness_score × importance  # Higher = more urgent to update
 - `output_path` (String, optional): Custom report location (default: `reports/audit-YYYY-MM-DD-HHMM.md`)
 
 **Outputs:**
+
 - `report_note_path` (String): Path to created audit report in vault
 - `health_score` (Float): Overall vault health (0-100)
 - `health_interpretation` (String): Excellent (90-100), Good (75-89), Fair (60-74), Poor (40-59), Critical (<40)
@@ -592,6 +631,7 @@ priority_score = staleness_score × importance  # Higher = more urgent to update
 - `success` (Boolean): Report generation status
 
 **Features:**
+
 - **14-step sequential procedure** for comprehensive report generation
 - **Weighted health score calculation:**
   - Freshness: 20% weight
@@ -607,6 +647,7 @@ priority_score = staleness_score × importance  # Higher = more urgent to update
 - **Performance:** <5s for report generation and aggregation
 
 **Health Score Formula:**
+
 ```python
 health_score = sum(dimension_score × weight for each dimension)
 
@@ -617,11 +658,13 @@ health_score = sum(dimension_score × weight for each dimension)
 ```
 
 **Example usage:**
+
 ```bash
 *generate-report  # Generate report from cached audit results
 ```
 
 **Example output:**
+
 ```json
 {
   "report_note_path": "reports/audit-2025-11-06-1430.md",
@@ -645,37 +688,48 @@ health_score = sum(dimension_score × weight for each dimension)
 ```
 
 **Generated Report Structure:**
+
 ```markdown
 # Vault Audit Report
-*Generated: 2025-11-06T14:30:00Z*
+
+_Generated: 2025-11-06T14:30:00Z_
 
 ## Executive Summary
+
 Vault health: 73.2/100 (Fair). Analyzed 1,245 notes...
 
 ## Health Score: 73.2/100 (Fair)
+
 | Dimension | Score | Weight | Contribution |
-|-----------|-------|--------|--------------|
+| --------- | ----- | ------ | ------------ |
 | Freshness | 85.0  | 20%    | 17.0         |
 | Links     | 78.2  | 15%    | 11.7         |
+
 ...
 
 ## Freshness Issues (Top 20)
+
 [Prioritized table of stale notes]
 
 ## Link Validation Issues
+
 ### Broken Links (34 total)
+
 ### Redirects (8 total)
+
 ...
 
 ## Action Items
+
 1. [HIGH] Fix 34 broken external links
 2. [HIGH] Update 25 high-priority stale notes
-...
+   ...
 ```
 
 ### Using Review Tasks
 
 **Manual execution via Quality Auditor Agent:**
+
 ```bash
 # Activate agent
 /bmad-2b:quality-auditor-agent
@@ -690,17 +744,20 @@ Vault health: 73.2/100 (Fair). Analyzed 1,245 notes...
 ```
 
 **Automated workflow:**
+
 1. Audit temporal freshness (Task 1) → stale notes with priority scores
 2. Validate external links (Task 2) → broken/redirect/timeout classification
 3. Generate comprehensive report (Task 3) → health score + action items
 
 **Performance:**
+
 - Temporal freshness audit: <10s for 1000 notes
 - Link validation: <15s for 50 links (with rate limiting)
 - Report generation: <5s for aggregation
 - **Total full audit: <30s for typical vault**
 
 **Security features:**
+
 - SSRF prevention: Private IP blocking in link validation
 - Protocol validation: Only http/https allowed
 - Path traversal prevention: All file operations validated
@@ -709,6 +766,7 @@ Vault health: 73.2/100 (Fair). Analyzed 1,245 notes...
 - Size limits: Prevents resource exhaustion
 
 **Test vault:**
+
 - Sample test vault: `tests/test-vaults/audit-test-vault/`
 - Test data specification: 1000 notes (200 stale, 50 with links, 10 orphans)
 - Performance benchmarks and validation criteria documented in test vault README
@@ -728,6 +786,7 @@ The expansion pack provides standardized YAML templates for creating structured 
 **Used By:** Inbox Triage Agent (`create-inbox-note` task)
 
 **Key Features:**
+
 - 6 content type classifications (quote, concept, reference, reflection, question, observation)
 - Processing status tracking (inbox, reviewed, processing, processed)
 - Confidence scoring (0.0-1.0)
@@ -735,6 +794,7 @@ The expansion pack provides standardized YAML templates for creating structured 
 - Sections: Content, Context, Initial Thoughts, Processing Notes, Next Actions
 
 **Frontmatter Fields:**
+
 ```yaml
 type: [inbox, capture, highlight]
 captured: ISO8601 timestamp
@@ -754,6 +814,7 @@ confidence: 0.0-1.0
 **Used By:** Structural Analysis Agent (`fragment-note` task)
 
 **Key Features:**
+
 - Atomic knowledge unit (single complete idea per note)
 - 6 building block types (concept, argument, model, question, claim, phenomenon)
 - Note maturity tracking (working, refined, established)
@@ -762,6 +823,7 @@ confidence: 0.0-1.0
 - Required source attribution
 
 **Frontmatter Fields:**
+
 ```yaml
 type: [atomic_note, evergreen]
 created: ISO8601 timestamp
@@ -774,6 +836,7 @@ related_mocs: [List of MOC links]
 ```
 
 **Sections:**
+
 - Core Claim: Single main idea (1-2 sentences)
 - Evidence & Context: Supporting details and examples
 - Related Concepts: Bidirectional links to adjacent notes
@@ -788,6 +851,7 @@ related_mocs: [List of MOC links]
 **Used By:** MOC Constructor Agent (manual creation in Phase 1)
 
 **Key Features:**
+
 - Domain-specific knowledge organization
 - Maturity level tracking (nascent, developing, established, comprehensive)
 - Core concepts list with definitions
@@ -795,6 +859,7 @@ related_mocs: [List of MOC links]
 - Optional Dataview queries for automatic note surfacing
 
 **Frontmatter Fields:**
+
 ```yaml
 type: [map_of_content, MOC]
 created: ISO8601 timestamp
@@ -806,6 +871,7 @@ maturity_level: [nascent, developing, established, comprehensive]
 ```
 
 **Sections:**
+
 - Overview: 2-3 sentence domain synthesis
 - Core Concepts: Foundational ideas with links
 - Knowledge Branches: Dynamic subsections per branch
@@ -814,6 +880,7 @@ maturity_level: [nascent, developing, established, comprehensive]
 - Last Updated: Maintenance history
 
 **Phase 2 Enhancements Planned:**
+
 - Advanced Dataview query templates
 - Automatic concept clustering
 - MOC relationship graphs
@@ -828,6 +895,7 @@ maturity_level: [nascent, developing, established, comprehensive]
 **Used By:** Query Interpreter Agent (`merge-results` task)
 
 **Key Features:**
+
 - Multiple format support (narrative, list, table, timeline) based on query intent
 - Contradiction detection and flagging
 - Source attribution with relevance scores
@@ -835,6 +903,7 @@ maturity_level: [nascent, developing, established, comprehensive]
 - Suggested next steps
 
 **Variables:**
+
 ```yaml
 query: Original user query
 query_intent: [factual, temporal, causal, comparative, exploratory]
@@ -847,6 +916,7 @@ sources_failed: Failed sources (optional)
 ```
 
 **Sections:**
+
 - Query Summary: Query metadata and performance
 - Results: Format-specific presentation (narrative/list/table/timeline)
 - Contradictions: Flagged conflicts (if detected)
@@ -862,6 +932,7 @@ sources_failed: Failed sources (optional)
 **Used By:** Quality Auditor Agent (`generate-audit-report` task)
 
 **Key Features:**
+
 - Vault health score (0-100) with interpretation
 - 7 audit dimensions (freshness, links, citations, orphans, atomicity, duplicates, metadata)
 - Prioritized action items (critical, high, medium, low)
@@ -869,6 +940,7 @@ sources_failed: Failed sources (optional)
 - Performance metrics
 
 **Frontmatter Fields:**
+
 ```yaml
 audit_date: ISO8601 timestamp
 vault_health_score: 0-100
@@ -878,6 +950,7 @@ audit_scope: Domain/tag filter or "entire vault"
 ```
 
 **Sections:**
+
 - Executive Summary: High-level findings
 - Temporal Freshness: Stale notes requiring updates
 - Link Validation: Broken/redirect/timeout links
@@ -890,6 +963,7 @@ audit_scope: Domain/tag filter or "entire vault"
 - Vault Health Metrics: Score breakdown
 
 **Phase 2 Enhancements Planned:**
+
 - Advanced graph metrics (betweenness centrality, clustering coefficient)
 - Predictive staleness modeling
 - Automated link suggestion quality scoring
@@ -898,6 +972,7 @@ audit_scope: Domain/tag filter or "entire vault"
 ### Template Usage
 
 **Via Agents (Recommended):**
+
 ```bash
 # Templates are automatically used by agents
 /bmad-2b:inbox-triage-agent
@@ -911,6 +986,7 @@ audit_scope: Domain/tag filter or "entire vault"
 ```
 
 **Direct Task Execution:**
+
 ```bash
 # Reference templates in task parameters
 *create-doc --template=atomic-note-tmpl.yaml
@@ -923,6 +999,7 @@ audit_scope: Domain/tag filter or "entire vault"
 **Test Samples:** `tests/test-vaults/phase1-templates/`
 
 **Validation:**
+
 ```bash
 # Validate YAML syntax
 npm run validate
@@ -938,12 +1015,14 @@ npm run validate
 ### Phase 1 vs Phase 2 Distinctions
 
 **Phase 1 (Current):**
+
 - All templates functional for core workflows
 - Basic/MVP feature sets
 - Proven patterns from Zettelkasten and PKM
 - Extensible for Phase 2 enhancements
 
 **Phase 2 (Planned):**
+
 - moc-tmpl.yaml: Advanced query templates, automatic clustering, relationship graphs
 - audit-report-tmpl.yaml: Graph analytics, predictive modeling, quality scoring
 

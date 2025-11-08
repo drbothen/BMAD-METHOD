@@ -9,18 +9,10 @@
 ---
 
 checklist:
-  id: relationship-confidence-checklist
-  name: Relationship Confidence Checklist
-  description: Confidence scoring for link type identification and strength calculation validation
-  items:
-    - "[ ] Similarity threshold test: Semantic similarity score >= 0.6 threshold"
-    - "[ ] Contextual relevance test: Contextual relevance indicators present (shared concepts, same MOC, common sources)"
-    - "[ ] Temporal proximity test: Temporal proximity considered (creation/edit dates)"
-    - "[ ] Link type confidence test: Link type confidence >= 0.7"
-    - "[ ] No conflicting signals test: No conflicting relationship signals present"
-    - "[ ] Atomicity verified test: Both notes are atomic and complete (score >= 0.7)"
-    - "[ ] Non-circular test: Relationship is non-circular (no reasoning loops)"
-    - "[ ] Strength validity test: Final strength score between 0.0-1.0"
+id: relationship-confidence-checklist
+name: Relationship Confidence Checklist
+description: Confidence scoring for link type identification and strength calculation validation
+items: - "[ ] Similarity threshold test: Semantic similarity score >= 0.6 threshold" - "[ ] Contextual relevance test: Contextual relevance indicators present (shared concepts, same MOC, common sources)" - "[ ] Temporal proximity test: Temporal proximity considered (creation/edit dates)" - "[ ] Link type confidence test: Link type confidence >= 0.7" - "[ ] No conflicting signals test: No conflicting relationship signals present" - "[ ] Atomicity verified test: Both notes are atomic and complete (score >= 0.7)" - "[ ] Non-circular test: Relationship is non-circular (no reasoning loops)" - "[ ] Strength validity test: Final strength score between 0.0-1.0"
 
 ---
 
@@ -43,6 +35,7 @@ This checklist validates the confidence scoring for link type identification and
 **Check:** Semantic similarity score from Smart Connections >= 0.6 threshold
 
 **Scoring:**
+
 - Pass: 1.0 if similarity >= 0.6
 - Partial: 0.5 if similarity 0.5-0.59 (borderline)
 - Fail: 0.0 if similarity < 0.5
@@ -50,6 +43,7 @@ This checklist validates the confidence scoring for link type identification and
 **Pass Criteria:** Score >= 0.7 (must meet or exceed threshold)
 
 **Remediation if failed:**
+
 - Reject links below 0.6 threshold
 - Flag borderline (0.5-0.59) for manual review
 - Consider adjusting threshold based on feedback learning
@@ -72,12 +66,14 @@ Semantic similarity: 0.42
 **Check:** Contextual relevance indicators present and measurable
 
 **Indicators:**
+
 1. **Shared concepts/tags** - Both notes share tags or concept references
 2. **Same MOC** - Both notes belong to same Map of Content
 3. **Common sources** - Both notes cite same source materials
 4. **Domain proximity** - Both notes in same knowledge domain
 
 **Calculation:**
+
 ```python
 # Component scores (each 0.0-1.0)
 tag_overlap = len(shared_tags) / len(total_unique_tags)
@@ -89,6 +85,7 @@ contextual_relevance = (tag_overlap + same_moc_bonus + common_sources_bonus) / 3
 ```
 
 **Scoring:**
+
 - Pass: 1.0 if contextual_relevance >= 0.5
 - Partial: 0.5 if contextual_relevance 0.3-0.49
 - Fail: 0.0 if contextual_relevance < 0.3
@@ -96,6 +93,7 @@ contextual_relevance = (tag_overlap + same_moc_bonus + common_sources_bonus) / 3
 **Pass Criteria:** Score >= 0.7 (must have strong context)
 
 **Remediation if failed:**
+
 - Verify notes have meaningful overlap beyond keywords
 - Check for shared tags or MOC membership
 - Analyze domain proximity
@@ -126,6 +124,7 @@ Contextual relevance: 0.0
 **Check:** Temporal proximity between note creation/edit dates considered
 
 **Temporal Scoring:**
+
 ```python
 import datetime
 
@@ -143,12 +142,14 @@ def calculate_temporal_proximity(date1, date2):
 ```
 
 **Scoring:**
+
 - Pass: 1.0 if temporal proximity calculated correctly
 - Fail: 0.0 if not considered
 
 **Pass Criteria:** Score >= 0.7 (must calculate temporal proximity)
 
 **Remediation if failed:**
+
 - Extract creation/edit dates from note metadata
 - Calculate temporal proximity bonus
 - Apply bonus to link strength calculation
@@ -168,6 +169,7 @@ Temporal proximity not calculated
 **Check:** Link type identified with confidence >= 0.7
 
 **Confidence Calculation:**
+
 ```python
 # Start at maximum confidence
 confidence = 1.0
@@ -185,6 +187,7 @@ confidence = max(0.0, min(1.0, confidence))
 ```
 
 **Scoring:**
+
 - Pass: 1.0 if confidence >= 0.7
 - Partial: 0.5 if confidence 0.5-0.69
 - Fail: 0.0 if confidence < 0.5
@@ -192,6 +195,7 @@ confidence = max(0.0, min(1.0, confidence))
 **Pass Criteria:** Score >= 0.7 (high confidence required)
 
 **Remediation if failed:**
+
 - Re-analyze note contents for clearer signals
 - Review connection-patterns.md for type characteristics
 - Default to "elaborates" if confidence < 0.5
@@ -217,17 +221,20 @@ No clear relationship type ✗
 **Check:** No conflicting relationship signals present in note contents
 
 **Conflicting Patterns:**
+
 - Supports AND contradicts signals simultaneously
 - Generalizes AND specializes signals simultaneously
 - Elaborates AND analogous_to signals simultaneously
 
 **Scoring:**
+
 - Pass: 1.0 if no conflicts detected
 - Fail: 0.0 if conflicts present
 
 **Pass Criteria:** Score >= 0.7 (must have no conflicts)
 
 **Remediation if failed:**
+
 - Identify which relationship type has stronger signals
 - Choose dominant relationship type
 - Reduce confidence score for ambiguous cases
@@ -246,12 +253,14 @@ Both "supports" (evidence for) AND "contradicts" (however, conflicts with)
 **Check:** Both source and target notes pass atomicity-checklist.md with score >= 0.7
 
 **Scoring:**
+
 - Pass: 1.0 if both atomic (>= 0.7)
 - Fail: 0.0 if either non-atomic (< 0.7)
 
 **Pass Criteria:** Score >= 0.7 (both must be atomic)
 
 **Remediation if failed:**
+
 - Run atomicity-checklist.md on both notes
 - Fragment non-atomic notes before linking
 - Only create links between atomic notes
@@ -272,6 +281,7 @@ Target atomicity: 0.58
 **Check:** Relationship does not create circular reasoning (A → B → C → A where → is "supports")
 
 **Circular Detection:**
+
 ```python
 def is_circular_reasoning(source, target, link_type):
     # Only check for evidence/support chains (not elaboration/analogy)
@@ -298,12 +308,14 @@ def is_circular_reasoning(source, target, link_type):
 ```
 
 **Scoring:**
+
 - Pass: 1.0 if non-circular
 - Fail: 0.0 if circular reasoning detected
 
 **Pass Criteria:** Score >= 0.7 (must be non-circular)
 
 **Remediation if failed:**
+
 - Reject link to prevent circular reasoning
 - Inform user of circular chain detected
 - Suggest alternative link type (elaborates, analogous_to)
@@ -322,23 +334,27 @@ A supports B, B supports C, C supports A
 **Check:** Final link strength score is valid (0.0-1.0 range) and classification matches score
 
 **Strength Formula:**
+
 ```python
 strength = (0.5 × semantic_similarity) + (0.3 × contextual_relevance) + (0.2 × temporal_proximity)
 strength = max(0.0, min(1.0, strength))
 ```
 
 **Classification Validation:**
+
 - Strong: strength >= 0.7 ✓
 - Medium: 0.5 <= strength < 0.7 ✓
 - Weak: strength < 0.5 ✓
 
 **Scoring:**
+
 - Pass: 1.0 if strength valid and classification correct
 - Fail: 0.0 if strength invalid or classification wrong
 
 **Pass Criteria:** Score >= 0.7 (must be valid)
 
 **Remediation if failed:**
+
 - Recalculate strength using correct formula
 - Verify all components in valid range (0.0-1.0)
 - Clamp strength to 0.0-1.0 if out of bounds
@@ -361,17 +377,20 @@ Classification: strong
 ### Strong Links (>= 0.7)
 
 **Characteristics:**
+
 - High semantic similarity (>= 0.7)
 - Strong contextual relevance (>= 0.6)
 - Clear relationship signals
 - High confidence (>= 0.8)
 
 **Usage:**
+
 - Auto-approve in batch mode
 - Core relationships in knowledge graph
 - High priority for linking
 
 **Example:**
+
 ```yaml
 strength: 0.82
 classification: strong
@@ -384,17 +403,20 @@ confidence: 0.85
 ### Medium Links (0.5-0.7)
 
 **Characteristics:**
+
 - Moderate semantic similarity (0.6-0.7)
 - Moderate contextual relevance (0.4-0.6)
 - Some relationship signals
 - Moderate confidence (0.6-0.8)
 
 **Usage:**
+
 - Prompt user for approval
 - Relevant connections in knowledge graph
 - Medium priority for linking
 
 **Example:**
+
 ```yaml
 strength: 0.64
 classification: medium
@@ -407,17 +429,20 @@ confidence: 0.72
 ### Weak Links (< 0.5)
 
 **Characteristics:**
+
 - Low semantic similarity (0.5-0.6)
 - Low contextual relevance (< 0.4)
 - Few relationship signals
 - Low confidence (< 0.6)
 
 **Usage:**
+
 - Flag for manual review
 - Tangential connections
 - Low priority or reject
 
 **Example:**
+
 ```yaml
 strength: 0.43
 classification: weak
@@ -463,6 +488,7 @@ is_high_confidence = (total_score >= 0.7)
 **LOW CONFIDENCE:** Score < 0.5 (reject or require manual review)
 
 **Blocking Failures (auto-fail):**
+
 - Similarity below threshold (test 1, < 0.6)
 - Link type confidence low (test 4, < 0.5)
 - Conflicting signals (test 5)
@@ -471,6 +497,7 @@ is_high_confidence = (total_score >= 0.7)
 - Invalid strength score (test 8)
 
 **Critical Warnings (flag for review):**
+
 - Borderline similarity (test 1, 0.5-0.59)
 - Weak contextual relevance (test 2, < 0.3)
 - Borderline link type confidence (test 4, 0.5-0.69)
@@ -517,27 +544,27 @@ All test scenarios documented in STORY-004 Task 15.
 ## Example Validation Report
 
 ```yaml
-relationship_id: "c3f5a921-4b2e-4d1a-9e8f-7c3d2b1a0f4e"
-source: "atomic/argument-01-spaced-repetition-superiority.md"
-target: "atomic/phenomenon-01-ebbinghaus-forgetting-curve.md"
+relationship_id: 'c3f5a921-4b2e-4d1a-9e8f-7c3d2b1a0f4e'
+source: 'atomic/argument-01-spaced-repetition-superiority.md'
+target: 'atomic/phenomenon-01-ebbinghaus-forgetting-curve.md'
 is_high_confidence: true
 total_score: 1.0
 tests:
-  similarity_threshold: {score: 1.0, pass: true, value: 0.76}
-  contextual_relevance: {score: 1.0, pass: true, value: 0.65}
-  temporal_proximity: {score: 1.0, pass: true, value: 0.20}
-  link_type_confidence: {score: 1.0, pass: true, type: "supports", confidence: 0.85}
-  no_conflicts: {score: 1.0, pass: true}
-  atomicity_verified: {score: 1.0, pass: true, source: 0.92, target: 0.88}
-  non_circular: {score: 1.0, pass: true}
-  strength_validity: {score: 1.0, pass: true, strength: 0.82, classification: "strong"}
-verdict: "HIGH CONFIDENCE - Approve link"
+  similarity_threshold: { score: 1.0, pass: true, value: 0.76 }
+  contextual_relevance: { score: 1.0, pass: true, value: 0.65 }
+  temporal_proximity: { score: 1.0, pass: true, value: 0.20 }
+  link_type_confidence: { score: 1.0, pass: true, type: 'supports', confidence: 0.85 }
+  no_conflicts: { score: 1.0, pass: true }
+  atomicity_verified: { score: 1.0, pass: true, source: 0.92, target: 0.88 }
+  non_circular: { score: 1.0, pass: true }
+  strength_validity: { score: 1.0, pass: true, strength: 0.82, classification: 'strong' }
+verdict: 'HIGH CONFIDENCE - Approve link'
 strength_components:
   semantic_similarity: 0.76
   contextual_relevance: 0.65
   temporal_proximity: 0.20
   final_strength: 0.82
-  classification: "strong"
+  classification: 'strong'
 ```
 
 ---
@@ -545,11 +572,13 @@ strength_components:
 ## Integration with Other Checklists
 
 **Linking Quality Checklist (linking-quality-checklist.md):**
+
 - Calls this checklist for tests 2 and 6 (strength and type validation)
 - Uses confidence scores to determine link quality
 - Shares atomicity verification (test 6)
 
 **Atomicity Checklist (atomicity-checklist.md):**
+
 - Used by test 6 to verify note atomicity
 - Both notes must score >= 0.7
 - Blocking failure if either note non-atomic

@@ -26,6 +26,7 @@ Different PKM tools support different workflows. Obsidian uses markdown files an
 The key is to build a system that reduces cognitive load rather than adding to it. The tool should disappear and let you focus on thinking.
 
 ## Expected Test Results
+
 - Single Claim Test: FAIL (4+ independent claims: PKM definition, memory theory, tool comparison, cognitive load)
 - Evidence Test: FAIL (memory science diverges from PKM systems, tool comparison is separate topic)
 - Self-Contained Test: BORDERLINE (some terms defined, others assumed)

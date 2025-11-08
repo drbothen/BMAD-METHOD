@@ -13,6 +13,7 @@ Active recall strengthens memory by forcing retrieval practice. Instead of passi
 ## Test Expectations
 
 **Expected atomicity analysis:**
+
 - is_atomic: borderline (could go either way)
 - score: 0.6-0.7 (borderline range)
 - building_block_type: concept or argument
@@ -21,6 +22,7 @@ Active recall strengthens memory by forcing retrieval practice. Instead of passi
 
 **Reasoning:**
 This is a borderline case because:
+
 - Two related but distinct concepts (spaced repetition vs active recall)
 - Could argue they're a single "learning technique" concept
 - Or could argue they're separate ideas requiring fragmentation
@@ -28,6 +30,7 @@ This is a borderline case because:
 
 **Fragmentation decision:**
 Should probably fragment into:
+
 1. "Spaced Repetition for Long-Term Retention" (concept)
 2. "Active Recall as Retrieval Practice" (concept)
 

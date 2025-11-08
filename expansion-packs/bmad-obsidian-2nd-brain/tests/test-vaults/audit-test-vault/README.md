@@ -1,6 +1,7 @@
 # Audit Test Vault
 
 This test vault is designed to validate the three review tasks:
+
 - `review-audit-temporal-freshness.md`
 - `review-validate-external-links.md`
 - `review-generate-audit-report.md`
@@ -18,6 +19,7 @@ The test vault should contain **1000 notes** with the following characteristics:
   - 50 notes: >730 days old (critical severity)
 
 **Importance Distribution:**
+
 - 20 stale notes with >10 incoming links (CRITICAL priority)
 - 50 stale notes with 5-10 incoming links (HIGH priority)
 - 80 stale notes with 2-5 incoming links (MEDIUM priority)
@@ -56,14 +58,17 @@ The test vault should contain **1000 notes** with the following characteristics:
 ### Link Graph Structure
 
 **Hub notes (high incoming link count):**
+
 - `notes/core-concepts/methodology.md` (15 incoming links)
 - `notes/core-concepts/framework.md` (12 incoming links)
 - `notes/core-concepts/workflow.md` (10 incoming links)
 
 **Connected notes (moderate links):**
+
 - 200 notes with 2-5 incoming links
 
 **Isolated notes:**
+
 - 10 orphaned notes (0 incoming/outgoing links)
 
 ## Directory Structure
@@ -83,6 +88,7 @@ audit-test-vault/
 ## Sample Notes
 
 ### Fresh Note (notes/projects/active-project.md)
+
 ```markdown
 ---
 title: Active Project
@@ -96,11 +102,13 @@ tags: [project, active]
 This is an active project note updated recently.
 
 Links:
+
 - [[methodology]]
 - [[framework]]
 ```
 
 ### Stale Critical Note (notes/core-concepts/methodology.md)
+
 ```markdown
 ---
 title: Methodology Framework
@@ -117,6 +125,7 @@ This is a critical knowledge hub with 15 incoming links.
 ```
 
 ### Note with External Links (notes/research/web-sources.md)
+
 ```markdown
 ---
 title: Web Research Sources
@@ -127,25 +136,31 @@ last_updated: 2025-10-15
 # Web Research Sources
 
 Working links:
+
 - [Example Domain](https://example.com)
 - [IANA Example Domain](https://www.iana.org/domains/example)
 
 Broken links:
+
 - [Missing Page](https://httpstat.us/404)
 - [Forbidden Resource](https://httpstat.us/403)
 
 Redirects:
+
 - [Moved Permanently](https://httpstat.us/301)
 
 Timeouts:
+
 - [Slow Server](https://httpstat.us/200?sleep=10000)
 
 Security blocked (should not be tested):
+
 - [Local Admin](http://localhost:8080/api)
 - [Private Network](http://192.168.1.1/admin)
 ```
 
 ### Orphaned Note (notes/archive/isolated-note.md)
+
 ```markdown
 ---
 title: Isolated Note
@@ -164,6 +179,7 @@ It's disconnected from the knowledge graph.
 ### Task 1: review-audit-temporal-freshness.md
 
 **Expected Output:**
+
 - `total_notes`: 1000
 - `stale_notes`: 200
 - `stale_ratio`: 0.20
@@ -171,6 +187,7 @@ It's disconnected from the knowledge graph.
 - `health_impact`: "medium"
 
 **Top Priority Stale Notes:**
+
 1. `notes/core-concepts/methodology.md` (priority_score: ~65, importance: 15)
 2. `notes/core-concepts/framework.md` (priority_score: ~48, importance: 12)
 3. `notes/core-concepts/workflow.md` (priority_score: ~40, importance: 10)
@@ -178,6 +195,7 @@ It's disconnected from the knowledge graph.
 ### Task 2: review-validate-external-links.md
 
 **Expected Output:**
+
 - `total_links`: 50 (limited by max_links parameter)
 - `success_count`: 25 (50%)
 - `broken_count`: 20 (40%)
@@ -186,11 +204,13 @@ It's disconnected from the knowledge graph.
 - `blocked_count`: 10 (SSRF prevention)
 
 **Expected Performance:**
+
 - Execution time: ~12-15 seconds (50 links at 5 req/sec rate limit)
 
 ### Task 3: review-generate-audit-report.md
 
 **Expected Output:**
+
 - `health_score`: ~68-72 (Fair)
   - Freshness: 80% → contributes 16 points (20% weight)
   - Links: 50% → contributes 7.5 points (15% weight)
@@ -203,6 +223,7 @@ It's disconnected from the knowledge graph.
   - MEDIUM: Link 10 orphaned notes
 
 **Report Location:**
+
 - `reports/audit-YYYY-MM-DD-HHMM.md`
 
 ## Test Execution
@@ -228,6 +249,7 @@ To manually test these tasks:
 ### Automated Testing
 
 Create unit tests using Node.js/Mocha or Jest:
+
 - `tests/unit/test-review-audit-freshness.js`
 - `tests/unit/test-review-validate-links.js`
 - `tests/unit/test-review-generate-report.js`
@@ -237,16 +259,19 @@ See `expansion-packs/bmad-obsidian-2nd-brain/tests/quality-auditor-test-plan.md`
 ## Performance Validation
 
 ### Task 1 Performance Targets
+
 - **1000 notes**: < 10 seconds
 - **10,000 notes**: < 60 seconds
 
 ### Task 2 Performance Targets
+
 - **50 links with rate limiting**: < 15 seconds
   - 50 links / 5 per sec = 10 batches
   - 10 batches × 1 sec wait = 10 seconds
   - Plus ~2-5 seconds for requests = 12-15 seconds total
 
 ### Task 3 Performance Targets
+
 - **Report generation**: < 5 seconds
   - Template loading: ~0.2s
   - Health score calculation: ~0.5s
@@ -256,7 +281,9 @@ See `expansion-packs/bmad-obsidian-2nd-brain/tests/quality-auditor-test-plan.md`
 ## Security Validation
 
 ### SSRF Prevention (Task 2)
+
 Verify these URLs are **blocked** and never sent to network:
+
 - ✓ `http://localhost:*`
 - ✓ `http://127.0.0.1/*`
 - ✓ `http://192.168.*.*/*`
@@ -264,13 +291,17 @@ Verify these URLs are **blocked** and never sent to network:
 - ✓ `http://172.16-31.*.*/*`
 
 ### Protocol Validation (Task 2)
+
 Verify these protocols are **blocked**:
+
 - ✓ `javascript:alert('XSS')`
 - ✓ `data:text/html,<script>...`
 - ✓ `file:///etc/passwd`
 
 ### Path Traversal Prevention (All Tasks)
+
 Verify these paths are **blocked**:
+
 - ✓ `/vault/../etc/passwd`
 - ✓ `C:\vault\..\Windows\System32`
 

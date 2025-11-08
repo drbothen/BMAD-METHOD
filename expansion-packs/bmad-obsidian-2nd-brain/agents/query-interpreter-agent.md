@@ -100,11 +100,13 @@ Before executing any query, classify the user's intent:
 **Pattern:** "What is X?", "Define X", "Explain X"
 
 **Strategy:**
+
 - Primary: Smart Connections semantic search (threshold 0.7)
 - Secondary: Obsidian text search for exact mentions
 - Format: List or narrative (if single comprehensive result)
 
 **Example:**
+
 ```
 User: "What is Zettelkasten?"
 Intent: factual
@@ -117,11 +119,13 @@ Format: list
 **Pattern:** "How has X evolved?", "When did I learn about X?", "Timeline of X"
 
 **Strategy:**
+
 - Primary: Neo4j Graphiti temporal queries (bi-temporal graph)
 - Fallback: Obsidian search sorted by file modification date
 - Format: Timeline
 
 **Example:**
+
 ```
 User: "How has my understanding of atomic notes evolved?"
 Intent: temporal
@@ -134,11 +138,13 @@ Format: timeline
 **Pattern:** "Why does X happen?", "What causes Y?", "How does X affect Y?"
 
 **Strategy:**
+
 - Primary: Neo4j relationship traversal (causal chains)
 - Secondary: Semantic search for related concepts
 - Format: Narrative
 
 **Example:**
+
 ```
 User: "Why do atomic notes improve recall?"
 Intent: causal
@@ -151,11 +157,13 @@ Format: narrative
 **Pattern:** "Compare X and Y", "Differences between X and Y", "X vs Y"
 
 **Strategy:**
+
 - Parallel queries for each subject
 - Merge results preserving source attribution
 - Format: Table
 
 **Example:**
+
 ```
 User: "Compare Zettelkasten and PARA methods"
 Intent: comparative
@@ -168,11 +176,13 @@ Format: table
 **Pattern:** "Show me everything about X", "What do I know about X?", "Explore X"
 
 **Strategy:**
+
 - Broad semantic search (lower threshold 0.5)
 - Include graph-connected notes
 - Format: List (categorized by relevance)
 
 **Example:**
+
 ```
 User: "Show me everything about productivity"
 Intent: exploratory
@@ -182,7 +192,7 @@ Format: list
 
 ## Command Implementations
 
-### *help
+### \*help
 
 Display available commands with descriptions:
 
@@ -190,6 +200,7 @@ Display available commands with descriptions:
 # Query Interpreter Commands
 
 **Query Execution:**
+
 1. `*query {question}` - Execute general natural language query
    - Example: `*query What is Zettelkasten?`
    - Auto-classifies intent and selects appropriate sources/format
@@ -206,26 +217,28 @@ Display available commands with descriptions:
    - Example: `*surface-related productivity`
    - Returns all related notes across sources
 
-**Settings:**
-5. `*yolo` - Toggle confirmation mode (on by default)
-   - When on: Skip confirmations, auto-execute queries
-   - When off: Confirm before executing each query
+**Settings:** 5. `*yolo` - Toggle confirmation mode (on by default)
+
+- When on: Skip confirmations, auto-execute queries
+- When off: Confirm before executing each query
 
 6. `*exit` - Exit Query Interpreter mode
 
 **Current Status:**
+
 - Available sources: {{sources_status}}
 - Performance budget: <3 seconds per query
 - Yolo mode: {{yolo_mode_status}}
 ```
 
-### *query {natural_language_question}
+### \*query {natural_language_question}
 
 Execute general natural language query with automatic intent classification:
 
 **Workflow:**
 
 1. **Parse and Classify**
+
    ```
    Load: parse-natural-language-query.md
    Input: user's natural language question
@@ -241,6 +254,7 @@ Execute general natural language query with automatic intent classification:
    ```
 
 2. **Handle Ambiguity**
+
    ```
    If confidence < 0.70:
      Present clarification options to user:
@@ -253,6 +267,7 @@ Execute general natural language query with automatic intent classification:
    ```
 
 3. **Execute Multi-Source Query**
+
    ```
    Based on intent, execute appropriate source queries:
 
@@ -276,6 +291,7 @@ Execute general natural language query with automatic intent classification:
    ```
 
 4. **Merge Results**
+
    ```
    Load: merge-results.md
    Input: results from all sources
@@ -292,6 +308,7 @@ Execute general natural language query with automatic intent classification:
    ```
 
 5. **Format and Present**
+
    ```
    Load: query-result-tmpl.yaml
    Select format based on intent:
@@ -366,13 +383,14 @@ Contradictions: None detected
 - Try `*temporal-query Zettelkasten` to see how concept evolved
 ```
 
-### *temporal-query {concept} [date_range]
+### \*temporal-query {concept} [date_range]
 
 Execute temporal evolution query:
 
 **Workflow:**
 
 1. **Parse Parameters**
+
    ```
    concept: extract from user input
    start_date: parse from date_range or default to "vault creation date"
@@ -380,6 +398,7 @@ Execute temporal evolution query:
    ```
 
 2. **Execute Neo4j Temporal Query**
+
    ```
    Load: execute-neo4j-query.md
    Execute: temporal_evolution_query(concept, start_date, end_date)
@@ -419,19 +438,21 @@ User: *temporal-query atomic notes since 2024-01
 [... more timeline entries ...]
 ```
 
-### *compare {subject1} vs {subject2}
+### \*compare {subject1} vs {subject2}
 
 Execute comparative query:
 
 **Workflow:**
 
 1. **Parse Subjects**
+
    ```
    Split on "vs", "versus", "and", ","
    subjects: ["Zettelkasten", "PARA"]
    ```
 
 2. **Execute Parallel Queries**
+
    ```
    Load: execute-obsidian-query.md
    For each subject:
@@ -475,13 +496,14 @@ User: *compare Zettelkasten vs PARA
   - System organizing information by actionability...
 ```
 
-### *surface-related {concept}
+### \*surface-related {concept}
 
 Execute broad exploratory query:
 
 **Workflow:**
 
 1. **Execute Broad Search**
+
    ```
    Load: execute-obsidian-query.md
    Semantic search with lower threshold (0.5)
@@ -493,6 +515,7 @@ Execute broad exploratory query:
    ```
 
 2. **Categorize by Relevance**
+
    ```
    Load: merge-results.md
    Group results:
@@ -534,11 +557,12 @@ User: *surface-related productivity
 [...]
 ```
 
-### *yolo
+### \*yolo
 
 Toggle Yolo Mode (skip confirmations):
 
 **State Management:**
+
 ```
 yolo_mode = !yolo_mode
 
@@ -553,7 +577,7 @@ If yolo_mode == false:
 
 **Default:** Yolo Mode is OFF (confirmations required)
 
-### *exit
+### \*exit
 
 Exit Query Interpreter mode:
 
@@ -604,6 +628,7 @@ if (total_duration > 3000) {
 Provide informative errors and graceful degradation:
 
 ### No Results Found
+
 ```
 "No notes found matching '[query]'. Try:
 - Broadening your search terms
@@ -612,6 +637,7 @@ Provide informative errors and graceful degradation:
 ```
 
 ### MCP Server Unavailable
+
 ```
 "⚠️ Smart Connections unavailable. Falling back to text search only.
 Semantic search disabled - results may be less relevant.
@@ -620,6 +646,7 @@ To enable: Install Smart Connections plugin in Obsidian and restart Claude Deskt
 ```
 
 ### All Sources Failed
+
 ```
 "❌ All data sources unavailable. Please check:
 1. Obsidian MCP Tools configuration
@@ -630,6 +657,7 @@ Cannot execute queries without at least one source."
 ```
 
 ### Query Timeout
+
 ```
 "⏱️ Query timed out after 3 seconds. Try:
 - Simplifying your query
@@ -642,16 +670,19 @@ Cannot execute queries without at least one source."
 Follow security-guidelines.md for all input validation:
 
 **Input Validation:**
+
 - Query text: Max 500 chars, strip dangerous content (<script>, eval, etc.)
 - Concept/term: Remove special chars, max 100 chars
 - Date: Validate format, must be reasonable (1900-now)
 - Similarity threshold: Must be number in [0.0, 1.0]
 
 **Cypher Injection Prevention:**
+
 - ALWAYS use parameterized queries in Neo4j
 - NEVER concatenate user input into Cypher strings
 
 **Path Validation:**
+
 - Block directory traversal (../)
 - Block absolute paths outside vault
 - Only allow .md files

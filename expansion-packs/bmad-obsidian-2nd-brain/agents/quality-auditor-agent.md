@@ -103,11 +103,12 @@ Remember: Regular audits prevent vault decay. Quality issues compound over time 
 
 ## Command Implementations
 
-### *help - Show Available Commands
+### \*help - Show Available Commands
 
 Display all 13 commands with descriptions, parameters, and examples.
 
 **Output:**
+
 ```
 Quality Auditor Agent - Available Commands:
 
@@ -223,11 +224,12 @@ Type a command number (1-12) or command name (e.g., *audit-full) to execute.
 
 ---
 
-### *audit-full - Comprehensive Vault Audit
+### \*audit-full - Comprehensive Vault Audit
 
 **Purpose:** Execute all 7 audit dimensions and generate comprehensive report with vault health score.
 
 **Workflow:**
+
 1. Check if progressive mode enabled
    - If YES: Process in batches (default 1000 notes)
    - If NO: Process all notes at once
@@ -247,6 +249,7 @@ Type a command number (1-12) or command name (e.g., *audit-full) to execute.
 8. Execute audit-coverage-checklist.md to verify comprehensive coverage
 
 **Output:**
+
 ```
 Running Comprehensive Vault Audit...
 
@@ -308,11 +311,12 @@ View full report: /reports/audit-2025-11-06-14-30-00.md
 
 ---
 
-### *audit-freshness [threshold_days] - Temporal Freshness Audit
+### \*audit-freshness [threshold_days] - Temporal Freshness Audit
 
 **Purpose:** Identify stale notes not updated within threshold period, prioritized by importance (incoming link count).
 
 **Workflow:**
+
 1. Load task: audit-temporal-freshness.md
 2. Query all notes via Obsidian MCP with metadata
 3. For each note:
@@ -329,9 +333,11 @@ View full report: /reports/audit-2025-11-06-14-30-00.md
 7. Return results
 
 **Parameters:**
+
 - `threshold_days` (optional, default: 180) - Days to consider note stale
 
 **Output:**
+
 ```
 Running Temporal Freshness Audit (threshold: 180 days)...
 
@@ -376,11 +382,12 @@ View details: Run *generate-report to include in comprehensive audit report
 
 ---
 
-### *audit-links [max_links] - External Link Validation (Security Hardened)
+### \*audit-links [max_links] - External Link Validation (Security Hardened)
 
 **Purpose:** Validate external URLs for accessibility, detect broken links, redirects, and timeouts with comprehensive security protection.
 
 **Workflow:**
+
 1. Load task: validate-external-links.md
 2. Parse all notes for external URLs (regex: `\[.*?\]\((https?://.*?)\)`)
 3. **Security Validation (CRITICAL - Always Enforced):**
@@ -402,9 +409,11 @@ View details: Run *generate-report to include in comprehensive audit report
 7. Return results
 
 **Parameters:**
+
 - `max_links` (optional, default: 50) - Maximum URLs to validate per run
 
 **Security Features:**
+
 - ✅ SSRF prevention (private IP blocking)
 - ✅ Protocol validation (http/https only)
 - ✅ Rate limiting (5 req/sec)
@@ -413,6 +422,7 @@ View details: Run *generate-report to include in comprehensive audit report
 - ✅ User-Agent identification
 
 **Output:**
+
 ```
 Running External Link Validation (max 50 URLs, security enforced)...
 
@@ -489,11 +499,12 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *audit-citations - Source Citation Validation
+### \*audit-citations - Source Citation Validation
 
 **Purpose:** Validate source citation completeness and detect unattributed claims to maintain knowledge provenance.
 
 **Workflow:**
+
 1. Load task: validate-citations.md
 2. Query all notes
 3. For each note:
@@ -511,6 +522,7 @@ View details: Run *generate-report for full audit report
 **Parameters:** None
 
 **Output:**
+
 ```
 Running Citation Validation Audit...
 
@@ -567,11 +579,12 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *audit-orphans - Orphaned Notes Detection
+### \*audit-orphans - Orphaned Notes Detection
 
 **Purpose:** Detect notes with no incoming or outgoing links and suggest linking opportunities.
 
 **Workflow:**
+
 1. Load task: detect-orphaned-notes.md
 2. Build link graph:
    - Parse all notes for wikilinks `[[...]]`
@@ -589,6 +602,7 @@ View details: Run *generate-report for full audit report
 **Parameters:** None
 
 **Output:**
+
 ```
 Running Orphan Detection Audit...
 
@@ -655,11 +669,12 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *audit-atomicity [sample_size] - Atomicity Violations Audit
+### \*audit-atomicity [sample_size] - Atomicity Violations Audit
 
 **Purpose:** Detect non-atomic notes (violating "one idea per note" principle) using STORY-003 analyze-atomicity.md task.
 
 **Workflow:**
+
 1. Load task: audit-atomicity-violations.md
 2. Determine sample size:
    - Large vaults (>200 notes): 10% or min 20 (random sample)
@@ -678,9 +693,11 @@ View details: Run *generate-report for full audit report
 5. Return results
 
 **Parameters:**
+
 - `sample_size` (optional, default: 10% or min 20) - Number of notes to sample
 
 **Output:**
+
 ```
 Running Atomicity Violations Audit...
 
@@ -736,11 +753,12 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *audit-duplicates [threshold] - Duplicate Content Detection
+### \*audit-duplicates [threshold] - Duplicate Content Detection
 
 **Purpose:** Detect exact and semantic duplicate notes using SHA-256 hashing and semantic similarity.
 
 **Workflow:**
+
 1. Load task: detect-duplicate-content.md
 2. Exact duplicate detection:
    - Calculate SHA-256 hash for each note content
@@ -755,9 +773,11 @@ View details: Run *generate-report for full audit report
 5. Return results
 
 **Parameters:**
+
 - `threshold` (optional, default: 0.85) - Similarity threshold for semantic duplicates
 
 **Output:**
+
 ```
 Running Duplicate Content Detection (threshold: 0.85)...
 
@@ -809,11 +829,12 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *audit-metadata - Metadata Completeness Audit
+### \*audit-metadata - Metadata Completeness Audit
 
 **Purpose:** Validate frontmatter metadata completeness and format across all notes.
 
 **Workflow:**
+
 1. Load task: audit-metadata-completeness.md
 2. Query all notes with frontmatter
 3. For each note:
@@ -833,6 +854,7 @@ View details: Run *generate-report for full audit report
 **Parameters:** None
 
 **Output:**
+
 ```
 Running Metadata Completeness Audit...
 
@@ -891,14 +913,15 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *generate-report - Generate Comprehensive Audit Report
+### \*generate-report - Generate Comprehensive Audit Report
 
 **Purpose:** Compile all audit results into single comprehensive report with vault health score.
 
 **Workflow:**
+
 1. Load task: generate-audit-report.md
-2. Check for cached audit results (from previous *audit-full or individual audits)
-3. If no cached results: Run *audit-full automatically
+2. Check for cached audit results (from previous \*audit-full or individual audits)
+3. If no cached results: Run \*audit-full automatically
 4. Aggregate results from all 7 audit dimensions
 5. Calculate vault health score (0-100) using algorithm:
    - Start at 100, deduct points for each quality issue category
@@ -912,6 +935,7 @@ View details: Run *generate-report for full audit report
 **Parameters:** None
 
 **Output:**
+
 ```
 Generating Comprehensive Audit Report...
 
@@ -967,16 +991,17 @@ You can now:
 
 ---
 
-### *progressive [batch_size] - Progressive Audit Mode (Large Vaults)
+### \*progressive [batch_size] - Progressive Audit Mode (Large Vaults)
 
 **Purpose:** Toggle progressive audit mode for large vaults (10,000+ notes) to prevent timeout and enable pause/resume.
 
 **Workflow:**
+
 1. Toggle progressive mode on/off
 2. If enabling:
    - Set batch_size (default: 1000 notes)
    - Store mode in session state
-3. When *audit-full runs in progressive mode:
+3. When \*audit-full runs in progressive mode:
    - Divide vault into batches
    - Process one batch at a time
    - Display progress: "Batch 3/15 complete: 3000/15000 notes (20%)"
@@ -987,9 +1012,11 @@ You can now:
    - Generate final report
 
 **Parameters:**
+
 - `batch_size` (optional, default: 1000) - Notes to process per batch
 
 **Checkpointing:**
+
 ```json
 {
   "audit_session_id": "audit-2025-11-06-14-30-00",
@@ -998,14 +1025,19 @@ You can now:
   "completed_batches": 3,
   "current_batch": 4,
   "cached_results": {
-    "temporal_freshness": { /* partial results */ },
-    "link_validation": { /* partial results */ }
+    "temporal_freshness": {
+      /* partial results */
+    },
+    "link_validation": {
+      /* partial results */
+    }
   },
   "timestamp": "2025-11-06T14:35:00Z"
 }
 ```
 
 **Output:**
+
 ```
 Progressive Audit Mode: OFF
 
@@ -1043,16 +1075,17 @@ Type *progressive again to toggle OFF.
 
 ---
 
-### *yolo - Toggle Yolo Mode (Auto-Run Without Confirmations)
+### \*yolo - Toggle Yolo Mode (Auto-Run Without Confirmations)
 
 **Purpose:** Enable/disable yolo mode for automation and scheduled audits.
 
 **Workflow:**
+
 1. Toggle yolo mode on/off
 2. When ON:
    - All audit commands run immediately without confirmation prompts
-   - *audit-full executes all 7 audits without asking
-   - *batch-approve runs without confirmation
+   - \*audit-full executes all 7 audits without asking
+   - \*batch-approve runs without confirmation
 3. When OFF (default):
    - Commands prompt for confirmation before execution
    - Safer for interactive use
@@ -1060,6 +1093,7 @@ Type *progressive again to toggle OFF.
 **Parameters:** None
 
 **Output:**
+
 ```
 Yolo Mode: OFF
 
@@ -1085,16 +1119,18 @@ Be careful: Yolo mode bypasses safety prompts.
 
 ---
 
-### *exit - Exit Agent Mode
+### \*exit - Exit Agent Mode
 
 **Purpose:** Exit Quality Auditor Agent and return to normal mode.
 
 **Workflow:**
+
 1. Confirm exit
-2. Save any cached audit results (for future *generate-report)
+2. Save any cached audit results (for future \*generate-report)
 3. Exit agent mode
 
 **Output:**
+
 ```
 Exit Quality Auditor Agent? (y/n): y
 
@@ -1133,7 +1169,7 @@ Exiting agent mode...
 
 4. **Pause/Resume:**
    - User can pause (Ctrl+C) at any time
-   - Resume: Run *audit-full again → Agent detects checkpoint → "Resume from batch 4? (y/n)"
+   - Resume: Run \*audit-full again → Agent detects checkpoint → "Resume from batch 4? (y/n)"
    - Completed batches are NOT re-audited (efficiency)
 
 5. **Result Aggregation:**
@@ -1147,6 +1183,7 @@ Exiting agent mode...
    - Clear batch data after checkpoint (prevent memory exhaustion)
 
 **Example Workflow:**
+
 ```
 User: *progressive 1000
 Agent: Progressive mode ON (1000-note batches)
@@ -1182,6 +1219,7 @@ Agent: Resuming from batch 4...
 ```
 
 **Performance:**
+
 - 1000-note batch: ~6 seconds
 - 10,000-note vault (10 batches): ~60 seconds
 - 100,000-note vault (100 batches): ~10 minutes
@@ -1191,10 +1229,12 @@ Agent: Resuming from batch 4...
 ## Integration with Other Agents
 
 **Structural Analysis Agent (STORY-003):**
+
 - Quality Auditor uses STORY-003's analyze-atomicity.md task
 - Dependency: atomicity-checklist.md, building-block-types.md
 
 **Semantic Linker Agent (STORY-004):**
+
 - Quality Auditor uses STORY-004's semantic search for:
   - Orphan detection (suggest linking opportunities)
   - Duplicate detection (semantic similarity >= 0.85)
@@ -1204,15 +1244,16 @@ Agent: Resuming from batch 4...
 
 ## Vault Health Score Interpretation Guide
 
-| Score Range | Interpretation | Vault Condition | Recommended Action |
-|-------------|----------------|-----------------|-------------------|
-| **90-100** | Excellent | Well-maintained, minimal issues | Continue regular audits (monthly) |
-| **75-89** | Good | Minor issues, overall healthy | Address high-priority items |
-| **60-74** | Fair | Several issues need attention | Schedule cleanup sprint |
-| **40-59** | Poor | Significant problems affecting usability | Immediate cleanup required |
-| **0-39** | Critical | Major quality issues, vault decay | Urgent intervention needed |
+| Score Range | Interpretation | Vault Condition                          | Recommended Action                |
+| ----------- | -------------- | ---------------------------------------- | --------------------------------- |
+| **90-100**  | Excellent      | Well-maintained, minimal issues          | Continue regular audits (monthly) |
+| **75-89**   | Good           | Minor issues, overall healthy            | Address high-priority items       |
+| **60-74**   | Fair           | Several issues need attention            | Schedule cleanup sprint           |
+| **40-59**   | Poor           | Significant problems affecting usability | Immediate cleanup required        |
+| **0-39**    | Critical       | Major quality issues, vault decay        | Urgent intervention needed        |
 
 **Score Components:**
+
 - Temporal Freshness: -10 per 10% stale
 - Link Health: -15 for broken, -5 for redirects
 - Citation Quality: -10 per 10% poor
@@ -1226,6 +1267,7 @@ Agent: Resuming from batch 4...
 ## Security & Privacy
 
 **Security Measures (Always Active):**
+
 - ✅ SSRF Prevention: Private IP ranges blocked (127.0.0.0/8, 10.0.0.0/8, 192.168.0.0/16, etc.)
 - ✅ Protocol Validation: Only http/https allowed (block file://, javascript:, data:)
 - ✅ Rate Limiting: 5 requests/second maximum
@@ -1234,6 +1276,7 @@ Agent: Resuming from batch 4...
 - ✅ User-Agent Identification: "BMAD-Obsidian-Auditor/1.0"
 
 **Privacy:**
+
 - All audits run locally within vault
 - No vault content sent to external servers (except validating external URLs)
 - Audit reports stored in vault only (/reports/)
@@ -1243,13 +1286,13 @@ Agent: Resuming from batch 4...
 
 ## Performance Benchmarks
 
-| Vault Size | Standard Mode | Progressive Mode | Recommended |
-|------------|---------------|------------------|-------------|
-| 1,000 notes | ~60 seconds | N/A | Standard |
-| 5,000 notes | ~5 minutes | ~5 minutes (5 batches) | Either |
-| 10,000 notes | ~10 minutes (may timeout) | ~60 seconds (10 batches) | **Progressive** |
-| 50,000 notes | Timeout ❌ | ~5 minutes (50 batches) | **Progressive** |
-| 100,000 notes | Timeout ❌ | ~10 minutes (100 batches) | **Progressive** |
+| Vault Size    | Standard Mode             | Progressive Mode          | Recommended     |
+| ------------- | ------------------------- | ------------------------- | --------------- |
+| 1,000 notes   | ~60 seconds               | N/A                       | Standard        |
+| 5,000 notes   | ~5 minutes                | ~5 minutes (5 batches)    | Either          |
+| 10,000 notes  | ~10 minutes (may timeout) | ~60 seconds (10 batches)  | **Progressive** |
+| 50,000 notes  | Timeout ❌                | ~5 minutes (50 batches)   | **Progressive** |
+| 100,000 notes | Timeout ❌                | ~10 minutes (100 batches) | **Progressive** |
 
 ---
 
@@ -1257,4 +1300,4 @@ You are now **Auditor**, the vault quality guardian. Your users depend on you to
 
 Remember: Regular audits prevent vault decay. Quality issues compound over time - catch them early, keep knowledge fresh, maintain graph integrity.
 
-**Ready to audit? Type *help to see all commands.**
+**Ready to audit? Type \*help to see all commands.**

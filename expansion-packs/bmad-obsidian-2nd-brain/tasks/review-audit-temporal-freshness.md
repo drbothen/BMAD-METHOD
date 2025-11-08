@@ -180,11 +180,13 @@ Audit vault notes for temporal freshness by identifying notes that haven't been 
 - **Large vaults (100,000 notes)**: Progressive mode required (batched processing)
 
 **Breakdown:**
+
 - Query time: ~2-5 seconds for 1,000 notes
 - Processing time: ~5-8 seconds for 1,000 notes
 - Sorting/formatting: ~1 second for 1,000 notes
 
 **Optimization strategies:**
+
 - Cache link graph if multiple audits run in session
 - Use parallel processing for note analysis (if MCP supports async)
 - Early exit for vaults with no stale notes
@@ -196,6 +198,7 @@ Audit vault notes for temporal freshness by identifying notes that haven't been 
 **Condition:** Vault contains 0 notes or all notes filtered out
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -216,6 +219,7 @@ Audit vault notes for temporal freshness by identifying notes that haven't been 
 **Condition:** All notes are fresh (within threshold)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -236,6 +240,7 @@ Audit vault notes for temporal freshness by identifying notes that haven't been 
 **Condition:** Obsidian MCP server unavailable or connection timeout
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -249,6 +254,7 @@ Audit vault notes for temporal freshness by identifying notes that haven't been 
 **Condition:** Note lacks `last_updated` metadata
 
 **Handling:**
+
 - Log warning: "Note lacks last_updated metadata, using file system timestamp"
 - Use file system modified time as fallback
 - Continue processing (non-blocking error)
@@ -259,6 +265,7 @@ Audit vault notes for temporal freshness by identifying notes that haven't been 
 **Condition:** Path doesn't exist, contains traversal, or outside allowed directories
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -272,6 +279,7 @@ Audit vault notes for temporal freshness by identifying notes that haven't been 
 **Condition:** Vault contains >100,000 notes
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -285,12 +293,14 @@ Audit vault notes for temporal freshness by identifying notes that haven't been 
 ### Example 1: Basic Freshness Audit
 
 **Input:**
+
 ```yaml
-vault_path: "/Users/john/Documents/ObsidianVault"
+vault_path: '/Users/john/Documents/ObsidianVault'
 freshness_threshold_days: 180
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,
@@ -317,7 +327,7 @@ freshness_threshold_days: 180
   "metrics": {
     "total_notes": 1000,
     "stale_notes": 200,
-    "stale_ratio": 0.20,
+    "stale_ratio": 0.2,
     "avg_staleness": 245.5,
     "health_impact": "medium"
   },
@@ -332,12 +342,14 @@ freshness_threshold_days: 180
 ### Example 2: Strict Threshold (90 days)
 
 **Input:**
+
 ```yaml
-vault_path: "/Users/john/Documents/ObsidianVault"
+vault_path: '/Users/john/Documents/ObsidianVault'
 freshness_threshold_days: 90
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,

@@ -18,6 +18,7 @@ violations:
 I've been thinking about how to take better notes. The main issue I've noticed is that my notes are too scattered and I can't find things later.
 
 Some ideas:
+
 - Use consistent tags
 - Write in my own words instead of copying quotes
 - Link related notes together
@@ -30,6 +31,7 @@ Also considering whether to use folders or tags for organization. Tags seem more
 The key is probably to just start and iterate. Perfect is the enemy of good.
 
 ## Expected Test Results
+
 - Single Claim Test: FAIL (multiple unrelated ideas: scattered notes, tagging, folders vs tags, perfect is enemy of good)
 - Evidence Test: FAIL (no cohesive argument, just random observations)
 - Self-Contained Test: PASS (no undefined terms)

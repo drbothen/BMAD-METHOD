@@ -270,6 +270,7 @@ A relationship where Note A describes a broader, more abstract principle, patter
 **Relationship to SPECIALIZES:**
 
 GENERALIZES and SPECIALIZES are inverse relationships:
+
 - If "A GENERALIZES B", then "B SPECIALIZES A"
 - Always create both directions explicitly for clarity
 
@@ -325,6 +326,7 @@ A relationship where Note A describes a specific, concrete instance, implementat
 **Relationship to GENERALIZES:**
 
 SPECIALIZES and GENERALIZES are inverse relationships:
+
 - If "A SPECIALIZES B", then "B GENERALIZES A"
 - Both directions should be created explicitly
 
@@ -463,14 +465,17 @@ For each type, confidence score determines acceptance:
 ### Signal Strength Examples
 
 **SUPPORTS - High Confidence:**
+
 - "Meta-analysis of 317 studies confirms..."
 - "Controlled experiment demonstrated..."
 
 **SUPPORTS - Medium Confidence:**
+
 - "Several examples suggest..."
 - "Anecdotal evidence indicates..."
 
 **SUPPORTS - Low Confidence:**
+
 - "Someone mentioned that..."
 - "It seems related to..."
 
@@ -497,7 +502,7 @@ For each type, confidence score determines acceptance:
 ### For Users
 
 1. **Manual Linking**
-   - Use *create-link command with explicit type
+   - Use \*create-link command with explicit type
    - Refer to this taxonomy for type selection
    - Check "When NOT to Use" to avoid misclassification
 
@@ -511,6 +516,6 @@ For each type, confidence score determines acceptance:
 ## References
 
 - Source: `/manuscripts/bmad-obsidian-2nd-brain-requirements.md` (lines 3806-3813)
-- Luhmann, N. (1992). *Communicating with Slip Boxes*
-- Ahrens, S. (2017). *How to Take Smart Notes*
-- Sowa, J. F. (2000). *Knowledge Representation: Logical, Philosophical, and Computational Foundations*
+- Luhmann, N. (1992). _Communicating with Slip Boxes_
+- Ahrens, S. (2017). _How to Take Smart Notes_
+- Sowa, J. F. (2000). _Knowledge Representation: Logical, Philosophical, and Computational Foundations_

@@ -62,6 +62,7 @@ Generate a comprehensive vault health audit report by aggregating results from m
 Use weighted formula to calculate overall health:
 
 **Weights:**
+
 - Freshness: 20%
 - Links: 15%
 - Orphans: 15%
@@ -71,6 +72,7 @@ Use weighted formula to calculate overall health:
 - Metadata: 10%
 
 **Calculation for each dimension:**
+
 - **Freshness**: `(1 - stale_notes_ratio) * 20`
 - **Links**: `(1 - broken_links_ratio) * 15`
 - **Orphans**: `(1 - orphan_ratio) * 15`
@@ -82,6 +84,7 @@ Use weighted formula to calculate overall health:
 **Total health_score**: Sum all dimension scores (0-100 scale)
 
 **Handle missing dimensions:**
+
 - If dimension is missing/null, redistribute weight proportionally to present dimensions
 - Minimum required: freshness + links (35% of total weight)
 
@@ -89,19 +92,20 @@ Use weighted formula to calculate overall health:
 
 Map numeric score to qualitative interpretation:
 
-| Score Range | Interpretation | Description |
-|-------------|----------------|-------------|
-| 90-100 | Excellent | Vault is well-maintained with minimal issues |
-| 75-89 | Good | Vault is healthy with some minor improvements needed |
-| 60-74 | Fair | Moderate attention required in several areas |
-| 40-59 | Poor | Significant maintenance needed across multiple dimensions |
-| 0-39 | Critical | Immediate action required to restore vault health |
+| Score Range | Interpretation | Description                                               |
+| ----------- | -------------- | --------------------------------------------------------- |
+| 90-100      | Excellent      | Vault is well-maintained with minimal issues              |
+| 75-89       | Good           | Vault is healthy with some minor improvements needed      |
+| 60-74       | Fair           | Moderate attention required in several areas              |
+| 40-59       | Poor           | Significant maintenance needed across multiple dimensions |
+| 0-39        | Critical       | Immediate action required to restore vault health         |
 
 Store `health_interpretation` for report.
 
 ### Step 5: Generate Executive Summary
 
 Create 3-5 sentence summary highlighting:
+
 - Current health score and interpretation
 - Total notes analyzed
 - Key issues count (stale notes, broken links, orphans)
@@ -109,11 +113,13 @@ Create 3-5 sentence summary highlighting:
 - Timestamp of audit execution
 
 **Example:**
+
 > "Vault health assessment completed on 2025-11-06T14:30:00Z. Overall health score: 68.5/100 (Fair). Analyzed 1,245 notes and identified 187 stale notes (15%), 34 broken external links (22% failure rate), and 12 orphaned notes. Recommended action: Prioritize updating 25 high-importance stale notes and fixing broken links in reference sections."
 
 ### Step 6: Format Freshness Issues as Prioritized Table
 
 Create markdown table with columns:
+
 - Note Path
 - Last Updated
 - Days Stale
@@ -124,11 +130,12 @@ Create markdown table with columns:
 Sort by priority_score (descending). Limit to top 20 critical issues.
 
 **Example:**
+
 ```markdown
-| Note Path | Last Updated | Days Stale | Importance | Priority Score | Severity |
-|-----------|--------------|------------|------------|----------------|----------|
-| core/methodology.md | 2024-03-15 | 236 | 15 | 19.65 | high |
-| concepts/workflow.md | 2024-01-20 | 291 | 12 | 19.40 | high |
+| Note Path            | Last Updated | Days Stale | Importance | Priority Score | Severity |
+| -------------------- | ------------ | ---------- | ---------- | -------------- | -------- |
+| core/methodology.md  | 2024-03-15   | 236        | 15         | 19.65          | high     |
+| concepts/workflow.md | 2024-01-20   | 291        | 12         | 19.40          | high     |
 ```
 
 ### Step 7: Group Link Validation Issues by Type
@@ -148,6 +155,7 @@ Show count per category and top 10 examples per type.
 ### Step 8: List Orphaned Notes with Suggested Linking Opportunities
 
 For each orphaned note:
+
 - Show note path and title
 - Use semantic search to find related notes (if available)
 - Suggest 3-5 potential linking opportunities based on content similarity
@@ -158,6 +166,7 @@ For each orphaned note:
 ### Step 9: Summarize Atomicity Violations (if available)
 
 If `audit_results.atomicity` exists:
+
 - Count total violations
 - Group by violation type:
   - Multi-concept notes (contains >1 core concept)
@@ -168,6 +177,7 @@ If `audit_results.atomicity` exists:
 ### Step 10: Summarize Duplicate Detection Results (if available)
 
 If `audit_results.duplicates` exists:
+
 - Count total duplicate clusters
 - Show similarity threshold used
 - List top duplicate clusters (>80% similarity)
@@ -178,25 +188,30 @@ If `audit_results.duplicates` exists:
 Generate prioritized action items based on health score and dimension results:
 
 **Critical Actions (health_score < 40):**
+
 - "Immediate attention required: Vault health is critical"
 - Specific high-impact fixes
 
 **High Priority Actions:**
+
 - Fix broken links (if broken_count > 10)
 - Update critical stale notes (if priority_score > 50)
 - Resolve major atomicity violations (if >20 violations)
 
 **Medium Priority Actions:**
+
 - Link orphaned notes (if orphan_count > 5)
 - Clean up duplicate content (if duplicate_ratio > 0.10)
 - Complete missing metadata (if metadata_completeness < 0.70)
 
 **Low Priority Actions:**
+
 - Update low-importance stale notes
 - Fix redirects (informational, not broken)
 - Minor formatting improvements
 
 Each action item includes:
+
 - `priority`: critical/high/medium/low
 - `category`: Audit dimension
 - `action`: Specific recommended action
@@ -205,6 +220,7 @@ Each action item includes:
 ### Step 12: Populate Report Template with All Sections
 
 Replace template variables with calculated values:
+
 - `{{timestamp}}`: Current ISO 8601 timestamp
 - `{{health_score}}`: Calculated health score (e.g., "68.5")
 - `{{health_interpretation}}`: Excellent/Good/Fair/Poor/Critical
@@ -233,6 +249,7 @@ Ensure all sections properly formatted with markdown.
 ### Step 14: Return Report Metadata and Success Status
 
 Return object containing:
+
 - `report_note_path`: Full path to created report
 - `health_score`: Calculated score (0-100)
 - `health_interpretation`: Qualitative interpretation
@@ -283,6 +300,7 @@ Return object containing:
   - Total: ~3-5 seconds
 
 **Optimization strategies:**
+
 - Cache template after first load (reuse for multiple reports in session)
 - Pre-calculate dimension scores in audit tasks (avoid re-computation)
 - Limit table sizes (top 20 items per section, not full lists)
@@ -295,6 +313,7 @@ Return object containing:
 **Condition:** audit-report-tmpl.yaml doesn't exist at expected path
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -308,6 +327,7 @@ Return object containing:
 **Condition:** Cannot create note in vault (permissions, disk space, MCP error)
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -321,6 +341,7 @@ Return object containing:
 **Condition:** audit_results missing required dimensions (freshness or links)
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -334,6 +355,7 @@ Return object containing:
 **Condition:** vault_path doesn't exist or contains traversal
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -347,6 +369,7 @@ Return object containing:
 **Condition:** Generated report exceeds 1MB
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -363,6 +386,7 @@ Return object containing:
 ### Example 1: Full Audit Report with All Dimensions
 
 **Input:**
+
 ```yaml
 audit_results:
   freshness:
@@ -397,6 +421,7 @@ output_path: null  # Use default timestamp-based path
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,
@@ -439,9 +464,11 @@ output_path: null  # Use default timestamp-based path
 ```
 
 **Generated Report Preview:**
+
 ```markdown
 # Vault Audit Report
-*Generated: 2025-11-06T14:30:00Z*
+
+_Generated: 2025-11-06T14:30:00Z_
 
 ## Executive Summary
 
@@ -449,33 +476,36 @@ Vault health assessment completed on 2025-11-06T14:30:00Z. Overall health score:
 
 ## Health Score: 73.2/100 (Fair)
 
-| Dimension | Score | Weight | Contribution |
-|-----------|-------|--------|--------------|
-| Freshness | 85.0 | 20% | 17.0 |
-| Links | 78.2 | 15% | 11.7 |
-| Orphans | 99.0 | 15% | 14.9 |
-| Atomicity | 85.0 | 20% | 17.0 |
-| Duplicates | 95.0 | 10% | 9.5 |
-| Citations | 78.0 | 10% | 7.8 |
-| Metadata | 92.0 | 10% | 9.2 |
-| **Total** | | **100%** | **73.2** |
+| Dimension  | Score | Weight   | Contribution |
+| ---------- | ----- | -------- | ------------ |
+| Freshness  | 85.0  | 20%      | 17.0         |
+| Links      | 78.2  | 15%      | 11.7         |
+| Orphans    | 99.0  | 15%      | 14.9         |
+| Atomicity  | 85.0  | 20%      | 17.0         |
+| Duplicates | 95.0  | 10%      | 9.5          |
+| Citations  | 78.0  | 10%      | 7.8          |
+| Metadata   | 92.0  | 10%      | 9.2          |
+| **Total**  |       | **100%** | **73.2**     |
 
 ## Freshness Issues (Top 20 by Priority)
 
-| Note Path | Last Updated | Days Stale | Importance | Priority Score | Severity |
-|-----------|--------------|------------|------------|----------------|----------|
-| core/methodology.md | 2024-03-15 | 236 | 15 | 19.65 | high |
-| concepts/workflow.md | 2024-01-20 | 291 | 12 | 19.40 | high |
+| Note Path            | Last Updated | Days Stale | Importance | Priority Score | Severity |
+| -------------------- | ------------ | ---------- | ---------- | -------------- | -------- |
+| core/methodology.md  | 2024-03-15   | 236        | 15         | 19.65          | high     |
+| concepts/workflow.md | 2024-01-20   | 291        | 12         | 19.40          | high     |
+
 | ...
 
 ## Link Validation Issues
 
 ### Broken Links (34 total)
+
 - **404 Not Found (28)**: ...
 - **403 Forbidden (4)**: ...
 - **500 Server Error (2)**: ...
 
 ### Redirects (8 total)
+
 - `https://old-site.com` → `https://new-site.com`
 - ...
 
@@ -485,6 +515,7 @@ Vault health assessment completed on 2025-11-06T14:30:00Z. Overall health score:
 ### Example 2: Minimal Report (Freshness + Links Only)
 
 **Input:**
+
 ```yaml
 audit_results:
   freshness:
@@ -502,6 +533,7 @@ output_path: "health-check.md"
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,

@@ -24,6 +24,7 @@
 ### Test Data Requirements
 
 **Minimum Test Vault Contents:**
+
 - 20+ atomic notes covering various topics
 - At least 3 notes about "Zettelkasten" concept
 - At least 3 notes about "PARA" concept (for comparison tests)
@@ -43,6 +44,7 @@
 **Query:** `*query What is Zettelkasten?`
 
 **Expected Behavior:**
+
 1. Intent correctly classified as "factual" with confidence >= 0.85
 2. Results queried from Smart Connections and Obsidian text search
 3. Results deduplicated and ranked by relevance
@@ -52,6 +54,7 @@
 7. Query completed in <3 seconds
 
 **Test Steps:**
+
 1. Activate agent: `/bmad-2b:query-interpreter-agent`
 2. Execute: `*query What is Zettelkasten?`
 3. Record performance metrics
@@ -88,6 +91,7 @@ Notes: [Any observations]
 **Query:** `*temporal-query atomic notes since 2024-01`
 
 **Expected Behavior:**
+
 1. Intent correctly classified as "temporal"
 2. Date range parsed: start=2024-01-01, end=today
 3. Neo4j Graphiti temporal query executed (if available)
@@ -98,6 +102,7 @@ Notes: [Any observations]
 8. Query completed in <3 seconds
 
 **Test Steps:**
+
 1. Execute: `*temporal-query atomic notes since 2024-01`
 2. Record performance metrics
 3. Verify timeline format
@@ -133,6 +138,7 @@ Notes: [Any observations]
 **Query:** `*query Why do atomic notes improve recall?`
 
 **Expected Behavior:**
+
 1. Intent correctly classified as "causal" with confidence >= 0.85
 2. Neo4j causal chain query executed (if available)
 3. Smart Connections semantic search as fallback
@@ -143,6 +149,7 @@ Notes: [Any observations]
 8. Query completed in <3 seconds
 
 **Test Steps:**
+
 1. Execute: `*query Why do atomic notes improve recall?`
 2. Record performance metrics
 3. Verify narrative format
@@ -177,6 +184,7 @@ Notes: [Any observations]
 **Query:** `*compare Zettelkasten vs PARA methods`
 
 **Expected Behavior:**
+
 1. Intent correctly classified as "comparative" with confidence >= 0.85
 2. Subjects parsed: ["Zettelkasten", "PARA"]
 3. Parallel queries executed for each subject
@@ -187,6 +195,7 @@ Notes: [Any observations]
 8. Query completed in <3 seconds
 
 **Test Steps:**
+
 1. Execute: `*compare Zettelkasten vs PARA methods`
 2. Record performance metrics
 3. Verify table format
@@ -222,6 +231,7 @@ Notes: [Any observations]
 **Query:** `*query knowledge management systems`
 
 **Expected Behavior:**
+
 1. Results queried from all available sources
 2. Duplicate results deduplicated by note_path
 3. Metadata merged for duplicates (sources array populated)
@@ -230,6 +240,7 @@ Notes: [Any observations]
 6. No duplicate note_path values in final results
 
 **Test Steps:**
+
 1. Execute: `*query knowledge management systems`
 2. Check sources_available list
 3. Verify no duplicate note_path values
@@ -264,6 +275,7 @@ Notes: [Any observations]
 **Query:** `*query [topic with known contradictory notes]`
 
 **Expected Behavior:**
+
 1. Results include notes with contradictory claims
 2. Contradiction detection algorithm executed
 3. Contradictions flagged with confidence > 0.70
@@ -272,6 +284,7 @@ Notes: [Any observations]
 6. Contradiction type identified (negation, conflicting_values, etc.)
 
 **Test Steps:**
+
 1. Prepare test vault with contradictory notes (e.g., "X improves Y" vs "X does not improve Y")
 2. Execute: `*query [topic]`
 3. Check contradictions array in results
@@ -303,15 +316,16 @@ Notes: [Any observations]
 
 **Test Queries:**
 
-| Query | Expected Intent | Expected Format |
-|-------|----------------|-----------------|
-| "What is X?" | factual | list |
-| "How has X evolved?" | temporal | timeline |
-| "Why does X happen?" | causal | narrative |
-| "Compare X and Y" | comparative | table |
-| "Show me everything about X" | exploratory | list (categorized) |
+| Query                        | Expected Intent | Expected Format    |
+| ---------------------------- | --------------- | ------------------ |
+| "What is X?"                 | factual         | list               |
+| "How has X evolved?"         | temporal        | timeline           |
+| "Why does X happen?"         | causal          | narrative          |
+| "Compare X and Y"            | comparative     | table              |
+| "Show me everything about X" | exploratory     | list (categorized) |
 
 **Test Steps:**
+
 1. Execute each query
 2. Record intent classification
 3. Record format selection
@@ -362,6 +376,7 @@ Pass/Fail: [PASS | FAIL]
 **Query:** `*query [any topic]`
 
 **Expected Behavior:**
+
 1. Every result includes note_title
 2. Every result includes note_path
 3. Every result includes excerpt
@@ -370,6 +385,7 @@ Pass/Fail: [PASS | FAIL]
 6. Timestamps in ISO 8601 format
 
 **Test Steps:**
+
 1. Execute any query
 2. Inspect result structure
 3. Verify all required fields present
@@ -406,6 +422,7 @@ Notes: [Any observations]
 **Query:** `*query [standard factual query]`
 
 **Test Steps:**
+
 1. Execute query
 2. Run query-completeness-checklist.md manually
 3. Check each item
@@ -445,6 +462,7 @@ Notes: [Any observations]
 **Query:** `*query [any topic]`
 
 **Performance Budget:**
+
 - Query parsing: <200ms
 - Obsidian queries: <1000ms
 - Neo4j queries: <1000ms
@@ -453,6 +471,7 @@ Notes: [Any observations]
 - **Total: <3000ms**
 
 **Test Steps:**
+
 1. Execute query with performance monitoring
 2. Record phase durations
 3. Identify any bottlenecks
@@ -494,12 +513,14 @@ Notes: [Any observations]
 **Objective:** Verify agent works with only Obsidian text search
 
 **Setup:**
+
 1. Disable Smart Connections MCP server
 2. Keep Obsidian MCP Tools running
 
 **Query:** `*query Zettelkasten`
 
 **Expected Behavior:**
+
 1. Smart Connections query fails
 2. Agent continues with Obsidian text search only
 3. Warning generated about Smart Connections unavailability
@@ -527,12 +548,14 @@ Pass/Fail: [PASS | FAIL]
 **Objective:** Verify agent works without Neo4j for temporal queries
 
 **Setup:**
+
 1. Disable Neo4j Graphiti MCP server
 2. Keep other sources running
 
 **Query:** `*temporal-query atomic notes`
 
 **Expected Behavior:**
+
 1. Neo4j query fails
 2. Agent falls back to Obsidian file metadata
 3. Warning generated about Neo4j unavailability
@@ -559,11 +582,13 @@ Pass/Fail: [PASS | FAIL]
 **Objective:** Verify agent uses all sources when available
 
 **Setup:**
+
 1. All MCP servers running (Obsidian, Smart Connections, Neo4j)
 
 **Query:** `*query [any topic]`
 
 **Expected Behavior:**
+
 1. All three sources queried
 2. Results merged from all sources
 3. Best quality results (multi-source agreement)
@@ -591,12 +616,14 @@ Pass/Fail: [PASS | FAIL]
 **Objective:** Verify dangerous input sanitized
 
 **Test Inputs:**
+
 1. `<script>alert('XSS')</script>`
 2. `'; DROP TABLE notes; --`
 3. `../../etc/passwd`
 4. `javascript:alert(1)`
 
 **Expected Behavior:**
+
 1. Dangerous patterns detected and stripped
 2. SecurityError thrown for malicious input
 3. No code execution
@@ -637,6 +664,7 @@ Pass/Fail: [PASS | FAIL]
 **Test:** Review Neo4j query execution code
 
 **Expected Behavior:**
+
 1. All Cypher queries use parameterized format
 2. No string concatenation of user input
 3. Parameters properly validated before use
@@ -686,12 +714,14 @@ From STORY-005 acceptance criteria:
 **Pass Rate:** [N%]
 
 **Performance Metrics (Average):**
+
 - Average query duration: [N ms]
 - Fastest query: [N ms]
 - Slowest query: [N ms]
 - Queries under budget (<3s): [N/total]
 
 **Quality Metrics:**
+
 - Intent classification accuracy: [N%]
 - Source attribution completeness: [N%]
 - Contradiction detection rate: [N detections / N contradictory pairs]
@@ -701,10 +731,11 @@ From STORY-005 acceptance criteria:
 **Recommendations:** [List any improvements needed]
 
 **Sign-off:**
+
 - [ ] All tests passed
 - [ ] Performance budget met
 - [ ] Acceptance criteria validated
 - [ ] Ready for PO review
 
-**Tester Signature:** _______________
-**Date:** _______________
+**Tester Signature:** **\*\***\_\_\_**\*\***
+**Date:** **\*\***\_\_\_**\*\***

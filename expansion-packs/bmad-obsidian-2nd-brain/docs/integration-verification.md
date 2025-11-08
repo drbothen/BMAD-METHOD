@@ -32,11 +32,13 @@ Before starting verification:
 ### Step 1: Activate Agent
 
 **Command:**
+
 ```
 /bmad-2b:semantic-linker-agent
 ```
 
 **Expected Output:**
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔗 Semantic Linker Agent Activated
@@ -57,20 +59,23 @@ Run *help to see all available commands.
 ```
 
 **Verification Checklist:**
+
 - [ ] Agent activates without errors
 - [ ] Greeting message displayed
 - [ ] Agent persona "Connector" mentioned
 - [ ] Focus areas listed
-- [ ] *help command mentioned
+- [ ] \*help command mentioned
 
 ### Step 2: Verify Command List
 
 **Command:**
+
 ```
 *help
 ```
 
 **Expected Output:**
+
 ```
 Available Commands:
 
@@ -93,7 +98,8 @@ Workflows:
 ```
 
 **Verification Checklist:**
-- [ ] All 11 commands listed (including *help)
+
+- [ ] All 11 commands listed (including \*help)
 - [ ] Each command has description and parameters
 - [ ] Example workflows provided
 - [ ] Examples show correct syntax
@@ -107,6 +113,7 @@ Workflows:
 **Steps:**
 
 1. **Generate Suggestions:**
+
    ```
    *suggest-links atomic/argument-01-spaced-repetition.md
    ```
@@ -118,6 +125,7 @@ Workflows:
    - Each shows: ID, target title, link type, strength, confidence, context preview
 
 2. **Review Suggestions:**
+
    ```
    *review-suggestions
    ```
@@ -128,6 +136,7 @@ Workflows:
    - Actions listed: *accept-suggestion, *reject-suggestion
 
 3. **Accept Suggestion:**
+
    ```
    *accept-suggestion abc123
    ```
@@ -140,6 +149,7 @@ Workflows:
    - Learning stats shown
 
 **Verification Checklist:**
+
 - [ ] Smart Connections returns results
 - [ ] Link types identified correctly
 - [ ] Strength scores calculated (0.0-1.0 range)
@@ -155,11 +165,13 @@ Workflows:
 **Steps:**
 
 1. **Generate Suggestions:**
+
    ```
    *suggest-links atomic/phenomenon-01-forgetting-curve.md
    ```
 
 2. **Batch Approve (High Threshold):**
+
    ```
    *batch-approve 0.8
    ```
@@ -172,6 +184,7 @@ Workflows:
    - Summary with success/failure count
 
 **Verification Checklist:**
+
 - [ ] Filtering by threshold works
 - [ ] Confirmation prompt appears
 - [ ] Batch creation successful
@@ -185,6 +198,7 @@ Workflows:
 **Steps:**
 
 1. **Create Single Link:**
+
    ```
    *create-link atomic/note-a.md atomic/note-b.md supports
    ```
@@ -197,6 +211,7 @@ Workflows:
    - Neo4j relationship created (if enabled)
 
 **Verification Checklist:**
+
 - [ ] Link type validation works
 - [ ] Strength calculation accurate
 - [ ] Context generation functional
@@ -209,6 +224,7 @@ Workflows:
 **Steps:**
 
 1. **Create Multiple Links:**
+
    ```
    *create-links atomic/note-a.md atomic/note-b.md atomic/note-c.md atomic/note-d.md
    ```
@@ -220,6 +236,7 @@ Workflows:
    - All links created if confirmed
 
 **Verification Checklist:**
+
 - [ ] Multiple targets processed
 - [ ] Confirmation shown
 - [ ] Batch creation works
@@ -231,6 +248,7 @@ Workflows:
 **Steps:**
 
 1. **Analyze Note Graph:**
+
    ```
    *analyze-graph atomic/argument-01-spaced-repetition.md
    ```
@@ -243,6 +261,7 @@ Workflows:
    - Suggestions for improvement
 
 **Verification Checklist:**
+
 - [ ] Metrics calculated accurately
 - [ ] Type distribution shown
 - [ ] Strength distribution shown
@@ -256,10 +275,12 @@ Map integration tests to STORY-004 acceptance criteria:
 ### AC1: Agent Activation with All Commands
 
 **Test:**
+
 - Activate agent: `/bmad-2b:semantic-linker-agent`
 - Run: `*help`
 
 **Verify:**
+
 - [ ] Agent activates successfully
 - [ ] All 11 commands available
 - [ ] No activation errors
@@ -267,9 +288,11 @@ Map integration tests to STORY-004 acceptance criteria:
 ### AC2: Smart Connections Semantic Search
 
 **Test:**
+
 - Run: `*suggest-links atomic/test-note.md`
 
 **Verify:**
+
 - [ ] Smart Connections MCP called
 - [ ] Related notes returned (similarity >= 0.6)
 - [ ] Results sorted by similarity
@@ -278,6 +301,7 @@ Map integration tests to STORY-004 acceptance criteria:
 ### AC3: Relationship Type Identification
 
 **Test:**
+
 - Generate suggestions for various note pairs
 - Verify all 7 types identified:
   - supports (phenomenon → argument)
@@ -289,6 +313,7 @@ Map integration tests to STORY-004 acceptance criteria:
   - influences (temporal precedence)
 
 **Verify:**
+
 - [ ] All 7 types can be identified
 - [ ] Confidence scores >= 0.7 for clear relationships
 - [ ] Temporal precedence enforced for influences
@@ -297,6 +322,7 @@ Map integration tests to STORY-004 acceptance criteria:
 ### AC4: Link Strength Calculation
 
 **Test:**
+
 - Review suggestions with various strengths
 - Verify 3-component formula:
   - Semantic similarity (50%)
@@ -304,6 +330,7 @@ Map integration tests to STORY-004 acceptance criteria:
   - Temporal proximity (20%)
 
 **Verify:**
+
 - [ ] Strength scores in [0.0, 1.0] range
 - [ ] Classification: strong (>= 0.7), medium (0.5-0.7), weak (< 0.5)
 - [ ] Components calculated correctly
@@ -312,10 +339,12 @@ Map integration tests to STORY-004 acceptance criteria:
 ### AC5: Bidirectional Wikilinks with Context
 
 **Test:**
+
 - Accept suggestion or create manual link
 - Check both source and target notes
 
 **Verify:**
+
 - [ ] Wikilink in source: `- [[Target]] - context forward`
 - [ ] Wikilink in target: `- [[Source]] - context backward`
 - [ ] Context sentences explain relationship
@@ -324,10 +353,12 @@ Map integration tests to STORY-004 acceptance criteria:
 ### AC6: Neo4j Relationship Creation
 
 **Test (Neo4j Enabled):**
+
 - Accept suggestion
 - Check Neo4j database
 
 **Verify:**
+
 - [ ] [:CONCEPTUALLY_RELATED] relationship created
 - [ ] Bi-temporal metadata present:
   - valid_time_start (discovery time)
@@ -336,10 +367,12 @@ Map integration tests to STORY-004 acceptance criteria:
 - [ ] Relationship metadata: link_id, link_type, strength, context
 
 **Test (Neo4j Disabled):**
+
 - Set config.yaml: `neo4j.enabled: false`
 - Accept suggestion
 
 **Verify:**
+
 - [ ] Neo4j gracefully skipped
 - [ ] Obsidian link still created
 - [ ] No errors thrown
@@ -348,12 +381,14 @@ Map integration tests to STORY-004 acceptance criteria:
 ### AC7: Pending Suggestions Review & Approval
 
 **Test:**
+
 - Generate suggestions
 - Review with `*review-suggestions`
 - Accept with `*accept-suggestion abc123`
 - Reject with `*reject-suggestion def456 "irrelevant"`
 
 **Verify:**
+
 - [ ] Pending suggestions tracked
 - [ ] Full details in review
 - [ ] Accept creates link and records feedback
@@ -362,11 +397,13 @@ Map integration tests to STORY-004 acceptance criteria:
 ### AC8: Circular Reasoning Prevention
 
 **Test:**
+
 - Create: A supports B
 - Create: B supports C
 - Attempt: C supports A
 
 **Verify:**
+
 - [ ] Cycle detected
 - [ ] Link rejected
 - [ ] Error message shows chain path
@@ -375,11 +412,13 @@ Map integration tests to STORY-004 acceptance criteria:
 ### AC9: Feedback Learning
 
 **Test:**
+
 - Generate 25 suggestions
 - Accept 12, reject 13 (48% acceptance)
 - Check learning update
 
 **Verify:**
+
 - [ ] Feedback recorded in `.bmad-obsidian-2nd-brain/link-feedback.json`
 - [ ] Threshold adjusted after >= 20 decisions:
   - Low acceptance (< 60%) → threshold raised
@@ -390,12 +429,14 @@ Map integration tests to STORY-004 acceptance criteria:
 ### AC10: Security Validation
 
 **Test:**
+
 1. Directory Traversal: `*create-link ../../etc/passwd atomic/note-b.md supports`
 2. Cypher Injection: Context with `"}]->(n) MATCH (secret:Note) RETURN secret //`
 3. Link Spam: Add 51st link to note with 50 links
 4. Link-to-Self: `*create-link atomic/note-a.md atomic/note-a.md supports`
 
 **Verify:**
+
 - [ ] Directory traversal blocked
 - [ ] Cypher injection prevented (parameterized queries)
 - [ ] Link spam limit enforced (max 50 per note)
@@ -561,6 +602,7 @@ Use this template to document integration test results:
 ## Workflow Tests
 
 ### Workflow 1: Basic Flow
+
 - [ ] Suggestions generated
 - [ ] Review functional
 - [ ] Accept created link
@@ -568,6 +610,7 @@ Use this template to document integration test results:
 - **Notes:** [Any issues]
 
 ### Workflow 2: Bulk Approval
+
 - [ ] Batch filtering works
 - [ ] Confirmation prompt shown
 - [ ] Links created successfully
@@ -593,14 +636,14 @@ Use this template to document integration test results:
 
 ## Issues Found
 
-| Issue | Severity | Description | Status |
-|-------|----------|-------------|--------|
+| Issue | Severity | Description   | Status     |
+| ----- | -------- | ------------- | ---------- |
 | #1    | Critical | [Description] | Open/Fixed |
 | #2    | Major    | [Description] | Open/Fixed |
 
 ## Overall Result
 
-**PASS** [ ]  **FAIL** [ ]  **PASS WITH ISSUES** [ ]
+**PASS** [ ] **FAIL** [ ] **PASS WITH ISSUES** [ ]
 
 **Summary:** [Brief summary of integration test results]
 ```
@@ -642,6 +685,7 @@ Once integration verification is complete:
 **Symptom:** "Smart Connections MCP not available"
 
 **Solution:**
+
 1. Install Smart Connections plugin in Obsidian
 2. Configure MCP server in Claude Desktop/VS Code settings
 3. Restart IDE/Claude Desktop
@@ -652,6 +696,7 @@ Once integration verification is complete:
 **Symptom:** "Neo4j connection failed"
 
 **Solution:**
+
 1. Check `config.yaml` for correct Neo4j settings
 2. Verify Neo4j server is running: `docker ps` or `systemctl status neo4j`
 3. Test connection with Cypher query: `MATCH (n) RETURN count(n)`
@@ -662,6 +707,7 @@ Once integration verification is complete:
 **Symptom:** Link only appears in one note
 
 **Solution:**
+
 1. Check for rollback messages in output
 2. Verify both notes are writable (not read-only)
 3. Check for file permission errors
@@ -672,6 +718,7 @@ Once integration verification is complete:
 **Symptom:** Threshold not adjusting after 20+ decisions
 
 **Solution:**
+
 1. Check `.bmad-obsidian-2nd-brain/link-feedback.json` exists
 2. Verify feedback entries recorded correctly
 3. Check decision count: need >= 20 total (approved + rejected)

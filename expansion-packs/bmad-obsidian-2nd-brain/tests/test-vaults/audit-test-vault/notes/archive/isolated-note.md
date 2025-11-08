@@ -12,6 +12,7 @@ outgoing_links: 0
 **WARNING: This is an ORPHANED note**
 
 This note has:
+
 - **Zero incoming links** (no other notes link to this)
 - **Zero outgoing links** (this note doesn't link to any others)
 - Completely disconnected from the knowledge graph
@@ -32,6 +33,7 @@ This note exists in isolation. It was created during a brainstorming session but
 ---
 
 **Test Validation:**
+
 - Should appear in orphaned notes list
 - Should have suggested linking opportunities (if semantic search available)
 - Low priority for freshness (no importance score)

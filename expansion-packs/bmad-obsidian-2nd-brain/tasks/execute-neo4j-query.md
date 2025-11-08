@@ -11,6 +11,7 @@
 ## Overview
 
 Neo4j Graphiti MCP provides bi-temporal graph database capabilities for:
+
 - **Temporal evolution queries** - How concepts changed over time
 - **Relationship traversal** - Find connections between entities
 - **Causal chain analysis** - Trace cause-effect relationships
@@ -23,6 +24,7 @@ This integration is **optional**. The agent degrades gracefully if Neo4j is not 
 ### Graphiti MCP Tools
 
 **Capabilities:**
+
 - Execute Cypher queries (parameterized only)
 - Temporal queries (valid time vs transaction time)
 - Graph traversal with hop limits
@@ -30,6 +32,7 @@ This integration is **optional**. The agent degrades gracefully if Neo4j is not 
 - Relationship creation with bi-temporal tracking
 
 **Tool Invocations (examples):**
+
 ```
 mcp__graphiti__execute_cypher(
   query: "MATCH (n:Note {path: $path}) RETURN n",
@@ -58,6 +61,7 @@ mcp__graphiti__traverse_graph(
 **Query Type:** Bi-temporal query using valid_time dimension
 
 **Algorithm:**
+
 ```
 1. Extract concept and date range from query parameters
 
@@ -72,6 +76,7 @@ mcp__graphiti__traverse_graph(
 ```
 
 **Example Cypher (via Graphiti MCP):**
+
 ```cypher
 // Find temporal evolution of a concept
 MATCH (n:Note {path: $note_path})
@@ -86,30 +91,32 @@ ORDER BY v.valid_time_start ASC
 ```
 
 **Parameters (safely escaped):**
+
 ```javascript
 const params = {
   note_path: validate_note_path(note_path),
   start_date: validate_date(start_date),
-  end_date: validate_date(end_date)
-}
+  end_date: validate_date(end_date),
+};
 
-const results = await mcp__graphiti__execute_cypher(query, params)
+const results = await mcp__graphiti__execute_cypher(query, params);
 ```
 
 **Example Implementation:**
+
 ```javascript
 async function execute_temporal_evolution_query(concept, start_date, end_date) {
   try {
     // Find notes matching concept
-    const concept_notes = await find_notes_by_concept(concept)
+    const concept_notes = await find_notes_by_concept(concept);
 
     if (concept_notes.length === 0) {
-      log_info(`No notes found for concept: ${concept}`)
-      return []
+      log_info(`No notes found for concept: ${concept}`);
+      return [];
     }
 
     // Execute temporal query for each note
-    const temporal_results = []
+    const temporal_results = [];
 
     for (const note of concept_notes) {
       const query = `
@@ -124,26 +131,25 @@ async function execute_temporal_evolution_query(concept, start_date, end_date) {
           v.content AS content_snapshot,
           v.properties AS properties
         ORDER BY v.valid_time_start ASC
-      `
+      `;
 
       const params = {
         note_path: validate_note_path(note.path),
         start_date: validate_date(start_date),
-        end_date: validate_date(end_date)
-      }
+        end_date: validate_date(end_date),
+      };
 
-      const result = await mcp__graphiti__execute_cypher(query, params)
-      temporal_results.push(...result)
+      const result = await mcp__graphiti__execute_cypher(query, params);
+      temporal_results.push(...result);
     }
 
-    return temporal_results
-
+    return temporal_results;
   } catch (error) {
     if (error.code === 'NEO4J_UNAVAILABLE') {
-      log_warning('Neo4j unavailable, temporal queries not supported')
-      return []
+      log_warning('Neo4j unavailable, temporal queries not supported');
+      return [];
     }
-    throw error
+    throw error;
   }
 }
 ```
@@ -155,6 +161,7 @@ async function execute_temporal_evolution_query(concept, start_date, end_date) {
 **Query Type:** Graph traversal following causal relationships
 
 **Algorithm:**
+
 ```
 1. Identify source concept (X)
 
@@ -170,6 +177,7 @@ async function execute_temporal_evolution_query(concept, start_date, end_date) {
 ```
 
 **Example Cypher:**
+
 ```cypher
 // Find causal chain
 MATCH path = (start:Note {path: $start_path})
@@ -185,27 +193,29 @@ LIMIT 10
 ```
 
 **Parameters:**
+
 ```javascript
 const params = {
   start_path: validate_note_path(start_path),
   end_path: validate_note_path(end_path),
-  target_concept: validate_concept(concept)
-}
+  target_concept: validate_concept(concept),
+};
 ```
 
 **Example Implementation:**
+
 ```javascript
 async function execute_causal_chain_query(source_concept, target_concept) {
   try {
     // Find notes matching source concept
-    const source_notes = await find_notes_by_concept(source_concept)
+    const source_notes = await find_notes_by_concept(source_concept);
 
     if (source_notes.length === 0) {
-      log_info(`No notes found for source concept: ${source_concept}`)
-      return []
+      log_info(`No notes found for source concept: ${source_concept}`);
+      return [];
     }
 
-    const causal_chains = []
+    const causal_chains = [];
 
     for (const source of source_notes) {
       const query = `
@@ -225,25 +235,24 @@ async function execute_causal_chain_query(source_concept, target_concept) {
           length(path) AS chain_length
         ORDER BY chain_length ASC
         LIMIT 10
-      `
+      `;
 
       const params = {
         start_path: validate_note_path(source.path),
-        target_concept: validate_concept(target_concept)
-      }
+        target_concept: validate_concept(target_concept),
+      };
 
-      const result = await mcp__graphiti__execute_cypher(query, params)
-      causal_chains.push(...result)
+      const result = await mcp__graphiti__execute_cypher(query, params);
+      causal_chains.push(...result);
     }
 
-    return causal_chains
-
+    return causal_chains;
   } catch (error) {
     if (error.code === 'NEO4J_UNAVAILABLE') {
-      log_warning('Neo4j unavailable, causal queries not supported')
-      return []
+      log_warning('Neo4j unavailable, causal queries not supported');
+      return [];
     }
-    throw error
+    throw error;
   }
 }
 ```
@@ -255,6 +264,7 @@ async function execute_causal_chain_query(source_concept, target_concept) {
 **Query Type:** Graph traversal with configurable hop limit
 
 **Algorithm:**
+
 ```
 1. Identify starting concept
 
@@ -274,6 +284,7 @@ async function execute_causal_chain_query(source_concept, target_concept) {
 ```
 
 **Example Cypher:**
+
 ```cypher
 // Traverse graph from starting point
 MATCH path = (start:Note {path: $start_path})
@@ -290,24 +301,26 @@ LIMIT 50
 ```
 
 **Parameters:**
+
 ```javascript
 const params = {
-  start_path: validate_note_path(start_path)
-}
+  start_path: validate_note_path(start_path),
+};
 ```
 
 **Example Implementation:**
+
 ```javascript
 async function execute_relationship_traversal_query(concept, max_hops = 2) {
   try {
-    const source_notes = await find_notes_by_concept(concept)
+    const source_notes = await find_notes_by_concept(concept);
 
     if (source_notes.length === 0) {
-      log_info(`No notes found for concept: ${concept}`)
-      return []
+      log_info(`No notes found for concept: ${concept}`);
+      return [];
     }
 
-    const related_notes = []
+    const related_notes = [];
 
     for (const source of source_notes) {
       const query = `
@@ -326,27 +339,26 @@ async function execute_relationship_traversal_query(concept, max_hops = 2) {
           [rel IN relationships(path) | type(rel)] AS relationship_types
         ORDER BY min_hops ASC, path_count DESC, avg_strength DESC
         LIMIT 50
-      `
+      `;
 
       const params = {
-        start_path: validate_note_path(source.path)
-      }
+        start_path: validate_note_path(source.path),
+      };
 
-      const result = await mcp__graphiti__execute_cypher(query, params)
-      related_notes.push(...result)
+      const result = await mcp__graphiti__execute_cypher(query, params);
+      related_notes.push(...result);
     }
 
     // Deduplicate
-    const unique_notes = deduplicate_by_path(related_notes)
+    const unique_notes = deduplicate_by_path(related_notes);
 
-    return unique_notes
-
+    return unique_notes;
   } catch (error) {
     if (error.code === 'NEO4J_UNAVAILABLE') {
-      log_warning('Neo4j unavailable, relationship traversal not supported')
-      return []
+      log_warning('Neo4j unavailable, relationship traversal not supported');
+      return [];
     }
-    throw error
+    throw error;
   }
 }
 ```
@@ -358,6 +370,7 @@ async function execute_relationship_traversal_query(concept, max_hops = 2) {
 **Query Type:** Parallel subgraph queries for each subject
 
 **Algorithm:**
+
 ```
 1. For each subject in comparison:
    - Find notes matching subject
@@ -371,6 +384,7 @@ async function execute_relationship_traversal_query(concept, max_hops = 2) {
 ```
 
 **Example Cypher:**
+
 ```cypher
 // Find relationships for one subject
 MATCH (n:Note {path: $note_path})
@@ -387,15 +401,16 @@ RETURN
 ```
 
 **Example Implementation:**
+
 ```javascript
 async function execute_comparative_query_with_graph(subjects) {
   try {
-    const results_by_subject = {}
+    const results_by_subject = {};
 
     for (const subject of subjects) {
-      const notes = await find_notes_by_concept(subject)
+      const notes = await find_notes_by_concept(subject);
 
-      const relationships = []
+      const relationships = [];
 
       for (const note of notes) {
         const query = `
@@ -411,30 +426,29 @@ async function execute_comparative_query_with_graph(subjects) {
               target_path: related.path,
               context: r.context
             }) AS relationships
-        `
+        `;
 
         const params = {
-          note_path: validate_note_path(note.path)
-        }
+          note_path: validate_note_path(note.path),
+        };
 
-        const result = await mcp__graphiti__execute_cypher(query, params)
-        relationships.push(...result)
+        const result = await mcp__graphiti__execute_cypher(query, params);
+        relationships.push(...result);
       }
 
       results_by_subject[subject] = {
         notes: notes,
-        relationships: relationships
-      }
+        relationships: relationships,
+      };
     }
 
-    return results_by_subject
-
+    return results_by_subject;
   } catch (error) {
     if (error.code === 'NEO4J_UNAVAILABLE') {
-      log_warning('Neo4j unavailable, graph context not available for comparison')
-      return {}
+      log_warning('Neo4j unavailable, graph context not available for comparison');
+      return {};
     }
-    throw error
+    throw error;
   }
 }
 ```
@@ -451,14 +465,14 @@ const query = `
   MATCH (n:Note {path: $note_path})
   WHERE n.title CONTAINS $search_term
   RETURN n
-`
+`;
 
 const params = {
-  note_path: validate_note_path(user_input_path),  // Validated
-  search_term: validate_concept(user_input_term)   // Sanitized
-}
+  note_path: validate_note_path(user_input_path), // Validated
+  search_term: validate_concept(user_input_term), // Sanitized
+};
 
-const results = await mcp__graphiti__execute_cypher(query, params)
+const results = await mcp__graphiti__execute_cypher(query, params);
 ```
 
 ### Unsafe Query Pattern
@@ -468,7 +482,7 @@ const results = await mcp__graphiti__execute_cypher(query, params)
 const query = `
   MATCH (n:Note {path: '${user_input_path}'})
   RETURN n
-`
+`;
 // Vulnerable to injection attacks!
 ```
 
@@ -493,11 +507,11 @@ Neo4j integration is **optional**. The agent must work without it.
 ```javascript
 async function check_neo4j_availability() {
   try {
-    await mcp__graphiti__execute_cypher('RETURN 1 AS test', {})
-    return true
+    await mcp__graphiti__execute_cypher('RETURN 1 AS test', {});
+    return true;
   } catch (error) {
-    log_info('Neo4j Graphiti MCP unavailable, temporal/graph queries disabled')
-    return false
+    log_info('Neo4j Graphiti MCP unavailable, temporal/graph queries disabled');
+    return false;
   }
 }
 ```
@@ -506,15 +520,15 @@ async function check_neo4j_availability() {
 
 ```javascript
 async function execute_temporal_query(concept, start_date, end_date) {
-  const neo4j_available = await check_neo4j_availability()
+  const neo4j_available = await check_neo4j_availability();
 
   if (neo4j_available) {
     // Use Neo4j for bi-temporal queries
-    return await execute_temporal_evolution_query(concept, start_date, end_date)
+    return await execute_temporal_evolution_query(concept, start_date, end_date);
   } else {
     // Fallback to Obsidian file metadata (less precise)
-    log_warning('Neo4j unavailable, using Obsidian fallback for temporal query')
-    return await execute_temporal_query_obsidian_fallback(concept, start_date, end_date)
+    log_warning('Neo4j unavailable, using Obsidian fallback for temporal query');
+    return await execute_temporal_query_obsidian_fallback(concept, start_date, end_date);
   }
 }
 ```
@@ -540,28 +554,27 @@ Current query will continue using available data sources."
 
 ```javascript
 async function execute_neo4j_query_with_timeout(query, params) {
-  const timeout_ms = 1000
+  const timeout_ms = 1000;
 
   const timeout_promise = new Promise((_, reject) => {
     setTimeout(() => {
-      reject(new TimeoutError('Neo4j query exceeded 1 second timeout'))
-    }, timeout_ms)
-  })
+      reject(new TimeoutError('Neo4j query exceeded 1 second timeout'));
+    }, timeout_ms);
+  });
 
   try {
     const result = await Promise.race([
       mcp__graphiti__execute_cypher(query, params),
-      timeout_promise
-    ])
+      timeout_promise,
+    ]);
 
-    return result
-
+    return result;
   } catch (error) {
     if (error instanceof TimeoutError) {
-      log_warning(error.message)
-      return []  // Return empty results on timeout
+      log_warning(error.message);
+      return []; // Return empty results on timeout
     }
-    throw error
+    throw error;
   }
 }
 ```
@@ -569,6 +582,7 @@ async function execute_neo4j_query_with_timeout(query, params) {
 ## Error Messages
 
 ### Error 1: Neo4j Unavailable
+
 ```
 "Neo4j graph database is not available. Temporal and causal queries are limited to Obsidian fallback mode.
 
@@ -576,12 +590,14 @@ Your query will continue using available sources."
 ```
 
 ### Error 2: Invalid Cypher Query
+
 ```
 "Graph query failed due to invalid syntax. This is an internal error.
 Please report this issue with your query: '[user_query]'"
 ```
 
 ### Error 3: No Graph Data
+
 ```
 "No graph relationships found for '[concept]'. This may be because:
 - The concept hasn't been linked by the Semantic Linker Agent yet
@@ -590,6 +606,7 @@ Please report this issue with your query: '[user_query]'"
 ```
 
 ### Error 4: Timeout
+
 ```
 "Neo4j query timed out after 1 second. This may be due to:
 - Complex graph traversal (try reducing scope)
@@ -603,34 +620,34 @@ Return structured results for merging:
 
 ```yaml
 results:
-  - source: "neo4j_graphiti"
-    query_type: "temporal_evolution"
-    note_path: "atomic/zettelkasten.md"
-    note_title: "Zettelkasten Method"
+  - source: 'neo4j_graphiti'
+    query_type: 'temporal_evolution'
+    note_path: 'atomic/zettelkasten.md'
+    note_title: 'Zettelkasten Method'
     timeline:
-      - timestamp: "2024-03-15T10:23:00Z"
-        event: "Note created"
-        content_snapshot: "Initial definition of Zettelkasten..."
-      - timestamp: "2024-05-20T14:30:00Z"
-        event: "Content modified"
-        content_snapshot: "Expanded with atomic notes principle..."
-      - timestamp: "2024-09-10T09:15:00Z"
-        event: "Relationships added"
-        new_links: ["atomic-notes.md", "slip-box.md"]
+      - timestamp: '2024-03-15T10:23:00Z'
+        event: 'Note created'
+        content_snapshot: 'Initial definition of Zettelkasten...'
+      - timestamp: '2024-05-20T14:30:00Z'
+        event: 'Content modified'
+        content_snapshot: 'Expanded with atomic notes principle...'
+      - timestamp: '2024-09-10T09:15:00Z'
+        event: 'Relationships added'
+        new_links: ['atomic-notes.md', 'slip-box.md']
 
-  - source: "neo4j_graphiti"
-    query_type: "causal_chain"
+  - source: 'neo4j_graphiti'
+    query_type: 'causal_chain'
     causal_path:
-      - note_path: "atomic/atomic-notes.md"
-        note_title: "Atomic Notes"
-        relationship_type: "LEADS_TO"
+      - note_path: 'atomic/atomic-notes.md'
+        note_title: 'Atomic Notes'
+        relationship_type: 'LEADS_TO'
         strength: 0.85
-        context: "Atomic notes enable modular thinking"
-      - note_path: "atomic/improved-recall.md"
-        note_title: "Improved Recall"
-        relationship_type: "CAUSES"
+        context: 'Atomic notes enable modular thinking'
+      - note_path: 'atomic/improved-recall.md'
+        note_title: 'Improved Recall'
+        relationship_type: 'CAUSES'
         strength: 0.78
-        context: "Modular thinking improves memory consolidation"
+        context: 'Modular thinking improves memory consolidation'
 
 query_metadata:
   neo4j_enabled: true
@@ -645,36 +662,35 @@ Track query performance:
 
 ```javascript
 async function execute_neo4j_query_with_monitoring(query, params) {
-  const start_time = Date.now()
+  const start_time = Date.now();
 
   try {
-    const result = await execute_neo4j_query_with_timeout(query, params)
-    const duration_ms = Date.now() - start_time
+    const result = await execute_neo4j_query_with_timeout(query, params);
+    const duration_ms = Date.now() - start_time;
 
     // Log slow queries
     if (duration_ms > 500) {
-      log_warning(`Slow Neo4j query: ${duration_ms}ms`)
+      log_warning(`Slow Neo4j query: ${duration_ms}ms`);
     }
 
     return {
       results: result,
       performance: {
         neo4j_query_ms: duration_ms,
-        timeout_occurred: false
-      }
-    }
-
+        timeout_occurred: false,
+      },
+    };
   } catch (error) {
-    const duration_ms = Date.now() - start_time
+    const duration_ms = Date.now() - start_time;
 
     return {
       results: [],
       performance: {
         neo4j_query_ms: duration_ms,
         timeout_occurred: error instanceof TimeoutError,
-        error: error.message
-      }
-    }
+        error: error.message,
+      },
+    };
   }
 }
 ```

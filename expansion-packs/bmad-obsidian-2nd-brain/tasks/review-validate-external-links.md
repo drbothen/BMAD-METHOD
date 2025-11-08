@@ -266,6 +266,7 @@ Validate external links in Obsidian notes by checking HTTP status codes, identif
   - Total: ~12-15 seconds
 
 **Breakdown:**
+
 - URL extraction: ~0.5 seconds for 50 notes
 - Security filtering: ~0.2 seconds for 50 URLs
 - HTTP requests: ~1-5 seconds (depends on server response times)
@@ -273,6 +274,7 @@ Validate external links in Obsidian notes by checking HTTP status codes, identif
 - Result processing: ~0.3 seconds
 
 **Optimization strategies:**
+
 - Use concurrent requests within batches (up to rate_limit simultaneous)
 - Cache DNS lookups to speed up repeated domains
 - Use HTTP HEAD instead of GET (lighter weight)
@@ -285,6 +287,7 @@ Validate external links in Obsidian notes by checking HTTP status codes, identif
 **Condition:** URL cannot be parsed or is malformed
 
 **Response:**
+
 ```json
 {
   "note_path": "notes/example.md",
@@ -301,6 +304,7 @@ Validate external links in Obsidian notes by checking HTTP status codes, identif
 **Condition:** Network error, DNS resolution failure, connection refused
 
 **Response:**
+
 ```json
 {
   "note_path": "notes/example.md",
@@ -317,6 +321,7 @@ Validate external links in Obsidian notes by checking HTTP status codes, identif
 **Condition:** Server doesn't respond within 5 seconds
 
 **Response:**
+
 ```json
 {
   "note_path": "notes/example.md",
@@ -333,6 +338,7 @@ Validate external links in Obsidian notes by checking HTTP status codes, identif
 **Condition:** Obsidian MCP server not accessible
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -346,6 +352,7 @@ Validate external links in Obsidian notes by checking HTTP status codes, identif
 **Condition:** No external links found in specified notes
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -370,6 +377,7 @@ Validate external links in Obsidian notes by checking HTTP status codes, identif
 **Condition:** URL targets private IP or localhost
 
 **Response:**
+
 ```json
 {
   "note_path": "notes/example.md",
@@ -386,6 +394,7 @@ Validate external links in Obsidian notes by checking HTTP status codes, identif
 **Condition:** URL uses dangerous protocol (javascript:, file:, etc.)
 
 **Response:**
+
 ```json
 {
   "note_path": "notes/example.md",
@@ -402,13 +411,15 @@ Validate external links in Obsidian notes by checking HTTP status codes, identif
 ### Example 1: Validate All Links (Default)
 
 **Input:**
+
 ```yaml
-note_paths: null  # All notes
+note_paths: null # All notes
 max_links: 50
 rate_limit: 5
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,
@@ -453,13 +464,15 @@ rate_limit: 5
 ### Example 2: Specific Notes with SSRF Block
 
 **Input:**
+
 ```yaml
-note_paths: ["security/test-notes.md"]
+note_paths: ['security/test-notes.md']
 max_links: 10
 rate_limit: 5
 ```
 
 **Output:**
+
 ```json
 {
   "success": true,
@@ -489,7 +502,7 @@ rate_limit: 5
     "redirect_count": 0,
     "timeout_count": 0,
     "success_count": 1,
-    "success_rate": 0.50
+    "success_rate": 0.5
   }
 }
 ```

@@ -102,11 +102,12 @@ Remember: Bidirectional links with context are the foundation of a powerful seco
 
 ## Command Implementations
 
-### *help - Show Available Commands
+### \*help - Show Available Commands
 
 Display all 11 commands with descriptions and examples.
 
 **Output:**
+
 ```
 Available Commands:
 
@@ -144,7 +145,7 @@ Workflows:
 - Analysis: *analyze-graph note.md
 ```
 
-### *suggest-links {note_path} - Semantic Link Suggestion
+### \*suggest-links {note_path} - Semantic Link Suggestion
 
 **Purpose:** Find semantically related notes using Smart Connections and suggest bidirectional links.
 
@@ -224,6 +225,7 @@ STEP 6: Return Summary
 ```
 
 **Example Output:**
+
 ```
 Semantic Link Suggestions for "Spaced Repetition Superior to Massed Practice"
 
@@ -250,7 +252,7 @@ Next steps:
 - *batch-approve 0.8 - Auto-approve all suggestions with strength >= 0.8
 ```
 
-### *create-links {source_path} {target_paths...} - Bulk Link Creation
+### \*create-links {source_path} {target_paths...} - Bulk Link Creation
 
 **Purpose:** Create bidirectional links between source note and multiple target notes.
 
@@ -293,6 +295,7 @@ STEP 5: Return Summary
 ```
 
 **Example:**
+
 ```
 *create-links atomic/note-a.md atomic/note-b.md atomic/note-c.md
 
@@ -308,7 +311,7 @@ Create all 2 bidirectional links? (y/n) y
 Summary: 2 links created successfully
 ```
 
-### *create-link {source_path} {target_path} {link_type} - Manual Single Link
+### \*create-link {source_path} {target_path} {link_type} - Manual Single Link
 
 **Purpose:** Manually create a single bidirectional link with user-specified relationship type.
 
@@ -344,6 +347,7 @@ STEP 6: Confirm Creation
 ```
 
 **Example:**
+
 ```
 *create-link atomic/note-a.md atomic/note-b.md supports
 
@@ -360,7 +364,7 @@ Context for link (or press Enter for auto-generated):
 Neo4j: Relationship created with bi-temporal metadata
 ```
 
-### *review-suggestions - Review Pending Suggestions
+### \*review-suggestions - Review Pending Suggestions
 
 **Purpose:** Display all pending link suggestions with full details for manual review.
 
@@ -389,6 +393,7 @@ STEP 3: Show Actions
 ```
 
 **Example:**
+
 ```
 Pending Link Suggestions (8)
 
@@ -414,7 +419,7 @@ Actions: *accept-suggestion abc123 | *reject-suggestion abc123 {reason}
 [... 7 more suggestions ...]
 ```
 
-### *accept-suggestion {suggestion_id} - Accept Link Suggestion
+### \*accept-suggestion {suggestion_id} - Accept Link Suggestion
 
 **Purpose:** Accept a suggested link, create bidirectional link, and record feedback.
 
@@ -454,6 +459,7 @@ STEP 6: Confirm to User
 ```
 
 **Example:**
+
 ```
 *accept-suggestion abc123
 
@@ -473,7 +479,7 @@ Learning update: Acceptance rate healthy (78%), threshold unchanged at 0.65
 Link created successfully!
 ```
 
-### *reject-suggestion {suggestion_id} {reason} - Reject Link Suggestion
+### \*reject-suggestion {suggestion_id} {reason} - Reject Link Suggestion
 
 **Purpose:** Reject a suggested link and record feedback for learning.
 
@@ -512,6 +518,7 @@ STEP 5: Confirm to User
 ```
 
 **Example:**
+
 ```
 *reject-suggestion def456 "too_weak"
 
@@ -526,7 +533,7 @@ Learning update: Threshold unchanged at 0.65
 Suggestion rejected and feedback recorded for learning.
 ```
 
-### *analyze-graph {note_path} - Graph Pattern Analysis
+### \*analyze-graph {note_path} - Graph Pattern Analysis
 
 **Purpose:** Analyze connection patterns and graph metrics for a specific note.
 
@@ -571,6 +578,7 @@ STEP 6: Visualize (optional)
 ```
 
 **Example:**
+
 ```
 *analyze-graph atomic/argument-01-spaced-repetition.md
 
@@ -618,7 +626,7 @@ Suggestions:
 - Consider creating MOC for "Learning Science" to connect related arguments
 ```
 
-### *batch-approve {threshold} - Batch Approval
+### \*batch-approve {threshold} - Batch Approval
 
 **Purpose:** Auto-approve all pending suggestions above a specified strength threshold.
 
@@ -654,6 +662,7 @@ STEP 5: Return Summary
 ```
 
 **Example:**
+
 ```
 *batch-approve 0.8
 
@@ -686,7 +695,7 @@ Summary:
 Batch approval complete!
 ```
 
-### *yolo - Toggle Yolo Mode
+### \*yolo - Toggle Yolo Mode
 
 **Purpose:** Toggle auto-approval mode that creates all suggested links without user confirmation.
 
@@ -723,6 +732,7 @@ STEP 4: Display Current State
 ```
 
 **Example:**
+
 ```
 *yolo
 
@@ -747,7 +757,7 @@ Best practices:
 - Disable Yolo Mode for critical work
 ```
 
-### *exit - Exit Agent Mode
+### \*exit - Exit Agent Mode
 
 **Purpose:** Exit Semantic Linker Agent and return to normal mode.
 
@@ -776,6 +786,7 @@ STEP 4: Confirm Exit
 ```
 
 **Example:**
+
 ```
 *exit
 
@@ -800,36 +811,43 @@ Exiting Semantic Linker Agent. Goodbye!
 Reference: `relationship-types.md` for complete taxonomy
 
 ### 1. SUPPORTS (A ⊢ B)
+
 **Definition:** A provides evidence or reasoning that strengthens B's claim
 **Signals:** "evidence for", "proves", "demonstrates", "validates"
 **Example:** [[Ebbinghaus Forgetting Curve]] supports [[Spaced Repetition]]
 
 ### 2. CONTRADICTS (A ⊥ B)
+
 **Definition:** A conflicts with or refutes B's claim
 **Signals:** "however", "contradicts", "conflicts with", "challenges"
 **Example:** [[Multitasking Reduces Performance]] contradicts [[Multitasking Improves Productivity]]
 
 ### 3. ELABORATES (A → B)
+
 **Definition:** A provides additional detail or explanation for B
 **Signals:** "in detail", "specifically", "for example", "expanding on"
 **Example:** [[Zettelkasten Atomicity]] elaborates [[Evergreen Notes]]
 
 ### 4. ANALOGOUS_TO (A ≈ B)
+
 **Definition:** A is similar to B in structure or pattern
 **Signals:** "similar to", "like", "analogous to", "mirrors"
 **Example:** [[Spaced Repetition]] analogous_to [[Deliberate Practice]]
 
 ### 5. GENERALIZES (A ⊃ B)
+
 **Definition:** A is a broader principle that encompasses B
 **Signals:** "in general", "broadly", "abstractly", "the general principle"
 **Example:** [[Learning Theory]] generalizes [[Spacing Effect]]
 
 ### 6. SPECIALIZES (A ⊂ B)
+
 **Definition:** A is a specific instance or application of B
 **Signals:** "specifically", "in particular", "one case of", "applied to"
 **Example:** [[Anki Algorithm]] specializes [[Spaced Repetition]]
 
 ### 7. INFLUENCES (A ⇒ B)
+
 **Definition:** A inspired or led to B (requires temporal precedence: A before B)
 **Signals:** "inspired", "led to", "based on", "building on"
 **Example:** [[Ebbinghaus 1885]] influences [[Modern Spaced Repetition Systems]]
@@ -837,6 +855,7 @@ Reference: `relationship-types.md` for complete taxonomy
 ## Link Strength Calculation Algorithm
 
 **Formula:**
+
 ```
 strength = (0.5 × semantic_similarity) +
            (0.3 × contextual_relevance) +
@@ -862,11 +881,13 @@ strength = (0.5 × semantic_similarity) +
    - Distant: 0.0
 
 **Classification:**
+
 - Strong: >= 0.7
 - Medium: 0.5 - 0.7
 - Weak: < 0.5
 
 **Example:**
+
 ```
 Source: "Spaced Repetition" (created: 2025-11-05)
 Target: "Forgetting Curve" (created: 2025-11-06)
@@ -931,6 +952,7 @@ STEP 7: Return Learning Results
 ```
 
 **Example:**
+
 ```
 Feedback Learning Analysis
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -961,12 +983,14 @@ Recommendations:
 ## Security Considerations
 
 **Input Validation:**
+
 - Sanitize all note paths to prevent directory traversal
 - Block paths containing: `../`, absolute paths outside vault
 - Validate note content is valid markdown (no script injection)
 - Limit suggestion count to 50 per query (prevent DoS)
 
 **Path Safety:**
+
 ```
 Allowed paths:
 - /inbox/*.md
@@ -981,6 +1005,7 @@ Blocked paths:
 ```
 
 **Cypher Injection Prevention:**
+
 - Always use parameterized queries for Neo4j
 - Never concatenate user input into Cypher strings
 - Example (SAFE):
@@ -995,40 +1020,47 @@ Blocked paths:
   ```
 
 **Link Quality Validation:**
+
 - Run linking-quality-checklist.md on all links
 - Detect circular reasoning: A supports B, B supports A (invalid)
 - Detect link spam: > 30 links from single note (review required)
 - Prevent duplicate links: check existing wikilinks before creation
 
 **Feedback Data Privacy:**
+
 - All feedback stored locally in `.bmad-obsidian-2nd-brain/link-feedback.json`
 - No external API calls for feedback collection
 - User can reset: `rm .bmad-obsidian-2nd-brain/link-feedback.json`
 - User can inspect: `cat .bmad-obsidian-2nd-brain/link-feedback.json | jq`
 
 **Smart Connections Privacy:**
+
 - Uses local BGE-micro-v2 embeddings
 - No cloud API calls
 - Embeddings stored in Obsidian vault (user-controlled)
 - Fully offline-capable
 
 **Neo4j Security:**
+
 - Optional integration (graceful degradation if disabled)
 - Parameterized queries only
 - Connection credentials stored in user-controlled config.yaml
 - No credential exposure in logs or error messages
 
 **Rollback Safety:**
+
 - Bidirectional link creation uses atomic rollback
 - If target update fails, source is rolled back to original state
 - Critical alert if rollback fails (manual intervention required)
 
 **Rate Limiting:**
-- Max 50 suggestions per *suggest-links query
-- Max 20 targets per *create-links bulk operation
+
+- Max 50 suggestions per \*suggest-links query
+- Max 20 targets per \*create-links bulk operation
 - Warn if > 10 pending suggestions (review backlog)
 
 **Content Sanitization:**
+
 - Escape special characters in wikilink titles
 - Remove potentially dangerous content (eval, script tags) from context sentences
 - Validate frontmatter YAML syntax before writing

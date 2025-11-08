@@ -7,7 +7,7 @@ template:
   description: Structured template for presenting query results with source attribution and format selection
   output:
     format: markdown
-    filename: null  # Results displayed inline, not saved to file
+    filename: null # Results displayed inline, not saved to file
 
 variables:
   - name: query

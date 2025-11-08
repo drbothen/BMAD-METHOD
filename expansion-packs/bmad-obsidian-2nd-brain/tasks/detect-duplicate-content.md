@@ -84,11 +84,11 @@ If Smart Connections available:
 
 **Duplicate Types:**
 
-| Type | Similarity | Priority | Suggested Action |
-|------|------------|----------|------------------|
-| **EXACT** | 1.0 (100%) | CRITICAL | MERGE immediately |
-| **NEAR** | >= 0.95 | HIGH | MERGE or consolidate |
-| **SEMANTIC** | 0.85-0.95 | MEDIUM | REVIEW for merge opportunities |
+| Type         | Similarity | Priority | Suggested Action               |
+| ------------ | ---------- | -------- | ------------------------------ |
+| **EXACT**    | 1.0 (100%) | CRITICAL | MERGE immediately              |
+| **NEAR**     | >= 0.95    | HIGH     | MERGE or consolidate           |
+| **SEMANTIC** | 0.85-0.95  | MEDIUM   | REVIEW for merge opportunities |
 
 ### Step 4: Aggregate Results
 
@@ -111,6 +111,7 @@ For each group:
 ## Memory Management
 
 **Batch Processing:** For large vaults (>10,000 notes):
+
 - Process notes in batches of 100
 - Clear batch data from memory after hashing
 - Peak memory: O(batch_size), not O(total_notes)
@@ -118,26 +119,31 @@ For each group:
 ## Use Cases
 
 **1. Reduce Redundancy**
+
 - Merge exact duplicates
 - Consolidate near-duplicates
 
 **2. Content Cleanup**
+
 - Identify copy-paste scenarios
 - Detect versioning without archiving
 
 **3. Knowledge Consolidation**
+
 - Find semantically similar notes
 - Merge related content
 
 ## False Positive Handling
 
 Allow user to mark pairs as "intentionally similar":
+
 - Store exclusions: `.audit-exclusions.json`
 - Ignore in future audits
 
 ## Testing
 
 **Test Case:** 100-note vault
+
 - 5 exact duplicate pairs
 - 5 near-duplicate pairs (>= 95%)
 - 5 semantic duplicate pairs (85-95%)
@@ -148,6 +154,7 @@ Expected: 15 duplicate groups detected
 ## Integration
 
 Executed by:
+
 - `*audit-duplicates [threshold]` command
 - `*audit-full` command
 - Progressive audit batch processing

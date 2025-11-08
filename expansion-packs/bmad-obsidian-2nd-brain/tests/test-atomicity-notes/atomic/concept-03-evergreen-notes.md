@@ -16,6 +16,7 @@ Evergreen notes are permanent notes in a knowledge management system that evolve
 The term "evergreen" captures two essential qualities: these notes are permanent (they don't decay or become obsolete) and they grow (accumulating more connections and nuance over time). They are the opposite of disposable notes or temporary captures.
 
 Characteristics of evergreen notes:
+
 - Atomic: one concept per note
 - Concept-oriented: titled by concepts, not sources
 - Densely linked: connected to many related notes
@@ -23,6 +24,7 @@ Characteristics of evergreen notes:
 - Designed for longevity: not time-bound or context-dependent
 
 ## Test Validation Criteria
+
 - ✓ Single claim: Defines evergreen notes concept
 - ✓ Evidence: Characteristics support the definition
 - ✓ Self-contained: Explains the concept completely

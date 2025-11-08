@@ -18,6 +18,7 @@ violations:
 Progressive Summarization is a technique for distilling information through multiple highlighting passes. Each pass emphasizes the most important parts, creating layers of compressed meaning.
 
 The technique involves:
+
 1. Initial capture (layer 0)
 2. Bold highlighting (layer 1)
 3. Highlighted highlighting (layer 2)
@@ -28,6 +29,7 @@ The technique involves:
 This is related to [[Zettelkasten]], [[GTD]], [[PARA]], [[Building a Second Brain]], [[Evergreen Notes]], [[Atomic Notes]], [[Fleeting Notes]], [[Literature Notes]], [[Permanent Notes]], [[Progressive Enhancement]], [[Information Architecture]], [[Knowledge Graphs]], [[Spaced Repetition]], [[Active Recall]], [[Ebbinghaus Forgetting Curve]], [[Memory Palace]], [[Mind Mapping]], [[Concept Mapping]], [[Cornell Notes]], [[Sketchnoting]], [[Bullet Journaling]], [[Digital Gardens]], [[Personal Knowledge Management]], [[Second Brain]], [[Tiago Forte]], [[Andy Matuschak]], [[Niklas Luhmann]], [[Sönke Ahrens]], [[Cal Newport]], [[Deep Work]], [[Attention Management]].
 
 ## Expected Test Results
+
 - Single Claim Test: PASS (one core concept: progressive summarization)
 - Evidence Test: PASS (supporting details relate to main concept)
 - Self-Contained Test: PASS (defines the technique)

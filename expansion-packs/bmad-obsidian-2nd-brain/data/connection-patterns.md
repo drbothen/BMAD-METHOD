@@ -19,6 +19,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Connect claims with their supporting evidence to build justified beliefs
 
 **Characteristics:**
+
 - Evidence-based relationship
 - Strengthens credibility of target claim
 - Often empirical or logical support
@@ -26,6 +27,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Creates justification networks in knowledge graph
 
 **Linguistic Signals:**
+
 - "evidence for", "confirms", "validates"
 - "proves that", "demonstrates"
 - "backs up", "corroborates"
@@ -34,6 +36,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "research supports", "data confirms"
 
 **Common Contexts:**
+
 - Phenomenon supporting argument
 - Data supporting claim
 - Example supporting theory
@@ -79,6 +82,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Highlight tensions, paradoxes, and competing perspectives in knowledge
 
 **Characteristics:**
+
 - Oppositional relationship
 - Reveals knowledge conflicts
 - Often productive tension
@@ -86,6 +90,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Creates critical thinking opportunities
 
 **Linguistic Signals:**
+
 - "however", "but", "in contrast"
 - "contradicts", "conflicts with"
 - "on the other hand", "conversely"
@@ -94,6 +99,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "contrary to", "opposes"
 
 **Common Contexts:**
+
 - Competing theories
 - Conflicting evidence
 - Opposing arguments
@@ -139,6 +145,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Build conceptual depth by connecting overviews to detailed explanations
 
 **Characteristics:**
+
 - Hierarchical depth relationship
 - Adds detail and nuance
 - Explanatory rather than evidential
@@ -146,6 +153,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Creates layers of understanding
 
 **Linguistic Signals:**
+
 - "in detail", "specifically"
 - "for example", "such as"
 - "more precisely", "to elaborate"
@@ -154,6 +162,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "the details of", "the specifics of"
 
 **Common Contexts:**
+
 - Concept → Sub-concept
 - Overview → Detailed explanation
 - General principle → Specific application
@@ -199,6 +208,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Enable cross-domain insight transfer and pattern recognition
 
 **Characteristics:**
+
 - Structural similarity
 - Different surface domains
 - Functional parallels
@@ -206,6 +216,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Transfers understanding across contexts
 
 **Linguistic Signals:**
+
 - "similar to", "like", "resembles"
 - "analogous to", "parallel to"
 - "mirrors", "echoes"
@@ -214,6 +225,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "just as", "in the same way"
 
 **Common Contexts:**
+
 - Cross-domain pattern matching
 - Metaphorical relationships
 - Isomorphic structures
@@ -259,6 +271,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Connect specific instances to general principles
 
 **Characteristics:**
+
 - Abstraction relationship
 - Broader scope in source
 - Subsumes target as special case
@@ -266,6 +279,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Enables principle extraction
 
 **Linguistic Signals:**
+
 - "in general", "broadly speaking"
 - "more generally", "abstractly"
 - "as a whole", "overall"
@@ -274,6 +288,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "applies more widely"
 
 **Common Contexts:**
+
 - Specific → General principle
 - Example → Category
 - Instance → Class
@@ -319,6 +334,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Connect general patterns to concrete implementations
 
 **Characteristics:**
+
 - Concretization relationship
 - Narrower scope in source
 - Specific instance of target
@@ -326,6 +342,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Adds domain-specific details
 
 **Linguistic Signals:**
+
 - "specifically", "in particular"
 - "for instance", "for example"
 - "a specific case of"
@@ -334,6 +351,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "applied to", "in the context of"
 
 **Common Contexts:**
+
 - General → Specific implementation
 - Category → Instance
 - Class → Object
@@ -379,6 +397,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Track intellectual lineage and idea evolution
 
 **Characteristics:**
+
 - Temporal dependency
 - Causal relationship
 - Idea provenance
@@ -386,6 +405,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Thought evolution
 
 **Linguistic Signals:**
+
 - "inspired", "led to", "sparked"
 - "based on", "building on"
 - "influenced", "shaped"
@@ -394,6 +414,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "in response to"
 
 **Common Contexts:**
+
 - Earlier idea → Later development
 - Reading → Insight
 - Question → Investigation
@@ -596,7 +617,7 @@ The agent uses this knowledge base to:
 ## References
 
 - Requirements: `/manuscripts/bmad-obsidian-2nd-brain-requirements.md` (lines 3806-3813)
-- Ahrens, S. (2017). *How to Take Smart Notes*
-- Luhmann, N. (1992). *Communicating with Slip Boxes*
-- Network Science: Barabási, A. (2016). *Network Science*
-- Knowledge Graphs: Hogan, A. et al. (2021). *Knowledge Graphs*
+- Ahrens, S. (2017). _How to Take Smart Notes_
+- Luhmann, N. (1992). _Communicating with Slip Boxes_
+- Network Science: Barabási, A. (2016). _Network Science_
+- Knowledge Graphs: Hogan, A. et al. (2021). _Knowledge Graphs_

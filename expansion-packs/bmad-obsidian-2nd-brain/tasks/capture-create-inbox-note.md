@@ -36,6 +36,7 @@ Create an inbox note in Obsidian vault using classified content and extracted me
 ### Step 2: Validate Template Structure
 
 Verify template contains required sections:
+
 - ✓ `template.id` exists
 - ✓ `variables` section exists
 - ✓ `sections` array exists
@@ -48,17 +49,20 @@ If validation fails, return error with details: "Template validation failed: [mi
 Map input data to template variables:
 
 **From classified_content:**
+
 - `{{content_type}}` → `classified_content.content_type`
 - `{{confidence}}` → `classified_content.confidence` (formatted to 2 decimal places)
 - `{{content}}` → `classified_content.raw_content`
 
 **From metadata:**
+
 - `{{source}}` → `metadata.source_url`
 - `{{author}}` → `metadata.author`
 - `{{captured}}` → `metadata.timestamp` (ISO8601 format)
 - `{{context}}` → `metadata.surrounding_context` (only include section if non-empty)
 
 **Computed variables:**
+
 - `{{flagged_for_review}}` → `true` if confidence < 0.7, else `false`
 - `{{tags}}` → Default to `[]` (empty array, can be enriched later by agent)
 - `{{timestamp}}` → Convert `metadata.timestamp` to filename format: `YYYY-MM-DD-HHMM`
@@ -77,11 +81,13 @@ Construct filename using template pattern: `{{timestamp}}-{{sanitized_title}}.md
 **Format:** `YYYY-MM-DD-HHMM-sanitized-title.md`
 
 **Examples:**
+
 - `2025-11-06-1030-deep-work-principles.md`
 - `2025-11-06-1445-atomic-notes-concept.md`
 - `2025-11-06-0915-spaced-repetition.md`
 
 **Collision handling:**
+
 - If filename already exists, append random 4-character suffix: `-a3f2`
 - Example: `2025-11-06-1030-deep-work-principles-a3f2.md`
 - Retry up to 3 times if collision persists
@@ -91,11 +97,13 @@ Construct filename using template pattern: `{{timestamp}}-{{sanitized_title}}.md
 Construct full path: `vault_path/inbox/YYYY-MM-DD-HHMM-sanitized-title.md`
 
 **Path construction:**
+
 1. Start with `vault_path` (e.g., `/Users/username/Obsidian/SecondBrain`)
 2. Append `/inbox/` subdirectory
 3. Append generated filename
 
 **Example paths:**
+
 - `/Users/username/Obsidian/SecondBrain/inbox/2025-11-06-1030-deep-work-principles.md`
 - `/Users/username/Obsidian/SecondBrain/inbox/2025-11-06-1445-atomic-notes-concept.md`
 
@@ -104,20 +112,24 @@ Construct full path: `vault_path/inbox/YYYY-MM-DD-HHMM-sanitized-title.md`
 Apply path security validation:
 
 **Block directory traversal:**
+
 - Check for `../` or `..\\` patterns
 - Check for absolute paths that escape vault root
 - Verify path resolves within vault bounds
 
 **Sanitize filename:**
+
 - Remove special characters: `/`, `\`, `:`, `*`, `?`, `"`, `<`, `>`, `|`
 - Keep only: alphanumeric, hyphens, underscores, periods, spaces
 
 **Validate vault_path:**
+
 - Verify vault_path exists and is a directory
 - Verify vault_path/inbox/ directory exists or create it
 - Check write permissions
 
 **If validation fails:**
+
 - Return error: "Invalid path: [reason]"
 - Examples: "Invalid path: directory traversal blocked", "Invalid path: vault not found"
 
@@ -126,20 +138,22 @@ Apply path security validation:
 Generate markdown content by populating template sections:
 
 **Section 1: Frontmatter**
+
 ```yaml
 ---
 status: unprocessed
-content_type: {{content_type}}
-confidence: {{confidence}}
-source: {{source}}
-author: {{author}}
-captured: {{captured}}
-tags: {{tags}}
-flagged_for_review: {{flagged_for_review}}
+content_type: { { content_type } }
+confidence: { { confidence } }
+source: { { source } }
+author: { { author } }
+captured: { { captured } }
+tags: { { tags } }
+flagged_for_review: { { flagged_for_review } }
 ---
 ```
 
 **Section 2: Content**
+
 ```markdown
 # {{content_type | titlecase}}: {{sanitized_title}}
 
@@ -147,6 +161,7 @@ flagged_for_review: {{flagged_for_review}}
 ```
 
 **Section 3: Context (conditional - only if context not empty)**
+
 ```markdown
 ## Context
 
@@ -154,20 +169,23 @@ flagged_for_review: {{flagged_for_review}}
 ```
 
 **Section 4: Processing Notes (placeholder)**
+
 ```markdown
 ## Processing Notes
 
-*To be filled by triage agent or user during processing*
+_To be filled by triage agent or user during processing_
 ```
 
 **Section 5: Next Actions (placeholder)**
+
 ```markdown
 ## Next Actions
 
-- [ ] *To be filled by user or organization agent*
+- [ ] _To be filled by user or organization agent_
 ```
 
 **Apply template rendering:**
+
 - Replace all `{{variable}}` placeholders with actual values
 - Apply filters: `| titlecase` (capitalize first letter of each word)
 - Escape YAML frontmatter values properly (quote strings with special chars)
@@ -178,6 +196,7 @@ flagged_for_review: {{flagged_for_review}}
 Use Obsidian MCP `obsidian.create_note` tool:
 
 **MCP Call Parameters:**
+
 ```javascript
 {
   path: "inbox/2025-11-06-1030-deep-work-principles.md",  // Relative to vault root
@@ -187,6 +206,7 @@ Use Obsidian MCP `obsidian.create_note` tool:
 ```
 
 **Handle MCP Response:**
+
 ```javascript
 {
   success: true/false,      // Boolean indicating success
@@ -196,15 +216,17 @@ Use Obsidian MCP `obsidian.create_note` tool:
 ```
 
 **MCP Call Example:**
+
 ```javascript
 obsidian.create_note({
-  path: "inbox/2025-11-06-1030-deep-work-principles.md",
-  content: "---\nstatus: unprocessed\ncontent_type: concept\n...\n",
-  vault: "SecondBrain"
-})
+  path: 'inbox/2025-11-06-1030-deep-work-principles.md',
+  content: '---\nstatus: unprocessed\ncontent_type: concept\n...\n',
+  vault: 'SecondBrain',
+});
 ```
 
 **If MCP unavailable:**
+
 - Return error: "Obsidian MCP not available, ensure MCP Tools configured"
 - Provide remediation: "Install Obsidian MCP server and configure in Claude Desktop/Cursor settings"
 
@@ -213,17 +235,20 @@ obsidian.create_note({
 Check MCP response:
 
 **If success = true:**
+
 - Extract `note_path` from response
 - Verify `note_path` matches expected path
 - Proceed to Step 10
 
 **If success = false:**
+
 - Check error message for reason
 - Apply error handling strategy (see Error Handling section)
 - Attempt retry if appropriate (e.g., path collision)
 - If retry fails, return error with details
 
 **Common failure scenarios:**
+
 - Permission denied: Check vault write permissions
 - Disk full: Check available disk space
 - Path already exists: Append random suffix and retry
@@ -243,6 +268,7 @@ Return success response:
 ```
 
 **Log success:**
+
 - Log note creation: "Inbox note created successfully: [path]"
 - Log file size and creation time for monitoring
 - Update capture statistics (optional)
@@ -261,6 +287,7 @@ Return success response:
 **Purpose:** Create new markdown file in Obsidian vault with YAML frontmatter
 
 **Parameters:**
+
 - **path** (String, required): Relative path from vault root
   - Example: `"inbox/2025-11-06-1030-deep-work-principles.md"`
   - Must be relative, not absolute
@@ -277,6 +304,7 @@ Return success response:
   - Must match actual vault name in Obsidian
 
 **Response:**
+
 ```javascript
 {
   success: true,                    // Boolean: operation success status
@@ -286,9 +314,10 @@ Return success response:
 ```
 
 **Example MCP Call:**
+
 ```javascript
 obsidian.create_note({
-  path: "inbox/2025-11-06-1030-deep-work-principles.md",
+  path: 'inbox/2025-11-06-1030-deep-work-principles.md',
   content: `---
 status: unprocessed
 content_type: concept
@@ -312,11 +341,12 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 
 - [ ] *To be filled by user or organization agent*
 `,
-  vault: "SecondBrain"
-})
+  vault: 'SecondBrain',
+});
 ```
 
 **Expected Response:**
+
 ```javascript
 {
   success: true,
@@ -332,6 +362,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** Obsidian MCP not configured or not responding
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -347,6 +378,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** MCP returns success=false due to write failure
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -356,6 +388,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 ```
 
 **Possible causes:**
+
 - Permission denied: User lacks write permission to vault/inbox directory
 - Disk full: No available disk space
 - Vault locked: Vault is read-only or locked by another process
@@ -367,6 +400,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** File already exists at target path
 
 **Response:**
+
 - Append random 4-character suffix to filename: `-a3f2`
 - Example: `2025-11-06-1030-deep-work-principles-a3f2.md`
 - Retry note creation with new filename
@@ -388,6 +422,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** inbox-note-tmpl.yaml not found at expected location
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -403,6 +438,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** Template file exists but validation fails (malformed YAML, missing sections)
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -418,6 +454,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** vault_path does not exist or is not a directory
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -433,6 +470,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 ### Atomic Operation
 
 Obsidian MCP `create_note` is **atomic**:
+
 - Note is either fully created or not created at all
 - No partial writes that require cleanup
 - No rollback needed if creation fails
@@ -440,16 +478,19 @@ Obsidian MCP `create_note` is **atomic**:
 ### Rollback Scenarios
 
 **If template population fails:**
+
 - No file created yet (failure before MCP call)
 - No rollback needed
 - Return error with details
 
 **If MCP call fails:**
+
 - Obsidian handles atomicity
 - No partial file left behind
 - No cleanup required
 
 **If path validation fails:**
+
 - Failure before MCP call
 - No file created
 - No rollback needed
@@ -461,17 +502,20 @@ Obsidian MCP `create_note` is **atomic**:
 ### Path Sanitization (Directory Traversal Prevention)
 
 **Block directory traversal patterns:**
+
 - `../` (parent directory)
 - `..\\` (Windows parent directory)
 - Absolute paths: `/`, `C:\\`
 - Symlink exploitation
 
 **Validation:**
+
 - Resolve path to absolute path
 - Verify resolved path is within vault bounds
 - Reject if path escapes vault directory
 
 **Example blocked paths:**
+
 ```
 ❌ "../../../etc/passwd"
 ❌ "/etc/passwd"
@@ -483,11 +527,13 @@ Obsidian MCP `create_note` is **atomic**:
 ### Content Validation
 
 **Vault bounds:**
+
 - Ensure path within vault directory tree
 - No escaping vault root
 - Verify vault_path is absolute and valid
 
 **Filename sanitization:**
+
 - Remove special chars: `/`, `\`, `:`, `*`, `?`, `"`, `<`, `>`, `|`
 - Keep only: a-z, A-Z, 0-9, `-`, `_`, `.`, space
 - Prevent null bytes: `\x00`
@@ -495,11 +541,13 @@ Obsidian MCP `create_note` is **atomic**:
 ### YAML Frontmatter Escaping
 
 **Escape YAML special characters:**
+
 - `:` → Quote value if contains colon
 - `#` → Quote value if starts with hash
 - `-`, `[`, `]`, `{`, `}`, `|`, `>` → Quote if needed
 
 **Example escaping:**
+
 ```yaml
 # Unescaped (unsafe)
 title: Understanding: Deep Work
@@ -509,6 +557,7 @@ title: "Understanding: Deep Work"
 ```
 
 **Quote string values:**
+
 - Quote strings containing special chars
 - Use double quotes: `"value"`
 - Escape quotes within strings: `"He said \"hello\""`
@@ -516,10 +565,12 @@ title: "Understanding: Deep Work"
 ### Size Limits
 
 **Content size:**
+
 - Max 10MB per note (inherited from classification input limit)
 - Already enforced in earlier steps
 
 **Metadata size:**
+
 - Max 1MB (inherited from metadata extraction)
 - Verify total note size < 10MB before creation
 
@@ -528,6 +579,7 @@ title: "Understanding: Deep Work"
 **Target execution time:** < 3 seconds per note creation
 
 **Performance breakdown:**
+
 - Template loading: < 100ms
 - Template rendering: < 200ms
 - MCP call latency: < 2s
@@ -535,12 +587,14 @@ title: "Understanding: Deep Work"
 - Total: ~2.35s (buffer for network latency)
 
 **Performance considerations:**
+
 - Cache template in memory (load once, reuse)
 - Minimize regex operations during rendering
 - Efficient string concatenation
 - No external API calls except Obsidian MCP
 
 **Monitoring:**
+
 - Log note creation time for each execution
 - Alert if average time exceeds 3s target
 - Track MCP latency separately

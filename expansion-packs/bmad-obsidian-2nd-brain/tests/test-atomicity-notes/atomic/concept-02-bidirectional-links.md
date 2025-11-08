@@ -18,6 +18,7 @@ This concept is fundamental to networked thinking because it reveals unexpected 
 The power of bidirectional linking emerges when you discover that Note C and Note D both link to Note B. This reveals an implicit relationship between C and D that you might not have noticed otherwise. The backlink panel becomes a discovery tool, not just a navigation aid.
 
 ## Test Validation Criteria
+
 - ✓ Single claim: Defines bidirectional linking concept
 - ✓ Evidence: Examples support the definition
 - ✓ Self-contained: Fully explains the concept

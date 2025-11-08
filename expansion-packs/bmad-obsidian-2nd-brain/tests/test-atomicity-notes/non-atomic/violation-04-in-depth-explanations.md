@@ -27,6 +27,7 @@ In practice, bidirectional links enable discovery. You might write Note C about 
 Implementation-wise, most modern PKM tools (Obsidian, Roam, LogSeq) support bidirectional links natively. They use `[[WikiLink]]` syntax and automatically maintain the backlink index. Some tools like Obsidian even show an interactive graph view of all connections.
 
 ## Expected Test Results
+
 - Single Claim Test: BORDERLINE (main claim about atomic notes + extensive bidirectional links explanation)
 - Evidence Test: FAIL (bidirectional links explanation diverges into implementation details, graph views)
 - Self-Contained Test: PASS (defines terms)

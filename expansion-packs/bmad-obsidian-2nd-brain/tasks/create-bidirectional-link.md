@@ -88,16 +88,16 @@ original_target_content = target_note.content
 
 ```javascript
 // Extract existing wikilinks from source
-existing_source_links = extract_wikilinks(source_note.content)
+existing_source_links = extract_wikilinks(source_note.content);
 
 // Check if target already linked
-target_note_title = extract_title_from_path(target_note_path)
+target_note_title = extract_title_from_path(target_note_path);
 if (existing_source_links.includes(`[[${target_note_title}]]`)) {
   return {
     success: false,
     error: `Link already exists: source already links to ${target_note_title}`,
-    action: 'Skipped duplicate link creation'
-  }
+    action: 'Skipped duplicate link creation',
+  };
 }
 ```
 
@@ -106,11 +106,12 @@ if (existing_source_links.includes(`[[${target_note_title}]]`)) {
 ```javascript
 // Format: - [[Note Title]] - context sentence
 
-source_to_target_link = `- [[${target_note.title}]] - ${context_forward}`
-target_to_source_link = `- [[${source_note.title}]] - ${context_backward}`
+source_to_target_link = `- [[${target_note.title}]] - ${context_forward}`;
+target_to_source_link = `- [[${source_note.title}]] - ${context_backward}`;
 ```
 
 **Example:**
+
 ```markdown
 ## Related Concepts
 
@@ -124,23 +125,27 @@ target_to_source_link = `- [[${source_note.title}]] - ${context_backward}`
 function find_insertion_point(note_content) {
   // Priority 1: Insert in "Related Concepts" section if exists
   if (note_content.includes('## Related Concepts')) {
-    section_start = note_content.indexOf('## Related Concepts')
-    section_end = note_content.indexOf('\n## ', section_start + 1)
-    if (section_end == -1) section_end = note_content.length
-    insertion_point = section_end
-    return {location: 'related_concepts_section', index: insertion_point}
+    section_start = note_content.indexOf('## Related Concepts');
+    section_end = note_content.indexOf('\n## ', section_start + 1);
+    if (section_end == -1) section_end = note_content.length;
+    insertion_point = section_end;
+    return { location: 'related_concepts_section', index: insertion_point };
   }
 
   // Priority 2: Insert before "Source Attribution" section if exists
   if (note_content.includes('## Source Attribution')) {
-    insertion_point = note_content.indexOf('## Source Attribution')
+    insertion_point = note_content.indexOf('## Source Attribution');
     // Create Related Concepts section
-    new_section = '\n## Related Concepts\n\n'
-    return {location: 'before_source_attribution', index: insertion_point, prefix: new_section}
+    new_section = '\n## Related Concepts\n\n';
+    return { location: 'before_source_attribution', index: insertion_point, prefix: new_section };
   }
 
   // Priority 3: Append to end of note
-  return {location: 'end_of_note', index: note_content.length, prefix: '\n\n## Related Concepts\n\n'}
+  return {
+    location: 'end_of_note',
+    index: note_content.length,
+    prefix: '\n\n## Related Concepts\n\n',
+  };
 }
 ```
 
@@ -181,17 +186,17 @@ if (dry_run) {
 ### Step 7: Write Updated Content (with Rollback)
 
 ```javascript
-source_updated = false
-target_updated = false
+source_updated = false;
+target_updated = false;
 
 try {
   // Step 7a: Update source note
-  obsidian_mcp.update_note(source_note_path, updated_source)
-  source_updated = true
+  obsidian_mcp.update_note(source_note_path, updated_source);
+  source_updated = true;
 
   // Step 7b: Update target note
-  obsidian_mcp.update_note(target_note_path, updated_target)
-  target_updated = true
+  obsidian_mcp.update_note(target_note_path, updated_target);
+  target_updated = true;
 
   return {
     success: true,
@@ -200,22 +205,21 @@ try {
     rollback_performed: false,
     source_link_added: source_to_target_link,
     target_link_added: target_to_source_link,
-    error: null
-  }
-
+    error: null,
+  };
 } catch (error) {
   // Rollback if second write failed
   if (source_updated && !target_updated) {
     try {
-      obsidian_mcp.update_note(source_note_path, original_source_content)
+      obsidian_mcp.update_note(source_note_path, original_source_content);
       return {
         success: false,
         source_updated: false,
         target_updated: false,
         rollback_performed: true,
         error: `Target update failed, source rolled back: ${error.message}`,
-        original_error: error.message
-      }
+        original_error: error.message,
+      };
     } catch (rollback_error) {
       return {
         success: false,
@@ -223,16 +227,16 @@ try {
         target_updated: false,
         rollback_performed: false,
         error: `CRITICAL: Target update failed AND rollback failed. Source note modified but target not updated. Manual intervention required.`,
-        rollback_error: rollback_error.message
-      }
+        rollback_error: rollback_error.message,
+      };
     }
   } else {
     return {
       success: false,
       source_updated: false,
       target_updated: false,
-      error: `Failed to update notes: ${error.message}`
-    }
+      error: `Failed to update notes: ${error.message}`,
+    };
   }
 }
 ```
@@ -242,23 +246,23 @@ try {
 ```javascript
 // Re-read both notes to confirm links present
 try {
-  source_verify = obsidian_mcp.read_note(source_note_path)
-  target_verify = obsidian_mcp.read_note(target_note_path)
+  source_verify = obsidian_mcp.read_note(source_note_path);
+  target_verify = obsidian_mcp.read_note(target_note_path);
 
-  source_has_link = source_verify.content.includes(`[[${target_note.title}]]`)
-  target_has_link = target_verify.content.includes(`[[${source_note.title}]]`)
+  source_has_link = source_verify.content.includes(`[[${target_note.title}]]`);
+  target_has_link = target_verify.content.includes(`[[${source_note.title}]]`);
 
   if (!source_has_link || !target_has_link) {
     return {
       success: false,
-      error: "Verification failed: links not found in updated notes",
+      error: 'Verification failed: links not found in updated notes',
       source_has_link: source_has_link,
-      target_has_link: target_has_link
-    }
+      target_has_link: target_has_link,
+    };
   }
 } catch (error) {
   // Non-critical: verification failed but links likely created
-  log_warning(`Link verification failed: ${error.message}`)
+  log_warning(`Link verification failed: ${error.message}`);
 }
 ```
 
@@ -267,6 +271,7 @@ try {
 ### Example 1: Successful Bidirectional Link
 
 **Input:**
+
 ```yaml
 source_note_path: 'atomic/argument-01-spaced-repetition.md'
 target_note_path: 'atomic/phenomenon-01-forgetting-curve.md'
@@ -277,6 +282,7 @@ dry_run: false
 ```
 
 **Output:**
+
 ```yaml
 success: true
 source_updated: true
@@ -292,6 +298,7 @@ error: null
 **Input:** (same as above, but target note locked/read-only)
 
 **Output:**
+
 ```yaml
 success: false
 source_updated: false
@@ -306,6 +313,7 @@ original_error: 'Permission denied: note is read-only'
 **Input:** (link already exists)
 
 **Output:**
+
 ```yaml
 success: false
 error: 'Link already exists: source already links to Forgetting Curve'
@@ -321,6 +329,6 @@ action: 'Skipped duplicate link creation'
 
 ## Integration Points
 
-**Called by:** *create-links, *create-link, *accept-suggestion
+**Called by:** *create-links, *create-link, \*accept-suggestion
 **Calls:** Obsidian MCP read_note(), update_note()
 **Depends on:** linking-quality-checklist.md (validation before calling)

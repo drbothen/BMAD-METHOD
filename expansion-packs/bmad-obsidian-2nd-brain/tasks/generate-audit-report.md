@@ -56,6 +56,7 @@ if any_missing_results:
 ### Step 2: Calculate Vault Health Score (0-100)
 
 **Algorithm:**
+
 ```
 health_score = 100  # Start perfect
 
@@ -96,6 +97,7 @@ health_score = max(0, min(100, round(health_score)))
 ```
 
 **Health Score Interpretation:**
+
 - **90-100**: Excellent
 - **75-89**: Good
 - **60-74**: Fair
@@ -107,24 +109,28 @@ health_score = max(0, min(100, round(health_score)))
 Aggregate all findings and classify by impact:
 
 **CRITICAL (Fix Immediately):**
+
 - Broken links (4xx status codes)
 - Missing required metadata (title, created)
 - Exact duplicates (100% match)
 - Notes with no source attribution (external claims)
 
 **HIGH (Fix Soon):**
+
 - Stale critical/high-priority notes (>10 incoming links, >180 days old)
 - Incomplete citations (missing 2+ fields)
 - Orphaned notes (no connections)
 - Near-duplicates (>= 95% similarity)
 
 **MEDIUM (Address When Possible):**
+
 - Atomicity violations (score 0.5-0.7)
 - Redirect links (3xx - update to new URL)
 - Minor metadata issues (missing tags/type)
 - Semantic duplicates (85-95% similarity)
 
 **LOW (Nice to Have):**
+
 - Format inconsistencies (citations, metadata)
 - Optional metadata fields
 - Stale low-priority notes (<2 incoming links)
@@ -145,6 +151,7 @@ Aggregate all findings and classify by impact:
 **Variable Formatting:**
 
 Example: `stale_notes_list` variable:
+
 ```markdown
 - **[CRITICAL]** [[Core Methodology Framework]] - Last updated 236 days ago (15 incoming links)
 - **[HIGH]** [[Team Processes]] - Last updated 380 days ago (8 incoming links)
@@ -177,6 +184,7 @@ report_generation:
 ## Vault Health Score Examples
 
 **Example 1: Healthy Vault (Score: 92)**
+
 ```
 Start: 100
 - Temporal: -8 (8% stale)
@@ -190,6 +198,7 @@ Final: 100 - 8 = 92 (Excellent)
 ```
 
 **Example 2: Problematic Vault (Score: 28)**
+
 ```
 Start: 100
 - Temporal: -70 (70% stale)
@@ -210,38 +219,46 @@ Final: max(0, -203.5) = 0 → Adjusted to 28 (Critical)
 ## Use Cases
 
 **1. Executive Summary**
+
 - High-level vault health overview
 - Key findings at a glance
 
 **2. Actionable Insights**
+
 - Prioritized to-do list
 - Clear next steps
 
 **3. Trend Tracking**
+
 - Compare reports over time
 - Measure improvement
 
 **4. Stakeholder Communication**
+
 - Share vault quality metrics
 - Justify maintenance efforts
 
 ## Error Handling
 
 **Missing Audit Results:**
+
 - Error: "Incomplete audit - missing {task_name} results"
 - Action: Run `*audit-full` to complete all audits
 
 **Template Not Found:**
+
 - Error: "audit-report-tmpl.yaml not found"
 - Action: Verify template file exists in expansion pack
 
 **Write Permissions:**
+
 - Error: "Cannot write to /reports/ directory"
 - Action: Check vault permissions
 
 ## Testing
 
 **Test Case:** Generate report from test audit results
+
 - Vault: 1000 notes
 - Results: All 7 audit tasks completed
 - Expected: Report generated with score, all sections present
@@ -249,6 +266,7 @@ Final: max(0, -203.5) = 0 → Adjusted to 28 (Critical)
 ## Integration
 
 Executed by:
+
 - `*generate-report` command (standalone)
 - `*audit-full` command (auto-generate after all audits)
 - Progressive audit completion (generate after all batches)

@@ -9,20 +9,10 @@
 ---
 
 checklist:
-  id: audit-coverage-checklist
-  name: Audit Coverage Checklist
-  description: Quality gates for comprehensive vault audit execution - ensures all audit dimensions are covered with adequate depth and rigor
-  items:
-    - "[ ] Temporal audit: All notes checked for staleness against threshold (default 180 days)"
-    - "[ ] Link validation: All external URLs tested (HTTP status codes verified)"
-    - "[ ] Citation audit: All notes checked for source attribution completeness"
-    - "[ ] Orphan detection: Graph analysis performed, isolated notes identified"
-    - "[ ] Atomicity audit: Random sample of 10% notes or min 20 notes analyzed for violations"
-    - "[ ] Duplicate detection: Semantic similarity analysis performed across vault (threshold >= 0.85)"
-    - "[ ] Metadata audit: All notes checked for required frontmatter fields"
-    - "[ ] Report generation: Comprehensive report with all findings generated"
-    - "[ ] Prioritization: Action items sorted by impact (critical/high/medium/low)"
-    - "[ ] Vault health score: Overall score calculated (0-100 scale)"
+id: audit-coverage-checklist
+name: Audit Coverage Checklist
+description: Quality gates for comprehensive vault audit execution - ensures all audit dimensions are covered with adequate depth and rigor
+items: - "[ ] Temporal audit: All notes checked for staleness against threshold (default 180 days)" - "[ ] Link validation: All external URLs tested (HTTP status codes verified)" - "[ ] Citation audit: All notes checked for source attribution completeness" - "[ ] Orphan detection: Graph analysis performed, isolated notes identified" - "[ ] Atomicity audit: Random sample of 10% notes or min 20 notes analyzed for violations" - "[ ] Duplicate detection: Semantic similarity analysis performed across vault (threshold >= 0.85)" - "[ ] Metadata audit: All notes checked for required frontmatter fields" - "[ ] Report generation: Comprehensive report with all findings generated" - "[ ] Prioritization: Action items sorted by impact (critical/high/medium/low)" - "[ ] Vault health score: Overall score calculated (0-100 scale)"
 
 ---
 
@@ -45,6 +35,7 @@ This checklist ensures a comprehensive quality audit covers all critical dimensi
 **Check:** All notes in vault checked for last modification date against configured staleness threshold
 
 **Coverage Requirements:**
+
 - **100% of notes** must be analyzed for last_modified date
 - Default threshold: 180 days (user-configurable)
 - Prioritization by incoming link count:
@@ -55,17 +46,20 @@ This checklist ensures a comprehensive quality audit covers all critical dimensi
 - Performance: Must complete in <5 seconds for 1000-note vault
 
 **Pass Criteria:**
+
 - All notes analyzed (100% coverage)
 - Stale notes correctly identified (days_since_update > threshold)
 - Prioritization accurate (based on incoming link count)
 - Results include: note path, last_updated date, days_since_update, priority
 
 **Verification:**
+
 ```
 Verify: stale_notes_count + fresh_notes_count == total_notes
 ```
 
 **Remediation if failed:**
+
 - Re-run temporal freshness audit
 - Check Obsidian MCP connection (must provide note metadata)
 - Verify threshold parameter is valid integer
@@ -78,6 +72,7 @@ Verify: stale_notes_count + fresh_notes_count == total_notes
 **Check:** All external URLs in vault tested for accessibility and HTTP status
 
 **Coverage Requirements:**
+
 - Parse all notes for external URLs (http:// and https://)
 - Match patterns: `[text](URL)` and `<URL>`
 - Test up to max_links URLs (default: 50 per audit run)
@@ -92,18 +87,21 @@ Verify: stale_notes_count + fresh_notes_count == total_notes
   - Timeout: Connection timeout (flag for retry or removal)
 
 **Pass Criteria:**
+
 - All discovered URLs validated (up to max_links limit)
 - HTTP status codes correctly classified
 - Security checks enforced (no SSRF, no invalid protocols)
 - Results include: note path, URL, status_code, status_category
 
 **Verification:**
+
 ```
 Verify: broken_links_count + redirect_links_count + valid_links_count + timeout_count + error_count == total_links_tested
 Verify: total_links_tested <= max_links (default 50)
 ```
 
 **Remediation if failed:**
+
 - Re-run link validation audit
 - Check network connectivity
 - Verify rate limiting not causing false timeouts
@@ -117,6 +115,7 @@ Verify: total_links_tested <= max_links (default 50)
 **Check:** All notes checked for citation completeness and quality
 
 **Coverage Requirements:**
+
 - **100% of notes** must be analyzed for citation quality
 - Check for Source Attribution section or metadata fields
 - Required citation fields:
@@ -132,17 +131,20 @@ Verify: total_links_tested <= max_links (default 50)
 - Detect unattributed claims (factual statements without nearby citations)
 
 **Pass Criteria:**
+
 - All notes analyzed (100% coverage)
 - Incomplete citations identified (missing 2+ required fields)
 - Unattributed claims detected (>3 claims without citations)
 - Results include: note path, issue_type, issue_severity, missing_fields, unattributed_claims_count
 
 **Verification:**
+
 ```
 Verify: notes_with_citation_issues + notes_with_complete_citations == total_notes
 ```
 
 **Remediation if failed:**
+
 - Re-run citation validation audit
 - Adjust citation format detection (APA, MLA, Chicago)
 - Review false positives (personal notes may not need citations)
@@ -155,6 +157,7 @@ Verify: notes_with_citation_issues + notes_with_complete_citations == total_note
 **Check:** Graph analysis performed to identify notes with no incoming/outgoing links
 
 **Coverage Requirements:**
+
 - **100% of notes** must be analyzed for link connections
 - Build complete link graph from wikilinks `[[...]]`
 - Identify three orphan categories:
@@ -166,6 +169,7 @@ Verify: notes_with_citation_issues + notes_with_complete_citations == total_note
 - Performance: Must complete in <5 seconds for 1000-note vault
 
 **Pass Criteria:**
+
 - All notes analyzed (100% coverage)
 - Link graph correctly constructed
 - Orphans accurately identified
@@ -173,12 +177,14 @@ Verify: notes_with_citation_issues + notes_with_complete_citations == total_note
 - Results include: note path, has_incoming, has_outgoing, suggested_links
 
 **Verification:**
+
 ```
 Verify: orphaned_notes_count <= total_notes
 Verify: Graph integrity (all links resolve to existing notes)
 ```
 
 **Remediation if failed:**
+
 - Re-run orphan detection audit
 - Verify wikilink parsing (handle [[link|alias]] syntax)
 - Check Smart Connections availability (optional, graceful degradation)
@@ -191,6 +197,7 @@ Verify: Graph integrity (all links resolve to existing notes)
 **Check:** Random sample of notes analyzed for atomicity violations using STORY-003 analyze-atomicity.md task
 
 **Coverage Requirements:**
+
 - Sampling strategy:
   - Large vaults (>200 notes): 10% random sample or min 20 notes
   - Small vaults (<=200 notes): analyze all notes
@@ -203,9 +210,10 @@ Verify: Graph integrity (all links resolve to existing notes)
 - Calculate atomicity score (0.0-1.0)
 - Flag violations: score < 0.7
 - Recommend fragmentation: score < 0.5
-- Extrapolate to full vault: estimated_violations = (violations_found / sample_size) * total_notes
+- Extrapolate to full vault: estimated_violations = (violations_found / sample_size) \* total_notes
 
 **Pass Criteria:**
+
 - Sample size >= 10% of vault or >= 20 notes (whichever is greater)
 - All sampled notes analyzed (100% of sample coverage)
 - Atomicity scores calculated (0.0-1.0 scale)
@@ -214,6 +222,7 @@ Verify: Graph integrity (all links resolve to existing notes)
 - Results include: note path, atomicity_score, failed_tests, fragmentation_recommended, estimated_violations_vault_wide
 
 **Verification:**
+
 ```
 Verify: sample_size >= min(0.1 * total_notes, 20)
 Verify: atomicity_violations_count <= sample_size
@@ -221,6 +230,7 @@ Verify: estimated_violations_vault_wide == (violations_count / sample_size) * to
 ```
 
 **Remediation if failed:**
+
 - Re-run atomicity audit with larger sample size
 - Verify STORY-003 analyze-atomicity.md task is available
 - Check atomicity score calculation (must be 0.0-1.0)
@@ -233,6 +243,7 @@ Verify: estimated_violations_vault_wide == (violations_count / sample_size) * to
 **Check:** Semantic similarity analysis performed across vault to detect duplicate content
 
 **Coverage Requirements:**
+
 - **All notes** must be analyzed for duplicates (100% coverage)
 - Two detection methods:
   - **Exact duplicates:** SHA-256 hash comparison (100% match)
@@ -246,6 +257,7 @@ Verify: estimated_violations_vault_wide == (violations_count / sample_size) * to
 - Performance: Must complete in <10 seconds for 1000-note vault
 
 **Pass Criteria:**
+
 - All notes analyzed (100% coverage)
 - Exact duplicates detected (SHA-256 hash collision)
 - Semantic duplicates detected (if Smart Connections available)
@@ -253,6 +265,7 @@ Verify: estimated_violations_vault_wide == (violations_count / sample_size) * to
 - Results include: duplicate_groups with note paths, similarity_score, is_exact_match
 
 **Verification:**
+
 ```
 Verify: All notes hashed (100% coverage for exact duplicates)
 Verify: duplicate_groups_count >= 0
@@ -260,6 +273,7 @@ Verify: Each group has >= 2 notes
 ```
 
 **Remediation if failed:**
+
 - Re-run duplicate detection audit
 - Check SHA-256 hashing implementation (must be consistent)
 - Verify Smart Connections availability (optional, graceful degradation)
@@ -272,6 +286,7 @@ Verify: Each group has >= 2 notes
 **Check:** All notes checked for required frontmatter metadata fields
 
 **Coverage Requirements:**
+
 - **100% of notes** must be analyzed for metadata completeness
 - Required fields:
   - title (required, non-empty string)
@@ -292,18 +307,21 @@ Verify: Each group has >= 2 notes
 - Performance: Must complete in <3 seconds for 1000-note vault
 
 **Pass Criteria:**
+
 - All notes analyzed (100% coverage)
 - Missing required fields identified
 - Format issues detected
 - Results include: note path, issue_severity, missing_fields, invalid_fields, recommendations
 
 **Verification:**
+
 ```
 Verify: notes_with_metadata_issues + notes_with_complete_metadata == total_notes
 Verify: metadata_completeness_percentage == (notes_with_complete_metadata / total_notes) * 100
 ```
 
 **Remediation if failed:**
+
 - Re-run metadata audit
 - Check YAML frontmatter parsing (must handle malformed YAML gracefully)
 - Verify required fields match expansion pack configuration
@@ -316,6 +334,7 @@ Verify: metadata_completeness_percentage == (notes_with_complete_metadata / tota
 **Check:** Comprehensive audit report generated using audit-report-tmpl.yaml with all findings
 
 **Coverage Requirements:**
+
 - Aggregate results from all audit tasks (Tasks 3-9)
 - Load audit-report-tmpl.yaml template
 - Substitute all 45+ variables with aggregated data
@@ -333,6 +352,7 @@ Verify: metadata_completeness_percentage == (notes_with_complete_metadata / tota
 - Save report to vault: `/reports/audit-{timestamp}.md`
 
 **Pass Criteria:**
+
 - Report generated successfully
 - All 10 sections present
 - All variables substituted (no {{missing_variable}} placeholders)
@@ -340,6 +360,7 @@ Verify: metadata_completeness_percentage == (notes_with_complete_metadata / tota
 - Results include: report_path, vault_health_score, critical_issues_count
 
 **Verification:**
+
 ```
 Verify: Report file exists at /reports/audit-{timestamp}.md
 Verify: Report contains all 10 sections
@@ -347,6 +368,7 @@ Verify: No {{unresolved_variables}} in output
 ```
 
 **Remediation if failed:**
+
 - Re-run report generation
 - Check template file exists (audit-report-tmpl.yaml)
 - Verify all audit tasks completed (cached results available)
@@ -359,6 +381,7 @@ Verify: No {{unresolved_variables}} in output
 **Check:** Action items sorted by impact and prioritized into four categories
 
 **Coverage Requirements:**
+
 - Aggregate all findings from audit tasks
 - Classify each finding by impact:
   - **Critical:** Fix immediately (broken links, missing required metadata, exact duplicates)
@@ -373,18 +396,21 @@ Verify: No {{unresolved_variables}} in output
 - Format as actionable items with clear next steps
 
 **Pass Criteria:**
+
 - All findings classified by impact
 - Action items sorted by priority
 - Each item is actionable (has clear next step)
 - Results include: action_items_critical, action_items_high, action_items_medium, action_items_low
 
 **Verification:**
+
 ```
 Verify: critical_issues_count + high_priority_count + medium_priority_count + low_priority_count == total_issues
 Verify: Each action item has clear remediation step
 ```
 
 **Remediation if failed:**
+
 - Re-run prioritization
 - Review impact classification logic
 - Ensure all findings are included (no missing issues)
@@ -397,6 +423,7 @@ Verify: Each action item has clear remediation step
 **Check:** Overall vault health score calculated using standardized algorithm
 
 **Coverage Requirements:**
+
 - Start at 100 points
 - Apply deductions for each quality issue category:
   - Temporal Freshness: -10 points per 10% of notes stale
@@ -415,12 +442,14 @@ Verify: Each action item has clear remediation step
   - 0-39: Critical - Major quality issues requiring immediate action
 
 **Pass Criteria:**
+
 - Health score calculated (0-100)
 - Algorithm correctly applied with all deductions
 - Score interpretation provided
 - Results include: vault_health_score, health_score_interpretation
 
 **Verification:**
+
 ```
 Verify: 0 <= vault_health_score <= 100
 Verify: health_score_interpretation matches score range
@@ -428,6 +457,7 @@ Verify: Deductions correctly calculated for each category
 ```
 
 **Remediation if failed:**
+
 - Re-run health score calculation
 - Verify deduction formula for each category
 - Check that extrapolation is used for atomicity violations
@@ -482,11 +512,13 @@ is_comprehensive_audit = (audit_coverage >= 90)  # Must pass 9 out of 10 criteri
 **FAIL (Incomplete Audit):** audit_coverage < 70% (significant gaps, re-run required)
 
 **Blocking Failures (auto-fail regardless of score):**
+
 - Report generation failed (criterion 8)
 - Vault health score not calculated (criterion 10)
 - Less than 5 criteria passed (< 50% coverage)
 
 **Critical Warnings (fail if not addressed):**
+
 - Temporal audit incomplete (criterion 1)
 - Metadata audit incomplete (criterion 7)
 - Prioritization not performed (criterion 9)
@@ -532,23 +564,23 @@ All test scenarios documented in STORY-006 testing section.
 ```yaml
 audit_coverage_check:
   timestamp: 2025-11-06T14:30:00Z
-  vault: "My Second Brain"
+  vault: 'My Second Brain'
   total_criteria: 10
   passed_criteria: 10
   coverage_percentage: 100
   is_comprehensive: true
   criteria:
-    - {id: 1, name: "Temporal audit", status: PASS, notes: "1000 notes analyzed"}
-    - {id: 2, name: "Link validation", status: PASS, notes: "50 URLs tested"}
-    - {id: 3, name: "Citation audit", status: PASS, notes: "1000 notes checked"}
-    - {id: 4, name: "Orphan detection", status: PASS, notes: "Graph analysis complete"}
-    - {id: 5, name: "Atomicity audit", status: PASS, notes: "100 notes sampled"}
-    - {id: 6, name: "Duplicate detection", status: PASS, notes: "1000 notes hashed"}
-    - {id: 7, name: "Metadata audit", status: PASS, notes: "1000 notes validated"}
-    - {id: 8, name: "Report generation", status: PASS, notes: "Report saved"}
-    - {id: 9, name: "Prioritization", status: PASS, notes: "Action items sorted"}
-    - {id: 10, name: "Vault health score", status: PASS, notes: "Score: 92/100"}
-  verdict: "PASS - Comprehensive audit complete"
+    - { id: 1, name: 'Temporal audit', status: PASS, notes: '1000 notes analyzed' }
+    - { id: 2, name: 'Link validation', status: PASS, notes: '50 URLs tested' }
+    - { id: 3, name: 'Citation audit', status: PASS, notes: '1000 notes checked' }
+    - { id: 4, name: 'Orphan detection', status: PASS, notes: 'Graph analysis complete' }
+    - { id: 5, name: 'Atomicity audit', status: PASS, notes: '100 notes sampled' }
+    - { id: 6, name: 'Duplicate detection', status: PASS, notes: '1000 notes hashed' }
+    - { id: 7, name: 'Metadata audit', status: PASS, notes: '1000 notes validated' }
+    - { id: 8, name: 'Report generation', status: PASS, notes: 'Report saved' }
+    - { id: 9, name: 'Prioritization', status: PASS, notes: 'Action items sorted' }
+    - { id: 10, name: 'Vault health score', status: PASS, notes: 'Score: 92/100' }
+  verdict: 'PASS - Comprehensive audit complete'
   recommendations: []
 ```
 

@@ -20,11 +20,13 @@ This claim applies to episodic memory (memories of events and experiences), not 
 This claim could be falsified if research demonstrated that episodic memories are stored as complete, immutable records that are retrieved without alteration. However, decades of research in cognitive psychology support the reconstructive view.
 
 **Implications:**
+
 - Eyewitness testimony is inherently unreliable
 - Memories can be altered by suggestion or misinformation
 - The act of remembering changes the memory itself
 
 ## Test Validation Criteria
+
 - ✓ Single claim: Clear assertion stated upfront
 - ✓ Evidence: Scope and falsifiability support the claim without introducing new topics
 - ✓ Self-contained: Defines reconstructive vs reproductive

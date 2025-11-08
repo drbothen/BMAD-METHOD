@@ -22,17 +22,20 @@ Getting Things Done (GTD) organizes all work through five sequential steps: Capt
 5. **Engage:** Choose actions based on context, time available, energy level, and priority
 
 **Relationships:**
+
 - Steps are sequential: items flow from Capture → Clarify → Organize
 - Reflect loops back to all steps, ensuring system integrity
 - Engage pulls from Organize based on current circumstances
 - The system is closed-loop: everything captured must be processed
 
 **Boundaries:**
+
 - Only capture things requiring action or decision
 - Each step must be completed before moving to the next
 - Engage only acts on already-clarified and organized items
 
 ## Test Validation Criteria
+
 - ✓ Single claim: Defines GTD workflow model
 - ✓ Evidence: Components and relationships support the model
 - ✓ Self-contained: Complete explanation of the framework

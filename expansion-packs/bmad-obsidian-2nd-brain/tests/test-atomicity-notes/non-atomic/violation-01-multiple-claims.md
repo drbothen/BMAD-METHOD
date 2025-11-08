@@ -26,6 +26,7 @@ Time-blocking assigns specific time slots to tasks. Cal Newport advocates for th
 The Pomodoro Technique uses 25-minute focused work sessions followed by 5-minute breaks.
 
 ## Expected Test Results
+
 - Single Claim Test: FAIL (5 independent claims: Zettelkasten, GTD, PARA, Time-blocking, Pomodoro)
 - Evidence Test: FAIL (each "claim" is actually a separate topic)
 - Self-Contained Test: FAIL (undefined terms: "second brain", "context lists", assumes knowledge of GTD/PARA)

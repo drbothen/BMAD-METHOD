@@ -21,17 +21,20 @@ PARA is a comprehensive organizational framework that divides all information in
 4. **Archives:** Inactive items from the above three categories
 
 **Relationships:**
+
 - Projects are derived from Areas (ongoing responsibilities generate specific projects)
 - Resources support both Projects and Areas with reference information
 - Everything eventually flows to Archives when no longer active
 - The system is hierarchical but flexible: items can move between categories as their status changes
 
 **Boundaries:**
+
 - Only active work lives in Projects/Areas/Resources
 - Completed or inactive items must move to Archives
 - Each item belongs to exactly one category at a time
 
 ## Test Validation Criteria
+
 - ✓ Single claim: Defines PARA system completely
 - ✓ Evidence: Components, relationships, boundaries all support the model
 - ✓ Self-contained: Fully explains the framework

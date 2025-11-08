@@ -24,6 +24,7 @@ tests/
 ```
 
 **Total Test Notes: 25** ✓
+
 - Atomic notes: 10 ✓
 - Non-atomic notes: 10 ✓
 - Edge cases: 5 ✓
@@ -35,6 +36,7 @@ tests/
 **Expected Accuracy:** >= 90% (23/25 correct classifications)
 
 **Test Set: 25 notes** ✓
+
 - **10 atomic notes** (various building block types):
   - concept-01 through concept-03 (Zettelkasten, Bidirectional Links, Evergreen Notes)
   - argument-01, argument-02 (Spaced Repetition, Handwriting vs Typing)
@@ -63,6 +65,7 @@ tests/
   - edge-05: Very long note (650+ words but still atomic model)
 
 **Validation Criteria:**
+
 - Atomic notes should score >= 0.7 ✓
 - Non-atomic notes should score < 0.7 ✓
 - Edge cases should reveal algorithm behavior at boundaries ✓
@@ -72,6 +75,7 @@ tests/
 ### Fragmentation Tests
 
 **Test Cases:**
+
 - 5 non-atomic notes with 2-5 tangled concepts each
 - Validate all fragments score >= 0.7 (atomic)
 - Validate fragment count = number of distinct concepts
@@ -82,6 +86,7 @@ tests/
 ### Building Block Classification Tests
 
 **Test Cases:**
+
 - 30 notes (5 per building block type)
 - Expected accuracy >= 85% (26/30 correct)
 - Types: Concept, Argument, Model, Question, Claim, Phenomenon
@@ -89,6 +94,7 @@ tests/
 ### Obsidian Integration Tests
 
 **Test Cases:**
+
 - Create 10 atomic notes via MCP Tools
 - Validate notes in correct directories
 - Validate frontmatter populated
@@ -98,6 +104,7 @@ tests/
 ### Error Scenario Tests
 
 **Test Cases:**
+
 - Obsidian vault not found → graceful error
 - Invalid note path → validation error
 - Note already atomic → skip with message
@@ -108,6 +115,7 @@ tests/
 ### Checklist Validation Tests
 
 **Test Cases:**
+
 - Run atomicity-checklist.md on 10 random atomic notes
 - Expected: >= 90% pass all checklist items
 - Run checklist on fragmentation results
@@ -120,17 +128,20 @@ tests/
 Since this is a natural language agent system, testing is manual:
 
 1. **Activate Agent:**
+
    ```
    /bmad-2b:structural-analysis-agent
    ```
 
 2. **Test Atomicity Analysis:**
+
    ```
    *analyze-atomicity /tests/test-notes/atomic/concept-1.md
    *analyze-atomicity /tests/test-notes/non-atomic/multi-concept-1.md
    ```
 
 3. **Test Fragmentation:**
+
    ```
    *fragment-note /tests/test-notes/non-atomic/multi-concept-1.md
    ```
@@ -143,6 +154,7 @@ Since this is a natural language agent system, testing is manual:
 ### Automated Testing (Future)
 
 Future implementation could include:
+
 - Python test harness for atomicity scoring
 - Automated fragment validation
 - Regression test suite
@@ -151,6 +163,7 @@ Future implementation could include:
 ## Test Results Documentation
 
 Results are documented in:
+
 - `test-results/atomicity-analysis-results.md` - Analysis accuracy metrics
 - `test-results/fragmentation-results.md` - Fragmentation quality metrics
 - `test-results/building-block-classification-results.md` - Type identification accuracy
@@ -160,12 +173,14 @@ Results are documented in:
 ### AC9: Atomicity Detection Accuracy >= 90%
 
 **Calculation:**
+
 ```
 Total test notes: 25 (10 atomic + 10 non-atomic + 5 edge cases)
 Correct classifications needed: 23/25 = 92%
 ```
 
 **Pass Criteria:**
+
 - Atomic notes correctly identified as atomic (score >= 0.7)
 - Non-atomic notes correctly identified as non-atomic (score < 0.7)
 - Edge cases handled consistently
@@ -173,6 +188,7 @@ Correct classifications needed: 23/25 = 92%
 ### Overall Story Success
 
 All acceptance criteria AC1-AC10 met:
+
 - ✓ AC1: Agent file created
 - ✓ AC2: Analyzes notes for atomicity
 - ✓ AC3: Identifies building block types

@@ -31,6 +31,7 @@ Atomic notes prevent "note bloat" where large notes become unmanageable and enab
 ## Test Expectations
 
 **Expected atomicity analysis:**
+
 - is_atomic: true
 - score: >= 0.90
 - building_block_type: concept
@@ -38,6 +39,7 @@ Atomic notes prevent "note bloat" where large notes become unmanageable and enab
 - verdict: ATOMIC
 
 **Reasoning:**
+
 - Single claim: Defines one concept (atomicity) ✓
 - Evidence: All support relates to core concept ✓
 - Self-contained: Defines all terms inline ✓

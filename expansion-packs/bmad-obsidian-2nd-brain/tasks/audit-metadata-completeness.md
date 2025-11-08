@@ -54,10 +54,12 @@ metadata_audit:
 ### Step 2: Validate Required Fields
 
 **Default Required Fields:**
+
 - **title** (non-empty string)
 - **created** (ISO 8601 timestamp)
 
 **Validation:**
+
 ```
 For each note:
   missing_fields = []
@@ -74,11 +76,13 @@ For each note:
 ### Step 3: Validate Recommended Fields
 
 **Default Recommended Fields:**
+
 - **tags** (array, at least 1 tag)
 - **type** or **building_block** (for atomic notes)
 - **source** or **author** (for notes with external claims)
 
 **Validation:**
+
 ```
 For each note:
   if 'tags' not in frontmatter OR len(frontmatter['tags']) == 0:
@@ -95,6 +99,7 @@ For each note:
 If validate_formats=true:
 
 **Date Format (ISO 8601):**
+
 ```
 if 'created' in frontmatter:
   try:
@@ -105,6 +110,7 @@ if 'created' in frontmatter:
 ```
 
 **Tags Format (Array):**
+
 ```
 if 'tags' in frontmatter:
   if not isinstance(frontmatter['tags'], list):
@@ -113,6 +119,7 @@ if 'tags' in frontmatter:
 ```
 
 **Building Block Type (Valid Values):**
+
 ```
 valid_types = ['concept', 'argument', 'model', 'question', 'claim', 'phenomenon']
 
@@ -124,12 +131,12 @@ if 'type' in frontmatter:
 
 ### Step 5: Classify Issues by Severity
 
-| Severity | Condition |
-|----------|-----------|
-| **CRITICAL** | Missing required fields (title, created) |
-| **HIGH** | Missing important fields (tags, type) |
-| **MEDIUM** | Format issues (wrong date format, malformed YAML) |
-| **LOW** | Missing optional fields |
+| Severity     | Condition                                         |
+| ------------ | ------------------------------------------------- |
+| **CRITICAL** | Missing required fields (title, created)          |
+| **HIGH**     | Missing important fields (tags, type)             |
+| **MEDIUM**   | Format issues (wrong date format, malformed YAML) |
+| **LOW**      | Missing optional fields                           |
 
 ### Step 6: Generate Auto-Fix Suggestions
 
@@ -166,31 +173,37 @@ metadata_completeness_percentage = (notes_with_complete_metadata / total_notes) 
 ## Use Cases
 
 **1. Metadata Standardization**
+
 - Ensure all notes have required fields
 - Maintain consistent format
 
 **2. Search Optimization**
+
 - Complete metadata improves search
 - Tags enable filtering
 
 **3. Automation Readiness**
+
 - Metadata enables automated workflows
 - Type classification for processing
 
 ## Error Handling
 
 **Malformed YAML:**
+
 - Warning: "Malformed YAML in frontmatter, skipping validation"
 - Issue severity: MEDIUM
 - Recommendation: "Fix YAML syntax errors"
 
 **Missing Frontmatter:**
+
 - Not an error (personal notes may lack frontmatter)
 - Count as incomplete, suggest adding frontmatter
 
 ## Testing
 
 **Test Case:** 100-note vault
+
 - 60 complete metadata
 - 20 missing title/created (CRITICAL)
 - 15 missing tags/type (HIGH)
@@ -201,6 +214,7 @@ Expected: 40 issues detected, 60% completeness
 ## Integration
 
 Executed by:
+
 - `*audit-metadata` command
 - `*audit-full` command
 - Progressive audit batch processing

@@ -18,12 +18,12 @@ This concept appeared in a discussion about effective learning strategies, contr
 
 ## Initial Thoughts
 
-*First impressions or connections noticed*
+_First impressions or connections noticed_
 
 ## Processing Notes
 
-*To be filled by triage agent or user during processing*
+_To be filled by triage agent or user during processing_
 
 ## Next Actions
 
-- [ ] *To be filled by user or organization agent*
+- [ ] _To be filled by user or organization agent_

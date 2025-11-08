@@ -27,28 +27,36 @@ Learning science synthesizes insights from cognitive psychology, neuroscience, a
 ## Knowledge Branches
 
 ### Memory Systems
+
 How information is encoded, stored, and retrieved:
+
 - [[Working Memory]]
 - [[Long-Term Memory]]
 - [[Episodic Memory]]
 - [[Semantic Memory]]
 
 ### Learning Strategies
+
 Evidence-based techniques for effective learning:
+
 - [[Spaced Repetition]]
 - [[Interleaving Practice]]
 - [[Retrieval Practice]]
 - [[Elaborative Interrogation]]
 
 ### Cognitive Principles
+
 Fundamental insights about how the brain learns:
+
 - [[Cognitive Load Theory]]
 - [[Dual Coding Theory]]
 - [[Transfer of Learning]]
 - [[Desirable Difficulties]]
 
 ### Application Methods
+
 Practical frameworks and systems:
+
 - [[Feynman Technique]]
 - [[Cornell Note-Taking]]
 - [[SQ3R Reading Method]]

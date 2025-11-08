@@ -59,6 +59,7 @@ else:
 ### Step 2: Sample Notes
 
 **Random Sampling (for large vaults):**
+
 ```
 1. Query all notes via Obsidian MCP: list_notes()
 2. Randomly select sample_size notes
@@ -66,6 +67,7 @@ else:
 ```
 
 **All Notes (for small vaults):**
+
 ```
 1. Query all notes
 2. Analyze all notes (no sampling)
@@ -91,6 +93,7 @@ For each sampled note:
 ```
 
 **Atomicity Scoring (from STORY-003):**
+
 ```
 total_score = 1.0
 total_score -= single_claim_deduction
@@ -131,6 +134,7 @@ confidence_interval = calculate_confidence(sample_size, total_notes, violation_r
 ```
 
 **Confidence Calculation:**
+
 - Sample >= 100: High confidence (±5%)
 - Sample 50-99: Medium confidence (±10%)
 - Sample < 50: Low confidence (±15%)
@@ -149,40 +153,48 @@ avg_atomicity_score = total_score / sample_size
 ## Use Cases
 
 **1. Vault Health Assessment**
+
 - Estimate atomicity violations across vault
 - Prioritize cleanup efforts
 
 **2. Fragmentation Planning**
+
 - Identify notes needing fragmentation
 - Focus on severe violations (score < 0.5)
 
 **3. Quality Improvement**
+
 - Track atomicity improvements over time
 - Measure vault maturity
 
 ## Fragmentation Recommendations
 
 **Score < 0.5 (Severe Violation):**
+
 - Immediate fragmentation recommended
 - Use STORY-003 fragment-note.md task
 - Likely to yield 3-5 atomic notes
 
 **Score 0.5-0.69 (Borderline):**
+
 - Manual review recommended
 - May need light editing or fragmentation
 - Coach user on atomicity principles
 
 **Score >= 0.7 (Atomic):**
+
 - No action needed
 - Note meets atomicity standards
 
 ## Testing
 
 **Test Case:** Use STORY-003 test set
+
 - 10 atomic notes (score >= 0.7)
 - 10 non-atomic notes (score < 0.7)
 
 Expected:
+
 - All 10 non-atomic detected as violations
 - All 10 atomic pass
 - Accuracy >= 90%
@@ -190,6 +202,7 @@ Expected:
 ## Integration
 
 Executed by:
+
 - `*audit-atomicity [sample_size]` command
 - `*audit-full` command (uses default 10% sample)
 - Progressive audit batch processing

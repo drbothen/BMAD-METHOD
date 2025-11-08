@@ -24,6 +24,7 @@ The CODE workflow integrates nicely with PARA. I Capture everything in my inbox,
 I'm also using Obsidian's YAML frontmatter to track which PARA category each note belongs to. This makes it easy to query and reorganize later.
 
 ## Expected Test Results
+
 - Single Claim Test: PASS (one main claim about organizing with PARA)
 - Evidence Test: PASS (evidence relates to main claim)
 - Self-Contained Test: FAIL (undefined: PARA, PKM, MOCs, CODE, "second brain", assumes prior knowledge)
