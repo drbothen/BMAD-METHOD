@@ -121,11 +121,13 @@ Before executing any query, classify the user's intent:
 **Pattern:** "What is X?", "Define X", "Explain X"
 
 **Strategy:**
+
 - Primary: Smart Connections semantic search (threshold 0.7)
 - Secondary: Obsidian text search for exact mentions
 - Format: List or narrative (if single comprehensive result)
 
 **Example:**
+
 ```
 User: "What is Zettelkasten?"
 Intent: factual
@@ -138,11 +140,13 @@ Format: list
 **Pattern:** "How has X evolved?", "When did I learn about X?", "Timeline of X"
 
 **Strategy:**
+
 - Primary: Neo4j Graphiti temporal queries (bi-temporal graph)
 - Fallback: Obsidian search sorted by file modification date
 - Format: Timeline
 
 **Example:**
+
 ```
 User: "How has my understanding of atomic notes evolved?"
 Intent: temporal
@@ -155,11 +159,13 @@ Format: timeline
 **Pattern:** "Why does X happen?", "What causes Y?", "How does X affect Y?"
 
 **Strategy:**
+
 - Primary: Neo4j relationship traversal (causal chains)
 - Secondary: Semantic search for related concepts
 - Format: Narrative
 
 **Example:**
+
 ```
 User: "Why do atomic notes improve recall?"
 Intent: causal
@@ -172,11 +178,13 @@ Format: narrative
 **Pattern:** "Compare X and Y", "Differences between X and Y", "X vs Y"
 
 **Strategy:**
+
 - Parallel queries for each subject
 - Merge results preserving source attribution
 - Format: Table
 
 **Example:**
+
 ```
 User: "Compare Zettelkasten and PARA methods"
 Intent: comparative
@@ -189,11 +197,13 @@ Format: table
 **Pattern:** "Show me everything about X", "What do I know about X?", "Explore X"
 
 **Strategy:**
+
 - Broad semantic search (lower threshold 0.5)
 - Include graph-connected notes
 - Format: List (categorized by relevance)
 
 **Example:**
+
 ```
 User: "Show me everything about productivity"
 Intent: exploratory
@@ -203,7 +213,7 @@ Format: list
 
 ## Command Implementations
 
-### *help
+### \*help
 
 Display available commands with descriptions:
 
@@ -211,6 +221,7 @@ Display available commands with descriptions:
 # Query Interpreter Commands
 
 **Query Execution:**
+
 1. `*query {question}` - Execute general natural language query
    - Example: `*query What is Zettelkasten?`
    - Auto-classifies intent and selects appropriate sources/format
@@ -227,26 +238,28 @@ Display available commands with descriptions:
    - Example: `*surface-related productivity`
    - Returns all related notes across sources
 
-**Settings:**
-5. `*yolo` - Toggle confirmation mode (on by default)
-   - When on: Skip confirmations, auto-execute queries
-   - When off: Confirm before executing each query
+**Settings:** 5. `*yolo` - Toggle confirmation mode (on by default)
+
+- When on: Skip confirmations, auto-execute queries
+- When off: Confirm before executing each query
 
 6. `*exit` - Exit Query Interpreter mode
 
 **Current Status:**
+
 - Available sources: {{sources_status}}
 - Performance budget: <3 seconds per query
 - Yolo mode: {{yolo_mode_status}}
 ```
 
-### *query {natural_language_question}
+### \*query {natural_language_question}
 
 Execute general natural language query with automatic intent classification:
 
 **Workflow:**
 
 1. **Parse and Classify**
+
    ```
    Load: parse-natural-language-query.md
    Input: user's natural language question
@@ -262,6 +275,7 @@ Execute general natural language query with automatic intent classification:
    ```
 
 2. **Handle Ambiguity**
+
    ```
    If confidence < 0.70:
      Present clarification options to user:
@@ -274,6 +288,7 @@ Execute general natural language query with automatic intent classification:
    ```
 
 3. **Execute Multi-Source Query**
+
    ```
    Based on intent, execute appropriate source queries:
 
@@ -297,6 +312,7 @@ Execute general natural language query with automatic intent classification:
    ```
 
 4. **Merge Results**
+
    ```
    Load: merge-results.md
    Input: results from all sources
@@ -313,6 +329,7 @@ Execute general natural language query with automatic intent classification:
    ```
 
 5. **Format and Present**
+
    ```
    Load: query-result-tmpl.yaml
    Select format based on intent:
@@ -387,13 +404,14 @@ Contradictions: None detected
 - Try `*temporal-query Zettelkasten` to see how concept evolved
 ```
 
-### *temporal-query {concept} [date_range]
+### \*temporal-query {concept} [date_range]
 
 Execute temporal evolution query:
 
 **Workflow:**
 
 1. **Parse Parameters**
+
    ```
    concept: extract from user input
    start_date: parse from date_range or default to "vault creation date"
@@ -401,6 +419,7 @@ Execute temporal evolution query:
    ```
 
 2. **Execute Neo4j Temporal Query**
+
    ```
    Load: execute-neo4j-query.md
    Execute: temporal_evolution_query(concept, start_date, end_date)
@@ -440,19 +459,21 @@ User: *temporal-query atomic notes since 2024-01
 [... more timeline entries ...]
 ```
 
-### *compare {subject1} vs {subject2}
+### \*compare {subject1} vs {subject2}
 
 Execute comparative query:
 
 **Workflow:**
 
 1. **Parse Subjects**
+
    ```
    Split on "vs", "versus", "and", ","
    subjects: ["Zettelkasten", "PARA"]
    ```
 
 2. **Execute Parallel Queries**
+
    ```
    Load: execute-obsidian-query.md
    For each subject:
@@ -496,13 +517,14 @@ User: *compare Zettelkasten vs PARA
   - System organizing information by actionability...
 ```
 
-### *surface-related {concept}
+### \*surface-related {concept}
 
 Execute broad exploratory query:
 
 **Workflow:**
 
 1. **Execute Broad Search**
+
    ```
    Load: execute-obsidian-query.md
    Semantic search with lower threshold (0.5)
@@ -514,6 +536,7 @@ Execute broad exploratory query:
    ```
 
 2. **Categorize by Relevance**
+
    ```
    Load: merge-results.md
    Group results:
@@ -555,11 +578,12 @@ User: *surface-related productivity
 [...]
 ```
 
-### *yolo
+### \*yolo
 
 Toggle Yolo Mode (skip confirmations):
 
 **State Management:**
+
 ```
 yolo_mode = !yolo_mode
 
@@ -574,7 +598,7 @@ If yolo_mode == false:
 
 **Default:** Yolo Mode is OFF (confirmations required)
 
-### *exit
+### \*exit
 
 Exit Query Interpreter mode:
 
@@ -625,6 +649,7 @@ if (total_duration > 3000) {
 Provide informative errors and graceful degradation:
 
 ### No Results Found
+
 ```
 "No notes found matching '[query]'. Try:
 - Broadening your search terms
@@ -633,6 +658,7 @@ Provide informative errors and graceful degradation:
 ```
 
 ### MCP Server Unavailable
+
 ```
 "⚠️ Smart Connections unavailable. Falling back to text search only.
 Semantic search disabled - results may be less relevant.
@@ -641,6 +667,7 @@ To enable: Install Smart Connections plugin in Obsidian and restart Claude Deskt
 ```
 
 ### All Sources Failed
+
 ```
 "❌ All data sources unavailable. Please check:
 1. Obsidian MCP Tools configuration
@@ -651,6 +678,7 @@ Cannot execute queries without at least one source."
 ```
 
 ### Query Timeout
+
 ```
 "⏱️ Query timed out after 3 seconds. Try:
 - Simplifying your query
@@ -663,16 +691,19 @@ Cannot execute queries without at least one source."
 Follow security-guidelines.md for all input validation:
 
 **Input Validation:**
+
 - Query text: Max 500 chars, strip dangerous content (<script>, eval, etc.)
 - Concept/term: Remove special chars, max 100 chars
 - Date: Validate format, must be reasonable (1900-now)
 - Similarity threshold: Must be number in [0.0, 1.0]
 
 **Cypher Injection Prevention:**
+
 - ALWAYS use parameterized queries in Neo4j
 - NEVER concatenate user input into Cypher strings
 
 **Path Validation:**
+
 - Block directory traversal (../)
 - Block absolute paths outside vault
 - Only allow .md files
@@ -720,23 +751,27 @@ Classify user queries into one of 5 intent types:
 ### 1. Factual Intent
 
 **Pattern Signals:**
+
 - Question words: "What is", "Define", "Explain"
 - Requesting definition or description
 - Single concept or term focus
 - Present tense without temporal indicators
 
 **Examples:**
+
 - "What is Zettelkasten?"
 - "Define atomic notes"
 - "Explain the PARA method"
 - "What are the types of knowledge management systems?"
 
 **Query Strategy:**
+
 - Primary: Smart Connections semantic search (local embeddings)
 - Secondary: Obsidian text search for exact term matches
 - Result Format: List or narrative definition
 
 **Confidence Scoring:**
+
 ```
 confidence = 1.0
 
@@ -763,11 +798,13 @@ confidence = clamp(confidence, 0.0, 1.0)
 ### 2. Temporal Intent
 
 **Pattern Signals:**
+
 - Time words: "evolved", "when", "timeline", "changed"
 - Temporal phrases: "over time", "in [month/year]"
 - Historical perspective: "track changes", "progression"
 
 **Examples:**
+
 - "How has my understanding of atomic notes evolved?"
 - "When did I learn about Zettelkasten?"
 - "Track changes to productivity methods"
@@ -775,11 +812,13 @@ confidence = clamp(confidence, 0.0, 1.0)
 - "What was my understanding of [concept] in [month]?"
 
 **Query Strategy:**
+
 - Primary: Neo4j Graphiti temporal queries (bi-temporal graph)
 - Fallback: Obsidian search sorted by file modification date
 - Result Format: Timeline with dates
 
 **Confidence Scoring:**
+
 ```
 confidence = 1.0
 
@@ -801,22 +840,26 @@ confidence = clamp(confidence, 0.0, 1.0)
 ### 3. Causal Intent
 
 **Pattern Signals:**
+
 - Causal words: "why", "causes", "because", "reason"
 - Relationship phrases: "leads to", "results in", "affects"
 - Mechanism questions: "how does X affect Y"
 
 **Examples:**
+
 - "Why do atomic notes improve recall?"
 - "What causes productivity to increase?"
 - "Explain the relationship between spaced repetition and memory"
 - "How does Zettelkasten affect creativity?"
 
 **Query Strategy:**
+
 - Primary: Neo4j relationship traversal (causal chains)
 - Secondary: Semantic search for related concepts
 - Result Format: Narrative explanation with causal chain
 
 **Confidence Scoring:**
+
 ```
 confidence = 1.0
 
@@ -835,22 +878,26 @@ confidence = clamp(confidence, 0.0, 1.0)
 ### 4. Comparative Intent
 
 **Pattern Signals:**
+
 - Comparison words: "compare", "vs", "versus", "differences"
 - Contrast phrases: "contrast with", "different from"
 - Multiple subjects: "X and Y", "[A] or [B]"
 
 **Examples:**
+
 - "Compare Zettelkasten and PARA methods"
 - "Differences between atomic notes and evergreen notes"
 - "Obsidian vs Roam Research"
 - "Contrast spaced repetition with active recall"
 
 **Query Strategy:**
+
 - Run parallel queries for each subject
 - Merge results preserving source attribution
 - Result Format: Comparison table with attributes
 
 **Confidence Scoring:**
+
 ```
 confidence = 1.0
 
@@ -869,22 +916,26 @@ confidence = clamp(confidence, 0.0, 1.0)
 ### 5. Exploratory Intent
 
 **Pattern Signals:**
+
 - Scope words: "everything", "all", "show me", "explore"
 - Broad requests without specific question structure
 - Multiple aspects requested
 
 **Examples:**
+
 - "Show me everything about Zettelkasten"
 - "What do I know about productivity?"
 - "Find all notes related to machine learning"
 - "Explore note-taking methods"
 
 **Query Strategy:**
+
 - Broad semantic search across all sources
 - Include related notes via graph traversal
 - Result Format: Categorized list with summaries
 
 **Confidence Scoring:**
+
 ```
 confidence = 1.0
 
@@ -905,6 +956,7 @@ confidence = clamp(confidence, 0.0, 1.0)
 When classification confidence < 0.7 for the top-ranked intent:
 
 1. **Identify competing intents**
+
    ```
    Example: "Tell me about Zettelkasten"
    - Factual: 0.65 (definition request)
@@ -912,6 +964,7 @@ When classification confidence < 0.7 for the top-ranked intent:
    ```
 
 2. **Present clarification options**
+
    ```
    "I found multiple interpretations. Did you want to:
    1) Get a definition of Zettelkasten (factual)
@@ -921,14 +974,14 @@ When classification confidence < 0.7 for the top-ranked intent:
 
 3. **Common ambiguity patterns:**
 
-   | Query Pattern | Ambiguity | Resolution |
-   |--------------|-----------|------------|
-   | "Tell me about X" | Factual vs Exploratory | Check for quantifiers ("all", "everything") → exploratory |
-   | "X and Y" | Comparative vs Exploratory | Check for comparison keywords ("vs", "compare") → comparative |
-   | "Explain X" | Factual vs Causal | Check for "why" context → causal; otherwise factual |
-   | "Show me X" | Exploratory vs Factual | Check for quantifiers → exploratory |
-   | "What happened with X" | Temporal vs Factual | Check for time indicators → temporal |
-   | "X relationship to Y" | Causal vs Comparative | Check for relationship verbs ("causes") → causal |
+   | Query Pattern          | Ambiguity                  | Resolution                                                    |
+   | ---------------------- | -------------------------- | ------------------------------------------------------------- |
+   | "Tell me about X"      | Factual vs Exploratory     | Check for quantifiers ("all", "everything") → exploratory     |
+   | "X and Y"              | Comparative vs Exploratory | Check for comparison keywords ("vs", "compare") → comparative |
+   | "Explain X"            | Factual vs Causal          | Check for "why" context → causal; otherwise factual           |
+   | "Show me X"            | Exploratory vs Factual     | Check for quantifiers → exploratory                           |
+   | "What happened with X" | Temporal vs Factual        | Check for time indicators → temporal                          |
+   | "X relationship to Y"  | Causal vs Comparative      | Check for relationship verbs ("causes") → causal              |
 
 4. **Default fallback:**
    - If confidence < 0.7 and user doesn't clarify: default to **Factual** (safest assumption)
@@ -989,29 +1042,29 @@ Mapping:
 ```javascript
 function validate_query_text(query) {
   // Maximum length (prevent DoS)
-  const MAX_QUERY_LENGTH = 500
+  const MAX_QUERY_LENGTH = 500;
 
   if (query.length > MAX_QUERY_LENGTH) {
-    throw ValidationError(`Query exceeds max length of ${MAX_QUERY_LENGTH} characters`)
+    throw ValidationError(`Query exceeds max length of ${MAX_QUERY_LENGTH} characters`);
   }
 
   // Strip dangerous content
   const dangerous_patterns = [
     /<script/i,
     /javascript:/i,
-    /on\w+\s*=/i,  // onclick=, onload=, etc.
+    /on\w+\s*=/i, // onclick=, onload=, etc.
     /<iframe/i,
     /eval\(/i,
-    /Function\(/i
-  ]
+    /Function\(/i,
+  ];
 
   for (const pattern of dangerous_patterns) {
     if (pattern.test(query)) {
-      throw SecurityError('Potentially dangerous content detected in query')
+      throw SecurityError('Potentially dangerous content detected in query');
     }
   }
 
-  return query.trim()
+  return query.trim();
 }
 ```
 
@@ -1020,17 +1073,17 @@ function validate_query_text(query) {
 ```javascript
 function validate_concept(concept) {
   // Remove special characters that could cause injection
-  const unsafe_chars = /[<>{}()\[\]\\\/]/g
+  const unsafe_chars = /[<>{}()\[\]\\\/]/g;
 
-  let safe_concept = concept.replace(unsafe_chars, '')
+  let safe_concept = concept.replace(unsafe_chars, '');
 
   // Limit length
-  const MAX_CONCEPT_LENGTH = 100
+  const MAX_CONCEPT_LENGTH = 100;
   if (safe_concept.length > MAX_CONCEPT_LENGTH) {
-    safe_concept = safe_concept.substring(0, MAX_CONCEPT_LENGTH)
+    safe_concept = safe_concept.substring(0, MAX_CONCEPT_LENGTH);
   }
 
-  return safe_concept.trim()
+  return safe_concept.trim();
 }
 ```
 
@@ -1039,25 +1092,25 @@ function validate_concept(concept) {
 ```javascript
 function validate_date(date_string) {
   // Parse date using standard formats
-  const date = new Date(date_string)
+  const date = new Date(date_string);
 
   if (isNaN(date.getTime())) {
-    throw ValidationError(`Invalid date format: ${date_string}`)
+    throw ValidationError(`Invalid date format: ${date_string}`);
   }
 
   // Ensure date is reasonable (not in far future, not before 1900)
-  const now = new Date()
-  const min_date = new Date('1900-01-01')
+  const now = new Date();
+  const min_date = new Date('1900-01-01');
 
   if (date > now) {
-    throw ValidationError('Date cannot be in the future')
+    throw ValidationError('Date cannot be in the future');
   }
 
   if (date < min_date) {
-    throw ValidationError('Date must be after 1900')
+    throw ValidationError('Date must be after 1900');
   }
 
-  return date.toISOString()
+  return date.toISOString();
 }
 ```
 
@@ -1066,14 +1119,14 @@ function validate_date(date_string) {
 ```javascript
 function validate_similarity_threshold(threshold) {
   if (typeof threshold !== 'number') {
-    throw ValidationError('Threshold must be a number')
+    throw ValidationError('Threshold must be a number');
   }
 
   if (threshold < 0.0 || threshold > 1.0) {
-    throw ValidationError('Threshold must be in range [0.0, 1.0]')
+    throw ValidationError('Threshold must be in range [0.0, 1.0]');
   }
 
-  return threshold
+  return threshold;
 }
 ```
 
@@ -1084,18 +1137,21 @@ Provide helpful error messages for malformed queries:
 ### Common Error Scenarios
 
 1. **Empty Query**
+
    ```
    Error: "Query cannot be empty. Please provide a question or search term."
    Example: "*query What is Zettelkasten?"
    ```
 
 2. **Unsupported Query Type**
+
    ```
    Error: "I couldn't understand your question. Try rephrasing using 'What is...', 'Compare...', or 'Show me...' patterns."
    Suggestion: Show examples of supported query patterns
    ```
 
 3. **Invalid Date Format**
+
    ```
    Error: "I couldn't parse the date 'last month'. Try using formats like '2024-10', 'October 2024', or '2024-10-05'."
    ```
@@ -1196,12 +1252,14 @@ Both sources are integrated via Model Context Protocol (MCP) servers.
 ### Obsidian MCP Tools
 
 **Capabilities:**
+
 - Read note contents by file path
 - Search vault by text patterns (grep-like functionality)
 - List files in directories
 - Access note metadata (creation date, modification date)
 
 **Tool Invocations (examples):**
+
 ```
 mcp__obsidian__read_note(path: "atomic/zettelkasten-definition.md")
 mcp__obsidian__search_vault(query: "atomic notes", case_sensitive: false)
@@ -1211,12 +1269,14 @@ mcp__obsidian__list_notes(directory: "atomic/")
 ### Smart Connections MCP
 
 **Capabilities:**
+
 - Semantic similarity search using local BGE-micro-v2 embeddings
 - Find notes conceptually related to a query
 - No cloud API required (fully offline)
 - Returns similarity scores with results
 
 **Tool Invocations (examples):**
+
 ```
 mcp__smart_connections__find_similar(
   query: "How do atomic notes improve recall?",
@@ -1235,6 +1295,7 @@ mcp__smart_connections__find_similar(
 **Secondary Source:** Obsidian text search (exact term matches)
 
 **Algorithm:**
+
 ```
 1. Execute semantic search via Smart Connections
    query = sanitized_concept
@@ -1252,56 +1313,59 @@ mcp__smart_connections__find_similar(
 ```
 
 **Example:**
+
 ```javascript
 async function execute_factual_query(concept) {
-  const results = []
+  const results = [];
 
   try {
     // Semantic search
     const semantic_results = await mcp__smart_connections__find_similar({
       query: concept,
       threshold: 0.7,
-      limit: 10
-    })
+      limit: 10,
+    });
 
-    results.push(...semantic_results.map(r => ({
-      source: 'smart_connections',
-      note_path: r.path,
-      note_title: r.title,
-      relevance_score: r.similarity,
-      excerpt: r.content_preview,
-      match_type: 'semantic'
-    })))
-
+    results.push(
+      ...semantic_results.map((r) => ({
+        source: 'smart_connections',
+        note_path: r.path,
+        note_title: r.title,
+        relevance_score: r.similarity,
+        excerpt: r.content_preview,
+        match_type: 'semantic',
+      })),
+    );
   } catch (error) {
-    log_warning(`Smart Connections unavailable: ${error.message}`)
+    log_warning(`Smart Connections unavailable: ${error.message}`);
   }
 
   try {
     // Text search for exact matches
     const text_results = await mcp__obsidian__search_vault({
       query: concept,
-      case_sensitive: false
-    })
+      case_sensitive: false,
+    });
 
-    results.push(...text_results.map(r => ({
-      source: 'obsidian_text_search',
-      note_path: r.path,
-      note_title: r.title,
-      relevance_score: 0.9, // High score for exact matches
-      excerpt: r.matching_line,
-      match_type: 'exact_text'
-    })))
-
+    results.push(
+      ...text_results.map((r) => ({
+        source: 'obsidian_text_search',
+        note_path: r.path,
+        note_title: r.title,
+        relevance_score: 0.9, // High score for exact matches
+        excerpt: r.matching_line,
+        match_type: 'exact_text',
+      })),
+    );
   } catch (error) {
-    log_warning(`Obsidian text search unavailable: ${error.message}`)
+    log_warning(`Obsidian text search unavailable: ${error.message}`);
   }
 
   if (results.length === 0) {
-    throw QueryExecutionError('No results found from Obsidian sources')
+    throw QueryExecutionError('No results found from Obsidian sources');
   }
 
-  return results
+  return results;
 }
 ```
 
@@ -1313,6 +1377,7 @@ async function execute_factual_query(concept) {
 **Secondary Source:** Obsidian text search (all matches)
 
 **Algorithm:**
+
 ```
 1. Execute semantic search with LOWER threshold (0.5)
    - Cast wider net to capture related concepts
@@ -1328,60 +1393,63 @@ async function execute_factual_query(concept) {
 ```
 
 **Example:**
+
 ```javascript
 async function execute_exploratory_query(concept) {
-  const results = []
+  const results = [];
 
   try {
     // Semantic search with lower threshold
     const semantic_results = await mcp__smart_connections__find_similar({
       query: concept,
-      threshold: 0.5,  // Lower for broader results
-      limit: 50        // Higher limit
-    })
+      threshold: 0.5, // Lower for broader results
+      limit: 50, // Higher limit
+    });
 
-    results.push(...semantic_results.map(r => ({
-      source: 'smart_connections',
-      note_path: r.path,
-      note_title: r.title,
-      relevance_score: r.similarity,
-      excerpt: r.content_preview,
-      match_type: 'semantic',
-      category: categorize_by_score(r.similarity)
-    })))
-
+    results.push(
+      ...semantic_results.map((r) => ({
+        source: 'smart_connections',
+        note_path: r.path,
+        note_title: r.title,
+        relevance_score: r.similarity,
+        excerpt: r.content_preview,
+        match_type: 'semantic',
+        category: categorize_by_score(r.similarity),
+      })),
+    );
   } catch (error) {
-    log_warning(`Smart Connections unavailable: ${error.message}`)
+    log_warning(`Smart Connections unavailable: ${error.message}`);
   }
 
   try {
     // Broad text search
     const text_results = await mcp__obsidian__search_vault({
       query: concept,
-      case_sensitive: false
-    })
+      case_sensitive: false,
+    });
 
-    results.push(...text_results.map(r => ({
-      source: 'obsidian_text_search',
-      note_path: r.path,
-      note_title: r.title,
-      relevance_score: 0.8,
-      excerpt: r.matching_line,
-      match_type: 'text',
-      category: 'direct_match'
-    })))
-
+    results.push(
+      ...text_results.map((r) => ({
+        source: 'obsidian_text_search',
+        note_path: r.path,
+        note_title: r.title,
+        relevance_score: 0.8,
+        excerpt: r.matching_line,
+        match_type: 'text',
+        category: 'direct_match',
+      })),
+    );
   } catch (error) {
-    log_warning(`Obsidian text search unavailable: ${error.message}`)
+    log_warning(`Obsidian text search unavailable: ${error.message}`);
   }
 
-  return results
+  return results;
 }
 
 function categorize_by_score(similarity) {
-  if (similarity > 0.7) return 'direct_match'
-  if (similarity > 0.6) return 'related_concept'
-  return 'peripheral_topic'
+  if (similarity > 0.7) return 'direct_match';
+  if (similarity > 0.6) return 'related_concept';
+  return 'peripheral_topic';
 }
 ```
 
@@ -1393,6 +1461,7 @@ function categorize_by_score(similarity) {
 **Fallback Source:** Obsidian text search sorted by modification date
 
 **Obsidian Fallback Algorithm:**
+
 ```
 1. Execute text search for concept
 
@@ -1404,21 +1473,22 @@ function categorize_by_score(similarity) {
 ```
 
 **Example:**
+
 ```javascript
 async function execute_temporal_query_obsidian_fallback(concept, start_date, end_date) {
   try {
     const text_results = await mcp__obsidian__search_vault({
       query: concept,
-      case_sensitive: false
-    })
+      case_sensitive: false,
+    });
 
     // Enrich with metadata
-    const enriched_results = []
+    const enriched_results = [];
     for (const result of text_results) {
-      const metadata = await mcp__obsidian__read_note(result.path)
+      const metadata = await mcp__obsidian__read_note(result.path);
 
       // Parse frontmatter for dates
-      const frontmatter = parse_frontmatter(metadata.content)
+      const frontmatter = parse_frontmatter(metadata.content);
 
       enriched_results.push({
         source: 'obsidian_text_search',
@@ -1427,23 +1497,22 @@ async function execute_temporal_query_obsidian_fallback(concept, start_date, end
         excerpt: result.matching_line,
         created_date: frontmatter.created || metadata.created_date,
         modified_date: metadata.modified_date,
-        match_type: 'temporal_fallback'
-      })
+        match_type: 'temporal_fallback',
+      });
     }
 
     // Filter by date range
-    const filtered = enriched_results.filter(r => {
-      const note_date = new Date(r.created_date)
-      return note_date >= start_date && note_date <= end_date
-    })
+    const filtered = enriched_results.filter((r) => {
+      const note_date = new Date(r.created_date);
+      return note_date >= start_date && note_date <= end_date;
+    });
 
     // Sort chronologically
-    filtered.sort((a, b) => new Date(a.created_date) - new Date(b.created_date))
+    filtered.sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
 
-    return filtered
-
+    return filtered;
   } catch (error) {
-    throw QueryExecutionError(`Temporal query failed: ${error.message}`)
+    throw QueryExecutionError(`Temporal query failed: ${error.message}`);
   }
 }
 ```
@@ -1455,6 +1524,7 @@ async function execute_temporal_query_obsidian_fallback(concept, start_date, end
 **Approach:** Execute parallel queries for each subject
 
 **Algorithm:**
+
 ```
 1. For each subject:
    - Execute semantic search
@@ -1468,9 +1538,10 @@ async function execute_temporal_query_obsidian_fallback(concept, start_date, end
 ```
 
 **Example:**
+
 ```javascript
 async function execute_comparative_query(subjects) {
-  const results_by_subject = {}
+  const results_by_subject = {};
 
   // Execute queries in parallel
   const promises = subjects.map(async (subject) => {
@@ -1478,63 +1549,63 @@ async function execute_comparative_query(subjects) {
       const semantic = await mcp__smart_connections__find_similar({
         query: subject,
         threshold: 0.7,
-        limit: 10
-      })
+        limit: 10,
+      });
 
       const text = await mcp__obsidian__search_vault({
         query: subject,
-        case_sensitive: false
-      })
+        case_sensitive: false,
+      });
 
       return {
         subject: subject,
         semantic_results: semantic,
-        text_results: text
-      }
-
+        text_results: text,
+      };
     } catch (error) {
-      log_warning(`Query failed for subject "${subject}": ${error.message}`)
+      log_warning(`Query failed for subject "${subject}": ${error.message}`);
       return {
         subject: subject,
         semantic_results: [],
         text_results: [],
-        error: error.message
-      }
+        error: error.message,
+      };
     }
-  })
+  });
 
-  const all_results = await Promise.all(promises)
+  const all_results = await Promise.all(promises);
 
   // Structure results by subject
   for (const result of all_results) {
     results_by_subject[result.subject] = {
       notes: [
-        ...result.semantic_results.map(r => ({
+        ...result.semantic_results.map((r) => ({
           source: 'smart_connections',
           note_path: r.path,
           note_title: r.title,
           relevance_score: r.similarity,
-          excerpt: r.content_preview
+          excerpt: r.content_preview,
         })),
-        ...result.text_results.map(r => ({
+        ...result.text_results.map((r) => ({
           source: 'obsidian_text_search',
           note_path: r.path,
           note_title: r.title,
           relevance_score: 0.8,
-          excerpt: r.matching_line
-        }))
+          excerpt: r.matching_line,
+        })),
       ],
-      error: result.error
-    }
+      error: result.error,
+    };
   }
 
-  return results_by_subject
+  return results_by_subject;
 }
 ```
 
 ## Graceful Degradation
 
 **Scenario 1: Smart Connections MCP Unavailable**
+
 ```javascript
 try {
   results = await mcp__smart_connections__find_similar(...)
@@ -1545,6 +1616,7 @@ try {
 ```
 
 **Scenario 2: Obsidian MCP Tools Unavailable**
+
 ```javascript
 try {
   results = await mcp__obsidian__search_vault(...)
@@ -1556,14 +1628,15 @@ try {
 ```
 
 **Scenario 3: Both Sources Unavailable**
+
 ```javascript
 if (smart_connections_failed && obsidian_failed) {
   throw QueryExecutionError(
     'All Obsidian data sources unavailable. Please check:\n' +
-    '1. Obsidian MCP Tools configuration\n' +
-    '2. Smart Connections plugin installation\n' +
-    '3. MCP server status in Claude Desktop config'
-  )
+      '1. Obsidian MCP Tools configuration\n' +
+      '2. Smart Connections plugin installation\n' +
+      '3. MCP server status in Claude Desktop config',
+  );
 }
 ```
 
@@ -1609,6 +1682,7 @@ const text_results = await execute_with_timeout(
 Provide informative error messages when queries fail:
 
 ### Error 1: No Results Found
+
 ```
 "No notes found matching '[concept]'. Try:
 - Broadening your search terms
@@ -1617,12 +1691,14 @@ Provide informative error messages when queries fail:
 ```
 
 ### Error 2: MCP Server Unavailable
+
 ```
 "Smart Connections MCP server is unavailable. Falling back to text search only.
 To enable semantic search, install the Smart Connections plugin in Obsidian."
 ```
 
 ### Error 3: Malformed Query
+
 ```
 "I couldn't process your query. Please try reformulating it as:
 - 'What is [concept]?' (factual)
@@ -1631,6 +1707,7 @@ To enable semantic search, install the Smart Connections plugin in Obsidian."
 ```
 
 ### Error 4: Timeout
+
 ```
 "Query timed out after 1 second. Try:
 - Simplifying your query
@@ -1644,31 +1721,31 @@ Return structured results for merging:
 
 ```yaml
 results:
-  - source: "smart_connections"
-    note_path: "atomic/zettelkasten-definition.md"
-    note_title: "Zettelkasten Method Definition"
+  - source: 'smart_connections'
+    note_path: 'atomic/zettelkasten-definition.md'
+    note_title: 'Zettelkasten Method Definition'
     relevance_score: 0.87
-    excerpt: "Zettelkasten is a method of knowledge management using atomic notes..."
-    match_type: "semantic"
+    excerpt: 'Zettelkasten is a method of knowledge management using atomic notes...'
+    match_type: 'semantic'
     metadata:
-      created_date: "2024-03-15T10:23:00Z"
-      modified_date: "2024-10-12T14:45:00Z"
-      building_block: "concept"
+      created_date: '2024-03-15T10:23:00Z'
+      modified_date: '2024-10-12T14:45:00Z'
+      building_block: 'concept'
 
-  - source: "obsidian_text_search"
-    note_path: "mocs/note-taking-methods.md"
-    note_title: "Note-Taking Methods MOC"
+  - source: 'obsidian_text_search'
+    note_path: 'mocs/note-taking-methods.md'
+    note_title: 'Note-Taking Methods MOC'
     relevance_score: 0.90
-    excerpt: "...comparing Zettelkasten with PARA and Johnny Decimal systems..."
-    match_type: "exact_text"
+    excerpt: '...comparing Zettelkasten with PARA and Johnny Decimal systems...'
+    match_type: 'exact_text'
     metadata:
-      created_date: "2024-01-05T09:00:00Z"
-      modified_date: "2024-11-01T16:30:00Z"
-      building_block: "moc"
+      created_date: '2024-01-05T09:00:00Z'
+      modified_date: '2024-11-01T16:30:00Z'
+      building_block: 'moc'
 
 query_metadata:
-  sources_queried: ["smart_connections", "obsidian_text_search"]
-  sources_successful: ["smart_connections", "obsidian_text_search"]
+  sources_queried: ['smart_connections', 'obsidian_text_search']
+  sources_successful: ['smart_connections', 'obsidian_text_search']
   sources_failed: []
   total_results: 12
   query_duration_ms: 850
@@ -1681,31 +1758,31 @@ Track and report query performance:
 
 ```javascript
 async function execute_obsidian_query_with_monitoring(query_params) {
-  const start_time = Date.now()
-  const performance_log = {}
+  const start_time = Date.now();
+  const performance_log = {};
 
   // Smart Connections
-  const sc_start = Date.now()
-  const semantic_results = await execute_smart_connections_query(query_params)
-  performance_log.smart_connections_ms = Date.now() - sc_start
+  const sc_start = Date.now();
+  const semantic_results = await execute_smart_connections_query(query_params);
+  performance_log.smart_connections_ms = Date.now() - sc_start;
 
   // Obsidian Text Search
-  const obs_start = Date.now()
-  const text_results = await execute_obsidian_text_search(query_params)
-  performance_log.obsidian_text_search_ms = Date.now() - obs_start
+  const obs_start = Date.now();
+  const text_results = await execute_obsidian_text_search(query_params);
+  performance_log.obsidian_text_search_ms = Date.now() - obs_start;
 
   // Total duration
-  performance_log.total_ms = Date.now() - start_time
+  performance_log.total_ms = Date.now() - start_time;
 
   // Log slow queries
   if (performance_log.total_ms > 1000) {
-    log_warning(`Slow Obsidian query: ${performance_log.total_ms}ms`)
+    log_warning(`Slow Obsidian query: ${performance_log.total_ms}ms`);
   }
 
   return {
     results: [...semantic_results, ...text_results],
-    performance: performance_log
-  }
+    performance: performance_log,
+  };
 }
 ```
 
@@ -1757,6 +1834,7 @@ Expected: Results structured by subject, parallel execution <1 second
 ## Overview
 
 Neo4j Graphiti MCP provides bi-temporal graph database capabilities for:
+
 - **Temporal evolution queries** - How concepts changed over time
 - **Relationship traversal** - Find connections between entities
 - **Causal chain analysis** - Trace cause-effect relationships
@@ -1769,6 +1847,7 @@ This integration is **optional**. The agent degrades gracefully if Neo4j is not 
 ### Graphiti MCP Tools
 
 **Capabilities:**
+
 - Execute Cypher queries (parameterized only)
 - Temporal queries (valid time vs transaction time)
 - Graph traversal with hop limits
@@ -1776,6 +1855,7 @@ This integration is **optional**. The agent degrades gracefully if Neo4j is not 
 - Relationship creation with bi-temporal tracking
 
 **Tool Invocations (examples):**
+
 ```
 mcp__graphiti__execute_cypher(
   query: "MATCH (n:Note {path: $path}) RETURN n",
@@ -1804,6 +1884,7 @@ mcp__graphiti__traverse_graph(
 **Query Type:** Bi-temporal query using valid_time dimension
 
 **Algorithm:**
+
 ```
 1. Extract concept and date range from query parameters
 
@@ -1818,6 +1899,7 @@ mcp__graphiti__traverse_graph(
 ```
 
 **Example Cypher (via Graphiti MCP):**
+
 ```cypher
 // Find temporal evolution of a concept
 MATCH (n:Note {path: $note_path})
@@ -1832,30 +1914,32 @@ ORDER BY v.valid_time_start ASC
 ```
 
 **Parameters (safely escaped):**
+
 ```javascript
 const params = {
   note_path: validate_note_path(note_path),
   start_date: validate_date(start_date),
-  end_date: validate_date(end_date)
-}
+  end_date: validate_date(end_date),
+};
 
-const results = await mcp__graphiti__execute_cypher(query, params)
+const results = await mcp__graphiti__execute_cypher(query, params);
 ```
 
 **Example Implementation:**
+
 ```javascript
 async function execute_temporal_evolution_query(concept, start_date, end_date) {
   try {
     // Find notes matching concept
-    const concept_notes = await find_notes_by_concept(concept)
+    const concept_notes = await find_notes_by_concept(concept);
 
     if (concept_notes.length === 0) {
-      log_info(`No notes found for concept: ${concept}`)
-      return []
+      log_info(`No notes found for concept: ${concept}`);
+      return [];
     }
 
     // Execute temporal query for each note
-    const temporal_results = []
+    const temporal_results = [];
 
     for (const note of concept_notes) {
       const query = `
@@ -1870,26 +1954,25 @@ async function execute_temporal_evolution_query(concept, start_date, end_date) {
           v.content AS content_snapshot,
           v.properties AS properties
         ORDER BY v.valid_time_start ASC
-      `
+      `;
 
       const params = {
         note_path: validate_note_path(note.path),
         start_date: validate_date(start_date),
-        end_date: validate_date(end_date)
-      }
+        end_date: validate_date(end_date),
+      };
 
-      const result = await mcp__graphiti__execute_cypher(query, params)
-      temporal_results.push(...result)
+      const result = await mcp__graphiti__execute_cypher(query, params);
+      temporal_results.push(...result);
     }
 
-    return temporal_results
-
+    return temporal_results;
   } catch (error) {
     if (error.code === 'NEO4J_UNAVAILABLE') {
-      log_warning('Neo4j unavailable, temporal queries not supported')
-      return []
+      log_warning('Neo4j unavailable, temporal queries not supported');
+      return [];
     }
-    throw error
+    throw error;
   }
 }
 ```
@@ -1901,6 +1984,7 @@ async function execute_temporal_evolution_query(concept, start_date, end_date) {
 **Query Type:** Graph traversal following causal relationships
 
 **Algorithm:**
+
 ```
 1. Identify source concept (X)
 
@@ -1916,6 +2000,7 @@ async function execute_temporal_evolution_query(concept, start_date, end_date) {
 ```
 
 **Example Cypher:**
+
 ```cypher
 // Find causal chain
 MATCH path = (start:Note {path: $start_path})
@@ -1931,27 +2016,29 @@ LIMIT 10
 ```
 
 **Parameters:**
+
 ```javascript
 const params = {
   start_path: validate_note_path(start_path),
   end_path: validate_note_path(end_path),
-  target_concept: validate_concept(concept)
-}
+  target_concept: validate_concept(concept),
+};
 ```
 
 **Example Implementation:**
+
 ```javascript
 async function execute_causal_chain_query(source_concept, target_concept) {
   try {
     // Find notes matching source concept
-    const source_notes = await find_notes_by_concept(source_concept)
+    const source_notes = await find_notes_by_concept(source_concept);
 
     if (source_notes.length === 0) {
-      log_info(`No notes found for source concept: ${source_concept}`)
-      return []
+      log_info(`No notes found for source concept: ${source_concept}`);
+      return [];
     }
 
-    const causal_chains = []
+    const causal_chains = [];
 
     for (const source of source_notes) {
       const query = `
@@ -1971,25 +2058,24 @@ async function execute_causal_chain_query(source_concept, target_concept) {
           length(path) AS chain_length
         ORDER BY chain_length ASC
         LIMIT 10
-      `
+      `;
 
       const params = {
         start_path: validate_note_path(source.path),
-        target_concept: validate_concept(target_concept)
-      }
+        target_concept: validate_concept(target_concept),
+      };
 
-      const result = await mcp__graphiti__execute_cypher(query, params)
-      causal_chains.push(...result)
+      const result = await mcp__graphiti__execute_cypher(query, params);
+      causal_chains.push(...result);
     }
 
-    return causal_chains
-
+    return causal_chains;
   } catch (error) {
     if (error.code === 'NEO4J_UNAVAILABLE') {
-      log_warning('Neo4j unavailable, causal queries not supported')
-      return []
+      log_warning('Neo4j unavailable, causal queries not supported');
+      return [];
     }
-    throw error
+    throw error;
   }
 }
 ```
@@ -2001,6 +2087,7 @@ async function execute_causal_chain_query(source_concept, target_concept) {
 **Query Type:** Graph traversal with configurable hop limit
 
 **Algorithm:**
+
 ```
 1. Identify starting concept
 
@@ -2020,6 +2107,7 @@ async function execute_causal_chain_query(source_concept, target_concept) {
 ```
 
 **Example Cypher:**
+
 ```cypher
 // Traverse graph from starting point
 MATCH path = (start:Note {path: $start_path})
@@ -2036,24 +2124,26 @@ LIMIT 50
 ```
 
 **Parameters:**
+
 ```javascript
 const params = {
-  start_path: validate_note_path(start_path)
-}
+  start_path: validate_note_path(start_path),
+};
 ```
 
 **Example Implementation:**
+
 ```javascript
 async function execute_relationship_traversal_query(concept, max_hops = 2) {
   try {
-    const source_notes = await find_notes_by_concept(concept)
+    const source_notes = await find_notes_by_concept(concept);
 
     if (source_notes.length === 0) {
-      log_info(`No notes found for concept: ${concept}`)
-      return []
+      log_info(`No notes found for concept: ${concept}`);
+      return [];
     }
 
-    const related_notes = []
+    const related_notes = [];
 
     for (const source of source_notes) {
       const query = `
@@ -2072,27 +2162,26 @@ async function execute_relationship_traversal_query(concept, max_hops = 2) {
           [rel IN relationships(path) | type(rel)] AS relationship_types
         ORDER BY min_hops ASC, path_count DESC, avg_strength DESC
         LIMIT 50
-      `
+      `;
 
       const params = {
-        start_path: validate_note_path(source.path)
-      }
+        start_path: validate_note_path(source.path),
+      };
 
-      const result = await mcp__graphiti__execute_cypher(query, params)
-      related_notes.push(...result)
+      const result = await mcp__graphiti__execute_cypher(query, params);
+      related_notes.push(...result);
     }
 
     // Deduplicate
-    const unique_notes = deduplicate_by_path(related_notes)
+    const unique_notes = deduplicate_by_path(related_notes);
 
-    return unique_notes
-
+    return unique_notes;
   } catch (error) {
     if (error.code === 'NEO4J_UNAVAILABLE') {
-      log_warning('Neo4j unavailable, relationship traversal not supported')
-      return []
+      log_warning('Neo4j unavailable, relationship traversal not supported');
+      return [];
     }
-    throw error
+    throw error;
   }
 }
 ```
@@ -2104,6 +2193,7 @@ async function execute_relationship_traversal_query(concept, max_hops = 2) {
 **Query Type:** Parallel subgraph queries for each subject
 
 **Algorithm:**
+
 ```
 1. For each subject in comparison:
    - Find notes matching subject
@@ -2117,6 +2207,7 @@ async function execute_relationship_traversal_query(concept, max_hops = 2) {
 ```
 
 **Example Cypher:**
+
 ```cypher
 // Find relationships for one subject
 MATCH (n:Note {path: $note_path})
@@ -2133,15 +2224,16 @@ RETURN
 ```
 
 **Example Implementation:**
+
 ```javascript
 async function execute_comparative_query_with_graph(subjects) {
   try {
-    const results_by_subject = {}
+    const results_by_subject = {};
 
     for (const subject of subjects) {
-      const notes = await find_notes_by_concept(subject)
+      const notes = await find_notes_by_concept(subject);
 
-      const relationships = []
+      const relationships = [];
 
       for (const note of notes) {
         const query = `
@@ -2157,30 +2249,29 @@ async function execute_comparative_query_with_graph(subjects) {
               target_path: related.path,
               context: r.context
             }) AS relationships
-        `
+        `;
 
         const params = {
-          note_path: validate_note_path(note.path)
-        }
+          note_path: validate_note_path(note.path),
+        };
 
-        const result = await mcp__graphiti__execute_cypher(query, params)
-        relationships.push(...result)
+        const result = await mcp__graphiti__execute_cypher(query, params);
+        relationships.push(...result);
       }
 
       results_by_subject[subject] = {
         notes: notes,
-        relationships: relationships
-      }
+        relationships: relationships,
+      };
     }
 
-    return results_by_subject
-
+    return results_by_subject;
   } catch (error) {
     if (error.code === 'NEO4J_UNAVAILABLE') {
-      log_warning('Neo4j unavailable, graph context not available for comparison')
-      return {}
+      log_warning('Neo4j unavailable, graph context not available for comparison');
+      return {};
     }
-    throw error
+    throw error;
   }
 }
 ```
@@ -2197,14 +2288,14 @@ const query = `
   MATCH (n:Note {path: $note_path})
   WHERE n.title CONTAINS $search_term
   RETURN n
-`
+`;
 
 const params = {
-  note_path: validate_note_path(user_input_path),  // Validated
-  search_term: validate_concept(user_input_term)   // Sanitized
-}
+  note_path: validate_note_path(user_input_path), // Validated
+  search_term: validate_concept(user_input_term), // Sanitized
+};
 
-const results = await mcp__graphiti__execute_cypher(query, params)
+const results = await mcp__graphiti__execute_cypher(query, params);
 ```
 
 ### Unsafe Query Pattern
@@ -2214,7 +2305,7 @@ const results = await mcp__graphiti__execute_cypher(query, params)
 const query = `
   MATCH (n:Note {path: '${user_input_path}'})
   RETURN n
-`
+`;
 // Vulnerable to injection attacks!
 ```
 
@@ -2239,11 +2330,11 @@ Neo4j integration is **optional**. The agent must work without it.
 ```javascript
 async function check_neo4j_availability() {
   try {
-    await mcp__graphiti__execute_cypher('RETURN 1 AS test', {})
-    return true
+    await mcp__graphiti__execute_cypher('RETURN 1 AS test', {});
+    return true;
   } catch (error) {
-    log_info('Neo4j Graphiti MCP unavailable, temporal/graph queries disabled')
-    return false
+    log_info('Neo4j Graphiti MCP unavailable, temporal/graph queries disabled');
+    return false;
   }
 }
 ```
@@ -2252,15 +2343,15 @@ async function check_neo4j_availability() {
 
 ```javascript
 async function execute_temporal_query(concept, start_date, end_date) {
-  const neo4j_available = await check_neo4j_availability()
+  const neo4j_available = await check_neo4j_availability();
 
   if (neo4j_available) {
     // Use Neo4j for bi-temporal queries
-    return await execute_temporal_evolution_query(concept, start_date, end_date)
+    return await execute_temporal_evolution_query(concept, start_date, end_date);
   } else {
     // Fallback to Obsidian file metadata (less precise)
-    log_warning('Neo4j unavailable, using Obsidian fallback for temporal query')
-    return await execute_temporal_query_obsidian_fallback(concept, start_date, end_date)
+    log_warning('Neo4j unavailable, using Obsidian fallback for temporal query');
+    return await execute_temporal_query_obsidian_fallback(concept, start_date, end_date);
   }
 }
 ```
@@ -2286,28 +2377,27 @@ Current query will continue using available data sources."
 
 ```javascript
 async function execute_neo4j_query_with_timeout(query, params) {
-  const timeout_ms = 1000
+  const timeout_ms = 1000;
 
   const timeout_promise = new Promise((_, reject) => {
     setTimeout(() => {
-      reject(new TimeoutError('Neo4j query exceeded 1 second timeout'))
-    }, timeout_ms)
-  })
+      reject(new TimeoutError('Neo4j query exceeded 1 second timeout'));
+    }, timeout_ms);
+  });
 
   try {
     const result = await Promise.race([
       mcp__graphiti__execute_cypher(query, params),
-      timeout_promise
-    ])
+      timeout_promise,
+    ]);
 
-    return result
-
+    return result;
   } catch (error) {
     if (error instanceof TimeoutError) {
-      log_warning(error.message)
-      return []  // Return empty results on timeout
+      log_warning(error.message);
+      return []; // Return empty results on timeout
     }
-    throw error
+    throw error;
   }
 }
 ```
@@ -2315,6 +2405,7 @@ async function execute_neo4j_query_with_timeout(query, params) {
 ## Error Messages
 
 ### Error 1: Neo4j Unavailable
+
 ```
 "Neo4j graph database is not available. Temporal and causal queries are limited to Obsidian fallback mode.
 
@@ -2322,12 +2413,14 @@ Your query will continue using available sources."
 ```
 
 ### Error 2: Invalid Cypher Query
+
 ```
 "Graph query failed due to invalid syntax. This is an internal error.
 Please report this issue with your query: '[user_query]'"
 ```
 
 ### Error 3: No Graph Data
+
 ```
 "No graph relationships found for '[concept]'. This may be because:
 - The concept hasn't been linked by the Semantic Linker Agent yet
@@ -2336,6 +2429,7 @@ Please report this issue with your query: '[user_query]'"
 ```
 
 ### Error 4: Timeout
+
 ```
 "Neo4j query timed out after 1 second. This may be due to:
 - Complex graph traversal (try reducing scope)
@@ -2349,34 +2443,34 @@ Return structured results for merging:
 
 ```yaml
 results:
-  - source: "neo4j_graphiti"
-    query_type: "temporal_evolution"
-    note_path: "atomic/zettelkasten.md"
-    note_title: "Zettelkasten Method"
+  - source: 'neo4j_graphiti'
+    query_type: 'temporal_evolution'
+    note_path: 'atomic/zettelkasten.md'
+    note_title: 'Zettelkasten Method'
     timeline:
-      - timestamp: "2024-03-15T10:23:00Z"
-        event: "Note created"
-        content_snapshot: "Initial definition of Zettelkasten..."
-      - timestamp: "2024-05-20T14:30:00Z"
-        event: "Content modified"
-        content_snapshot: "Expanded with atomic notes principle..."
-      - timestamp: "2024-09-10T09:15:00Z"
-        event: "Relationships added"
-        new_links: ["atomic-notes.md", "slip-box.md"]
+      - timestamp: '2024-03-15T10:23:00Z'
+        event: 'Note created'
+        content_snapshot: 'Initial definition of Zettelkasten...'
+      - timestamp: '2024-05-20T14:30:00Z'
+        event: 'Content modified'
+        content_snapshot: 'Expanded with atomic notes principle...'
+      - timestamp: '2024-09-10T09:15:00Z'
+        event: 'Relationships added'
+        new_links: ['atomic-notes.md', 'slip-box.md']
 
-  - source: "neo4j_graphiti"
-    query_type: "causal_chain"
+  - source: 'neo4j_graphiti'
+    query_type: 'causal_chain'
     causal_path:
-      - note_path: "atomic/atomic-notes.md"
-        note_title: "Atomic Notes"
-        relationship_type: "LEADS_TO"
+      - note_path: 'atomic/atomic-notes.md'
+        note_title: 'Atomic Notes'
+        relationship_type: 'LEADS_TO'
         strength: 0.85
-        context: "Atomic notes enable modular thinking"
-      - note_path: "atomic/improved-recall.md"
-        note_title: "Improved Recall"
-        relationship_type: "CAUSES"
+        context: 'Atomic notes enable modular thinking'
+      - note_path: 'atomic/improved-recall.md'
+        note_title: 'Improved Recall'
+        relationship_type: 'CAUSES'
         strength: 0.78
-        context: "Modular thinking improves memory consolidation"
+        context: 'Modular thinking improves memory consolidation'
 
 query_metadata:
   neo4j_enabled: true
@@ -2391,36 +2485,35 @@ Track query performance:
 
 ```javascript
 async function execute_neo4j_query_with_monitoring(query, params) {
-  const start_time = Date.now()
+  const start_time = Date.now();
 
   try {
-    const result = await execute_neo4j_query_with_timeout(query, params)
-    const duration_ms = Date.now() - start_time
+    const result = await execute_neo4j_query_with_timeout(query, params);
+    const duration_ms = Date.now() - start_time;
 
     // Log slow queries
     if (duration_ms > 500) {
-      log_warning(`Slow Neo4j query: ${duration_ms}ms`)
+      log_warning(`Slow Neo4j query: ${duration_ms}ms`);
     }
 
     return {
       results: result,
       performance: {
         neo4j_query_ms: duration_ms,
-        timeout_occurred: false
-      }
-    }
-
+        timeout_occurred: false,
+      },
+    };
   } catch (error) {
-    const duration_ms = Date.now() - start_time
+    const duration_ms = Date.now() - start_time;
 
     return {
       results: [],
       performance: {
         neo4j_query_ms: duration_ms,
         timeout_occurred: error instanceof TimeoutError,
-        error: error.message
-      }
-    }
+        error: error.message,
+      },
+    };
   }
 }
 ```
@@ -2475,11 +2568,13 @@ Expected: Sanitized safely, no injection, valid results or empty
 ## Overview
 
 Query results come from 3 sources:
+
 1. **Smart Connections** - Semantic similarity search (local embeddings)
 2. **Obsidian Text Search** - Exact text pattern matching
 3. **Neo4j Graphiti** - Temporal and graph relationship queries (optional)
 
 This task merges results while:
+
 - Deduplicating by note path
 - Preserving source attribution
 - Ranking by relevance
@@ -2492,24 +2587,24 @@ This task merges results while:
 
 ```javascript
 function deduplicate_results(results) {
-  const seen_paths = new Set()
-  const deduplicated = []
+  const seen_paths = new Set();
+  const deduplicated = [];
 
   // Sort by relevance first (highest to lowest)
-  results.sort((a, b) => b.relevance_score - a.relevance_score)
+  results.sort((a, b) => b.relevance_score - a.relevance_score);
 
   for (const result of results) {
     if (!seen_paths.has(result.note_path)) {
-      seen_paths.add(result.note_path)
-      deduplicated.push(result)
+      seen_paths.add(result.note_path);
+      deduplicated.push(result);
     } else {
       // Merge metadata from duplicate
-      const existing = deduplicated.find(r => r.note_path === result.note_path)
-      merge_result_metadata(existing, result)
+      const existing = deduplicated.find((r) => r.note_path === result.note_path);
+      merge_result_metadata(existing, result);
     }
   }
 
-  return deduplicated
+  return deduplicated;
 }
 ```
 
@@ -2521,35 +2616,35 @@ When the same note appears in multiple sources, merge their metadata:
 function merge_result_metadata(existing, duplicate) {
   // Track all sources that found this note
   if (!existing.sources) {
-    existing.sources = [existing.source]
+    existing.sources = [existing.source];
   }
 
   if (!existing.sources.includes(duplicate.source)) {
-    existing.sources.push(duplicate.source)
+    existing.sources.push(duplicate.source);
   }
 
   // Keep highest relevance score
   if (duplicate.relevance_score > existing.relevance_score) {
-    existing.relevance_score = duplicate.relevance_score
-    existing.primary_source = duplicate.source
+    existing.relevance_score = duplicate.relevance_score;
+    existing.primary_source = duplicate.source;
   }
 
   // Merge match types
   if (!existing.match_types) {
-    existing.match_types = [existing.match_type]
+    existing.match_types = [existing.match_type];
   }
 
   if (!existing.match_types.includes(duplicate.match_type)) {
-    existing.match_types.push(duplicate.match_type)
+    existing.match_types.push(duplicate.match_type);
   }
 
   // Keep all unique excerpts
   if (!existing.excerpts) {
-    existing.excerpts = [existing.excerpt]
+    existing.excerpts = [existing.excerpt];
   }
 
   if (duplicate.excerpt && !existing.excerpts.includes(duplicate.excerpt)) {
-    existing.excerpts.push(duplicate.excerpt)
+    existing.excerpts.push(duplicate.excerpt);
   }
 }
 ```
@@ -2562,47 +2657,47 @@ Rank results by composite relevance score:
 
 ```javascript
 function calculate_composite_relevance(result) {
-  let score = result.relevance_score || 0.5
+  let score = result.relevance_score || 0.5;
 
   // Boost for multiple source agreement
   if (result.sources && result.sources.length > 1) {
-    score += 0.1 * (result.sources.length - 1)  // +0.1 per additional source
+    score += 0.1 * (result.sources.length - 1); // +0.1 per additional source
   }
 
   // Boost for exact text matches
   if (result.match_types && result.match_types.includes('exact_text')) {
-    score += 0.1
+    score += 0.1;
   }
 
   // Boost for semantic matches (high quality)
   if (result.source === 'smart_connections' && result.relevance_score > 0.8) {
-    score += 0.05
+    score += 0.05;
   }
 
   // Boost for MOC notes (high-level overview value)
   if (result.metadata && result.metadata.building_block === 'moc') {
-    score += 0.1
+    score += 0.1;
   }
 
   // Boost for graph-confirmed relationships
   if (result.source === 'neo4j_graphiti') {
-    score += 0.08
+    score += 0.08;
   }
 
   // Clamp to [0.0, 1.0]
-  return Math.max(0.0, Math.min(1.0, score))
+  return Math.max(0.0, Math.min(1.0, score));
 }
 
 function rank_results(results) {
   // Calculate composite scores
   for (const result of results) {
-    result.composite_relevance = calculate_composite_relevance(result)
+    result.composite_relevance = calculate_composite_relevance(result);
   }
 
   // Sort by composite relevance (highest first)
-  results.sort((a, b) => b.composite_relevance - a.composite_relevance)
+  results.sort((a, b) => b.composite_relevance - a.composite_relevance);
 
-  return results
+  return results;
 }
 ```
 
@@ -2613,27 +2708,27 @@ Group results into relevance tiers for presentation:
 ```javascript
 function categorize_by_relevance(results) {
   const tiers = {
-    highly_relevant: [],   // score >= 0.8
-    relevant: [],          // 0.6 <= score < 0.8
+    highly_relevant: [], // score >= 0.8
+    relevant: [], // 0.6 <= score < 0.8
     somewhat_relevant: [], // 0.4 <= score < 0.6
-    low_relevance: []      // score < 0.4
-  }
+    low_relevance: [], // score < 0.4
+  };
 
   for (const result of results) {
-    const score = result.composite_relevance
+    const score = result.composite_relevance;
 
     if (score >= 0.8) {
-      tiers.highly_relevant.push(result)
+      tiers.highly_relevant.push(result);
     } else if (score >= 0.6) {
-      tiers.relevant.push(result)
+      tiers.relevant.push(result);
     } else if (score >= 0.4) {
-      tiers.somewhat_relevant.push(result)
+      tiers.somewhat_relevant.push(result);
     } else {
-      tiers.low_relevance.push(result)
+      tiers.low_relevance.push(result);
     }
   }
 
-  return tiers
+  return tiers;
 }
 ```
 
@@ -2649,27 +2744,27 @@ Contradictions occur when results make conflicting claims about the same concept
 
 ```javascript
 async function detect_contradictions(results) {
-  const contradictions = []
+  const contradictions = [];
 
   // Compare all pairs of results
   for (let i = 0; i < results.length; i++) {
     for (let j = i + 1; j < results.length; j++) {
-      const result_a = results[i]
-      const result_b = results[j]
+      const result_a = results[i];
+      const result_b = results[j];
 
       // Extract claims from excerpts
-      const claims_a = extract_claims(result_a.excerpt)
-      const claims_b = extract_claims(result_b.excerpt)
+      const claims_a = extract_claims(result_a.excerpt);
+      const claims_b = extract_claims(result_b.excerpt);
 
       // Compare claims pairwise
       for (const claim_a of claims_a) {
         for (const claim_b of claims_b) {
-          const similarity = calculate_semantic_similarity(claim_a, claim_b)
+          const similarity = calculate_semantic_similarity(claim_a, claim_b);
 
           // Check if claims are about same topic (>70% similar)
           if (similarity > 0.7) {
             // Check if claims contradict each other
-            const contradiction_score = detect_opposing_sentiment(claim_a, claim_b)
+            const contradiction_score = detect_opposing_sentiment(claim_a, claim_b);
 
             if (contradiction_score > 0.7) {
               contradictions.push({
@@ -2677,18 +2772,18 @@ async function detect_contradictions(results) {
                   path: result_a.note_path,
                   title: result_a.note_title,
                   claim: claim_a,
-                  timestamp: result_a.metadata?.created_date
+                  timestamp: result_a.metadata?.created_date,
                 },
                 note_b: {
                   path: result_b.note_path,
                   title: result_b.note_title,
                   claim: claim_b,
-                  timestamp: result_b.metadata?.created_date
+                  timestamp: result_b.metadata?.created_date,
                 },
                 confidence: contradiction_score,
                 similarity: similarity,
-                type: categorize_contradiction_type(claim_a, claim_b)
-              })
+                type: categorize_contradiction_type(claim_a, claim_b),
+              });
             }
           }
         }
@@ -2696,7 +2791,7 @@ async function detect_contradictions(results) {
     }
   }
 
-  return contradictions
+  return contradictions;
 }
 ```
 
@@ -2707,20 +2802,20 @@ Extract individual claims from result excerpts:
 ```javascript
 function extract_claims(excerpt) {
   // Split excerpt into sentences
-  const sentences = excerpt.split(/[.!?]+/).filter(s => s.trim().length > 0)
+  const sentences = excerpt.split(/[.!?]+/).filter((s) => s.trim().length > 0);
 
-  const claims = []
+  const claims = [];
 
   for (const sentence of sentences) {
-    const trimmed = sentence.trim()
+    const trimmed = sentence.trim();
 
     // Filter out non-claims
     if (is_claim(trimmed)) {
-      claims.push(trimmed)
+      claims.push(trimmed);
     }
   }
 
-  return claims
+  return claims;
 }
 
 function is_claim(sentence) {
@@ -2728,25 +2823,26 @@ function is_claim(sentence) {
 
   // Exclude questions
   if (sentence.endsWith('?')) {
-    return false
+    return false;
   }
 
   // Exclude meta-statements ("This note discusses...", "See also...")
   const meta_patterns = [
     /^(this note|this document|see also|references?|sources?)/i,
-    /^(i think|i believe|in my opinion)/i  // Opinions are claims but flagged differently
-  ]
+    /^(i think|i believe|in my opinion)/i, // Opinions are claims but flagged differently
+  ];
 
   for (const pattern of meta_patterns) {
     if (pattern.test(sentence)) {
-      return false
+      return false;
     }
   }
 
   // Must have a subject and predicate (simplified heuristic)
-  const has_subject_predicate = /\w+\s+(is|are|was|were|has|have|does|do|can|will|should|must)/i.test(sentence)
+  const has_subject_predicate =
+    /\w+\s+(is|are|was|were|has|have|does|do|can|will|should|must)/i.test(sentence);
 
-  return has_subject_predicate
+  return has_subject_predicate;
 }
 ```
 
@@ -2762,25 +2858,24 @@ async function calculate_semantic_similarity(claim_a, claim_b) {
   try {
     const similarity = await mcp__smart_connections__calculate_similarity({
       text_a: claim_a,
-      text_b: claim_b
-    })
+      text_b: claim_b,
+    });
 
-    return similarity
-
+    return similarity;
   } catch (error) {
     // Fallback: Jaccard similarity on word sets
-    return jaccard_similarity(claim_a, claim_b)
+    return jaccard_similarity(claim_a, claim_b);
   }
 }
 
 function jaccard_similarity(text_a, text_b) {
-  const words_a = new Set(text_a.toLowerCase().split(/\s+/))
-  const words_b = new Set(text_b.toLowerCase().split(/\s+/))
+  const words_a = new Set(text_a.toLowerCase().split(/\s+/));
+  const words_b = new Set(text_b.toLowerCase().split(/\s+/));
 
-  const intersection = new Set([...words_a].filter(w => words_b.has(w)))
-  const union = new Set([...words_a, ...words_b])
+  const intersection = new Set([...words_a].filter((w) => words_b.has(w)));
+  const union = new Set([...words_a, ...words_b]);
 
-  return intersection.size / union.size
+  return intersection.size / union.size;
 }
 ```
 
@@ -2790,67 +2885,68 @@ Detect if two claims contradict each other:
 
 ```javascript
 function detect_opposing_sentiment(claim_a, claim_b) {
-  let contradiction_score = 0.0
+  let contradiction_score = 0.0;
 
   // Pattern 1: Negation
   // "X is Y" vs "X is not Y"
   if (has_negation(claim_a) !== has_negation(claim_b)) {
-    contradiction_score += 0.4
+    contradiction_score += 0.4;
   }
 
   // Pattern 2: Opposing adjectives
   // "X is good" vs "X is bad"
-  const adjectives_a = extract_adjectives(claim_a)
-  const adjectives_b = extract_adjectives(claim_b)
+  const adjectives_a = extract_adjectives(claim_a);
+  const adjectives_b = extract_adjectives(claim_b);
 
   for (const adj_a of adjectives_a) {
     for (const adj_b of adjectives_b) {
       if (are_antonyms(adj_a, adj_b)) {
-        contradiction_score += 0.3
+        contradiction_score += 0.3;
       }
     }
   }
 
   // Pattern 3: Conflicting values
   // "X improves Y" vs "X worsens Y"
-  const verbs_a = extract_action_verbs(claim_a)
-  const verbs_b = extract_action_verbs(claim_b)
+  const verbs_a = extract_action_verbs(claim_a);
+  const verbs_b = extract_action_verbs(claim_b);
 
   for (const verb_a of verbs_a) {
     for (const verb_b of verbs_b) {
       if (are_opposite_actions(verb_a, verb_b)) {
-        contradiction_score += 0.3
+        contradiction_score += 0.3;
       }
     }
   }
 
   // Pattern 4: Incompatible values
   // "X is 100" vs "X is 200"
-  const numbers_a = extract_numbers(claim_a)
-  const numbers_b = extract_numbers(claim_b)
+  const numbers_a = extract_numbers(claim_a);
+  const numbers_b = extract_numbers(claim_b);
 
   if (numbers_a.length > 0 && numbers_b.length > 0) {
     // Check if numbers are significantly different
     for (const num_a of numbers_a) {
       for (const num_b of numbers_b) {
-        const diff = Math.abs(num_a - num_b)
-        const avg = (num_a + num_b) / 2
+        const diff = Math.abs(num_a - num_b);
+        const avg = (num_a + num_b) / 2;
 
-        if (avg > 0 && diff / avg > 0.5) {  // >50% difference
-          contradiction_score += 0.2
+        if (avg > 0 && diff / avg > 0.5) {
+          // >50% difference
+          contradiction_score += 0.2;
         }
       }
     }
   }
 
-  return Math.min(1.0, contradiction_score)
+  return Math.min(1.0, contradiction_score);
 }
 
 function has_negation(text) {
-  const negation_words = ['not', 'no', 'never', 'neither', 'nor', "n't", 'cannot']
-  const words = text.toLowerCase().split(/\s+/)
+  const negation_words = ['not', 'no', 'never', 'neither', 'nor', "n't", 'cannot'];
+  const words = text.toLowerCase().split(/\s+/);
 
-  return negation_words.some(neg => words.includes(neg))
+  return negation_words.some((neg) => words.includes(neg));
 }
 
 function are_antonyms(word_a, word_b) {
@@ -2863,16 +2959,16 @@ function are_antonyms(word_a, word_b) {
     ['useful', 'useless'],
     ['simple', 'complex'],
     ['fast', 'slow'],
-    ['easy', 'difficult']
-  ]
+    ['easy', 'difficult'],
+  ];
 
   for (const [ant1, ant2] of antonym_pairs) {
     if ((word_a === ant1 && word_b === ant2) || (word_a === ant2 && word_b === ant1)) {
-      return true
+      return true;
     }
   }
 
-  return false
+  return false;
 }
 
 function are_opposite_actions(verb_a, verb_b) {
@@ -2881,40 +2977,44 @@ function are_opposite_actions(verb_a, verb_b) {
     ['increases', 'decreases'],
     ['enhances', 'diminishes'],
     ['supports', 'contradicts'],
-    ['helps', 'hinders']
-  ]
+    ['helps', 'hinders'],
+  ];
 
   for (const [opp1, opp2] of opposite_pairs) {
-    if ((verb_a.includes(opp1) && verb_b.includes(opp2)) ||
-        (verb_a.includes(opp2) && verb_b.includes(opp1))) {
-      return true
+    if (
+      (verb_a.includes(opp1) && verb_b.includes(opp2)) ||
+      (verb_a.includes(opp2) && verb_b.includes(opp1))
+    ) {
+      return true;
     }
   }
 
-  return false
+  return false;
 }
 
 function extract_numbers(text) {
-  const number_pattern = /\b\d+(\.\d+)?\b/g
-  const matches = text.match(number_pattern)
+  const number_pattern = /\b\d+(\.\d+)?\b/g;
+  const matches = text.match(number_pattern);
 
-  return matches ? matches.map(n => parseFloat(n)) : []
+  return matches ? matches.map((n) => parseFloat(n)) : [];
 }
 
 // Helper functions for NLP (simplified implementations)
 function extract_adjectives(text) {
   // Simplified: Look for common adjective patterns
-  const adjective_pattern = /\b(good|bad|effective|useful|simple|complex|fast|slow|easy|difficult|important|trivial)\b/gi
-  const matches = text.match(adjective_pattern)
+  const adjective_pattern =
+    /\b(good|bad|effective|useful|simple|complex|fast|slow|easy|difficult|important|trivial)\b/gi;
+  const matches = text.match(adjective_pattern);
 
-  return matches ? matches.map(m => m.toLowerCase()) : []
+  return matches ? matches.map((m) => m.toLowerCase()) : [];
 }
 
 function extract_action_verbs(text) {
-  const verb_pattern = /\b(improves?|worsens?|increases?|decreases?|enhances?|diminishes?|supports?|contradicts?|helps?|hinders?)\b/gi
-  const matches = text.match(verb_pattern)
+  const verb_pattern =
+    /\b(improves?|worsens?|increases?|decreases?|enhances?|diminishes?|supports?|contradicts?|helps?|hinders?)\b/gi;
+  const matches = text.match(verb_pattern);
 
-  return matches ? matches.map(m => m.toLowerCase()) : []
+  return matches ? matches.map((m) => m.toLowerCase()) : [];
 }
 ```
 
@@ -2925,25 +3025,25 @@ Categorize detected contradictions:
 ```javascript
 function categorize_contradiction_type(claim_a, claim_b) {
   if (has_negation(claim_a) !== has_negation(claim_b)) {
-    return 'negation'  // Direct negation: "X is Y" vs "X is not Y"
+    return 'negation'; // Direct negation: "X is Y" vs "X is not Y"
   }
 
   if (extract_numbers(claim_a).length > 0 && extract_numbers(claim_b).length > 0) {
-    return 'conflicting_values'  // Incompatible numbers
+    return 'conflicting_values'; // Incompatible numbers
   }
 
-  const adj_a = extract_adjectives(claim_a)
-  const adj_b = extract_adjectives(claim_b)
+  const adj_a = extract_adjectives(claim_a);
+  const adj_b = extract_adjectives(claim_b);
 
   for (const a of adj_a) {
     for (const b of adj_b) {
       if (are_antonyms(a, b)) {
-        return 'opposing_sentiment'  // Antonym adjectives
+        return 'opposing_sentiment'; // Antonym adjectives
       }
     }
   }
 
-  return 'semantic_conflict'  // General semantic contradiction
+  return 'semantic_conflict'; // General semantic contradiction
 }
 ```
 
@@ -2953,13 +3053,13 @@ When some sources fail, merge available results gracefully:
 
 ```javascript
 function merge_with_partial_failures(source_results, source_errors) {
-  const merged_results = []
-  const warnings = []
+  const merged_results = [];
+  const warnings = [];
 
   // Collect successful results
   for (const [source_name, results] of Object.entries(source_results)) {
     if (results && results.length > 0) {
-      merged_results.push(...results)
+      merged_results.push(...results);
     }
   }
 
@@ -2968,34 +3068,34 @@ function merge_with_partial_failures(source_results, source_errors) {
     warnings.push({
       source: source_name,
       error: error.message,
-      impact: describe_source_impact(source_name)
-    })
+      impact: describe_source_impact(source_name),
+    });
   }
 
   // If ALL sources failed, throw error
   if (merged_results.length === 0) {
     throw QueryExecutionError(
       'All data sources failed. Please check:\n' +
-      warnings.map(w => `- ${w.source}: ${w.error}`).join('\n')
-    )
+        warnings.map((w) => `- ${w.source}: ${w.error}`).join('\n'),
+    );
   }
 
   return {
     results: merged_results,
     warnings: warnings,
     sources_available: Object.keys(source_results),
-    sources_failed: Object.keys(source_errors)
-  }
+    sources_failed: Object.keys(source_errors),
+  };
 }
 
 function describe_source_impact(source_name) {
   const impacts = {
-    'smart_connections': 'Semantic similarity search unavailable. Results may be less relevant.',
-    'obsidian_text_search': 'Exact text matching unavailable. Results may miss direct mentions.',
-    'neo4j_graphiti': 'Temporal and graph queries unavailable. Relationship context limited.'
-  }
+    smart_connections: 'Semantic similarity search unavailable. Results may be less relevant.',
+    obsidian_text_search: 'Exact text matching unavailable. Results may miss direct mentions.',
+    neo4j_graphiti: 'Temporal and graph queries unavailable. Relationship context limited.',
+  };
 
-  return impacts[source_name] || 'Unknown impact'
+  return impacts[source_name] || 'Unknown impact';
 }
 ```
 
@@ -3006,46 +3106,45 @@ Return merged and deduplicated results:
 ```yaml
 merged_results:
   results:
-    - note_path: "atomic/zettelkasten-definition.md"
-      note_title: "Zettelkasten Method Definition"
+    - note_path: 'atomic/zettelkasten-definition.md'
+      note_title: 'Zettelkasten Method Definition'
       relevance_score: 0.87
-      composite_relevance: 0.95  # Boosted by multiple sources
-      sources: ["smart_connections", "obsidian_text_search"]
-      primary_source: "smart_connections"
-      match_types: ["semantic", "exact_text"]
+      composite_relevance: 0.95 # Boosted by multiple sources
+      sources: ['smart_connections', 'obsidian_text_search']
+      primary_source: 'smart_connections'
+      match_types: ['semantic', 'exact_text']
       excerpts:
-        - "Zettelkasten is a method of knowledge management using atomic notes..."
-        - "...comparing Zettelkasten with PARA method..."
+        - 'Zettelkasten is a method of knowledge management using atomic notes...'
+        - '...comparing Zettelkasten with PARA method...'
       metadata:
-        created_date: "2024-03-15T10:23:00Z"
-        modified_date: "2024-10-12T14:45:00Z"
-        building_block: "concept"
+        created_date: '2024-03-15T10:23:00Z'
+        modified_date: '2024-10-12T14:45:00Z'
+        building_block: 'concept'
 
   contradictions:
     - note_a:
-        path: "atomic/atomic-notes-improve-recall.md"
-        title: "Atomic Notes Improve Recall"
-        claim: "Atomic notes significantly improve long-term recall"
-        timestamp: "2024-05-20T14:30:00Z"
+        path: 'atomic/atomic-notes-improve-recall.md'
+        title: 'Atomic Notes Improve Recall'
+        claim: 'Atomic notes significantly improve long-term recall'
+        timestamp: '2024-05-20T14:30:00Z'
       note_b:
-        path: "literature/critique-of-zettelkasten.md"
-        title: "Critique of Zettelkasten"
-        claim: "Atomic notes do not improve recall compared to traditional notes"
-        timestamp: "2024-08-15T09:00:00Z"
+        path: 'literature/critique-of-zettelkasten.md'
+        title: 'Critique of Zettelkasten'
+        claim: 'Atomic notes do not improve recall compared to traditional notes'
+        timestamp: '2024-08-15T09:00:00Z'
       confidence: 0.78
       similarity: 0.85
-      type: "negation"
+      type: 'negation'
 
   query_metadata:
     total_results: 15
     deduplicated_results: 12
-    sources_available: ["smart_connections", "obsidian_text_search", "neo4j_graphiti"]
+    sources_available: ['smart_connections', 'obsidian_text_search', 'neo4j_graphiti']
     sources_failed: []
     contradictions_detected: 1
     merge_duration_ms: 320
 
-  warnings:
-    []  # Empty if all sources succeeded
+  warnings: [] # Empty if all sources succeeded
 ```
 
 ## Performance Budget
@@ -3097,7 +3196,7 @@ template:
   description: Structured template for presenting query results with source attribution and format selection
   output:
     format: markdown
-    filename: null  # Results displayed inline, not saved to file
+    filename: null # Results displayed inline, not saved to file
 
 variables:
   - name: query
@@ -3443,20 +3542,10 @@ sections:
 ---
 
 checklist:
-  id: query-completeness-checklist
-  name: Query Completeness Checklist
-  description: Quality gates for query result validation - ensures query results are complete, accurate, and properly attributed
-  items:
-    - "[ ] Intent classification test: Query intent correctly classified with >85% confidence"
-    - "[ ] Result relevance test: Top 5 results directly relevant to query (composite score >= 0.7)"
-    - "[ ] Source attribution test: All results include source attribution (note title, path, date)"
-    - "[ ] Multi-source test: Results queried from all available sources (Obsidian + Smart Connections + Neo4j if available)"
-    - "[ ] Deduplication test: No duplicate results (same note_path)"
-    - "[ ] Format selection test: Result format matches query intent (narrative/list/table/timeline)"
-    - "[ ] Contradiction detection test: Contradictions identified if present (>70% similarity + opposing claims)"
-    - "[ ] Performance test: Query completed in <3 seconds total"
-    - "[ ] Error handling test: Graceful degradation if sources unavailable with informative warnings"
-    - "[ ] Completeness test: Query answered the user's question adequately"
+id: query-completeness-checklist
+name: Query Completeness Checklist
+description: Quality gates for query result validation - ensures query results are complete, accurate, and properly attributed
+items: - "[ ] Intent classification test: Query intent correctly classified with >85% confidence" - "[ ] Result relevance test: Top 5 results directly relevant to query (composite score >= 0.7)" - "[ ] Source attribution test: All results include source attribution (note title, path, date)" - "[ ] Multi-source test: Results queried from all available sources (Obsidian + Smart Connections + Neo4j if available)" - "[ ] Deduplication test: No duplicate results (same note_path)" - "[ ] Format selection test: Result format matches query intent (narrative/list/table/timeline)" - "[ ] Contradiction detection test: Contradictions identified if present (>70% similarity + opposing claims)" - "[ ] Performance test: Query completed in <3 seconds total" - "[ ] Error handling test: Graceful degradation if sources unavailable with informative warnings" - "[ ] Completeness test: Query answered the user's question adequately"
 
 ---
 
@@ -3479,17 +3568,20 @@ This checklist ensures query results meet quality standards - providing complete
 **Check:** Query intent correctly classified with confidence score >85%
 
 **Pass Criteria:**
+
 - Intent classification matches expected intent for query pattern
 - Confidence score >= 0.85
 - Ambiguous queries (confidence < 0.70) prompt user clarification
 
 **Remediation if failed:**
+
 - Review query patterns in parse-natural-language-query.md
 - Check for missing pattern signals
 - Verify confidence scoring algorithm
 - Add clarification prompt for ambiguous queries
 
 **Example PASS:**
+
 ```
 Query: "What is Zettelkasten?"
 Intent: factual
@@ -3498,6 +3590,7 @@ Confidence: 0.92
 ```
 
 **Example FAIL:**
+
 ```
 Query: "Tell me about productivity"
 Intent: factual
@@ -3510,17 +3603,20 @@ Confidence: 0.65
 **Check:** Top 5 results directly relevant to query with composite relevance >= 0.7
 
 **Pass Criteria:**
+
 - At least 3 of top 5 results have composite_relevance >= 0.7
 - Results contain query concepts in title or content
 - Results ranked by relevance (highest first)
 
 **Remediation if failed:**
+
 - Review semantic search threshold (may be too low)
 - Check text search pattern matching
 - Verify relevance scoring algorithm in merge-results.md
 - Consider broadening search if no results found
 
 **Example PASS:**
+
 ```
 Top 5 results:
 1. "Zettelkasten Definition" (0.95)
@@ -3532,6 +3628,7 @@ Top 5 results:
 ```
 
 **Example FAIL:**
+
 ```
 Top 5 results:
 1. "Zettelkasten Definition" (0.90)
@@ -3547,6 +3644,7 @@ Top 5 results:
 **Check:** All results include complete source attribution
 
 **Required Fields:**
+
 - note_title
 - note_path
 - excerpt (content snippet)
@@ -3554,16 +3652,19 @@ Top 5 results:
 - metadata.created_date (or modified_date)
 
 **Pass Criteria:**
+
 - 100% of results have all required fields
 - Source attribution accurate and traceable
 - Timestamps in ISO 8601 format
 
 **Remediation if failed:**
+
 - Check result structure in execute-obsidian-query.md
 - Verify metadata extraction
 - Ensure fallback values for missing metadata
 
 **Example PASS:**
+
 ```
 {
   note_title: "Zettelkasten Method",
@@ -3578,6 +3679,7 @@ Top 5 results:
 ```
 
 **Example FAIL:**
+
 ```
 {
   note_title: "Zettelkasten Method",
@@ -3592,23 +3694,27 @@ Top 5 results:
 **Check:** Results queried from all available data sources
 
 **Available Sources:**
+
 - Obsidian MCP Tools (text search)
 - Smart Connections MCP (semantic search)
 - Neo4j Graphiti MCP (temporal/graph queries) - optional
 
 **Pass Criteria:**
+
 - Query attempted against all configured sources
 - sources_available list includes all active sources
 - sources_failed list only includes truly unavailable sources
 - Warnings generated for failed sources
 
 **Remediation if failed:**
+
 - Check MCP server configuration
 - Verify MCP server status (running/accessible)
 - Review timeout settings
 - Ensure graceful degradation logic
 
 **Example PASS:**
+
 ```
 sources_available: ["smart_connections", "obsidian_text_search"]
 sources_failed: []
@@ -3616,6 +3722,7 @@ sources_failed: []
 ```
 
 **Example FAIL:**
+
 ```
 sources_available: ["obsidian_text_search"]
 sources_failed: ["smart_connections"]
@@ -3627,16 +3734,19 @@ sources_failed: ["smart_connections"]
 **Check:** No duplicate results with same note_path
 
 **Pass Criteria:**
+
 - All result note_path values are unique
 - Duplicate sources merged into single result
 - Metadata from all sources preserved in merged result
 
 **Remediation if failed:**
+
 - Review deduplication logic in merge-results.md
 - Check note_path normalization (path separators, case)
 - Verify merge_result_metadata function
 
 **Example PASS:**
+
 ```
 results:
   - note_path: "atomic/zettelkasten.md" (sources: ["smart_connections", "text_search"])
@@ -3646,6 +3756,7 @@ results:
 ```
 
 **Example FAIL:**
+
 ```
 results:
   - note_path: "atomic/zettelkasten.md" (source: "smart_connections")
@@ -3658,6 +3769,7 @@ results:
 **Check:** Result format matches query intent appropriately
 
 **Format Mapping:**
+
 - factual → list (or narrative for single result)
 - temporal → timeline
 - causal → narrative
@@ -3665,16 +3777,19 @@ results:
 - exploratory → list (with categories)
 
 **Pass Criteria:**
+
 - Format selection logic matches intent
 - Format renders correctly in template
 - Results structured appropriately for format
 
 **Remediation if failed:**
+
 - Review format selection in query-interpreter-agent.md
 - Check query-result-tmpl.yaml template rendering
 - Verify result structure matches format requirements
 
 **Example PASS:**
+
 ```
 Query: "Compare Zettelkasten and PARA"
 Intent: comparative
@@ -3683,6 +3798,7 @@ Format: table
 ```
 
 **Example FAIL:**
+
 ```
 Query: "How has Zettelkasten evolved?"
 Intent: temporal
@@ -3695,23 +3811,27 @@ Format: list
 **Check:** Contradictions identified when present in results
 
 **Detection Criteria:**
+
 - Semantic similarity between claims >70%
 - Opposing sentiment or values detected
 - Contradiction confidence score >70%
 
 **Pass Criteria:**
+
 - Contradictions array includes all detected conflicts
 - Each contradiction has both note_a and note_b
 - Confidence scores and types included
 - False positive rate <10%
 
 **Remediation if failed:**
+
 - Review contradiction detection in merge-results.md
 - Adjust similarity threshold
 - Refine opposing sentiment detection patterns
 - Test with known contradictory notes
 
 **Example PASS:**
+
 ```
 Query: "Do atomic notes improve recall?"
 Results include:
@@ -3729,6 +3849,7 @@ Contradictions: [
 ```
 
 **Example FAIL:**
+
 ```
 Same query and contradictory results
 Contradictions: []
@@ -3740,6 +3861,7 @@ Contradictions: []
 **Check:** Query completed within performance budget (<3 seconds total)
 
 **Performance Budget:**
+
 - Query parsing: <200ms
 - Obsidian queries: <1 second per source
 - Neo4j queries: <1 second
@@ -3747,17 +3869,20 @@ Contradictions: []
 - **Total: <3 seconds**
 
 **Pass Criteria:**
+
 - query_duration_ms < 3000
 - No timeout errors
 - Phase durations within budget
 
 **Remediation if failed:**
+
 - Identify slow phase (check performance log)
 - Optimize slow queries (reduce scope, add indexes)
 - Adjust timeout settings if needed
 - Consider caching for repeated queries
 
 **Example PASS:**
+
 ```
 Performance:
   parse_ms: 120
@@ -3769,6 +3894,7 @@ Performance:
 ```
 
 **Example FAIL:**
+
 ```
 Performance:
   parse_ms: 150
@@ -3784,18 +3910,21 @@ Performance:
 **Check:** Graceful degradation with informative warnings when sources fail
 
 **Pass Criteria:**
+
 - System continues with available sources
 - Warnings array populated with error details
 - User informed about degraded capabilities
 - Error messages actionable (what to check/fix)
 
 **Remediation if failed:**
+
 - Add try-catch blocks around MCP calls
 - Populate warnings array on failures
 - Provide actionable error messages
 - Ensure user communication in result template
 
 **Example PASS:**
+
 ```
 sources_available: ["obsidian_text_search"]
 sources_failed: ["smart_connections"]
@@ -3810,6 +3939,7 @@ warnings: [
 ```
 
 **Example FAIL:**
+
 ```
 sources_available: ["obsidian_text_search"]
 sources_failed: ["smart_connections"]
@@ -3822,23 +3952,27 @@ warnings: []
 **Check:** Query adequately answered the user's question
 
 **Pass Criteria:**
+
 - Results address the query topic
 - Sufficient context provided (>= 3 relevant results)
 - Follow-up suggestions included if results incomplete
 - User can take action with information provided
 
 **Subjective Assessment:**
+
 - Does this answer the question posed?
 - Would a human find this response helpful?
 - Are there obvious gaps in coverage?
 
 **Remediation if failed:**
+
 - Broaden search if too narrow (lower threshold)
 - Improve query parsing if misunderstood
 - Add related queries in "Next Steps" section
 - Consider rephrasing query
 
 **Example PASS:**
+
 ```
 Query: "What is Zettelkasten?"
 Results: 8 notes including:
@@ -3850,6 +3984,7 @@ Results: 8 notes including:
 ```
 
 **Example FAIL:**
+
 ```
 Query: "What is Zettelkasten?"
 Results: 1 note:
@@ -3907,6 +4042,7 @@ Comprehensive security hardening and validation guidelines for the bmad-obsidian
 ## Overview
 
 The Semantic Linker Agent handles user notes, executes database queries, and modifies files. Security is paramount to prevent:
+
 - **Directory traversal attacks** (accessing files outside vault)
 - **Cypher injection** (malicious Neo4j queries)
 - **Link spam** (overwhelming notes with excessive links)
@@ -3921,6 +4057,7 @@ The Semantic Linker Agent handles user notes, executes database queries, and mod
 All user inputs must be validated before processing:
 
 **Note Paths:**
+
 ```javascript
 function validate_note_path(path) {
   // Block directory traversal
@@ -3954,73 +4091,86 @@ function validate_note_path(path) {
 ```
 
 **Semantic Similarity Threshold:**
+
 ```javascript
 function validate_threshold(threshold) {
   if (typeof threshold !== 'number') {
-    throw ValidationError('Threshold must be a number')
+    throw ValidationError('Threshold must be a number');
   }
 
   if (threshold < 0.0 || threshold > 1.0) {
-    throw ValidationError('Threshold must be in range [0.0, 1.0]')
+    throw ValidationError('Threshold must be in range [0.0, 1.0]');
   }
 
-  return threshold
+  return threshold;
 }
 ```
 
 **Link Type:**
+
 ```javascript
 function validate_link_type(link_type) {
-  valid_types = ['supports', 'contradicts', 'elaborates', 'analogous_to',
-                 'generalizes', 'specializes', 'influences']
+  valid_types = [
+    'supports',
+    'contradicts',
+    'elaborates',
+    'analogous_to',
+    'generalizes',
+    'specializes',
+    'influences',
+  ];
 
   if (!valid_types.includes(link_type)) {
-    throw ValidationError(`Invalid link_type: ${link_type}. Must be one of: ${valid_types.join(', ')}`)
+    throw ValidationError(
+      `Invalid link_type: ${link_type}. Must be one of: ${valid_types.join(', ')}`,
+    );
   }
 
-  return link_type
+  return link_type;
 }
 ```
 
 **Context Sentences:**
+
 ```javascript
 function validate_context(context) {
   // Maximum length (prevent resource exhaustion)
-  const MAX_LENGTH = 500
+  const MAX_LENGTH = 500;
 
   if (context.length > MAX_LENGTH) {
-    throw ValidationError(`Context exceeds max length of ${MAX_LENGTH} characters`)
+    throw ValidationError(`Context exceeds max length of ${MAX_LENGTH} characters`);
   }
 
   // Strip dangerous content
   const dangerous_patterns = [
     /<script/i,
     /javascript:/i,
-    /on\w+\s*=/i,  // onclick=, onload=, etc.
+    /on\w+\s*=/i, // onclick=, onload=, etc.
     /eval\(/i,
-    /Function\(/i
-  ]
+    /Function\(/i,
+  ];
 
   for (const pattern of dangerous_patterns) {
     if (pattern.test(context)) {
-      throw SecurityError('Dangerous content detected in context')
+      throw SecurityError('Dangerous content detected in context');
     }
   }
 
-  return context
+  return context;
 }
 ```
 
 **Result Limits:**
+
 ```javascript
 function validate_limit(limit) {
-  const MAX_LIMIT = 100  // Prevent DoS via excessive results
+  const MAX_LIMIT = 100; // Prevent DoS via excessive results
 
   if (typeof limit !== 'number' || limit < 1 || limit > MAX_LIMIT) {
-    throw ValidationError(`Limit must be integer in range [1, ${MAX_LIMIT}]`)
+    throw ValidationError(`Limit must be integer in range [1, ${MAX_LIMIT}]`);
   }
 
-  return limit
+  return limit;
 }
 ```
 
@@ -4029,6 +4179,7 @@ function validate_limit(limit) {
 **ALWAYS use parameterized queries. NEVER concatenate user input into Cypher strings.**
 
 **SAFE (Parameterized Query):**
+
 ```cypher
 MATCH (source:Note {path: $source_path})
 MATCH (target:Note {path: $target_path})
@@ -4045,22 +4196,24 @@ RETURN r
 ```
 
 **Parameters object (properly escaped):**
+
 ```javascript
 params = {
-  source_path: validate_note_path(source_path),  // Validated
-  target_path: validate_note_path(target_path),  // Validated
-  link_id: generate_uuid(),                      // System-generated
-  link_type: validate_link_type(link_type),      // Validated enum
-  strength: parseFloat(strength),                // Type-safe
-  discovered_at: new Date().toISOString(),       // System-generated
-  context: validate_context(context),            // Sanitized
-  valid_time_start: new Date().toISOString()     // System-generated
-}
+  source_path: validate_note_path(source_path), // Validated
+  target_path: validate_note_path(target_path), // Validated
+  link_id: generate_uuid(), // System-generated
+  link_type: validate_link_type(link_type), // Validated enum
+  strength: parseFloat(strength), // Type-safe
+  discovered_at: new Date().toISOString(), // System-generated
+  context: validate_context(context), // Sanitized
+  valid_time_start: new Date().toISOString(), // System-generated
+};
 
-result = graphiti_mcp.execute_cypher(cypher_query, params)
+result = graphiti_mcp.execute_cypher(cypher_query, params);
 ```
 
 **UNSAFE (String Concatenation - NEVER DO THIS):**
+
 ```cypher
 // ❌ VULNERABLE TO INJECTION
 CREATE (a)-[r:CONCEPTUALLY_RELATED {
@@ -4074,12 +4227,14 @@ CREATE (a)-[r:CONCEPTUALLY_RELATED {
 **Cypher Injection Attack Examples:**
 
 1. **Data Exfiltration:**
+
    ```
    User input: "}]->(n) WITH n MATCH (secret:Note) RETURN secret //"
    → Exposes all notes in database
    ```
 
 2. **Unauthorized Relationships:**
+
    ```
    User input: "}]->(n), (attacker:Note {path: 'evil.md'})-[:CONTROLS]->(n) //"
    → Creates unauthorized control relationships
@@ -4096,139 +4251,143 @@ CREATE (a)-[r:CONCEPTUALLY_RELATED {
 ### 3. Path Sanitization
 
 **Filename Sanitization:**
+
 ```javascript
 function sanitize_filename(title) {
   // Remove special characters that are unsafe in filenames
-  const unsafe_chars = /[\/\\:\*\?"<>\|]/g
-  let safe_title = title.replace(unsafe_chars, '-')
+  const unsafe_chars = /[\/\\:\*\?"<>\|]/g;
+  let safe_title = title.replace(unsafe_chars, '-');
 
   // Limit length
-  const MAX_FILENAME_LENGTH = 100
+  const MAX_FILENAME_LENGTH = 100;
   if (safe_title.length > MAX_FILENAME_LENGTH) {
-    safe_title = safe_title.substring(0, MAX_FILENAME_LENGTH)
+    safe_title = safe_title.substring(0, MAX_FILENAME_LENGTH);
   }
 
   // Convert spaces to hyphens
-  safe_title = safe_title.replace(/\s+/g, '-')
+  safe_title = safe_title.replace(/\s+/g, '-');
 
   // Remove leading/trailing hyphens
-  safe_title = safe_title.replace(/^-+|-+$/g, '')
+  safe_title = safe_title.replace(/^-+|-+$/g, '');
 
   // Ensure uniqueness (collision detection)
   if (file_exists(`${safe_title}.md`)) {
-    let counter = 1
+    let counter = 1;
     while (file_exists(`${safe_title}-${counter}.md`)) {
-      counter++
+      counter++;
     }
-    safe_title = `${safe_title}-${counter}`
+    safe_title = `${safe_title}-${counter}`;
   }
 
-  return safe_title
+  return safe_title;
 }
 ```
 
 **Wikilink Sanitization:**
+
 ```javascript
 function sanitize_wikilink(link_text) {
   // Ensure wikilink syntax is valid
   // Format: [[Note Title]]
 
   if (!link_text.startsWith('[[') || !link_text.endsWith(']]')) {
-    throw ValidationError('Invalid wikilink format')
+    throw ValidationError('Invalid wikilink format');
   }
 
   // Extract title
-  let title = link_text.slice(2, -2)
+  let title = link_text.slice(2, -2);
 
   // Check for nested brackets (invalid)
   if (title.includes('[[') || title.includes(']]')) {
-    throw ValidationError('Nested brackets not allowed in wikilinks')
+    throw ValidationError('Nested brackets not allowed in wikilinks');
   }
 
   // Check for pipe character (alias)
   if (title.includes('|')) {
-    const [target, alias] = title.split('|')
-    title = target.trim()
+    const [target, alias] = title.split('|');
+    title = target.trim();
   }
 
-  return `[[${title}]]`
+  return `[[${title}]]`;
 }
 ```
 
 ### 4. Circular Reasoning Detection
 
 **Algorithm:**
+
 ```javascript
 function detect_circular_reasoning(source_path, target_path, link_type) {
   // Only check for reasoning-based link types
-  reasoning_types = ['supports', 'contradicts', 'generalizes', 'specializes']
+  reasoning_types = ['supports', 'contradicts', 'generalizes', 'specializes'];
 
   if (!reasoning_types.includes(link_type)) {
-    return false  // Elaborates, analogous_to, influences can be cyclic
+    return false; // Elaborates, analogous_to, influences can be cyclic
   }
 
   // Build graph of reasoning links
-  reasoning_graph = build_reasoning_graph()
+  reasoning_graph = build_reasoning_graph();
 
   // Check if adding this link creates a cycle
   if (would_create_cycle(reasoning_graph, source_path, target_path, link_type)) {
-    return true  // Circular reasoning detected
+    return true; // Circular reasoning detected
   }
 
-  return false
+  return false;
 }
 
 function build_reasoning_graph() {
   // Load all existing links of reasoning types
-  graph = new DirectedGraph()
+  graph = new DirectedGraph();
 
-  all_notes = list_all_notes()
+  all_notes = list_all_notes();
   for (note_path in all_notes) {
-    note_content = read_note(note_path)
-    links = extract_typed_links(note_content)
+    note_content = read_note(note_path);
+    links = extract_typed_links(note_content);
 
     for (link in links) {
       if (reasoning_types.includes(link.type)) {
-        graph.add_edge(note_path, link.target, link.type)
+        graph.add_edge(note_path, link.target, link.type);
       }
     }
   }
 
-  return graph
+  return graph;
 }
 
 function would_create_cycle(graph, source, target, link_type) {
   // Use depth-first search to detect cycle
-  visited = new Set()
-  stack = [target]
+  visited = new Set();
+  stack = [target];
 
   while (stack.length > 0) {
-    current = stack.pop()
+    current = stack.pop();
 
     if (current === source) {
-      return true  // Cycle detected: target → ... → source
+      return true; // Cycle detected: target → ... → source
     }
 
     if (visited.has(current)) {
-      continue
+      continue;
     }
 
-    visited.add(current)
+    visited.add(current);
 
     // Add outgoing edges from current node
-    outgoing = graph.get_edges_from(current)
+    outgoing = graph.get_edges_from(current);
     for (edge in outgoing) {
       if (reasoning_types.includes(edge.type)) {
-        stack.push(edge.target)
+        stack.push(edge.target);
       }
     }
   }
 
-  return false  // No cycle
+  return false; // No cycle
 }
 ```
 
 **Example Detection:**
+
 ```
 Existing: A supports B, B supports C
 Proposed: C supports A
@@ -4244,69 +4403,72 @@ Proposed: C elaborates A
 ### 5. Link Spam Prevention
 
 **Rate Limiting:**
+
 ```javascript
 function enforce_link_limits(note_path) {
-  const MAX_LINKS_PER_NOTE = 50
-  const MAX_SUGGESTIONS_PER_QUERY = 50
-  const MAX_BULK_TARGETS = 20
+  const MAX_LINKS_PER_NOTE = 50;
+  const MAX_SUGGESTIONS_PER_QUERY = 50;
+  const MAX_BULK_TARGETS = 20;
 
   // Check existing link count
-  note_content = read_note(note_path)
-  existing_links = extract_wikilinks(note_content)
+  note_content = read_note(note_path);
+  existing_links = extract_wikilinks(note_content);
 
   if (existing_links.length >= MAX_LINKS_PER_NOTE) {
-    throw SecurityError(`Note has reached max link limit (${MAX_LINKS_PER_NOTE})`)
+    throw SecurityError(`Note has reached max link limit (${MAX_LINKS_PER_NOTE})`);
   }
 
   // Check for suspicious patterns
   if (existing_links.length > 30) {
-    log_warning(`Note approaching link limit: ${note_path} (${existing_links.length} links)`)
+    log_warning(`Note approaching link limit: ${note_path} (${existing_links.length} links)`);
   }
 
-  return true
+  return true;
 }
 ```
 
 **Duplicate Link Prevention:**
+
 ```javascript
 function check_duplicate_link(source_path, target_path) {
-  source_content = read_note(source_path)
-  existing_links = extract_wikilinks(source_content)
+  source_content = read_note(source_path);
+  existing_links = extract_wikilinks(source_content);
 
-  target_title = extract_title_from_path(target_path)
+  target_title = extract_title_from_path(target_path);
 
   for (link in existing_links) {
     if (link.includes(target_title)) {
-      return true  // Duplicate detected
+      return true; // Duplicate detected
     }
   }
 
-  return false
+  return false;
 }
 ```
 
 ### 6. Permission Verification
 
 **File Permission Checks:**
+
 ```javascript
 function verify_write_permissions(note_path) {
   try {
     // Attempt to read file metadata
-    stats = file_stats(note_path)
+    stats = file_stats(note_path);
 
     // Check if writable
     if (!stats.writable) {
-      throw PermissionError(`Note is read-only: ${note_path}`)
+      throw PermissionError(`Note is read-only: ${note_path}`);
     }
 
     // Check if locked by another process
     if (stats.locked) {
-      throw PermissionError(`Note is locked: ${note_path}`)
+      throw PermissionError(`Note is locked: ${note_path}`);
     }
 
-    return true
+    return true;
   } catch (error) {
-    throw PermissionError(`Cannot access note: ${note_path} - ${error.message}`)
+    throw PermissionError(`Cannot access note: ${note_path} - ${error.message}`);
   }
 }
 ```
@@ -4314,22 +4476,26 @@ function verify_write_permissions(note_path) {
 ### 7. Data Privacy
 
 **Local-Only Storage:**
+
 - All feedback data stored in `.bmad-obsidian-2nd-brain/link-feedback.json` (local)
 - No external API calls for feedback collection
 - User has full control: can inspect, modify, or delete feedback file
 
 **Smart Connections Privacy:**
+
 - Uses local BGE-micro-v2 embeddings (no cloud API)
 - Embeddings stored in Obsidian vault (user-controlled)
 - Fully offline-capable
 
 **Neo4j Security:**
+
 - Optional integration (graceful degradation if disabled)
 - Connection credentials in user-controlled `config.yaml`
 - No credential exposure in logs or error messages
 - Parameterized queries only
 
 **User Data Control:**
+
 ```javascript
 // User can reset feedback learning
 rm .bmad-obsidian-2nd-brain/link-feedback.json
@@ -4348,18 +4514,21 @@ RETURN n, r, m
 **Never expose sensitive information in error messages:**
 
 **BAD:**
+
 ```javascript
-throw Error(`Failed to connect to Neo4j at bolt://localhost:7687 with password: ${password}`)
+throw Error(`Failed to connect to Neo4j at bolt://localhost:7687 with password: ${password}`);
 // Exposes credentials ❌
 ```
 
 **GOOD:**
+
 ```javascript
-throw Error('Failed to connect to Neo4j. Check config.yaml for connection settings.')
+throw Error('Failed to connect to Neo4j. Check config.yaml for connection settings.');
 // No sensitive data ✓
 ```
 
 **Graceful Degradation:**
+
 ```javascript
 try {
   neo4j_result = create_neo4j_relationship(...)
@@ -4378,48 +4547,50 @@ try {
 ### 9. Content Validation
 
 **Markdown Syntax Validation:**
+
 ```javascript
 function validate_markdown(content) {
   try {
     // Parse markdown
-    parsed = markdown_parser.parse(content)
+    parsed = markdown_parser.parse(content);
 
     // Check for script tags (XSS prevention)
     if (/<script|javascript:|on\w+=/i.test(content)) {
-      throw SecurityError('Potentially dangerous content detected')
+      throw SecurityError('Potentially dangerous content detected');
     }
 
-    return true
+    return true;
   } catch (error) {
-    throw ValidationError(`Invalid markdown: ${error.message}`)
+    throw ValidationError(`Invalid markdown: ${error.message}`);
   }
 }
 ```
 
 **Frontmatter YAML Validation:**
+
 ```javascript
 function validate_frontmatter(content) {
   // Extract frontmatter between --- delimiters
-  frontmatter_match = content.match(/^---\n([\s\S]*?)\n---/)
+  frontmatter_match = content.match(/^---\n([\s\S]*?)\n---/);
 
   if (!frontmatter_match) {
-    return true  // No frontmatter is valid
+    return true; // No frontmatter is valid
   }
 
-  frontmatter_yaml = frontmatter_match[1]
+  frontmatter_yaml = frontmatter_match[1];
 
   try {
     // Parse YAML
-    parsed = yaml.parse(frontmatter_yaml)
+    parsed = yaml.parse(frontmatter_yaml);
 
     // Validate required fields
     if (!parsed.building_block) {
-      log_warning('Missing building_block in frontmatter')
+      log_warning('Missing building_block in frontmatter');
     }
 
-    return true
+    return true;
   } catch (error) {
-    throw ValidationError(`Invalid frontmatter YAML: ${error.message}`)
+    throw ValidationError(`Invalid frontmatter YAML: ${error.message}`);
   }
 }
 ```
@@ -4427,48 +4598,54 @@ function validate_frontmatter(content) {
 ### 10. Rollback Safety
 
 **Atomic Bidirectional Link Creation:**
-```javascript
-function create_bidirectional_link_safe(source_path, target_path, context_forward, context_backward) {
-  // Store original content for rollback
-  original_source = read_note(source_path)
-  original_target = read_note(target_path)
 
-  source_updated = false
-  target_updated = false
+```javascript
+function create_bidirectional_link_safe(
+  source_path,
+  target_path,
+  context_forward,
+  context_backward,
+) {
+  // Store original content for rollback
+  original_source = read_note(source_path);
+  original_target = read_note(target_path);
+
+  source_updated = false;
+  target_updated = false;
 
   try {
     // Step 1: Update source note
-    update_note(source_path, add_link(original_source, target_path, context_forward))
-    source_updated = true
+    update_note(source_path, add_link(original_source, target_path, context_forward));
+    source_updated = true;
 
     // Step 2: Update target note
-    update_note(target_path, add_link(original_target, source_path, context_backward))
-    target_updated = true
+    update_note(target_path, add_link(original_target, source_path, context_backward));
+    target_updated = true;
 
-    return {success: true, rollback_performed: false}
-
+    return { success: true, rollback_performed: false };
   } catch (error) {
     // Rollback if second update failed
     if (source_updated && !target_updated) {
       try {
-        update_note(source_path, original_source)
+        update_note(source_path, original_source);
         return {
           success: false,
           rollback_performed: true,
-          error: `Target update failed, source rolled back: ${error.message}`
-        }
+          error: `Target update failed, source rolled back: ${error.message}`,
+        };
       } catch (rollback_error) {
         // CRITICAL: Rollback failed
         return {
           success: false,
           rollback_performed: false,
-          error: 'CRITICAL: Target update failed AND rollback failed. Manual intervention required.',
-          rollback_error: rollback_error.message
-        }
+          error:
+            'CRITICAL: Target update failed AND rollback failed. Manual intervention required.',
+          rollback_error: rollback_error.message,
+        };
       }
     }
 
-    return {success: false, error: error.message}
+    return { success: false, error: error.message };
   }
 }
 ```
@@ -4496,30 +4673,37 @@ Before deploying or executing semantic linking operations:
 ## Attack Scenarios & Defenses
 
 ### Scenario 1: Directory Traversal Attack
+
 **Attack:** User provides path `../../etc/passwd` to exfiltrate system files
 **Defense:** Path validation blocks `../` patterns and absolute paths outside vault
 
 ### Scenario 2: Cypher Injection
+
 **Attack:** User input in context: `"}]->(n) MATCH (secret:Note) RETURN secret //"`
 **Defense:** Parameterized queries prevent injection, user input never concatenated
 
 ### Scenario 3: Link Spam
+
 **Attack:** Automated script creates 1000 links to single note
 **Defense:** Max 50 links per note enforced, rate limiting blocks excessive operations
 
 ### Scenario 4: Circular Reasoning
+
 **Attack:** Create A supports B, B supports C, C supports A (circular argument)
 **Defense:** Cycle detection algorithm rejects links that create reasoning cycles
 
 ### Scenario 5: Malicious Script Injection
+
 **Attack:** Context sentence contains `<script>alert('XSS')</script>`
 **Defense:** Content validation strips script tags and dangerous patterns
 
 ### Scenario 6: Credential Exposure
+
 **Attack:** Error message reveals Neo4j password
 **Defense:** Error messages sanitized, no credentials in logs
 
 ### Scenario 7: Rollback Failure
+
 **Attack:** Second link creation fails, leaving first link orphaned
 **Defense:** Atomic rollback restores original state if second operation fails
 

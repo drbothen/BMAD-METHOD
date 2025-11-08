@@ -123,11 +123,12 @@ Remember: Regular audits prevent vault decay. Quality issues compound over time 
 
 ## Command Implementations
 
-### *help - Show Available Commands
+### \*help - Show Available Commands
 
 Display all 13 commands with descriptions, parameters, and examples.
 
 **Output:**
+
 ```
 Quality Auditor Agent - Available Commands:
 
@@ -243,11 +244,12 @@ Type a command number (1-12) or command name (e.g., *audit-full) to execute.
 
 ---
 
-### *audit-full - Comprehensive Vault Audit
+### \*audit-full - Comprehensive Vault Audit
 
 **Purpose:** Execute all 7 audit dimensions and generate comprehensive report with vault health score.
 
 **Workflow:**
+
 1. Check if progressive mode enabled
    - If YES: Process in batches (default 1000 notes)
    - If NO: Process all notes at once
@@ -267,6 +269,7 @@ Type a command number (1-12) or command name (e.g., *audit-full) to execute.
 8. Execute audit-coverage-checklist.md to verify comprehensive coverage
 
 **Output:**
+
 ```
 Running Comprehensive Vault Audit...
 
@@ -328,11 +331,12 @@ View full report: /reports/audit-2025-11-06-14-30-00.md
 
 ---
 
-### *audit-freshness [threshold_days] - Temporal Freshness Audit
+### \*audit-freshness [threshold_days] - Temporal Freshness Audit
 
 **Purpose:** Identify stale notes not updated within threshold period, prioritized by importance (incoming link count).
 
 **Workflow:**
+
 1. Load task: audit-temporal-freshness.md
 2. Query all notes via Obsidian MCP with metadata
 3. For each note:
@@ -349,9 +353,11 @@ View full report: /reports/audit-2025-11-06-14-30-00.md
 7. Return results
 
 **Parameters:**
+
 - `threshold_days` (optional, default: 180) - Days to consider note stale
 
 **Output:**
+
 ```
 Running Temporal Freshness Audit (threshold: 180 days)...
 
@@ -396,11 +402,12 @@ View details: Run *generate-report to include in comprehensive audit report
 
 ---
 
-### *audit-links [max_links] - External Link Validation (Security Hardened)
+### \*audit-links [max_links] - External Link Validation (Security Hardened)
 
 **Purpose:** Validate external URLs for accessibility, detect broken links, redirects, and timeouts with comprehensive security protection.
 
 **Workflow:**
+
 1. Load task: validate-external-links.md
 2. Parse all notes for external URLs (regex: `\[.*?\]\((https?://.*?)\)`)
 3. **Security Validation (CRITICAL - Always Enforced):**
@@ -422,9 +429,11 @@ View details: Run *generate-report to include in comprehensive audit report
 7. Return results
 
 **Parameters:**
+
 - `max_links` (optional, default: 50) - Maximum URLs to validate per run
 
 **Security Features:**
+
 - ✅ SSRF prevention (private IP blocking)
 - ✅ Protocol validation (http/https only)
 - ✅ Rate limiting (5 req/sec)
@@ -433,6 +442,7 @@ View details: Run *generate-report to include in comprehensive audit report
 - ✅ User-Agent identification
 
 **Output:**
+
 ```
 Running External Link Validation (max 50 URLs, security enforced)...
 
@@ -509,11 +519,12 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *audit-citations - Source Citation Validation
+### \*audit-citations - Source Citation Validation
 
 **Purpose:** Validate source citation completeness and detect unattributed claims to maintain knowledge provenance.
 
 **Workflow:**
+
 1. Load task: validate-citations.md
 2. Query all notes
 3. For each note:
@@ -531,6 +542,7 @@ View details: Run *generate-report for full audit report
 **Parameters:** None
 
 **Output:**
+
 ```
 Running Citation Validation Audit...
 
@@ -587,11 +599,12 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *audit-orphans - Orphaned Notes Detection
+### \*audit-orphans - Orphaned Notes Detection
 
 **Purpose:** Detect notes with no incoming or outgoing links and suggest linking opportunities.
 
 **Workflow:**
+
 1. Load task: detect-orphaned-notes.md
 2. Build link graph:
    - Parse all notes for wikilinks `[[...]]`
@@ -609,6 +622,7 @@ View details: Run *generate-report for full audit report
 **Parameters:** None
 
 **Output:**
+
 ```
 Running Orphan Detection Audit...
 
@@ -675,11 +689,12 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *audit-atomicity [sample_size] - Atomicity Violations Audit
+### \*audit-atomicity [sample_size] - Atomicity Violations Audit
 
 **Purpose:** Detect non-atomic notes (violating "one idea per note" principle) using STORY-003 analyze-atomicity.md task.
 
 **Workflow:**
+
 1. Load task: audit-atomicity-violations.md
 2. Determine sample size:
    - Large vaults (>200 notes): 10% or min 20 (random sample)
@@ -698,9 +713,11 @@ View details: Run *generate-report for full audit report
 5. Return results
 
 **Parameters:**
+
 - `sample_size` (optional, default: 10% or min 20) - Number of notes to sample
 
 **Output:**
+
 ```
 Running Atomicity Violations Audit...
 
@@ -756,11 +773,12 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *audit-duplicates [threshold] - Duplicate Content Detection
+### \*audit-duplicates [threshold] - Duplicate Content Detection
 
 **Purpose:** Detect exact and semantic duplicate notes using SHA-256 hashing and semantic similarity.
 
 **Workflow:**
+
 1. Load task: detect-duplicate-content.md
 2. Exact duplicate detection:
    - Calculate SHA-256 hash for each note content
@@ -775,9 +793,11 @@ View details: Run *generate-report for full audit report
 5. Return results
 
 **Parameters:**
+
 - `threshold` (optional, default: 0.85) - Similarity threshold for semantic duplicates
 
 **Output:**
+
 ```
 Running Duplicate Content Detection (threshold: 0.85)...
 
@@ -829,11 +849,12 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *audit-metadata - Metadata Completeness Audit
+### \*audit-metadata - Metadata Completeness Audit
 
 **Purpose:** Validate frontmatter metadata completeness and format across all notes.
 
 **Workflow:**
+
 1. Load task: audit-metadata-completeness.md
 2. Query all notes with frontmatter
 3. For each note:
@@ -853,6 +874,7 @@ View details: Run *generate-report for full audit report
 **Parameters:** None
 
 **Output:**
+
 ```
 Running Metadata Completeness Audit...
 
@@ -911,14 +933,15 @@ View details: Run *generate-report for full audit report
 
 ---
 
-### *generate-report - Generate Comprehensive Audit Report
+### \*generate-report - Generate Comprehensive Audit Report
 
 **Purpose:** Compile all audit results into single comprehensive report with vault health score.
 
 **Workflow:**
+
 1. Load task: generate-audit-report.md
-2. Check for cached audit results (from previous *audit-full or individual audits)
-3. If no cached results: Run *audit-full automatically
+2. Check for cached audit results (from previous \*audit-full or individual audits)
+3. If no cached results: Run \*audit-full automatically
 4. Aggregate results from all 7 audit dimensions
 5. Calculate vault health score (0-100) using algorithm:
    - Start at 100, deduct points for each quality issue category
@@ -932,6 +955,7 @@ View details: Run *generate-report for full audit report
 **Parameters:** None
 
 **Output:**
+
 ```
 Generating Comprehensive Audit Report...
 
@@ -987,16 +1011,17 @@ You can now:
 
 ---
 
-### *progressive [batch_size] - Progressive Audit Mode (Large Vaults)
+### \*progressive [batch_size] - Progressive Audit Mode (Large Vaults)
 
 **Purpose:** Toggle progressive audit mode for large vaults (10,000+ notes) to prevent timeout and enable pause/resume.
 
 **Workflow:**
+
 1. Toggle progressive mode on/off
 2. If enabling:
    - Set batch_size (default: 1000 notes)
    - Store mode in session state
-3. When *audit-full runs in progressive mode:
+3. When \*audit-full runs in progressive mode:
    - Divide vault into batches
    - Process one batch at a time
    - Display progress: "Batch 3/15 complete: 3000/15000 notes (20%)"
@@ -1007,9 +1032,11 @@ You can now:
    - Generate final report
 
 **Parameters:**
+
 - `batch_size` (optional, default: 1000) - Notes to process per batch
 
 **Checkpointing:**
+
 ```json
 {
   "audit_session_id": "audit-2025-11-06-14-30-00",
@@ -1018,14 +1045,19 @@ You can now:
   "completed_batches": 3,
   "current_batch": 4,
   "cached_results": {
-    "temporal_freshness": { /* partial results */ },
-    "link_validation": { /* partial results */ }
+    "temporal_freshness": {
+      /* partial results */
+    },
+    "link_validation": {
+      /* partial results */
+    }
   },
   "timestamp": "2025-11-06T14:35:00Z"
 }
 ```
 
 **Output:**
+
 ```
 Progressive Audit Mode: OFF
 
@@ -1063,16 +1095,17 @@ Type *progressive again to toggle OFF.
 
 ---
 
-### *yolo - Toggle Yolo Mode (Auto-Run Without Confirmations)
+### \*yolo - Toggle Yolo Mode (Auto-Run Without Confirmations)
 
 **Purpose:** Enable/disable yolo mode for automation and scheduled audits.
 
 **Workflow:**
+
 1. Toggle yolo mode on/off
 2. When ON:
    - All audit commands run immediately without confirmation prompts
-   - *audit-full executes all 7 audits without asking
-   - *batch-approve runs without confirmation
+   - \*audit-full executes all 7 audits without asking
+   - \*batch-approve runs without confirmation
 3. When OFF (default):
    - Commands prompt for confirmation before execution
    - Safer for interactive use
@@ -1080,6 +1113,7 @@ Type *progressive again to toggle OFF.
 **Parameters:** None
 
 **Output:**
+
 ```
 Yolo Mode: OFF
 
@@ -1105,16 +1139,18 @@ Be careful: Yolo mode bypasses safety prompts.
 
 ---
 
-### *exit - Exit Agent Mode
+### \*exit - Exit Agent Mode
 
 **Purpose:** Exit Quality Auditor Agent and return to normal mode.
 
 **Workflow:**
+
 1. Confirm exit
-2. Save any cached audit results (for future *generate-report)
+2. Save any cached audit results (for future \*generate-report)
 3. Exit agent mode
 
 **Output:**
+
 ```
 Exit Quality Auditor Agent? (y/n): y
 
@@ -1153,7 +1189,7 @@ Exiting agent mode...
 
 4. **Pause/Resume:**
    - User can pause (Ctrl+C) at any time
-   - Resume: Run *audit-full again → Agent detects checkpoint → "Resume from batch 4? (y/n)"
+   - Resume: Run \*audit-full again → Agent detects checkpoint → "Resume from batch 4? (y/n)"
    - Completed batches are NOT re-audited (efficiency)
 
 5. **Result Aggregation:**
@@ -1167,6 +1203,7 @@ Exiting agent mode...
    - Clear batch data after checkpoint (prevent memory exhaustion)
 
 **Example Workflow:**
+
 ```
 User: *progressive 1000
 Agent: Progressive mode ON (1000-note batches)
@@ -1202,6 +1239,7 @@ Agent: Resuming from batch 4...
 ```
 
 **Performance:**
+
 - 1000-note batch: ~6 seconds
 - 10,000-note vault (10 batches): ~60 seconds
 - 100,000-note vault (100 batches): ~10 minutes
@@ -1211,10 +1249,12 @@ Agent: Resuming from batch 4...
 ## Integration with Other Agents
 
 **Structural Analysis Agent (STORY-003):**
+
 - Quality Auditor uses STORY-003's analyze-atomicity.md task
 - Dependency: atomicity-checklist.md, building-block-types.md
 
 **Semantic Linker Agent (STORY-004):**
+
 - Quality Auditor uses STORY-004's semantic search for:
   - Orphan detection (suggest linking opportunities)
   - Duplicate detection (semantic similarity >= 0.85)
@@ -1224,15 +1264,16 @@ Agent: Resuming from batch 4...
 
 ## Vault Health Score Interpretation Guide
 
-| Score Range | Interpretation | Vault Condition | Recommended Action |
-|-------------|----------------|-----------------|-------------------|
-| **90-100** | Excellent | Well-maintained, minimal issues | Continue regular audits (monthly) |
-| **75-89** | Good | Minor issues, overall healthy | Address high-priority items |
-| **60-74** | Fair | Several issues need attention | Schedule cleanup sprint |
-| **40-59** | Poor | Significant problems affecting usability | Immediate cleanup required |
-| **0-39** | Critical | Major quality issues, vault decay | Urgent intervention needed |
+| Score Range | Interpretation | Vault Condition                          | Recommended Action                |
+| ----------- | -------------- | ---------------------------------------- | --------------------------------- |
+| **90-100**  | Excellent      | Well-maintained, minimal issues          | Continue regular audits (monthly) |
+| **75-89**   | Good           | Minor issues, overall healthy            | Address high-priority items       |
+| **60-74**   | Fair           | Several issues need attention            | Schedule cleanup sprint           |
+| **40-59**   | Poor           | Significant problems affecting usability | Immediate cleanup required        |
+| **0-39**    | Critical       | Major quality issues, vault decay        | Urgent intervention needed        |
 
 **Score Components:**
+
 - Temporal Freshness: -10 per 10% stale
 - Link Health: -15 for broken, -5 for redirects
 - Citation Quality: -10 per 10% poor
@@ -1246,6 +1287,7 @@ Agent: Resuming from batch 4...
 ## Security & Privacy
 
 **Security Measures (Always Active):**
+
 - ✅ SSRF Prevention: Private IP ranges blocked (127.0.0.0/8, 10.0.0.0/8, 192.168.0.0/16, etc.)
 - ✅ Protocol Validation: Only http/https allowed (block file://, javascript:, data:)
 - ✅ Rate Limiting: 5 requests/second maximum
@@ -1254,6 +1296,7 @@ Agent: Resuming from batch 4...
 - ✅ User-Agent Identification: "BMAD-Obsidian-Auditor/1.0"
 
 **Privacy:**
+
 - All audits run locally within vault
 - No vault content sent to external servers (except validating external URLs)
 - Audit reports stored in vault only (/reports/)
@@ -1263,13 +1306,13 @@ Agent: Resuming from batch 4...
 
 ## Performance Benchmarks
 
-| Vault Size | Standard Mode | Progressive Mode | Recommended |
-|------------|---------------|------------------|-------------|
-| 1,000 notes | ~60 seconds | N/A | Standard |
-| 5,000 notes | ~5 minutes | ~5 minutes (5 batches) | Either |
-| 10,000 notes | ~10 minutes (may timeout) | ~60 seconds (10 batches) | **Progressive** |
-| 50,000 notes | Timeout ❌ | ~5 minutes (50 batches) | **Progressive** |
-| 100,000 notes | Timeout ❌ | ~10 minutes (100 batches) | **Progressive** |
+| Vault Size    | Standard Mode             | Progressive Mode          | Recommended     |
+| ------------- | ------------------------- | ------------------------- | --------------- |
+| 1,000 notes   | ~60 seconds               | N/A                       | Standard        |
+| 5,000 notes   | ~5 minutes                | ~5 minutes (5 batches)    | Either          |
+| 10,000 notes  | ~10 minutes (may timeout) | ~60 seconds (10 batches)  | **Progressive** |
+| 50,000 notes  | Timeout ❌                | ~5 minutes (50 batches)   | **Progressive** |
+| 100,000 notes | Timeout ❌                | ~10 minutes (100 batches) | **Progressive** |
 
 ---
 
@@ -1277,7 +1320,7 @@ You are now **Auditor**, the vault quality guardian. Your users depend on you to
 
 Remember: Regular audits prevent vault decay. Quality issues compound over time - catch them early, keep knowledge fresh, maintain graph integrity.
 
-**Ready to audit? Type *help to see all commands.**
+**Ready to audit? Type \*help to see all commands.**
 ==================== END: .bmad-obsidian-2nd-brain/agents/quality-auditor-agent.md ====================
 
 ==================== START: .bmad-obsidian-2nd-brain/tasks/audit-temporal-freshness.md ====================
@@ -1302,7 +1345,7 @@ Detect notes that have become stale (not updated recently) to help maintain a fr
 
 - **threshold_days** (integer, optional): Number of days to consider a note stale (default: 180)
 - **vault_path** (string, required): Path to Obsidian vault
-- **include_pattern** (string, optional): Glob pattern to filter notes (default: "**/*.md")
+- **include_pattern** (string, optional): Glob pattern to filter notes (default: "\*_/_.md")
 - **exclude_patterns** (array, optional): Patterns to exclude (e.g., templates, archives)
 
 ## Outputs
@@ -1351,6 +1394,7 @@ temporal_freshness_audit:
 ```
 
 **Error Handling:**
+
 - If Obsidian MCP unavailable: Return error "Obsidian MCP server not accessible"
 - If note lacks last_modified: Use file system modified date as fallback
 - If timestamp invalid: Skip note, log warning
@@ -1390,6 +1434,7 @@ Is stale: 326 > 180 → YES (stale)
 ```
 
 **Edge Cases:**
+
 - Note updated in the future (last_modified > current_date): Flag as error, use current_date
 - Note with no last_modified metadata: Use file system timestamp as fallback
 - Note updated today (days_since_update = 0): Fresh
@@ -1422,6 +1467,7 @@ Is stale: 326 > 180 → YES (stale)
 **Fallback:** If link graph analysis unavailable (e.g., MCP limitation), set all incoming_link_count = 0 and prioritize by days_since_update only.
 
 **Performance Optimization:**
+
 - Cache link graph if multiple audits run in session
 - Use MCP bulk operations if available
 
@@ -1433,12 +1479,12 @@ Is stale: 326 > 180 → YES (stale)
 
 **Priority Classification:**
 
-| Priority | Criteria | Incoming Link Count | Description |
-|----------|----------|---------------------|-------------|
-| **CRITICAL** | Domain-critical knowledge hubs | >10 incoming links | Core concepts heavily referenced across vault |
-| **HIGH** | Frequently referenced | >5 incoming links | Important notes with significant connections |
-| **MEDIUM** | Some connections | 2-5 incoming links | Moderate integration into knowledge graph |
-| **LOW** | Minimal connections | <2 incoming links | Isolated or rarely referenced notes |
+| Priority     | Criteria                       | Incoming Link Count | Description                                   |
+| ------------ | ------------------------------ | ------------------- | --------------------------------------------- |
+| **CRITICAL** | Domain-critical knowledge hubs | >10 incoming links  | Core concepts heavily referenced across vault |
+| **HIGH**     | Frequently referenced          | >5 incoming links   | Important notes with significant connections  |
+| **MEDIUM**   | Some connections               | 2-5 incoming links  | Moderate integration into knowledge graph     |
+| **LOW**      | Minimal connections            | <2 incoming links   | Isolated or rarely referenced notes           |
 
 **Implementation:**
 
@@ -1545,6 +1591,7 @@ temporal_freshness_audit:
 **Default:** 180 days (6 months)
 
 **Recommended Values:**
+
 - **30 days:** Aggressive freshness (for rapidly evolving domains)
 - **90 days:** Standard freshness (for active knowledge workers)
 - **180 days:** Relaxed freshness (for stable knowledge bases)
@@ -1571,6 +1618,7 @@ temporal_freshness_config:
 **Scenario:** Regular vault health check to identify outdated knowledge
 
 **Workflow:**
+
 1. Run `*audit-freshness` with default threshold (180 days)
 2. Review CRITICAL and HIGH priority stale notes first
 3. Update domain-critical notes to maintain knowledge hub accuracy
@@ -1589,6 +1637,7 @@ temporal_freshness_config:
 - **Meeting notes:** 90-day threshold (time-sensitive)
 
 **Workflow:**
+
 1. Run `*audit-freshness 30` for tech notes folder
 2. Run `*audit-freshness 365` for literature notes folder
 3. Aggregate results for comprehensive audit
@@ -1600,6 +1649,7 @@ temporal_freshness_config:
 **Scenario:** Focus on maintaining most-referenced notes (critical to vault integrity)
 
 **Workflow:**
+
 1. Run `*audit-freshness` with default threshold
 2. Filter results to CRITICAL priority only (>10 incoming links)
 3. Review and update each critical note systematically
@@ -1611,12 +1661,12 @@ temporal_freshness_config:
 
 **Target Performance:**
 
-| Vault Size | Notes Analyzed | Expected Time | Max Time |
-|------------|----------------|---------------|----------|
-| 100 notes  | 100            | <1 second     | 2 seconds |
-| 1,000 notes | 1,000         | <3 seconds    | 5 seconds |
-| 10,000 notes | 10,000       | <30 seconds   | 60 seconds |
-| 100,000 notes | 100,000     | <5 minutes    | 10 minutes |
+| Vault Size    | Notes Analyzed | Expected Time | Max Time   |
+| ------------- | -------------- | ------------- | ---------- |
+| 100 notes     | 100            | <1 second     | 2 seconds  |
+| 1,000 notes   | 1,000          | <3 seconds    | 5 seconds  |
+| 10,000 notes  | 10,000         | <30 seconds   | 60 seconds |
+| 100,000 notes | 100,000        | <5 minutes    | 10 minutes |
 
 **Optimization Strategies:**
 
@@ -1636,6 +1686,7 @@ temporal_freshness_config:
 **Error:** "Obsidian MCP server not accessible"
 
 **Remediation:**
+
 - Verify MCP server is running
 - Check MCP configuration in Claude Desktop/Cursor
 - Test connection: `mcp__obsidian__list_notes`
@@ -1647,6 +1698,7 @@ temporal_freshness_config:
 **Error:** "Invalid threshold_days: must be positive integer"
 
 **Remediation:**
+
 - Ensure threshold_days > 0
 - Use default (180) if invalid value provided
 
@@ -1657,6 +1709,7 @@ temporal_freshness_config:
 **Error:** "No notes found in vault (check include_pattern and exclude_patterns)"
 
 **Remediation:**
+
 - Verify vault path is correct
 - Check include/exclude patterns aren't too restrictive
 - Confirm vault contains markdown files
@@ -1668,6 +1721,7 @@ temporal_freshness_config:
 **Warning:** "Note lacks last_modified metadata, using file system timestamp as fallback"
 
 **Remediation:**
+
 - This is non-blocking, audit continues with fallback
 - Consider standardizing note metadata (add frontmatter created/modified fields)
 
@@ -1678,12 +1732,14 @@ temporal_freshness_config:
 ### Test Case 1: Stale Note Detection
 
 **Setup:**
+
 - 100 notes in test vault
 - 20 notes updated within 30 days (fresh)
 - 30 notes updated 31-180 days ago (aging)
 - 50 notes updated >180 days ago (stale)
 
 **Expected Results:**
+
 - stale_notes_count = 50
 - stale_percentage = 50.0%
 - All 50 stale notes in results array
@@ -1695,6 +1751,7 @@ temporal_freshness_config:
 ### Test Case 2: Priority Classification
 
 **Setup:**
+
 - 10 stale notes with varying incoming link counts:
   - 2 notes with 15 incoming links (CRITICAL)
   - 3 notes with 7 incoming links (HIGH)
@@ -1702,6 +1759,7 @@ temporal_freshness_config:
   - 2 notes with 0 incoming links (LOW)
 
 **Expected Results:**
+
 - 2 notes classified as CRITICAL
 - 3 notes classified as HIGH
 - 3 notes classified as MEDIUM
@@ -1714,9 +1772,11 @@ temporal_freshness_config:
 ### Test Case 3: Custom Threshold
 
 **Setup:**
+
 - Run audit with threshold_days = 90 (stricter than default 180)
 
 **Expected Results:**
+
 - More notes classified as stale (lower threshold = more stale)
 - Correctly uses 90-day threshold in results
 
@@ -1727,9 +1787,11 @@ temporal_freshness_config:
 ### Test Case 4: Performance Benchmark
 
 **Setup:**
+
 - 1000-note test vault
 
 **Expected Results:**
+
 - Execution time < 5 seconds
 - All 1000 notes analyzed
 
@@ -1740,10 +1802,12 @@ temporal_freshness_config:
 ### Test Case 5: Error Handling
 
 **Setup:**
+
 - Disconnect Obsidian MCP server
 - Run audit
 
 **Expected Results:**
+
 - Error: "Obsidian MCP server not accessible"
 - Graceful error message (no crash)
 
@@ -1825,6 +1889,7 @@ link_validation_audit:
 This task handles **external network requests** which are a primary attack vector. Security measures are **non-negotiable** and **always enforced**.
 
 **Attack Vectors Mitigated:**
+
 1. **SSRF (Server-Side Request Forgery)** - Attacker tricks auditor into requesting private resources
 2. **Rate Limiting Bypass** - Attacker overwhelms target servers with requests
 3. **Timeout DoS** - Attacker hangs auditor with slow-responding URLs
@@ -1885,6 +1950,7 @@ This task handles **external network requests** which are a primary attack vecto
 **Whitelist:** ONLY `http://` and `https://` protocols allowed
 
 **Blocked Protocols:**
+
 - `file://` - Local file access (critical security risk)
 - `javascript:` - JavaScript injection
 - `data:` - Data URI injection
@@ -1994,6 +2060,7 @@ def sanitize_url(url):
 **Objective:** Test each validated URL with HTTP HEAD request, enforcing rate limits
 
 **Rate Limiting:**
+
 - **Max 5 requests per second** (user-configurable)
 - Prevents overwhelming target servers
 - Prevents abuse of this audit feature
@@ -2057,14 +2124,14 @@ for url in validated_urls[:max_links]:
 
 **Status Classification:**
 
-| Status Code | Category | Severity | Description | Action |
-|-------------|----------|----------|-------------|--------|
-| **2xx** | Valid | N/A (no issue) | Link is working | No action needed |
-| **3xx** | Redirect | MEDIUM | Link redirects to new URL | Update link to redirect_url |
-| **4xx** | Broken | **CRITICAL** | Resource not found or forbidden | Fix or remove link |
-| **5xx** | Server Error | HIGH | Server-side issue (may be temporary) | Retry later or contact site owner |
-| **TIMEOUT** | Timeout | HIGH | Connection timed out | Retry or remove if persistent |
-| **SECURITY_BLOCKED** | Security | **CRITICAL** | SSRF or protocol violation | Remove link immediately |
+| Status Code          | Category     | Severity       | Description                          | Action                            |
+| -------------------- | ------------ | -------------- | ------------------------------------ | --------------------------------- |
+| **2xx**              | Valid        | N/A (no issue) | Link is working                      | No action needed                  |
+| **3xx**              | Redirect     | MEDIUM         | Link redirects to new URL            | Update link to redirect_url       |
+| **4xx**              | Broken       | **CRITICAL**   | Resource not found or forbidden      | Fix or remove link                |
+| **5xx**              | Server Error | HIGH           | Server-side issue (may be temporary) | Retry later or contact site owner |
+| **TIMEOUT**          | Timeout      | HIGH           | Connection timed out                 | Retry or remove if persistent     |
+| **SECURITY_BLOCKED** | Security     | **CRITICAL**   | SSRF or protocol violation           | Remove link immediately           |
 
 **Implementation:**
 
@@ -2145,7 +2212,7 @@ Sort link_issues by:
 ```yaml
 link_validation_audit:
   total_links_found: 75
-  total_links_tested: 50  # Capped at max_links
+  total_links_tested: 50 # Capped at max_links
   broken_links_count: 10
   redirect_links_count: 5
   server_error_count: 2
@@ -2201,6 +2268,7 @@ link_validation_audit:
 **Scenario:** Identify broken external links (404s) in knowledge base
 
 **Workflow:**
+
 1. Run `*audit-links`
 2. Review CRITICAL issues (4xx status codes)
 3. Fix or remove broken links
@@ -2213,6 +2281,7 @@ link_validation_audit:
 **Scenario:** Find and update outdated URLs that redirect to new locations
 
 **Workflow:**
+
 1. Run `*audit-links`
 2. Filter results to 3xx status codes
 3. For each redirect:
@@ -2226,6 +2295,7 @@ link_validation_audit:
 **Scenario:** Detect potential SSRF attempts or malicious links
 
 **Workflow:**
+
 1. Run `*audit-links`
 2. Check security_violations_count
 3. If > 0, review SECURITY_BLOCKED entries
@@ -2238,8 +2308,8 @@ link_validation_audit:
 
 **Target Performance:**
 
-| Links Tested | Expected Time | Rate Limit Impact |
-|--------------|---------------|-------------------|
+| Links Tested | Expected Time | Rate Limit Impact     |
+| ------------ | ------------- | --------------------- |
 | 10 links     | ~2 seconds    | Rate limit: 0.2s/link |
 | 50 links     | ~10 seconds   | Rate limit: 0.2s/link |
 | 100 links    | ~20 seconds   | Rate limit: 0.2s/link |
@@ -2257,6 +2327,7 @@ link_validation_audit:
 **Error:** "Network unreachable - check internet connection"
 
 **Remediation:**
+
 - Verify internet connection
 - Test with simple curl/ping command
 - Check firewall settings
@@ -2268,6 +2339,7 @@ link_validation_audit:
 **Error:** "SSRF attempt detected: URL resolves to private IP 192.168.1.1"
 
 **Remediation:**
+
 - Remove the malicious URL from the note
 - Investigate who added the URL
 - This is a security incident - log for audit
@@ -2279,6 +2351,7 @@ link_validation_audit:
 **Error:** "Rate limit exceeded - max 5 requests/second"
 
 **Remediation:**
+
 - This is expected behavior (security measure)
 - Audit will automatically wait between requests
 - Increase max_links if too slow
@@ -2290,10 +2363,12 @@ link_validation_audit:
 ### Test Case 1: Broken Link Detection
 
 **Setup:**
+
 - 50 notes with external links
 - 10 links with 404 status codes (broken)
 
 **Expected Results:**
+
 - broken_links_count = 10
 - All 10 broken links reported with severity: CRITICAL
 
@@ -2304,10 +2379,12 @@ link_validation_audit:
 ### Test Case 2: Redirect Detection
 
 **Setup:**
+
 - 50 notes with external links
 - 5 links with 301/302 status codes (redirects)
 
 **Expected Results:**
+
 - redirect_links_count = 5
 - All 5 redirects reported with redirect_url populated
 
@@ -2318,10 +2395,12 @@ link_validation_audit:
 ### Test Case 3: Security - SSRF Prevention
 
 **Setup:**
+
 - Note with link: `http://localhost:8080/admin`
 - Run audit
 
 **Expected Results:**
+
 - status_code: 'SECURITY_BLOCKED'
 - severity: 'CRITICAL'
 - error_message: 'SSRF attempt: private IP'
@@ -2334,10 +2413,12 @@ link_validation_audit:
 ### Test Case 4: Security - Invalid Protocol
 
 **Setup:**
+
 - Note with link: `file:///etc/passwd`
 - Run audit
 
 **Expected Results:**
+
 - status_code: 'SECURITY_BLOCKED'
 - severity: 'CRITICAL'
 - error_message: 'Invalid protocol - only http/https allowed'
@@ -2350,10 +2431,12 @@ link_validation_audit:
 ### Test Case 5: Rate Limiting Enforced
 
 **Setup:**
+
 - 50 links to validate
 - Run audit
 
 **Expected Results:**
+
 - Rate limiting enforced (5 requests/second)
 - Execution time >= 10 seconds (50 links × 0.2s/link)
 
@@ -2364,10 +2447,12 @@ link_validation_audit:
 ### Test Case 6: Timeout Handling
 
 **Setup:**
+
 - Note with link to slow server (>10s response time)
 - Run audit
 
 **Expected Results:**
+
 - status_code: 'TIMEOUT'
 - severity: 'HIGH'
 - error_message: 'Connection timeout after 10s'
@@ -2451,6 +2536,7 @@ citation_validation_audit:
 For each note:
 
 **2.1 Detect Citation Section**
+
 - Look for "## Source Attribution" or "## Sources" or "## References" section
 - Check frontmatter for: source, author, url, date fields
 - Parse inline citations (e.g., "(Author, Year)")
@@ -2458,12 +2544,14 @@ For each note:
 **2.2 Validate Required Fields**
 
 Required fields (if external claims present):
+
 - author (required)
 - title (required)
 - url OR isbn (required for external sources)
 - date (required for time-sensitive content)
 
 **Classification:**
+
 - **Complete:** All 4 required fields present
 - **Incomplete:** Missing 2+ required fields → Issue severity: HIGH
 - **Missing:** No attribution at all → Issue severity: CRITICAL
@@ -2473,6 +2561,7 @@ Required fields (if external claims present):
 **Heuristic:** Identify declarative factual statements without nearby citations
 
 **Algorithm:**
+
 ```
 1. Extract declarative statements (sentences ending with period, no questions)
 2. Identify factual claims (avoid opinions, personal observations)
@@ -2482,6 +2571,7 @@ Required fields (if external claims present):
 ```
 
 **Signals for Factual Claims:**
+
 - Statistics, percentages, numbers
 - Historical facts, dates, events
 - Scientific findings, research results
@@ -2491,12 +2581,14 @@ Required fields (if external claims present):
 ### Step 4: Format Consistency Check
 
 **Detect Citation Format:**
+
 - APA: (Author, Year) or Author (Year)
 - MLA: (Author Page) or (Author)
 - Chicago: Footnotes or (Author Year, Page)
 - Custom: Vault-specific format
 
 **Check Consistency:**
+
 - If mixed formats detected: Issue severity: MEDIUM
 - If no consistent format: Issue severity: LOW
 
@@ -2504,15 +2596,16 @@ Required fields (if external claims present):
 
 **Issue Classification:**
 
-| Issue Type | Severity | Condition |
-|------------|----------|-----------|
-| NO_ATTRIBUTION | CRITICAL | Note has external claims but no source attribution |
-| INCOMPLETE | HIGH | Missing 2+ required fields (author, title, url/isbn, date) |
-| UNATTRIBUTED_CLAIMS | HIGH | >3 factual claims without citations |
-| FORMAT_ERROR | MEDIUM | Mixed or inconsistent citation formats |
-| MINOR_FORMAT | LOW | Minor format issues (punctuation, spacing) |
+| Issue Type          | Severity | Condition                                                  |
+| ------------------- | -------- | ---------------------------------------------------------- |
+| NO_ATTRIBUTION      | CRITICAL | Note has external claims but no source attribution         |
+| INCOMPLETE          | HIGH     | Missing 2+ required fields (author, title, url/isbn, date) |
+| UNATTRIBUTED_CLAIMS | HIGH     | >3 factual claims without citations                        |
+| FORMAT_ERROR        | MEDIUM   | Mixed or inconsistent citation formats                     |
+| MINOR_FORMAT        | LOW      | Minor format issues (punctuation, spacing)                 |
 
 **Calculate Coverage:**
+
 ```
 citation_coverage_percentage = (notes_complete / total_notes) * 100
 ```
@@ -2524,14 +2617,17 @@ citation_coverage_percentage = (notes_complete / total_notes) * 100
 ## Use Cases
 
 **1. Academic Integrity Audit**
+
 - Detect notes lacking proper source attribution
 - Ensure all research properly cited
 
 **2. Knowledge Provenance**
+
 - Prevent loss of source information
 - Maintain attribution chain for claims
 
 **3. Citation Format Standardization**
+
 - Detect format inconsistencies
 - Guide users to consistent format
 
@@ -2544,6 +2640,7 @@ citation_coverage_percentage = (notes_complete / total_notes) * 100
 ## Testing
 
 **Test Case 1:** 30 notes
+
 - 10 complete citations → Pass
 - 10 incomplete (missing author+date) → HIGH severity
 - 10 no attribution with claims → CRITICAL severity
@@ -2553,6 +2650,7 @@ Expected: 20 issues detected, 33% coverage
 ## Integration
 
 Executed by:
+
 - `*audit-citations` command
 - `*audit-full` command
 - Progressive audit batch processing
@@ -2633,11 +2731,11 @@ orphan_detection_audit:
 
 **Orphan Categories:**
 
-| Category | Condition | Priority |
-|----------|-----------|----------|
+| Category            | Condition                   | Priority |
+| ------------------- | --------------------------- | -------- |
 | **Complete Orphan** | No incoming AND no outgoing | CRITICAL |
-| **No Incoming** | incoming_link_count == 0 | HIGH |
-| **No Outgoing** | outgoing_link_count == 0 | MEDIUM |
+| **No Incoming**     | incoming_link_count == 0    | HIGH     |
+| **No Outgoing**     | outgoing_link_count == 0    | MEDIUM   |
 
 ```
 For each note:
@@ -2695,6 +2793,7 @@ orphan_categories:
 ### Step 5: Sort and Return
 
 Sort orphaned_notes by:
+
 1. priority (CRITICAL → HIGH → MEDIUM)
 2. note_title (alphabetically)
 
@@ -2705,14 +2804,17 @@ Sort orphaned_notes by:
 ## Use Cases
 
 **1. Knowledge Graph Integration**
+
 - Connect isolated notes to vault
 - Build bidirectional link network
 
 **2. Note Discovery**
+
 - Find forgotten or underutilized notes
 - Surface hidden knowledge
 
 **3. Structural Health**
+
 - Maintain connected knowledge graph
 - Prevent knowledge silos
 
@@ -2735,6 +2837,7 @@ ORDER BY incoming_count DESC
 ## Testing
 
 **Test Case:** 100-note vault
+
 - 70 well-connected (>2 links)
 - 15 no incoming links
 - 10 no outgoing links
@@ -2745,6 +2848,7 @@ Expected: 30 orphans detected, 30% orphan rate
 ## Integration
 
 Executed by:
+
 - `*audit-orphans` command
 - `*audit-full` command
 - Progressive audit batch processing
@@ -2837,11 +2941,11 @@ If Smart Connections available:
 
 **Duplicate Types:**
 
-| Type | Similarity | Priority | Suggested Action |
-|------|------------|----------|------------------|
-| **EXACT** | 1.0 (100%) | CRITICAL | MERGE immediately |
-| **NEAR** | >= 0.95 | HIGH | MERGE or consolidate |
-| **SEMANTIC** | 0.85-0.95 | MEDIUM | REVIEW for merge opportunities |
+| Type         | Similarity | Priority | Suggested Action               |
+| ------------ | ---------- | -------- | ------------------------------ |
+| **EXACT**    | 1.0 (100%) | CRITICAL | MERGE immediately              |
+| **NEAR**     | >= 0.95    | HIGH     | MERGE or consolidate           |
+| **SEMANTIC** | 0.85-0.95  | MEDIUM   | REVIEW for merge opportunities |
 
 ### Step 4: Aggregate Results
 
@@ -2864,6 +2968,7 @@ For each group:
 ## Memory Management
 
 **Batch Processing:** For large vaults (>10,000 notes):
+
 - Process notes in batches of 100
 - Clear batch data from memory after hashing
 - Peak memory: O(batch_size), not O(total_notes)
@@ -2871,26 +2976,31 @@ For each group:
 ## Use Cases
 
 **1. Reduce Redundancy**
+
 - Merge exact duplicates
 - Consolidate near-duplicates
 
 **2. Content Cleanup**
+
 - Identify copy-paste scenarios
 - Detect versioning without archiving
 
 **3. Knowledge Consolidation**
+
 - Find semantically similar notes
 - Merge related content
 
 ## False Positive Handling
 
 Allow user to mark pairs as "intentionally similar":
+
 - Store exclusions: `.audit-exclusions.json`
 - Ignore in future audits
 
 ## Testing
 
 **Test Case:** 100-note vault
+
 - 5 exact duplicate pairs
 - 5 near-duplicate pairs (>= 95%)
 - 5 semantic duplicate pairs (85-95%)
@@ -2901,6 +3011,7 @@ Expected: 15 duplicate groups detected
 ## Integration
 
 Executed by:
+
 - `*audit-duplicates [threshold]` command
 - `*audit-full` command
 - Progressive audit batch processing
@@ -2963,10 +3074,12 @@ metadata_audit:
 ### Step 2: Validate Required Fields
 
 **Default Required Fields:**
+
 - **title** (non-empty string)
 - **created** (ISO 8601 timestamp)
 
 **Validation:**
+
 ```
 For each note:
   missing_fields = []
@@ -2983,11 +3096,13 @@ For each note:
 ### Step 3: Validate Recommended Fields
 
 **Default Recommended Fields:**
+
 - **tags** (array, at least 1 tag)
 - **type** or **building_block** (for atomic notes)
 - **source** or **author** (for notes with external claims)
 
 **Validation:**
+
 ```
 For each note:
   if 'tags' not in frontmatter OR len(frontmatter['tags']) == 0:
@@ -3004,6 +3119,7 @@ For each note:
 If validate_formats=true:
 
 **Date Format (ISO 8601):**
+
 ```
 if 'created' in frontmatter:
   try:
@@ -3014,6 +3130,7 @@ if 'created' in frontmatter:
 ```
 
 **Tags Format (Array):**
+
 ```
 if 'tags' in frontmatter:
   if not isinstance(frontmatter['tags'], list):
@@ -3022,6 +3139,7 @@ if 'tags' in frontmatter:
 ```
 
 **Building Block Type (Valid Values):**
+
 ```
 valid_types = ['concept', 'argument', 'model', 'question', 'claim', 'phenomenon']
 
@@ -3033,12 +3151,12 @@ if 'type' in frontmatter:
 
 ### Step 5: Classify Issues by Severity
 
-| Severity | Condition |
-|----------|-----------|
-| **CRITICAL** | Missing required fields (title, created) |
-| **HIGH** | Missing important fields (tags, type) |
-| **MEDIUM** | Format issues (wrong date format, malformed YAML) |
-| **LOW** | Missing optional fields |
+| Severity     | Condition                                         |
+| ------------ | ------------------------------------------------- |
+| **CRITICAL** | Missing required fields (title, created)          |
+| **HIGH**     | Missing important fields (tags, type)             |
+| **MEDIUM**   | Format issues (wrong date format, malformed YAML) |
+| **LOW**      | Missing optional fields                           |
 
 ### Step 6: Generate Auto-Fix Suggestions
 
@@ -3075,31 +3193,37 @@ metadata_completeness_percentage = (notes_with_complete_metadata / total_notes) 
 ## Use Cases
 
 **1. Metadata Standardization**
+
 - Ensure all notes have required fields
 - Maintain consistent format
 
 **2. Search Optimization**
+
 - Complete metadata improves search
 - Tags enable filtering
 
 **3. Automation Readiness**
+
 - Metadata enables automated workflows
 - Type classification for processing
 
 ## Error Handling
 
 **Malformed YAML:**
+
 - Warning: "Malformed YAML in frontmatter, skipping validation"
 - Issue severity: MEDIUM
 - Recommendation: "Fix YAML syntax errors"
 
 **Missing Frontmatter:**
+
 - Not an error (personal notes may lack frontmatter)
 - Count as incomplete, suggest adding frontmatter
 
 ## Testing
 
 **Test Case:** 100-note vault
+
 - 60 complete metadata
 - 20 missing title/created (CRITICAL)
 - 15 missing tags/type (HIGH)
@@ -3110,6 +3234,7 @@ Expected: 40 issues detected, 60% completeness
 ## Integration
 
 Executed by:
+
 - `*audit-metadata` command
 - `*audit-full` command
 - Progressive audit batch processing
@@ -3177,6 +3302,7 @@ else:
 ### Step 2: Sample Notes
 
 **Random Sampling (for large vaults):**
+
 ```
 1. Query all notes via Obsidian MCP: list_notes()
 2. Randomly select sample_size notes
@@ -3184,6 +3310,7 @@ else:
 ```
 
 **All Notes (for small vaults):**
+
 ```
 1. Query all notes
 2. Analyze all notes (no sampling)
@@ -3209,6 +3336,7 @@ For each sampled note:
 ```
 
 **Atomicity Scoring (from STORY-003):**
+
 ```
 total_score = 1.0
 total_score -= single_claim_deduction
@@ -3249,6 +3377,7 @@ confidence_interval = calculate_confidence(sample_size, total_notes, violation_r
 ```
 
 **Confidence Calculation:**
+
 - Sample >= 100: High confidence (±5%)
 - Sample 50-99: Medium confidence (±10%)
 - Sample < 50: Low confidence (±15%)
@@ -3267,40 +3396,48 @@ avg_atomicity_score = total_score / sample_size
 ## Use Cases
 
 **1. Vault Health Assessment**
+
 - Estimate atomicity violations across vault
 - Prioritize cleanup efforts
 
 **2. Fragmentation Planning**
+
 - Identify notes needing fragmentation
 - Focus on severe violations (score < 0.5)
 
 **3. Quality Improvement**
+
 - Track atomicity improvements over time
 - Measure vault maturity
 
 ## Fragmentation Recommendations
 
 **Score < 0.5 (Severe Violation):**
+
 - Immediate fragmentation recommended
 - Use STORY-003 fragment-note.md task
 - Likely to yield 3-5 atomic notes
 
 **Score 0.5-0.69 (Borderline):**
+
 - Manual review recommended
 - May need light editing or fragmentation
 - Coach user on atomicity principles
 
 **Score >= 0.7 (Atomic):**
+
 - No action needed
 - Note meets atomicity standards
 
 ## Testing
 
 **Test Case:** Use STORY-003 test set
+
 - 10 atomic notes (score >= 0.7)
 - 10 non-atomic notes (score < 0.7)
 
 Expected:
+
 - All 10 non-atomic detected as violations
 - All 10 atomic pass
 - Accuracy >= 90%
@@ -3308,6 +3445,7 @@ Expected:
 ## Integration
 
 Executed by:
+
 - `*audit-atomicity [sample_size]` command
 - `*audit-full` command (uses default 10% sample)
 - Progressive audit batch processing
@@ -3374,6 +3512,7 @@ if any_missing_results:
 ### Step 2: Calculate Vault Health Score (0-100)
 
 **Algorithm:**
+
 ```
 health_score = 100  # Start perfect
 
@@ -3414,6 +3553,7 @@ health_score = max(0, min(100, round(health_score)))
 ```
 
 **Health Score Interpretation:**
+
 - **90-100**: Excellent
 - **75-89**: Good
 - **60-74**: Fair
@@ -3425,24 +3565,28 @@ health_score = max(0, min(100, round(health_score)))
 Aggregate all findings and classify by impact:
 
 **CRITICAL (Fix Immediately):**
+
 - Broken links (4xx status codes)
 - Missing required metadata (title, created)
 - Exact duplicates (100% match)
 - Notes with no source attribution (external claims)
 
 **HIGH (Fix Soon):**
+
 - Stale critical/high-priority notes (>10 incoming links, >180 days old)
 - Incomplete citations (missing 2+ fields)
 - Orphaned notes (no connections)
 - Near-duplicates (>= 95% similarity)
 
 **MEDIUM (Address When Possible):**
+
 - Atomicity violations (score 0.5-0.7)
 - Redirect links (3xx - update to new URL)
 - Minor metadata issues (missing tags/type)
 - Semantic duplicates (85-95% similarity)
 
 **LOW (Nice to Have):**
+
 - Format inconsistencies (citations, metadata)
 - Optional metadata fields
 - Stale low-priority notes (<2 incoming links)
@@ -3463,6 +3607,7 @@ Aggregate all findings and classify by impact:
 **Variable Formatting:**
 
 Example: `stale_notes_list` variable:
+
 ```markdown
 - **[CRITICAL]** [[Core Methodology Framework]] - Last updated 236 days ago (15 incoming links)
 - **[HIGH]** [[Team Processes]] - Last updated 380 days ago (8 incoming links)
@@ -3495,6 +3640,7 @@ report_generation:
 ## Vault Health Score Examples
 
 **Example 1: Healthy Vault (Score: 92)**
+
 ```
 Start: 100
 - Temporal: -8 (8% stale)
@@ -3508,6 +3654,7 @@ Final: 100 - 8 = 92 (Excellent)
 ```
 
 **Example 2: Problematic Vault (Score: 28)**
+
 ```
 Start: 100
 - Temporal: -70 (70% stale)
@@ -3528,38 +3675,46 @@ Final: max(0, -203.5) = 0 → Adjusted to 28 (Critical)
 ## Use Cases
 
 **1. Executive Summary**
+
 - High-level vault health overview
 - Key findings at a glance
 
 **2. Actionable Insights**
+
 - Prioritized to-do list
 - Clear next steps
 
 **3. Trend Tracking**
+
 - Compare reports over time
 - Measure improvement
 
 **4. Stakeholder Communication**
+
 - Share vault quality metrics
 - Justify maintenance efforts
 
 ## Error Handling
 
 **Missing Audit Results:**
+
 - Error: "Incomplete audit - missing {task_name} results"
 - Action: Run `*audit-full` to complete all audits
 
 **Template Not Found:**
+
 - Error: "audit-report-tmpl.yaml not found"
 - Action: Verify template file exists in expansion pack
 
 **Write Permissions:**
+
 - Error: "Cannot write to /reports/ directory"
 - Action: Check vault permissions
 
 ## Testing
 
 **Test Case:** Generate report from test audit results
+
 - Vault: 1000 notes
 - Results: All 7 audit tasks completed
 - Expected: Report generated with score, all sections present
@@ -3567,6 +3722,7 @@ Final: max(0, -203.5) = 0 → Adjusted to 28 (Critical)
 ## Integration
 
 Executed by:
+
 - `*generate-report` command (standalone)
 - `*audit-full` command (auto-generate after all audits)
 - Progressive audit completion (generate after all batches)
@@ -4616,20 +4772,10 @@ examples:
 ---
 
 checklist:
-  id: audit-coverage-checklist
-  name: Audit Coverage Checklist
-  description: Quality gates for comprehensive vault audit execution - ensures all audit dimensions are covered with adequate depth and rigor
-  items:
-    - "[ ] Temporal audit: All notes checked for staleness against threshold (default 180 days)"
-    - "[ ] Link validation: All external URLs tested (HTTP status codes verified)"
-    - "[ ] Citation audit: All notes checked for source attribution completeness"
-    - "[ ] Orphan detection: Graph analysis performed, isolated notes identified"
-    - "[ ] Atomicity audit: Random sample of 10% notes or min 20 notes analyzed for violations"
-    - "[ ] Duplicate detection: Semantic similarity analysis performed across vault (threshold >= 0.85)"
-    - "[ ] Metadata audit: All notes checked for required frontmatter fields"
-    - "[ ] Report generation: Comprehensive report with all findings generated"
-    - "[ ] Prioritization: Action items sorted by impact (critical/high/medium/low)"
-    - "[ ] Vault health score: Overall score calculated (0-100 scale)"
+id: audit-coverage-checklist
+name: Audit Coverage Checklist
+description: Quality gates for comprehensive vault audit execution - ensures all audit dimensions are covered with adequate depth and rigor
+items: - "[ ] Temporal audit: All notes checked for staleness against threshold (default 180 days)" - "[ ] Link validation: All external URLs tested (HTTP status codes verified)" - "[ ] Citation audit: All notes checked for source attribution completeness" - "[ ] Orphan detection: Graph analysis performed, isolated notes identified" - "[ ] Atomicity audit: Random sample of 10% notes or min 20 notes analyzed for violations" - "[ ] Duplicate detection: Semantic similarity analysis performed across vault (threshold >= 0.85)" - "[ ] Metadata audit: All notes checked for required frontmatter fields" - "[ ] Report generation: Comprehensive report with all findings generated" - "[ ] Prioritization: Action items sorted by impact (critical/high/medium/low)" - "[ ] Vault health score: Overall score calculated (0-100 scale)"
 
 ---
 
@@ -4652,6 +4798,7 @@ This checklist ensures a comprehensive quality audit covers all critical dimensi
 **Check:** All notes in vault checked for last modification date against configured staleness threshold
 
 **Coverage Requirements:**
+
 - **100% of notes** must be analyzed for last_modified date
 - Default threshold: 180 days (user-configurable)
 - Prioritization by incoming link count:
@@ -4662,17 +4809,20 @@ This checklist ensures a comprehensive quality audit covers all critical dimensi
 - Performance: Must complete in <5 seconds for 1000-note vault
 
 **Pass Criteria:**
+
 - All notes analyzed (100% coverage)
 - Stale notes correctly identified (days_since_update > threshold)
 - Prioritization accurate (based on incoming link count)
 - Results include: note path, last_updated date, days_since_update, priority
 
 **Verification:**
+
 ```
 Verify: stale_notes_count + fresh_notes_count == total_notes
 ```
 
 **Remediation if failed:**
+
 - Re-run temporal freshness audit
 - Check Obsidian MCP connection (must provide note metadata)
 - Verify threshold parameter is valid integer
@@ -4685,6 +4835,7 @@ Verify: stale_notes_count + fresh_notes_count == total_notes
 **Check:** All external URLs in vault tested for accessibility and HTTP status
 
 **Coverage Requirements:**
+
 - Parse all notes for external URLs (http:// and https://)
 - Match patterns: `[text](URL)` and `<URL>`
 - Test up to max_links URLs (default: 50 per audit run)
@@ -4699,18 +4850,21 @@ Verify: stale_notes_count + fresh_notes_count == total_notes
   - Timeout: Connection timeout (flag for retry or removal)
 
 **Pass Criteria:**
+
 - All discovered URLs validated (up to max_links limit)
 - HTTP status codes correctly classified
 - Security checks enforced (no SSRF, no invalid protocols)
 - Results include: note path, URL, status_code, status_category
 
 **Verification:**
+
 ```
 Verify: broken_links_count + redirect_links_count + valid_links_count + timeout_count + error_count == total_links_tested
 Verify: total_links_tested <= max_links (default 50)
 ```
 
 **Remediation if failed:**
+
 - Re-run link validation audit
 - Check network connectivity
 - Verify rate limiting not causing false timeouts
@@ -4724,6 +4878,7 @@ Verify: total_links_tested <= max_links (default 50)
 **Check:** All notes checked for citation completeness and quality
 
 **Coverage Requirements:**
+
 - **100% of notes** must be analyzed for citation quality
 - Check for Source Attribution section or metadata fields
 - Required citation fields:
@@ -4739,17 +4894,20 @@ Verify: total_links_tested <= max_links (default 50)
 - Detect unattributed claims (factual statements without nearby citations)
 
 **Pass Criteria:**
+
 - All notes analyzed (100% coverage)
 - Incomplete citations identified (missing 2+ required fields)
 - Unattributed claims detected (>3 claims without citations)
 - Results include: note path, issue_type, issue_severity, missing_fields, unattributed_claims_count
 
 **Verification:**
+
 ```
 Verify: notes_with_citation_issues + notes_with_complete_citations == total_notes
 ```
 
 **Remediation if failed:**
+
 - Re-run citation validation audit
 - Adjust citation format detection (APA, MLA, Chicago)
 - Review false positives (personal notes may not need citations)
@@ -4762,6 +4920,7 @@ Verify: notes_with_citation_issues + notes_with_complete_citations == total_note
 **Check:** Graph analysis performed to identify notes with no incoming/outgoing links
 
 **Coverage Requirements:**
+
 - **100% of notes** must be analyzed for link connections
 - Build complete link graph from wikilinks `[[...]]`
 - Identify three orphan categories:
@@ -4773,6 +4932,7 @@ Verify: notes_with_citation_issues + notes_with_complete_citations == total_note
 - Performance: Must complete in <5 seconds for 1000-note vault
 
 **Pass Criteria:**
+
 - All notes analyzed (100% coverage)
 - Link graph correctly constructed
 - Orphans accurately identified
@@ -4780,12 +4940,14 @@ Verify: notes_with_citation_issues + notes_with_complete_citations == total_note
 - Results include: note path, has_incoming, has_outgoing, suggested_links
 
 **Verification:**
+
 ```
 Verify: orphaned_notes_count <= total_notes
 Verify: Graph integrity (all links resolve to existing notes)
 ```
 
 **Remediation if failed:**
+
 - Re-run orphan detection audit
 - Verify wikilink parsing (handle [[link|alias]] syntax)
 - Check Smart Connections availability (optional, graceful degradation)
@@ -4798,6 +4960,7 @@ Verify: Graph integrity (all links resolve to existing notes)
 **Check:** Random sample of notes analyzed for atomicity violations using STORY-003 analyze-atomicity.md task
 
 **Coverage Requirements:**
+
 - Sampling strategy:
   - Large vaults (>200 notes): 10% random sample or min 20 notes
   - Small vaults (<=200 notes): analyze all notes
@@ -4810,9 +4973,10 @@ Verify: Graph integrity (all links resolve to existing notes)
 - Calculate atomicity score (0.0-1.0)
 - Flag violations: score < 0.7
 - Recommend fragmentation: score < 0.5
-- Extrapolate to full vault: estimated_violations = (violations_found / sample_size) * total_notes
+- Extrapolate to full vault: estimated_violations = (violations_found / sample_size) \* total_notes
 
 **Pass Criteria:**
+
 - Sample size >= 10% of vault or >= 20 notes (whichever is greater)
 - All sampled notes analyzed (100% of sample coverage)
 - Atomicity scores calculated (0.0-1.0 scale)
@@ -4821,6 +4985,7 @@ Verify: Graph integrity (all links resolve to existing notes)
 - Results include: note path, atomicity_score, failed_tests, fragmentation_recommended, estimated_violations_vault_wide
 
 **Verification:**
+
 ```
 Verify: sample_size >= min(0.1 * total_notes, 20)
 Verify: atomicity_violations_count <= sample_size
@@ -4828,6 +4993,7 @@ Verify: estimated_violations_vault_wide == (violations_count / sample_size) * to
 ```
 
 **Remediation if failed:**
+
 - Re-run atomicity audit with larger sample size
 - Verify STORY-003 analyze-atomicity.md task is available
 - Check atomicity score calculation (must be 0.0-1.0)
@@ -4840,6 +5006,7 @@ Verify: estimated_violations_vault_wide == (violations_count / sample_size) * to
 **Check:** Semantic similarity analysis performed across vault to detect duplicate content
 
 **Coverage Requirements:**
+
 - **All notes** must be analyzed for duplicates (100% coverage)
 - Two detection methods:
   - **Exact duplicates:** SHA-256 hash comparison (100% match)
@@ -4853,6 +5020,7 @@ Verify: estimated_violations_vault_wide == (violations_count / sample_size) * to
 - Performance: Must complete in <10 seconds for 1000-note vault
 
 **Pass Criteria:**
+
 - All notes analyzed (100% coverage)
 - Exact duplicates detected (SHA-256 hash collision)
 - Semantic duplicates detected (if Smart Connections available)
@@ -4860,6 +5028,7 @@ Verify: estimated_violations_vault_wide == (violations_count / sample_size) * to
 - Results include: duplicate_groups with note paths, similarity_score, is_exact_match
 
 **Verification:**
+
 ```
 Verify: All notes hashed (100% coverage for exact duplicates)
 Verify: duplicate_groups_count >= 0
@@ -4867,6 +5036,7 @@ Verify: Each group has >= 2 notes
 ```
 
 **Remediation if failed:**
+
 - Re-run duplicate detection audit
 - Check SHA-256 hashing implementation (must be consistent)
 - Verify Smart Connections availability (optional, graceful degradation)
@@ -4879,6 +5049,7 @@ Verify: Each group has >= 2 notes
 **Check:** All notes checked for required frontmatter metadata fields
 
 **Coverage Requirements:**
+
 - **100% of notes** must be analyzed for metadata completeness
 - Required fields:
   - title (required, non-empty string)
@@ -4899,18 +5070,21 @@ Verify: Each group has >= 2 notes
 - Performance: Must complete in <3 seconds for 1000-note vault
 
 **Pass Criteria:**
+
 - All notes analyzed (100% coverage)
 - Missing required fields identified
 - Format issues detected
 - Results include: note path, issue_severity, missing_fields, invalid_fields, recommendations
 
 **Verification:**
+
 ```
 Verify: notes_with_metadata_issues + notes_with_complete_metadata == total_notes
 Verify: metadata_completeness_percentage == (notes_with_complete_metadata / total_notes) * 100
 ```
 
 **Remediation if failed:**
+
 - Re-run metadata audit
 - Check YAML frontmatter parsing (must handle malformed YAML gracefully)
 - Verify required fields match expansion pack configuration
@@ -4923,6 +5097,7 @@ Verify: metadata_completeness_percentage == (notes_with_complete_metadata / tota
 **Check:** Comprehensive audit report generated using audit-report-tmpl.yaml with all findings
 
 **Coverage Requirements:**
+
 - Aggregate results from all audit tasks (Tasks 3-9)
 - Load audit-report-tmpl.yaml template
 - Substitute all 45+ variables with aggregated data
@@ -4940,6 +5115,7 @@ Verify: metadata_completeness_percentage == (notes_with_complete_metadata / tota
 - Save report to vault: `/reports/audit-{timestamp}.md`
 
 **Pass Criteria:**
+
 - Report generated successfully
 - All 10 sections present
 - All variables substituted (no {{missing_variable}} placeholders)
@@ -4947,6 +5123,7 @@ Verify: metadata_completeness_percentage == (notes_with_complete_metadata / tota
 - Results include: report_path, vault_health_score, critical_issues_count
 
 **Verification:**
+
 ```
 Verify: Report file exists at /reports/audit-{timestamp}.md
 Verify: Report contains all 10 sections
@@ -4954,6 +5131,7 @@ Verify: No {{unresolved_variables}} in output
 ```
 
 **Remediation if failed:**
+
 - Re-run report generation
 - Check template file exists (audit-report-tmpl.yaml)
 - Verify all audit tasks completed (cached results available)
@@ -4966,6 +5144,7 @@ Verify: No {{unresolved_variables}} in output
 **Check:** Action items sorted by impact and prioritized into four categories
 
 **Coverage Requirements:**
+
 - Aggregate all findings from audit tasks
 - Classify each finding by impact:
   - **Critical:** Fix immediately (broken links, missing required metadata, exact duplicates)
@@ -4980,18 +5159,21 @@ Verify: No {{unresolved_variables}} in output
 - Format as actionable items with clear next steps
 
 **Pass Criteria:**
+
 - All findings classified by impact
 - Action items sorted by priority
 - Each item is actionable (has clear next step)
 - Results include: action_items_critical, action_items_high, action_items_medium, action_items_low
 
 **Verification:**
+
 ```
 Verify: critical_issues_count + high_priority_count + medium_priority_count + low_priority_count == total_issues
 Verify: Each action item has clear remediation step
 ```
 
 **Remediation if failed:**
+
 - Re-run prioritization
 - Review impact classification logic
 - Ensure all findings are included (no missing issues)
@@ -5004,6 +5186,7 @@ Verify: Each action item has clear remediation step
 **Check:** Overall vault health score calculated using standardized algorithm
 
 **Coverage Requirements:**
+
 - Start at 100 points
 - Apply deductions for each quality issue category:
   - Temporal Freshness: -10 points per 10% of notes stale
@@ -5022,12 +5205,14 @@ Verify: Each action item has clear remediation step
   - 0-39: Critical - Major quality issues requiring immediate action
 
 **Pass Criteria:**
+
 - Health score calculated (0-100)
 - Algorithm correctly applied with all deductions
 - Score interpretation provided
 - Results include: vault_health_score, health_score_interpretation
 
 **Verification:**
+
 ```
 Verify: 0 <= vault_health_score <= 100
 Verify: health_score_interpretation matches score range
@@ -5035,6 +5220,7 @@ Verify: Deductions correctly calculated for each category
 ```
 
 **Remediation if failed:**
+
 - Re-run health score calculation
 - Verify deduction formula for each category
 - Check that extrapolation is used for atomicity violations
@@ -5089,11 +5275,13 @@ is_comprehensive_audit = (audit_coverage >= 90)  # Must pass 9 out of 10 criteri
 **FAIL (Incomplete Audit):** audit_coverage < 70% (significant gaps, re-run required)
 
 **Blocking Failures (auto-fail regardless of score):**
+
 - Report generation failed (criterion 8)
 - Vault health score not calculated (criterion 10)
 - Less than 5 criteria passed (< 50% coverage)
 
 **Critical Warnings (fail if not addressed):**
+
 - Temporal audit incomplete (criterion 1)
 - Metadata audit incomplete (criterion 7)
 - Prioritization not performed (criterion 9)
@@ -5139,23 +5327,23 @@ All test scenarios documented in STORY-006 testing section.
 ```yaml
 audit_coverage_check:
   timestamp: 2025-11-06T14:30:00Z
-  vault: "My Second Brain"
+  vault: 'My Second Brain'
   total_criteria: 10
   passed_criteria: 10
   coverage_percentage: 100
   is_comprehensive: true
   criteria:
-    - {id: 1, name: "Temporal audit", status: PASS, notes: "1000 notes analyzed"}
-    - {id: 2, name: "Link validation", status: PASS, notes: "50 URLs tested"}
-    - {id: 3, name: "Citation audit", status: PASS, notes: "1000 notes checked"}
-    - {id: 4, name: "Orphan detection", status: PASS, notes: "Graph analysis complete"}
-    - {id: 5, name: "Atomicity audit", status: PASS, notes: "100 notes sampled"}
-    - {id: 6, name: "Duplicate detection", status: PASS, notes: "1000 notes hashed"}
-    - {id: 7, name: "Metadata audit", status: PASS, notes: "1000 notes validated"}
-    - {id: 8, name: "Report generation", status: PASS, notes: "Report saved"}
-    - {id: 9, name: "Prioritization", status: PASS, notes: "Action items sorted"}
-    - {id: 10, name: "Vault health score", status: PASS, notes: "Score: 92/100"}
-  verdict: "PASS - Comprehensive audit complete"
+    - { id: 1, name: 'Temporal audit', status: PASS, notes: '1000 notes analyzed' }
+    - { id: 2, name: 'Link validation', status: PASS, notes: '50 URLs tested' }
+    - { id: 3, name: 'Citation audit', status: PASS, notes: '1000 notes checked' }
+    - { id: 4, name: 'Orphan detection', status: PASS, notes: 'Graph analysis complete' }
+    - { id: 5, name: 'Atomicity audit', status: PASS, notes: '100 notes sampled' }
+    - { id: 6, name: 'Duplicate detection', status: PASS, notes: '1000 notes hashed' }
+    - { id: 7, name: 'Metadata audit', status: PASS, notes: '1000 notes validated' }
+    - { id: 8, name: 'Report generation', status: PASS, notes: 'Report saved' }
+    - { id: 9, name: 'Prioritization', status: PASS, notes: 'Action items sorted' }
+    - { id: 10, name: 'Vault health score', status: PASS, notes: 'Score: 92/100' }
+  verdict: 'PASS - Comprehensive audit complete'
   recommendations: []
 ```
 

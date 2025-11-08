@@ -115,6 +115,7 @@ Remember: Atomic notes are the foundation of a powerful second brain. Garbage in
 ### 1. Single Claim Test
 
 **Algorithm:**
+
 ```
 1. Extract all claims/assertions from note
    - Use NLP to identify declarative statements
@@ -139,6 +140,7 @@ Example FAIL:
 ### 2. Evidence Test
 
 **Algorithm:**
+
 ```
 1. Identify core claim/concept in note
 2. Extract all supporting statements
@@ -166,6 +168,7 @@ Support: "Anki is better than SuperMemo for this"
 ### 3. Self-Contained Test
 
 **Algorithm:**
+
 ```
 1. Identify all terms/concepts mentioned in note
 2. For each term:
@@ -193,6 +196,7 @@ Example FAIL:
 ### 4. Title Test
 
 **Algorithm:**
+
 ```
 1. Descriptiveness check:
    - Does title indicate core claim/concept?
@@ -220,6 +224,7 @@ Content: Discusses 5 different productivity concepts
 ### 5. Related Concepts Test
 
 **Algorithm:**
+
 ```
 1. Identify related concepts mentioned in note
 2. For each related concept:
@@ -243,6 +248,7 @@ Example FAIL:
 ### Composite Atomicity Score
 
 **Algorithm:**
+
 ```python
 score = 1.0  # Start with perfect atomicity
 
@@ -258,17 +264,19 @@ is_atomic = (score >= 0.7)
 ```
 
 **Violation Detection:**
+
 - Return list of failed tests (score < 1.0 for that test)
 - Include specific suggestions for remediation
 - Flag for manual review if borderline (0.6 <= score < 0.7)
 
 **Output Format:**
+
 ```yaml
 is_atomic: boolean
 score: float (0.0-1.0)
-violations: [string]  # List of failed test names
-suggestions: [string]  # Specific remediation suggestions
-building_block_type: string  # concept|argument|model|question|claim|phenomenon
+violations: [string] # List of failed test names
+suggestions: [string] # Specific remediation suggestions
+building_block_type: string # concept|argument|model|question|claim|phenomenon
 ```
 
 ## Building Block Type Definitions (6 Types)
@@ -276,36 +284,42 @@ building_block_type: string  # concept|argument|model|question|claim|phenomenon
 **Purpose:** Classify atomic notes by their knowledge structure.
 
 ### 1. Concept
+
 **Definition:** Explanation of an idea, term, or principle
 **Structure:** Definition + Characteristics + Examples
 **Signals:** "is defined as", "refers to", "means that"
 **Example:** "Zettelkasten Principle: Atomicity"
 
 ### 2. Argument
+
 **Definition:** Claim supported by evidence and reasoning
 **Structure:** Thesis + Evidence + Logic
 **Signals:** "therefore", "because", "this shows that"
 **Example:** "Spaced repetition is superior to massed practice"
 
 ### 3. Model
+
 **Definition:** Framework, system, or mental model
 **Structure:** Components + Relationships + Boundaries
 **Signals:** "consists of", "framework", "system"
 **Example:** "PARA Method for Information Organization"
 
 ### 4. Question
+
 **Definition:** Open question or area of inquiry
 **Structure:** Question + Context + Significance
 **Signals:** "?", "how", "why", "what if"
 **Example:** "How does bi-temporal versioning differ from event sourcing?"
 
 ### 5. Claim
+
 **Definition:** Statement of belief, assertion, or hypothesis
 **Structure:** Declarative statement + Scope + Falsifiability
 **Signals:** "I believe", "hypothesis", "assertion"
 **Example:** "Human memory is reconstructive, not reproductive"
 
 ### 6. Phenomenon
+
 **Definition:** Observed pattern or empirical finding
 **Structure:** Observation + Context + Data
 **Signals:** "observed", "data shows", "pattern"
@@ -403,6 +417,7 @@ building_block_type: string  # concept|argument|model|question|claim|phenomenon
 ```
 
 **Output Format:**
+
 ```yaml
 fragments_created: int
 fragment_paths: [string]
@@ -413,12 +428,14 @@ original_status: "fragmented" | "archived"
 ## Security Considerations
 
 **Input Validation:**
+
 - Sanitize all note paths to prevent directory traversal
 - Block paths containing: `../`, absolute paths outside vault
 - Validate note content is valid markdown (no script injection)
 - Limit fragment count to 20 per note (prevent DoS)
 
 **Path Safety:**
+
 ```
 Allowed paths:
 - /inbox/*.md
@@ -432,18 +449,21 @@ Blocked paths:
 ```
 
 **Content Validation:**
+
 - Verify markdown syntax before creating notes
 - Escape special characters in generated titles
 - Validate frontmatter YAML syntax
 - Strip potentially dangerous content (eval, script tags)
 
 **Fragment Limits:**
+
 - Max 20 fragments per note
 - Warn user if >10 fragments (may need restructuring)
 - Reject fragmentation if fragments would still be non-atomic
 
 **Filename Sanitization:**
-- Remove special characters: / \ : * ? " < > |
+
+- Remove special characters: / \ : \* ? " < > |
 - Limit filename length to 100 characters
 - Convert spaces to hyphens
 - Ensure uniqueness with collision detection
@@ -486,11 +506,11 @@ atomicity_analysis:
   violations: [] # List of failed test names
   suggestions: [] # List of remediation suggestions
   test_results:
-    single_claim: {score: float, pass: bool, issues: []}
-    evidence: {score: float, pass: bool, issues: []}
-    self_contained: {score: float, pass: bool, issues: []}
-    title: {score: float, pass: bool, issues: []}
-    related_concepts: {score: float, pass: bool, issues: []}
+    single_claim: { score: float, pass: bool, issues: [] }
+    evidence: { score: float, pass: bool, issues: [] }
+    self_contained: { score: float, pass: bool, issues: [] }
+    title: { score: float, pass: bool, issues: [] }
+    related_concepts: { score: float, pass: bool, issues: [] }
   verdict: 'ATOMIC|BORDERLINE|NON-ATOMIC'
 ```
 
@@ -514,6 +534,7 @@ atomicity_analysis:
    - Multiple standalone assertions = multiple claims ✗
 
 3. **Score calculation:**
+
    ```
    score = 1.0
    for each additional_independent_claim:
@@ -538,26 +559,32 @@ atomicity_analysis:
   - Lists of unrelated items
 
 **Example - PASS:**
+
 ```
 "Zettelkasten uses atomic notes. Atomic notes contain one idea.
 This enables flexible recombination."
 ```
+
 → 1 core claim (Zettelkasten uses atomic notes) + supporting details
 → Score: 1.0 ✓
 
 **Example - FAIL:**
+
 ```
 "Zettelkasten uses atomic notes. GTD uses context lists.
 Both are productivity systems."
 ```
+
 → 3 independent claims (Zettelkasten, GTD, productivity systems)
 → Score: 1.0 - 0.3 - 0.3 = 0.4 ✗
 
 **Violations to report:**
+
 - "Multiple independent claims detected: [claim 1], [claim 2]"
 - "Topic shifts indicate separate ideas"
 
 **Remediation suggestions:**
+
 - "Fragment note into N separate notes (one per claim)"
 - "Extract claims: [list of claims to extract]"
 
@@ -583,6 +610,7 @@ Both are productivity systems."
    - Is it an example illustrating the core? → Related ✓
 
 4. **Score calculation:**
+
    ```
    score = 1.0
    for each divergent_idea:
@@ -607,29 +635,35 @@ Both are productivity systems."
   - Comparisons that become full explanations
 
 **Example - PASS:**
+
 ```
 Core: "Spaced repetition improves retention"
 Support: "Ebbinghaus curve shows memory decay without review"
 Support: "Multiple exposures strengthen neural pathways"
 ```
+
 → All support directly relates to retention/memory
 → Score: 1.0 ✓
 
 **Example - FAIL:**
+
 ```
 Core: "Spaced repetition improves retention"
 Support: "Anki is better than SuperMemo for implementing this"
 Support: "SuperMemo was created in 1987 by Piotr Wozniak"
 ```
+
 → Introduces tool comparison (new topic)
 → Introduces software history (new topic)
 → Score: 1.0 - 0.3 - 0.3 = 0.4 ✗
 
 **Violations to report:**
+
 - "Divergent ideas detected: [list]"
 - "Supporting evidence introduces new topics"
 
 **Remediation suggestions:**
+
 - "Extract tool comparison into separate note"
 - "Link to related notes instead of explaining in-depth"
 
@@ -657,6 +691,7 @@ Support: "SuperMemo was created in 1987 by Piotr Wozniak"
    - Depends on other notes to make sense
 
 4. **Score calculation:**
+
    ```
    score = 1.0
    for each undefined_critical_term:
@@ -683,28 +718,34 @@ Support: "SuperMemo was created in 1987 by Piotr Wozniak"
   - References to other notes without summary
 
 **Example - PASS:**
+
 ```
 "The PARA method organizes information into Projects, Areas,
 Resources, Archives. Projects are active work with deadlines.
 Areas are ongoing responsibilities."
 ```
+
 → Defines all terms inline
 → Score: 1.0 ✓
 
 **Example - FAIL:**
+
 ```
 "Using the P.A.R.A. categories, my project list is getting cleaner.
 The GTD weekly review helps identify Areas vs Projects."
 ```
+
 → Assumes knowledge of PARA (undefined)
 → Assumes knowledge of GTD (undefined)
 → Score: 1.0 - 0.2 - 0.2 = 0.6 ✗
 
 **Violations to report:**
+
 - "Undefined terms: [list]"
 - "Assumed context: [list]"
 
 **Remediation suggestions:**
+
 - "Define 'PARA' inline or link with brief summary"
 - "Add context about GTD weekly review"
 
@@ -727,6 +768,7 @@ The GTD weekly review helps identify Areas vs Projects."
    - Unique if no duplicates/near-duplicates
 
 3. **Score calculation:**
+
    ```
    score = 1.0
    if not descriptive:
@@ -755,27 +797,33 @@ The GTD weekly review helps identify Areas vs Projects."
   - "Ideas", "Notes", "Observations" alone
 
 **Example - PASS:**
+
 ```
 Title: "Zettelkasten Principle: Atomicity"
 Content: Explains atomic notes concept
 ```
+
 → Descriptive (indicates concept and topic) ✓
 → Unique (no duplicates) ✓
 → Score: 1.0 ✓
 
 **Example - FAIL:**
+
 ```
 Title: "Notes on Productivity"
 Content: Discusses Zettelkasten, GTD, PARA, time-blocking, deep work
 ```
+
 → Not descriptive (too generic, doesn't indicate specific topics) ✗
 → Score: 1.0 - 0.4 = 0.6 ✗
 
 **Violations to report:**
+
 - "Title is too generic"
 - "Duplicate title found: [path]"
 
 **Remediation suggestions:**
+
 - "Make title more specific: suggest '[Specific Topic] - [Aspect]'"
 - "Add context to differentiate from: [duplicate note]"
 
@@ -797,6 +845,7 @@ Content: Discusses Zettelkasten, GTD, PARA, time-blocking, deep work
    - Does explanation become main focus? → In-depth ✗
 
 3. **Score calculation:**
+
    ```
    score = 1.0
    for each in_depth_explanation:
@@ -821,14 +870,17 @@ Content: Discusses Zettelkasten, GTD, PARA, time-blocking, deep work
   - Explains mechanism/structure of related concept
 
 **Example - PASS:**
+
 ```
 "Atomic notes enable flexible linking.
 See also [[Bidirectional Links]] and [[Evergreen Notes]]."
 ```
+
 → Related concepts linked only, not explained
 → Score: 1.0 ✓
 
 **Example - FAIL:**
+
 ```
 "Atomic notes enable flexible linking. Bidirectional links
 connect notes in both directions, creating a web of knowledge.
@@ -836,13 +888,16 @@ Each link represents a semantic relationship between ideas.
 When you link Note A to Note B, Note B automatically shows
 the backlink from Note A, revealing unexpected connections..."
 ```
+
 → Explains bidirectional links in depth (4+ sentences)
 → Score: 1.0 - 0.3 = 0.7 (borderline) ⚠
 
 **Violations to report:**
+
 - "In-depth explanations of related concepts: [list]"
 
 **Remediation suggestions:**
+
 - "Extract [[Bidirectional Links]] explanation into separate note"
 - "Replace explanation with brief link and 1-sentence summary"
 
@@ -986,7 +1041,7 @@ atomicity_analysis:
     evidence:
       score: 0.7
       pass: true
-      issues: ["Minor divergent idea about tool selection"]
+      issues: ['Minor divergent idea about tool selection']
     self_contained:
       score: 1.0
       pass: true
@@ -998,9 +1053,9 @@ atomicity_analysis:
     related_concepts:
       score: 0.8
       pass: true
-      issues: ["One concept explained in 3 sentences"]
-  verdict: "ATOMIC"
-  recommendation: "Note is atomic - ready for permanent collection"
+      issues: ['One concept explained in 3 sentences']
+  verdict: 'ATOMIC'
+  recommendation: 'Note is atomic - ready for permanent collection'
 ```
 
 ## Usage Notes
@@ -2070,6 +2125,7 @@ def validate_note_created(note_path):
 **Common Errors:**
 
 1. **Vault Not Found:**
+
    ```python
    if error.message.contains("vault not found"):
        return error(
@@ -2079,6 +2135,7 @@ def validate_note_created(note_path):
    ```
 
 2. **Permission Denied:**
+
    ```python
    if error.message.contains("permission denied"):
        return error(
@@ -2088,6 +2145,7 @@ def validate_note_created(note_path):
    ```
 
 3. **File Already Exists:**
+
    ```python
    if error.message.contains("file exists"):
        # Collision handling should prevent this, but handle anyway
@@ -2096,6 +2154,7 @@ def validate_note_created(note_path):
    ```
 
 4. **Invalid Path:**
+
    ```python
    if error.message.contains("invalid path"):
        return error(
@@ -2573,21 +2632,10 @@ examples:
 ---
 
 checklist:
-  id: atomicity-checklist
-  name: Atomicity Checklist
-  description: Quality gates for atomic note validation - ensures notes contain exactly one complete knowledge building block
-  items:
-    - "[ ] Single claim test: Note expresses exactly one core claim/concept"
-    - "[ ] Evidence test: Evidence supports core claim without introducing new claims"
-    - "[ ] Self-contained test: Note understandable without extensive external context"
-    - "[ ] Title test: Title is descriptive and unique"
-    - "[ ] Related concepts test: Related concepts linked but not explained in detail"
-    - "[ ] Building block test: Clear identification of building block type"
-    - "[ ] Completeness test: Note contains complete thought (not fragment)"
-    - "[ ] Independence test: Note can be moved/reorganized without breaking system"
-    - "[ ] Link quality test: Links are bidirectional and meaningful"
-    - "[ ] Metadata test: All required metadata present"
-    - "[ ] Security test: No dangerous content or path traversal attempts"
+id: atomicity-checklist
+name: Atomicity Checklist
+description: Quality gates for atomic note validation - ensures notes contain exactly one complete knowledge building block
+items: - "[ ] Single claim test: Note expresses exactly one core claim/concept" - "[ ] Evidence test: Evidence supports core claim without introducing new claims" - "[ ] Self-contained test: Note understandable without extensive external context" - "[ ] Title test: Title is descriptive and unique" - "[ ] Related concepts test: Related concepts linked but not explained in detail" - "[ ] Building block test: Clear identification of building block type" - "[ ] Completeness test: Note contains complete thought (not fragment)" - "[ ] Independence test: Note can be moved/reorganized without breaking system" - "[ ] Link quality test: Links are bidirectional and meaningful" - "[ ] Metadata test: All required metadata present" - "[ ] Security test: No dangerous content or path traversal attempts"
 
 ---
 
@@ -2610,6 +2658,7 @@ This checklist ensures every note meets atomicity standards - containing exactly
 **Check:** Note expresses exactly one core claim, concept, or observation (not multiple independent claims)
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.3 per additional independent claim
 - Min: 0.0
@@ -2617,6 +2666,7 @@ This checklist ensures every note meets atomicity standards - containing exactly
 **Pass Criteria:** Score >= 0.7 (max 1 additional claim allowed)
 
 **Remediation if failed:**
+
 - Identify each independent claim in the note
 - Create separate notes for each claim
 - Keep only one claim in the current note
@@ -2635,6 +2685,7 @@ This checklist ensures every note meets atomicity standards - containing exactly
 **Check:** All supporting statements directly support the core claim without introducing new independent claims requiring explanation
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.3 per divergent idea requiring separate explanation
 - Min: 0.0
@@ -2642,6 +2693,7 @@ This checklist ensures every note meets atomicity standards - containing exactly
 **Pass Criteria:** Score >= 0.7 (max 1 divergent idea allowed)
 
 **Remediation if failed:**
+
 - Identify supporting statements that introduce new topics
 - Extract divergent ideas into separate notes
 - Keep only direct support in the current note
@@ -2662,6 +2714,7 @@ Support: "Anki is better than SuperMemo for this"
 **Check:** Note is understandable without requiring extensive external context or undefined terms
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.2 per undefined critical term
 - Deduct: -0.2 per assumed context element
@@ -2670,6 +2723,7 @@ Support: "Anki is better than SuperMemo for this"
 **Pass Criteria:** Score >= 0.7 (max 2 missing elements allowed)
 
 **Remediation if failed:**
+
 - Define all critical terms inline
 - Add necessary context to make note self-contained
 - Or link to definition notes with brief inline summary
@@ -2688,6 +2742,7 @@ Support: "Anki is better than SuperMemo for this"
 **Check:** Title is descriptive (indicates core concept) AND unique (no duplicates in vault)
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.4 if not descriptive
 - Deduct: -0.4 if not unique
@@ -2696,6 +2751,7 @@ Support: "Anki is better than SuperMemo for this"
 **Pass Criteria:** Score >= 0.7 (must pass one of two criteria)
 
 **Remediation if failed:**
+
 - Make title more specific and descriptive
 - Add context to differentiate from similar titles
 - Use pattern: "Topic - Specific Aspect" or "Concept: Detail"
@@ -2716,6 +2772,7 @@ Content: Discusses 5 concepts
 **Check:** Related concepts are linked only (not explained in depth >2 sentences)
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.3 per in-depth explanation (>2 sentences)
 - Min: 0.0
@@ -2723,6 +2780,7 @@ Content: Discusses 5 concepts
 **Pass Criteria:** Score >= 0.7 (max 1 in-depth explanation allowed)
 
 **Remediation if failed:**
+
 - Extract in-depth explanations into separate notes
 - Replace explanations with links [[Concept]]
 - Add brief 1-sentence context if needed
@@ -2741,18 +2799,21 @@ Content: Discusses 5 concepts
 **Check:** Note clearly identifies its building block type (concept, argument, model, question, claim, phenomenon)
 
 **Scoring:**
+
 - Pass: 1.0 if type identified correctly
 - Fail: 0.0 if no type or wrong type
 
 **Pass Criteria:** Score >= 0.7 (must identify type correctly)
 
 **Remediation if failed:**
+
 - Analyze note structure and content
 - Classify as one of 6 building block types
 - Add type to frontmatter metadata
 - Restructure note if type is ambiguous
 
 **Building Block Types:**
+
 1. **Concept** - Definition/explanation of idea
 2. **Argument** - Claim + evidence + reasoning
 3. **Model** - Framework/system with components
@@ -2765,12 +2826,14 @@ Content: Discusses 5 concepts
 **Check:** Note contains a complete thought, not just a fragment or partial idea
 
 **Scoring:**
+
 - Pass: 1.0 if complete
 - Fail: 0.0 if incomplete fragment
 
 **Pass Criteria:** Score >= 0.7 (must be complete)
 
 **Remediation if failed:**
+
 - Expand fragment into complete thought
 - Add missing context, evidence, or explanation
 - Combine with related fragments if necessary
@@ -2789,12 +2852,14 @@ Content: Discusses 5 concepts
 **Check:** Note can be moved, renamed, or reorganized without breaking the knowledge system
 
 **Scoring:**
+
 - Pass: 1.0 if independent
 - Fail: 0.0 if tightly coupled to location/structure
 
 **Pass Criteria:** Score >= 0.7 (must be independent)
 
 **Remediation if failed:**
+
 - Remove dependencies on folder structure
 - Replace relative references with absolute [[links]]
 - Ensure note makes sense out of context
@@ -2813,6 +2878,7 @@ Note refers to "the previous section" or "parent folder"
 **Check:** Links are bidirectional and meaningful (not just random connections)
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.2 per broken or one-way link
 - Deduct: -0.3 per meaningless/random link
@@ -2821,6 +2887,7 @@ Note refers to "the previous section" or "parent folder"
 **Pass Criteria:** Score >= 0.7 (max 2 link quality issues)
 
 **Remediation if failed:**
+
 - Ensure all outgoing links have backlinks
 - Add context to links (why are they related?)
 - Remove random or weak connections
@@ -2839,6 +2906,7 @@ Links to 20 random notes without context
 **Check:** All required metadata fields are present and valid
 
 **Required Fields:**
+
 - title (non-empty string)
 - type (one of 6 building block types)
 - building_block (matches type)
@@ -2847,6 +2915,7 @@ Links to 20 random notes without context
 - tags (array, can be empty)
 
 **Scoring:**
+
 - Start: 1.0
 - Deduct: -0.2 per missing required field
 - Min: 0.0
@@ -2854,6 +2923,7 @@ Links to 20 random notes without context
 **Pass Criteria:** Score >= 0.7 (max 2 missing fields allowed)
 
 **Remediation if failed:**
+
 - Add missing metadata fields
 - Validate field formats (timestamps, types, scores)
 - Ensure frontmatter YAML is valid
@@ -2901,11 +2971,13 @@ is_atomic = (total_score >= 0.7)
 **FAIL (Non-Atomic):** Score < 0.6
 
 **Blocking Failures (auto-fail regardless of score):**
+
 - Building block type not identified (test 6)
 - Note is incomplete fragment (test 7)
 - Note is location-dependent (test 8)
 
 **Critical Warnings (fail if not addressed):**
+
 - Multiple independent claims (test 1)
 - Extensive undefined context (test 3)
 - No metadata present (test 10)
@@ -2954,24 +3026,24 @@ All test scenarios documented in STORY-003 testing section.
 ## Example Validation Report
 
 ```yaml
-note: "2025-11-05-zettelkasten-atomicity.md"
+note: '2025-11-05-zettelkasten-atomicity.md'
 is_atomic: true
 total_score: 0.92
 tests:
-  single_claim: {score: 1.0, pass: true}
-  evidence: {score: 1.0, pass: true}
-  self_contained: {score: 0.8, pass: true, issues: ["Term 'evergreen' not defined"]}
-  title: {score: 1.0, pass: true}
-  related_concepts: {score: 1.0, pass: true}
-  building_block: {score: 1.0, pass: true, type: "concept"}
-  completeness: {score: 1.0, pass: true}
-  independence: {score: 1.0, pass: true}
-  link_quality: {score: 0.8, pass: true, issues: ["1 one-way link detected"]}
-  metadata: {score: 1.0, pass: true}
-verdict: "PASS - Note is atomic"
+  single_claim: { score: 1.0, pass: true }
+  evidence: { score: 1.0, pass: true }
+  self_contained: { score: 0.8, pass: true, issues: ["Term 'evergreen' not defined"] }
+  title: { score: 1.0, pass: true }
+  related_concepts: { score: 1.0, pass: true }
+  building_block: { score: 1.0, pass: true, type: 'concept' }
+  completeness: { score: 1.0, pass: true }
+  independence: { score: 1.0, pass: true }
+  link_quality: { score: 0.8, pass: true, issues: ['1 one-way link detected'] }
+  metadata: { score: 1.0, pass: true }
+verdict: 'PASS - Note is atomic'
 recommendations:
   - "Define term 'evergreen' inline or link to definition"
-  - "Add backlink from [[Evergreen Notes]]"
+  - 'Add backlink from [[Evergreen Notes]]'
 ```
 
 ### 11. Security Test
@@ -2979,6 +3051,7 @@ recommendations:
 **Check:** Note paths and content do not contain dangerous patterns or security risks
 
 **Security Checks:**
+
 - Path validation: No directory traversal (../) attempts
 - Content scanning: No script tags, JavaScript injection, eval()
 - Link safety: All generated links are safe wikilinks
@@ -2986,12 +3059,14 @@ recommendations:
 - Fragment limits: Max 20 fragments per note
 
 **Scoring:**
+
 - Pass: 1.0 if all security checks pass
 - Fail: 0.0 if any security violation detected
 
 **Pass Criteria:** Score >= 0.7 (must pass security validation)
 
 **Remediation if failed:**
+
 - Block dangerous content immediately
 - Sanitize paths and filenames
 - Strip unsafe HTML/JavaScript
@@ -3028,6 +3103,7 @@ This taxonomy defines the 6 fundamental building block types used to classify at
 **Structure:** Definition + Characteristics + Examples (optional)
 
 **Key Characteristics:**
+
 - Defines what something **is** or **means**
 - Explains the nature or essence of an idea
 - Provides boundaries (what it includes/excludes)
@@ -3035,6 +3111,7 @@ This taxonomy defines the 6 fundamental building block types used to classify at
 - May include examples to clarify meaning
 
 **Linguistic Signals:**
+
 - "is defined as", "refers to", "means that"
 - "the concept of", "the idea of"
 - "in other words", "essentially"
@@ -3049,6 +3126,7 @@ This taxonomy defines the 6 fundamental building block types used to classify at
 [Concept] is defined as [definition].
 
 Key characteristics:
+
 - [Characteristic 1]
 - [Characteristic 2]
 - [Characteristic 3]
@@ -3086,6 +3164,7 @@ This concept is important because [significance].
 **Structure:** Thesis/Claim + Evidence + Logic/Reasoning
 
 **Key Characteristics:**
+
 - Makes a clear, arguable claim
 - Provides evidence to support the claim
 - Explains the logical connection between evidence and claim
@@ -3093,6 +3172,7 @@ This concept is important because [significance].
 - Has a persuasive or analytical intent
 
 **Linguistic Signals:**
+
 - "therefore", "thus", "consequently"
 - "because", "since", "given that"
 - "this shows that", "this proves that"
@@ -3107,6 +3187,7 @@ This concept is important because [significance].
 **Thesis:** [Clear statement of claim]
 
 **Evidence:**
+
 1. [Evidence point 1]
 2. [Evidence point 2]
 3. [Evidence point 3]
@@ -3144,6 +3225,7 @@ This concept is important because [significance].
 **Structure:** Components + Relationships + Boundaries
 
 **Key Characteristics:**
+
 - Describes a system with multiple interrelated parts
 - Shows how components interact or relate
 - Defines boundaries (what's in/out of scope)
@@ -3151,6 +3233,7 @@ This concept is important because [significance].
 - Simplifies complexity for understanding
 
 **Linguistic Signals:**
+
 - "consists of", "comprises", "is made up of"
 - "framework", "system", "model", "structure"
 - "the relationship between", "how X connects to Y"
@@ -3165,6 +3248,7 @@ This concept is important because [significance].
 [Model] is a [framework/system] for [purpose].
 
 **Components:**
+
 1. [Component 1] - [Description and role]
 2. [Component 2] - [Description and role]
 3. [Component 3] - [Description and role]
@@ -3204,6 +3288,7 @@ This concept is important because [significance].
 **Structure:** Question + Context + Significance
 
 **Key Characteristics:**
+
 - Explicitly interrogative (ends with ?)
 - Expresses uncertainty or curiosity
 - Provides context for why the question matters
@@ -3211,6 +3296,7 @@ This concept is important because [significance].
 - Often evolves into claims or arguments when answered
 
 **Linguistic Signals:**
+
 - Interrogative words: "what", "why", "how", "when", "where"
 - "?" punctuation
 - "I wonder", "unclear whether"
@@ -3231,6 +3317,7 @@ This concept is important because [significance].
 **Possible Approaches:** [How to investigate]
 
 **Related Questions:**
+
 - [[Related Question 1]]
 - [[Related Question 2]]
 ```
@@ -3263,6 +3350,7 @@ This concept is important because [significance].
 **Structure:** Declarative Statement + Scope + Falsifiability
 
 **Key Characteristics:**
+
 - Makes a specific, contestable assertion
 - Presents a belief or hypothesis
 - Falsifiable (could be proven wrong)
@@ -3270,6 +3358,7 @@ This concept is important because [significance].
 - May evolve into arguments with evidence
 
 **Linguistic Signals:**
+
 - "I believe", "I think", "I suspect"
 - "hypothesis", "assertion", "conjecture"
 - Declarative statements without extensive evidence
@@ -3320,6 +3409,7 @@ This concept is important because [significance].
 **Structure:** Observation + Context + Data/Evidence
 
 **Key Characteristics:**
+
 - Reports what was observed or measured
 - Empirical (based on observation/experience)
 - Descriptive rather than explanatory
@@ -3327,6 +3417,7 @@ This concept is important because [significance].
 - May later be explained by arguments or models
 
 **Linguistic Signals:**
+
 - "observed", "noticed", "witnessed"
 - "data shows", "research found", "study demonstrated"
 - "pattern", "trend", "occurrence"
@@ -3407,10 +3498,12 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Large concepts may have components (e.g., "Democracy")
 
 **Disambiguation:**
+
 - CONCEPT: Focuses on definition and meaning
 - MODEL: Focuses on components and relationships
 
 **Example:**
+
 - Concept: "Democracy is a system of government by the people"
 - Model: "Democracy consists of: elections, representation, separation of powers, rule of law"
 
@@ -3419,6 +3512,7 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Both make assertions, difference is evidence depth
 
 **Disambiguation:**
+
 - CLAIM: Statement with minimal evidence (belief, hypothesis)
 - ARGUMENT: Statement with substantial evidence and reasoning
 
@@ -3429,10 +3523,12 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Explained observations could be either
 
 **Disambiguation:**
+
 - PHENOMENON: Reports what happened (descriptive)
 - ARGUMENT: Explains why it happened (analytical)
 
 **Example:**
+
 - Phenomenon: "My note count increased from 487 to 523 this month"
 - Argument: "My note count increased because I implemented daily capture habits"
 
@@ -3441,6 +3537,7 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Questions can imply claims ("Isn't X true?")
 
 **Disambiguation:**
+
 - QUESTION: Genuinely seeks answer, open inquiry
 - CLAIM: Rhetorical question that asserts a belief
 
@@ -3451,10 +3548,12 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Defining concepts can involve argumentation
 
 **Disambiguation:**
+
 - CONCEPT: Establishes what something means
 - ARGUMENT: Defends why a claim is true
 
 **Example:**
+
 - Concept: "Atomic notes are notes containing one idea"
 - Argument: "Atomic notes are superior to long-form notes"
 
@@ -3463,6 +3562,7 @@ Use this decision tree to disambiguate building block types when a note could fi
 **Problem:** Note contains concept definition AND argument
 
 **Solution:** This indicates the note is NOT atomic. Fragment it:
+
 1. Extract the concept definition into one note
 2. Extract the argument into another note
 3. Link them: "[[Concept]] enables [[Argument about concept]]"
@@ -3479,6 +3579,7 @@ Based on typical knowledge work, expect this distribution:
 - **CLAIM:** 5-10% (hypotheses and beliefs)
 
 Significant deviations may indicate:
+
 - Too many concepts: Consuming more than creating
 - Too many phenomena: Capturing without synthesizing
 - Too many claims: Asserting without evidencing
@@ -3517,8 +3618,8 @@ The structural analysis agent uses this taxonomy to:
 
 ## References
 
-- Ahrens, S. (2017). *How to Take Smart Notes*
-- Luhmann, N. (1992). *Communicating with Slip Boxes*
-- Schmidt, J. (2016). *Niklas Luhmann's Card Index: The Fabrication of Serendipity*
-- Matuschak, A. (2019). *Evergreen Notes*
+- Ahrens, S. (2017). _How to Take Smart Notes_
+- Luhmann, N. (1992). _Communicating with Slip Boxes_
+- Schmidt, J. (2016). _Niklas Luhmann's Card Index: The Fabrication of Serendipity_
+- Matuschak, A. (2019). _Evergreen Notes_
 ==================== END: .bmad-obsidian-2nd-brain/data/building-block-types.md ====================

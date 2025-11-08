@@ -180,6 +180,605 @@ integration:
 ```
 ==================== END: .bmad-1898-engineering/agents/security-reviewer.md ====================
 
+==================== START: .bmad-1898-engineering/tasks/fact-verify-claims.md ====================
+# Fact Verification Task
+
+## Purpose
+
+Verify factual claims in security enrichment against authoritative sources using Perplexity MCP.
+
+## When to Use
+
+- User explicitly requests: `*fact-check {ticket-id}`
+- Reviewer wants to validate critical claims (CVSS, KEV, Priority)
+- Default mode: Verify critical claims only (CVSS, EPSS, KEV, Patch)
+- Comprehensive mode: Verify all verifiable claims in enrichment
+
+## Inputs Required
+
+- **Enrichment document path:** JIRA ticket enrichment comment or custom field content
+- **CVE ID:** For querying authoritative sources (must match CVE-YYYY-NNNNN pattern)
+- **Claims to verify:** Selectable (critical only vs. comprehensive)
+
+## Output Destination
+
+- **Standalone report:** Markdown fact verification report
+- **Integrated into review:** Fact Verification Results section of security review report (Story 2.6)
+
+## Prerequisites Check
+
+Before executing fact verification:
+
+1. **Verify Perplexity MCP Available:** Check if `mcp__perplexity__search` tool is available
+2. **If Unavailable:**
+   - Skip fact verification step
+   - Note in review report: "⚠️ Fact verification skipped (Perplexity MCP unavailable)"
+   - Recommend manual verification of critical claims
+   - Continue with rest of review workflow
+
+## Process
+
+### Step 1: Input Validation & Security Checks
+
+**Security Validation:**
+
+- **CVE ID Format:** Validate CVE-YYYY-NNNNN pattern before proceeding
+- **Ticket ID Sanitization:** Sanitize JIRA ticket IDs to prevent injection attacks
+- **Enrichment Path Validation:** Verify file paths are within expected project directories
+- **Query Parameter Sanitization:** Escape special characters in Perplexity queries
+
+**Validation Rules:**
+
+```
+CVE ID: Must match regex ^CVE-\d{4}-\d{4,}$
+Ticket ID: Must match project JIRA key pattern
+File Path: Must be within project directory, no ../ traversal
+Max Query Length: 500 characters per Perplexity query
+```
+
+**If validation fails:**
+
+- Log security validation failure
+- Skip verification for invalid inputs
+- Note in report: "⚠️ Security validation failed for {input}"
+- Continue with valid inputs only
+
+### Step 2: Extract Claims from Enrichment
+
+Parse enrichment document and extract factual assertions:
+
+**Critical Claims (Default Mode):**
+
+- **CVSS Base Score:** Numeric score (0.0-10.0)
+- **EPSS Score:** Probability score (0.00-1.00)
+- **KEV Status:** Listed or Not Listed
+- **Patched Version:** Version number
+
+**Additional Claims (Comprehensive Mode):**
+
+- Affected Version Range
+- Exploit Status (PoC/Public/Active)
+- Vendor Name
+- Product Name
+- Attack Vector details
+
+**Extraction Format:**
+
+```markdown
+Extracted Claims:
+
+- CVSS Base Score: 9.8
+- CVSS Severity: Critical
+- EPSS Score: 0.85
+- EPSS Percentile: 85th
+- KEV Status: Not Listed
+- Affected Versions: 2.0.0 - 2.5.32
+- Patched Version: 2.5.33+
+- Exploit Status: Active Exploitation
+```
+
+### Step 3: Verify Critical Claims Using Perplexity
+
+Use Perplexity MCP to verify claims against authoritative sources.
+
+**Rate Limiting:**
+
+- Implement 1-second delay between queries
+- Maximum 10 queries per session (critical mode)
+- Maximum 20 queries per session (comprehensive mode)
+- Warn user if comprehensive mode exceeds limits
+
+**Error Handling:**
+
+- **MCP Unavailable:** Skip verification, note in report
+- **Query Timeout:** Retry once with 60s timeout, then skip
+- **Conflicting Sources:** Document all, prioritize by authority
+- **No Data Available:** Note as "⚠️ Unable to verify - information not yet available"
+
+#### CVSS Score Verification
+
+**Query:**
+
+```
+What is the official CVSS base score for {cve_id} according to NIST NVD? Provide:
+- CVSS Base Score (numeric)
+- CVSS Vector String
+- CVSS Severity Label (Low/Medium/High/Critical)
+Source must be nvd.nist.gov
+```
+
+**Tool Call:**
+
+```
+mcp__perplexity__search({
+  query: [formatted query above],
+  force_model: false
+})
+```
+
+**Expected Response:**
+
+- CVSS Base Score: X.X
+- Vector: CVSS:3.1/AV:X/AC:X/PR:X/UI:X/S:X/C:X/I:X/A:X
+- Severity: Low|Medium|High|Critical
+- Source: https://nvd.nist.gov/vuln/detail/{cve_id}
+
+**Verification Logic:**
+
+```
+IF analyst_cvss == nvd_cvss THEN ✅ MATCH
+ELSE ❌ MISMATCH (Critical Discrepancy)
+  Impact: Priority assessment may be incorrect
+  Action: Correct CVSS score, recalculate priority
+```
+
+#### EPSS Score Verification
+
+**Query:**
+
+```
+What is the current EPSS exploitation probability score for {cve_id} from FIRST.org EPSS? Provide:
+- EPSS Score (0.00-1.00)
+- EPSS Percentile
+- Date of EPSS score
+Source must be first.org/epss
+```
+
+**Tool Call:**
+
+```
+mcp__perplexity__search({
+  query: [formatted query above],
+  force_model: false
+})
+```
+
+**Expected Response:**
+
+- EPSS Score: 0.XX
+- Percentile: XXth
+- Date: YYYY-MM-DD
+- Source: https://first.org/epss/cve/{cve_id}
+
+**Verification Logic:**
+
+```
+IF analyst_epss == first_epss THEN ✅ MATCH
+ELSE IF abs(analyst_epss - first_epss) < 0.01 THEN ✅ MATCH (rounding tolerance)
+ELSE ❌ MISMATCH (Significant Discrepancy)
+  Impact: Exploitation probability assessment may be incorrect
+  Action: Update EPSS score to current value
+```
+
+#### KEV Status Verification
+
+**Query:**
+
+```
+Is {cve_id} listed on the CISA Known Exploited Vulnerabilities (KEV) catalog? If yes, provide:
+- KEV Status (Listed or Not Listed)
+- date_added
+- due_date
+- required_action
+Source must be cisa.gov/known-exploited-vulnerabilities-catalog
+```
+
+**Tool Call:**
+
+```
+mcp__perplexity__search({
+  query: [formatted query above],
+  force_model: false
+})
+```
+
+**Expected Response:**
+
+- KEV Status: Listed | Not Listed
+- If Listed:
+  - date_added: YYYY-MM-DD
+  - due_date: YYYY-MM-DD
+  - required_action: "Apply vendor patches"
+- Source: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+
+**Verification Logic:**
+
+```
+IF analyst_kev == cisa_kev THEN ✅ MATCH
+ELSE ❌ MISMATCH (Significant/Critical Discrepancy)
+  IF cisa_kev == "Listed" AND analyst_kev == "Not Listed" THEN
+    Impact: Missing critical prioritization factor (elevates to P1/P2)
+    Action: Add KEV status, date_added, recalculate priority
+  IF cisa_kev == "Not Listed" AND analyst_kev == "Listed" THEN
+    Impact: False prioritization (incorrectly elevated)
+    Action: Correct KEV status, recalculate priority
+```
+
+#### Patch Availability Verification
+
+**Query:**
+
+```
+What is the patched version for {cve_id} according to {vendor} security advisory? Provide:
+- Affected versions
+- Patched version
+Source must be official {vendor} security site.
+```
+
+**Tool Call:**
+
+```
+mcp__perplexity__search({
+  query: [formatted query above],
+  force_model: false
+})
+```
+
+**Expected Response:**
+
+- Affected: Product X.X.X - X.X.X
+- Patched: X.X.X+
+- Source: https://{vendor official security site}
+
+**Verification Logic:**
+
+```
+IF analyst_patch == vendor_patch THEN ✅ MATCH
+ELSE ❌ MISMATCH (Significant Discrepancy)
+  Impact: Incorrect remediation guidance
+  Action: Correct patch version to vendor-stated version
+```
+
+### Step 4: Compare Claims and Document Discrepancies
+
+**Comparison Result Types:**
+
+- ✅ **MATCH:** Analyst claim matches authoritative source
+- ❌ **MISMATCH:** Analyst claim differs from authoritative source
+- ⚠️ **UNABLE TO VERIFY:** Cannot verify (source unavailable or conflicting)
+
+**Discrepancy Severity Classification:**
+
+**Critical Discrepancy:**
+
+- CVSS score difference > 2.0 points
+- CVSS severity label differs (e.g., High vs Critical)
+- KEV status incorrect (Listed vs Not Listed)
+- **Impact:** Priority assessment fundamentally wrong
+- **Action:** Reject enrichment, require correction
+
+**Significant Discrepancy:**
+
+- CVSS score difference 0.5-2.0 points
+- EPSS score difference > 0.10
+- Patch version incorrect
+- **Impact:** Quality and remediation guidance affected
+- **Action:** Mandatory correction before proceeding
+
+**Minor Discrepancy:**
+
+- CVSS score difference < 0.5 points
+- EPSS score difference < 0.10
+- Formatting differences (9.80 vs 9.8)
+- **Impact:** Minimal to none
+- **Action:** Optional cleanup
+
+**For Each Mismatch, Document:**
+
+```markdown
+### Severity: [Critical|Significant|Minor] Discrepancy: [Claim Name]
+
+**Analyst Claim:** [What analyst stated]
+**Authoritative Source:** [What authoritative source says]
+**Source URL:** [Authoritative source link]
+**Impact:** [How this affects enrichment quality/priority]
+**Recommended Action:** [Specific correction needed]
+```
+
+### Step 5: Calculate Accuracy Score
+
+**Accuracy Formula:**
+
+```
+Accuracy = (Matching Claims / Total Claims Verified) × 100%
+```
+
+**Do NOT count "Unable to Verify" as mismatches:**
+
+```
+Total Claims Verified = Matches + Mismatches
+(Excludes "Unable to Verify" claims)
+```
+
+**Accuracy Classifications:**
+
+- **95-100%: Excellent Accuracy**
+  - ✅ Approve enrichment - no corrections needed
+  - Action: Proceed with review, no fact-checking revisions required
+
+- **85-94%: Good Accuracy**
+  - ⚠️ Minor corrections recommended
+  - Action: Recommend analyst address discrepancies, but do not block ticket
+  - Re-review: Optional, at reviewer's discretion
+
+- **75-84%: Fair Accuracy**
+  - ⚠️ Significant corrections required
+  - Action: Analyst must address all discrepancies before ticket proceeds
+  - Re-review: Mandatory after corrections applied
+
+- **<75%: Poor Accuracy**
+  - ❌ Reject enrichment - complete rework required
+  - Action: Reject enrichment, request analyst re-research CVE from authoritative sources
+  - Re-review: Full re-review required after complete rework
+
+### Step 6: Generate Fact Verification Report
+
+**Report Structure:**
+
+```markdown
+# Fact Verification Report
+
+**CVE:** {cve_id}
+**Ticket:** {ticket_id}
+**Analyst:** {analyst_name}
+**Reviewer:** {reviewer_name}
+**Verification Date:** {timestamp}
+**Verification Mode:** [Critical Claims Only | Comprehensive]
+
+---
+
+## Verification Summary
+
+**Claims Verified:** {total_claims}
+**Matches:** {matches} ({match_percentage}%)
+**Discrepancies:** {discrepancies} ({discrepancy_percentage}%)
+**Unable to Verify:** {unknown}
+
+**Accuracy Score:** {accuracy_score}% ({accuracy_classification})
+
+**Overall Assessment:** {approval_status}
+**Recommended Action:** {action_required}
+
+---
+
+## Discrepancies Found
+
+{List all discrepancies with severity, organized by severity level}
+
+### 🔴 Critical Discrepancies
+
+{Critical discrepancies here}
+
+### 🟡 Significant Discrepancies
+
+{Significant discrepancies here}
+
+### 🔵 Minor Discrepancies
+
+{Minor discrepancies here}
+
+---
+
+## Verified Claims (✅ Accurate)
+
+{List all matching claims}
+
+---
+
+## Unable to Verify (⚠️)
+
+{List claims that couldn't be verified with reasons}
+
+---
+
+## Source Authority Hierarchy Used
+
+When conflicting information existed, prioritized:
+
+1. NIST NVD (nvd.nist.gov) - CVSS Scores
+2. CISA KEV (cisa.gov) - Exploitation Status
+3. FIRST EPSS (first.org/epss) - Exploitation Probability
+4. Vendor Security Advisories - Affected/Patched Versions
+5. Other Sources - Context only, not factual claims
+
+---
+
+## Next Steps
+
+{Based on accuracy score, provide specific next steps}
+```
+
+## Source Authority Hierarchy
+
+When conflicting information exists across sources, prioritize in this order:
+
+**1. NIST NVD (nvd.nist.gov) - CVSS Scores**
+
+- **Authoritative For:** CVSS base score, vector string, severity label
+- **When to Use:** Always use NVD as primary source for CVSS scoring
+- **When to Deviate:** If NVD data not yet available (very new CVE), document as "Pending NVD"
+
+**2. CISA KEV (cisa.gov) - Exploitation Status**
+
+- **Authoritative For:** Known exploited vulnerabilities, active exploitation confirmation
+- **When to Use:** KEV listing is definitive proof of active exploitation
+- **When to Deviate:** Never - if CVE is on KEV, it must be marked as exploited
+
+**3. FIRST EPSS (first.org/epss) - Exploitation Probability**
+
+- **Authoritative For:** Exploitation probability score (0.00-1.00), percentile ranking
+- **When to Use:** Always use FIRST.org for EPSS scores (updated daily)
+- **When to Deviate:** If EPSS not yet available for very new CVE, document as "EPSS pending"
+
+**4. Vendor Security Advisories - Affected/Patched Versions**
+
+- **Authoritative For:** Affected version ranges, patched versions, workarounds
+- **When to Use:** Vendor is authoritative for their own product versions
+- **When to Deviate:** If vendor advisory conflicts with NVD, document both and note discrepancy
+
+**5. Other Sources (security blogs, forums) - Context Only**
+
+- **Authoritative For:** None - use for context only, not factual claims
+- **When to Use:** Background information, attack vectors, exploit development
+- **When to Deviate:** Never use as authoritative source for factual claims
+
+**Handling Conflicts:**
+
+- If NVD shows CVSS 9.8 but vendor shows 7.5: Use NVD 9.8, note vendor discrepancy
+- If multiple sources conflict: Document all sources, prioritize by hierarchy above
+- If source is outdated: Check publication dates, use most recent from highest authority
+- If no authoritative source available: Mark claim as "⚠️ Unable to verify" (not discrepancy)
+
+## Error Handling
+
+**Perplexity MCP Unavailable:**
+
+- Skip fact verification entirely
+- Note in review: "⚠️ Fact verification skipped (Perplexity MCP unavailable)"
+- Recommend manual verification of critical claims
+- Continue with rest of review workflow
+
+**Query Timeout:**
+
+- Retry once with 60-second timeout
+- If still fails, skip that specific claim
+- Note: "⚠️ Unable to verify {claim} - query timeout"
+- Continue with remaining claims
+
+**Conflicting Sources:**
+
+- Note discrepancy: "⚠️ Conflicting information across sources"
+- Apply source authority hierarchy
+- Document all sources and their claims
+- Use highest-authority source as correct value
+
+**Information Not Available:**
+
+- Note: "⚠️ Unable to verify - information not yet available (new CVE)"
+- Do NOT mark as discrepancy
+- Do NOT count against accuracy score
+- Recommend re-verification when data available
+
+**Security Validation Failure:**
+
+- Fail safely: Skip verification for invalid inputs
+- Do NOT expose internal paths or system info
+- Log validation failure for audit
+- Note in report: "⚠️ Security validation failed for {input}"
+
+**API/Network Errors:**
+
+- Log error (sanitized, no credentials)
+- Skip failed query
+- Continue with remaining verifications
+- Note in report which claims couldn't be verified due to errors
+
+## Security Considerations
+
+**HTTPS Only:**
+
+- All external API calls must use HTTPS
+- Verify certificate validity
+- No HTTP fallback allowed
+
+**Request Timeouts:**
+
+- Set maximum 30-second timeout per query
+- Maximum 5-minute total execution time for task
+
+**No Credential Exposure:**
+
+- Never log or expose API keys in error messages
+- Never log or expose API keys in reports
+- Sanitize all error outputs
+
+**Response Validation:**
+
+- Validate response data structure before parsing
+- Sanitize all external data before including in markdown reports
+- Prevent XSS in generated reports
+
+**Rate Limiting & DoS Prevention:**
+
+- Maximum 1 query/second to each source
+- Maximum 10 queries per session (critical mode)
+- Maximum 20 queries per session (comprehensive mode)
+- Warn user if comprehensive mode exceeds limits
+
+**Audit Logging:**
+
+- Log all fact verification queries (sanitized)
+- Log all verification results
+- Log security validation failures
+- Include timestamp and user context
+
+## Example Usage
+
+**Critical Mode (Default):**
+
+```
+Input: CVE-2024-1234, ticket VULN-123, enrichment document
+Verifies: CVSS, EPSS, KEV, Patch (4 queries)
+Output: Fact verification report with accuracy score
+Time: ~10-15 seconds (with 1s delays between queries)
+```
+
+**Comprehensive Mode:**
+
+```
+Input: CVE-2024-1234, ticket VULN-123, enrichment document, comprehensive=true
+Verifies: All verifiable claims (up to 20 queries)
+Output: Detailed fact verification report with all claims checked
+Time: ~30-60 seconds (with 1s delays between queries)
+Warning: User notified if >20 queries required
+```
+
+## Integration with Review Workflow
+
+This task is called by Security Reviewer agent as part of the review workflow:
+
+```
+Security Reviewer Agent Workflow:
+1. *review-enrichment → Run 8 quality checklists (Story 2.2)
+2. *fact-check (OPTIONAL) → Verify critical claims (Story 2.5) ← THIS TASK
+3. *detect-bias → Detect cognitive biases (Story 2.4)
+4. *generate-report → Create review report (Story 2.6)
+```
+
+**When to Execute:**
+
+- User explicitly requests: `*fact-check {ticket-id}`
+- Reviewer suspects accuracy issues in enrichment
+- High-priority tickets (P1/P2) for extra validation
+- Optional for all other tickets
+
+**Integration Points:**
+
+- Input: Enrichment document from JIRA ticket
+- Output: Standalone report or integrated into security review report
+- Next Step: Continue to bias detection or final report generation
+==================== END: .bmad-1898-engineering/tasks/fact-verify-claims.md ====================
+
 ==================== START: .bmad-1898-engineering/tasks/create-doc.md ====================
 <!-- Powered by BMAD™ Core -->
 
@@ -377,10 +976,367 @@ The LLM will:
 - Offer to provide detailed analysis of any section, especially those with warnings or failures
 ==================== END: .bmad-1898-engineering/tasks/execute-checklist.md ====================
 
+==================== START: .bmad-1898-engineering/checklists/technical-accuracy-checklist.md ====================
+# Technical Accuracy Checklist
+
+## Vulnerability Identification
+
+- [ ] CVE ID format correct (CVE-YYYY-NNNNN)
+- [ ] CVE ID matches vulnerability described
+
+## CVSS Scoring
+
+- [ ] CVSS base score accurate (verified against NVD)
+- [ ] CVSS vector string present and valid
+- [ ] CVSS severity label matches score
+
+## EPSS Scoring
+
+- [ ] EPSS score accurate (verified against FIRST EPSS)
+- [ ] EPSS percentile provided
+
+## KEV Status
+
+- [ ] CISA KEV status verified (Listed/Not Listed)
+- [ ] If Listed: KEV date_added included
+
+## Affected Versions
+
+- [ ] Affected version ranges accurate (verified against vendor advisory)
+- [ ] Patched versions accurate
+==================== END: .bmad-1898-engineering/checklists/technical-accuracy-checklist.md ====================
+
+==================== START: .bmad-1898-engineering/checklists/completeness-checklist.md ====================
+# Completeness Checklist
+
+## Required Sections Present
+
+- [ ] Executive Summary (2-3 sentences)
+- [ ] Vulnerability Details (description, CWE)
+- [ ] Severity Metrics (CVSS, EPSS, KEV)
+- [ ] Affected Systems (products, versions)
+- [ ] Exploit Intelligence (PoC, active exploitation)
+- [ ] Business Impact Assessment
+- [ ] MITRE ATT&CK Mapping (tactics, techniques)
+- [ ] Remediation Guidance (patches, workarounds)
+- [ ] Compensating Controls (if applicable)
+- [ ] Priority Assessment (P1-P5 with rationale)
+- [ ] References (authoritative sources)
+- [ ] Enrichment Metadata (timestamp, agent version)
+==================== END: .bmad-1898-engineering/checklists/completeness-checklist.md ====================
+
+==================== START: .bmad-1898-engineering/checklists/actionability-checklist.md ====================
+# Actionability Checklist
+
+## Remediation Guidance
+
+- [ ] Specific patch versions provided
+- [ ] Installation/upgrade instructions clear
+- [ ] Workarounds provided if no patch available
+- [ ] Compensating controls specific and implementable
+
+## Priority and SLA
+
+- [ ] Priority level clearly stated (P1-P5)
+- [ ] SLA deadline calculated and provided
+- [ ] Rationale explains why this priority assigned
+
+## Next Steps
+
+- [ ] Clear action items for remediation team
+- [ ] Dependencies or prerequisites identified
+==================== END: .bmad-1898-engineering/checklists/actionability-checklist.md ====================
+
+==================== START: .bmad-1898-engineering/checklists/contextualization-checklist.md ====================
+# Contextualization Checklist
+
+## Business Context
+
+- [ ] Asset Criticality Rating considered
+- [ ] System exposure assessed (Internet/Internal/Isolated)
+- [ ] Business impact described (availability, confidentiality, integrity)
+- [ ] Affected business processes identified
+
+## Threat Context
+
+- [ ] Exploit availability researched
+- [ ] Active exploitation status verified
+- [ ] Attack complexity explained
+- [ ] Required privileges and user interaction noted
+
+## Environmental Context
+
+- [ ] Internal infrastructure considerations mentioned
+- [ ] Compliance implications noted (if applicable)
+==================== END: .bmad-1898-engineering/checklists/contextualization-checklist.md ====================
+
+==================== START: .bmad-1898-engineering/checklists/documentation-quality-checklist.md ====================
+# Documentation Quality Checklist
+
+## Structure and Clarity
+
+- [ ] Sections logically organized
+- [ ] Headers and formatting consistent
+- [ ] No spelling or grammar errors
+- [ ] Technical terminology used correctly
+
+## Readability
+
+- [ ] Executive summary understandable by non-technical stakeholders
+- [ ] Technical details appropriate for security engineers
+- [ ] Acronyms defined on first use
+- [ ] Jargon minimized or explained
+==================== END: .bmad-1898-engineering/checklists/documentation-quality-checklist.md ====================
+
+==================== START: .bmad-1898-engineering/checklists/attack-mapping-validation-checklist.md ====================
+# MITRE ATT&CK Validation Checklist
+
+- [ ] At least one tactic identified
+- [ ] At least one technique with T-number
+- [ ] Techniques appropriate for vulnerability type
+- [ ] Detection/defense recommendations included
+==================== END: .bmad-1898-engineering/checklists/attack-mapping-validation-checklist.md ====================
+
+==================== START: .bmad-1898-engineering/checklists/cognitive-bias-checklist.md ====================
+# Cognitive Bias Detection Checklist
+
+**Purpose:** Identify cognitive bias patterns in Security Analyst enrichment work to ensure objective, evidence-based vulnerability assessments.
+
+**Usage:** Run this checklist via `execute-checklist` task when reviewing Security Analyst enrichments. Check each bias type systematically.
+
+---
+
+## 1. Confirmation Bias
+
+**Definition:** Seeking or interpreting evidence to confirm pre-existing beliefs while dismissing contradicting evidence.
+
+**Detection Questions:**
+
+- [ ] Does the analysis consider evidence that contradicts the initial severity assessment?
+- [ ] Are alternate interpretations or scenarios considered?
+- [ ] Does the analysis cherry-pick data supporting high/low severity?
+- [ ] Are limitations or uncertainties acknowledged?
+
+**Red Flags:**
+
+- Only citing sources that confirm high severity
+- Ignoring low EPSS score when CVSS is high
+- Dismissing lack of exploits without investigation
+- Overstating exploitability without evidence
+
+**Example:**
+
+❌ **Bad (Confirmation Bias Present):**
+"CVSS is 9.8, so this is critical. Active exploitation is likely."
+(Ignores EPSS 0.05, KEV Not Listed, No PoC available)
+
+✅ **Good (Balanced Analysis):**
+"CVSS is 9.8 (critical severity), but EPSS is 0.05 (very low exploitation probability), KEV Not Listed, and no public exploits found. Priority: P3 due to low exploitability."
+
+---
+
+## 2. Anchoring Bias
+
+**Definition:** Over-relying on the first piece of information encountered (the "anchor") when making decisions.
+
+**Detection Questions:**
+
+- [ ] Is priority based on multiple factors, not just CVSS?
+- [ ] Does analysis consider EPSS, KEV, ACR, and Exposure equally?
+- [ ] Is CVSS score allowed to dominate priority assessment?
+- [ ] Are mitigating factors given appropriate weight?
+
+**Red Flags:**
+
+- Priority matches CVSS severity exactly (High CVSS → High Priority) without considering other factors
+- Ignoring low EPSS or lack of KEV listing
+- Dismissing effective compensating controls
+
+**Example:**
+
+❌ **Bad (Anchoring Bias Present):**
+"CVSS 8.5 (High) → Priority P2 (High)"
+(Ignores low EPSS, internal system, no exploits, effective WAF)
+
+✅ **Good (Multi-Factor Assessment):**
+"CVSS 8.5 (High), but EPSS 0.15 (low), Internal system, No exploits, WAF provides strong compensating control. Priority: P4."
+
+---
+
+## 3. Availability Heuristic
+
+**Definition:** Overestimating the likelihood or importance of events that are easily recalled, often because they are recent or emotionally impactful.
+
+**Detection Questions:**
+
+- [ ] Is the analysis influenced by recent high-profile breaches?
+- [ ] Does the enrichment mention recent incidents without relevance?
+- [ ] Is risk assessment data-driven (EPSS, KEV) vs. emotion-driven?
+- [ ] Are rare but memorable events given disproportionate weight?
+
+**Red Flags:**
+
+- Referencing Log4Shell or SolarWinds without connection to current CVE
+- Elevating priority because vulnerability "sounds like" recent breach
+- Using phrases like "could be the next Log4Shell"
+
+**Example:**
+
+❌ **Bad (Availability Heuristic Present):**
+"This is an Apache vulnerability like Log4Shell. Could be catastrophic."
+(CVE-2024-XXXX is a low-severity DoS, unrelated to Log4Shell RCE)
+
+✅ **Good (Data-Driven Assessment):**
+"Apache Commons DoS (CVSS 5.3). Unlike Log4Shell RCE, this is a denial-of-service with local attack vector. Priority: P4."
+
+---
+
+## 4. Overconfidence Bias
+
+**Definition:** Overestimating the accuracy of one's assessments and failing to acknowledge uncertainty or incomplete information.
+
+**Detection Questions:**
+
+- [ ] Does analysis acknowledge missing or uncertain information?
+- [ ] Are absolute statements avoided when data is incomplete?
+- [ ] Is uncertainty explicitly noted (e.g., "EPSS not yet available")?
+- [ ] Are recommendations appropriately hedged when information limited?
+
+**Red Flags:**
+
+- Definitive statements without sources ("This is definitely exploited in the wild")
+- No mention of information gaps
+- Ignoring "Insufficient Information" from Perplexity
+
+**Example:**
+
+❌ **Bad (Overconfidence Bias Present):**
+"This vulnerability is actively exploited. Priority: P1."
+(No KEV listing, no EPSS, no exploit evidence cited)
+
+✅ **Good (Uncertainty Acknowledged):**
+"⚠️ Exploit status uncertain: No KEV listing, EPSS not yet available (new CVE). Recommend conservative P2 priority until more intel available."
+
+---
+
+## 5. Recency Bias
+
+**Definition:** Giving disproportionate weight to recent events or information while undervaluing historical patterns or persistent risks.
+
+**Detection Questions:**
+
+- [ ] Is recent CVE disclosure date affecting priority without rationale?
+- [ ] Are older CVEs dismissed as "too old" despite ongoing risk?
+- [ ] Is priority inflated simply because CVE is new?
+- [ ] Are persistent vulnerabilities given appropriate attention?
+
+**Red Flags:**
+
+- Prioritizing new CVE (2024) over older CVE (2022) with higher EPSS/KEV
+- Assuming new = more dangerous
+- Ignoring that old vulnerabilities often have higher exploitation rates
+
+**Example:**
+
+❌ **Bad (Recency Bias Present):**
+"CVE-2024-XXXX disclosed yesterday. High priority due to recency."
+(CVSS 6.5, EPSS 0.10, No exploits vs. older CVE-2022-YYYY: CVSS 8.0, KEV Listed, Active Exploitation)
+
+✅ **Good (Age-Independent Assessment):**
+"CVE-2024-XXXX is recent but CVSS 6.5, EPSS 0.10, no exploits. Priority: P3. Note: Older CVE-2022-YYYY (KEV Listed, active exploitation) remains higher priority (P1)."
+
+---
+
+## Debiasing Strategies
+
+**Purpose:** Provide corrective techniques to mitigate detected biases in future analysis.
+
+### General Debiasing Approach
+
+1. **Awareness:** Recognize bias exists
+2. **Systematic Process:** Follow checklist, don't skip steps
+3. **Consider Alternatives:** Actively seek contradicting evidence
+4. **Quantitative Data:** Rely on CVSS, EPSS, KEV scores vs. intuition
+5. **Peer Review:** Second opinion reduces individual bias
+
+### Specific Mitigation Strategies
+
+#### Counter Confirmation Bias
+
+✅ **Devil's Advocate:** Actively argue for opposite conclusion
+✅ **Pre-Mortem:** "If this assessment is wrong, why would it be wrong?"
+✅ **Contradicting Evidence:** Explicitly list evidence against your hypothesis
+
+#### Counter Anchoring Bias
+
+✅ **Multi-Factor Checklist:** Evaluate CVSS, EPSS, KEV, ACR, Exposure independently
+✅ **Blind Assessment:** Assess EPSS before seeing CVSS
+✅ **Weighted Scoring:** Use algorithmic priority calculation
+
+#### Counter Availability Heuristic
+
+✅ **Base Rate Awareness:** Check EPSS for actual exploitation probability
+✅ **Recent Events Log:** Maintain awareness of current bias triggers (Log4Shell, etc.)
+✅ **Statistical Reasoning:** "What does the data say?" vs. "What do I remember?"
+
+#### Counter Overconfidence
+
+✅ **Confidence Calibration:** "How certain am I? What could I be wrong about?"
+✅ **Uncertainty Acknowledgment:** Explicitly state information gaps
+✅ **Verification:** Fact-check critical claims with authoritative sources
+
+#### Counter Recency Bias
+
+✅ **Historical Context:** Review older CVEs in same product
+✅ **Trend Analysis:** Are new CVEs actually more dangerous?
+✅ **Age-Independent Assessment:** Assess risk factors regardless of CVE age
+
+---
+
+## Checklist Execution Summary
+
+**After completing all bias checks above, document findings:**
+
+### Detected Biases
+
+- [ ] List each bias type detected with specific evidence (line numbers, quotes)
+- [ ] Provide severity assessment (Minor, Moderate, Severe)
+
+### Recommendations
+
+- [ ] Provide specific debiasing strategy for each detected bias
+- [ ] Suggest alternative analysis or additional evidence needed
+- [ ] Recommend revision areas in enrichment
+
+### Overall Assessment
+
+- [ ] Cognitive bias level: None / Minor / Moderate / Severe
+- [ ] Pass/Fail: Does enrichment require revision due to bias?
+
+---
+
+**References:**
+
+- Story 2.2: Systematic Quality Evaluation (Cognitive Bias Check dimension)
+- Story 4.2: Cognitive Bias Patterns Guide (comprehensive knowledge base)
+- Story 1.7: Multi-Factor Priority Assessment (P1-P5 priority framework)
+==================== END: .bmad-1898-engineering/checklists/cognitive-bias-checklist.md ====================
+
+==================== START: .bmad-1898-engineering/checklists/source-citation-checklist.md ====================
+# Source Citation Checklist
+
+- [ ] All factual claims have source citations
+- [ ] Sources are authoritative (NVD, CISA, vendor)
+- [ ] URLs valid and accessible
+- [ ] Publication dates included
+- [ ] No reliance on unverified sources (blogs, forums)
+==================== END: .bmad-1898-engineering/checklists/source-citation-checklist.md ====================
+
 ==================== START: .bmad-1898-engineering/data/bmad-kb.md ====================
 # BMAD-1898 Engineering Expansion Pack Knowledge Base
 
 ## Table of Contents
+
 1. Introduction
 2. Vulnerability Management Landscape
 3. Frameworks and Standards
@@ -395,6 +1351,7 @@ The LLM will:
 BMAD-1898 is an AI-assisted security vulnerability enrichment and quality assurance expansion pack for the BMAD Method™ framework. It addresses the challenge of 50,000+ annual CVE disclosures by enabling analysts to enrich vulnerability tickets 90% faster while maintaining enterprise-grade quality through systematic peer review.
 
 **Key Components:**
+
 - Security Analyst Agent: AI-assisted enrichment
 - Security Reviewer Agent: Systematic QA review
 - 8 Quality Dimension Checklists
@@ -407,21 +1364,25 @@ BMAD-1898 is an AI-assisted security vulnerability enrichment and quality assura
 ### Current Challenge (2025)
 
 **CVE Volume (Source: NIST NVD historical trends, verify during implementation):**
+
 - 2024: 43,000+ CVE disclosures (approximate)
 - 2025: 50,000+ projected (18% increase estimate)
 - 2030: 75,000+ estimated (trend extrapolation)
 
 **Alert Fatigue (Source: Industry benchmarks - verify current statistics during implementation):**
+
 - 78% of security alerts go uninvestigated (industry estimate)
 - Average analyst processes 10-20 alerts/day manually (typical capacity)
 - With AI assistance: 50-100 alerts/day possible (performance goal)
 
 **Traditional CVSS-Only Approach:**
+
 - Problem: CVSS only measures severity, not exploitability
 - Result: Patching theoretical risks while missing genuine threats
 - Example: CVSS 9.8 vulnerability with EPSS 0.02 (low exploitation probability)
 
 **BMAD-1898 Solution:**
+
 - Multi-factor risk assessment (CVSS + EPSS + KEV + Business Context)
 - AI-assisted research (10-15 min vs. hours - performance target)
 - Systematic QA (60-70% more defects found - based on dual-review effectiveness studies)
@@ -437,11 +1398,13 @@ BMAD-1898 is an AI-assisted security vulnerability enrichment and quality assura
 **URL:** https://nvd.nist.gov
 
 **CVE ID Format:** CVE-YYYY-NNNNN
+
 - YYYY: Year of disclosure
 - NNNNN: 4-7 digit identifier
 - Example: CVE-2024-1234
 
 **Information Provided:**
+
 - CVE description
 - CVSS v3.1 base score and vector
 - Affected products and versions
@@ -459,6 +1422,7 @@ BMAD-1898 is an AI-assisted security vulnerability enrichment and quality assura
 **Version:** CVSS v3.1 (current standard)
 
 **Base Score Metrics:**
+
 - **AV (Attack Vector):** Network/Adjacent/Local/Physical
 - **AC (Attack Complexity):** Low/High
 - **PR (Privileges Required):** None/Low/High
@@ -472,6 +1436,7 @@ BMAD-1898 is an AI-assisted security vulnerability enrichment and quality assura
 CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 
 **Severity Ratings:**
+
 - 0.0: None
 - 0.1-3.9: Low
 - 4.0-6.9: Medium
@@ -492,20 +1457,30 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 
 **Percentile:** Ranks vulnerability against all CVEs
 
-**Interpretation:**
+**Understanding EPSS Scores:**
+
+EPSS provides two values:
+
+- **Score (0.0-1.0)**: Probability of exploitation (e.g., 0.85 = 85% probability)
+- **Percentile**: Ranking against all CVEs (e.g., 85th percentile = scores higher than 85% of CVEs)
+
+**BMAD-1898 Interpretation Guidance:**
+
 - 0.00-0.25: Low exploitation probability
 - 0.26-0.49: Moderate exploitation probability
 - 0.50-0.75: High exploitation probability
 - 0.76-1.00: Very high exploitation probability
 
 **Example:**
-- EPSS Score: 0.85 (85th percentile)
-- Meaning: 85% probability of exploitation in next 30 days
-- Context: In top 15% of most exploitable vulnerabilities
+
+- CVE-2024-5678: EPSS Score 0.85, Percentile 92.5
+- Meaning: 85% probability of exploitation within 30 days
+- Context: Scores higher than 92.5% of all CVEs (top 7.5% most likely to be exploited)
 
 **Update Frequency:** Daily
 
 **Why EPSS Matters:**
+
 - Many CVSS 9.0+ vulnerabilities have EPSS <0.10 (rarely exploited)
 - Some CVSS 6.0 vulnerabilities have EPSS >0.80 (frequently exploited)
 - EPSS + CVSS provides complete risk picture
@@ -519,11 +1494,13 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 **URL:** https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 
 **Listing Criteria:**
+
 - Assigned CVE ID
 - Reliable evidence of active exploitation
 - Clear remediation action available
 
 **KEV Fields:**
+
 - CVE ID
 - Date Added to KEV
 - Due Date (Federal agencies must remediate by this date)
@@ -532,11 +1509,13 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 - Known Ransomware Campaign Use
 
 **Why KEV Matters:**
+
 - CISA observes active exploitation
 - Federal mandates require KEV vulnerabilities patched within timelines
 - Strong signal for prioritization (should be P1 or P2)
 
 **Example:**
+
 - CVE-2024-1234 added to KEV on 2024-11-01
 - Due Date: 2024-11-22 (21 days)
 - Required Action: Apply updates per vendor instructions
@@ -548,12 +1527,14 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 **Purpose:** Business impact classification for systems
 
 **Ratings:**
+
 - **Critical:** Mission-critical systems (production databases, payment systems, authentication servers)
 - **High:** Important business systems (CRM, ERP, customer portals)
 - **Medium:** Standard business systems (internal tools, reporting)
 - **Low:** Development, test, or non-production systems
 
 **Assessment Factors:**
+
 - Business process dependency
 - Data sensitivity
 - Downtime impact
@@ -561,6 +1542,7 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 - Customer impact
 
 **Example:**
+
 - Production payment processing server: Critical
 - Internal wiki: Medium
 - Dev sandbox: Low
@@ -584,29 +1566,34 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 
 ### Priority Levels (P1-P5)
 
-**Note:** SLA timelines below represent industry-standard practices. Organizations should adjust based on their specific risk tolerance and operational capabilities.
+**Note:** The priority criteria and SLA timelines below are BMAD-1898 recommendations based on industry-standard practices. Organizations should adjust thresholds, factor weights, and timelines based on their specific risk tolerance and operational capabilities.
 
 **P1 - Critical (24 hour SLA):**
+
 - Criteria: CVSS ≥9.0 + EPSS ≥0.75 + KEV Listed, OR Active Exploitation + Internet-Facing + Critical ACR
 - Example: RCE in internet-facing production database with active exploitation
 - Action: Emergency patching, war room if needed
 
 **P2 - High (7 day SLA):**
+
 - Criteria: CVSS ≥7.0 + EPSS ≥0.50 + (KEV Listed OR Public Exploit), OR High ACR + Internet-Facing
 - Example: High severity with public PoC affecting important systems
 - Action: Urgent patching within next sprint
 
 **P3 - Medium (30 day SLA):**
+
 - Criteria: CVSS 4.0-6.9 + Moderate EPSS + Internal Exposure, OR Medium ACR + No Active Exploitation
 - Example: Moderate severity affecting internal systems with no known exploits
 - Action: Planned patching in regular maintenance window
 
 **P4 - Low (90 day SLA):**
+
 - Criteria: CVSS <4.0 OR Low ACR + No Exploit + Isolated System
 - Example: Low severity on development systems with theoretical risk
 - Action: Routine patching during scheduled maintenance
 
 **P5 - Informational (No SLA):**
+
 - Criteria: CVSS <2.0 + No Exploit + Test Environment
 - Example: Theoretical vulnerabilities with minimal business impact
 - Action: Awareness only, optional patching
@@ -620,6 +1607,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **When:** Vendor patch available
 
 **Actions:**
+
 - Identify patched version
 - Review patch release notes
 - Test in non-production
@@ -635,6 +1623,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **When:** No patch available yet, vendor provides workaround
 
 **Actions:**
+
 - Implement vendor-recommended workaround
 - Document workaround steps
 - Monitor for patch availability
@@ -649,6 +1638,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **When:** Patching delayed, need to reduce risk
 
 **Actions:**
+
 - WAF rules to block exploitation attempts
 - Network segmentation to limit exposure
 - IDS/IPS signatures to detect exploitation
@@ -664,6 +1654,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **When:** Critical vulnerability, no patch, high exploitation risk
 
 **Actions:**
+
 - Remove system from network
 - Restrict access to trusted users only
 - Implement compensating controls
@@ -676,6 +1667,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **When:** Remediation cost exceeds risk, or system decommissioning soon
 
 **Actions:**
+
 - Document risk acceptance decision
 - Obtain management approval
 - Implement monitoring
@@ -691,18 +1683,22 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **Implementation Note:** All URLs should be verified as accessible during implementation. If any URL has changed, update to the current authoritative source.
 
 **NIST NVD:**
+
 - URL: https://nvd.nist.gov
 - Purpose: CVE details, CVSS scores
 
 **CISA KEV:**
+
 - URL: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 - Purpose: Known exploited vulnerabilities
 
 **FIRST EPSS:**
+
 - URL: https://www.first.org/epss
 - Purpose: Exploitation probability scores
 
 **MITRE ATT&CK:**
+
 - URL: https://attack.mitre.org
 - Purpose: Adversary tactics and techniques
 
@@ -722,6 +1718,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 ## Introduction
 
 Cognitive biases are systematic errors in thinking that affect judgments and decisions. In security analysis, biases can lead to:
+
 - Incorrect priority assessments
 - Missed critical vulnerabilities
 - Over-reaction to low-risk issues
@@ -734,9 +1731,11 @@ This guide helps security analysts recognize and mitigate 5 common biases.
 ## 1. Confirmation Bias
 
 ### Definition
+
 Seeking, interpreting, and remembering information that confirms pre-existing beliefs while dismissing contradicting evidence.
 
 ### Psychology
+
 Our brains naturally seek information that supports what we already think. Once we form an initial hypothesis ("This is critical"), we subconsciously look for evidence supporting that conclusion and ignore evidence against it.
 
 ### Security Analysis Examples
@@ -744,6 +1743,7 @@ Our brains naturally seek information that supports what we already think. Once 
 **Example 1: CVSS-Only Assessment**
 ❌ **Biased Analysis:**
 "The CVSS score is 9.8 (Critical), so this is definitely high priority. I found articles about similar vulnerabilities being exploited, so this confirms it's critical."
+
 - Ignores: EPSS 0.05 (very low exploitation probability)
 - Ignores: KEV Not Listed (no active exploitation observed)
 - Ignores: No public exploits available
@@ -754,6 +1754,7 @@ Our brains naturally seek information that supports what we already think. Once 
 **Example 2: Cherry-Picking Sources**
 ❌ **Biased Analysis:**
 "I found 3 security blogs saying this is critical, so it must be."
+
 - Ignores: Official NVD assessment rates it Medium
 - Ignores: Vendor advisory says low risk
 - Selected only sources confirming initial belief
@@ -762,6 +1763,7 @@ Our brains naturally seek information that supports what we already think. Once 
 "Security blogs rate this as critical, but official NVD and vendor advisory rate it Medium/Low. Prioritize authoritative sources (NVD, vendor) over secondary sources (blogs). Further investigation needed."
 
 ### Impact on Vulnerability Assessment
+
 - Over-prioritization of some vulnerabilities
 - Under-prioritization of others
 - Inconsistent analysis across tickets
@@ -771,6 +1773,7 @@ Our brains naturally seek information that supports what we already think. Once 
 
 **1. Devil's Advocate:**
 After initial assessment, actively argue the opposite conclusion.
+
 - "Why might this be lower priority than I think?"
 - "What evidence contradicts my assessment?"
 
@@ -778,6 +1781,7 @@ After initial assessment, actively argue the opposite conclusion.
 "If this priority assessment turns out to be wrong, what would be the reason?"
 
 **3. Explicitly Seek Contradicting Evidence:**
+
 - "What data suggests this is NOT as critical?"
 - "Are there mitigating factors I'm overlooking?"
 
@@ -789,9 +1793,11 @@ BMAD-1898 checklists force evaluation of all factors, not just confirming ones.
 ## 2. Anchoring Bias
 
 ### Definition
+
 Over-relying on the first piece of information encountered (the "anchor") when making decisions.
 
 ### Psychology
+
 The first number or fact we see disproportionately influences our subsequent judgments, even when other equally important information is presented.
 
 ### Security Analysis Examples
@@ -799,6 +1805,7 @@ The first number or fact we see disproportionately influences our subsequent jud
 **Example 1: CVSS Anchoring**
 ❌ **Biased Analysis:**
 "CVSS is 8.5 (High), so priority should be P2 (High)."
+
 - Anchored on CVSS score
 - Ignores EPSS 0.10 (low exploitation probability)
 - Ignores Internal system with no internet exposure
@@ -810,6 +1817,7 @@ The first number or fact we see disproportionately influences our subsequent jud
 **Example 2: Initial Severity Report Anchoring**
 ❌ **Biased Analysis:**
 "Scanner initially flagged this as Critical, so I'm starting with that assumption."
+
 - Anchored on scanner's initial classification
 - Fails to independently assess using CVSS + EPSS + KEV
 - Scanner may have false positive
@@ -818,6 +1826,7 @@ The first number or fact we see disproportionately influences our subsequent jud
 "Scanner flagged as Critical. Let me independently verify: CVSS 6.5 (Medium), EPSS 0.20 (low), KEV Not Listed. Scanner may have over-estimated. Priority: P3."
 
 ### Impact on Vulnerability Assessment
+
 - Priority matching CVSS severity exactly
 - Ignoring mitigating factors
 - Inconsistent priority framework application
@@ -841,9 +1850,11 @@ Use BMAD-1898 priority algorithm to weight all factors mathematically.
 ## 3. Availability Heuristic
 
 ### Definition
+
 Overestimating the likelihood or importance of events that are easily recalled, often because they are recent, emotionally impactful, or widely publicized.
 
 ### Psychology
+
 Our brains assess risk based on how easily we can recall examples. Recent high-profile breaches (Log4Shell, SolarWinds) make similar vulnerabilities feel more dangerous than data suggests.
 
 ### Security Analysis Examples
@@ -851,6 +1862,7 @@ Our brains assess risk based on how easily we can recall examples. Recent high-p
 **Example 1: Log4Shell Influence**
 ❌ **Biased Analysis:**
 "This is an Apache library vulnerability. It could be the next Log4Shell! Priority P1."
+
 - CVE-2024-XXXX: Apache Commons Text DoS (CVSS 5.3, Local attack vector)
 - Log4Shell: Apache Log4j RCE (CVSS 10.0, Remote)
 - No similarity beyond "Apache"
@@ -861,6 +1873,7 @@ Our brains assess risk based on how easily we can recall examples. Recent high-p
 **Example 2: Recent Breach Over-Reaction**
 ❌ **Biased Analysis:**
 "We just had a breach involving SQL injection last month. This SQL injection CVE is definitely critical."
+
 - Influenced by recent breach emotional impact
 - Current CVE: CVSS 4.5, requires authentication, low privilege escalation
 - Not comparable to previous breach (CVSS 9.8, unauthenticated RCE)
@@ -869,6 +1882,7 @@ Our brains assess risk based on how easily we can recall examples. Recent high-p
 "SQL injection (CVSS 4.5), requires auth, low priv escalation. Previous breach was CVSS 9.8 unauthenticated RCE. These are different severity levels. Priority: P3."
 
 ### Impact on Vulnerability Assessment
+
 - Over-prioritizing vulnerabilities similar to recent news
 - Under-prioritizing persistent threats
 - Emotional vs. data-driven decisions
@@ -893,9 +1907,11 @@ Ask: "Am I influenced by recent news rather than data?"
 ## 4. Overconfidence Bias
 
 ### Definition
+
 Overestimating the accuracy of one's assessments and failing to acknowledge uncertainty or incomplete information.
 
 ### Psychology
+
 We tend to be more confident in our judgments than accuracy warrants. Experts are particularly susceptible because expertise increases confidence faster than accuracy.
 
 ### Security Analysis Examples
@@ -903,6 +1919,7 @@ We tend to be more confident in our judgments than accuracy warrants. Experts ar
 **Example 1: Definitive Statements Without Evidence**
 ❌ **Biased Analysis:**
 "This vulnerability is definitely being actively exploited in the wild. Priority P1."
+
 - No KEV listing
 - No EPSS data (new CVE)
 - No exploit intelligence cited
@@ -914,6 +1931,7 @@ We tend to be more confident in our judgments than accuracy warrants. Experts ar
 **Example 2: Ignoring Information Gaps**
 ❌ **Biased Analysis:**
 "I've done the research. This is definitely P2."
+
 - EPSS data unavailable (didn't mention)
 - Vendor advisory not yet published (didn't mention)
 - Didn't acknowledge uncertainty
@@ -922,6 +1940,7 @@ We tend to be more confident in our judgments than accuracy warrants. Experts ar
 "Based on CVSS 8.0 and system criticality, preliminary assessment is P2. Note: EPSS not yet available, vendor advisory pending. Will update assessment when additional data available."
 
 ### Impact on Vulnerability Assessment
+
 - Missing critical information
 - No acknowledgment of uncertainty
 - Overconfident incorrect priority assessments
@@ -945,9 +1964,11 @@ Fact-check critical claims with authoritative sources before stating as fact.
 ## 5. Recency Bias
 
 ### Definition
+
 Giving disproportionate weight to recent events or information while undervaluing historical patterns or persistent risks.
 
 ### Psychology
+
 Recent information is more vivid and accessible in memory, leading us to overweight it compared to older (but potentially more important) information.
 
 ### Security Analysis Examples
@@ -955,6 +1976,7 @@ Recent information is more vivid and accessible in memory, leading us to overwei
 **Example 1: New CVE Over-Prioritization**
 ❌ **Biased Analysis:**
 "CVE-2024-XXXX was disclosed yesterday. High priority due to recency."
+
 - CVE-2024-XXXX: CVSS 6.5, EPSS 0.10, No exploits
 - CVE-2022-YYYY (older): CVSS 8.0, KEV Listed, Active Exploitation, EPSS 0.90
 - Prioritized new CVE over older, more dangerous CVE
@@ -965,6 +1987,7 @@ Recent information is more vivid and accessible in memory, leading us to overwei
 **Example 2: Dismissing Older CVEs**
 ❌ **Biased Analysis:**
 "CVE-2022-1234 is from 2022, so it's probably not a big deal anymore."
+
 - Assumption: Old = less dangerous
 - Reality: CVE-2022-1234 added to KEV in 2024 (recent active exploitation)
 - Older CVEs often have higher EPSS (more time for exploits to develop)
@@ -973,6 +1996,7 @@ Recent information is more vivid and accessible in memory, leading us to overwei
 "CVE-2022-1234 (2022 disclosure) added to CISA KEV in 2024, indicating recent active exploitation. EPSS 0.88. Age does not reduce risk. Priority: P1."
 
 ### Impact on Vulnerability Assessment
+
 - New CVEs over-prioritized
 - Persistent threats under-prioritized
 - Poor resource allocation
@@ -1000,47 +2024,57 @@ Maintain list of older but still-dangerous CVEs for comparison.
 Review your last 10 vulnerability enrichments and ask:
 
 **Confirmation Bias Check:**
+
 - [ ] Did I consider evidence contradicting my initial assessment?
 - [ ] Did I seek out opposing viewpoints?
 - [ ] Did I acknowledge limitations or uncertainties?
 
 **Anchoring Bias Check:**
+
 - [ ] Did my priority exactly match CVSS severity?
 - [ ] Did I weight all factors (CVSS, EPSS, KEV, ACR, Exposure) equally?
 - [ ] Did I question my initial impression?
 
 **Availability Heuristic Check:**
+
 - [ ] Did I reference recent breaches or news events?
 - [ ] Did I compare to memorable incidents without data?
 - [ ] Did I rely on EPSS/KEV data vs. recollection?
 
 **Overconfidence Check:**
+
 - [ ] Did I acknowledge information gaps or uncertainties?
 - [ ] Did I use hedging language when appropriate?
 - [ ] Did I verify critical claims against authoritative sources?
 
 **Recency Bias Check:**
+
 - [ ] Did I prioritize new CVEs over older CVEs without rationale?
 - [ ] Did I consider persistent threats alongside new ones?
 - [ ] Did I assess CVE age-independently?
 
 ### Scoring
+
 - 0-5 Yes answers: High bias risk - Focus on debiasing techniques
 - 6-10 Yes answers: Moderate bias awareness - Continue improvement
 - 11-15 Yes answers: Good bias mitigation - Maintain practices
 
 ### Action Plan
+
 **If High Bias Risk:**
+
 - Use BMAD-1898 checklists for every analysis
 - Fact-check critical claims using Perplexity
 - Request peer review for all P1/P2 priorities
 
 **If Moderate:**
+
 - Continue checklist use
 - Periodic self-assessment
 - Peer review for P1/P2
 
 **If Good:**
+
 - Maintain current practices
 - Mentor others on bias awareness
 - Periodic refresher

@@ -204,12 +204,14 @@ Classify captured content into one of 6 semantic types using pattern matching an
 ### Step 2: Check for Quote Patterns
 
 Look for indicators that the content is a **quote**:
+
 - Contains quoted text in quotation marks ("...", '...', or smart quotes)
 - Has attribution keywords: "said", "according to", "states", "argues", "writes"
 - Has citation markers: author name followed by quoted text
 - Contains source attribution (e.g., "- Author Name")
 
 **Pattern Match Score:**
+
 - Has quotation marks: +0.3
 - Has attribution keywords: +0.3
 - Has source/author attribution: +0.2
@@ -217,12 +219,14 @@ Look for indicators that the content is a **quote**:
 ### Step 3: Check for Concept Patterns
 
 Look for indicators that the content is a **concept** definition/explanation:
+
 - Contains definition keywords: "is defined as", "means", "refers to", "is a type of"
 - Has explanatory structure: "X is Y that Z"
 - Uses clarifying language: "in other words", "specifically", "that is"
 - Explains an idea, principle, or methodology
 
 **Pattern Match Score:**
+
 - Has definition keywords: +0.3
 - Has explanatory structure: +0.3
 - Uses clarifying language: +0.2
@@ -230,12 +234,14 @@ Look for indicators that the content is a **concept** definition/explanation:
 ### Step 4: Check for Reference Patterns
 
 Look for indicators that the content is a **reference** to external resources:
+
 - Contains URLs or web links (http://, https://)
 - Has "see also" language: "see", "read more", "check out", "visit"
 - Contains external citations or bibliography entries
 - Primarily link-heavy with minimal original content
 
 **Pattern Match Score:**
+
 - Contains URLs: +0.4
 - Has "see/read more" language: +0.2
 - Multiple links (3+): +0.2
@@ -243,12 +249,14 @@ Look for indicators that the content is a **reference** to external resources:
 ### Step 5: Check for Reflection Patterns
 
 Look for indicators that the content is a **reflection** (personal thought/opinion):
+
 - Uses first-person language: "I think", "I feel", "I believe", "in my view"
 - Contains subjective opinions or personal interpretations
 - Expresses personal insights or perspectives
 - Uses opinion markers: "seems to me", "I wonder", "my sense is"
 
 **Pattern Match Score:**
+
 - Has first-person pronouns (I, my, me): +0.3
 - Has opinion markers: +0.3
 - Uses subjective language: +0.2
@@ -256,12 +264,14 @@ Look for indicators that the content is a **reflection** (personal thought/opini
 ### Step 6: Check for Question Patterns
 
 Look for indicators that the content is a **question**:
+
 - Ends with question mark (?)
 - Contains investigative keywords: "why", "how", "what if", "when", "where", "who"
 - Has interrogative structure
 - Expresses inquiry or seeks understanding
 
 **Pattern Match Score:**
+
 - Ends with question mark: +0.5
 - Has investigative keywords: +0.2
 - Multiple questions: +0.1
@@ -269,12 +279,14 @@ Look for indicators that the content is a **question**:
 ### Step 7: Check for Observation Patterns
 
 Look for indicators that the content is an **observation** (factual/descriptive):
+
 - Uses observation keywords: "I noticed", "I saw", "observed that", "it appears"
 - Describes factual, descriptive statements
 - Reports what was seen or noticed without heavy interpretation
 - Uses descriptive language focused on "what is" rather than "what should be"
 
 **Pattern Match Score:**
+
 - Has observation keywords: +0.3
 - Uses descriptive structure: +0.2
 - Factual/neutral tone: +0.2
@@ -318,11 +330,13 @@ Calculate final confidence score using the following algorithm:
 ### Example 1: Quote Classification
 
 **Input:**
+
 ```
 raw_content: "According to Cal Newport in Deep Work, 'Deep work is the ability to focus without distraction on a cognitively demanding task. It's a skill that allows you to quickly master complicated information and produce better results in less time.'"
 ```
 
 **Analysis:**
+
 - Has quotation marks: ✓ (+0.3)
 - Has attribution: "According to Cal Newport" ✓ (+0.3)
 - Has source: "in Deep Work" ✓ (+0.2)
@@ -330,23 +344,31 @@ raw_content: "According to Cal Newport in Deep Work, 'Deep work is the ability t
 - No ambiguity (single clear type)
 
 **Output:**
+
 ```json
 {
   "content_type": "quote",
   "confidence": 0.95,
   "reasoning": "Content contains attributed quoted text from Cal Newport with clear source citation",
-  "matched_patterns": ["quotation marks", "attribution keyword: 'According to'", "source: 'Deep Work'", "author name"]
+  "matched_patterns": [
+    "quotation marks",
+    "attribution keyword: 'According to'",
+    "source: 'Deep Work'",
+    "author name"
+  ]
 }
 ```
 
 ### Example 2: Concept Classification
 
 **Input:**
+
 ```
 raw_content: "Atomic notes are single-idea notes that can stand alone and be recombined with other notes to form new insights. Each atomic note focuses on one specific concept, making it easier to link related ideas and discover unexpected connections."
 ```
 
 **Analysis:**
+
 - Has definition structure: "X are Y that Z" ✓ (+0.3)
 - Explains a concept: ✓ (+0.3)
 - Uses clarifying language: "making it easier to" ✓ (+0.2)
@@ -354,10 +376,11 @@ raw_content: "Atomic notes are single-idea notes that can stand alone and be rec
 - No ambiguity
 
 **Output:**
+
 ```json
 {
   "content_type": "concept",
-  "confidence": 0.90,
+  "confidence": 0.9,
   "reasoning": "Content defines and explains the concept of atomic notes with clear explanatory structure",
   "matched_patterns": ["definition structure", "explanatory language", "concept explanation"]
 }
@@ -366,11 +389,13 @@ raw_content: "Atomic notes are single-idea notes that can stand alone and be rec
 ### Example 3: Reference Classification
 
 **Input:**
+
 ```
 raw_content: "See https://example.com/deep-work for a comprehensive guide to deep work practices. Also check out https://calnewport.com/blog for more articles on digital minimalism and focused work."
 ```
 
 **Analysis:**
+
 - Contains URLs: ✓ (+0.4)
 - Has "see/check out" language: ✓ (+0.2)
 - Multiple links (2): ✓ (+0.2)
@@ -378,23 +403,31 @@ raw_content: "See https://example.com/deep-work for a comprehensive guide to dee
 - No ambiguity
 
 **Output:**
+
 ```json
 {
   "content_type": "reference",
   "confidence": 0.85,
   "reasoning": "Content primarily contains external URLs with 'see' and 'check out' referential language",
-  "matched_patterns": ["URLs present", "see also language: 'See'", "see also language: 'check out'", "multiple links"]
+  "matched_patterns": [
+    "URLs present",
+    "see also language: 'See'",
+    "see also language: 'check out'",
+    "multiple links"
+  ]
 }
 ```
 
 ### Example 4: Reflection Classification
 
 **Input:**
+
 ```
 raw_content: "I think this approach works because it aligns with how memory consolidation happens during sleep. In my experience, reviewing notes before bed leads to better retention the next day. I've noticed this pattern consistently over the past few months."
 ```
 
 **Analysis:**
+
 - First-person pronouns: "I think", "In my experience", "I've noticed" ✓ (+0.3)
 - Opinion markers: "I think" ✓ (+0.3)
 - Subjective language: personal interpretation ✓ (+0.2)
@@ -402,23 +435,31 @@ raw_content: "I think this approach works because it aligns with how memory cons
 - No ambiguity
 
 **Output:**
+
 ```json
 {
   "content_type": "reflection",
   "confidence": 0.92,
   "reasoning": "Content expresses personal thoughts and experiences using first-person opinion language",
-  "matched_patterns": ["first-person pronouns: 'I'", "opinion marker: 'I think'", "experience marker: 'In my experience'", "observation marker: 'I've noticed'"]
+  "matched_patterns": [
+    "first-person pronouns: 'I'",
+    "opinion marker: 'I think'",
+    "experience marker: 'In my experience'",
+    "observation marker: 'I've noticed'"
+  ]
 }
 ```
 
 ### Example 5: Question Classification
 
 **Input:**
+
 ```
 raw_content: "Why does spaced repetition improve long-term retention better than massed practice? What cognitive mechanisms make distributed learning more effective?"
 ```
 
 **Analysis:**
+
 - Ends with question mark: ✓ (+0.5)
 - Has investigative keywords: "Why", "What" ✓ (+0.2)
 - Multiple questions: ✓ (+0.1)
@@ -426,23 +467,31 @@ raw_content: "Why does spaced repetition improve long-term retention better than
 - No ambiguity
 
 **Output:**
+
 ```json
 {
   "content_type": "question",
   "confidence": 0.98,
   "reasoning": "Content consists of investigative questions ending with question marks",
-  "matched_patterns": ["ends with question mark", "investigative keyword: 'Why'", "investigative keyword: 'What'", "multiple questions"]
+  "matched_patterns": [
+    "ends with question mark",
+    "investigative keyword: 'Why'",
+    "investigative keyword: 'What'",
+    "multiple questions"
+  ]
 }
 ```
 
 ### Example 6: Observation Classification
 
 **Input:**
+
 ```
 raw_content: "I noticed that my notes cluster around three main themes: cognitive science, knowledge management, and productivity systems. Most of my concept notes (about 60%) relate to memory and learning, while methodology notes make up another 30%."
 ```
 
 **Analysis:**
+
 - Has observation keywords: "I noticed" ✓ (+0.3)
 - Descriptive structure: factual description ✓ (+0.2)
 - Factual/neutral tone: reporting data ✓ (+0.2)
@@ -450,12 +499,18 @@ raw_content: "I noticed that my notes cluster around three main themes: cognitiv
 - Minor ambiguity with reflection (has "I"), but descriptive focus wins
 
 **Output:**
+
 ```json
 {
   "content_type": "observation",
   "confidence": 0.88,
   "reasoning": "Content reports factual observations about note patterns with descriptive, data-focused language",
-  "matched_patterns": ["observation keyword: 'I noticed'", "descriptive structure", "factual reporting", "data points"]
+  "matched_patterns": [
+    "observation keyword: 'I noticed'",
+    "descriptive structure",
+    "factual reporting",
+    "data points"
+  ]
 }
 ```
 
@@ -466,6 +521,7 @@ raw_content: "I noticed that my notes cluster around three main themes: cognitiv
 **Condition:** `raw_content` is empty, null, or contains only whitespace
 
 **Response:**
+
 ```json
 {
   "error": "Content cannot be empty",
@@ -478,9 +534,11 @@ raw_content: "I noticed that my notes cluster around three main themes: cognitiv
 **Condition:** `raw_content` contains malformed or unsanitizable content (e.g., malicious scripts that can't be safely sanitized)
 
 **Response:**
+
 - Attempt to sanitize content (strip dangerous tags, escape entities)
 - If sanitization succeeds, proceed with classification
 - If sanitization fails, return error:
+
 ```json
 {
   "error": "Malformed input: Unable to sanitize content safely",
@@ -493,6 +551,7 @@ raw_content: "I noticed that my notes cluster around three main themes: cognitiv
 **Condition:** `raw_content` exceeds 10MB size limit
 
 **Response:**
+
 ```json
 {
   "error": "Content exceeds size limit (10MB maximum)",
@@ -505,6 +564,7 @@ raw_content: "I noticed that my notes cluster around three main themes: cognitiv
 **Condition:** `raw_content` is not a string type
 
 **Response:**
+
 ```json
 {
   "error": "Invalid input type: raw_content must be a string",
@@ -517,6 +577,7 @@ raw_content: "I noticed that my notes cluster around three main themes: cognitiv
 **Condition:** XSS sanitization detects but cannot safely remove malicious content
 
 **Response:**
+
 ```json
 {
   "error": "Security validation failed: Content contains malicious code that cannot be safely sanitized",
@@ -580,12 +641,14 @@ raw_content: "I noticed that my notes cluster around three main themes: cognitiv
 **Target execution time:** < 2 seconds per classification
 
 **Performance considerations:**
+
 - Pattern matching optimized with efficient regex
 - Early exit when high-confidence match found
 - Minimal memory allocation during processing
 - No external API calls (local classification only)
 
 **Monitoring:**
+
 - Log classification time for each execution
 - Alert if average time exceeds target threshold
 - Identify slow patterns for optimization
@@ -621,6 +684,7 @@ Extract structured metadata from captured content and source context to enable r
 **Priority 1:** Extract from `source_context.url` if present
 
 **Priority 2:** Extract URLs from `raw_content` if `source_context.url` not provided:
+
 - Use URL pattern matching: `https?://[^\s]+`
 - Extract first valid URL found in content
 - If multiple URLs, prefer the first one
@@ -667,17 +731,20 @@ Apply URL validation algorithm:
 **Priority 1:** Use `source_context.author` if present and non-empty
 
 **Priority 2:** Parse from `raw_content` using byline patterns:
+
 - Look for "by [Author Name]" pattern (case-insensitive)
 - Look for "author: [Author Name]" pattern
 - Look for "-- [Author Name]" or "- [Author Name]" at end
 - Look for "[Author Name] writes:" or "[Author Name] says:"
 
 **Priority 3:** Parse from `source_context.title` if it contains author info:
+
 - Pattern: "Title by Author" or "Title - Author"
 
 **Priority 4:** Default to "Unknown" if no author found
 
 **Sanitization:**
+
 - Trim whitespace
 - Capitalize first letter of each word (proper noun formatting)
 - Limit to 100 characters maximum
@@ -688,17 +755,20 @@ Apply URL validation algorithm:
 **Priority 1:** Use `source_context.title` if present and non-empty
 
 **Priority 2:** Parse from `raw_content` using heading patterns:
+
 - Look for markdown heading: `# Heading Text` (first heading)
 - Look for first line if it's short (< 100 chars) and not a sentence
 - Look for HTML `<title>` tags if content contains HTML
 
 **Priority 3:** Auto-generate from first 50 characters:
+
 - Take first 50 chars of `raw_content`
 - Break at word boundary (don't cut mid-word)
 - Append "..." if truncated
 - Example: "Deep work is the ability to focus without distr..."
 
 **Sanitization:**
+
 - Trim whitespace
 - Remove markdown formatting: `#`, `*`, `_`, `[`, `]`
 - Limit to 200 characters maximum
@@ -711,11 +781,13 @@ Apply URL validation algorithm:
 **Priority 2:** Use current time as fallback
 
 **Format requirements:**
+
 - Must be ISO8601 format: `YYYY-MM-DDTHH:MM:SSZ`
 - Must be in UTC timezone
 - Example: `2025-11-06T10:30:00Z`
 
 **Validation:**
+
 - Parse timestamp to verify valid format
 - If invalid format, use current time and log warning
 - Ensure timezone is UTC (convert if necessary)
@@ -727,20 +799,24 @@ Apply URL validation algorithm:
 **Extraction logic:**
 
 **If `source_context.surrounding_context` exists:**
+
 - Use provided value directly
 - Sanitize for YAML injection
 - Limit to 2000 characters
 
 **If `source_context.highlight_range` exists:**
+
 - Extract text before highlight (up to 500 chars)
 - Extract highlighted text
 - Extract text after highlight (up to 500 chars)
 - Format: `...before... [HIGHLIGHTED TEXT] ...after...`
 
 **If neither exists:**
+
 - Set to empty string (not applicable for quick captures)
 
 **Sanitization:**
+
 - Trim excessive whitespace
 - Preserve paragraph breaks (convert to `\n\n`)
 - Escape YAML special characters
@@ -751,15 +827,18 @@ Apply URL validation algorithm:
 Apply sanitization to all metadata fields:
 
 **YAML escaping:**
+
 - Escape special characters that break YAML: `:`, `#`, `-`, `[`, `]`, `{`, `}`, `|`, `>`
 - Quote string values containing special chars
 - Handle multiline strings properly (use `|` or `>` indicators)
 
 **HTML escaping:**
+
 - Escape entities: `&lt;`, `&gt;`, `&amp;`, `&quot;`
 - Strip dangerous HTML tags: `<script>`, `<iframe>`, `<object>`
 
 **Character encoding:**
+
 - Ensure UTF-8 encoding
 - Handle emoji, international characters properly
 - No encoding-based exploits
@@ -769,15 +848,18 @@ Apply sanitization to all metadata fields:
 Verify metadata object has required structure:
 
 **Required fields (must be present, can be defaults):**
+
 - `source_url`: String (can be "Unknown")
 - `author`: String (can be "Unknown")
 - `title`: String (must be non-empty, auto-generated if needed)
 - `timestamp`: String (must be valid ISO8601)
 
 **Optional fields:**
+
 - `surrounding_context`: String (can be empty)
 
 **Validation checks:**
+
 - All required fields present: ✓
 - `timestamp` is valid ISO8601: ✓
 - `title` is non-empty: ✓
@@ -785,6 +867,7 @@ Verify metadata object has required structure:
 - Total metadata size < 1MB: ✓
 
 **If validation fails:**
+
 - Log validation errors
 - Return error with details
 
@@ -815,6 +898,7 @@ Return complete metadata object with all fields:
 ### Example 1: Web Article with Full Metadata
 
 **Input:**
+
 ```json
 {
   "raw_content": "Deep work is the ability to focus without distraction on a cognitively demanding task.",
@@ -828,6 +912,7 @@ Return complete metadata object with all fields:
 ```
 
 **Extraction Process:**
+
 1. source_url: From source_context.url → "https://example.com/deep-work-guide"
 2. Validate URL: https:// scheme → VALID ✓
 3. author: From source_context.author → "Cal Newport"
@@ -836,6 +921,7 @@ Return complete metadata object with all fields:
 6. surrounding_context: Not provided → ""
 
 **Output:**
+
 ```json
 {
   "source_url": "https://example.com/deep-work-guide",
@@ -849,6 +935,7 @@ Return complete metadata object with all fields:
 ### Example 2: Reading Highlight with Surrounding Context
 
 **Input:**
+
 ```json
 {
   "raw_content": "Deep work is the ability to focus without distraction on a cognitively demanding task.",
@@ -860,6 +947,7 @@ Return complete metadata object with all fields:
 ```
 
 **Extraction Process:**
+
 1. source_url: From source_context.url → "https://example.com/deep-work"
 2. Validate URL: VALID ✓
 3. author: Not in source_context, not in content → "Unknown"
@@ -868,6 +956,7 @@ Return complete metadata object with all fields:
 6. surrounding_context: From source_context.surrounding_context → Provided value (sanitized)
 
 **Output:**
+
 ```json
 {
   "source_url": "https://example.com/deep-work",
@@ -881,6 +970,7 @@ Return complete metadata object with all fields:
 ### Example 3: Quick Note with Minimal Metadata
 
 **Input:**
+
 ```json
 {
   "raw_content": "Spaced repetition works because it aligns with the spacing effect - our brain remembers better when learning is distributed over time.",
@@ -889,6 +979,7 @@ Return complete metadata object with all fields:
 ```
 
 **Extraction Process:**
+
 1. source_url: No source_context, no URLs in content → "Unknown"
 2. author: No source_context, no byline → "Unknown"
 3. title: No source_context, auto-generate from first 50 chars → "Spaced repetition works because it aligns with th..."
@@ -896,6 +987,7 @@ Return complete metadata object with all fields:
 5. surrounding_context: No source_context → ""
 
 **Output:**
+
 ```json
 {
   "source_url": "Unknown",
@@ -909,6 +1001,7 @@ Return complete metadata object with all fields:
 ### Example 4: Social Media Capture
 
 **Input:**
+
 ```json
 {
   "raw_content": "The best productivity system is the one you'll actually use consistently. Don't get lost in the tools. by @productivityguru on Twitter",
@@ -920,6 +1013,7 @@ Return complete metadata object with all fields:
 ```
 
 **Extraction Process:**
+
 1. source_url: From source_context.url → "https://twitter.com/productivityguru/status/123456789"
 2. Validate URL: VALID ✓
 3. author: Not in source_context, parse from content "by @productivityguru" → "Productivityguru"
@@ -928,6 +1022,7 @@ Return complete metadata object with all fields:
 6. surrounding_context: Not provided → ""
 
 **Output:**
+
 ```json
 {
   "source_url": "https://twitter.com/productivityguru/status/123456789",
@@ -984,18 +1079,21 @@ Reject URLs with dangerous schemes:
 ### Step 4: Sanitize Query Parameters
 
 **Optional tracking parameter removal (if configured):**
+
 - Remove `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`
 - Remove `fbclid` (Facebook click ID)
 - Remove `gclid` (Google click ID)
 - Remove `msclkid` (Microsoft click ID)
 
 **Preserve functional parameters:**
+
 - Keep query parameters needed for content access
 - Keep parameters that affect page content
 
 ### Step 5: Strip Authentication Tokens
 
 Remove sensitive parameters that contain credentials:
+
 - Remove `?token=*`
 - Remove `?auth=*`
 - Remove `?key=*`
@@ -1028,6 +1126,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** `source_context` is null or undefined
 
 **Response:** Continue processing with defaults
+
 - source_url: Extract from content or "Unknown"
 - author: "Unknown"
 - title: Auto-generate from content
@@ -1041,6 +1140,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** URL fails validation (malicious scheme, invalid format)
 
 **Response:**
+
 - Set source_url to "Unknown"
 - Log warning: "Invalid URL detected: [reason], set to 'Unknown'"
 - Continue processing other metadata
@@ -1053,6 +1153,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** Unable to parse author, title, or other fields from content
 
 **Response:**
+
 - Use fallback values:
   - author: "Unknown"
   - title: First 50 chars of content
@@ -1066,6 +1167,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** `raw_content` exceeds 10MB or metadata exceeds 1MB
 
 **Response:**
+
 - Truncate content to 10MB: Log warning: "Content truncated to 10MB limit"
 - Truncate metadata fields to stay under 1MB total
 - Continue processing with truncated content
@@ -1077,6 +1179,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** `source_context.timestamp` is not valid ISO8601 format
 
 **Response:**
+
 - Use current time as fallback
 - Log warning: "Invalid timestamp format '[value]', using current time"
 - Continue processing
@@ -1088,6 +1191,7 @@ Remove sensitive parameters that contain credentials:
 **Condition:** Metadata fields contain unescaped YAML special characters
 
 **Response:**
+
 - Apply YAML escaping to all fields
 - Quote string values containing special chars
 - Log warning: "YAML special characters detected and escaped"
@@ -1102,7 +1206,7 @@ Remove sensitive parameters that contain credentials:
 - **Block malicious schemes:** javascript:, data:, file:, vbscript:
 - **Validate domain format:** No malformed domains, valid TLD required
 - **Block localhost access:** Prevent localhost, 127.0.0.1 unless explicitly allowed
-- **Block private IPs:** Prevent 192.168.*.*, 10.*.*.*, 172.16-31.*.* unless allowed
+- **Block private IPs:** Prevent 192.168._._, 10._._._, 172.16-31._.\* unless allowed
 - **Strip auth tokens:** Remove ?token=, ?auth=, ?key= parameters
 
 ### Metadata Sanitization (Injection Prevention)
@@ -1136,6 +1240,7 @@ Remove sensitive parameters that contain credentials:
 **Target execution time:** < 1 second per metadata extraction
 
 **Performance considerations:**
+
 - Simple pattern matching (no complex NLP)
 - Minimal regex usage (use string operations where possible)
 - No external API calls
@@ -1143,6 +1248,7 @@ Remove sensitive parameters that contain credentials:
 - Memory-efficient field extraction
 
 **Monitoring:**
+
 - Log extraction time for each execution
 - Alert if average time exceeds target
 - Identify slow operations for optimization
@@ -1187,6 +1293,7 @@ Create an inbox note in Obsidian vault using classified content and extracted me
 ### Step 2: Validate Template Structure
 
 Verify template contains required sections:
+
 - ✓ `template.id` exists
 - ✓ `variables` section exists
 - ✓ `sections` array exists
@@ -1199,17 +1306,20 @@ If validation fails, return error with details: "Template validation failed: [mi
 Map input data to template variables:
 
 **From classified_content:**
+
 - `{{content_type}}` → `classified_content.content_type`
 - `{{confidence}}` → `classified_content.confidence` (formatted to 2 decimal places)
 - `{{content}}` → `classified_content.raw_content`
 
 **From metadata:**
+
 - `{{source}}` → `metadata.source_url`
 - `{{author}}` → `metadata.author`
 - `{{captured}}` → `metadata.timestamp` (ISO8601 format)
 - `{{context}}` → `metadata.surrounding_context` (only include section if non-empty)
 
 **Computed variables:**
+
 - `{{flagged_for_review}}` → `true` if confidence < 0.7, else `false`
 - `{{tags}}` → Default to `[]` (empty array, can be enriched later by agent)
 - `{{timestamp}}` → Convert `metadata.timestamp` to filename format: `YYYY-MM-DD-HHMM`
@@ -1228,11 +1338,13 @@ Construct filename using template pattern: `{{timestamp}}-{{sanitized_title}}.md
 **Format:** `YYYY-MM-DD-HHMM-sanitized-title.md`
 
 **Examples:**
+
 - `2025-11-06-1030-deep-work-principles.md`
 - `2025-11-06-1445-atomic-notes-concept.md`
 - `2025-11-06-0915-spaced-repetition.md`
 
 **Collision handling:**
+
 - If filename already exists, append random 4-character suffix: `-a3f2`
 - Example: `2025-11-06-1030-deep-work-principles-a3f2.md`
 - Retry up to 3 times if collision persists
@@ -1242,11 +1354,13 @@ Construct filename using template pattern: `{{timestamp}}-{{sanitized_title}}.md
 Construct full path: `vault_path/inbox/YYYY-MM-DD-HHMM-sanitized-title.md`
 
 **Path construction:**
+
 1. Start with `vault_path` (e.g., `/Users/username/Obsidian/SecondBrain`)
 2. Append `/inbox/` subdirectory
 3. Append generated filename
 
 **Example paths:**
+
 - `/Users/username/Obsidian/SecondBrain/inbox/2025-11-06-1030-deep-work-principles.md`
 - `/Users/username/Obsidian/SecondBrain/inbox/2025-11-06-1445-atomic-notes-concept.md`
 
@@ -1255,20 +1369,24 @@ Construct full path: `vault_path/inbox/YYYY-MM-DD-HHMM-sanitized-title.md`
 Apply path security validation:
 
 **Block directory traversal:**
+
 - Check for `../` or `..\\` patterns
 - Check for absolute paths that escape vault root
 - Verify path resolves within vault bounds
 
 **Sanitize filename:**
+
 - Remove special characters: `/`, `\`, `:`, `*`, `?`, `"`, `<`, `>`, `|`
 - Keep only: alphanumeric, hyphens, underscores, periods, spaces
 
 **Validate vault_path:**
+
 - Verify vault_path exists and is a directory
 - Verify vault_path/inbox/ directory exists or create it
 - Check write permissions
 
 **If validation fails:**
+
 - Return error: "Invalid path: [reason]"
 - Examples: "Invalid path: directory traversal blocked", "Invalid path: vault not found"
 
@@ -1277,20 +1395,22 @@ Apply path security validation:
 Generate markdown content by populating template sections:
 
 **Section 1: Frontmatter**
+
 ```yaml
 ---
 status: unprocessed
-content_type: {{content_type}}
-confidence: {{confidence}}
-source: {{source}}
-author: {{author}}
-captured: {{captured}}
-tags: {{tags}}
-flagged_for_review: {{flagged_for_review}}
+content_type: { { content_type } }
+confidence: { { confidence } }
+source: { { source } }
+author: { { author } }
+captured: { { captured } }
+tags: { { tags } }
+flagged_for_review: { { flagged_for_review } }
 ---
 ```
 
 **Section 2: Content**
+
 ```markdown
 # {{content_type | titlecase}}: {{sanitized_title}}
 
@@ -1298,6 +1418,7 @@ flagged_for_review: {{flagged_for_review}}
 ```
 
 **Section 3: Context (conditional - only if context not empty)**
+
 ```markdown
 ## Context
 
@@ -1305,20 +1426,23 @@ flagged_for_review: {{flagged_for_review}}
 ```
 
 **Section 4: Processing Notes (placeholder)**
+
 ```markdown
 ## Processing Notes
 
-*To be filled by triage agent or user during processing*
+_To be filled by triage agent or user during processing_
 ```
 
 **Section 5: Next Actions (placeholder)**
+
 ```markdown
 ## Next Actions
 
-- [ ] *To be filled by user or organization agent*
+- [ ] _To be filled by user or organization agent_
 ```
 
 **Apply template rendering:**
+
 - Replace all `{{variable}}` placeholders with actual values
 - Apply filters: `| titlecase` (capitalize first letter of each word)
 - Escape YAML frontmatter values properly (quote strings with special chars)
@@ -1329,6 +1453,7 @@ flagged_for_review: {{flagged_for_review}}
 Use Obsidian MCP `obsidian.create_note` tool:
 
 **MCP Call Parameters:**
+
 ```javascript
 {
   path: "inbox/2025-11-06-1030-deep-work-principles.md",  // Relative to vault root
@@ -1338,6 +1463,7 @@ Use Obsidian MCP `obsidian.create_note` tool:
 ```
 
 **Handle MCP Response:**
+
 ```javascript
 {
   success: true/false,      // Boolean indicating success
@@ -1347,15 +1473,17 @@ Use Obsidian MCP `obsidian.create_note` tool:
 ```
 
 **MCP Call Example:**
+
 ```javascript
 obsidian.create_note({
-  path: "inbox/2025-11-06-1030-deep-work-principles.md",
-  content: "---\nstatus: unprocessed\ncontent_type: concept\n...\n",
-  vault: "SecondBrain"
-})
+  path: 'inbox/2025-11-06-1030-deep-work-principles.md',
+  content: '---\nstatus: unprocessed\ncontent_type: concept\n...\n',
+  vault: 'SecondBrain',
+});
 ```
 
 **If MCP unavailable:**
+
 - Return error: "Obsidian MCP not available, ensure MCP Tools configured"
 - Provide remediation: "Install Obsidian MCP server and configure in Claude Desktop/Cursor settings"
 
@@ -1364,17 +1492,20 @@ obsidian.create_note({
 Check MCP response:
 
 **If success = true:**
+
 - Extract `note_path` from response
 - Verify `note_path` matches expected path
 - Proceed to Step 10
 
 **If success = false:**
+
 - Check error message for reason
 - Apply error handling strategy (see Error Handling section)
 - Attempt retry if appropriate (e.g., path collision)
 - If retry fails, return error with details
 
 **Common failure scenarios:**
+
 - Permission denied: Check vault write permissions
 - Disk full: Check available disk space
 - Path already exists: Append random suffix and retry
@@ -1394,6 +1525,7 @@ Return success response:
 ```
 
 **Log success:**
+
 - Log note creation: "Inbox note created successfully: [path]"
 - Log file size and creation time for monitoring
 - Update capture statistics (optional)
@@ -1412,6 +1544,7 @@ Return success response:
 **Purpose:** Create new markdown file in Obsidian vault with YAML frontmatter
 
 **Parameters:**
+
 - **path** (String, required): Relative path from vault root
   - Example: `"inbox/2025-11-06-1030-deep-work-principles.md"`
   - Must be relative, not absolute
@@ -1428,6 +1561,7 @@ Return success response:
   - Must match actual vault name in Obsidian
 
 **Response:**
+
 ```javascript
 {
   success: true,                    // Boolean: operation success status
@@ -1437,9 +1571,10 @@ Return success response:
 ```
 
 **Example MCP Call:**
+
 ```javascript
 obsidian.create_note({
-  path: "inbox/2025-11-06-1030-deep-work-principles.md",
+  path: 'inbox/2025-11-06-1030-deep-work-principles.md',
   content: `---
 status: unprocessed
 content_type: concept
@@ -1463,11 +1598,12 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 
 - [ ] *To be filled by user or organization agent*
 `,
-  vault: "SecondBrain"
-})
+  vault: 'SecondBrain',
+});
 ```
 
 **Expected Response:**
+
 ```javascript
 {
   success: true,
@@ -1483,6 +1619,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** Obsidian MCP not configured or not responding
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -1498,6 +1635,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** MCP returns success=false due to write failure
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -1507,6 +1645,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 ```
 
 **Possible causes:**
+
 - Permission denied: User lacks write permission to vault/inbox directory
 - Disk full: No available disk space
 - Vault locked: Vault is read-only or locked by another process
@@ -1518,6 +1657,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** File already exists at target path
 
 **Response:**
+
 - Append random 4-character suffix to filename: `-a3f2`
 - Example: `2025-11-06-1030-deep-work-principles-a3f2.md`
 - Retry note creation with new filename
@@ -1539,6 +1679,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** inbox-note-tmpl.yaml not found at expected location
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -1554,6 +1695,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** Template file exists but validation fails (malformed YAML, missing sections)
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -1569,6 +1711,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 **Condition:** vault_path does not exist or is not a directory
 
 **Response:**
+
 ```json
 {
   "success": false,
@@ -1584,6 +1727,7 @@ Deep work is the ability to focus without distraction on a cognitively demanding
 ### Atomic Operation
 
 Obsidian MCP `create_note` is **atomic**:
+
 - Note is either fully created or not created at all
 - No partial writes that require cleanup
 - No rollback needed if creation fails
@@ -1591,16 +1735,19 @@ Obsidian MCP `create_note` is **atomic**:
 ### Rollback Scenarios
 
 **If template population fails:**
+
 - No file created yet (failure before MCP call)
 - No rollback needed
 - Return error with details
 
 **If MCP call fails:**
+
 - Obsidian handles atomicity
 - No partial file left behind
 - No cleanup required
 
 **If path validation fails:**
+
 - Failure before MCP call
 - No file created
 - No rollback needed
@@ -1612,17 +1759,20 @@ Obsidian MCP `create_note` is **atomic**:
 ### Path Sanitization (Directory Traversal Prevention)
 
 **Block directory traversal patterns:**
+
 - `../` (parent directory)
 - `..\\` (Windows parent directory)
 - Absolute paths: `/`, `C:\\`
 - Symlink exploitation
 
 **Validation:**
+
 - Resolve path to absolute path
 - Verify resolved path is within vault bounds
 - Reject if path escapes vault directory
 
 **Example blocked paths:**
+
 ```
 ❌ "../../../etc/passwd"
 ❌ "/etc/passwd"
@@ -1634,11 +1784,13 @@ Obsidian MCP `create_note` is **atomic**:
 ### Content Validation
 
 **Vault bounds:**
+
 - Ensure path within vault directory tree
 - No escaping vault root
 - Verify vault_path is absolute and valid
 
 **Filename sanitization:**
+
 - Remove special chars: `/`, `\`, `:`, `*`, `?`, `"`, `<`, `>`, `|`
 - Keep only: a-z, A-Z, 0-9, `-`, `_`, `.`, space
 - Prevent null bytes: `\x00`
@@ -1646,11 +1798,13 @@ Obsidian MCP `create_note` is **atomic**:
 ### YAML Frontmatter Escaping
 
 **Escape YAML special characters:**
+
 - `:` → Quote value if contains colon
 - `#` → Quote value if starts with hash
 - `-`, `[`, `]`, `{`, `}`, `|`, `>` → Quote if needed
 
 **Example escaping:**
+
 ```yaml
 # Unescaped (unsafe)
 title: Understanding: Deep Work
@@ -1660,6 +1814,7 @@ title: "Understanding: Deep Work"
 ```
 
 **Quote string values:**
+
 - Quote strings containing special chars
 - Use double quotes: `"value"`
 - Escape quotes within strings: `"He said \"hello\""`
@@ -1667,10 +1822,12 @@ title: "Understanding: Deep Work"
 ### Size Limits
 
 **Content size:**
+
 - Max 10MB per note (inherited from classification input limit)
 - Already enforced in earlier steps
 
 **Metadata size:**
+
 - Max 1MB (inherited from metadata extraction)
 - Verify total note size < 10MB before creation
 
@@ -1679,6 +1836,7 @@ title: "Understanding: Deep Work"
 **Target execution time:** < 3 seconds per note creation
 
 **Performance breakdown:**
+
 - Template loading: < 100ms
 - Template rendering: < 200ms
 - MCP call latency: < 2s
@@ -1686,12 +1844,14 @@ title: "Understanding: Deep Work"
 - Total: ~2.35s (buffer for network latency)
 
 **Performance considerations:**
+
 - Cache template in memory (load once, reuse)
 - Minimize regex operations during rendering
 - Efficient string concatenation
 - No external API calls except Obsidian MCP
 
 **Monitoring:**
+
 - Log note creation time for each execution
 - Alert if average time exceeds 3s target
 - Track MCP latency separately
@@ -1731,11 +1891,13 @@ Create temporal CaptureEvent node in Neo4j graph database for evolution tracking
 ### Step 1: Check Neo4j Enabled in Config
 
 **Read configuration:**
+
 - Load config file: `expansion-packs/bmad-obsidian-2nd-brain/config.yaml`
 - Parse YAML structure
 - Extract `neo4j.enabled` boolean value
 
 **Decision logic:**
+
 ```
 IF neo4j.enabled == false OR neo4j.enabled == undefined:
   Log info: "Neo4j disabled, temporal tracking skipped"
@@ -1747,6 +1909,7 @@ IF neo4j.enabled == true:
 ```
 
 **Graceful degradation:**
+
 - Neo4j disabled is NOT an error
 - Return success=true with skipped=true
 - Allow capture workflow to continue without temporal tracking
@@ -1755,12 +1918,14 @@ IF neo4j.enabled == true:
 ### Step 2: Validate Neo4j Configuration
 
 **If neo4j.enabled == true, verify configuration:**
+
 - ✓ `neo4j.uri` exists and is non-empty
 - ✓ `neo4j.username` exists and is non-empty
 - ✓ `neo4j.password` exists and is non-empty
 - ✓ `neo4j.database` exists and is non-empty
 
 **If validation fails:**
+
 - Log warning: "Neo4j enabled but configuration incomplete, skipping temporal tracking"
 - Return {success: true, skipped: true, capture_event_id: null}
 - Graceful degradation (not blocking error)
@@ -1770,11 +1935,13 @@ IF neo4j.enabled == true:
 Generate unique capture event identifier:
 
 **Use UUID v4:**
+
 - Example: `c7e4f1a2-9b3d-4c8e-a5f2-1d6b9e3c4a8f`
 - Ensures global uniqueness
 - No collision concerns
 
 **Store for later use:**
+
 - `capture_id` = generated UUID
 - Will be used as episode identifier in Graphiti
 
@@ -1783,6 +1950,7 @@ Generate unique capture event identifier:
 Construct temporal event properties for bi-temporal graph:
 
 **Core properties:**
+
 ```json
 {
   "capture_id": "[UUID v4]",
@@ -1796,6 +1964,7 @@ Construct temporal event properties for bi-temporal graph:
 ```
 
 **Bi-temporal metadata:**
+
 - `valid_time_start`: When capture occurred (use metadata.timestamp)
   - Represents "when did this knowledge enter the real world?"
   - Used for queries like: "What did I learn last week?"
@@ -1805,6 +1974,7 @@ Construct temporal event properties for bi-temporal graph:
   - Used for queries like: "What was added to the graph today?"
 
 **Example properties:**
+
 ```json
 {
   "capture_id": "c7e4f1a2-9b3d-4c8e-a5f2-1d6b9e3c4a8f",
@@ -1823,6 +1993,7 @@ Construct temporal event properties for bi-temporal graph:
 Map capture data to Graphiti episode format:
 
 **Episode structure:**
+
 ```json
 {
   "name": "Capture: [title]",
@@ -1833,6 +2004,7 @@ Map capture data to Graphiti episode format:
 ```
 
 **Field mappings:**
+
 - `name`: Prefix "Capture: " + metadata.title
   - Example: "Capture: Deep Work Principles"
   - Distinguishes capture events from other episode types
@@ -1852,6 +2024,7 @@ Map capture data to Graphiti episode format:
   - Maps to valid_time_start in bi-temporal model
 
 **Example episode:**
+
 ```json
 {
   "name": "Capture: Deep Work Principles",
@@ -1866,6 +2039,7 @@ Map capture data to Graphiti episode format:
 Use Graphiti MCP `graphiti.add_episode` tool:
 
 **MCP Call Parameters:**
+
 ```javascript
 {
   name: "Capture: Deep Work Principles",
@@ -1876,6 +2050,7 @@ Use Graphiti MCP `graphiti.add_episode` tool:
 ```
 
 **Expected MCP Response:**
+
 ```javascript
 {
   success: true,                         // Boolean: operation success
@@ -1887,6 +2062,7 @@ Use Graphiti MCP `graphiti.add_episode` tool:
 ```
 
 **If Graphiti MCP unavailable:**
+
 - Catch connection error
 - Proceed to Step 9 (graceful degradation)
 - Do NOT treat as blocking error
@@ -1894,12 +2070,14 @@ Use Graphiti MCP `graphiti.add_episode` tool:
 ### Step 7: Extract Episode ID from Response
 
 **If MCP call successful (success == true):**
+
 - Extract `episode_id` from response
 - Store as `capture_event_id`
 - Example: `"ep_c7e4f1a2"`
 - This ID can be used for later queries to retrieve the episode
 
 **If MCP call failed (success == false):**
+
 - Extract `error` message from response
 - Log error details
 - Proceed to Step 9 (graceful degradation)
@@ -1907,11 +2085,13 @@ Use Graphiti MCP `graphiti.add_episode` tool:
 ### Step 8: Verify Episode Created and Log Success
 
 **Verification (optional):**
+
 - Could query Graphiti to confirm episode exists
 - For performance, trust MCP success response
 - Skip verification to meet < 1s target
 
 **Log success:**
+
 - Log info: "CaptureEvent created in Neo4j: episode_id=[id]"
 - Log episode_id for debugging
 - Update capture statistics (optional)
@@ -1921,12 +2101,14 @@ Use Graphiti MCP `graphiti.add_episode` tool:
 **If any error occurs during Neo4j interaction:**
 
 **Connection errors:**
+
 - Graphiti MCP unavailable
 - Neo4j connection failed
 - Authentication failed
 - Timeout
 
 **Response:**
+
 - Log warning: "Graphiti MCP unavailable, operating in Obsidian-only mode"
 - OR: "Neo4j connection failed, capture saved to Obsidian only"
 - Return {success: true, skipped: true, capture_event_id: null, error: "[details]"}
@@ -1934,16 +2116,19 @@ Use Graphiti MCP `graphiti.add_episode` tool:
 - Capture workflow continues (not blocking)
 
 **Episode creation errors:**
+
 - Episode validation failed
 - Duplicate episode_id (rare with UUID)
 - Graph constraint violation
 
 **Response:**
+
 - Log error: "Episode creation failed: [details]"
 - Return {success: true, skipped: true, capture_event_id: null, error: "[details]"}
 - Continue capture workflow
 
 **Philosophy:**
+
 - Neo4j is OPTIONAL enhancement, not required
 - Failure to create episode should NOT block inbox note creation
 - Always return success=true (graceful degradation)
@@ -1952,6 +2137,7 @@ Use Graphiti MCP `graphiti.add_episode` tool:
 ### Step 10: Return Success Response
 
 **If episode created successfully:**
+
 ```json
 {
   "capture_event_id": "ep_c7e4f1a2",
@@ -1962,6 +2148,7 @@ Use Graphiti MCP `graphiti.add_episode` tool:
 ```
 
 **If Neo4j disabled:**
+
 ```json
 {
   "capture_event_id": null,
@@ -1972,6 +2159,7 @@ Use Graphiti MCP `graphiti.add_episode` tool:
 ```
 
 **If Neo4j error (graceful degradation):**
+
 ```json
 {
   "capture_event_id": null,
@@ -1982,6 +2170,7 @@ Use Graphiti MCP `graphiti.add_episode` tool:
 ```
 
 **Only return success=false for:**
+
 - Config file unreadable (fatal)
 - Invalid config YAML (fatal)
 - Unexpected/unhandled exceptions (fatal)
@@ -2021,6 +2210,7 @@ Use Graphiti MCP `graphiti.add_episode` tool:
   - Maps to valid_time_start in bi-temporal model
 
 **Response:**
+
 ```javascript
 {
   success: true,                         // Boolean: operation status
@@ -2046,16 +2236,19 @@ Use Graphiti MCP `graphiti.add_episode` tool:
 ```
 
 **Example MCP Call:**
+
 ```javascript
 graphiti.add_episode({
-  name: "Capture: Deep Work Principles",
-  episode_body: "Deep work is the ability to focus without distraction on a cognitively demanding task. It enables deep understanding and high-quality creative output. Unlike shallow work, deep work produces lasting value and is increasingly rare in our distracted world.",
-  source_description: "Cal Newport - https://example.com/deep-work",
-  reference_time: "2025-11-06T10:30:00Z"
-})
+  name: 'Capture: Deep Work Principles',
+  episode_body:
+    'Deep work is the ability to focus without distraction on a cognitively demanding task. It enables deep understanding and high-quality creative output. Unlike shallow work, deep work produces lasting value and is increasingly rare in our distracted world.',
+  source_description: 'Cal Newport - https://example.com/deep-work',
+  reference_time: '2025-11-06T10:30:00Z',
+});
 ```
 
 **Expected Response:**
+
 ```javascript
 {
   success: true,
@@ -2093,18 +2286,21 @@ graphiti.add_episode({
 ### What is Bi-Temporal Data?
 
 **Bi-temporal data** tracks two independent timelines:
+
 1. **Valid Time:** When the fact was true in the real world
 2. **Transaction Time:** When the fact was recorded in the database
 
 ### Valid Time vs Transaction Time
 
 **Valid Time (`valid_time_start`):**
+
 - **Meaning:** When did the capture event occur in the real world?
 - **Source:** `metadata.timestamp` (when user captured the content)
 - **Example:** "I captured this article on Nov 6, 2025 at 10:30 AM"
 - **Query use:** "Show me what I captured last week"
 
 **Transaction Time (`transaction_time`):**
+
 - **Meaning:** When was this event recorded in the Neo4j database?
 - **Source:** Auto-set by Neo4j on INSERT (system timestamp)
 - **Example:** "This episode was added to the graph on Nov 6, 2025 at 10:30:15 AM"
@@ -2113,21 +2309,25 @@ graphiti.add_episode({
 ### Why Bi-Temporal Tracking?
 
 **Use Case 1: Historical Queries**
+
 - Query: "What did I capture last Monday?"
 - Uses: `valid_time_start` (when capture occurred)
 - Example: Find all captures with valid_time between Monday 00:00 and Monday 23:59
 
 **Use Case 2: System Audit**
+
 - Query: "What was added to the graph in the last hour?"
 - Uses: `transaction_time` (when recorded in DB)
 - Example: Find all episodes with transaction_time in last 60 minutes
 
 **Use Case 3: Temporal Evolution**
+
 - Query: "How has my understanding of 'Deep Work' evolved over time?"
 - Uses: Both `valid_time` (sequence of captures) and `transaction_time` (when I learned it)
 - Example: Show timeline of all captures mentioning "Deep Work", ordered by valid_time
 
 **Use Case 4: Retroactive Capture**
+
 - Scenario: User captures old content (article from 2020) on Nov 6, 2025
 - valid_time_start: 2020-03-15 (when article was published)
 - transaction_time: 2025-11-06 (when captured today)
@@ -2136,6 +2336,7 @@ graphiti.add_episode({
 ### Example Temporal Queries
 
 **Query 1: Last week's captures**
+
 ```cypher
 MATCH (e:Episode)
 WHERE e.valid_time_start >= datetime() - duration({days: 7})
@@ -2144,6 +2345,7 @@ ORDER BY e.valid_time_start DESC
 ```
 
 **Query 2: Recent graph additions**
+
 ```cypher
 MATCH (e:Episode)
 WHERE e.transaction_time >= datetime() - duration({hours: 24})
@@ -2152,6 +2354,7 @@ ORDER BY e.transaction_time DESC
 ```
 
 **Query 3: Evolution of concept understanding**
+
 ```cypher
 MATCH (e:Episode)
 WHERE e.episode_body CONTAINS "Deep Work"
@@ -2166,6 +2369,7 @@ ORDER BY e.valid_time_start ASC
 **Condition:** `neo4j.enabled: false` in config.yaml
 
 **Response:**
+
 - Skip Neo4j integration entirely (exit at Step 1)
 - Log info: "Neo4j disabled, temporal tracking skipped"
 - Return: `{success: true, skipped: true, capture_event_id: null}`
@@ -2177,6 +2381,7 @@ ORDER BY e.valid_time_start ASC
 **Condition:** Graphiti MCP not configured or not responding
 
 **Response:**
+
 - Catch connection error during MCP call (Step 6)
 - Log warning: "Graphiti MCP unavailable, operating in Obsidian-only mode"
 - Return: `{success: true, skipped: true, capture_event_id: null, error: "MCP unavailable"}`
@@ -2188,6 +2393,7 @@ ORDER BY e.valid_time_start ASC
 **Condition:** Neo4j database unreachable (network issue, credentials wrong, service down)
 
 **Response:**
+
 - Catch connection error from Graphiti MCP
 - Log warning: "Neo4j connection failed, capture saved to Obsidian only"
 - Return: `{success: true, skipped: true, capture_event_id: null, error: "Connection failed"}`
@@ -2199,6 +2405,7 @@ ORDER BY e.valid_time_start ASC
 **Condition:** Graphiti rejects episode (validation error, constraint violation)
 
 **Response:**
+
 - Log error: "Episode creation failed: [MCP error details]"
 - Return: `{success: true, skipped: true, capture_event_id: null, error: "[details]"}`
 
@@ -2207,12 +2414,14 @@ ORDER BY e.valid_time_start ASC
 ### Key Principle: Always Succeed
 
 **Philosophy:**
+
 - Neo4j is an OPTIONAL enhancement, not a requirement
 - Failure to create graph event should NEVER block inbox note creation
 - Return `success: true` in all degradation scenarios
 - Only return `success: false` for fatal/unexpected errors
 
 **Benefits:**
+
 - User can capture content even if Neo4j is down
 - System remains functional without graph database
 - Graceful degradation to Obsidian-only mode
@@ -2225,6 +2434,7 @@ ORDER BY e.valid_time_start ASC
 **Condition:** Cannot connect to Neo4j (network, credentials, service down)
 
 **Response:** Graceful degradation
+
 - Log warning: "Neo4j connection failed, capture saved to Obsidian only"
 - Return: `{success: true, skipped: true, capture_event_id: null, error: "Connection failed: [details]"}`
 
@@ -2235,6 +2445,7 @@ ORDER BY e.valid_time_start ASC
 **Condition:** Graphiti MCP not installed or not responding
 
 **Response:** Graceful degradation
+
 - Log warning: "Graphiti MCP unavailable, operating in Obsidian-only mode"
 - Return: `{success: true, skipped: true, capture_event_id: null, error: "MCP unavailable"}`
 
@@ -2247,6 +2458,7 @@ ORDER BY e.valid_time_start ASC
 **Condition:** Graphiti rejects episode (validation error, constraint violation, duplicate)
 
 **Response:** Graceful degradation
+
 - Log error: "Episode creation failed: [MCP error details]"
 - Return: `{success: true, skipped: true, capture_event_id: null, error: "Creation failed: [details]"}`
 
@@ -2257,6 +2469,7 @@ ORDER BY e.valid_time_start ASC
 **Condition:** config.yaml cannot be read or parsed
 
 **Response:** Treat as Neo4j disabled
+
 - Log warning: "Config parse error, treating Neo4j as disabled"
 - Return: `{success: true, skipped: true, capture_event_id: null, error: "Config parse error"}`
 
@@ -2267,6 +2480,7 @@ ORDER BY e.valid_time_start ASC
 **Condition:** `episode_body` exceeds 1MB size limit
 
 **Response:**
+
 - Truncate episode_body to 1MB
 - Log warning: "Episode body truncated to 1MB limit"
 - Continue with truncated content
@@ -2279,23 +2493,26 @@ ORDER BY e.valid_time_start ASC
 ### No Cypher Injection Risk
 
 **Why safe:**
+
 - Using Graphiti MCP abstraction layer
 - No direct Cypher query construction
 - MCP handles parameterization and escaping
 - Episode data passed as structured parameters, not string concatenation
 
 **Example safe call:**
+
 ```javascript
 // Safe: Using MCP with structured parameters
 graphiti.add_episode({
-  name: "Capture: Example",
-  episode_body: "User-provided content with ' quotes \" and special chars",
-  source_description: "Author - https://example.com",
-  reference_time: "2025-11-06T10:30:00Z"
-})
+  name: 'Capture: Example',
+  episode_body: 'User-provided content with \' quotes " and special chars',
+  source_description: 'Author - https://example.com',
+  reference_time: '2025-11-06T10:30:00Z',
+});
 ```
 
 **Not vulnerable to:**
+
 - Cypher injection via episode_body
 - SQL injection (not using SQL)
 - Command injection
@@ -2303,16 +2520,19 @@ graphiti.add_episode({
 ### Credentials Storage
 
 **Configuration:**
+
 - Credentials stored in config.yaml (user-controlled file)
 - Not hardcoded in task files
 - User manages credential security
 
 **Best practices:**
+
 - Use environment variables for sensitive data (optional)
 - Restrict config.yaml file permissions (chmod 600)
 - Do not commit config.yaml to public repositories
 
 **No credential exposure:**
+
 - Credentials never logged
 - Error messages sanitized (no credentials in error text)
 - MCP handles credential management
@@ -2320,12 +2540,14 @@ graphiti.add_episode({
 ### Content Validation
 
 **Episode body size limit:**
+
 - Max 1MB per episode
 - Prevents DoS attacks via oversized content
 - Enforced in earlier classification step
 - Verify size before MCP call
 
 **Content sanitization:**
+
 - Already sanitized in classification step
 - No additional sanitization needed here
 - Trust input from previous validated tasks
@@ -2333,11 +2555,13 @@ graphiti.add_episode({
 ### Authentication
 
 **Neo4j authentication:**
+
 - Username/password from config.yaml
 - Managed by Graphiti MCP
 - No credential validation in this task (trust config)
 
 **MCP authentication:**
+
 - Handled by MCP server configuration
 - Outside scope of this task
 
@@ -2346,6 +2570,7 @@ graphiti.add_episode({
 **Target execution time:** < 1 second per episode creation
 
 **Performance breakdown:**
+
 - Config check: < 10ms
 - UUID generation: < 1ms
 - Episode object construction: < 10ms
@@ -2355,12 +2580,14 @@ graphiti.add_episode({
 - Total: ~841ms (well under 1s target)
 
 **Performance considerations:**
+
 - Single MCP call (no query chaining)
 - No entity extraction in this task (Graphiti handles it)
 - Minimal data validation (trust upstream tasks)
 - No external API calls besides Graphiti MCP
 
 **Monitoring:**
+
 - Log episode creation time
 - Alert if average time exceeds 1s
 - Track MCP latency separately

@@ -123,11 +123,12 @@ Remember: Bidirectional links with context are the foundation of a powerful seco
 
 ## Command Implementations
 
-### *help - Show Available Commands
+### \*help - Show Available Commands
 
 Display all 11 commands with descriptions and examples.
 
 **Output:**
+
 ```
 Available Commands:
 
@@ -165,7 +166,7 @@ Workflows:
 - Analysis: *analyze-graph note.md
 ```
 
-### *suggest-links {note_path} - Semantic Link Suggestion
+### \*suggest-links {note_path} - Semantic Link Suggestion
 
 **Purpose:** Find semantically related notes using Smart Connections and suggest bidirectional links.
 
@@ -245,6 +246,7 @@ STEP 6: Return Summary
 ```
 
 **Example Output:**
+
 ```
 Semantic Link Suggestions for "Spaced Repetition Superior to Massed Practice"
 
@@ -271,7 +273,7 @@ Next steps:
 - *batch-approve 0.8 - Auto-approve all suggestions with strength >= 0.8
 ```
 
-### *create-links {source_path} {target_paths...} - Bulk Link Creation
+### \*create-links {source_path} {target_paths...} - Bulk Link Creation
 
 **Purpose:** Create bidirectional links between source note and multiple target notes.
 
@@ -314,6 +316,7 @@ STEP 5: Return Summary
 ```
 
 **Example:**
+
 ```
 *create-links atomic/note-a.md atomic/note-b.md atomic/note-c.md
 
@@ -329,7 +332,7 @@ Create all 2 bidirectional links? (y/n) y
 Summary: 2 links created successfully
 ```
 
-### *create-link {source_path} {target_path} {link_type} - Manual Single Link
+### \*create-link {source_path} {target_path} {link_type} - Manual Single Link
 
 **Purpose:** Manually create a single bidirectional link with user-specified relationship type.
 
@@ -365,6 +368,7 @@ STEP 6: Confirm Creation
 ```
 
 **Example:**
+
 ```
 *create-link atomic/note-a.md atomic/note-b.md supports
 
@@ -381,7 +385,7 @@ Context for link (or press Enter for auto-generated):
 Neo4j: Relationship created with bi-temporal metadata
 ```
 
-### *review-suggestions - Review Pending Suggestions
+### \*review-suggestions - Review Pending Suggestions
 
 **Purpose:** Display all pending link suggestions with full details for manual review.
 
@@ -410,6 +414,7 @@ STEP 3: Show Actions
 ```
 
 **Example:**
+
 ```
 Pending Link Suggestions (8)
 
@@ -435,7 +440,7 @@ Actions: *accept-suggestion abc123 | *reject-suggestion abc123 {reason}
 [... 7 more suggestions ...]
 ```
 
-### *accept-suggestion {suggestion_id} - Accept Link Suggestion
+### \*accept-suggestion {suggestion_id} - Accept Link Suggestion
 
 **Purpose:** Accept a suggested link, create bidirectional link, and record feedback.
 
@@ -475,6 +480,7 @@ STEP 6: Confirm to User
 ```
 
 **Example:**
+
 ```
 *accept-suggestion abc123
 
@@ -494,7 +500,7 @@ Learning update: Acceptance rate healthy (78%), threshold unchanged at 0.65
 Link created successfully!
 ```
 
-### *reject-suggestion {suggestion_id} {reason} - Reject Link Suggestion
+### \*reject-suggestion {suggestion_id} {reason} - Reject Link Suggestion
 
 **Purpose:** Reject a suggested link and record feedback for learning.
 
@@ -533,6 +539,7 @@ STEP 5: Confirm to User
 ```
 
 **Example:**
+
 ```
 *reject-suggestion def456 "too_weak"
 
@@ -547,7 +554,7 @@ Learning update: Threshold unchanged at 0.65
 Suggestion rejected and feedback recorded for learning.
 ```
 
-### *analyze-graph {note_path} - Graph Pattern Analysis
+### \*analyze-graph {note_path} - Graph Pattern Analysis
 
 **Purpose:** Analyze connection patterns and graph metrics for a specific note.
 
@@ -592,6 +599,7 @@ STEP 6: Visualize (optional)
 ```
 
 **Example:**
+
 ```
 *analyze-graph atomic/argument-01-spaced-repetition.md
 
@@ -639,7 +647,7 @@ Suggestions:
 - Consider creating MOC for "Learning Science" to connect related arguments
 ```
 
-### *batch-approve {threshold} - Batch Approval
+### \*batch-approve {threshold} - Batch Approval
 
 **Purpose:** Auto-approve all pending suggestions above a specified strength threshold.
 
@@ -675,6 +683,7 @@ STEP 5: Return Summary
 ```
 
 **Example:**
+
 ```
 *batch-approve 0.8
 
@@ -707,7 +716,7 @@ Summary:
 Batch approval complete!
 ```
 
-### *yolo - Toggle Yolo Mode
+### \*yolo - Toggle Yolo Mode
 
 **Purpose:** Toggle auto-approval mode that creates all suggested links without user confirmation.
 
@@ -744,6 +753,7 @@ STEP 4: Display Current State
 ```
 
 **Example:**
+
 ```
 *yolo
 
@@ -768,7 +778,7 @@ Best practices:
 - Disable Yolo Mode for critical work
 ```
 
-### *exit - Exit Agent Mode
+### \*exit - Exit Agent Mode
 
 **Purpose:** Exit Semantic Linker Agent and return to normal mode.
 
@@ -797,6 +807,7 @@ STEP 4: Confirm Exit
 ```
 
 **Example:**
+
 ```
 *exit
 
@@ -821,36 +832,43 @@ Exiting Semantic Linker Agent. Goodbye!
 Reference: `relationship-types.md` for complete taxonomy
 
 ### 1. SUPPORTS (A ⊢ B)
+
 **Definition:** A provides evidence or reasoning that strengthens B's claim
 **Signals:** "evidence for", "proves", "demonstrates", "validates"
 **Example:** [[Ebbinghaus Forgetting Curve]] supports [[Spaced Repetition]]
 
 ### 2. CONTRADICTS (A ⊥ B)
+
 **Definition:** A conflicts with or refutes B's claim
 **Signals:** "however", "contradicts", "conflicts with", "challenges"
 **Example:** [[Multitasking Reduces Performance]] contradicts [[Multitasking Improves Productivity]]
 
 ### 3. ELABORATES (A → B)
+
 **Definition:** A provides additional detail or explanation for B
 **Signals:** "in detail", "specifically", "for example", "expanding on"
 **Example:** [[Zettelkasten Atomicity]] elaborates [[Evergreen Notes]]
 
 ### 4. ANALOGOUS_TO (A ≈ B)
+
 **Definition:** A is similar to B in structure or pattern
 **Signals:** "similar to", "like", "analogous to", "mirrors"
 **Example:** [[Spaced Repetition]] analogous_to [[Deliberate Practice]]
 
 ### 5. GENERALIZES (A ⊃ B)
+
 **Definition:** A is a broader principle that encompasses B
 **Signals:** "in general", "broadly", "abstractly", "the general principle"
 **Example:** [[Learning Theory]] generalizes [[Spacing Effect]]
 
 ### 6. SPECIALIZES (A ⊂ B)
+
 **Definition:** A is a specific instance or application of B
 **Signals:** "specifically", "in particular", "one case of", "applied to"
 **Example:** [[Anki Algorithm]] specializes [[Spaced Repetition]]
 
 ### 7. INFLUENCES (A ⇒ B)
+
 **Definition:** A inspired or led to B (requires temporal precedence: A before B)
 **Signals:** "inspired", "led to", "based on", "building on"
 **Example:** [[Ebbinghaus 1885]] influences [[Modern Spaced Repetition Systems]]
@@ -858,6 +876,7 @@ Reference: `relationship-types.md` for complete taxonomy
 ## Link Strength Calculation Algorithm
 
 **Formula:**
+
 ```
 strength = (0.5 × semantic_similarity) +
            (0.3 × contextual_relevance) +
@@ -883,11 +902,13 @@ strength = (0.5 × semantic_similarity) +
    - Distant: 0.0
 
 **Classification:**
+
 - Strong: >= 0.7
 - Medium: 0.5 - 0.7
 - Weak: < 0.5
 
 **Example:**
+
 ```
 Source: "Spaced Repetition" (created: 2025-11-05)
 Target: "Forgetting Curve" (created: 2025-11-06)
@@ -952,6 +973,7 @@ STEP 7: Return Learning Results
 ```
 
 **Example:**
+
 ```
 Feedback Learning Analysis
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -982,12 +1004,14 @@ Recommendations:
 ## Security Considerations
 
 **Input Validation:**
+
 - Sanitize all note paths to prevent directory traversal
 - Block paths containing: `../`, absolute paths outside vault
 - Validate note content is valid markdown (no script injection)
 - Limit suggestion count to 50 per query (prevent DoS)
 
 **Path Safety:**
+
 ```
 Allowed paths:
 - /inbox/*.md
@@ -1002,6 +1026,7 @@ Blocked paths:
 ```
 
 **Cypher Injection Prevention:**
+
 - Always use parameterized queries for Neo4j
 - Never concatenate user input into Cypher strings
 - Example (SAFE):
@@ -1016,40 +1041,47 @@ Blocked paths:
   ```
 
 **Link Quality Validation:**
+
 - Run linking-quality-checklist.md on all links
 - Detect circular reasoning: A supports B, B supports A (invalid)
 - Detect link spam: > 30 links from single note (review required)
 - Prevent duplicate links: check existing wikilinks before creation
 
 **Feedback Data Privacy:**
+
 - All feedback stored locally in `.bmad-obsidian-2nd-brain/link-feedback.json`
 - No external API calls for feedback collection
 - User can reset: `rm .bmad-obsidian-2nd-brain/link-feedback.json`
 - User can inspect: `cat .bmad-obsidian-2nd-brain/link-feedback.json | jq`
 
 **Smart Connections Privacy:**
+
 - Uses local BGE-micro-v2 embeddings
 - No cloud API calls
 - Embeddings stored in Obsidian vault (user-controlled)
 - Fully offline-capable
 
 **Neo4j Security:**
+
 - Optional integration (graceful degradation if disabled)
 - Parameterized queries only
 - Connection credentials stored in user-controlled config.yaml
 - No credential exposure in logs or error messages
 
 **Rollback Safety:**
+
 - Bidirectional link creation uses atomic rollback
 - If target update fails, source is rolled back to original state
 - Critical alert if rollback fails (manual intervention required)
 
 **Rate Limiting:**
-- Max 50 suggestions per *suggest-links query
-- Max 20 targets per *create-links bulk operation
+
+- Max 50 suggestions per \*suggest-links query
+- Max 20 targets per \*create-links bulk operation
 - Warn if > 10 pending suggestions (review backlog)
 
 **Content Sanitization:**
+
 - Escape special characters in wikilink titles
 - Remove potentially dangerous content (eval, script tags) from context sentences
 - Validate frontmatter YAML syntax before writing
@@ -1129,18 +1161,20 @@ similarity_query_result:
 ### Step 2: Check Smart Connections Availability
 
 1. **Query MCP Server:**
+
    ```javascript
    // Attempt to call Smart Connections MCP
    try {
-     mcp_available = check_smart_connections_mcp()
+     mcp_available = check_smart_connections_mcp();
    } catch (error) {
      // Graceful degradation
      return {
        mcp_available: false,
-       error: "Smart Connections MCP not available. Install Smart Connections plugin and configure MCP server.",
+       error:
+         'Smart Connections MCP not available. Install Smart Connections plugin and configure MCP server.',
        results: [],
-       suggestion: "Manual linking available via *create-link command"
-     }
+       suggestion: 'Manual linking available via *create-link command',
+     };
    }
    ```
 
@@ -1152,6 +1186,7 @@ similarity_query_result:
 ### Step 3: Load Source Note Content
 
 1. **Read source note via Obsidian MCP:**
+
    ```javascript
    source_note = read_note(note_id)
    if (!source_note) {
@@ -1161,7 +1196,7 @@ similarity_query_result:
 
 2. **Parse existing wikilinks (if exclude_already_linked=true):**
    ```javascript
-   existing_links = extract_wikilinks(source_note.content)
+   existing_links = extract_wikilinks(source_note.content);
    // Example: ["[[Note 1]]", "[[Note 2]]"]
    // Convert to paths: ["path/to/note-1.md", "path/to/note-2.md"]
    ```
@@ -1169,17 +1204,19 @@ similarity_query_result:
 ### Step 4: Execute Smart Connections Query
 
 1. **Call Smart Connections MCP:**
+
    ```javascript
    // MCP Call Example
    results = smart_connections.search_similar({
      content: note_content,
      threshold: similarity_threshold,
      limit: result_limit,
-     exclude_current: true // Don't return the source note itself
-   })
+     exclude_current: true, // Don't return the source note itself
+   });
    ```
 
 2. **Smart Connections returns:**
+
    ```json
    [
      {
@@ -1223,25 +1260,28 @@ similarity_query_result:
 ### Step 5: Filter Results
 
 1. **Apply similarity threshold:**
+
    ```javascript
-   filtered = results.filter(r => r.similarity_score >= similarity_threshold)
+   filtered = results.filter((r) => r.similarity_score >= similarity_threshold);
    ```
 
 2. **Exclude already-linked notes (if requested):**
+
    ```javascript
    if (exclude_already_linked) {
-     filtered = filtered.filter(r => !existing_links.includes(r.note_path))
+     filtered = filtered.filter((r) => !existing_links.includes(r.note_path));
    }
    ```
 
 3. **Exclude source note itself:**
+
    ```javascript
-   filtered = filtered.filter(r => r.note_id !== source_note.id)
+   filtered = filtered.filter((r) => r.note_id !== source_note.id);
    ```
 
 4. **Sort by similarity descending:**
    ```javascript
-   filtered.sort((a, b) => b.similarity_score - a.similarity_score)
+   filtered.sort((a, b) => b.similarity_score - a.similarity_score);
    ```
 
 ### Step 6: Extract Shared Concepts
@@ -1249,17 +1289,19 @@ similarity_query_result:
 For each result, analyze shared concepts:
 
 1. **Extract concepts from both notes:**
+
    ```javascript
-   source_concepts = extract_concepts(source_note.content)
+   source_concepts = extract_concepts(source_note.content);
    // Extract: tags, heading keywords, linked concepts
 
-   target_concepts = extract_concepts(result.note_content)
+   target_concepts = extract_concepts(result.note_content);
    ```
 
 2. **Calculate overlap:**
+
    ```javascript
-   shared_concepts = intersection(source_concepts, target_concepts)
-   result.shared_concepts = shared_concepts
+   shared_concepts = intersection(source_concepts, target_concepts);
+   result.shared_concepts = shared_concepts;
    ```
 
 3. **Example:**
@@ -1272,6 +1314,7 @@ For each result, analyze shared concepts:
 ### Step 7: Format and Return Results
 
 1. **Build output structure:**
+
    ```yaml
    {
      source_note: note_id,
@@ -1301,15 +1344,17 @@ For each result, analyze shared concepts:
 ### Example 1: Successful Query
 
 **Input:**
+
 ```yaml
-note_id: "concepts/zettelkasten-atomicity.md"
-note_content: "The atomicity principle states that each note should contain exactly one complete idea..."
+note_id: 'concepts/zettelkasten-atomicity.md'
+note_content: 'The atomicity principle states that each note should contain exactly one complete idea...'
 similarity_threshold: 0.6
 result_limit: 20
 exclude_already_linked: true
 ```
 
 **Output:**
+
 ```yaml
 similarity_query_result:
   source_note: 'concepts/zettelkasten-atomicity.md'
@@ -1343,12 +1388,14 @@ similarity_query_result:
 ### Example 2: Smart Connections Unavailable
 
 **Input:**
+
 ```yaml
-note_id: "concepts/zettelkasten-atomicity.md"
-note_content: "..."
+note_id: 'concepts/zettelkasten-atomicity.md'
+note_content: '...'
 ```
 
 **Output:**
+
 ```yaml
 similarity_query_result:
   source_note: 'concepts/zettelkasten-atomicity.md'
@@ -1358,30 +1405,32 @@ similarity_query_result:
   results: []
   execution_time_ms: 45
   mcp_available: false
-  error: "Smart Connections MCP not available. Install Smart Connections plugin and configure MCP server."
-  suggestion: "Manual linking available via *create-link command"
+  error: 'Smart Connections MCP not available. Install Smart Connections plugin and configure MCP server.'
+  suggestion: 'Manual linking available via *create-link command'
 ```
 
 ### Example 3: No Results Above Threshold
 
 **Input:**
+
 ```yaml
-note_id: "unique-topic.md"
+note_id: 'unique-topic.md'
 similarity_threshold: 0.6
 ```
 
 **Output:**
+
 ```yaml
 similarity_query_result:
   source_note: 'unique-topic.md'
   query_timestamp: '2025-11-05T14:35:00Z'
   total_candidates: 8
-  filtered_count: 0  # All below 0.6 threshold
+  filtered_count: 0 # All below 0.6 threshold
   results: []
   execution_time_ms: 1834
   mcp_available: true
   error: null
-  message: "No notes found with similarity >= 0.6. Source note may be on unique topic or vault is too small."
+  message: 'No notes found with similarity >= 0.6. Source note may be on unique topic or vault is too small.'
 ```
 
 ## Error Handling
@@ -1389,29 +1438,29 @@ similarity_query_result:
 ### Error: Source Note Not Found
 
 ```yaml
-error: "Source note not found: {note_id}"
-action: "Verify note exists in vault"
+error: 'Source note not found: {note_id}'
+action: 'Verify note exists in vault'
 ```
 
 ### Error: Smart Connections Timeout
 
 ```yaml
-error: "Smart Connections timeout after 3 retries"
-action: "Check Smart Connections plugin status, reduce vault size, or increase timeout"
+error: 'Smart Connections timeout after 3 retries'
+action: 'Check Smart Connections plugin status, reduce vault size, or increase timeout'
 ```
 
 ### Error: Invalid Threshold
 
 ```yaml
-error: "Invalid similarity_threshold: {value}. Must be 0.0-1.0"
-action: "Using default 0.6"
+error: 'Invalid similarity_threshold: {value}. Must be 0.0-1.0'
+action: 'Using default 0.6'
 ```
 
 ### Error: Empty Note Content
 
 ```yaml
-error: "Note content empty, cannot perform semantic search"
-action: "Ensure note has content before querying"
+error: 'Note content empty, cannot perform semantic search'
+action: 'Ensure note has content before querying'
 ```
 
 ## Performance Targets
@@ -1423,15 +1472,18 @@ action: "Ensure note has content before querying"
 ## Integration Points
 
 **Called by:**
-- *suggest-links command
-- *create-links command (to find candidates)
-- *batch-approve workflow
+
+- \*suggest-links command
+- \*create-links command (to find candidates)
+- \*batch-approve workflow
 
 **Calls:**
+
 - Smart Connections MCP: `search_similar()`
 - Obsidian MCP: `read_note()`
 
 **References:**
+
 - connection-patterns.md (for relationship context)
 - linking-quality-checklist.md (for threshold validation)
 
@@ -1475,14 +1527,14 @@ Determine which of the 7 relationship types (supports, contradicts, elaborates, 
 ```yaml
 concept_overlap_analysis:
   link_type: 'supports|contradicts|elaborates|analogous_to|generalizes|specializes|influences'
-  confidence: 0.0-1.0  # Confidence in type identification
+  confidence: 0.0-1.0 # Confidence in type identification
   reasoning: 'Why this relationship type was selected'
   shared_concepts: ['concept1', 'concept2', '...']
   linguistic_signals: ['signal1', 'signal2', '...']
   alternative_types: # If confidence < 0.9
     - type: 'alternative_type'
       confidence: 0.0-1.0
-  fallback_used: false  # true if confidence < 0.5 and defaulted to elaborates
+  fallback_used: false # true if confidence < 0.5 and defaulted to elaborates
 ```
 
 ## Procedure
@@ -1496,39 +1548,42 @@ concept_overlap_analysis:
 
 2. **Extract metadata from notes:**
    ```javascript
-   source_building_block = extract_frontmatter(source_note_content).building_block
-   target_building_block = extract_frontmatter(target_note_content).building_block
-   source_created = extract_frontmatter(source_note_content).created
-   target_created = extract_frontmatter(target_note_content).created
+   source_building_block = extract_frontmatter(source_note_content).building_block;
+   target_building_block = extract_frontmatter(target_note_content).building_block;
+   source_created = extract_frontmatter(source_note_content).created;
+   target_created = extract_frontmatter(target_note_content).created;
    ```
 
 ### Step 2: Extract Shared Concepts
 
 1. **Extract concepts from source:**
+
    ```javascript
    source_concepts = {
      tags: extract_tags(source_note_content),
      keywords: extract_heading_keywords(source_note_content),
-     linked_notes: extract_wikilinks(source_note_content)
-   }
+     linked_notes: extract_wikilinks(source_note_content),
+   };
    ```
 
 2. **Extract concepts from target:**
+
    ```javascript
    target_concepts = {
      tags: extract_tags(target_note_content),
      keywords: extract_heading_keywords(target_note_content),
-     linked_notes: extract_wikilinks(target_note_content)
-   }
+     linked_notes: extract_wikilinks(target_note_content),
+   };
    ```
 
 3. **Calculate overlap:**
-   ```javascript
-   shared_tags = intersection(source_concepts.tags, target_concepts.tags)
-   shared_keywords = intersection(source_concepts.keywords, target_concepts.keywords)
-   shared_links = intersection(source_concepts.linked_notes, target_concepts.linked_notes)
 
-   shared_concepts = unique(shared_tags + shared_keywords + shared_links)
+   ```javascript
+   shared_tags = intersection(source_concepts.tags, target_concepts.tags);
+   shared_keywords = intersection(source_concepts.keywords, target_concepts.keywords);
+   shared_links = intersection(source_concepts.linked_notes, target_concepts.linked_notes);
+
+   shared_concepts = unique(shared_tags + shared_keywords + shared_links);
    ```
 
 ### Step 3: Detect Linguistic Signals
@@ -1536,78 +1591,137 @@ concept_overlap_analysis:
 Check note contents for relationship type signals (from relationship-types.md):
 
 1. **SUPPORTS signals:**
+
    ```javascript
    supports_signals = count_signals(target_note_content, [
-     'evidence for', 'confirms', 'validates', 'proves', 'demonstrates',
-     'backs up', 'corroborates', 'justifies', 'substantiates'
-   ])
+     'evidence for',
+     'confirms',
+     'validates',
+     'proves',
+     'demonstrates',
+     'backs up',
+     'corroborates',
+     'justifies',
+     'substantiates',
+   ]);
    ```
 
 2. **CONTRADICTS signals:**
+
    ```javascript
    contradicts_signals = count_signals(target_note_content, [
-     'however', 'but', 'in contrast', 'contradicts', 'conflicts with',
-     'on the other hand', 'conversely', 'challenges', 'refutes'
-   ])
+     'however',
+     'but',
+     'in contrast',
+     'contradicts',
+     'conflicts with',
+     'on the other hand',
+     'conversely',
+     'challenges',
+     'refutes',
+   ]);
    ```
 
 3. **ELABORATES signals:**
+
    ```javascript
    elaborates_signals = count_signals(target_note_content, [
-     'in detail', 'specifically', 'for example', 'such as',
-     'more precisely', 'to elaborate', 'breaking down', 'expanding on'
-   ])
+     'in detail',
+     'specifically',
+     'for example',
+     'such as',
+     'more precisely',
+     'to elaborate',
+     'breaking down',
+     'expanding on',
+   ]);
    ```
 
 4. **ANALOGOUS_TO signals:**
+
    ```javascript
-   analogous_signals = count_signals([source_note_content, target_note_content], [
-     'similar to', 'like', 'resembles', 'analogous to', 'parallel to',
-     'mirrors', 'echoes', 'comparable to', 'just as', 'in the same way'
-   ])
+   analogous_signals = count_signals(
+     [source_note_content, target_note_content],
+     [
+       'similar to',
+       'like',
+       'resembles',
+       'analogous to',
+       'parallel to',
+       'mirrors',
+       'echoes',
+       'comparable to',
+       'just as',
+       'in the same way',
+     ],
+   );
    ```
 
 5. **GENERALIZES signals:**
+
    ```javascript
    generalizes_signals = count_signals(source_note_content, [
-     'in general', 'broadly speaking', 'more generally', 'abstractly',
-     'as a whole', 'overall', 'the broader principle', 'applies more widely'
-   ])
+     'in general',
+     'broadly speaking',
+     'more generally',
+     'abstractly',
+     'as a whole',
+     'overall',
+     'the broader principle',
+     'applies more widely',
+   ]);
    ```
 
 6. **SPECIALIZES signals:**
+
    ```javascript
    specializes_signals = count_signals(source_note_content, [
-     'specifically', 'in particular', 'for instance', 'one case of',
-     'one implementation', 'concretely', 'in practice', 'applied to'
-   ])
+     'specifically',
+     'in particular',
+     'for instance',
+     'one case of',
+     'one implementation',
+     'concretely',
+     'in practice',
+     'applied to',
+   ]);
    ```
 
 7. **INFLUENCES signals:**
    ```javascript
    influences_signals = count_signals(target_note_content, [
-     'inspired', 'led to', 'sparked', 'based on', 'building on',
-     'influenced', 'shaped', 'prompted', 'motivated', 'arose from'
-   ])
+     'inspired',
+     'led to',
+     'sparked',
+     'based on',
+     'building on',
+     'influenced',
+     'shaped',
+     'prompted',
+     'motivated',
+     'arose from',
+   ]);
    ```
 
 ### Step 4: Check Temporal Ordering (for INFLUENCES)
 
 1. **Extract creation dates:**
+
    ```javascript
-   source_date = parse_iso_datetime(source_created)
-   target_date = parse_iso_datetime(target_created)
+   source_date = parse_iso_datetime(source_created);
+   target_date = parse_iso_datetime(target_created);
    ```
 
 2. **Verify temporal precedence:**
+
    ```javascript
-   source_predates_target = (source_date < target_date)
+   source_predates_target = source_date < target_date;
    ```
 
 3. **INFLUENCES requires temporal precedence:**
    ```javascript
    if (influences_signals > 0 && !source_predates_target) {
-     influences_signals = 0  // Discard signals if temporal order violated
+     influences_signals = 0; // Discard signals if temporal order violated
    }
    ```
 
@@ -1616,36 +1730,40 @@ Check note contents for relationship type signals (from relationship-types.md):
 Use building block types to inform relationship:
 
 1. **Phenomenon → Argument typically SUPPORTS:**
+
    ```javascript
    if (source_building_block == 'phenomenon' && target_building_block == 'argument') {
-     supports_signals += 2  // Boost support signal
+     supports_signals += 2; // Boost support signal
    }
    ```
 
 2. **Concept → Concept often ELABORATES:**
+
    ```javascript
    if (source_building_block == 'concept' && target_building_block == 'concept') {
-     elaborates_signals += 1
+     elaborates_signals += 1;
    }
    ```
 
 3. **Model → Model may be ANALOGOUS_TO:**
+
    ```javascript
    if (source_building_block == 'model' && target_building_block == 'model') {
-     analogous_signals += 1
+     analogous_signals += 1;
    }
    ```
 
 4. **Question → Claim/Argument typically INFLUENCES:**
    ```javascript
    if (source_building_block == 'question' && target_building_block in ['claim', 'argument']) {
-     influences_signals += 1
+     influences_signals += 1;
    }
    ```
 
 ### Step 6: Calculate Confidence Scores for Each Type
 
 1. **Score each type:**
+
    ```javascript
    type_scores = {
      supports: calculate_type_confidence('supports', supports_signals),
@@ -1654,50 +1772,53 @@ Use building block types to inform relationship:
      analogous_to: calculate_type_confidence('analogous_to', analogous_signals),
      generalizes: calculate_type_confidence('generalizes', generalizes_signals),
      specializes: calculate_type_confidence('specializes', specializes_signals),
-     influences: calculate_type_confidence('influences', influences_signals)
-   }
+     influences: calculate_type_confidence('influences', influences_signals),
+   };
    ```
 
 2. **Confidence calculation per type:**
+
    ```javascript
    function calculate_type_confidence(type, signal_count) {
      // Start at maximum confidence
-     confidence = 1.0
+     confidence = 1.0;
 
      // Deductions
      if (signal_count == 0) {
-       confidence = 0.0  // No signals → no confidence
+       confidence = 0.0; // No signals → no confidence
      } else if (signal_count == 1) {
-       confidence = 0.6  // Weak evidence
+       confidence = 0.6; // Weak evidence
      } else if (signal_count == 2) {
-       confidence = 0.8  // Moderate evidence
+       confidence = 0.8; // Moderate evidence
      } else {
-       confidence = 0.95  // Strong evidence (3+ signals)
+       confidence = 0.95; // Strong evidence (3+ signals)
      }
 
-     return confidence
+     return confidence;
    }
    ```
 
 3. **Select best type:**
    ```javascript
-   best_type = max_by(type_scores, score)
-   best_confidence = type_scores[best_type]
+   best_type = max_by(type_scores, score);
+   best_confidence = type_scores[best_type];
    ```
 
 ### Step 7: Handle Multiple Matching Types
 
 1. **Check for ties:**
+
    ```javascript
-   top_types = type_scores.filter(score => score >= best_confidence - 0.1)
+   top_types = type_scores.filter((score) => score >= best_confidence - 0.1);
    ```
 
 2. **If multiple types match equally:**
+
    ```javascript
    if (top_types.length > 1) {
      // Deduct confidence for ambiguity
-     best_confidence -= 0.3
-     alternative_types = top_types.filter(t => t != best_type)
+     best_confidence -= 0.3;
+     alternative_types = top_types.filter((t) => t != best_type);
    }
    ```
 
@@ -1705,32 +1826,39 @@ Use building block types to inform relationship:
    ```javascript
    if (supports_signals > 0 && contradicts_signals > 0) {
      // Conflicting signals detected
-     best_confidence -= 0.4
+     best_confidence -= 0.4;
    }
    ```
 
 ### Step 8: Apply Fallback Logic
 
 1. **If confidence < 0.5:**
+
    ```javascript
    if (best_confidence < 0.5) {
      // Default to ELABORATES (safest fallback)
-     best_type = 'elaborates'
-     best_confidence = 0.5
-     fallback_used = true
+     best_type = 'elaborates';
+     best_confidence = 0.5;
+     fallback_used = true;
    }
    ```
 
 2. **Clamp confidence to [0.0, 1.0]:**
    ```javascript
-   best_confidence = max(0.0, min(1.0, best_confidence))
+   best_confidence = max(0.0, min(1.0, best_confidence));
    ```
 
 ### Step 9: Generate Reasoning
 
 1. **Build reasoning explanation:**
+
    ```javascript
-   reasoning = generate_reasoning(best_type, linguistic_signals, shared_concepts, building_block_types)
+   reasoning = generate_reasoning(
+     best_type,
+     linguistic_signals,
+     shared_concepts,
+     building_block_types,
+   );
    ```
 
 2. **Reasoning template:**
@@ -1747,12 +1875,13 @@ Use building block types to inform relationship:
 ```yaml
 {
   link_type: best_type,
-  confidence: round(best_confidence, 2),
+  confidence: round(best_confidence,
+  2),
   reasoning: reasoning_text,
   shared_concepts: shared_concepts,
   linguistic_signals: detected_signals,
   alternative_types: alternative_types,
-  fallback_used: fallback_used
+  fallback_used: fallback_used,
 }
 ```
 
@@ -1761,17 +1890,19 @@ Use building block types to inform relationship:
 ### Example 1: SUPPORTS (High Confidence)
 
 **Input:**
+
 ```yaml
-source_note_title: "Ebbinghaus Forgetting Curve"
-source_note_content: "Ebbinghaus documented exponential memory decay..."
-source_building_block: "phenomenon"
-target_note_title: "Spaced Repetition Superior to Massed Practice"
-target_note_content: "The forgetting curve provides empirical evidence for..."
-target_building_block: "argument"
+source_note_title: 'Ebbinghaus Forgetting Curve'
+source_note_content: 'Ebbinghaus documented exponential memory decay...'
+source_building_block: 'phenomenon'
+target_note_title: 'Spaced Repetition Superior to Massed Practice'
+target_note_content: 'The forgetting curve provides empirical evidence for...'
+target_building_block: 'argument'
 semantic_similarity: 0.76
 ```
 
 **Output:**
+
 ```yaml
 link_type: supports
 confidence: 0.95
@@ -1785,13 +1916,15 @@ fallback_used: false
 ### Example 2: ELABORATES (Medium Confidence)
 
 **Input:**
+
 ```yaml
-source_note_title: "Zettelkasten Atomicity Principle"
-target_note_title: "Evergreen Notes"
+source_note_title: 'Zettelkasten Atomicity Principle'
+target_note_title: 'Evergreen Notes'
 semantic_similarity: 0.78
 ```
 
 **Output:**
+
 ```yaml
 link_type: elaborates
 confidence: 0.74
@@ -1807,6 +1940,7 @@ fallback_used: false
 ### Example 3: Ambiguous → ELABORATES Fallback
 
 **Input:**
+
 ```yaml
 source_note_title: "Note A"
 target_note_title: "Note B"
@@ -1815,6 +1949,7 @@ semantic_similarity: 0.62
 ```
 
 **Output:**
+
 ```yaml
 link_type: elaborates
 confidence: 0.50
@@ -1830,38 +1965,41 @@ fallback_used: true
 ### Error: Empty Note Content
 
 ```yaml
-error: "Note content empty for source or target"
-action: "Verify both notes have content before analysis"
+error: 'Note content empty for source or target'
+action: 'Verify both notes have content before analysis'
 ```
 
 ### Error: Conflicting Type Signals
 
 ```yaml
-warning: "Conflicting signals detected (both SUPPORTS and CONTRADICTS)"
-action: "Reduced confidence by 0.4. Consider manual review."
-confidence: 0.45  # Reduced due to conflict
+warning: 'Conflicting signals detected (both SUPPORTS and CONTRADICTS)'
+action: 'Reduced confidence by 0.4. Consider manual review.'
+confidence: 0.45 # Reduced due to conflict
 ```
 
 ### Error: Temporal Violation for INFLUENCES
 
 ```yaml
-warning: "INFLUENCES signals detected but source does not predate target"
-action: "Discarding INFLUENCES type, selecting next best type"
+warning: 'INFLUENCES signals detected but source does not predate target'
+action: 'Discarding INFLUENCES type, selecting next best type'
 ```
 
 ## Integration Points
 
 **Called by:**
-- *suggest-links command
-- *create-links command
-- *create-link command
+
+- \*suggest-links command
+- \*create-links command
+- \*create-link command
 
 **Calls:**
+
 - relationship-types.md (reference)
 - connection-patterns.md (reference)
 - relationship-confidence-checklist.md (validation)
 
 **Outputs to:**
+
 - rate-connection-strength.md (uses link_type for strength calculation)
 - create-bidirectional-link.md (uses link_type for context generation)
 
@@ -1902,7 +2040,7 @@ Compute a composite link strength score (0.0-1.0) by combining three components:
 
 ```yaml
 connection_strength:
-  strength: 0.0-1.0  # Final composite score
+  strength: 0.0-1.0 # Final composite score
   classification: 'strong|medium|weak'
   components:
     semantic_similarity: 0.0-1.0
@@ -1928,85 +2066,88 @@ if (!source_note_metadata.created || !target_note_metadata.created) {
 ### Step 2: Calculate Contextual Relevance
 
 **Component 1: Tag Overlap**
+
 ```javascript
-shared_tags = intersection(source_note_metadata.tags, target_note_metadata.tags)
-all_unique_tags = unique(source_note_metadata.tags + target_note_metadata.tags)
+shared_tags = intersection(source_note_metadata.tags, target_note_metadata.tags);
+all_unique_tags = unique(source_note_metadata.tags + target_note_metadata.tags);
 
 if (all_unique_tags.length > 0) {
-  tag_overlap_score = shared_tags.length / all_unique_tags.length
+  tag_overlap_score = shared_tags.length / all_unique_tags.length;
 } else {
-  tag_overlap_score = 0.0
+  tag_overlap_score = 0.0;
 }
 ```
 
 **Component 2: MOC Membership**
+
 ```javascript
 if (source_note_metadata.moc && target_note_metadata.moc) {
-  same_moc_bonus = (source_note_metadata.moc == target_note_metadata.moc) ? 0.3 : 0.0
+  same_moc_bonus = source_note_metadata.moc == target_note_metadata.moc ? 0.3 : 0.0;
 } else {
-  same_moc_bonus = 0.0
+  same_moc_bonus = 0.0;
 }
 ```
 
 **Component 3: Common Sources**
+
 ```javascript
-common_sources_bonus = common_sources ? 0.2 : 0.0
+common_sources_bonus = common_sources ? 0.2 : 0.0;
 ```
 
 **Final Contextual Relevance:**
+
 ```javascript
 // Weighted average with bonuses
-contextual_relevance = (tag_overlap_score * 0.5) + (same_moc_bonus * 0.3) + (common_sources_bonus * 0.2)
-contextual_relevance = max(0.0, min(1.0, contextual_relevance))
+contextual_relevance = tag_overlap_score * 0.5 + same_moc_bonus * 0.3 + common_sources_bonus * 0.2;
+contextual_relevance = max(0.0, min(1.0, contextual_relevance));
 ```
 
 ### Step 3: Calculate Temporal Proximity
 
 ```javascript
-source_date = parse_iso_datetime(source_note_metadata.created)
-target_date = parse_iso_datetime(target_note_metadata.created)
+source_date = parse_iso_datetime(source_note_metadata.created);
+target_date = parse_iso_datetime(target_note_metadata.created);
 
-delta_days = abs((source_date - target_date).days)
+delta_days = abs((source_date - target_date).days);
 
 if (delta_days <= 7) {
   // Same week
-  temporal_proximity = 0.2
+  temporal_proximity = 0.2;
 } else if (delta_days <= 30) {
   // Same month
-  temporal_proximity = 0.1
+  temporal_proximity = 0.1;
 } else if (delta_days <= 90) {
   // Same quarter
-  temporal_proximity = 0.05
+  temporal_proximity = 0.05;
 } else {
   // Distant
-  temporal_proximity = 0.0
+  temporal_proximity = 0.0;
 }
 ```
 
 ### Step 4: Calculate Final Strength
 
 **Formula:**
+
 ```javascript
-strength = (0.5 * semantic_similarity) +
-           (0.3 * contextual_relevance) +
-           (0.2 * temporal_proximity)
+strength = 0.5 * semantic_similarity + 0.3 * contextual_relevance + 0.2 * temporal_proximity;
 
 // Clamp to valid range
-strength = max(0.0, min(1.0, strength))
+strength = max(0.0, min(1.0, strength));
 
 // Round to 2 decimal places
-strength = round(strength, 2)
+strength = round(strength, 2);
 ```
 
 ### Step 5: Classify Strength
 
 ```javascript
 if (strength >= 0.7) {
-  classification = 'strong'
+  classification = 'strong';
 } else if (strength >= 0.5) {
-  classification = 'medium'
+  classification = 'medium';
 } else {
-  classification = 'weak'
+  classification = 'weak';
 }
 ```
 
@@ -2020,7 +2161,7 @@ explanation = `This link has ${classification} strength (${strength}) because:
   - Same MOC: ${same_moc_bonus > 0 ? 'Yes (+0.3)' : 'No'}
   - Common sources: ${common_sources_bonus > 0 ? 'Yes (+0.2)' : 'No'}
 - Temporal proximity: ${temporal_proximity} (notes created ${delta_days} days apart)
-- Formula: (0.5 × ${semantic_similarity}) + (0.3 × ${contextual_relevance}) + (0.2 × ${temporal_proximity}) = ${strength}`
+- Formula: (0.5 × ${semantic_similarity}) + (0.3 × ${contextual_relevance}) + (0.2 × ${temporal_proximity}) = ${strength}`;
 ```
 
 ### Step 7: Return Results
@@ -2029,18 +2170,20 @@ explanation = `This link has ${classification} strength (${strength}) because:
 {
   strength: strength,
   classification: classification,
-  components: {
-    semantic_similarity: semantic_similarity,
-    contextual_relevance: contextual_relevance,
-    temporal_proximity: temporal_proximity
-  },
-  explanation: explanation
+  components:
+    {
+      semantic_similarity: semantic_similarity,
+      contextual_relevance: contextual_relevance,
+      temporal_proximity: temporal_proximity,
+    },
+  explanation: explanation,
 }
 ```
 
 ## Example: Strong Link
 
 **Input:**
+
 ```yaml
 semantic_similarity: 0.76
 source_note_metadata:
@@ -2056,6 +2199,7 @@ common_sources: true
 ```
 
 **Output:**
+
 ```yaml
 strength: 0.82
 classification: strong
@@ -2063,12 +2207,13 @@ components:
   semantic_similarity: 0.76
   contextual_relevance: 0.85
   temporal_proximity: 0.20
-explanation: "Strong strength (0.82): similarity 0.76, contextual 0.85 (4 shared tags, same MOC, common sources), temporal 0.20 (1 day apart)"
+explanation: 'Strong strength (0.82): similarity 0.76, contextual 0.85 (4 shared tags, same MOC, common sources), temporal 0.20 (1 day apart)'
 ```
 
 ## Example: Weak Link
 
 **Input:**
+
 ```yaml
 semantic_similarity: 0.52
 source_note_metadata:
@@ -2083,6 +2228,7 @@ common_sources: false
 ```
 
 **Output:**
+
 ```yaml
 strength: 0.26
 classification: weak
@@ -2090,12 +2236,12 @@ components:
   semantic_similarity: 0.52
   contextual_relevance: 0.0
   temporal_proximity: 0.0
-explanation: "Weak strength (0.26): similarity 0.52, no shared tags, different MOCs, 51 days apart"
+explanation: 'Weak strength (0.26): similarity 0.52, no shared tags, different MOCs, 51 days apart'
 ```
 
 ## Integration Points
 
-**Called by:** *suggest-links, *create-links, *accept-suggestion
+**Called by:** *suggest-links, *create-links, \*accept-suggestion
 **Calls:** relationship-confidence-checklist.md (validation)
 **Outputs to:** linking-quality-checklist.md (strength test validation)
 ==================== END: .bmad-obsidian-2nd-brain/tasks/rate-connection-strength.md ====================
@@ -2191,16 +2337,16 @@ original_target_content = target_note.content
 
 ```javascript
 // Extract existing wikilinks from source
-existing_source_links = extract_wikilinks(source_note.content)
+existing_source_links = extract_wikilinks(source_note.content);
 
 // Check if target already linked
-target_note_title = extract_title_from_path(target_note_path)
+target_note_title = extract_title_from_path(target_note_path);
 if (existing_source_links.includes(`[[${target_note_title}]]`)) {
   return {
     success: false,
     error: `Link already exists: source already links to ${target_note_title}`,
-    action: 'Skipped duplicate link creation'
-  }
+    action: 'Skipped duplicate link creation',
+  };
 }
 ```
 
@@ -2209,11 +2355,12 @@ if (existing_source_links.includes(`[[${target_note_title}]]`)) {
 ```javascript
 // Format: - [[Note Title]] - context sentence
 
-source_to_target_link = `- [[${target_note.title}]] - ${context_forward}`
-target_to_source_link = `- [[${source_note.title}]] - ${context_backward}`
+source_to_target_link = `- [[${target_note.title}]] - ${context_forward}`;
+target_to_source_link = `- [[${source_note.title}]] - ${context_backward}`;
 ```
 
 **Example:**
+
 ```markdown
 ## Related Concepts
 
@@ -2227,23 +2374,27 @@ target_to_source_link = `- [[${source_note.title}]] - ${context_backward}`
 function find_insertion_point(note_content) {
   // Priority 1: Insert in "Related Concepts" section if exists
   if (note_content.includes('## Related Concepts')) {
-    section_start = note_content.indexOf('## Related Concepts')
-    section_end = note_content.indexOf('\n## ', section_start + 1)
-    if (section_end == -1) section_end = note_content.length
-    insertion_point = section_end
-    return {location: 'related_concepts_section', index: insertion_point}
+    section_start = note_content.indexOf('## Related Concepts');
+    section_end = note_content.indexOf('\n## ', section_start + 1);
+    if (section_end == -1) section_end = note_content.length;
+    insertion_point = section_end;
+    return { location: 'related_concepts_section', index: insertion_point };
   }
 
   // Priority 2: Insert before "Source Attribution" section if exists
   if (note_content.includes('## Source Attribution')) {
-    insertion_point = note_content.indexOf('## Source Attribution')
+    insertion_point = note_content.indexOf('## Source Attribution');
     // Create Related Concepts section
-    new_section = '\n## Related Concepts\n\n'
-    return {location: 'before_source_attribution', index: insertion_point, prefix: new_section}
+    new_section = '\n## Related Concepts\n\n';
+    return { location: 'before_source_attribution', index: insertion_point, prefix: new_section };
   }
 
   // Priority 3: Append to end of note
-  return {location: 'end_of_note', index: note_content.length, prefix: '\n\n## Related Concepts\n\n'}
+  return {
+    location: 'end_of_note',
+    index: note_content.length,
+    prefix: '\n\n## Related Concepts\n\n',
+  };
 }
 ```
 
@@ -2284,17 +2435,17 @@ if (dry_run) {
 ### Step 7: Write Updated Content (with Rollback)
 
 ```javascript
-source_updated = false
-target_updated = false
+source_updated = false;
+target_updated = false;
 
 try {
   // Step 7a: Update source note
-  obsidian_mcp.update_note(source_note_path, updated_source)
-  source_updated = true
+  obsidian_mcp.update_note(source_note_path, updated_source);
+  source_updated = true;
 
   // Step 7b: Update target note
-  obsidian_mcp.update_note(target_note_path, updated_target)
-  target_updated = true
+  obsidian_mcp.update_note(target_note_path, updated_target);
+  target_updated = true;
 
   return {
     success: true,
@@ -2303,22 +2454,21 @@ try {
     rollback_performed: false,
     source_link_added: source_to_target_link,
     target_link_added: target_to_source_link,
-    error: null
-  }
-
+    error: null,
+  };
 } catch (error) {
   // Rollback if second write failed
   if (source_updated && !target_updated) {
     try {
-      obsidian_mcp.update_note(source_note_path, original_source_content)
+      obsidian_mcp.update_note(source_note_path, original_source_content);
       return {
         success: false,
         source_updated: false,
         target_updated: false,
         rollback_performed: true,
         error: `Target update failed, source rolled back: ${error.message}`,
-        original_error: error.message
-      }
+        original_error: error.message,
+      };
     } catch (rollback_error) {
       return {
         success: false,
@@ -2326,16 +2476,16 @@ try {
         target_updated: false,
         rollback_performed: false,
         error: `CRITICAL: Target update failed AND rollback failed. Source note modified but target not updated. Manual intervention required.`,
-        rollback_error: rollback_error.message
-      }
+        rollback_error: rollback_error.message,
+      };
     }
   } else {
     return {
       success: false,
       source_updated: false,
       target_updated: false,
-      error: `Failed to update notes: ${error.message}`
-    }
+      error: `Failed to update notes: ${error.message}`,
+    };
   }
 }
 ```
@@ -2345,23 +2495,23 @@ try {
 ```javascript
 // Re-read both notes to confirm links present
 try {
-  source_verify = obsidian_mcp.read_note(source_note_path)
-  target_verify = obsidian_mcp.read_note(target_note_path)
+  source_verify = obsidian_mcp.read_note(source_note_path);
+  target_verify = obsidian_mcp.read_note(target_note_path);
 
-  source_has_link = source_verify.content.includes(`[[${target_note.title}]]`)
-  target_has_link = target_verify.content.includes(`[[${source_note.title}]]`)
+  source_has_link = source_verify.content.includes(`[[${target_note.title}]]`);
+  target_has_link = target_verify.content.includes(`[[${source_note.title}]]`);
 
   if (!source_has_link || !target_has_link) {
     return {
       success: false,
-      error: "Verification failed: links not found in updated notes",
+      error: 'Verification failed: links not found in updated notes',
       source_has_link: source_has_link,
-      target_has_link: target_has_link
-    }
+      target_has_link: target_has_link,
+    };
   }
 } catch (error) {
   // Non-critical: verification failed but links likely created
-  log_warning(`Link verification failed: ${error.message}`)
+  log_warning(`Link verification failed: ${error.message}`);
 }
 ```
 
@@ -2370,6 +2520,7 @@ try {
 ### Example 1: Successful Bidirectional Link
 
 **Input:**
+
 ```yaml
 source_note_path: 'atomic/argument-01-spaced-repetition.md'
 target_note_path: 'atomic/phenomenon-01-forgetting-curve.md'
@@ -2380,6 +2531,7 @@ dry_run: false
 ```
 
 **Output:**
+
 ```yaml
 success: true
 source_updated: true
@@ -2395,6 +2547,7 @@ error: null
 **Input:** (same as above, but target note locked/read-only)
 
 **Output:**
+
 ```yaml
 success: false
 source_updated: false
@@ -2409,6 +2562,7 @@ original_error: 'Permission denied: note is read-only'
 **Input:** (link already exists)
 
 **Output:**
+
 ```yaml
 success: false
 error: 'Link already exists: source already links to Forgetting Curve'
@@ -2424,7 +2578,7 @@ action: 'Skipped duplicate link creation'
 
 ## Integration Points
 
-**Called by:** *create-links, *create-link, *accept-suggestion
+**Called by:** *create-links, *create-link, \*accept-suggestion
 **Calls:** Obsidian MCP read_note(), update_note()
 **Depends on:** linking-quality-checklist.md (validation before calling)
 ==================== END: .bmad-obsidian-2nd-brain/tasks/create-bidirectional-link.md ====================
@@ -2475,22 +2629,22 @@ neo4j_relationship_result:
 ```javascript
 // Read config file
 try {
-  config = read_yaml('expansion-packs/bmad-obsidian-2nd-brain/config.yaml')
-  neo4j_enabled = config.neo4j?.enabled || false
+  config = read_yaml('expansion-packs/bmad-obsidian-2nd-brain/config.yaml');
+  neo4j_enabled = config.neo4j?.enabled || false;
 } catch (error) {
   // Config not found or invalid → default to disabled
-  neo4j_enabled = false
-  log_warning('Config file not found, Neo4j disabled by default')
+  neo4j_enabled = false;
+  log_warning('Config file not found, Neo4j disabled by default');
 }
 
 // If disabled, skip gracefully
 if (!neo4j_enabled) {
   return {
-    success: true,  // Not a failure - intentionally skipped
+    success: true, // Not a failure - intentionally skipped
     neo4j_enabled: false,
     skipped: true,
-    message: 'Neo4j disabled in config, skipping relationship creation'
-  }
+    message: 'Neo4j disabled in config, skipping relationship creation',
+  };
 }
 ```
 
@@ -2498,7 +2652,7 @@ if (!neo4j_enabled) {
 
 ```javascript
 // Load relationship-record-tmpl.yaml
-cypher_template = load_template('relationship-record-tmpl.yaml')
+cypher_template = load_template('relationship-record-tmpl.yaml');
 
 // Prepare parameters (prevents Cypher injection)
 params = {
@@ -2509,8 +2663,8 @@ params = {
   strength: strength,
   discovered_at: discovered_at,
   context: context,
-  valid_time_start: discovered_at  // Same as discovered_at typically
-}
+  valid_time_start: discovered_at, // Same as discovered_at typically
+};
 
 // Parameterized Cypher query
 cypher_query = `
@@ -2526,7 +2680,7 @@ CREATE (source)-[r:CONCEPTUALLY_RELATED {
   transaction_time: datetime()
 }]->(target)
 RETURN r
-`
+`;
 ```
 
 ### Step 3: Execute Cypher Query
@@ -2596,6 +2750,7 @@ try {
 - **transaction_time**: When the relationship was recorded in the database (auto-generated by Neo4j)
 
 This enables temporal queries:
+
 - "What relationships existed on 2025-11-01?" → Query valid_time
 - "What did we know as of 2025-11-01?" → Query transaction_time
 
@@ -2604,6 +2759,7 @@ This enables temporal queries:
 ### Example 1: Successful Creation (Neo4j Enabled)
 
 **Input:**
+
 ```yaml
 source_note_path: 'atomic/argument-01-spaced-repetition.md'
 target_note_path: 'atomic/phenomenon-01-forgetting-curve.md'
@@ -2615,6 +2771,7 @@ context: 'The forgetting curve provides empirical evidence'
 ```
 
 **Output:**
+
 ```yaml
 success: true
 neo4j_enabled: true
@@ -2635,6 +2792,7 @@ error: null
 **Input:** (same as above, but config.neo4j.enabled = false)
 
 **Output:**
+
 ```yaml
 success: true
 neo4j_enabled: false
@@ -2648,6 +2806,7 @@ message: 'Neo4j disabled in config, skipping relationship creation'
 **Input:** (Neo4j enabled but connection fails)
 
 **Output:**
+
 ```yaml
 success: true
 neo4j_enabled: true
@@ -2666,7 +2825,7 @@ fallback: 'Obsidian-only mode'
 
 ## Integration Points
 
-**Called by:** *create-links, *create-link, *accept-suggestion
+**Called by:** *create-links, *create-link, \*accept-suggestion
 **Depends on:** config.yaml, relationship-record-tmpl.yaml
 **Calls:** Graphiti MCP execute_cypher()
 ==================== END: .bmad-obsidian-2nd-brain/tasks/create-neo4j-relationship.md ====================
@@ -2705,8 +2864,8 @@ learning_result:
   total_feedback_count: 125
   acceptance_rate: 0.78
   adjustments_applied:
-    threshold_adjustment: +0.05  # Raised or lowered
-    type_preferences: {'supports': 0.92, 'elaborates': 0.74, ...}
+    threshold_adjustment: +0.05 # Raised or lowered
+    type_preferences: { 'supports': 0.92, 'elaborates': 0.74, ... }
   recommendations:
     - 'Acceptance rate high (78%), consider lowering threshold to 0.55'
 ```
@@ -2748,21 +2907,21 @@ learning_result:
 ### Step 1: Load Existing Feedback
 
 ```javascript
-feedback_file_path = '.bmad-obsidian-2nd-brain/link-feedback.json'
+feedback_file_path = '.bmad-obsidian-2nd-brain/link-feedback.json';
 
 try {
-  feedback_data = read_json(feedback_file_path)
+  feedback_data = read_json(feedback_file_path);
 } catch (error) {
   // File doesn't exist → initialize
   feedback_data = {
     version: '1.0',
     created: current_iso_timestamp(),
     last_updated: current_iso_timestamp(),
-    threshold_history: [{date: today(), value: 0.6, reason: 'initial'}],
+    threshold_history: [{ date: today(), value: 0.6, reason: 'initial' }],
     current_threshold: 0.6,
     feedback_entries: [],
-    type_statistics: initialize_type_stats()
-  }
+    type_statistics: initialize_type_stats(),
+  };
 }
 ```
 
@@ -2776,11 +2935,11 @@ new_entry = {
   link_type: link_type,
   link_strength: link_strength,
   semantic_similarity: semantic_similarity,
-  rejection_reason: rejection_reason
-}
+  rejection_reason: rejection_reason,
+};
 
-feedback_data.feedback_entries.push(new_entry)
-feedback_data.last_updated = current_iso_timestamp()
+feedback_data.feedback_entries.push(new_entry);
+feedback_data.last_updated = current_iso_timestamp();
 ```
 
 ### Step 3: Update Type Statistics
@@ -2792,24 +2951,24 @@ if (!feedback_data.type_statistics[link_type]) {
     approved: 0,
     rejected: 0,
     deferred: 0,
-    acceptance_rate: 0.0
-  }
+    acceptance_rate: 0.0,
+  };
 }
 
-stats = feedback_data.type_statistics[link_type]
+stats = feedback_data.type_statistics[link_type];
 
 if (decision == 'approved') {
-  stats.approved += 1
+  stats.approved += 1;
 } else if (decision == 'rejected') {
-  stats.rejected += 1
+  stats.rejected += 1;
 } else if (decision == 'deferred') {
-  stats.deferred += 1
+  stats.deferred += 1;
 }
 
 // Recalculate acceptance rate
-total = stats.approved + stats.rejected  // Don't count deferred
+total = stats.approved + stats.rejected; // Don't count deferred
 if (total > 0) {
-  stats.acceptance_rate = stats.approved / total
+  stats.acceptance_rate = stats.approved / total;
 }
 ```
 
@@ -2842,20 +3001,20 @@ rejection_patterns = group_by(feedback_entries where decision == 'rejected', 're
 ```javascript
 // Only adjust if sufficient data (>= 20 decisions)
 if (total_decided >= 20) {
-  current_threshold = feedback_data.current_threshold
+  current_threshold = feedback_data.current_threshold;
 
-  if (overall_acceptance_rate < 0.60) {
+  if (overall_acceptance_rate < 0.6) {
     // Low acceptance → raise threshold (be more selective)
-    new_threshold = min(1.0, current_threshold + 0.05)
-    adjustment_reason = 'acceptance_low'
-  } else if (overall_acceptance_rate > 0.90) {
+    new_threshold = min(1.0, current_threshold + 0.05);
+    adjustment_reason = 'acceptance_low';
+  } else if (overall_acceptance_rate > 0.9) {
     // High acceptance → lower threshold (more suggestions)
-    new_threshold = max(0.5, current_threshold - 0.05)
-    adjustment_reason = 'acceptance_high'
+    new_threshold = max(0.5, current_threshold - 0.05);
+    adjustment_reason = 'acceptance_high';
   } else {
     // Acceptance in good range (60%-90%) → no change
-    new_threshold = current_threshold
-    adjustment_reason = 'no_change'
+    new_threshold = current_threshold;
+    adjustment_reason = 'no_change';
   }
 
   // Record threshold change
@@ -2865,9 +3024,9 @@ if (total_decided >= 20) {
       value: new_threshold,
       reason: adjustment_reason,
       previous_value: current_threshold,
-      acceptance_rate: overall_acceptance_rate
-    })
-    feedback_data.current_threshold = new_threshold
+      acceptance_rate: overall_acceptance_rate,
+    });
+    feedback_data.current_threshold = new_threshold;
   }
 }
 ```
@@ -2917,13 +3076,15 @@ try {
   feedback_recorded: true,
   total_feedback_count: feedback_data.feedback_entries.length,
   acceptance_rate: overall_acceptance_rate,
-  adjustments_applied: {
-    threshold_adjustment: new_threshold - current_threshold,
-    new_threshold: new_threshold,
-    type_preferences: feedback_data.type_statistics
-  },
+  adjustments_applied:
+    {
+      threshold_adjustment: new_threshold - current_threshold,
+      new_threshold: new_threshold,
+      type_preferences: feedback_data.type_statistics,
+    },
   rejection_filters: rejection_filters,
-  recommendations: generate_recommendations(overall_acceptance_rate, type_statistics)
+  recommendations: generate_recommendations(overall_acceptance_rate,
+  type_statistics),
 }
 ```
 
@@ -2932,6 +3093,7 @@ try {
 ### Example 1: First Feedback (Initialization)
 
 **Input:**
+
 ```yaml
 suggestion_id: 'abc123'
 decision: 'approved'
@@ -2941,12 +3103,13 @@ semantic_similarity: 0.76
 ```
 
 **Output:**
+
 ```yaml
 feedback_recorded: true
 total_feedback_count: 1
 acceptance_rate: 1.0
 adjustments_applied:
-  threshold_adjustment: 0.0  # Insufficient data
+  threshold_adjustment: 0.0 # Insufficient data
   new_threshold: 0.6
 recommendations:
   - 'Insufficient data (1 decision). Need 20+ decisions for threshold adjustment'
@@ -2957,6 +3120,7 @@ recommendations:
 **Input:** (after 25 decisions, 12 approved, 13 rejected → 48% acceptance)
 
 **Output:**
+
 ```yaml
 feedback_recorded: true
 total_feedback_count: 25
@@ -2966,7 +3130,7 @@ adjustments_applied:
   new_threshold: 0.65
   type_preferences:
     supports: 0.85
-    elaborates: 0.42  # Low acceptance
+    elaborates: 0.42 # Low acceptance
     analogous_to: 0.60
 recommendations:
   - 'Acceptance rate low (48%), raised threshold from 0.60 to 0.65'
@@ -2978,6 +3142,7 @@ recommendations:
 **Input:** (after 50 decisions, 46 approved, 4 rejected → 92% acceptance)
 
 **Output:**
+
 ```yaml
 feedback_recorded: true
 total_feedback_count: 50
@@ -2992,17 +3157,20 @@ recommendations:
 ## Privacy & Reset
 
 **Privacy:**
+
 - All feedback stored locally in `.bmad-obsidian-2nd-brain/link-feedback.json`
 - No data sent to external services
 - User has full control and visibility
 
 **Reset Learning:**
+
 ```bash
 # Delete feedback file to reset
 rm .bmad-obsidian-2nd-brain/link-feedback.json
 ```
 
 **View Stats:**
+
 ```javascript
 // User can view learning stats via command
 *review-feedback-stats
@@ -3020,7 +3188,7 @@ rm .bmad-obsidian-2nd-brain/link-feedback.json
 ## Integration Points
 
 **Called by:** *accept-suggestion, *reject-suggestion
-**Outputs to:** *suggest-links (applies learned threshold and filters)
+**Outputs to:** \*suggest-links (applies learned threshold and filters)
 ==================== END: .bmad-obsidian-2nd-brain/tasks/learn-from-feedback.md ====================
 
 ==================== START: .bmad-obsidian-2nd-brain/templates/link-suggestion-tmpl.yaml ====================
@@ -3725,21 +3893,10 @@ examples:
 ---
 
 checklist:
-  id: linking-quality-checklist
-  name: Linking Quality Checklist
-  description: Quality gates for semantic link validation - ensures links represent genuine conceptual relationships with bidirectional integrity
-  items:
-    - "[ ] Genuine relationship test: Link represents genuine conceptual relationship (not just keyword overlap)"
-    - "[ ] Link type test: Link type identified correctly from 7 types (supports/contradicts/elaborates/analogous_to/generalizes/specializes/influences)"
-    - "[ ] Context test: Context sentence explains why link exists"
-    - "[ ] Bidirectional test: Link bidirectional (present in both notes)"
-    - "[ ] Duplicate test: No duplicate links (same target linked multiple times)"
-    - "[ ] Strength test: Link strength appropriate (strong >= 0.7, medium 0.5-0.7, weak < 0.5)"
-    - "[ ] Circular reasoning test: Links don't create circular reasoning"
-    - "[ ] Atomicity test: Both notes are atomic (verified via atomicity-checklist.md)"
-    - "[ ] Similarity threshold test: Semantic similarity score >= 0.6 threshold"
-    - "[ ] Neo4j test: Neo4j relationship created (if enabled) or skipped gracefully"
-    - "[ ] Security test: Input validation and path sanitization"
+id: linking-quality-checklist
+name: Linking Quality Checklist
+description: Quality gates for semantic link validation - ensures links represent genuine conceptual relationships with bidirectional integrity
+items: - "[ ] Genuine relationship test: Link represents genuine conceptual relationship (not just keyword overlap)" - "[ ] Link type test: Link type identified correctly from 7 types (supports/contradicts/elaborates/analogous_to/generalizes/specializes/influences)" - "[ ] Context test: Context sentence explains why link exists" - "[ ] Bidirectional test: Link bidirectional (present in both notes)" - "[ ] Duplicate test: No duplicate links (same target linked multiple times)" - "[ ] Strength test: Link strength appropriate (strong >= 0.7, medium 0.5-0.7, weak < 0.5)" - "[ ] Circular reasoning test: Links don't create circular reasoning" - "[ ] Atomicity test: Both notes are atomic (verified via atomicity-checklist.md)" - "[ ] Similarity threshold test: Semantic similarity score >= 0.6 threshold" - "[ ] Neo4j test: Neo4j relationship created (if enabled) or skipped gracefully" - "[ ] Security test: Input validation and path sanitization"
 
 ---
 
@@ -3754,7 +3911,7 @@ This checklist ensures every semantic link meets quality standards - representin
 - During batch approval of link suggestions
 - When validating link creation results
 - Before creating Neo4j [:CONCEPTUALLY_RELATED] relationships
-- During manual link creation via *create-link command
+- During manual link creation via \*create-link command
 
 ## Quality Criteria Details
 
@@ -3763,12 +3920,14 @@ This checklist ensures every semantic link meets quality standards - representin
 **Check:** Link represents a genuine conceptual relationship based on semantic meaning, not just keyword overlap
 
 **Scoring:**
+
 - Pass: 1.0 if genuine conceptual relationship
 - Fail: 0.0 if only superficial keyword match
 
 **Pass Criteria:** Score >= 0.7 (must be genuine relationship)
 
 **Remediation if failed:**
+
 - Analyze whether notes share conceptual meaning beyond keywords
 - Check if relationship can be explained in semantic terms
 - Reject link if only surface-level keyword match
@@ -3787,6 +3946,7 @@ This checklist ensures every semantic link meets quality standards - representin
 **Check:** Link type correctly identified as one of 7 relationship types with confidence >= 0.7
 
 **7 Relationship Types:**
+
 1. **supports** - Note A provides evidence for Note B
 2. **contradicts** - Note A conflicts with Note B
 3. **elaborates** - Note A explains Note B in detail
@@ -3796,12 +3956,14 @@ This checklist ensures every semantic link meets quality standards - representin
 7. **influences** - Note A influenced creation/revision of Note B
 
 **Scoring:**
+
 - Pass: 1.0 if type identified with confidence >= 0.7
 - Fail: 0.0 if type ambiguous (confidence < 0.7) or wrong type
 
 **Pass Criteria:** Score >= 0.7 (must identify type correctly)
 
 **Remediation if failed:**
+
 - Re-analyze note contents for relationship signals
 - Check connection-patterns.md for type characteristics
 - Default to "elaborates" if truly ambiguous
@@ -3821,12 +3983,14 @@ Type: elaborates, Confidence: 0.45
 **Check:** Context sentence clearly explains WHY the link exists (the semantic relationship)
 
 **Scoring:**
+
 - Pass: 1.0 if context sentence present and meaningful
 - Fail: 0.0 if no context or generic/vague context
 
 **Pass Criteria:** Score >= 0.7 (must have meaningful context)
 
 **Remediation if failed:**
+
 - Generate context sentence explaining the relationship
 - Avoid generic contexts like "these are related"
 - Include specific semantic connection
@@ -3846,12 +4010,14 @@ Context: "See also this related note"
 **Check:** Link exists in both source and target notes (true bidirectional linking)
 
 **Scoring:**
+
 - Pass: 1.0 if link present in both notes
 - Fail: 0.0 if link only in one note (one-way link)
 
 **Pass Criteria:** Score >= 0.7 (must be bidirectional)
 
 **Remediation if failed:**
+
 - Create link in missing direction
 - Ensure both notes updated via Obsidian MCP
 - Verify both context sentences are present
@@ -3872,12 +4038,14 @@ Target note: (no link back)
 **Check:** No duplicate links to the same target note already exist
 
 **Scoring:**
+
 - Pass: 1.0 if no duplicates
 - Fail: 0.0 if duplicate link detected
 
 **Pass Criteria:** Score >= 0.7 (must be no duplicates)
 
 **Remediation if failed:**
+
 - Check existing wikilinks in note before creating
 - Skip link creation if duplicate detected
 - Inform user that link already exists
@@ -3896,16 +4064,19 @@ Note has links to A, B, C. Creating link to A again.
 **Check:** Link strength score is appropriate and correctly classified
 
 **Strength Classifications:**
+
 - **Strong:** >= 0.7 (core relationships, high confidence)
 - **Medium:** 0.5-0.7 (relevant connections, moderate confidence)
 - **Weak:** < 0.5 (tangential, suggest for user review)
 
 **Strength Calculation:**
+
 ```
 strength = (0.5 × semantic_similarity) + (0.3 × contextual_relevance) + (0.2 × temporal_proximity)
 ```
 
 **Scoring:**
+
 - Pass: 1.0 if strength >= 0.5 (medium or strong)
 - Partial: 0.5 if strength 0.4-0.49 (borderline)
 - Fail: 0.0 if strength < 0.4 (too weak)
@@ -3913,6 +4084,7 @@ strength = (0.5 × semantic_similarity) + (0.3 × contextual_relevance) + (0.2 �
 **Pass Criteria:** Score >= 0.7 (must be medium or strong)
 
 **Remediation if failed:**
+
 - Reject weak links (< 0.5) or flag for manual review
 - Verify semantic similarity >= 0.6 threshold
 - Check contextual relevance calculation
@@ -3931,12 +4103,14 @@ Strength: 0.38 (weak)
 **Check:** Link doesn't create circular reasoning chains (A → B → C → A)
 
 **Scoring:**
+
 - Pass: 1.0 if no circular reasoning detected
 - Fail: 0.0 if circular chain found
 
 **Pass Criteria:** Score >= 0.7 (must not be circular)
 
 **Remediation if failed:**
+
 - Traverse link graph to detect cycles
 - Reject link if it completes a reasoning cycle
 - Distinguish from valid circular references (different from reasoning)
@@ -3955,12 +4129,14 @@ A supports B, B supports C, C supports A
 **Check:** Both source and target notes pass atomicity-checklist.md (score >= 0.7)
 
 **Scoring:**
+
 - Pass: 1.0 if both notes atomic (>= 0.7)
 - Fail: 0.0 if either note non-atomic (< 0.7)
 
 **Pass Criteria:** Score >= 0.7 (both must be atomic)
 
 **Remediation if failed:**
+
 - Run atomicity-checklist.md on both notes
 - Fragment non-atomic notes first
 - Only link atomic notes
@@ -3979,12 +4155,14 @@ Source atomicity: 0.95, Target atomicity: 0.58
 **Check:** Semantic similarity score from Smart Connections >= 0.6 threshold
 
 **Scoring:**
+
 - Pass: 1.0 if similarity >= 0.6
 - Fail: 0.0 if similarity < 0.6
 
 **Pass Criteria:** Score >= 0.7 (must meet threshold)
 
 **Remediation if failed:**
+
 - Reject links below 0.6 similarity threshold
 - Verify Smart Connections query was correct
 - Consider manual linking if user insists (bypass threshold)
@@ -4003,12 +4181,14 @@ Semantic similarity: 0.52
 **Check:** Neo4j [:CONCEPTUALLY_RELATED] relationship created successfully (if enabled) or skipped gracefully (if disabled)
 
 **Scoring:**
+
 - Pass: 1.0 if Neo4j relationship created OR disabled gracefully
 - Fail: 0.0 if Neo4j enabled but creation failed
 
 **Pass Criteria:** Score >= 0.7 (must handle Neo4j correctly)
 
 **Remediation if failed:**
+
 - Check config.yaml for neo4j.enabled status
 - If enabled: retry Neo4j connection
 - If retry fails: log warning, continue with Obsidian-only mode
@@ -4031,6 +4211,7 @@ Neo4j enabled, connection failed, no retry
 **Check:** Input validation, path sanitization, injection prevention
 
 **Security Checks:**
+
 - **Path validation:** No directory traversal (../) in note paths
 - **Cypher injection:** Use parameterized queries only
 - **Link-to-self:** Prevent linking note to itself
@@ -4039,12 +4220,14 @@ Neo4j enabled, connection failed, no retry
 - **Permissions:** Verify both notes are writable
 
 **Scoring:**
+
 - Pass: 1.0 if all security checks pass
 - Fail: 0.0 if any security violation detected
 
 **Pass Criteria:** Score >= 0.7 (must pass security)
 
 **Remediation if failed:**
+
 - Block dangerous paths immediately
 - Sanitize all note paths
 - Use parameterized Cypher queries
@@ -4098,6 +4281,7 @@ is_quality_link = (total_score >= 0.7)
 **FAIL (Reject Link):** Score < 0.6 OR any blocking test fails
 
 **Blocking Failures (auto-fail regardless of score):**
+
 - Not genuine relationship (test 1)
 - Link type not identified (test 2)
 - No context sentence (test 3)
@@ -4109,6 +4293,7 @@ is_quality_link = (total_score >= 0.7)
 - Security violation (test 11)
 
 **Critical Warnings (flag for review):**
+
 - Weak link strength (test 6, < 0.5)
 - Low link type confidence (test 2, < 0.7)
 - Borderline similarity (test 9, 0.6-0.65)
@@ -4162,24 +4347,24 @@ All test scenarios documented in STORY-004 Task 15.
 ## Example Validation Report
 
 ```yaml
-link_id: "c3f5a921-4b2e-4d1a-9e8f-7c3d2b1a0f4e"
-source: "atomic/argument-01-spaced-repetition-superiority.md"
-target: "atomic/phenomenon-01-ebbinghaus-forgetting-curve.md"
+link_id: 'c3f5a921-4b2e-4d1a-9e8f-7c3d2b1a0f4e'
+source: 'atomic/argument-01-spaced-repetition-superiority.md'
+target: 'atomic/phenomenon-01-ebbinghaus-forgetting-curve.md'
 is_quality_link: true
 total_score: 1.0
 tests:
-  genuine_relationship: {score: 1.0, pass: true}
-  link_type: {score: 1.0, pass: true, type: "supports", confidence: 0.85}
-  context: {score: 1.0, pass: true}
-  bidirectional: {score: 1.0, pass: true}
-  duplicate: {score: 1.0, pass: true}
-  strength: {score: 1.0, pass: true, value: 0.82, classification: "strong"}
-  circular_reasoning: {score: 1.0, pass: true}
-  atomicity: {score: 1.0, pass: true, source: 0.92, target: 0.88}
-  similarity_threshold: {score: 1.0, pass: true, value: 0.76}
-  neo4j: {score: 1.0, pass: true, relationship_id: "rel-abc123"}
-  security: {score: 1.0, pass: true}
-verdict: "PASS - Link approved for creation"
+  genuine_relationship: { score: 1.0, pass: true }
+  link_type: { score: 1.0, pass: true, type: 'supports', confidence: 0.85 }
+  context: { score: 1.0, pass: true }
+  bidirectional: { score: 1.0, pass: true }
+  duplicate: { score: 1.0, pass: true }
+  strength: { score: 1.0, pass: true, value: 0.82, classification: 'strong' }
+  circular_reasoning: { score: 1.0, pass: true }
+  atomicity: { score: 1.0, pass: true, source: 0.92, target: 0.88 }
+  similarity_threshold: { score: 1.0, pass: true, value: 0.76 }
+  neo4j: { score: 1.0, pass: true, relationship_id: 'rel-abc123' }
+  security: { score: 1.0, pass: true }
+verdict: 'PASS - Link approved for creation'
 recommendations: []
 ```
 
@@ -4188,11 +4373,13 @@ recommendations: []
 ## Integration with Other Checklists
 
 **Atomicity Checklist (atomicity-checklist.md):**
+
 - Used by test 8 to verify both notes are atomic
 - Both notes must score >= 0.7 on atomicity checklist
 - Blocking failure if either note is non-atomic
 
 **Relationship Confidence Checklist (relationship-confidence-checklist.md):**
+
 - Used by test 2 and test 6 to validate type and strength
 - Provides confidence scoring for link type identification
 - Used during link strength calculation validation
@@ -4204,11 +4391,13 @@ recommendations: []
 ### Graceful Degradation
 
 If Neo4j unavailable (test 10):
+
 - Continue with Obsidian-only linking
 - Log warning but don't fail link creation
 - Return {neo4j_skipped: true} in result
 
 If Smart Connections unavailable (test 9):
+
 - Allow manual linking to bypass threshold
 - Warn user that semantic similarity not verified
 - Suggest manual review for link quality
@@ -4216,6 +4405,7 @@ If Smart Connections unavailable (test 9):
 ### Rollback on Failure
 
 If link creation fails after source note updated:
+
 - Rollback source note to previous state
 - Remove partial link to maintain consistency
 - Return clear error to user
@@ -4234,18 +4424,10 @@ If link creation fails after source note updated:
 ---
 
 checklist:
-  id: relationship-confidence-checklist
-  name: Relationship Confidence Checklist
-  description: Confidence scoring for link type identification and strength calculation validation
-  items:
-    - "[ ] Similarity threshold test: Semantic similarity score >= 0.6 threshold"
-    - "[ ] Contextual relevance test: Contextual relevance indicators present (shared concepts, same MOC, common sources)"
-    - "[ ] Temporal proximity test: Temporal proximity considered (creation/edit dates)"
-    - "[ ] Link type confidence test: Link type confidence >= 0.7"
-    - "[ ] No conflicting signals test: No conflicting relationship signals present"
-    - "[ ] Atomicity verified test: Both notes are atomic and complete (score >= 0.7)"
-    - "[ ] Non-circular test: Relationship is non-circular (no reasoning loops)"
-    - "[ ] Strength validity test: Final strength score between 0.0-1.0"
+id: relationship-confidence-checklist
+name: Relationship Confidence Checklist
+description: Confidence scoring for link type identification and strength calculation validation
+items: - "[ ] Similarity threshold test: Semantic similarity score >= 0.6 threshold" - "[ ] Contextual relevance test: Contextual relevance indicators present (shared concepts, same MOC, common sources)" - "[ ] Temporal proximity test: Temporal proximity considered (creation/edit dates)" - "[ ] Link type confidence test: Link type confidence >= 0.7" - "[ ] No conflicting signals test: No conflicting relationship signals present" - "[ ] Atomicity verified test: Both notes are atomic and complete (score >= 0.7)" - "[ ] Non-circular test: Relationship is non-circular (no reasoning loops)" - "[ ] Strength validity test: Final strength score between 0.0-1.0"
 
 ---
 
@@ -4268,6 +4450,7 @@ This checklist validates the confidence scoring for link type identification and
 **Check:** Semantic similarity score from Smart Connections >= 0.6 threshold
 
 **Scoring:**
+
 - Pass: 1.0 if similarity >= 0.6
 - Partial: 0.5 if similarity 0.5-0.59 (borderline)
 - Fail: 0.0 if similarity < 0.5
@@ -4275,6 +4458,7 @@ This checklist validates the confidence scoring for link type identification and
 **Pass Criteria:** Score >= 0.7 (must meet or exceed threshold)
 
 **Remediation if failed:**
+
 - Reject links below 0.6 threshold
 - Flag borderline (0.5-0.59) for manual review
 - Consider adjusting threshold based on feedback learning
@@ -4297,12 +4481,14 @@ Semantic similarity: 0.42
 **Check:** Contextual relevance indicators present and measurable
 
 **Indicators:**
+
 1. **Shared concepts/tags** - Both notes share tags or concept references
 2. **Same MOC** - Both notes belong to same Map of Content
 3. **Common sources** - Both notes cite same source materials
 4. **Domain proximity** - Both notes in same knowledge domain
 
 **Calculation:**
+
 ```python
 # Component scores (each 0.0-1.0)
 tag_overlap = len(shared_tags) / len(total_unique_tags)
@@ -4314,6 +4500,7 @@ contextual_relevance = (tag_overlap + same_moc_bonus + common_sources_bonus) / 3
 ```
 
 **Scoring:**
+
 - Pass: 1.0 if contextual_relevance >= 0.5
 - Partial: 0.5 if contextual_relevance 0.3-0.49
 - Fail: 0.0 if contextual_relevance < 0.3
@@ -4321,6 +4508,7 @@ contextual_relevance = (tag_overlap + same_moc_bonus + common_sources_bonus) / 3
 **Pass Criteria:** Score >= 0.7 (must have strong context)
 
 **Remediation if failed:**
+
 - Verify notes have meaningful overlap beyond keywords
 - Check for shared tags or MOC membership
 - Analyze domain proximity
@@ -4351,6 +4539,7 @@ Contextual relevance: 0.0
 **Check:** Temporal proximity between note creation/edit dates considered
 
 **Temporal Scoring:**
+
 ```python
 import datetime
 
@@ -4368,12 +4557,14 @@ def calculate_temporal_proximity(date1, date2):
 ```
 
 **Scoring:**
+
 - Pass: 1.0 if temporal proximity calculated correctly
 - Fail: 0.0 if not considered
 
 **Pass Criteria:** Score >= 0.7 (must calculate temporal proximity)
 
 **Remediation if failed:**
+
 - Extract creation/edit dates from note metadata
 - Calculate temporal proximity bonus
 - Apply bonus to link strength calculation
@@ -4393,6 +4584,7 @@ Temporal proximity not calculated
 **Check:** Link type identified with confidence >= 0.7
 
 **Confidence Calculation:**
+
 ```python
 # Start at maximum confidence
 confidence = 1.0
@@ -4410,6 +4602,7 @@ confidence = max(0.0, min(1.0, confidence))
 ```
 
 **Scoring:**
+
 - Pass: 1.0 if confidence >= 0.7
 - Partial: 0.5 if confidence 0.5-0.69
 - Fail: 0.0 if confidence < 0.5
@@ -4417,6 +4610,7 @@ confidence = max(0.0, min(1.0, confidence))
 **Pass Criteria:** Score >= 0.7 (high confidence required)
 
 **Remediation if failed:**
+
 - Re-analyze note contents for clearer signals
 - Review connection-patterns.md for type characteristics
 - Default to "elaborates" if confidence < 0.5
@@ -4442,17 +4636,20 @@ No clear relationship type ✗
 **Check:** No conflicting relationship signals present in note contents
 
 **Conflicting Patterns:**
+
 - Supports AND contradicts signals simultaneously
 - Generalizes AND specializes signals simultaneously
 - Elaborates AND analogous_to signals simultaneously
 
 **Scoring:**
+
 - Pass: 1.0 if no conflicts detected
 - Fail: 0.0 if conflicts present
 
 **Pass Criteria:** Score >= 0.7 (must have no conflicts)
 
 **Remediation if failed:**
+
 - Identify which relationship type has stronger signals
 - Choose dominant relationship type
 - Reduce confidence score for ambiguous cases
@@ -4471,12 +4668,14 @@ Both "supports" (evidence for) AND "contradicts" (however, conflicts with)
 **Check:** Both source and target notes pass atomicity-checklist.md with score >= 0.7
 
 **Scoring:**
+
 - Pass: 1.0 if both atomic (>= 0.7)
 - Fail: 0.0 if either non-atomic (< 0.7)
 
 **Pass Criteria:** Score >= 0.7 (both must be atomic)
 
 **Remediation if failed:**
+
 - Run atomicity-checklist.md on both notes
 - Fragment non-atomic notes before linking
 - Only create links between atomic notes
@@ -4497,6 +4696,7 @@ Target atomicity: 0.58
 **Check:** Relationship does not create circular reasoning (A → B → C → A where → is "supports")
 
 **Circular Detection:**
+
 ```python
 def is_circular_reasoning(source, target, link_type):
     # Only check for evidence/support chains (not elaboration/analogy)
@@ -4523,12 +4723,14 @@ def is_circular_reasoning(source, target, link_type):
 ```
 
 **Scoring:**
+
 - Pass: 1.0 if non-circular
 - Fail: 0.0 if circular reasoning detected
 
 **Pass Criteria:** Score >= 0.7 (must be non-circular)
 
 **Remediation if failed:**
+
 - Reject link to prevent circular reasoning
 - Inform user of circular chain detected
 - Suggest alternative link type (elaborates, analogous_to)
@@ -4547,23 +4749,27 @@ A supports B, B supports C, C supports A
 **Check:** Final link strength score is valid (0.0-1.0 range) and classification matches score
 
 **Strength Formula:**
+
 ```python
 strength = (0.5 × semantic_similarity) + (0.3 × contextual_relevance) + (0.2 × temporal_proximity)
 strength = max(0.0, min(1.0, strength))
 ```
 
 **Classification Validation:**
+
 - Strong: strength >= 0.7 ✓
 - Medium: 0.5 <= strength < 0.7 ✓
 - Weak: strength < 0.5 ✓
 
 **Scoring:**
+
 - Pass: 1.0 if strength valid and classification correct
 - Fail: 0.0 if strength invalid or classification wrong
 
 **Pass Criteria:** Score >= 0.7 (must be valid)
 
 **Remediation if failed:**
+
 - Recalculate strength using correct formula
 - Verify all components in valid range (0.0-1.0)
 - Clamp strength to 0.0-1.0 if out of bounds
@@ -4586,17 +4792,20 @@ Classification: strong
 ### Strong Links (>= 0.7)
 
 **Characteristics:**
+
 - High semantic similarity (>= 0.7)
 - Strong contextual relevance (>= 0.6)
 - Clear relationship signals
 - High confidence (>= 0.8)
 
 **Usage:**
+
 - Auto-approve in batch mode
 - Core relationships in knowledge graph
 - High priority for linking
 
 **Example:**
+
 ```yaml
 strength: 0.82
 classification: strong
@@ -4609,17 +4818,20 @@ confidence: 0.85
 ### Medium Links (0.5-0.7)
 
 **Characteristics:**
+
 - Moderate semantic similarity (0.6-0.7)
 - Moderate contextual relevance (0.4-0.6)
 - Some relationship signals
 - Moderate confidence (0.6-0.8)
 
 **Usage:**
+
 - Prompt user for approval
 - Relevant connections in knowledge graph
 - Medium priority for linking
 
 **Example:**
+
 ```yaml
 strength: 0.64
 classification: medium
@@ -4632,17 +4844,20 @@ confidence: 0.72
 ### Weak Links (< 0.5)
 
 **Characteristics:**
+
 - Low semantic similarity (0.5-0.6)
 - Low contextual relevance (< 0.4)
 - Few relationship signals
 - Low confidence (< 0.6)
 
 **Usage:**
+
 - Flag for manual review
 - Tangential connections
 - Low priority or reject
 
 **Example:**
+
 ```yaml
 strength: 0.43
 classification: weak
@@ -4688,6 +4903,7 @@ is_high_confidence = (total_score >= 0.7)
 **LOW CONFIDENCE:** Score < 0.5 (reject or require manual review)
 
 **Blocking Failures (auto-fail):**
+
 - Similarity below threshold (test 1, < 0.6)
 - Link type confidence low (test 4, < 0.5)
 - Conflicting signals (test 5)
@@ -4696,6 +4912,7 @@ is_high_confidence = (total_score >= 0.7)
 - Invalid strength score (test 8)
 
 **Critical Warnings (flag for review):**
+
 - Borderline similarity (test 1, 0.5-0.59)
 - Weak contextual relevance (test 2, < 0.3)
 - Borderline link type confidence (test 4, 0.5-0.69)
@@ -4742,27 +4959,27 @@ All test scenarios documented in STORY-004 Task 15.
 ## Example Validation Report
 
 ```yaml
-relationship_id: "c3f5a921-4b2e-4d1a-9e8f-7c3d2b1a0f4e"
-source: "atomic/argument-01-spaced-repetition-superiority.md"
-target: "atomic/phenomenon-01-ebbinghaus-forgetting-curve.md"
+relationship_id: 'c3f5a921-4b2e-4d1a-9e8f-7c3d2b1a0f4e'
+source: 'atomic/argument-01-spaced-repetition-superiority.md'
+target: 'atomic/phenomenon-01-ebbinghaus-forgetting-curve.md'
 is_high_confidence: true
 total_score: 1.0
 tests:
-  similarity_threshold: {score: 1.0, pass: true, value: 0.76}
-  contextual_relevance: {score: 1.0, pass: true, value: 0.65}
-  temporal_proximity: {score: 1.0, pass: true, value: 0.20}
-  link_type_confidence: {score: 1.0, pass: true, type: "supports", confidence: 0.85}
-  no_conflicts: {score: 1.0, pass: true}
-  atomicity_verified: {score: 1.0, pass: true, source: 0.92, target: 0.88}
-  non_circular: {score: 1.0, pass: true}
-  strength_validity: {score: 1.0, pass: true, strength: 0.82, classification: "strong"}
-verdict: "HIGH CONFIDENCE - Approve link"
+  similarity_threshold: { score: 1.0, pass: true, value: 0.76 }
+  contextual_relevance: { score: 1.0, pass: true, value: 0.65 }
+  temporal_proximity: { score: 1.0, pass: true, value: 0.20 }
+  link_type_confidence: { score: 1.0, pass: true, type: 'supports', confidence: 0.85 }
+  no_conflicts: { score: 1.0, pass: true }
+  atomicity_verified: { score: 1.0, pass: true, source: 0.92, target: 0.88 }
+  non_circular: { score: 1.0, pass: true }
+  strength_validity: { score: 1.0, pass: true, strength: 0.82, classification: 'strong' }
+verdict: 'HIGH CONFIDENCE - Approve link'
 strength_components:
   semantic_similarity: 0.76
   contextual_relevance: 0.65
   temporal_proximity: 0.20
   final_strength: 0.82
-  classification: "strong"
+  classification: 'strong'
 ```
 
 ---
@@ -4770,11 +4987,13 @@ strength_components:
 ## Integration with Other Checklists
 
 **Linking Quality Checklist (linking-quality-checklist.md):**
+
 - Calls this checklist for tests 2 and 6 (strength and type validation)
 - Uses confidence scores to determine link quality
 - Shares atomicity verification (test 6)
 
 **Atomicity Checklist (atomicity-checklist.md):**
+
 - Used by test 6 to verify note atomicity
 - Both notes must score >= 0.7
 - Blocking failure if either note non-atomic
@@ -5053,6 +5272,7 @@ A relationship where Note A describes a broader, more abstract principle, patter
 **Relationship to SPECIALIZES:**
 
 GENERALIZES and SPECIALIZES are inverse relationships:
+
 - If "A GENERALIZES B", then "B SPECIALIZES A"
 - Always create both directions explicitly for clarity
 
@@ -5108,6 +5328,7 @@ A relationship where Note A describes a specific, concrete instance, implementat
 **Relationship to GENERALIZES:**
 
 SPECIALIZES and GENERALIZES are inverse relationships:
+
 - If "A SPECIALIZES B", then "B GENERALIZES A"
 - Both directions should be created explicitly
 
@@ -5246,14 +5467,17 @@ For each type, confidence score determines acceptance:
 ### Signal Strength Examples
 
 **SUPPORTS - High Confidence:**
+
 - "Meta-analysis of 317 studies confirms..."
 - "Controlled experiment demonstrated..."
 
 **SUPPORTS - Medium Confidence:**
+
 - "Several examples suggest..."
 - "Anecdotal evidence indicates..."
 
 **SUPPORTS - Low Confidence:**
+
 - "Someone mentioned that..."
 - "It seems related to..."
 
@@ -5280,7 +5504,7 @@ For each type, confidence score determines acceptance:
 ### For Users
 
 1. **Manual Linking**
-   - Use *create-link command with explicit type
+   - Use \*create-link command with explicit type
    - Refer to this taxonomy for type selection
    - Check "When NOT to Use" to avoid misclassification
 
@@ -5294,9 +5518,9 @@ For each type, confidence score determines acceptance:
 ## References
 
 - Source: `/manuscripts/bmad-obsidian-2nd-brain-requirements.md` (lines 3806-3813)
-- Luhmann, N. (1992). *Communicating with Slip Boxes*
-- Ahrens, S. (2017). *How to Take Smart Notes*
-- Sowa, J. F. (2000). *Knowledge Representation: Logical, Philosophical, and Computational Foundations*
+- Luhmann, N. (1992). _Communicating with Slip Boxes_
+- Ahrens, S. (2017). _How to Take Smart Notes_
+- Sowa, J. F. (2000). _Knowledge Representation: Logical, Philosophical, and Computational Foundations_
 ==================== END: .bmad-obsidian-2nd-brain/data/relationship-types.md ====================
 
 ==================== START: .bmad-obsidian-2nd-brain/data/connection-patterns.md ====================
@@ -5321,6 +5545,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Connect claims with their supporting evidence to build justified beliefs
 
 **Characteristics:**
+
 - Evidence-based relationship
 - Strengthens credibility of target claim
 - Often empirical or logical support
@@ -5328,6 +5553,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Creates justification networks in knowledge graph
 
 **Linguistic Signals:**
+
 - "evidence for", "confirms", "validates"
 - "proves that", "demonstrates"
 - "backs up", "corroborates"
@@ -5336,6 +5562,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "research supports", "data confirms"
 
 **Common Contexts:**
+
 - Phenomenon supporting argument
 - Data supporting claim
 - Example supporting theory
@@ -5381,6 +5608,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Highlight tensions, paradoxes, and competing perspectives in knowledge
 
 **Characteristics:**
+
 - Oppositional relationship
 - Reveals knowledge conflicts
 - Often productive tension
@@ -5388,6 +5616,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Creates critical thinking opportunities
 
 **Linguistic Signals:**
+
 - "however", "but", "in contrast"
 - "contradicts", "conflicts with"
 - "on the other hand", "conversely"
@@ -5396,6 +5625,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "contrary to", "opposes"
 
 **Common Contexts:**
+
 - Competing theories
 - Conflicting evidence
 - Opposing arguments
@@ -5441,6 +5671,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Build conceptual depth by connecting overviews to detailed explanations
 
 **Characteristics:**
+
 - Hierarchical depth relationship
 - Adds detail and nuance
 - Explanatory rather than evidential
@@ -5448,6 +5679,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Creates layers of understanding
 
 **Linguistic Signals:**
+
 - "in detail", "specifically"
 - "for example", "such as"
 - "more precisely", "to elaborate"
@@ -5456,6 +5688,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "the details of", "the specifics of"
 
 **Common Contexts:**
+
 - Concept → Sub-concept
 - Overview → Detailed explanation
 - General principle → Specific application
@@ -5501,6 +5734,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Enable cross-domain insight transfer and pattern recognition
 
 **Characteristics:**
+
 - Structural similarity
 - Different surface domains
 - Functional parallels
@@ -5508,6 +5742,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Transfers understanding across contexts
 
 **Linguistic Signals:**
+
 - "similar to", "like", "resembles"
 - "analogous to", "parallel to"
 - "mirrors", "echoes"
@@ -5516,6 +5751,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "just as", "in the same way"
 
 **Common Contexts:**
+
 - Cross-domain pattern matching
 - Metaphorical relationships
 - Isomorphic structures
@@ -5561,6 +5797,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Connect specific instances to general principles
 
 **Characteristics:**
+
 - Abstraction relationship
 - Broader scope in source
 - Subsumes target as special case
@@ -5568,6 +5805,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Enables principle extraction
 
 **Linguistic Signals:**
+
 - "in general", "broadly speaking"
 - "more generally", "abstractly"
 - "as a whole", "overall"
@@ -5576,6 +5814,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "applies more widely"
 
 **Common Contexts:**
+
 - Specific → General principle
 - Example → Category
 - Instance → Class
@@ -5621,6 +5860,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Connect general patterns to concrete implementations
 
 **Characteristics:**
+
 - Concretization relationship
 - Narrower scope in source
 - Specific instance of target
@@ -5628,6 +5868,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Adds domain-specific details
 
 **Linguistic Signals:**
+
 - "specifically", "in particular"
 - "for instance", "for example"
 - "a specific case of"
@@ -5636,6 +5877,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "applied to", "in the context of"
 
 **Common Contexts:**
+
 - General → Specific implementation
 - Category → Instance
 - Class → Object
@@ -5681,6 +5923,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 **Purpose:** Track intellectual lineage and idea evolution
 
 **Characteristics:**
+
 - Temporal dependency
 - Causal relationship
 - Idea provenance
@@ -5688,6 +5931,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - Thought evolution
 
 **Linguistic Signals:**
+
 - "inspired", "led to", "sparked"
 - "based on", "building on"
 - "influenced", "shaped"
@@ -5696,6 +5940,7 @@ This knowledge base defines the 7 semantic relationship types used to classify l
 - "in response to"
 
 **Common Contexts:**
+
 - Earlier idea → Later development
 - Reading → Insight
 - Question → Investigation
@@ -5898,8 +6143,8 @@ The agent uses this knowledge base to:
 ## References
 
 - Requirements: `/manuscripts/bmad-obsidian-2nd-brain-requirements.md` (lines 3806-3813)
-- Ahrens, S. (2017). *How to Take Smart Notes*
-- Luhmann, N. (1992). *Communicating with Slip Boxes*
-- Network Science: Barabási, A. (2016). *Network Science*
-- Knowledge Graphs: Hogan, A. et al. (2021). *Knowledge Graphs*
+- Ahrens, S. (2017). _How to Take Smart Notes_
+- Luhmann, N. (1992). _Communicating with Slip Boxes_
+- Network Science: Barabási, A. (2016). _Network Science_
+- Knowledge Graphs: Hogan, A. et al. (2021). _Knowledge Graphs_
 ==================== END: .bmad-obsidian-2nd-brain/data/connection-patterns.md ====================

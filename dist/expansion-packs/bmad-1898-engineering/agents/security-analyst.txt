@@ -166,9 +166,11 @@ integration:
 # Read JIRA Ticket Task
 
 ## Purpose
+
 Read a JIRA security alert ticket via Atlassian MCP, extract CVE IDs and affected system metadata for vulnerability analysis.
 
 ## Prerequisites
+
 - Atlassian MCP server configured and connected
 - JIRA configuration in `config.yaml` with required fields
 - Valid JIRA ticket ID to read
@@ -179,13 +181,13 @@ This task requires JIRA configuration in `expansion-packs/bmad-1898-engineering/
 
 ```yaml
 jira:
-  cloud_id: "YOUR_CLOUD_ID_HERE"
-  project_key: "YOUR_PROJECT_KEY"
+  cloud_id: 'YOUR_CLOUD_ID_HERE'
+  project_key: 'YOUR_PROJECT_KEY'
   custom_fields:
-    cve_id: "customfield_XXXXX"
-    affected_systems: "customfield_XXXXX"
-    asset_criticality_rating: "customfield_XXXXX"
-    system_exposure: "customfield_XXXXX"
+    cve_id: 'customfield_XXXXX'
+    affected_systems: 'customfield_XXXXX'
+    asset_criticality_rating: 'customfield_XXXXX'
+    system_exposure: 'customfield_XXXXX'
 ```
 
 ## Task Steps
@@ -203,6 +205,7 @@ jira:
    - `jira.custom_fields.system_exposure` - Custom field ID for exposure level
 
 **If validation fails:**
+
 - Missing config file: "❌ Config file not found at expansion-packs/bmad-1898-engineering/config.yaml"
 - Missing required field: "❌ Missing required field: jira.cloud_id" (or specific field name)
 - HALT and request user to configure
@@ -224,6 +227,7 @@ mcp__atlassian__getJiraIssue
 ```
 
 **Handle errors gracefully:**
+
 - **Ticket not found:** "❌ Ticket {ticket_id} not found. Verify ticket ID and try again."
 - **Authentication failure:** "❌ JIRA authentication failed. Check Atlassian MCP configuration."
 - **Network error:** "❌ Cannot connect to JIRA. Check network connection and try again."
@@ -237,17 +241,20 @@ If error occurs, prompt user to retry or exit.
 Search for CVE IDs using pattern: `CVE-\d{4}-\d{4,7}` (case-insensitive)
 
 **Search locations (in order):**
+
 1. Ticket summary field: `fields.summary`
 2. Ticket description field: `fields.description`
 3. Custom CVE ID field: `fields[config.jira.custom_fields.cve_id]`
 
 **Extract ALL CVE IDs found:**
+
 - Use regex with case-insensitive flag
 - Collect all matches (may find multiple)
 - Designate first CVE as "primary CVE"
 - Store all CVEs for processing
 
 **Example extraction:**
+
 ```
 Summary: "Apache Struts 2 RCE (CVE-2024-1234) and Log4j (CVE-2024-5678)"
 Result:
@@ -256,6 +263,7 @@ Result:
 ```
 
 **If no CVE IDs found:**
+
 - Display: "⚠️ No CVE ID found in ticket {ticket_id}."
 - Prompt: "Please provide CVE ID manually, or type 'skip' to proceed with generic vulnerability research:"
 - If user provides CVE: Add to CVE list as primary
@@ -315,29 +323,31 @@ Labels: {labels}
 Return the following data structure for use by subsequent tasks:
 
 ```yaml
-ticket_id: "{ticket_id}"
-summary: "{ticket_summary}"
-description: "{ticket_description}"
+ticket_id: '{ticket_id}'
+summary: '{ticket_summary}'
+description: '{ticket_description}'
 cve_ids:
-  primary: "{primary_cve}"
-  all: ["{cve_1}", "{cve_2}", ...]
-affected_systems: ["{system_1}", "{system_2}", ...]
-asset_criticality: "{criticality_rating}"
-system_exposure: "{exposure_level}"
-priority: "{jira_priority}"
-components: ["{component_1}", "{component_2}", ...]
-labels: ["{label_1}", "{label_2}", ...]
+  primary: '{primary_cve}'
+  all: ['{cve_1}', '{cve_2}', ...]
+affected_systems: ['{system_1}', '{system_2}', ...]
+asset_criticality: '{criticality_rating}'
+system_exposure: '{exposure_level}'
+priority: '{jira_priority}'
+components: ['{component_1}', '{component_2}', ...]
+labels: ['{label_1}', '{label_2}', ...]
 ```
 
 ## Security Considerations
 
 **DO NOT:**
+
 - Log JIRA credentials or API tokens
 - Display cloud_id in error messages
 - Expose internal system names in public logs
 - Include stack traces with file paths in user-facing errors
 
 **DO:**
+
 - CVE IDs are public - safe to log
 - Sanitize error messages
 - Cache ticket data to minimize API calls
@@ -346,20 +356,24 @@ labels: ["{label_1}", "{label_2}", ...]
 ## Error Recovery
 
 **Rate Limiting:**
+
 - Implement exponential backoff: 60s, 120s, 240s
 - Max 3 retries before failing
 
 **Authentication Failures:**
+
 - Guide user to verify MCP configuration
 - Check `~/.config/mcp/config.json` or equivalent
 
 **Network Timeouts:**
+
 - Retry once after 30 seconds
 - Offer offline mode or alternative input
 
 ## Success Criteria
 
 Task completes successfully when:
+
 1. ✅ Config validated and loaded
 2. ✅ Ticket read from JIRA via MCP
 3. ✅ At least one CVE ID extracted (or user chose to skip)
@@ -369,6 +383,7 @@ Task completes successfully when:
 ## Next Steps
 
 After this task completes, the extracted data will be used by:
+
 - CVE research tasks (enrichment via NVD/CISA)
 - Risk assessment workflows
 - Remediation planning
@@ -379,9 +394,11 @@ After this task completes, the extracted data will be used by:
 # Research CVE Task
 
 ## Purpose
+
 Research a CVE using Perplexity AI to gather comprehensive vulnerability intelligence including CVSS scores, EPSS probability, KEV status, exploits, patches, and MITRE ATT&CK mappings.
 
 ## Prerequisites
+
 - Perplexity MCP server connected (available by default in Claude Code)
 - Valid CVE identifier (CVE-YYYY-NNNNN format)
 - Internet connectivity for AI-assisted research
@@ -399,16 +416,19 @@ Ask the user: **"Please provide the CVE identifier to research (e.g., CVE-2024-1
 **Validate CVE format:** `CVE-\d{4}-\d{4,7}` (case-insensitive)
 
 **Valid examples:**
+
 - CVE-2024-1234
 - CVE-2023-44487
 - CVE-2021-44228
 
 **Invalid examples:**
+
 - 2024-1234 (missing CVE prefix)
 - CVE-24-1234 (year must be 4 digits)
 - CVE-2024-123 (ID must be at least 4 digits)
 
 **If validation fails:**
+
 - Display: "❌ Invalid CVE format. Expected format: CVE-YYYY-NNNNN (e.g., CVE-2024-1234)"
 - Re-prompt user for valid CVE identifier
 - Max 3 attempts before halting
@@ -451,27 +471,30 @@ Flag any information that cannot be verified from authoritative sources.
 Use `mcp__perplexity__reason` to get basic CVE information including CVSS score.
 
 **Execute initial research:**
+
 ```
 mcp__perplexity__reason
   query: {constructed_query}
 ```
 
 **Parse CVSS score from response:**
+
 - Extract numerical score (0.0-10.0)
 - Extract severity rating (Low/Medium/High/Critical)
 - If CVSS not found, default severity to "Unknown"
 
 **Select appropriate tool based on CVSS severity:**
 
-| CVSS Score | Severity | Perplexity Tool | Rationale |
-|------------|----------|-----------------|-----------|
+| CVSS Score | Severity | Perplexity Tool                  | Rationale                                  |
+| ---------- | -------- | -------------------------------- | ------------------------------------------ |
 | 9.0 - 10.0 | Critical | `mcp__perplexity__deep_research` | Requires comprehensive 2-5 minute analysis |
-| 7.0 - 8.9  | High     | `mcp__perplexity__reason` | Requires moderate 30-60 second analysis |
-| 4.0 - 6.9  | Medium   | `mcp__perplexity__search` | Requires basic 10-20 second lookup |
-| 0.1 - 3.9  | Low      | `mcp__perplexity__search` | Requires quick lookup |
-| Unknown    | Unknown  | `mcp__perplexity__reason` | Default to moderate analysis |
+| 7.0 - 8.9  | High     | `mcp__perplexity__reason`        | Requires moderate 30-60 second analysis    |
+| 4.0 - 6.9  | Medium   | `mcp__perplexity__search`        | Requires basic 10-20 second lookup         |
+| 0.1 - 3.9  | Low      | `mcp__perplexity__search`        | Requires quick lookup                      |
+| Unknown    | Unknown  | `mcp__perplexity__reason`        | Default to moderate analysis               |
 
 **If Critical severity detected:**
+
 - Display: "⚠️ Critical vulnerability detected (CVSS {score}). Initiating deep research (2-5 minutes)..."
 - Re-execute research with `mcp__perplexity__deep_research` for comprehensive analysis
 
@@ -480,43 +503,51 @@ mcp__perplexity__reason
 Extract the following intelligence fields from the Perplexity response:
 
 #### 4.1 CVSS Information
+
 - **CVSS Score:** Numerical value (0.0-10.0)
 - **CVSS Vector String:** Format `CVSS:3.1/AV:X/AC:X/PR:X/UI:X/S:X/C:X/I:X/A:X`
 - **Severity Rating:** Critical, High, Medium, Low
 - **Source:** Must be from NVD (nvd.nist.gov)
 
 #### 4.2 EPSS Information
+
 - **EPSS Score:** Probability value (0.0-1.0 or percentage)
 - **EPSS Percentile:** Ranking (0-100)
 - **Source:** Must be from FIRST.org EPSS
 
 **If EPSS not available:**
+
 - Flag: "⚠️ EPSS score not available for {cve_id}"
 - Set EPSS score to `null`
 - Continue with other intelligence
 
 #### 4.3 CISA KEV Status
+
 - **Status:** "Listed" or "Not Listed"
 - **Date Added:** If listed, date when added to KEV catalog
 - **Due Date:** If listed, remediation due date
 - **Source:** Must be from cisa.gov
 
 #### 4.4 Affected Products and Versions
+
 - **Product Name:** Full product name (e.g., "Apache Struts 2")
 - **Vendor:** Product vendor (e.g., "Apache Software Foundation")
 - **Affected Versions:** Version ranges (e.g., "2.0.0 - 2.5.32")
 - **Version Format:** Use precise version numbers, not "all versions"
 
 #### 4.5 Patch Information
+
 - **Patched Versions:** Fixed version numbers (e.g., "2.5.33+", "3.0.0+")
 - **Vendor Advisory URL:** Official vendor security advisory link
 - **Patch Availability Status:** Available, Partial, Not Available, Workaround Only
 
 **If no patch available:**
+
 - Flag: "⚠️ No patch available for {cve_id}"
 - Check for workarounds in vendor advisory
 
 #### 4.6 Exploit Information
+
 - **PoC Available:** Boolean (true/false)
 - **Exploit Code Public:** Boolean (true/false)
 - **Exploit Frameworks:** List (e.g., Metasploit, ExploitDB)
@@ -524,16 +555,19 @@ Extract the following intelligence fields from the Perplexity response:
 - **Source:** Security vendor reports, threat intelligence
 
 #### 4.7 MITRE ATT&CK Mapping
+
 - **Tactics:** List of tactic names (e.g., "Initial Access", "Execution")
 - **Techniques:** List with T-numbers (e.g., "T1190 - Exploit Public-Facing Application")
 - **Source:** Must cite attack.mitre.org or threat intelligence report
 
 **If ATT&CK mapping not available:**
+
 - Flag: "⚠️ MITRE ATT&CK mapping not available for {cve_id}"
 - Attempt to infer techniques from vulnerability type
 - Clearly mark inferred techniques as "INFERRED" vs "CONFIRMED"
 
 #### 4.8 Technical Description
+
 - **Vulnerability Type:** CWE classification (e.g., "CWE-78: OS Command Injection")
 - **Attack Vector:** How vulnerability is exploited
 - **Impact:** Confidentiality, Integrity, Availability impacts
@@ -544,6 +578,7 @@ Extract the following intelligence fields from the Perplexity response:
 **Review all sources cited in Perplexity response:**
 
 #### Trusted Sources (ACCEPT):
+
 - nvd.nist.gov (NIST NVD)
 - cve.mitre.org (MITRE CVE)
 - cisa.gov (CISA)
@@ -558,6 +593,7 @@ Extract the following intelligence fields from the Perplexity response:
 - Oracle, Cisco, VMware, Adobe official security sites
 
 #### Untrusted Sources (FLAG):
+
 - Blog posts (unless from recognized security researchers)
 - News sites (CNN, TechCrunch, etc.) - secondary sources
 - Social media (Twitter, Reddit, etc.)
@@ -565,18 +601,22 @@ Extract the following intelligence fields from the Perplexity response:
 - Sites without HTTPS
 
 **For each untrusted source found:**
+
 - Flag: "⚠️ Information from untrusted source: {url}"
 - Mark associated data as "UNVERIFIED"
 - Attempt to find authoritative source for same information
 
 **If critical information only available from untrusted sources:**
+
 - Flag: "⚠️ Critical information lacks authoritative source citation"
 - Include information but clearly mark as "REQUIRES VERIFICATION"
 
 ### Step 6: Handle Conflicts and Missing Data
 
 #### Conflicting Information
+
 **If CVSS scores differ between sources:**
+
 - Display: "⚠️ CVSS score conflict detected:"
 - List all sources and their scores:
   ```
@@ -587,13 +627,16 @@ Extract the following intelligence fields from the Perplexity response:
 - Document discrepancy in notes
 
 **If exploit status conflicts:**
+
 - Display: "⚠️ Exploit status conflict detected"
 - Document all sources and their claims
 - Use most recent and authoritative source
 - Mark as "CONFLICTING REPORTS" in output
 
 #### Missing Information
+
 **Track all missing intelligence fields:**
+
 - CVSS: "⚠️ CVSS score not available"
 - EPSS: "⚠️ EPSS probability not available"
 - KEV: "⚠️ KEV status unknown"
@@ -656,68 +699,71 @@ SOURCES
 Return the following YAML structure for use by subsequent tasks:
 
 ```yaml
-cve_id: "{cve_id}"
+cve_id: '{cve_id}'
 cvss:
-  score: {numerical_score}
-  vector: "{vector_string}"
-  severity: "{severity_rating}"
-  source: "{source_url}"
+  score: { numerical_score }
+  vector: '{vector_string}'
+  severity: '{severity_rating}'
+  source: '{source_url}'
 epss:
-  score: {probability_score}
-  percentile: {percentile_value}
-  source: "{source_url}"
+  score: { probability_score }
+  percentile: { percentile_value }
+  source: '{source_url}'
 kev:
-  status: "{Listed|Not Listed}"
-  date_added: "{date}" # If listed
-  due_date: "{date}"   # If listed
-  source: "{source_url}"
+  status: '{Listed|Not Listed}'
+  date_added: '{date}' # If listed
+  due_date: '{date}' # If listed
+  source: '{source_url}'
 affected_products:
-  - product: "{product_name}"
-    vendor: "{vendor_name}"
-    affected_versions: "{version_range}"
+  - product: '{product_name}'
+    vendor: '{vendor_name}'
+    affected_versions: '{version_range}'
 patches:
-  available: {true|false}
-  versions: ["{version_1}", "{version_2}"]
-  advisory_url: "{vendor_advisory_url}"
+  available: { true|false }
+  versions: ['{version_1}', '{version_2}']
+  advisory_url: '{vendor_advisory_url}'
 exploit_status:
-  poc_available: {true|false}
-  exploit_code_public: {true|false}
-  active_exploitation: {true|false}
-  frameworks: ["{framework_1}", "{framework_2}"]
+  poc_available: { true|false }
+  exploit_code_public: { true|false }
+  active_exploitation: { true|false }
+  frameworks: ['{framework_1}', '{framework_2}']
 attack_mapping:
-  tactics: ["{tactic_1}", "{tactic_2}"]
+  tactics: ['{tactic_1}', '{tactic_2}']
   techniques:
-    - id: "{T-number}"
-      name: "{technique_name}"
-      confidence: "{CONFIRMED|INFERRED}"
+    - id: '{T-number}'
+      name: '{technique_name}'
+      confidence: '{CONFIRMED|INFERRED}'
 description:
-  vulnerability_type: "{CWE-XX: Description}"
-  attack_vector: "{description}"
-  impact: "{description}"
-  prerequisites: "{description}"
+  vulnerability_type: '{CWE-XX: Description}'
+  attack_vector: '{description}'
+  impact: '{description}'
+  prerequisites: '{description}'
 sources:
-  - url: "{url_1}"
-    type: "{NVD|CISA KEV|Vendor Advisory|etc}"
-  - url: "{url_2}"
-    type: "{type}"
+  - url: '{url_1}'
+    type: '{NVD|CISA KEV|Vendor Advisory|etc}'
+  - url: '{url_2}'
+    type: '{type}'
 warnings:
-  - "{warning_1}"
-  - "{warning_2}"
+  - '{warning_1}'
+  - '{warning_2}'
 metadata:
-  research_tool_used: "{search|reason|deep_research}"
-  research_timestamp: "{ISO-8601 timestamp}"
-  research_duration: "{duration in seconds}"
+  research_tool_used: '{search|reason|deep_research}'
+  research_timestamp: '{ISO-8601 timestamp}'
+  research_duration: '{duration in seconds}'
 ```
 
 ## Error Handling
 
 ### Perplexity Timeout
+
 **Symptoms:**
+
 - Request exceeds tool timeout (2 minutes for search/reason, 10 minutes for deep_research)
 - Network connection issues
 - Service unavailable errors
 
 **Recovery Strategy:**
+
 1. Display: "⚠️ Perplexity research timed out. Retrying with simpler query..."
 2. Simplify query by reducing requested fields to critical only (CVSS, EPSS, KEV)
 3. Retry with next-faster tool:
@@ -727,6 +773,7 @@ metadata:
 4. Max 2 retries before offering manual input
 
 **Manual research prompt:**
+
 ```
 ❌ Automated research failed for {cve_id}.
 
@@ -739,16 +786,20 @@ Select option (1-3):
 ```
 
 ### Invalid CVE Identifier
+
 **Symptoms:**
+
 - CVE ID not found in any vulnerability databases
 - Typo in CVE identifier
 - Reserved CVE number (not yet published)
 
 **Recovery Strategy:**
+
 1. Display: "❌ CVE {cve_id} not found in vulnerability databases."
 2. Check if CVE is reserved but not published:
    - Display: "⚠️ This CVE may be reserved but not yet published."
 3. Offer to correct CVE identifier:
+
    ```
    Options:
    1. Re-enter CVE identifier (check for typos)
@@ -759,14 +810,18 @@ Select option (1-3):
    ```
 
 ### Missing Critical Information
+
 **Symptoms:**
+
 - CVSS score not available
 - CVE exists but has minimal information
 - Pre-disclosure or embargoed vulnerability
 
 **Recovery Strategy:**
+
 1. Continue research with available information
 2. Flag all missing critical fields:
+
    ```
    ⚠️ INCOMPLETE CVE DATA for {cve_id}
 
@@ -781,22 +836,27 @@ Select option (1-3):
 
    Recommendation: Monitor for updated CVE information
    ```
+
 3. Return partial structured data with `null` values for missing fields
 4. Set warning flag: `incomplete_data: true`
 
 ### Conflicting Source Information
+
 **Symptoms:**
+
 - Different CVSS scores from NVD vs vendor
 - Conflicting patch version numbers
 - Disputed exploitation status
 
 **Recovery Strategy:**
+
 1. Document all conflicting sources
 2. Apply priority hierarchy:
    - **CVSS:** NVD > Vendor > Third-party
    - **Patches:** Vendor > NVD > Third-party
    - **Exploitation:** CISA > Security vendors > Researchers
 3. Flag discrepancies in warnings section:
+
    ```
    ⚠️ CONFLICTING INFORMATION DETECTED
 
@@ -809,21 +869,26 @@ Select option (1-3):
    Note: Review vendor advisory for additional context
    Advisory URL: {vendor_url}
    ```
+
 4. Include all sources in structured output for manual review
 
 ### Perplexity Hallucination Detection
+
 **Symptoms:**
+
 - Citations to non-existent URLs
 - Fabricated CVE details
 - Information not verifiable from authoritative sources
 
 **Detection Strategy:**
+
 1. Validate all URLs are accessible (not required to fetch, just check format)
 2. Cross-reference critical facts:
    - CVSS scores against known ranges (0.0-10.0)
    - CVE ID format matches pattern
    - Dates are chronologically valid
 3. Flag suspicious information:
+
    ```
    ⚠️ UNVERIFIED INFORMATION DETECTED
 
@@ -835,6 +900,7 @@ Select option (1-3):
    ```
 
 **Recovery Strategy:**
+
 1. Mark unverified data with `verified: false` flag
 2. Exclude hallucinated information from structured output
 3. Log warning for security analyst review
@@ -843,12 +909,14 @@ Select option (1-3):
 ## Security Considerations
 
 **DO NOT:**
+
 - Execute exploit code or PoC scripts
 - Expose internal system details in research queries
 - Log API keys or credentials
 - Auto-apply patches without authorization
 
 **DO:**
+
 - CVE IDs are public information - safe to research
 - Cite all sources for audit trail
 - Flag unverified information clearly
@@ -857,6 +925,7 @@ Select option (1-3):
 ## Success Criteria
 
 Task completes successfully when:
+
 1. ✅ CVE identifier validated
 2. ✅ Research query constructed and executed
 3. ✅ CVSS severity determined (or marked unknown)
@@ -870,12 +939,810 @@ Task completes successfully when:
 ## Next Steps
 
 After this task completes, the structured CVE data will be used by:
+
 - Security enrichment workflows (documentation generation)
 - Priority assessment tasks (CVSS + EPSS + KEV + business context)
 - JIRA ticket updates (custom field population)
 - Remediation planning (patch availability and urgency)
 - Threat modeling (ATT&CK mapping and attack chain analysis)
 ==================== END: .bmad-1898-engineering/tasks/research-cve.md ====================
+
+==================== START: .bmad-1898-engineering/tasks/assess-vulnerability-priority.md ====================
+# Assess Vulnerability Priority Task
+
+## Purpose
+
+Calculate vulnerability remediation priority using multi-factor risk assessment combining CVSS severity, EPSS exploitation probability, CISA KEV status, asset criticality, system exposure, and exploit availability. Returns priority level (P1-P5), risk score, rationale, and SLA remediation deadline.
+
+## Prerequisites
+
+- Vulnerability data with CVSS score, EPSS score, KEV status, exploit status
+- System context with Asset Criticality Rating (ACR) and exposure level
+- CVE research completed (via `research-cve.md` task)
+
+## Configuration Requirements
+
+No configuration required - uses BMAD-1898 default priority framework based on CISA BOD 22-01 and NIST risk assessment principles.
+
+**Customization:** Organizations can override priority thresholds and SLA timelines in `.bmad-core/core-config.yaml` (optional).
+
+## Task Steps
+
+### Step 1: Validate Input Data
+
+**Required vulnerability data:**
+
+- `cvss_score` (float): CVSS base score 0.0-10.0
+- `epss_score` (float): EPSS probability 0.0-1.0
+- `kev_status` (string): "Listed" or "Not Listed"
+- `exploit_status` (string): "Active Exploitation", "Public Exploit", "PoC", or "Theoretical"
+
+**Required system data:**
+
+- `acr_rating` (string): "Critical", "High", "Medium", or "Low"
+- `exposure` (string): "Internet", "Internal", or "Isolated"
+
+**Validation rules:**
+
+- CVSS score must be 0.0-10.0 (default to 0.0 if missing)
+- EPSS score must be 0.0-1.0 (default to 0.0 if missing)
+- KEV status must be "Listed" or "Not Listed" (default to "Not Listed" if missing)
+- ACR rating must be valid enum value (default to "Medium" if missing)
+- Exposure must be valid enum value (default to "Internal" if missing)
+- Exploit status must be valid enum value (default to "Theoretical" if missing)
+
+**If critical data missing:**
+
+- Display: "⚠️ Missing vulnerability data: {missing_fields}"
+- Continue with default values
+- Flag assessment as "INCOMPLETE DATA" in rationale
+
+### Step 2: Calculate Factor Scores
+
+Calculate score (0-5 points) for each of 6 risk factors:
+
+#### Factor 1: CVSS Severity (0-4 points)
+
+**Scoring algorithm:**
+
+```
+if cvss_score >= 9.0:
+    cvss_points = 4  # Critical severity
+elif cvss_score >= 7.0:
+    cvss_points = 3  # High severity
+elif cvss_score >= 4.0:
+    cvss_points = 2  # Medium severity
+else:
+    cvss_points = 1  # Low severity
+```
+
+**Interpretation:**
+
+- 9.0-10.0 (Critical): Severe impact, complete system compromise possible
+- 7.0-8.9 (High): Significant impact, partial system compromise possible
+- 4.0-6.9 (Medium): Moderate impact, limited scope
+- 0.1-3.9 (Low): Minimal impact, difficult to exploit
+
+#### Factor 2: EPSS Exploitation Probability (0-4 points)
+
+**Scoring algorithm:**
+
+```
+if epss_score >= 0.75:
+    epss_points = 4  # Very high probability
+elif epss_score >= 0.50:
+    epss_points = 3  # High probability
+elif epss_score >= 0.25:
+    epss_points = 2  # Moderate probability
+else:
+    epss_points = 1  # Low probability
+```
+
+**Interpretation:**
+
+- 0.75-1.00 (Very High): ≥75% likelihood of exploitation within 30 days
+- 0.50-0.74 (High): 50-74% likelihood of exploitation
+- 0.25-0.49 (Moderate): 25-49% likelihood of exploitation
+- 0.00-0.24 (Low): <25% likelihood of exploitation
+
+#### Factor 3: CISA KEV Status (0-5 points, OVERRIDE)
+
+**Scoring algorithm:**
+
+```
+if kev_status == "Listed":
+    kev_points = 5  # Automatic high priority (override)
+else:
+    kev_points = 0  # No bonus
+```
+
+**Interpretation:**
+
+- **Listed:** CISA has confirmed active exploitation in the wild
+  - **CRITICAL:** KEV listing is an override factor - automatically elevates priority
+  - Per CISA BOD 22-01: Federal agencies must remediate KEV vulnerabilities within mandated timelines
+- **Not Listed:** No confirmed widespread exploitation (proceed with normal scoring)
+
+**KEV Override Rule:**
+If `kev_points == 5`, vulnerability receives minimum P1 or P2 priority regardless of other factors.
+
+#### Factor 4: Asset Criticality Rating - ACR (0-4 points)
+
+**Scoring algorithm:**
+
+```
+acr_map = {
+    "Critical": 4,  # Mission-critical systems
+    "High": 3,      # Important business systems
+    "Medium": 2,    # Standard systems
+    "Low": 1        # Dev/test systems
+}
+acr_points = acr_map.get(acr_rating, 2)  # Default to Medium
+```
+
+**Interpretation:**
+
+- **Critical (4 pts):** Mission-critical production systems
+  - Examples: Payment processing, authentication servers, production databases
+  - Impact: Business-critical outage, data breach, compliance violation
+- **High (3 pts):** Important business systems
+  - Examples: CRM, ERP, customer portals, internal apps
+  - Impact: Significant business disruption
+- **Medium (2 pts):** Standard business systems
+  - Examples: Internal tools, reporting systems, wikis
+  - Impact: Operational inconvenience
+- **Low (1 pt):** Non-production systems
+  - Examples: Development, test, sandbox environments
+  - Impact: Minimal business impact
+
+#### Factor 5: System Exposure (0-3 points)
+
+**Scoring algorithm:**
+
+```
+exposure_map = {
+    "Internet": 3,   # Public-facing
+    "Internal": 2,   # Internal network only
+    "Isolated": 1    # Air-gapped/DMZ
+}
+exposure_points = exposure_map.get(exposure, 2)  # Default to Internal
+```
+
+**Interpretation:**
+
+- **Internet-Facing (3 pts):** Directly accessible from public internet
+  - Attack surface: Maximum (anyone can attempt exploitation)
+  - Examples: Web servers, APIs, VPNs, public cloud services
+- **Internal Network (2 pts):** Accessible only from corporate network
+  - Attack surface: Limited to internal users or compromised systems
+  - Examples: Internal apps, file servers, databases on private network
+- **Isolated (1 pt):** Air-gapped, DMZ, or highly restricted access
+  - Attack surface: Minimal (requires physical access or multi-step compromise)
+  - Examples: OT/ICS systems, air-gapped networks, bastion hosts
+
+#### Factor 6: Exploit Availability (0-4 points)
+
+**Scoring algorithm:**
+
+```
+exploit_map = {
+    "Active Exploitation": 4,  # In-the-wild exploitation confirmed
+    "Public Exploit": 3,       # Exploit code publicly available
+    "PoC": 2,                  # Proof-of-concept exists
+    "Theoretical": 1           # No known exploit
+}
+exploit_points = exploit_map.get(exploit_status, 1)  # Default to Theoretical
+```
+
+**Interpretation:**
+
+- **Active Exploitation (4 pts):** Confirmed in-the-wild exploitation
+  - Evidence: Threat intel reports, IDS alerts, honeypot observations
+  - Risk: Imminent threat, attackers actively targeting this vulnerability
+- **Public Exploit (3 pts):** Weaponized exploit code publicly available
+  - Sources: ExploitDB, Metasploit, GitHub, security researcher disclosures
+  - Risk: Low skill barrier, any attacker can exploit
+- **PoC (2 pts):** Proof-of-concept demonstration exists
+  - Sources: Research papers, vendor advisories, conference talks
+  - Risk: Requires modification to weaponize, moderate skill barrier
+- **Theoretical (1 pt):** No known exploit code or demonstration
+  - Risk: Requires expert-level skill to develop exploit
+
+### Step 3: Calculate Total Risk Score
+
+**Sum all factor scores:**
+
+```
+total_score = cvss_points + epss_points + kev_points + acr_points + exposure_points + exploit_points
+```
+
+**Score range:** 0-24 points maximum
+
+- CVSS: 0-4 points
+- EPSS: 0-4 points
+- KEV: 0-5 points (override factor)
+- ACR: 0-4 points
+- Exposure: 0-3 points
+- Exploit: 0-4 points
+
+**Score distribution examples:**
+
+- **Maximum (24 pts):** CVSS 10.0 + EPSS 1.0 + KEV Listed + Critical ACR + Internet + Active Exploitation
+- **Minimum (6 pts):** CVSS 0.0 + EPSS 0.0 + No KEV + Low ACR + Isolated + Theoretical
+
+### Step 4: Map Score to Priority Level
+
+**Priority mapping algorithm:**
+
+```
+if total_score >= 20 or kev_points == 5:
+    priority = "P1"         # Critical
+    sla_hours = 24
+elif total_score >= 15:
+    priority = "P2"         # High
+    sla_hours = 168         # 7 days
+elif total_score >= 10:
+    priority = "P3"         # Medium
+    sla_hours = 720         # 30 days
+elif total_score >= 5:
+    priority = "P4"         # Low
+    sla_hours = 2160        # 90 days
+else:
+    priority = "P5"         # Informational
+    sla_hours = None        # No SLA
+```
+
+**Priority definitions:**
+
+**P1 - Critical (24 hour SLA):**
+
+- **Score threshold:** ≥20 points OR KEV Listed
+- **Criteria:** Severe vulnerabilities with imminent exploitation risk
+- **Examples:**
+  - CVSS 9.8 + EPSS 0.85 + KEV Listed + Critical ACR + Internet-Facing
+  - Active exploitation of internet-facing production system
+- **Action:** Emergency patching, war room, executive notification
+
+**P2 - High (7 day SLA):**
+
+- **Score threshold:** 15-19 points
+- **Criteria:** High severity with significant exploitation risk
+- **Examples:**
+  - CVSS 8.0 + EPSS 0.60 + Public Exploit + High ACR + Internal
+  - High severity with public PoC affecting important systems
+- **Action:** Urgent patching within next sprint, escalate to security team
+
+**P3 - Medium (30 day SLA):**
+
+- **Score threshold:** 10-14 points
+- **Criteria:** Moderate severity with limited exploitation risk
+- **Examples:**
+  - CVSS 6.5 + EPSS 0.30 + No Exploit + Medium ACR + Internal
+  - Moderate severity affecting internal systems with no known exploits
+- **Action:** Planned patching in regular maintenance window
+
+**P4 - Low (90 day SLA):**
+
+- **Score threshold:** 5-9 points
+- **Criteria:** Low severity or low-criticality systems
+- **Examples:**
+  - CVSS 3.5 + EPSS 0.10 + Theoretical + Low ACR + Isolated
+  - Low severity on development systems with theoretical risk
+- **Action:** Routine patching during scheduled maintenance
+
+**P5 - Informational (No SLA):**
+
+- **Score threshold:** 0-4 points
+- **Criteria:** Minimal risk, awareness only
+- **Examples:**
+  - CVSS 1.5 + EPSS 0.05 + No Exploit + Test Environment
+  - Theoretical vulnerabilities with minimal business impact
+- **Action:** Awareness only, optional patching, document as accepted risk
+
+### Step 5: Apply Priority Modifiers (Override Rules)
+
+**Automatic P1 override (regardless of calculated score):**
+
+- KEV Listed + Internet-Facing + Critical ACR
+- Active Exploitation + CVSS ≥9.0 + High ACR
+
+**Priority elevation (+1 level):**
+
+- Compliance requirement (PCI-DSS, HIPAA, SOX, etc.)
+- Previous security incident involving similar vulnerability
+- Executive risk acceptance required but not granted
+- Customer-facing system with data breach potential
+
+**Priority reduction (-1 level):**
+
+- Effective compensating controls validated by security team
+  - Examples: WAF rules blocking exploit, network segmentation preventing access
+  - **Requirement:** Documented and tested compensating control
+- System scheduled for decommission within 30 days
+  - **Requirement:** Confirmed decommission date and migration plan
+- Vendor end-of-life with no patch available
+  - **Requirement:** Documented mitigation or replacement plan
+
+**Modifier application logic:**
+
+```
+# Apply overrides first
+if (kev_status == "Listed" and exposure == "Internet" and acr_rating == "Critical"):
+    priority = "P1"
+elif (exploit_status == "Active Exploitation" and cvss_score >= 9.0 and acr_rating in ["Critical", "High"]):
+    priority = "P1"
+
+# Apply elevations
+if has_compliance_requirement and priority != "P1":
+    priority = elevate_priority(priority)  # P2→P1, P3→P2, etc.
+
+# Apply reductions
+if has_compensating_controls and priority != "P5":
+    priority = reduce_priority(priority)  # P2→P3, P3→P4, etc.
+```
+
+**Document all modifiers applied in rationale.**
+
+### Step 6: Calculate SLA Deadline
+
+**SLA calculation algorithm:**
+
+```python
+from datetime import datetime, timedelta
+
+def calculate_sla_deadline(enrichment_timestamp, sla_hours):
+    """Calculate exact SLA remediation deadline"""
+
+    if sla_hours is None:
+        return "No SLA (Informational)"
+
+    # Calculate deadline
+    deadline = enrichment_timestamp + timedelta(hours=sla_hours)
+
+    # Format: "2025-11-08 14:30:00 UTC (24 hours from enrichment)"
+    hours_label = f"{sla_hours} hours" if sla_hours < 48 else f"{sla_hours // 24} days"
+    return f"{deadline.strftime('%Y-%m-%d %H:%M:%S UTC')} ({hours_label} from enrichment)"
+```
+
+**SLA timeline mapping:**
+
+- **P1:** 24 hours from enrichment timestamp
+- **P2:** 168 hours (7 days) from enrichment timestamp
+- **P3:** 720 hours (30 days) from enrichment timestamp
+- **P4:** 2160 hours (90 days) from enrichment timestamp
+- **P5:** No SLA (informational only)
+
+**SLA warnings:**
+
+- Display breach warning if current time > 80% of SLA window
+- Escalate if SLA already breached
+
+### Step 7: Generate Priority Rationale
+
+**Rationale template:**
+
+```markdown
+## Priority Assessment
+
+**Priority Level:** {priority} - {priority_label}
+**Overall Risk Score:** {total_score}/24 points
+**SLA Remediation Deadline:** {sla_deadline}
+
+### Factor Analysis
+
+**1. CVSS Severity:** {cvss_score} ({cvss_severity}) → {cvss_points}/4 points
+
+- Vulnerability has {cvss_interpretation}
+
+**2. EPSS Exploitation Probability:** {epss_score} ({epss_percentile}th percentile) → {epss_points}/4 points
+
+- {epss_interpretation}
+
+**3. CISA KEV Status:** {kev_status} → {kev_points}/5 points
+
+- {kev_interpretation}
+
+**4. Asset Criticality Rating:** {acr_rating} → {acr_points}/4 points
+
+- System is {acr_interpretation}
+
+**5. System Exposure:** {exposure} → {exposure_points}/3 points
+
+- System is {exposure_interpretation}
+
+**6. Exploit Availability:** {exploit_status} → {exploit_points}/4 points
+
+- {exploit_interpretation}
+
+### Priority Rationale
+
+{rationale_explanation}
+
+{modifiers_applied}
+
+### Recommended Actions
+
+**Immediate Actions:**
+{priority_specific_actions}
+
+**Remediation Guidance:**
+{remediation_guidance}
+```
+
+**Rationale explanation logic:**
+
+```
+if priority == "P1":
+    explanation = "This vulnerability represents a CRITICAL risk requiring immediate emergency response. "
+    if kev_points == 5:
+        explanation += "CISA has confirmed active exploitation in the wild (KEV Listed). "
+    explanation += f"The combination of {highlight_top_factors} creates an imminent threat to {acr_rating.lower()} systems."
+
+elif priority == "P2":
+    explanation = "This vulnerability represents a HIGH risk requiring urgent remediation. "
+    explanation += f"The {cvss_severity} severity combined with {highlight_exploitation_factors} poses significant risk to {acr_rating.lower()} systems."
+
+elif priority == "P3":
+    explanation = "This vulnerability represents a MEDIUM risk requiring planned remediation. "
+    explanation += f"While the severity is {cvss_severity}, the {highlight_mitigating_factors} reduce immediate urgency."
+
+elif priority == "P4":
+    explanation = "This vulnerability represents a LOW risk for routine patching. "
+    explanation += f"The {cvss_severity} severity and {highlight_low_risk_factors} indicate limited business impact."
+
+else:  # P5
+    explanation = "This vulnerability is INFORMATIONAL only with minimal risk. "
+    explanation += f"The {cvss_severity} severity and {highlight_minimal_factors} result in negligible business impact."
+```
+
+**Priority-specific actions:**
+
+**P1 Actions:**
+
+- Initiate emergency change process
+- Notify security team and management
+- Convene war room if patch requires coordination
+- Prepare rollback plan
+- Monitor for active exploitation attempts
+- Document exception if patching delayed
+
+**P2 Actions:**
+
+- Schedule urgent patching in next sprint
+- Notify security team
+- Test patch in staging environment
+- Plan production deployment
+- Validate compensating controls if patch delayed
+
+**P3 Actions:**
+
+- Add to next maintenance window
+- Test patch in non-production environment
+- Schedule change request
+- Monitor threat intelligence for status changes
+
+**P4 Actions:**
+
+- Add to routine patching schedule
+- Batch with other low-priority patches
+- Document in vulnerability tracking system
+
+**P5 Actions:**
+
+- Document for awareness
+- Optional patching during opportunistic maintenance
+- Consider risk acceptance
+
+### Step 8: Return Structured Assessment Data
+
+**Output format (YAML):**
+
+```yaml
+priority_assessment:
+  priority_level: '{P1|P2|P3|P4|P5}'
+  priority_label: '{Critical|High|Medium|Low|Informational}'
+  total_score: { 0-24 }
+  sla_hours: { 24|168|720|2160|null }
+  sla_deadline: "{ISO-8601 timestamp or 'No SLA'}"
+  sla_breach_warning: { true|false }
+
+factor_scores:
+  cvss:
+    value: { cvss_score }
+    severity: '{Critical|High|Medium|Low}'
+    points: { 0-4 }
+    interpretation: '{explanation}'
+  epss:
+    value: { epss_score }
+    percentile: { epss_percentile }
+    points: { 0-4 }
+    interpretation: '{explanation}'
+  kev:
+    status: '{Listed|Not Listed}'
+    points: { 0-5 }
+    interpretation: '{explanation}'
+  acr:
+    rating: '{Critical|High|Medium|Low}'
+    points: { 0-4 }
+    interpretation: '{explanation}'
+  exposure:
+    level: '{Internet|Internal|Isolated}'
+    points: { 0-3 }
+    interpretation: '{explanation}'
+  exploit:
+    status: '{Active Exploitation|Public Exploit|PoC|Theoretical}'
+    points: { 0-4 }
+    interpretation: '{explanation}'
+
+modifiers:
+  overrides_applied: ['{list of override rules applied}']
+  elevations_applied: ['{list of elevation reasons}']
+  reductions_applied: ['{list of reduction reasons}']
+
+rationale:
+  summary: '{brief explanation of priority decision}'
+  key_factors: ['{list of most influential factors}']
+  recommended_actions: ['{list of immediate actions}']
+  remediation_guidance: '{patching guidance}'
+
+metadata:
+  assessment_timestamp: '{ISO-8601 timestamp}'
+  framework_version: 'BMAD-1898 v1.0'
+  data_completeness: '{COMPLETE|INCOMPLETE - missing {fields}}'
+```
+
+### Step 9: Display Priority Assessment Summary
+
+**Present assessment to user:**
+
+```
+✅ Priority Assessment Complete
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PRIORITY: {priority} - {priority_label}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Risk Score: {total_score}/24 points
+SLA Deadline: {sla_deadline}
+{sla_breach_warning}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FACTOR BREAKDOWN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ CVSS Severity: {cvss_score} ({cvss_severity}) → {cvss_points}/4 pts
+✓ EPSS Probability: {epss_score} ({epss_percentile}th %ile) → {epss_points}/4 pts
+✓ CISA KEV: {kev_status} → {kev_points}/5 pts
+✓ Asset Criticality: {acr_rating} → {acr_points}/4 pts
+✓ System Exposure: {exposure} → {exposure_points}/3 pts
+✓ Exploit Status: {exploit_status} → {exploit_points}/4 pts
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RATIONALE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{rationale_summary}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RECOMMENDED ACTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{recommended_actions_list}
+
+{modifiers_note}
+```
+
+## Error Handling
+
+### Missing Vulnerability Data
+
+**Symptoms:**
+
+- CVSS score not available
+- EPSS score not calculated
+- KEV status unknown
+- Exploit status unclear
+
+**Recovery Strategy:**
+
+1. Apply default values for missing fields:
+   - CVSS: 0.0 (minimal severity)
+   - EPSS: 0.0 (minimal probability)
+   - KEV: "Not Listed"
+   - Exploit: "Theoretical"
+2. Flag assessment as incomplete:
+
+   ```
+   ⚠️ INCOMPLETE ASSESSMENT DATA
+
+   Missing Fields:
+   - CVSS score not available (defaulted to 0.0)
+   - EPSS probability not calculated (defaulted to 0.0)
+
+   Recommendation: Complete CVE research before relying on priority assessment
+   ```
+
+3. Continue with assessment using available data
+4. Document data gaps in metadata: `data_completeness: "INCOMPLETE - missing CVSS, EPSS"`
+5. Recommend re-assessment once missing data obtained
+
+### Missing System Context
+
+**Symptoms:**
+
+- ACR rating not defined
+- System exposure level unknown
+- System criticality unclear
+
+**Recovery Strategy:**
+
+1. Prompt user for missing system context:
+
+   ```
+   ⚠️ System context required for accurate priority assessment
+
+   Please provide:
+   1. Asset Criticality Rating (Critical/High/Medium/Low): _______
+   2. System Exposure (Internet/Internal/Isolated): _______
+
+   Or type 'default' to use conservative estimates (Medium ACR, Internal exposure)
+   ```
+
+2. If user selects 'default', apply conservative defaults:
+   - ACR: "Medium" (standard system)
+   - Exposure: "Internal" (not internet-facing)
+3. Document assumptions in rationale
+4. Flag for manual review: "Assessment based on assumed system context"
+
+### Invalid Input Values
+
+**Symptoms:**
+
+- CVSS score >10.0 or <0.0
+- EPSS score outside 0.0-1.0 range
+- Unrecognized enum values
+
+**Recovery Strategy:**
+
+1. Validate all inputs before processing
+2. For invalid numerical values:
+
+   ```
+   ❌ Invalid CVSS score: {value}
+
+   CVSS score must be between 0.0 and 10.0
+   Please verify CVE research data and retry
+   ```
+
+3. For invalid enum values:
+
+   ```
+   ❌ Invalid ACR rating: "{value}"
+
+   Valid options: Critical, High, Medium, Low
+   Please provide valid rating or type 'help' for definitions
+   ```
+
+4. Max 3 retry attempts before offering default values
+5. Do not proceed with assessment if critical validation fails
+
+### SLA Already Breached
+
+**Symptoms:**
+
+- Current timestamp > SLA deadline
+- Vulnerability past remediation timeline
+
+**Recovery Strategy:**
+
+1. Calculate breach duration:
+   ```python
+   breach_hours = (current_time - sla_deadline).total_seconds() / 3600
+   ```
+2. Display prominent breach warning:
+
+   ```
+   🚨 SLA BREACH WARNING 🚨
+
+   This {priority} vulnerability is OVERDUE for remediation!
+
+   Original SLA: {sla_hours} hours
+   Breach Duration: {breach_hours} hours PAST deadline
+   Original Deadline: {sla_deadline}
+
+   IMMEDIATE ACTION REQUIRED:
+   - Escalate to security management
+   - Document delay reason
+   - Expedite remediation or request risk acceptance
+   ```
+
+3. Flag in output: `sla_breach_warning: true`
+4. Recommend immediate escalation to security leadership
+
+### Conflicting Priority Factors
+
+**Symptoms:**
+
+- High CVSS but low EPSS
+- KEV Listed but isolated system
+- Critical ACR but low CVSS
+
+**Recovery Strategy:**
+
+1. Document conflict in rationale:
+
+   ```
+   ⚠️ CONFLICTING RISK FACTORS DETECTED
+
+   High Severity Factors:
+   - CVSS: 9.8 (Critical severity)
+   - System: Critical ACR
+
+   Low Urgency Factors:
+   - EPSS: 0.05 (Low exploitation probability)
+   - Exposure: Isolated (not internet-facing)
+
+   Resolution: Priority calculated using multi-factor scoring algorithm
+   Result: P2 (High) - Critical severity offset by low exploitation risk
+
+   Recommendation: Monitor threat intelligence for EPSS changes
+   ```
+
+2. Highlight conflicting factors in factor breakdown
+3. Explain priority decision logic clearly
+4. Recommend periodic re-assessment if threat landscape changes
+
+## Security Considerations
+
+**DO NOT:**
+
+- Store priority assessments with hardcoded credentials or sensitive system details
+- Expose internal system architecture in priority rationale
+- Auto-apply patches without authorization
+- Share priority assessments outside authorized security team
+
+**DO:**
+
+- Document all priority modifiers and override decisions
+- Maintain audit trail of priority assessments with timestamps
+- Flag SLA breaches for escalation
+- Re-assess priorities when new threat intelligence available
+- Use priority assessments to inform risk-based patching strategies
+
+**Audit Trail Requirements:**
+
+- Log all priority assessments with timestamp, user, and input data
+- Track priority changes over time (vulnerability aging)
+- Document all manual overrides and business justifications
+- Retain assessment history for compliance reporting
+
+## Success Criteria
+
+Task completes successfully when:
+
+1. ✅ Input data validated (or defaults applied with warnings)
+2. ✅ All 6 factor scores calculated
+3. ✅ Total risk score computed (0-24 points)
+4. ✅ Priority level assigned (P1-P5)
+5. ✅ Priority modifiers evaluated and applied
+6. ✅ SLA deadline calculated
+7. ✅ Comprehensive rationale generated
+8. ✅ Structured assessment data returned (YAML)
+9. ✅ Summary displayed to user
+
+**Task may complete with warnings** - incomplete data or missing context does not constitute failure if documented appropriately.
+
+## Next Steps
+
+After priority assessment, structured data will be used by:
+
+- **JIRA Update Tasks:** Populate custom fields (Priority, Risk Score, SLA Deadline)
+- **Enrichment Documentation:** Include priority rationale in security analysis comments
+- **Remediation Planning:** Schedule patching based on priority level and SLA
+- **Metrics & Reporting:** Track vulnerability aging, SLA compliance, remediation velocity
+- **Risk Dashboards:** Visualize vulnerability portfolio by priority distribution
+- **Compliance Reporting:** Demonstrate risk-based vulnerability management for audits
+
+**Integration with Security Analyst Agent:**
+The Security Analyst agent invokes this task via the `*assess-priority {ticket-id}` command, passing vulnerability and system context data from prior CVE research and JIRA ticket analysis.
+==================== END: .bmad-1898-engineering/tasks/assess-vulnerability-priority.md ====================
 
 ==================== START: .bmad-1898-engineering/tasks/create-doc.md ====================
 <!-- Powered by BMAD™ Core -->
@@ -983,10 +1850,344 @@ User can type `#yolo` to toggle to YOLO mode (process all sections at once).
 - End with "Select 1-9 or just type your question/feedback:"
 ==================== END: .bmad-1898-engineering/tasks/create-doc.md ====================
 
+==================== START: .bmad-1898-engineering/templates/security-enrichment-tmpl.yaml ====================
+# Security Enrichment Template
+# Powered by BMAD™ Core
+#
+# This template structures CVE research findings into comprehensive security enrichment
+# documents for JIRA ticket updates. It consumes YAML output from the research-cve task
+# and produces formatted markdown enrichment comments.
+
+template:
+  id: security-enrichment-template-v1
+  name: Security Alert Enrichment
+  version: 1.0
+  output:
+    format: markdown
+    filename: enrichment-{{cve_id}}.md
+    title: "Security Enrichment: {{cve_id}} - {{vulnerability_title}}"
+
+workflow:
+  mode: automated
+  # No elicitation - template processes data directly from research-cve task output
+
+sections:
+  - id: executive-summary
+    title: Executive Summary
+    instruction: |
+      Provide a concise executive summary in 2-3 sentences:
+      - Sentence 1: CVE ID, severity, vulnerability type, affected product/versions
+      - Sentence 2: CVSS/EPSS scores and KEV status
+      - Sentence 3: Recommended priority and SLA timeline
+
+      Variables used:
+      - cve_id: CVE identifier
+      - cvss.severity: Critical/High/Medium/Low
+      - vulnerability_type: RCE/SQLi/XSS/etc
+      - affected_product: Product name
+      - affected_versions_summary: Version range summary
+      - cvss.score: CVSS base score (0.0-10.0)
+      - epss.score: EPSS probability (0.0-1.0)
+      - kev_status_text: "Listed" or "Not Listed"
+      - priority: P1-P5
+      - sla_timeline: Remediation deadline
+    template: |
+      {{cve_id}} is a **{{cvss.severity}}** severity {{vulnerability_type}} affecting {{affected_product}} versions {{affected_versions_summary}}. The vulnerability has a CVSS score of {{cvss.score}}, EPSS score of {{epss.score}}, and is {{kev_status_text}} on the CISA KEV catalog. Recommended priority: **{{priority}}** ({{sla_timeline}}).
+
+  - id: vulnerability-details
+    title: Vulnerability Details
+    instruction: |
+      Provide detailed vulnerability information:
+      - CVE identifier and full vulnerability title
+      - Vulnerability type/category (RCE, SQLi, XSS, etc.)
+      - Affected product name and version ranges
+      - Patched versions if available
+      - Technical description of the vulnerability
+
+      Variables used:
+      - cve_id: CVE identifier
+      - vulnerability_title: Full CVE title
+      - vulnerability_type: Vulnerability category
+      - affected_product: Product name
+      - affected_versions_list: Formatted version list
+      - patched_versions_list: Formatted patch list or "Not available"
+      - vulnerability_description: Technical description
+    template: |
+      **CVE ID:** {{cve_id}}
+
+      **Vulnerability Title:** {{vulnerability_title}}
+
+      **Type:** {{vulnerability_type}}
+
+      **Affected Product:** {{affected_product}}
+
+      **Affected Versions:**
+      {{affected_versions_list}}
+
+      **Patched Versions:** {{patched_versions_list}}
+
+      **Description:**
+      {{vulnerability_description}}
+
+  - id: severity-metrics
+    title: Severity Metrics
+    instruction: |
+      Present severity metrics in a markdown table with three columns: Metric, Value, Context.
+      Include CVSS, EPSS, KEV status, and exploit availability.
+      Provide interpretation context for each metric.
+
+      Variables used:
+      - cvss.score: CVSS base score
+      - cvss.severity: Severity rating
+      - cvss.vector: CVSS vector string
+      - epss.score: EPSS probability
+      - epss.percentile: EPSS percentile rank
+      - epss_interpretation: High/Medium/Low
+      - kev.status: Listed/Not Listed
+      - kev_context: KEV details or "Not in KEV catalog"
+      - exploit_availability_text: Exploit status summary
+      - exploit_context: Exploit maturity description
+    template: |
+      | Metric | Value | Context |
+      |--------|-------|---------|
+      | **CVSS Base Score** | {{cvss.score}} ({{cvss.severity}}) | {{cvss.vector}} |
+      | **EPSS Score** | {{epss.score}} ({{epss.percentile}}th percentile) | Exploitation probability: {{epss_interpretation}} |
+      | **CISA KEV Status** | {{kev.status}} | {{kev_context}} |
+      | **Exploit Availability** | {{exploit_availability_text}} | {{exploit_context}} |
+
+  - id: affected-systems
+    title: Affected Systems
+    instruction: |
+      List affected systems from JIRA custom field.
+      For each system, include:
+      - System name/identifier
+      - Installed version
+      - Asset Criticality Rating (ACR)
+      - System Exposure classification
+
+      Variables used:
+      - affected_systems_table: Pre-formatted markdown table from JIRA data
+
+      Example format:
+      | System | Version | ACR | Exposure |
+      |--------|---------|-----|----------|
+      | prod-web-01 | Apache Struts 2.5.30 | Critical | Internet-Facing |
+    template: |
+      {{affected_systems_table}}
+
+  - id: exploit-intelligence
+    title: Exploit Intelligence
+    instruction: |
+      Provide exploit intelligence from research-cve task output:
+      - PoC availability (Yes/No)
+      - Public exploit code availability (Yes/No)
+      - Active exploitation in the wild (Yes/No)
+      - Exploit maturity assessment
+
+      Variables used:
+      - exploit_status.poc_available_text: "Yes" or "No"
+      - exploit_status.exploit_code_public_text: "Yes" or "No"
+      - exploit_status.active_exploitation_text: "Yes" or "No"
+      - exploit_maturity: Maturity assessment
+    template: |
+      **PoC Available:** {{exploit_status.poc_available_text}}
+
+      **Public Exploit Code:** {{exploit_status.exploit_code_public_text}}
+
+      **Active Exploitation:** {{exploit_status.active_exploitation_text}}
+
+      **Exploit Maturity:** {{exploit_maturity}}
+
+  - id: business-impact-assessment
+    title: Business Impact Assessment
+    instruction: |
+      Assess business impact based on:
+      - Vulnerability type and CVSS impact metrics (C/I/A)
+      - Affected systems' business criticality (ACR)
+      - Potential compliance implications
+      - Overall business risk rating
+
+      Variables used:
+      - confidentiality_impact: Derived from CVSS C score
+      - integrity_impact: Derived from CVSS I score
+      - availability_impact: Derived from CVSS A score
+      - compliance_implications: Compliance context
+      - business_risk_rating: Critical/High/Medium/Low
+    template: |
+      **Confidentiality Impact:** {{confidentiality_impact}}
+
+      **Integrity Impact:** {{integrity_impact}}
+
+      **Availability Impact:** {{availability_impact}}
+
+      **Compliance Implications:** {{compliance_implications}}
+
+      **Business Risk Rating:** {{business_risk_rating}}
+
+  - id: mitre-attack-mapping
+    title: MITRE ATT&CK Mapping
+    instruction: |
+      Map vulnerability to MITRE ATT&CK framework using research output.
+      List tactics as bullet points.
+      List techniques as bullet points with T-numbers.
+      Provide detection implications and defensive recommendations.
+
+      Variables used:
+      - attack_tactics_list: Pre-formatted bullet list of tactics
+      - attack_techniques_list: Pre-formatted bullet list with T-numbers
+      - detection_implications: What to monitor
+      - defensive_recommendations: Actionable defense measures
+
+      Note: Lists must be pre-formatted strings (no iteration syntax).
+    template: |
+      **Tactics:**
+      {{attack_tactics_list}}
+
+      **Techniques:**
+      {{attack_techniques_list}}
+
+      **Detection Implications:**
+      {{detection_implications}}
+
+      **Defensive Recommendations:**
+      {{defensive_recommendations}}
+
+  - id: remediation-guidance
+    title: Remediation Guidance
+    instruction: |
+      Provide remediation guidance:
+      - Patch application steps
+      - Upgrade path recommendations
+      - Vendor advisory links from research sources
+      - Remediation complexity (Low/Medium/High)
+
+      Variables used:
+      - patch_availability: Status from patched_versions
+      - recommended_action: Specific remediation steps
+      - upgrade_path: Version upgrade recommendations
+      - vendor_advisory_links: Links from sources
+      - remediation_complexity: Difficulty assessment
+    template: |
+      **Patch Availability:** {{patch_availability}}
+
+      **Recommended Action:** {{recommended_action}}
+
+      **Upgrade Path:** {{upgrade_path}}
+
+      **Vendor Advisory:**
+      {{vendor_advisory_links}}
+
+      **Remediation Complexity:** {{remediation_complexity}}
+
+  - id: compensating-controls
+    title: Compensating Controls
+    instruction: |
+      Provide compensating controls if patch is not available or cannot be immediately applied:
+      - Network-based mitigations
+      - Access control adjustments
+      - Monitoring enhancements
+      - Configuration changes
+
+      Note: If patch is available and easily applied, set content to "Not applicable - patch available"
+
+      Variables used:
+      - compensating_controls_content: Conditional content based on patch availability
+    template: |
+      {{compensating_controls_content}}
+
+  - id: priority-assessment
+    title: Priority Assessment
+    instruction: |
+      Provide priority assessment based on multi-factor analysis:
+      - Priority level (P1-P5) from priority assessment task
+      - Detailed rationale
+      - Factor breakdown showing CVSS, EPSS, KEV, ACR, Exposure
+      - SLA remediation deadline
+
+      Variables used:
+      - priority: P1-P5
+      - priority_label: Critical/High/Medium/Low/Informational
+      - priority_rationale: Explanation of priority factors
+      - cvss.severity, cvss.score: Severity metrics
+      - epss_interpretation, epss.score: Exploitation probability
+      - kev.status: KEV listing status
+      - acr_rating: Asset criticality from JIRA
+      - system_exposure: Exposure classification from JIRA
+      - exploit_availability_text: Exploit status
+      - sla_deadline: Remediation deadline
+    template: |
+      **Priority Level:** {{priority}} ({{priority_label}})
+
+      **Rationale:**
+      {{priority_rationale}}
+
+      **Factor Analysis:**
+      - CVSS Severity: {{cvss.severity}} ({{cvss.score}})
+      - EPSS Exploitation Probability: {{epss_interpretation}} ({{epss.score}})
+      - CISA KEV Status: {{kev.status}}
+      - Asset Criticality Rating: {{acr_rating}}
+      - System Exposure: {{system_exposure}}
+      - Exploit Availability: {{exploit_availability_text}}
+
+      **SLA Remediation Timeline:** {{sla_deadline}}
+
+  - id: references
+    title: References
+    instruction: |
+      List all authoritative sources used in research.
+      Include all sources from research-cve task output.
+      Format as bullet list with links.
+
+      Variables used:
+      - references_list: Pre-formatted bullet list with markdown links
+
+      Example format:
+      - [NIST NVD - CVE-2024-1234](https://nvd.nist.gov/vuln/detail/CVE-2024-1234)
+      - [CISA KEV Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
+    template: |
+      {{references_list}}
+
+  - id: enrichment-metadata
+    title: Enrichment Metadata
+    instruction: |
+      Provide enrichment metadata:
+      - Timestamp of enrichment
+      - Agent identifier
+      - Research tools used
+      - Confidence level in findings
+
+      Variables used:
+      - enrichment_timestamp: Current date/time
+      - research_tools_used: "Perplexity AI (search/reason/deep_research)"
+      - confidence_level: High/Medium/Low based on data completeness
+      - data_sources_count: Count of authoritative sources
+    template: |
+      **Enrichment Date:** {{enrichment_timestamp}}
+
+      **Enriched By:** Security Analyst Agent (BMAD-1898)
+
+      **Research Tools:** {{research_tools_used}}
+
+      **Confidence Level:** {{confidence_level}}
+
+      **Data Sources:** {{data_sources_count}} authoritative sources
+==================== END: .bmad-1898-engineering/templates/security-enrichment-tmpl.yaml ====================
+
+==================== START: .bmad-1898-engineering/checklists/source-citation-checklist.md ====================
+# Source Citation Checklist
+
+- [ ] All factual claims have source citations
+- [ ] Sources are authoritative (NVD, CISA, vendor)
+- [ ] URLs valid and accessible
+- [ ] Publication dates included
+- [ ] No reliance on unverified sources (blogs, forums)
+==================== END: .bmad-1898-engineering/checklists/source-citation-checklist.md ====================
+
 ==================== START: .bmad-1898-engineering/data/bmad-kb.md ====================
 # BMAD-1898 Engineering Expansion Pack Knowledge Base
 
 ## Table of Contents
+
 1. Introduction
 2. Vulnerability Management Landscape
 3. Frameworks and Standards
@@ -1001,6 +2202,7 @@ User can type `#yolo` to toggle to YOLO mode (process all sections at once).
 BMAD-1898 is an AI-assisted security vulnerability enrichment and quality assurance expansion pack for the BMAD Method™ framework. It addresses the challenge of 50,000+ annual CVE disclosures by enabling analysts to enrich vulnerability tickets 90% faster while maintaining enterprise-grade quality through systematic peer review.
 
 **Key Components:**
+
 - Security Analyst Agent: AI-assisted enrichment
 - Security Reviewer Agent: Systematic QA review
 - 8 Quality Dimension Checklists
@@ -1013,21 +2215,25 @@ BMAD-1898 is an AI-assisted security vulnerability enrichment and quality assura
 ### Current Challenge (2025)
 
 **CVE Volume (Source: NIST NVD historical trends, verify during implementation):**
+
 - 2024: 43,000+ CVE disclosures (approximate)
 - 2025: 50,000+ projected (18% increase estimate)
 - 2030: 75,000+ estimated (trend extrapolation)
 
 **Alert Fatigue (Source: Industry benchmarks - verify current statistics during implementation):**
+
 - 78% of security alerts go uninvestigated (industry estimate)
 - Average analyst processes 10-20 alerts/day manually (typical capacity)
 - With AI assistance: 50-100 alerts/day possible (performance goal)
 
 **Traditional CVSS-Only Approach:**
+
 - Problem: CVSS only measures severity, not exploitability
 - Result: Patching theoretical risks while missing genuine threats
 - Example: CVSS 9.8 vulnerability with EPSS 0.02 (low exploitation probability)
 
 **BMAD-1898 Solution:**
+
 - Multi-factor risk assessment (CVSS + EPSS + KEV + Business Context)
 - AI-assisted research (10-15 min vs. hours - performance target)
 - Systematic QA (60-70% more defects found - based on dual-review effectiveness studies)
@@ -1043,11 +2249,13 @@ BMAD-1898 is an AI-assisted security vulnerability enrichment and quality assura
 **URL:** https://nvd.nist.gov
 
 **CVE ID Format:** CVE-YYYY-NNNNN
+
 - YYYY: Year of disclosure
 - NNNNN: 4-7 digit identifier
 - Example: CVE-2024-1234
 
 **Information Provided:**
+
 - CVE description
 - CVSS v3.1 base score and vector
 - Affected products and versions
@@ -1065,6 +2273,7 @@ BMAD-1898 is an AI-assisted security vulnerability enrichment and quality assura
 **Version:** CVSS v3.1 (current standard)
 
 **Base Score Metrics:**
+
 - **AV (Attack Vector):** Network/Adjacent/Local/Physical
 - **AC (Attack Complexity):** Low/High
 - **PR (Privileges Required):** None/Low/High
@@ -1078,6 +2287,7 @@ BMAD-1898 is an AI-assisted security vulnerability enrichment and quality assura
 CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 
 **Severity Ratings:**
+
 - 0.0: None
 - 0.1-3.9: Low
 - 4.0-6.9: Medium
@@ -1098,20 +2308,30 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 
 **Percentile:** Ranks vulnerability against all CVEs
 
-**Interpretation:**
+**Understanding EPSS Scores:**
+
+EPSS provides two values:
+
+- **Score (0.0-1.0)**: Probability of exploitation (e.g., 0.85 = 85% probability)
+- **Percentile**: Ranking against all CVEs (e.g., 85th percentile = scores higher than 85% of CVEs)
+
+**BMAD-1898 Interpretation Guidance:**
+
 - 0.00-0.25: Low exploitation probability
 - 0.26-0.49: Moderate exploitation probability
 - 0.50-0.75: High exploitation probability
 - 0.76-1.00: Very high exploitation probability
 
 **Example:**
-- EPSS Score: 0.85 (85th percentile)
-- Meaning: 85% probability of exploitation in next 30 days
-- Context: In top 15% of most exploitable vulnerabilities
+
+- CVE-2024-5678: EPSS Score 0.85, Percentile 92.5
+- Meaning: 85% probability of exploitation within 30 days
+- Context: Scores higher than 92.5% of all CVEs (top 7.5% most likely to be exploited)
 
 **Update Frequency:** Daily
 
 **Why EPSS Matters:**
+
 - Many CVSS 9.0+ vulnerabilities have EPSS <0.10 (rarely exploited)
 - Some CVSS 6.0 vulnerabilities have EPSS >0.80 (frequently exploited)
 - EPSS + CVSS provides complete risk picture
@@ -1125,11 +2345,13 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 **URL:** https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 
 **Listing Criteria:**
+
 - Assigned CVE ID
 - Reliable evidence of active exploitation
 - Clear remediation action available
 
 **KEV Fields:**
+
 - CVE ID
 - Date Added to KEV
 - Due Date (Federal agencies must remediate by this date)
@@ -1138,11 +2360,13 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 - Known Ransomware Campaign Use
 
 **Why KEV Matters:**
+
 - CISA observes active exploitation
 - Federal mandates require KEV vulnerabilities patched within timelines
 - Strong signal for prioritization (should be P1 or P2)
 
 **Example:**
+
 - CVE-2024-1234 added to KEV on 2024-11-01
 - Due Date: 2024-11-22 (21 days)
 - Required Action: Apply updates per vendor instructions
@@ -1154,12 +2378,14 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 **Purpose:** Business impact classification for systems
 
 **Ratings:**
+
 - **Critical:** Mission-critical systems (production databases, payment systems, authentication servers)
 - **High:** Important business systems (CRM, ERP, customer portals)
 - **Medium:** Standard business systems (internal tools, reporting)
 - **Low:** Development, test, or non-production systems
 
 **Assessment Factors:**
+
 - Business process dependency
 - Data sensitivity
 - Downtime impact
@@ -1167,6 +2393,7 @@ CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 - Customer impact
 
 **Example:**
+
 - Production payment processing server: Critical
 - Internal wiki: Medium
 - Dev sandbox: Low
@@ -1190,29 +2417,34 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 
 ### Priority Levels (P1-P5)
 
-**Note:** SLA timelines below represent industry-standard practices. Organizations should adjust based on their specific risk tolerance and operational capabilities.
+**Note:** The priority criteria and SLA timelines below are BMAD-1898 recommendations based on industry-standard practices. Organizations should adjust thresholds, factor weights, and timelines based on their specific risk tolerance and operational capabilities.
 
 **P1 - Critical (24 hour SLA):**
+
 - Criteria: CVSS ≥9.0 + EPSS ≥0.75 + KEV Listed, OR Active Exploitation + Internet-Facing + Critical ACR
 - Example: RCE in internet-facing production database with active exploitation
 - Action: Emergency patching, war room if needed
 
 **P2 - High (7 day SLA):**
+
 - Criteria: CVSS ≥7.0 + EPSS ≥0.50 + (KEV Listed OR Public Exploit), OR High ACR + Internet-Facing
 - Example: High severity with public PoC affecting important systems
 - Action: Urgent patching within next sprint
 
 **P3 - Medium (30 day SLA):**
+
 - Criteria: CVSS 4.0-6.9 + Moderate EPSS + Internal Exposure, OR Medium ACR + No Active Exploitation
 - Example: Moderate severity affecting internal systems with no known exploits
 - Action: Planned patching in regular maintenance window
 
 **P4 - Low (90 day SLA):**
+
 - Criteria: CVSS <4.0 OR Low ACR + No Exploit + Isolated System
 - Example: Low severity on development systems with theoretical risk
 - Action: Routine patching during scheduled maintenance
 
 **P5 - Informational (No SLA):**
+
 - Criteria: CVSS <2.0 + No Exploit + Test Environment
 - Example: Theoretical vulnerabilities with minimal business impact
 - Action: Awareness only, optional patching
@@ -1226,6 +2458,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **When:** Vendor patch available
 
 **Actions:**
+
 - Identify patched version
 - Review patch release notes
 - Test in non-production
@@ -1241,6 +2474,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **When:** No patch available yet, vendor provides workaround
 
 **Actions:**
+
 - Implement vendor-recommended workaround
 - Document workaround steps
 - Monitor for patch availability
@@ -1255,6 +2489,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **When:** Patching delayed, need to reduce risk
 
 **Actions:**
+
 - WAF rules to block exploitation attempts
 - Network segmentation to limit exposure
 - IDS/IPS signatures to detect exploitation
@@ -1270,6 +2505,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **When:** Critical vulnerability, no patch, high exploitation risk
 
 **Actions:**
+
 - Remove system from network
 - Restrict access to trusted users only
 - Implement compensating controls
@@ -1282,6 +2518,7 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **When:** Remediation cost exceeds risk, or system decommissioning soon
 
 **Actions:**
+
 - Document risk acceptance decision
 - Obtain management approval
 - Implement monitoring
@@ -1297,18 +2534,22 @@ BMAD-1898 uses a **multi-factor risk assessment** approach combining:
 **Implementation Note:** All URLs should be verified as accessible during implementation. If any URL has changed, update to the current authoritative source.
 
 **NIST NVD:**
+
 - URL: https://nvd.nist.gov
 - Purpose: CVE details, CVSS scores
 
 **CISA KEV:**
+
 - URL: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 - Purpose: Known exploited vulnerabilities
 
 **FIRST EPSS:**
+
 - URL: https://www.first.org/epss
 - Purpose: Exploitation probability scores
 
 **MITRE ATT&CK:**
+
 - URL: https://attack.mitre.org
 - Purpose: Adversary tactics and techniques
 
@@ -1340,6 +2581,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Definition:** Immediate action required. Critical vulnerabilities with high exploitability affecting critical systems. War room may be needed.
 
 **Criteria (ANY of the following):**
+
 1. **CVSS ≥9.0 + EPSS ≥0.75 + KEV Listed**
    - Critical severity + very high exploitation probability + active exploitation confirmed
 
@@ -1352,6 +2594,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Examples:**
 
 **Example 1: Apache Struts 2 RCE**
+
 - CVE-2024-1234
 - CVSS: 9.8 (Critical)
 - EPSS: 0.85 (97th percentile - very high exploitation probability)
@@ -1361,6 +2604,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 - **Priority: P1** (All factors indicate immediate high risk)
 
 **Example 2: Zero-Day RCE with Active Exploitation**
+
 - CVE-2024-5678
 - CVSS: 8.5 (High)
 - EPSS: 0.95 (99th percentile)
@@ -1373,6 +2617,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **SLA Timeline:** 24 hours from enrichment completion
 
 **Actions Required:**
+
 - Immediate notification to security leadership
 - Emergency change approval (bypass standard CAB)
 - Deploy patch or workaround within 24 hours
@@ -1388,6 +2633,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Definition:** Urgent action required. High severity vulnerabilities with significant exploitability or important systems affected.
 
 **Criteria (ANY of the following):**
+
 1. **CVSS ≥7.0 + EPSS ≥0.50 + (KEV Listed OR Public Exploit)**
    - High severity + high exploitation probability + exploit available
 
@@ -1400,6 +2646,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Examples:**
 
 **Example 1: SQL Injection with Public PoC**
+
 - CVE-2024-7890
 - CVSS: 8.0 (High)
 - EPSS: 0.65 (85th percentile)
@@ -1410,6 +2657,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 - **Priority: P2** (High severity + public exploit + important system)
 
 **Example 2: Internal Critical System, High CVSS**
+
 - CVE-2024-1111
 - CVSS: 9.5 (Critical)
 - EPSS: 0.20 (low exploitation probability)
@@ -1422,6 +2670,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **SLA Timeline:** 7 days from enrichment completion
 
 **Actions Required:**
+
 - Notify security team and system owners
 - Schedule patch deployment within 7 days
 - Implement monitoring and compensating controls until patched
@@ -1437,6 +2686,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Definition:** Important but not urgent. Moderate severity or exploitability. Planned patching in regular maintenance window.
 
 **Criteria (ANY of the following):**
+
 1. **CVSS 4.0-6.9 + EPSS 0.25-0.49 + Internal Exposure**
    - Medium severity + moderate exploitability + internal system
 
@@ -1449,6 +2699,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Examples:**
 
 **Example 1: Medium Severity Internal System**
+
 - CVE-2024-2222
 - CVSS: 6.5 (Medium)
 - EPSS: 0.30 (moderate)
@@ -1459,6 +2710,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 - **Priority: P3** (Moderate risk, internal system)
 
 **Example 2: High CVSS but Low Exploitability with WAF**
+
 - CVE-2024-3333
 - CVSS: 8.0 (High)
 - EPSS: 0.15 (low)
@@ -1471,6 +2723,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **SLA Timeline:** 30 days from enrichment completion
 
 **Actions Required:**
+
 - Schedule patch deployment in next monthly maintenance window
 - Implement monitoring and basic compensating controls
 - No emergency change required
@@ -1485,6 +2738,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Definition:** Routine patching. Low severity or low exploitability. Minimal business impact.
 
 **Criteria (ANY of the following):**
+
 1. **CVSS <4.0 + Any EPSS + Any System**
    - Low severity regardless of other factors
 
@@ -1497,6 +2751,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Examples:**
 
 **Example 1: Low Severity, Any System**
+
 - CVE-2024-4444
 - CVSS: 3.5 (Low)
 - EPSS: 0.10
@@ -1506,6 +2761,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 - **Priority: P4** (CVSS <4.0 = Low priority despite critical system)
 
 **Example 2: Dev Environment, Moderate Severity**
+
 - CVE-2024-5555
 - CVSS: 6.0 (Medium)
 - EPSS: 0.05
@@ -1517,6 +2773,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **SLA Timeline:** 90 days from enrichment completion
 
 **Actions Required:**
+
 - Schedule patch in quarterly maintenance
 - No compensating controls required
 - Low monitoring priority
@@ -1531,6 +2788,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Definition:** Awareness only. Very low or theoretical risk. Optional patching.
 
 **Criteria (ANY of the following):**
+
 1. **CVSS <2.0 + No Exploit + Test Environment**
    - Very low severity in non-production
 
@@ -1543,6 +2801,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **Examples:**
 
 **Example 1: Theoretical Risk, Test System**
+
 - CVE-2024-6666
 - CVSS: 1.5 (Low)
 - EPSS: 0.01
@@ -1552,6 +2811,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 - **Priority: P5** (Minimal risk, test environment)
 
 **Example 2: Decommissioning Planned**
+
 - CVE-2024-7777
 - CVSS: 7.0 (High)
 - System: Legacy server scheduled for decommission in 2 weeks
@@ -1560,6 +2820,7 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 **SLA Timeline:** No SLA
 
 **Actions Required:**
+
 - Awareness only
 - No patching required
 - Optional patching if convenient
@@ -1575,30 +2836,55 @@ The BMAD-1898 Priority Framework uses **multi-factor risk assessment** to priori
 
 ```python
 def calculate_priority(vuln, system):
+    """
+    Calculate vulnerability priority using multi-factor risk assessment.
+
+    Args:
+        vuln: Vulnerability object with cvss, epss, kev_status, exploit_status
+        system: System object with acr (Asset Criticality Rating), exposure
+
+    Returns:
+        Priority level: "P1", "P2", "P3", "P4", or "P5"
+    """
     score = 0
 
+    # Input validation and defensive defaults
+    cvss = getattr(vuln, 'cvss', None)
+    epss = getattr(vuln, 'epss', None)
+    kev_status = getattr(vuln, 'kev_status', 'Not Listed')
+    exploit_status = getattr(vuln, 'exploit_status', 'Theoretical')
+    acr = getattr(system, 'acr', 'Low')
+    exposure = getattr(system, 'exposure', 'Isolated')
+
+    # Validate critical inputs
+    if cvss is None:
+        raise ValueError("CVSS score is required for priority calculation")
+    if epss is None:
+        epss = 0.0  # Default to lowest exploitability if unavailable
+
     # Factor 1: CVSS (0-4 points)
-    if vuln.cvss >= 9.0: score += 4
-    elif vuln.cvss >= 7.0: score += 3
-    elif vuln.cvss >= 4.0: score += 2
+    if cvss >= 9.0: score += 4
+    elif cvss >= 7.0: score += 3
+    elif cvss >= 4.0: score += 2
     else: score += 1
 
     # Factor 2: EPSS (0-4 points)
-    if vuln.epss >= 0.75: score += 4
-    elif vuln.epss >= 0.50: score += 3
-    elif vuln.epss >= 0.25: score += 2
+    if epss >= 0.75: score += 4
+    elif epss >= 0.50: score += 3
+    elif epss >= 0.25: score += 2
     else: score += 1
 
-    # Factor 3: KEV (0-5 points, OVERRIDE)
-    if vuln.kev_status == "Listed": score += 5
+    # Factor 3: KEV (0-5 points)
+    if kev_status == "Listed":
+        score += 5
 
     # Factor 4: Asset Criticality Rating (0-4 points)
     acr_points = {"Critical": 4, "High": 3, "Medium": 2, "Low": 1}
-    score += acr_points[system.acr]
+    score += acr_points.get(acr, 1)  # Default to Low if invalid
 
     # Factor 5: System Exposure (0-3 points)
     exposure_points = {"Internet": 3, "Internal": 2, "Isolated": 1}
-    score += exposure_points[system.exposure]
+    score += exposure_points.get(exposure, 1)  # Default to Isolated if invalid
 
     # Factor 6: Exploit Availability (0-4 points)
     exploit_points = {
@@ -1607,12 +2893,14 @@ def calculate_priority(vuln, system):
         "PoC": 2,
         "Theoretical": 1
     }
-    score += exploit_points[vuln.exploit_status]
+    score += exploit_points.get(exploit_status, 1)  # Default to Theoretical if invalid
 
     # Map score to priority (max 24 points)
-    if score >= 20 or vuln.kev_status == "Listed":
+    # KEV-listed vulnerabilities are elevated but nuanced by context
+    if score >= 20:
         return "P1"
-    elif score >= 15:
+    elif score >= 15 or kev_status == "Listed":
+        # KEV elevates to at least P2 (matches P2 criteria #3: KEV + Internal + High ACR)
         return "P2"
     elif score >= 10:
         return "P3"
@@ -1624,14 +2912,14 @@ def calculate_priority(vuln, system):
 
 ### Factor Weights Summary
 
-| Factor | Weight | Rationale |
-|--------|--------|-----------|
-| CVSS | 4 points | Severity matters, but not alone |
-| EPSS | 4 points | Exploitability is equally important as severity |
-| KEV | 5 points | Active exploitation is strongest signal (override) |
-| ACR | 4 points | Business impact is critical |
-| Exposure | 3 points | Internet-facing = higher risk |
-| Exploit | 4 points | Exploit availability = imminent risk |
+| Factor   | Weight   | Rationale                                          |
+| -------- | -------- | -------------------------------------------------- |
+| CVSS     | 4 points | Severity matters, but not alone                    |
+| EPSS     | 4 points | Exploitability is equally important as severity    |
+| KEV      | 5 points | Active exploitation is strongest signal (override) |
+| ACR      | 4 points | Business impact is critical                        |
+| Exposure | 3 points | Internet-facing = higher risk                      |
+| Exploit  | 4 points | Exploit availability = imminent risk               |
 
 **Total Max Score:** 24 points
 
@@ -1642,18 +2930,22 @@ def calculate_priority(vuln, system):
 ### Automatic Priority Elevation (+1 or +2 levels)
 
 **Compliance Requirement:**
+
 - PCI-DSS Critical vulnerability: Elevate to P1 or P2
 - HIPAA-regulated system: Elevate +1 level
 
 **Previous Breach:**
+
 - Similar vulnerability exploited in past: Elevate +1 level
 - Same product/vendor as previous breach: Elevate +1 level
 
 **Executive Mandate:**
+
 - CEO/CIO/CISO mandate: Elevate to specified priority
 - Board-level concern: Elevate to P1 or P2
 
 **Ransomware Threat:**
+
 - KEV with known ransomware use: Elevate to P1
 
 ---
@@ -1661,15 +2953,18 @@ def calculate_priority(vuln, system):
 ### Priority Reduction (-1 level)
 
 **Effective Compensating Controls:**
+
 - WAF with virtual patching: Reduce -1 level
 - Network segmentation isolates vulnerable system: Reduce -1 level
 - System not accessible to attackers: Reduce -1 level
 
 **Scheduled Decommissioning:**
+
 - System decommissioning within 30 days: Reduce to P5
 - System decommissioning within 90 days: Reduce -1 level
 
 **Vendor End-of-Life (No Patch):**
+
 - No patch available, vendor EOL: Consider risk acceptance (P5)
 - Migration to supported version planned: Maintain current priority
 
@@ -1679,22 +2974,24 @@ def calculate_priority(vuln, system):
 
 ### SLA Deadlines
 
-| Priority | SLA Timeline | Calculation |
-|----------|-------------|-------------|
-| P1 | 24 hours | Enrichment timestamp + 24 hours |
-| P2 | 7 days | Enrichment timestamp + 7 days |
-| P3 | 30 days | Enrichment timestamp + 30 days |
-| P4 | 90 days | Enrichment timestamp + 90 days |
-| P5 | No SLA | N/A |
+| Priority | SLA Timeline | Calculation                     |
+| -------- | ------------ | ------------------------------- |
+| P1       | 24 hours     | Enrichment timestamp + 24 hours |
+| P2       | 7 days       | Enrichment timestamp + 7 days   |
+| P3       | 30 days      | Enrichment timestamp + 30 days  |
+| P4       | 90 days      | Enrichment timestamp + 90 days  |
+| P5       | No SLA       | N/A                             |
 
 ### SLA Tracking
 
 **Deadline Calculation Example:**
+
 - Enrichment completed: 2025-11-06 10:30:00 UTC
 - Priority: P1 (24 hours)
 - SLA Deadline: 2025-11-07 10:30:00 UTC
 
 **SLA Breach:**
+
 - Definition: Remediation not completed by deadline
 - Action: Escalate to management, document reason for delay
 
@@ -1702,11 +2999,11 @@ def calculate_priority(vuln, system):
 
 ## Quick Reference Table
 
-| Priority | CVSS | EPSS | KEV | ACR | Exposure | SLA | Review |
-|----------|------|------|-----|-----|----------|-----|--------|
-| P1 | 9.0+ | 0.75+ | Listed | Critical | Internet | 24h | 100% |
-| P2 | 7.0+ | 0.50+ | Listed or Exploit | High | Internet/Internal | 7d | 100% |
-| P3 | 4.0-6.9 | 0.25-0.49 | Not Listed | Medium | Internal | 30d | 25% |
-| P4 | <4.0 | Any | Not Listed | Low | Any | 90d | 10% |
-| P5 | <2.0 | Any | Not Listed | Low | Test/Decom | None | 5% |
+| Priority | CVSS    | EPSS      | KEV               | ACR      | Exposure          | SLA  | Review |
+| -------- | ------- | --------- | ----------------- | -------- | ----------------- | ---- | ------ |
+| P1       | 9.0+    | 0.75+     | Listed            | Critical | Internet          | 24h  | 100%   |
+| P2       | 7.0+    | 0.50+     | Listed or Exploit | High     | Internet/Internal | 7d   | 100%   |
+| P3       | 4.0-6.9 | 0.25-0.49 | Not Listed        | Medium   | Internal          | 30d  | 25%    |
+| P4       | <4.0    | Any       | Not Listed        | Low      | Any               | 90d  | 10%    |
+| P5       | <2.0    | Any       | Not Listed        | Low      | Test/Decom        | None | 5%     |
 ==================== END: .bmad-1898-engineering/data/priority-framework.md ====================
