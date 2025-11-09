@@ -85,6 +85,29 @@ jira:
       label: "Exploit Availability"
       options: ["None", "PoC", "Public Exploit", "Active Exploitation"]
 
+    # Event Investigation Fields (Story 7.1)
+    disposition:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "select"
+      label: "Disposition"
+      options: ["True Positive", "False Positive", "Benign True Positive"]
+
+    confidence_level:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "select"
+      label: "Confidence Level"
+      options: ["High", "Medium", "Low"]
+
+    next_actions:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "text"
+      label: "Next Actions"
+
+    investigation_duration:
+      field_id: "customfield_XXXXX" # EXAMPLE - Replace with actual field ID
+      field_type: "text"
+      label: "Investigation Duration"
+
   # Priority Mapping for Multi-factor Assessment (Story 1.7)
   priority_mapping:
     P1: "Critical" # Highest priority

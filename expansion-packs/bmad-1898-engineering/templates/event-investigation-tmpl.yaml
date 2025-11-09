@@ -1,0 +1,385 @@
+# Event Investigation Template
+# Powered by BMAD™ Core
+#
+# This template structures security event alert investigation findings into comprehensive
+# documentation for JIRA ticket updates. It consumes investigation data from the
+# investigate-event-alert task and produces formatted markdown investigation reports.
+
+template:
+  id: event-investigation-template-v1
+  name: Security Event Investigation
+  version: 1.0
+  output:
+    format: markdown
+    filename: event-investigation-{{ticket_id}}.md
+    title: "Event Investigation: {{alert_name}} - {{ticket_id}}"
+
+workflow:
+  mode: automated
+  # No elicitation - template processes data directly from investigate-event-alert task output
+
+sections:
+  - id: executive-summary
+    title: Executive Summary
+    instruction: |
+      Provide a concise executive summary in 2-3 sentences:
+      - Sentence 1: Alert name, severity, platform, affected systems
+      - Sentence 2: Disposition (TP/FP/BTP) with confidence level
+      - Sentence 3: Recommended next actions and escalation decision
+
+      Variables used:
+      - alert_name: Full alert name/signature
+      - alert_severity: Critical/High/Medium/Low
+      - alert_platform: Platform name (Claroty, Snort, Splunk, etc.)
+      - source_ip: Source IP address
+      - destination_ip: Destination IP address
+      - disposition: True Positive/False Positive/Benign True Positive
+      - confidence_level: High/Medium/Low
+      - escalation_decision: Escalate/Monitor/Tune/Close
+      - next_actions_summary: Brief summary of recommended actions
+    template: |
+      **{{alert_name}}** ({{alert_severity}} severity) detected by {{alert_platform}} from {{source_ip}} to {{destination_ip}}. Investigation determined disposition: **{{disposition}}** with {{confidence_level}} confidence. Recommendation: {{escalation_decision}} - {{next_actions_summary}}.
+
+  - id: metadata
+    title: Investigation Metadata
+    instruction: |
+      Provide investigation metadata in a table format:
+      - Ticket ID
+      - Alert platform and type
+      - Alert ID/signature
+      - Detection timestamp
+      - Analyst name
+      - Investigation date and duration
+
+      Variables used:
+      - ticket_id: JIRA ticket ID
+      - alert_platform: Platform name
+      - alert_platform_type: ICS/IDS/SIEM
+      - alert_id: Rule ID or signature ID
+      - detection_timestamp: When alert was generated
+      - analyst_name: Analyst performing investigation
+      - investigation_date: Date of investigation
+      - investigation_duration: Time spent on investigation
+    template: |
+      | Field | Value |
+      |-------|-------|
+      | **Ticket ID** | {{ticket_id}} |
+      | **Alert Platform** | {{alert_platform}} ({{alert_platform_type}}) |
+      | **Alert ID** | {{alert_id}} |
+      | **Detection Timestamp** | {{detection_timestamp}} |
+      | **Analyst** | {{analyst_name}} |
+      | **Investigation Date** | {{investigation_date}} |
+      | **Investigation Duration** | {{investigation_duration}} |
+
+  - id: alert-details
+    title: Alert Details
+    instruction: |
+      Provide detailed alert information:
+      - Alert source (sensor/platform that generated alert)
+      - Alert rule ID and category/classification
+      - Detection engine version if available
+      - Raw alert data or relevant excerpts
+
+      Variables used:
+      - alert_source: Sensor or platform generating alert
+      - alert_id: Rule/signature identifier
+      - alert_category: Classification or category
+      - detection_engine: Detection engine version (optional)
+      - raw_alert_data: Original alert message or excerpts
+    template: |
+      **Alert Source:** {{alert_source}}
+
+      **Alert Rule ID:** {{alert_id}}
+
+      **Alert Category:** {{alert_category}}
+
+      **Detection Engine:** {{detection_engine}}
+
+      **Raw Alert Data:**
+      ```
+      {{raw_alert_data}}
+      ```
+
+  - id: network-identifiers
+    title: Network and Host Identifiers
+    instruction: |
+      Document network and host identifiers in structured format:
+      - Source information (IP, hostname, asset type, criticality, zone)
+      - Destination information (IP, hostname, asset type, criticality, zone)
+      - Protocol and port information
+      - Optional: ASN information for external IPs
+
+      Variables used:
+      - source_ip, source_hostname, source_asset_type, source_asset_criticality, source_zone
+      - destination_ip, destination_hostname, destination_asset_type, destination_asset_criticality, destination_zone
+      - protocol, port, service_name
+      - asn_information (optional)
+    template: |
+      **Source:**
+      - IP Address: {{source_ip}}
+      - Hostname: {{source_hostname}}
+      - Asset Type: {{source_asset_type}}
+      - Asset Criticality: {{source_asset_criticality}}
+      - Zone: {{source_zone}}
+
+      **Destination:**
+      - IP Address: {{destination_ip}}
+      - Hostname: {{destination_hostname}}
+      - Asset Type: {{destination_asset_type}}
+      - Asset Criticality: {{destination_asset_criticality}}
+      - Zone: {{destination_zone}}
+
+      **Protocol/Port:**
+      - Protocol: {{protocol}}
+      - Port: {{port}}
+      - Service: {{service_name}}
+
+      **ASN Information:** {{asn_information}}
+
+  - id: timeline
+    title: Event Timeline
+    instruction: |
+      Provide chronological timeline of event:
+      - Event occurrence time (when activity happened)
+      - Alert detection time (when alert fired)
+      - Investigation start time
+      - Key events in chronological order
+
+      Variables used:
+      - event_occurrence_time: When activity occurred
+      - alert_detection_time: When alert was generated
+      - investigation_start_time: When investigation began
+      - detection_delay: Time between occurrence and detection
+      - key_events: Formatted list of key events with timestamps
+    template: |
+      | Timestamp | Event |
+      |-----------|-------|
+      | {{event_occurrence_time}} | Event occurred |
+      | {{alert_detection_time}} | Alert detected (delay: {{detection_delay}}) |
+      | {{investigation_start_time}} | Investigation started |
+
+      **Key Events:**
+      {{key_events}}
+
+  - id: evidence-collected
+    title: Evidence Collected
+    instruction: |
+      Document evidence collection results:
+      - Log sources reviewed (comma-separated list)
+      - Relevant log excerpts (preserve formatting)
+      - Correlated events (related alerts or activities)
+      - Historical context (previous occurrences, known patterns)
+
+      Variables used:
+      - log_sources_reviewed: List of log sources checked
+      - relevant_log_excerpts: Key log entries
+      - correlated_events: Related events or alerts
+      - historical_context: Historical patterns or previous occurrences
+    template: |
+      **Log Sources Reviewed:** {{log_sources_reviewed}}
+
+      **Relevant Log Excerpts:**
+      ```
+      {{relevant_log_excerpts}}
+      ```
+
+      **Correlated Events:**
+      {{correlated_events}}
+
+      **Historical Context:**
+      {{historical_context}}
+
+  - id: asset-context
+    title: Asset Context
+    instruction: |
+      Provide asset context assessment:
+      - Asset criticality rating
+      - Asset function and business purpose
+      - Asset ownership (responsible team/department)
+      - Business impact if compromised
+      - Environmental factors (test vs prod, maintenance, changes)
+
+      Variables used:
+      - asset_criticality: Critical/High/Medium/Low
+      - asset_function: Business/operational purpose
+      - asset_ownership: Responsible team
+      - business_impact: Potential impact if compromised
+      - environmental_factors: Contextual factors
+    template: |
+      **Asset Criticality:** {{asset_criticality}}
+
+      **Asset Function:** {{asset_function}}
+
+      **Asset Ownership:** {{asset_ownership}}
+
+      **Business Impact:** {{business_impact}}
+
+      **Environmental Factors:** {{environmental_factors}}
+
+  - id: technical-analysis
+    title: Technical Analysis
+    instruction: |
+      Provide comprehensive technical analysis:
+      - Protocol and port validation
+      - Attack vector analysis
+      - Log interpretation and findings
+      - IOC analysis (indicators of compromise)
+      - Threat intelligence correlation
+
+      Variables used:
+      - protocol_port_analysis: Validation of protocol/port legitimacy
+      - attack_vector_analysis: How attack could be executed
+      - log_interpretation: Detailed log analysis
+      - ioc_analysis: IOCs identified
+      - threat_intelligence: External threat correlation
+    template: |
+      **Protocol and Port Analysis:**
+      {{protocol_port_analysis}}
+
+      **Attack Vector Analysis:**
+      {{attack_vector_analysis}}
+
+      **Log Interpretation:**
+      {{log_interpretation}}
+
+      **IOC Analysis:**
+      {{ioc_analysis}}
+
+      **Threat Intelligence:**
+      {{threat_intelligence}}
+
+  - id: investigation-methodology
+    title: Investigation Methodology
+    instruction: |
+      Document investigation approach and thought process:
+      - Initial hypothesis about the alert
+      - Investigation steps taken
+      - Alternative explanations considered
+      - Dead ends or paths that yielded no findings
+      - Peer consultation or escalation performed
+
+      Variables used:
+      - hypothesis: Initial hypothesis
+      - investigation_steps: Numbered steps taken
+      - alternative_explanations_considered: Alternative scenarios evaluated
+      - dead_ends_noted: What was checked but yielded no findings
+      - peer_consultation: Any escalation or consultation
+    template: |
+      **Initial Hypothesis:** {{hypothesis}}
+
+      **Investigation Steps:**
+      {{investigation_steps}}
+
+      **Alternative Explanations Considered:**
+      {{alternative_explanations_considered}}
+
+      **Dead Ends Noted:** {{dead_ends_noted}}
+
+      **Peer Consultation:** {{peer_consultation}}
+
+  - id: disposition-reasoning
+    title: Disposition and Reasoning
+    instruction: |
+      Provide disposition determination with evidence-based reasoning:
+      - Disposition classification (TP/FP/BTP)
+      - Confidence level (High/Medium/Low)
+      - Evidence summary supporting disposition
+      - Detailed reasoning connecting evidence to conclusion
+      - Alternative dispositions considered and why ruled out
+
+      Variables used:
+      - disposition: True Positive/False Positive/Benign True Positive
+      - confidence_level: High/Medium/Low
+      - evidence_summary: Key evidence supporting disposition
+      - reasoning: Logic connecting evidence to disposition
+      - alternative_dispositions_considered: Other dispositions evaluated
+    template: |
+      **Disposition:** {{disposition}}
+
+      **Confidence Level:** {{confidence_level}}
+
+      **Evidence Summary:**
+      {{evidence_summary}}
+
+      **Reasoning:**
+      {{reasoning}}
+
+      **Alternative Dispositions Considered:**
+      {{alternative_dispositions_considered}}
+
+  - id: recommendations
+    title: Recommendations and Next Actions
+    instruction: |
+      Provide actionable recommendations:
+      - Escalation decision (Escalate/Monitor/Tune/Close)
+      - Specific next action items
+      - Containment requirements if applicable
+      - Tuning recommendations for FP/BTP
+      - Monitoring recommendations if needed
+
+      Variables used:
+      - escalation_decision: Escalate/Monitor/Tune/Close
+      - next_actions: Specific action items (list)
+      - containment_required: Yes/No with actions if yes
+      - tuning_recommendations: Alert tuning guidance
+      - monitoring_recommendations: Ongoing monitoring suggestions
+    template: |
+      **Escalation Decision:** {{escalation_decision}}
+
+      **Next Actions:**
+      {{next_actions}}
+
+      **Containment Required:** {{containment_required}}
+
+      **Tuning Recommendations:**
+      {{tuning_recommendations}}
+
+      **Monitoring Recommendations:**
+      {{monitoring_recommendations}}
+
+  - id: appendix
+    title: Appendix
+    instruction: |
+      Provide supplementary information:
+      - Sources consulted during investigation
+      - Tools used for analysis
+
+      Variables used:
+      - sources_consulted: List of sources referenced
+      - tools_used: List of tools employed
+    template: |
+      **Sources Consulted:**
+      {{sources_consulted}}
+
+      **Tools Used:**
+      {{tools_used}}
+
+  - id: investigation-metadata-footer
+    title: Investigation Metadata Footer
+    instruction: |
+      Provide investigation metadata footer including chain of custody information:
+      - Enrichment timestamp
+      - Analyst identifier
+      - Quality score if calculated
+      - Chain of custody documentation
+
+      Variables used:
+      - enrichment_timestamp: Current date/time
+      - analyst_name: Analyst performing investigation
+      - quality_score: Quality validation score (optional)
+      - investigation_start_time: When investigation began
+    template: |
+      ---
+
+      **Investigation Date:** {{enrichment_timestamp}}
+
+      **Investigated By:** {{analyst_name}} (Security Analyst Agent - BMAD-1898)
+
+      **Quality Score:** {{quality_score}}
+
+      **Chain of Custody:**
+      - Investigation initiated: {{investigation_start_time}}
+      - Investigation completed: {{enrichment_timestamp}}
+      - Analyst: {{analyst_name}}
+      - Evidence preserved in this document with timestamps
+      - All evidence collection, analysis, and disposition documented above
