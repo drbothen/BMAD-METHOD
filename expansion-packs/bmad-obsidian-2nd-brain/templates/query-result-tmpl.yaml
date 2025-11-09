@@ -22,30 +22,38 @@ variables:
   - name: result_format
     description: Selected format (narrative, list, table, timeline)
     required: true
-  - name: results
-    description: Array of result objects with note_path, note_title, relevance_score, excerpt, sources
-    required: true
-  - name: contradictions
-    description: Array of contradiction objects (optional)
-    required: false
-    default: []
-  - name: sources_available
-    description: Array of data sources successfully queried
-    required: true
-  - name: sources_failed
-    description: Array of data sources that failed
-    required: false
-    default: []
   - name: total_results
     description: Total number of results found
     required: true
   - name: query_duration_ms
     description: Total query execution time in milliseconds
     required: true
-  - name: warnings
-    description: Array of warning messages (optional)
+  - name: sources_available
+    description: Comma-separated list of data sources successfully queried
+    required: true
+  - name: sources_failed
+    description: Pre-formatted markdown list of failed sources with errors (empty if none)
     required: false
-    default: []
+    default: ""
+  - name: warnings
+    description: Pre-formatted markdown warnings section (empty if no warnings)
+    required: false
+    default: ""
+  - name: results_formatted
+    description: Pre-formatted results in the selected format (narrative/list/table/timeline as markdown)
+    required: true
+  - name: contradictions_formatted
+    description: Pre-formatted contradictions section with detected conflicts (empty if none)
+    required: false
+    default: ""
+  - name: metadata_stats
+    description: Pre-formatted metadata statistics (result distribution counts)
+    required: false
+    default: ""
+  - name: next_steps_formatted
+    description: Pre-formatted suggested next steps based on query intent and results
+    required: false
+    default: ""
 
 workflow:
   elicitation: false
@@ -58,7 +66,6 @@ sections:
     instruction: |
       Display query metadata including original query, intent, and confidence.
       Show performance metrics (duration, result count).
-      Highlight warnings if any sources failed.
     template: |
       # Query Results
 
@@ -69,200 +76,50 @@ sections:
 
   - id: warnings
     title: Warnings
-    type: template-text
-    condition: sources_failed is not empty
-    instruction: |
-      Display warnings when data sources fail.
-      Inform user about degraded capabilities.
-      Only include if sources_failed array is not empty.
-    template: |
-      ---
-
-      ⚠️ **Warnings:**
-
-      {{#each sources_failed}}
-      - **{{this.source}}** unavailable: {{this.error}}
-        - Impact: {{this.impact}}
-      {{/each}}
-
-      Results shown are from available sources: {{sources_available}}
-
-      ---
-
-  - id: results_narrative
-    title: Results (Narrative Format)
     type: paragraphs
-    condition: result_format equals "narrative"
+    condition: warnings is not empty
     instruction: |
-      Present results in narrative format for causal or explanatory queries.
-      Synthesize information from multiple notes into coherent explanation.
-      Include source attribution inline using footnotes.
-      Format: Flowing text with citations.
+      Display warnings when data sources fail or other issues occur.
+      Only include if warnings variable is not empty.
+      The warnings variable should be pre-formatted markdown.
     template: |
-      ## Answer
+      ---
 
-      {{#narrative_synthesis results}}
-      {{synthesized_text}}
-
-      {{#each source_notes}}
-      [^{{@index}}]: [[{{this.note_title}}]] - {{this.excerpt}}
-      {{/each}}
-      {{/narrative_synthesis}}
+      {{warnings}}
 
       ---
 
-      ## Sources
-
-      {{#each results}}
-      ### [[{{this.note_title}}]]
-      **Relevance:** {{this.composite_relevance}} | **Sources:** {{this.sources}}
-
-      > {{this.excerpt}}
-
-      {{/each}}
-
-  - id: results_list
-    title: Results (List Format)
-    type: list
-    condition: result_format equals "list"
+  - id: results
+    title: Results
+    type: paragraphs
     instruction: |
-      Present results as bulleted list for factual queries.
-      Group by relevance tiers (Highly Relevant, Relevant, Somewhat Relevant).
-      Include source attribution and relevance scores.
-      Format: Tiered bullet list with metadata.
+      Present the query results in the format selected by the query interpreter.
+      The results_formatted variable contains pre-formatted markdown in one of:
+      - Narrative format (flowing text with citations)
+      - List format (tiered bullet list by relevance)
+      - Table format (comparison table for comparative queries)
+      - Timeline format (chronological list for temporal queries)
     template: |
       ## Results
 
-      ### Highly Relevant (score >= 0.8)
-
-      {{#each results}}
-      {{#if (gte this.composite_relevance 0.8)}}
-      - **[[{{this.note_title}}]]** ({{this.composite_relevance}})
-        - {{this.excerpt}}
-        - *Sources: {{this.sources}} | Created: {{this.metadata.created_date}}*
-      {{/if}}
-      {{/each}}
-
-      ### Relevant (score >= 0.6)
-
-      {{#each results}}
-      {{#if (and (gte this.composite_relevance 0.6) (lt this.composite_relevance 0.8))}}
-      - **[[{{this.note_title}}]]** ({{this.composite_relevance}})
-        - {{this.excerpt}}
-        - *Sources: {{this.sources}}*
-      {{/if}}
-      {{/each}}
-
-      ### Somewhat Relevant (score >= 0.4)
-
-      {{#each results}}
-      {{#if (and (gte this.composite_relevance 0.4) (lt this.composite_relevance 0.6))}}
-      - **[[{{this.note_title}}]]** ({{this.composite_relevance}})
-        - {{this.excerpt}}
-      {{/if}}
-      {{/each}}
-
-  - id: results_table
-    title: Results (Table Format)
-    type: table
-    condition: result_format equals "table"
-    instruction: |
-      Present results as comparison table for comparative queries.
-      Create columns for each compared subject.
-      Include rows for key attributes extracted from results.
-      Format: Markdown table with source attribution.
-    template: |
-      ## Comparison
-
-      {{#comparison_table results subjects}}
-      | Attribute | {{#each subjects}}{{this}}{{#unless @last}} | {{/unless}}{{/each}} |
-      |-----------|{{#each subjects}}--------{{#unless @last}}|{{/unless}}{{/each}}|
-      {{#each attributes}}
-      | {{this.name}} | {{#each this.values}}{{this}}{{#unless @last}} | {{/unless}}{{/each}} |
-      {{/each}}
-      {{/comparison_table}}
-
-      ---
-
-      ## Detailed Results by Subject
-
-      {{#each subjects}}
-      ### {{this}}
-
-      {{#each (filter results (subject_matches this))}}
-      - **[[{{this.note_title}}]]** ({{this.composite_relevance}})
-        - {{this.excerpt}}
-        - *Sources: {{this.sources}}*
-      {{/each}}
-
-      {{/each}}
-
-  - id: results_timeline
-    title: Results (Timeline Format)
-    type: timeline
-    condition: result_format equals "timeline"
-    instruction: |
-      Present results as timeline for temporal queries.
-      Sort chronologically by creation/modification date.
-      Group by time periods (years, months).
-      Show evolution and changes over time.
-      Format: Chronological list with date markers.
-    template: |
-      ## Timeline
-
-      {{#timeline results}}
-      {{#each time_periods}}
-      ### {{this.period_label}}
-
-      {{#each this.results}}
-      - **{{this.timestamp}}** - [[{{this.note_title}}]]
-        - {{this.excerpt}}
-        {{#if this.event_type}}
-        - *Event: {{this.event_type}}*
-        {{/if}}
-        - *Relevance: {{this.composite_relevance}}*
-      {{/each}}
-
-      {{/each}}
-      {{/timeline}}
+      {{results_formatted}}
 
   - id: contradictions
     title: Contradictions Detected
-    type: template-text
-    condition: contradictions is not empty
+    type: paragraphs
+    condition: contradictions_formatted is not empty
     instruction: |
       Display detected contradictions when present.
-      Show both sides with source attribution and timestamps.
-      Include confidence score and contradiction type.
-      Only show if contradictions array is not empty.
+      Only show if contradictions_formatted variable is not empty.
+      The variable should contain pre-formatted markdown showing both sides with source attribution.
     template: |
       ---
 
       ## ⚠️ Contradictions Detected
 
-      {{#each contradictions}}
-      ### Contradiction {{@index+1}}: {{this.type}} (confidence: {{this.confidence}})
-
-      **Note A:** [[{{this.note_a.title}}]] ({{this.note_a.timestamp}})
-      > {{this.note_a.claim}}
-
-      **Note B:** [[{{this.note_b.title}}]] ({{this.note_b.timestamp}})
-      > {{this.note_b.claim}}
-
-      **Analysis:**
-      - Semantic similarity: {{this.similarity}} (claims about same topic)
-      - Contradiction confidence: {{this.confidence}}
-      - Type: {{this.type}}
-
-      {{#if (gt this.note_a.timestamp this.note_b.timestamp)}}
-      *Note A is newer - this may reflect an updated understanding.*
-      {{else}}
-      *Note B is newer - this may reflect an updated understanding.*
-      {{/if}}
+      {{contradictions_formatted}}
 
       ---
-
-      {{/each}}
 
   - id: metadata
     title: Query Metadata
@@ -286,56 +143,155 @@ sections:
       **Performance:**
       - Total duration: {{query_duration_ms}}ms
       - Total results: {{total_results}}
-      - Deduplicated results: {{deduplicated_count}}
-      - Contradictions detected: {{contradictions.length}}
 
       **Data Sources:**
       - Available: {{sources_available}}
-      {{#if sources_failed}}
-      - Failed: {{sources_failed}}
-      {{/if}}
+      {{sources_failed}}
 
-      **Result Distribution:**
-      - Highly relevant (>= 0.8): {{highly_relevant_count}}
-      - Relevant (>= 0.6): {{relevant_count}}
-      - Somewhat relevant (>= 0.4): {{somewhat_relevant_count}}
+      {{metadata_stats}}
 
       </details>
 
   - id: next_steps
     title: Suggested Next Steps
     type: paragraphs
+    condition: next_steps_formatted is not empty
     instruction: |
       Suggest follow-up actions based on query results.
-      Recommend related queries or exploration paths.
-      Offer to refine or expand the search.
+      Only include if next_steps_formatted variable is not empty.
+      The variable should contain pre-formatted markdown suggestions.
     template: |
       ---
 
       ## Suggested Next Steps
 
-      {{#if (eq query_intent "factual")}}
-      - Use `*surface-related` to explore connections to "{{query}}"
-      - Try `*temporal-query` to see how "{{query}}" evolved over time
-      {{/if}}
+      {{next_steps_formatted}}
 
-      {{#if (eq query_intent "temporal")}}
-      - Use `*compare` to contrast earlier vs. later understanding
-      - Try `*query` for factual summary of current state
-      {{/if}}
+examples:
+  - |
+    # Query Results
 
-      {{#if (eq query_intent "comparative")}}
-      - Use `*surface-related` to find more related concepts
-      - Try individual `*query` for deeper dive into each subject
-      {{/if}}
+    **Query:** "What is spaced repetition?"
+    **Intent:** factual (confidence: 0.92)
+    **Results:** 8 notes found
+    **Duration:** 145ms
 
-      {{#if (gt contradictions.length 0)}}
-      - **Resolve contradictions:** Review the conflicting notes to determine which is more accurate
-      - Consider adding a synthesis note reconciling the differences
-      {{/if}}
+    ## Results
 
-      {{#if (eq total_results 0)}}
-      - Try broadening your search terms
-      - Use `*surface-related` for exploratory search
-      - Check spelling and phrasing
-      {{/if}}
+    ### Highly Relevant (score >= 0.8)
+
+    - **[[Spaced Repetition Superior to Massed Practice]]** (0.95)
+      - Distributing learning sessions over time produces better retention than concentrated practice (cramming).
+      - *Sources: Learning Science MOC | Created: 2025-11-05*
+
+    - **[[Ebbinghaus Forgetting Curve]]** (0.87)
+      - Memory retention decays exponentially without reinforcement, demonstrating the need for spaced review.
+      - *Sources: Memory Systems MOC | Created: 2025-11-04*
+
+    ### Relevant (score >= 0.6)
+
+    - **[[Active Recall]]** (0.72)
+      - Retrieving information from memory strengthens learning and combats forgetting.
+      - *Sources: Learning Strategies MOC*
+
+    - **[[Anki Spaced Repetition System]]** (0.68)
+      - Digital flashcard application implementing spaced repetition algorithm for optimal review intervals.
+      - *Sources: PKM Tools MOC*
+
+    ---
+
+    <details>
+    <summary><strong>Query Metadata</strong></summary>
+
+    **Query Details:**
+    - Original query: "What is spaced repetition?"
+    - Intent: factual
+    - Classification confidence: 0.92
+    - Result format: list
+
+    **Performance:**
+    - Total duration: 145ms
+    - Total results: 8
+
+    **Data Sources:**
+    - Available: semantic_search, metadata_search, dataview
+
+    **Result Distribution:**
+    - Highly relevant (>= 0.8): 2
+    - Relevant (>= 0.6): 2
+    - Somewhat relevant (>= 0.4): 4
+
+    </details>
+
+    ---
+
+    ## Suggested Next Steps
+
+    - Use `*surface-related` to explore connections to "spaced repetition"
+    - Try `*temporal-query` to see how "spaced repetition" evolved over time
+    - Review highly relevant notes to deepen understanding
+
+  - |
+    # Query Results
+
+    **Query:** "Compare Zettelkasten vs PARA"
+    **Intent:** comparative (confidence: 0.88)
+    **Results:** 12 notes found
+    **Duration:** 203ms
+
+    ## Results
+
+    ### Comparison Table
+
+    | Aspect | Zettelkasten | PARA Method |
+    |--------|--------------|-------------|
+    | **Primary Focus** | Knowledge connections and emergence | Action-oriented organization |
+    | **Structure** | Bottom-up, organic linking | Top-down, hierarchical categories |
+    | **Note Type** | Atomic notes with bidirectional links | Mixed: projects, areas, resources, archives |
+    | **Best For** | Research, writing, deep thinking | Task management, project execution |
+    | **Learning Curve** | Steep (requires understanding principles) | Gentle (intuitive categories) |
+
+    ### Detailed Notes by Subject
+
+    **Zettelkasten System:**
+    - **[[Zettelkasten Principle - Atomicity]]** (0.94)
+    - **[[Bidirectional Links in Zettelkasten]]** (0.89)
+    - **[[Luhmann's Zettelkasten Method]]** (0.85)
+
+    **PARA Method:**
+    - **[[PARA Method for Information Organization]]** (0.91)
+    - **[[Projects vs Areas in PARA]]** (0.83)
+    - **[[PARA Progressive Summarization]]** (0.78)
+
+    ---
+
+    <details>
+    <summary><strong>Query Metadata</strong></summary>
+
+    **Query Details:**
+    - Original query: "Compare Zettelkasten vs PARA"
+    - Intent: comparative
+    - Classification confidence: 0.88
+    - Result format: table
+
+    **Performance:**
+    - Total duration: 203ms
+    - Total results: 12
+
+    **Data Sources:**
+    - Available: semantic_search, metadata_search, dataview
+
+    **Result Distribution:**
+    - Highly relevant (>= 0.8): 6
+    - Relevant (>= 0.6): 4
+    - Somewhat relevant (>= 0.4): 2
+
+    </details>
+
+    ---
+
+    ## Suggested Next Steps
+
+    - Use `*surface-related` to find more related concepts
+    - Try individual `*query` for deeper dive into each method
+    - Consider creating a synthesis note comparing the two approaches
