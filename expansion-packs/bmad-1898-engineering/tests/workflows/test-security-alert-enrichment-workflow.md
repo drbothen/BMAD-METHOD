@@ -25,6 +25,7 @@ The following test tickets must be created in your JIRA project before executing
 **Ticket Creation Instructions:**
 
 **TEST-WF-001: Happy Path Test Ticket**
+
 ```yaml
 Summary: "Apache Struts RCE Vulnerability (CVE-2024-1234)"
 Description: "Critical vulnerability affecting production web servers"
@@ -39,6 +40,7 @@ Status: "Open"
 ```
 
 **TEST-WF-002: Missing CVE Test Ticket**
+
 ```yaml
 Summary: "Security Alert: Suspicious Activity Detected"
 Description: "Potential vulnerability in web application (no CVE ID provided)"
@@ -51,6 +53,7 @@ Status: "Open"
 ```
 
 **TEST-WF-003: Resume Workflow Test Ticket**
+
 ```yaml
 Summary: "OpenSSL Vulnerability (CVE-2024-9999)"
 Description: "OpenSSL vulnerability requiring remediation"
@@ -65,6 +68,7 @@ Status: "Open"
 ```
 
 **TEST-WF-004: JIRA Update Failure Test Ticket**
+
 ```yaml
 Summary: "PostgreSQL Vulnerability (CVE-2024-7777)"
 Description: "Database vulnerability requiring immediate attention"
@@ -97,6 +101,7 @@ Status: "Open"
 **JIRA Configuration Prerequisites:**
 
 Before creating test tickets, ensure your JIRA project has:
+
 - ✓ All required custom fields configured (see jira-workflow-standards.md)
 - ✓ "Security Alert" or equivalent issue type
 - ✓ Required workflow statuses (Open, In Progress, etc.)
@@ -117,12 +122,12 @@ Before creating test tickets, ensure your JIRA project has:
 **Ticket Configuration:**
 
 ```yaml
-Summary: "Apache Struts RCE Vulnerability (CVE-2024-1234)"
-Description: "Critical vulnerability affecting production web servers"
+Summary: 'Apache Struts RCE Vulnerability (CVE-2024-1234)'
+Description: 'Critical vulnerability affecting production web servers'
 Custom Fields:
-  affected_systems: ["web-prod-01", "web-prod-02"]
-  asset_criticality_rating: "High"
-  system_exposure: "Internet-facing"
+  affected_systems: ['web-prod-01', 'web-prod-02']
+  asset_criticality_rating: 'High'
+  system_exposure: 'Internet-facing'
 ```
 
 **Steps:**
@@ -138,12 +143,14 @@ Custom Fields:
 **Expected Results:**
 
 **Stage 1: Triage (1-2 min)**
+
 - ✅ Ticket read successfully
 - ✅ CVE-2024-1234 extracted
 - ✅ Affected systems: ["web-prod-01", "web-prod-02"]
 - ✅ Progress displayed: "✅ Stage 1: Triage (completed in Xm Xs)"
 
 **Stage 2: CVE Research (3-5 min)**
+
 - ✅ CVSS score obtained (e.g., 9.8)
 - ✅ EPSS score obtained
 - ✅ KEV status determined
@@ -153,37 +160,44 @@ Custom Fields:
 - ✅ Perplexity MCP called successfully
 
 **Stage 3: Business Context (2-3 min)**
+
 - ✅ ACR rating: High
 - ✅ System exposure: Internet-facing
 - ✅ Business impact assessed
 
 **Stage 4: Remediation Planning (2-3 min)**
+
 - ✅ Patch version identified
 - ✅ Remediation steps generated
 - ✅ Compensating controls listed
 
 **Stage 5: MITRE ATT&CK (1-2 min)**
+
 - ✅ At least one tactic mapped
 - ✅ At least one technique with T-number
 - ✅ Detection implications provided
 
 **Stage 6: Priority Assessment (1-2 min)**
+
 - ✅ Priority level assigned (P1-P5)
 - ✅ Priority rationale generated
 - ✅ SLA deadline calculated
 
 **Stage 7: Documentation (1 min)**
+
 - ✅ All 12 template sections populated
 - ✅ Executive summary generated
 - ✅ Markdown document formatted correctly
 
 **Stage 8: JIRA Update (1-2 min)**
+
 - ✅ JIRA comment posted successfully
 - ✅ Custom fields updated (priority, CVSS, EPSS, KEV)
 - ✅ Local file saved to `artifacts/enrichments/TEST-WF-001-enrichment-{timestamp}.md`
 - ✅ File exists and is readable
 
 **Overall Validation:**
+
 - ✅ Total duration: 10-15 minutes (95th percentile)
 - ✅ All 8 stages completed
 - ✅ Quality score >75% (7+ checks passing)
@@ -191,15 +205,16 @@ Custom Fields:
 - ✅ Workflow state cleaned up (archived)
 
 **Performance Metrics:**
-- Total Time: _______ minutes (must be <15 min)
-- Stage 1: _______ seconds
-- Stage 2: _______ seconds
-- Stage 3: _______ seconds
-- Stage 4: _______ seconds
-- Stage 5: _______ seconds
-- Stage 6: _______ seconds
-- Stage 7: _______ seconds
-- Stage 8: _______ seconds
+
+- Total Time: **\_\_\_** minutes (must be <15 min)
+- Stage 1: **\_\_\_** seconds
+- Stage 2: **\_\_\_** seconds
+- Stage 3: **\_\_\_** seconds
+- Stage 4: **\_\_\_** seconds
+- Stage 5: **\_\_\_** seconds
+- Stage 6: **\_\_\_** seconds
+- Stage 7: **\_\_\_** seconds
+- Stage 8: **\_\_\_** seconds
 
 **Status:** ⬜ Not Run | ⬜ Pass | ⬜ Fail
 
@@ -214,10 +229,10 @@ Custom Fields:
 **Ticket Configuration:**
 
 ```yaml
-Summary: "Security Alert: Suspicious Activity Detected"
-Description: "Potential vulnerability in web application"
+Summary: 'Security Alert: Suspicious Activity Detected'
+Description: 'Potential vulnerability in web application'
 Custom Fields:
-  affected_systems: ["web-prod-03"]
+  affected_systems: ['web-prod-03']
 ```
 
 **Note:** Ticket intentionally has NO CVE ID
@@ -233,6 +248,7 @@ Custom Fields:
 **Expected Results:**
 
 **Stage 1 Error Handling:**
+
 - ⚠️ No CVE found in summary, description, or custom fields
 - ❌ Stage 1 error handler activates
 - ✅ Clear prompt displayed: "No CVE ID found. Please provide CVE ID:"
@@ -240,11 +256,13 @@ Custom Fields:
 - ✅ CVE accepted and stored
 
 **Stage 2 Resume:**
+
 - ✅ Workflow continues with provided CVE
 - ✅ CVE research proceeds normally
 - ✅ All subsequent stages complete
 
 **Overall:**
+
 - ✅ No workflow crash or abort
 - ✅ Graceful error handling
 - ✅ Enrichment completes successfully
@@ -271,6 +289,7 @@ Custom Fields:
 **Expected Results:**
 
 **Stage 2 Timeout Handling:**
+
 - ⚠️ Perplexity timeout detected
 - ✅ Error message: "Perplexity research timeout. Retrying with simplified query..."
 - ✅ First retry: Wait 10 seconds, retry with simpler query
@@ -279,12 +298,14 @@ Custom Fields:
 - ✅ If third timeout: Prompt user for manual research or fallback
 
 **Retry Logic:**
+
 - ✅ Automatic retry up to 3 times
 - ✅ Exponential backoff (10s, 30s)
 - ✅ Simplified query on retry
 - ✅ No data loss between retries
 
 **Fallback:**
+
 - ✅ If all retries fail, manual research option provided
 - ✅ Workflow can continue with partial data
 - ✅ Warning noted in enrichment document
@@ -312,6 +333,7 @@ Custom Fields:
 **Expected Results:**
 
 **Stage 8 Failure Handling:**
+
 - ❌ JIRA comment post fails with API error
 - ⚠️ Error message: "JIRA update failed. Saving enrichment locally..."
 - ✅ Enrichment document saved to `artifacts/enrichments/TEST-WF-004-enrichment-{timestamp}.md`
@@ -322,11 +344,13 @@ Custom Fields:
   - "2. Post as comment to TEST-WF-004"
 
 **Audit Trail:**
+
 - ✅ Local file saved successfully (critical requirement)
 - ✅ Workflow state shows partial completion
 - ✅ Quality validation still performed on enrichment document
 
 **Recovery:**
+
 - ✅ User can manually post comment to JIRA
 - ✅ Enrichment document is complete and valid
 - ✅ No data loss
@@ -392,11 +416,13 @@ Custom Fields:
 **Expected Results:**
 
 **Resume Detection:**
+
 - ✅ State file detected on startup
 - ✅ Prompt displayed: "Incomplete workflow found for TEST-WF-003. Resume from Stage 5? (y/n)"
 - ✅ User selects: y
 
 **Resume Execution:**
+
 - ✅ Progress display shows stages 1-4 as completed:
   - "✅ Stage 1: Triage (completed in 1m 23s)"
   - "✅ Stage 2: CVE Research (completed in 4m 12s)"
@@ -409,16 +435,19 @@ Custom Fields:
 - ✅ ACR: Medium
 
 **Stages 5-8 Execution:**
+
 - ✅ Stage 5: MITRE ATT&CK mapping completes
 - ✅ Stage 6: Priority assessment uses loaded CVSS/EPSS data
 - ✅ Stage 7: Documentation includes all data from stages 1-6
 - ✅ Stage 8: JIRA update succeeds
 
 **State Cleanup:**
+
 - ✅ On completion, state file archived to `.workflow-state/completed/TEST-WF-003-{timestamp}.json`
 - ✅ Active state file removed
 
 **Alternative: Decline Resume**
+
 - If user selects "n" to resume prompt:
 - ✅ Old state archived
 - ✅ Fresh workflow starts from Stage 1
@@ -445,11 +474,13 @@ Custom Fields:
 **Expected Results:**
 
 **Overall Duration:**
+
 - ✅ 95th percentile: <15 minutes
 - ✅ Median: ~12 minutes
 - ✅ No execution >20 minutes (hard limit)
 
 **Individual Stage Targets:**
+
 - ✅ Stage 1: 1-2 minutes average
 - ✅ Stage 2: 3-5 minutes average (largest variance expected)
 - ✅ Stage 3: 2-3 minutes average
@@ -460,23 +491,24 @@ Custom Fields:
 - ✅ Stage 8: 1-2 minutes average
 
 **Performance Warnings:**
+
 - ⚠️ If any stage exceeds 2x target, log warning
 - ⚠️ If total exceeds 18 minutes, investigate bottleneck
 
 **Test Results Table:**
 
-| Run | Total Time | S1  | S2  | S3  | S4  | S5  | S6  | S7 | S8  | Pass/Fail |
-| --- | ---------- | --- | --- | --- | --- | --- | --- | -- | --- | --------- |
-| 1   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_ | \_  | ⬜        |
-| 2   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_ | \_  | ⬜        |
-| 3   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_ | \_  | ⬜        |
-| 4   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_ | \_  | ⬜        |
-| 5   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_ | \_  | ⬜        |
-| 6   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_ | \_  | ⬜        |
-| 7   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_ | \_  | ⬜        |
-| 8   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_ | \_  | ⬜        |
-| 9   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_ | \_  | ⬜        |
-| 10  | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_ | \_  | ⬜        |
+| Run | Total Time | S1  | S2  | S3  | S4  | S5  | S6  | S7  | S8  | Pass/Fail |
+| --- | ---------- | --- | --- | --- | --- | --- | --- | --- | --- | --------- |
+| 1   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_  | \_  | ⬜        |
+| 2   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_  | \_  | ⬜        |
+| 3   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_  | \_  | ⬜        |
+| 4   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_  | \_  | ⬜        |
+| 5   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_  | \_  | ⬜        |
+| 6   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_  | \_  | ⬜        |
+| 7   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_  | \_  | ⬜        |
+| 8   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_  | \_  | ⬜        |
+| 9   | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_  | \_  | ⬜        |
+| 10  | \_\_       | \_  | \_  | \_  | \_  | \_  | \_  | \_  | \_  | ⬜        |
 
 **95th Percentile:** \_\_\_\_\_ minutes
 
@@ -522,6 +554,7 @@ Custom Fields:
 - ✅ MITRE ATT&CK has at least 1 tactic and 1 technique
 
 **Quality Score Calculation:**
+
 - Sections populated: \_\_\_ / 12
 - Quality score: \_\_\_% (target: >75%)
 

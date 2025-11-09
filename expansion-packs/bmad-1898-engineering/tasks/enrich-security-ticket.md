@@ -80,6 +80,7 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 ```
 
 **Status Indicators:**
+
 - ✅ = Completed successfully
 - 🔄 = Currently executing
 - ⏳ = Pending
@@ -91,12 +92,14 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 **Duration:** 1-2 minutes
 
 **Actions:**
+
 1. Execute task: `read-jira-ticket.md`
 2. Extract CVE ID(s) from ticket (summary, description, custom fields)
 3. Extract affected systems from custom fields
 4. Extract initial severity and context metadata
 
 **Outputs to collect:**
+
 - `cve_id` (primary CVE)
 - `all_cves` (array of all CVEs found)
 - `affected_systems` (array)
@@ -105,6 +108,7 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 - `ticket_description`
 
 **Error Handling:**
+
 - If no CVE found: Prompt user for CVE ID
 - If ticket not found: Validate ticket ID and retry
 - If MCP error: Check connection and retry once
@@ -116,14 +120,17 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 **Duration:** 3-5 minutes
 
 **Actions:**
+
 1. Execute task: `research-cve.md` with primary CVE
 2. Use Perplexity MCP for comprehensive research
 3. Gather CVSS, EPSS, KEV status, exploits, patches, ATT&CK suggestions
 
 **Inputs:**
+
 - `cve_id` from Stage 1
 
 **Outputs to collect:**
+
 - `cvss_score`
 - `cvss_vector`
 - `cvss_severity`
@@ -136,6 +143,7 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 - `authoritative_sources` (links)
 
 **Error Handling:**
+
 - Perplexity timeout: Retry with simplified query
 - No data found: Attempt manual fallback or prompt user
 - Rate limit: Wait and retry with exponential backoff
@@ -147,23 +155,27 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 **Duration:** 2-3 minutes
 
 **Actions:**
+
 1. Load config from `config.yaml`
 2. Extract Asset Criticality Rating (ACR) from JIRA custom field or config
 3. Determine system exposure classification
 4. Assess business impact dimensions
 
 **Inputs:**
+
 - `affected_systems` from Stage 1
 - `cvss_score` from Stage 2
 - JIRA custom fields
 
 **Outputs to collect:**
+
 - `acr_rating` (Critical/High/Medium/Low)
 - `system_exposure` (Internet-facing/Internal/Isolated)
 - `business_impact` (availability, confidentiality, integrity)
 - `affected_processes` (optional)
 
 **Error Handling:**
+
 - ACR not found: Prompt user or default to "Medium"
 - Exposure unknown: Prompt user for classification
 
@@ -174,16 +186,19 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 **Duration:** 2-3 minutes
 
 **Actions:**
+
 1. Use CVE research data to identify patches
 2. Research workarounds if no patch available
 3. Identify compensating controls based on vulnerability type
 4. Generate actionable remediation steps
 
 **Inputs:**
+
 - `cvss_score`, `affected_versions`, `patched_versions` from Stage 2
 - `business_impact` from Stage 3
 
 **Outputs to collect:**
+
 - `patch_available` (boolean)
 - `patch_version`
 - `patch_url`
@@ -192,6 +207,7 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 - `remediation_steps` (numbered action items)
 
 **Error Handling:**
+
 - No patch info: Note as "No patch available yet"
 - Workaround research fails: Document manual investigation needed
 
@@ -202,21 +218,25 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 **Duration:** 1-2 minutes
 
 **Actions:**
+
 1. Use CVE intelligence and vulnerability type to map tactics
 2. Identify specific ATT&CK techniques (T-numbers)
 3. Add detection implications and defense recommendations
 
 **Inputs:**
+
 - `cvss_vector` from Stage 2
 - `attack_suggestions` from Stage 2
 - Vulnerability type (RCE, SQLi, XSS, etc.)
 
 **Outputs to collect:**
+
 - `attack_tactics` (array, e.g., "Initial Access", "Execution")
 - `attack_techniques` (array with T-numbers, e.g., "T1190 - Exploit Public-Facing Application")
 - `detection_implications` (guidance for detection)
 
 **Error Handling:**
+
 - No mapping found: Use generic mapping based on vulnerability type
 - Research timeout: Use cached/default mappings
 
@@ -227,12 +247,14 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 **Duration:** 1-2 minutes
 
 **Actions:**
+
 1. Execute task: `assess-vulnerability-priority.md`
 2. Calculate priority using multi-factor algorithm
 3. Generate priority rationale
 4. Calculate SLA deadline
 
 **Inputs:**
+
 - `cvss_score` from Stage 2
 - `epss_score` from Stage 2
 - `kev_status` from Stage 2
@@ -241,12 +263,14 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 - `exploit_status` from Stage 2
 
 **Outputs to collect:**
+
 - `priority_level` (P1/P2/P3/P4/P5)
 - `priority_score` (numeric)
 - `priority_rationale` (explanation)
 - `sla_deadline` (date/time)
 
 **Error Handling:**
+
 - Missing factors: Use defaults and note in rationale
 - Calculation error: Use conservative priority (higher)
 
@@ -257,24 +281,29 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 **Duration:** 1 minute
 
 **Actions:**
+
 1. Load template: `templates/security-enrichment-tmpl.yaml`
 2. Populate all 12 template sections with collected data
 3. Generate markdown document
 4. Validate completeness (all sections present)
 
 **Inputs:**
+
 - All data collected from Stages 1-6
 
 **Outputs to collect:**
+
 - `enrichment_document` (markdown string)
 - `enrichment_filename` (e.g., `{ticket-id}-enrichment.md`)
 
 **Validation:**
+
 - Verify all 12 template sections populated
 - Verify executive summary generated
 - Check for missing data markers (e.g., "N/A", "Unknown")
 
 **Error Handling:**
+
 - Template missing: HALT and notify user
 - Section population fails: Note incomplete and continue
 
@@ -285,18 +314,22 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 **Duration:** 1-2 minutes
 
 **Actions:**
+
 1. Execute task: `post-enrichment-comment.md` to add enrichment document
 2. Execute task: `update-jira-fields.md` to update custom fields
 3. Save enrichment document locally to artifacts directory
 4. Validate all updates succeeded
 
 **Inputs:**
+
 - `enrichment_document` from Stage 7
 - `priority_level` from Stage 6
 - Structured data: `cvss_score`, `epss_score`, `kev_status`, etc.
 
 **Actions:**
+
 1. Post enrichment as JIRA comment:
+
    ```
    mcp__atlassian__addCommentToJiraIssue
      issueKey: {ticket_id}
@@ -305,6 +338,7 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
    ```
 
 2. Update JIRA custom fields:
+
    ```
    mcp__atlassian__updateJiraIssue
      issueKey: {ticket_id}
@@ -321,11 +355,13 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
    - Create directory if not exists
 
 **Outputs:**
+
 - JIRA comment posted (verify comment ID returned)
 - Custom fields updated (verify update success)
 - Local file saved (verify file exists)
 
 **Error Handling:**
+
 - Comment post fails: Save locally and notify user
 - Field update fails: Continue with partial update, log errors
 - Local save fails: HALT and notify (critical for audit trail)
@@ -337,6 +373,7 @@ Elapsed: 5m 35s | Estimated Remaining: 6m
 **Upon successful completion of all 8 stages:**
 
 1. Display completion summary:
+
    ```
    ✅ Security Alert Enrichment Complete!
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -445,6 +482,7 @@ Before marking workflow complete, validate:
 - ✅ Remediation guidance provided
 
 **Quality Score Calculation:**
+
 - Total checks: 9
 - Passed checks / Total checks = Quality %
 - Target: >75% (7+ checks passing)

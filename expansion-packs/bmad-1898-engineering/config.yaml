@@ -214,4 +214,57 @@ reviewer_assignment:
     error_handling:
       fallback_to_jira_only: true # If email/Slack fail, still assign in JIRA
       retry_count: 2
+      retry_delay_seconds: 30
       log_failures: true
+      log_file: "logs/notification-errors.log"
+
+# Metrics Configuration
+# Controls metrics collection, storage, and retention for performance tracking
+metrics:
+  # Enable/disable metrics collection
+  enabled: true
+
+  # Metrics output directory
+  output_dir: "metrics"
+
+  # Metrics files
+  enrichment_metrics: "enrichment-metrics.csv"
+  review_metrics: "review-metrics.csv"
+  lifecycle_metrics: "lifecycle-metrics.csv"
+  review_decisions: "review-decisions.csv"
+
+  # Retention policy (days)
+  retention_days: 365
+
+  # Aggregation intervals for reporting
+  aggregation:
+    - "daily"
+    - "weekly"
+    - "monthly"
+
+# Advanced Configuration
+# Optional advanced settings for workflow customization and tuning
+advanced:
+  # Enrichment workflow customization
+  enrichment:
+    default_quality_threshold: 75 # Minimum quality score target
+    max_duration_minutes: 20 # Maximum enrichment duration before warning
+    auto_save_interval_seconds: 60 # Workflow state save interval
+
+  # Review workflow customization
+  review:
+    default_quality_threshold: 60 # Minimum acceptable quality score
+    max_duration_minutes: 25 # Maximum review duration before warning
+    fact_verification_mandatory_priorities: ["P1", "P2"] # Priorities requiring fact verification
+
+  # Lifecycle workflow customization
+  lifecycle:
+    sla_buffer_percentage: 10 # SLA escalation buffer (escalate at 90% of SLA)
+    state_file_cleanup_hours: 24 # Clean up orphaned state files after hours
+
+  # Logging configuration
+  logging:
+    level: "INFO" # DEBUG, INFO, WARN, ERROR
+    file: "logs/bmad-1898-engineering.log"
+    max_size_mb: 100
+    backup_count: 5

@@ -248,15 +248,18 @@ The Security Analyst agent (Epic 1) provides:
 ## Success Metrics
 
 **Efficiency Gains:**
+
 - 90% reduction in enrichment time (30 min → 3 min per CVE)
 - 10x increase in daily enrichment capacity per analyst
 
 **Quality Improvements:**
+
 - 100% consistent enrichment format via template
 - Multi-factor priority accuracy (validated by Epic 2 review)
 - Authoritative source citations for all claims
 
 **Operational Impact:**
+
 - Reduced analyst burnout through automation of repetitive research
 - Faster vulnerability remediation through accurate prioritization
 - Improved stakeholder visibility via JIRA integration
@@ -264,11 +267,13 @@ The Security Analyst agent (Epic 1) provides:
 ## Dependencies
 
 **External:**
+
 - Atlassian JIRA MCP server (installed and configured)
 - Perplexity MCP (available in Claude Code)
 - JIRA Cloud instance with custom fields configured
 
 **Internal:**
+
 - Epic 4 knowledge base (Stories 4.1, 4.2, 4.3) for reference materials
 - `config.yaml` with JIRA Cloud ID and custom field mappings
 

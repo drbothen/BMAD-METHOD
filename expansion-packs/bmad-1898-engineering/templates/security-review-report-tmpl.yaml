@@ -12,7 +12,7 @@ template:
   output:
     format: markdown
     filename: review-{{ticket_id}}.md
-    title: 'Security Review: {{ticket_id}} - {{cve_id}}'
+    title: "Security Review: {{ticket_id}} - {{cve_id}}"
 
 workflow:
   mode: automated

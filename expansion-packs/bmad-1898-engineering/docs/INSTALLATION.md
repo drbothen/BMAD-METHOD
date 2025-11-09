@@ -5,6 +5,7 @@
 This guide provides complete installation and configuration instructions for the **bmad-1898-engineering** expansion pack. This expansion pack enables security teams to automate vulnerability management workflows using AI-powered agents integrated with JIRA Cloud.
 
 **What You'll Accomplish:**
+
 - Install the bmad-1898-engineering expansion pack
 - Configure JIRA Cloud integration with custom fields
 - Set up required MCP servers for JIRA and vulnerability research
@@ -24,6 +25,7 @@ Before beginning installation, ensure you have the following components and perm
 ### 1.1 JIRA Cloud Requirements
 
 **Required:**
+
 - **JIRA Cloud Subscription:** Standard, Premium, or Enterprise plan
 - **Permissions:** Admin or Project Admin role
 - **Capabilities Needed:**
@@ -33,6 +35,7 @@ Before beginning installation, ensure you have the following components and perm
   - Create and edit issues
 
 **How to Verify:**
+
 - Log in to your JIRA Cloud instance (https://your-domain.atlassian.net)
 - Navigate to Project Settings to confirm admin access
 - Check your plan level at admin.atlassian.com → Billing
@@ -42,6 +45,7 @@ Before beginning installation, ensure you have the following components and perm
 **Required:**
 
 **Atlassian MCP:**
+
 - **Must be installed and configured separately** (not included by default)
 - Installation: Follow Atlassian MCP setup instructions for your IDE
 - Required tools:
@@ -53,6 +57,7 @@ Before beginning installation, ensure you have the following components and perm
 - Documentation: See Atlassian MCP setup guide for your specific IDE
 
 **Perplexity MCP:**
+
 - **Must be installed and configured separately** (not included by default)
 - Installation: Follow Perplexity MCP setup instructions for your IDE
 - Configuration varies by IDE (Claude Code, Cursor, VS Code, etc.)
@@ -66,6 +71,7 @@ Before beginning installation, ensure you have the following components and perm
 ### 1.3 Development Environment
 
 **Required:**
+
 - BMAD-METHOD framework installed in your project
 - IDE/Editor with AI assistant (same as BMAD core supports):
   - Cursor IDE (recommended)
@@ -80,6 +86,7 @@ Before beginning installation, ensure you have the following components and perm
 ### 1.4 Network Access Requirements
 
 Your environment must have network connectivity to:
+
 - **JIRA Cloud:** `*.atlassian.net` (HTTPS)
 - **Perplexity API:** via MCP (HTTPS)
 - **Vulnerability Intelligence Sources:**
@@ -88,6 +95,7 @@ Your environment must have network connectivity to:
   - FIRST EPSS: `www.first.org`
 
 **Firewall Configuration:**
+
 - Outbound HTTPS (port 443) to all listed domains
 - No inbound connections required
 
@@ -105,6 +113,7 @@ npx bmad-method install
 ```
 
 When prompted:
+
 1. Select "Install expansion pack"
 2. Choose "bmad-1898-engineering" from the list
 3. Confirm installation location (e.g., project root, or a specific subdirectory)
@@ -113,6 +122,7 @@ The expansion pack will be installed as `.bmad-1898-engineering/` (hidden direct
 
 **After Installation:**
 Once installed, the expansion pack agents will be available via slash commands:
+
 - Slash command prefix: `bmad-1898` (defined in `config.yaml` `slashPrefix` setting)
 - Access agents: `/bmad-1898:agents:security-analyst` or `/bmad-1898:agents:security-reviewer`
 - The expansion pack files exist in `.bmad-1898-engineering/` directory
@@ -122,6 +132,7 @@ Once installed, the expansion pack agents will be available via slash commands:
 **Manual Installation:**
 
 If installing manually (without npx), you'll need to:
+
 1. Create the hidden directory `.bmad-1898-engineering` in your project root
 2. Copy all expansion pack files into that directory
 3. The directory name uses the full expansion pack name with a leading dot
@@ -197,6 +208,7 @@ ls .bmad-1898-engineering/templates/
 ```
 
 **Note:**
+
 - Directory name: `.bmad-1898-engineering` (full expansion pack name with leading dot)
 - Slash command prefix: `bmad-1898` (from `slashPrefix` in config.yaml)
 - Hidden on Unix-based systems (macOS, Linux) because it starts with `.`
@@ -210,6 +222,7 @@ ls .bmad-1898-engineering/templates/
 Your JIRA Cloud ID is required for API authentication and is different from your JIRA URL.
 
 **Steps:**
+
 1. Navigate to https://admin.atlassian.com
 2. Select your JIRA site from the list
 3. Go to "Settings" → "Site details"
@@ -222,17 +235,20 @@ Your JIRA Cloud ID is required for API authentication and is different from your
 The project key is the prefix used in your JIRA issue IDs (e.g., "SEC" in "SEC-123").
 
 **Steps:**
+
 1. Navigate to your JIRA project
 2. Look at any issue URL: `https://your-domain.atlassian.net/browse/SEC-123`
 3. The project key is the letters before the dash: **SEC**
 
 Alternatively:
+
 1. Go to Project Settings
 2. The project key is displayed at the top
 
 ### 3.3 Generate API Token (for Atlassian MCP)
 
 **Steps:**
+
 1. Go to https://id.atlassian.com/manage-profile/security/api-tokens
 2. Click "Create API token"
 3. Name it: "bmad-1898-engineering-mcp"
@@ -247,33 +263,36 @@ The expansion pack requires 8 custom fields in JIRA to store vulnerability enric
 
 ### 4.1 Required Custom Fields
 
-| Field Name | Field Type | Options/Validation | Purpose |
-|------------|-----------|-------------------|---------|
-| **CVE ID** | Text (single line) | Pattern: `CVE-\d{4}-\d{4,}` | Primary vulnerability identifier |
-| **Affected Systems** | Text (multi-line) | - | List of impacted systems/applications |
-| **Asset Criticality Rating** | Select (single) | Critical, High, Medium, Low | Business criticality of affected asset |
-| **System Exposure** | Select (single) | Internet, Internal, Isolated | Network exposure classification |
-| **CVSS Score** | Number | Min: 0.0, Max: 10.0, Decimals: 1 | CVSS v3.1 base score |
-| **EPSS Score** | Number | Min: 0.0, Max: 100.0, Decimals: 2 | EPSS exploitation probability (%) |
-| **KEV Status** | Select (single) | Yes, No | CISA Known Exploited Vulnerability |
-| **Exploit Status** | Select (single) | Active, PoC, None, Unknown | Observed exploitation status |
+| Field Name                   | Field Type         | Options/Validation                | Purpose                                |
+| ---------------------------- | ------------------ | --------------------------------- | -------------------------------------- |
+| **CVE ID**                   | Text (single line) | Pattern: `CVE-\d{4}-\d{4,}`       | Primary vulnerability identifier       |
+| **Affected Systems**         | Text (multi-line)  | -                                 | List of impacted systems/applications  |
+| **Asset Criticality Rating** | Select (single)    | Critical, High, Medium, Low       | Business criticality of affected asset |
+| **System Exposure**          | Select (single)    | Internet, Internal, Isolated      | Network exposure classification        |
+| **CVSS Score**               | Number             | Min: 0.0, Max: 10.0, Decimals: 1  | CVSS v3.1 base score                   |
+| **EPSS Score**               | Number             | Min: 0.0, Max: 100.0, Decimals: 2 | EPSS exploitation probability (%)      |
+| **KEV Status**               | Select (single)    | Yes, No                           | CISA Known Exploited Vulnerability     |
+| **Exploit Status**           | Select (single)    | Active, PoC, None, Unknown        | Observed exploitation status           |
 
 ### 4.2 Step-by-Step Field Creation
 
 For **each field** listed above, follow these steps:
 
 **Step 1: Navigate to Custom Fields**
+
 1. Go to https://admin.atlassian.com
 2. Select your JIRA site
 3. Navigate to "Products" → "JIRA" → "Custom fields"
 4. Click "Create custom field"
 
 **Step 2: Select Field Type**
+
 - For **Text fields** (CVE ID, Affected Systems): Choose "Text Field (single line)" or "Text Field (multi-line)"
 - For **Select fields** (Asset Criticality, System Exposure, KEV Status, Exploit Status): Choose "Select List (single choice)"
 - For **Number fields** (CVSS Score, EPSS Score): Choose "Number Field"
 
 **Step 3: Configure Field**
+
 - **Name:** Use exact names from table above
 - **Description:** Add purpose from table
 - **Options** (for Select fields only): Enter options exactly as shown:
@@ -286,10 +305,12 @@ For **each field** listed above, follow these steps:
   - EPSS Score: Min=0.0, Max=100.0, Decimal places=2
 
 **Step 4: Associate with Projects**
+
 - Select your target project(s) where vulnerabilities will be tracked
 - Click "Create"
 
 **Step 5: Note Field ID**
+
 - After creation, click on the field name
 - Click "Edit"
 - Look at the URL: `https://admin.atlassian.com/.../customfield_10042/edit`
@@ -299,10 +320,12 @@ For **each field** listed above, follow these steps:
 ### 4.3 Quick Field ID Discovery
 
 **Method 1: Admin UI** (easiest)
+
 1. Go to admin.atlassian.com → Custom fields
 2. Click field → Edit → Copy ID from URL
 
 **Method 2: API Inspection** (most accurate)
+
 1. Create a test JIRA issue
 2. Add some value to each custom field
 3. Use Atlassian MCP to fetch the issue:
@@ -315,16 +338,16 @@ For **each field** listed above, follow these steps:
 
 Create this table for your configuration (fill in YOUR actual field IDs):
 
-| Field Name | Config Key | Your Field ID |
-|------------|-----------|---------------|
-| CVE ID | `cve_id` | `customfield_____` |
-| Affected Systems | `affected_systems` | `customfield_____` |
+| Field Name               | Config Key                 | Your Field ID      |
+| ------------------------ | -------------------------- | ------------------ |
+| CVE ID                   | `cve_id`                   | `customfield_____` |
+| Affected Systems         | `affected_systems`         | `customfield_____` |
 | Asset Criticality Rating | `asset_criticality_rating` | `customfield_____` |
-| System Exposure | `system_exposure` | `customfield_____` |
-| CVSS Score | `cvss_score` | `customfield_____` |
-| EPSS Score | `epss_score` | `customfield_____` |
-| KEV Status | `kev_status` | `customfield_____` |
-| Exploit Status | `exploit_status` | `customfield_____` |
+| System Exposure          | `system_exposure`          | `customfield_____` |
+| CVSS Score               | `cvss_score`               | `customfield_____` |
+| EPSS Score               | `epss_score`               | `customfield_____` |
+| KEV Status               | `kev_status`               | `customfield_____` |
+| Exploit Status           | `exploit_status`           | `customfield_____` |
 
 **Keep this table handy for the next configuration step.**
 
@@ -337,12 +360,14 @@ Create this table for your configuration (fill in YOUR actual field IDs):
 The Atlassian MCP must be installed and configured separately (not included in this expansion pack).
 
 **Installation:**
+
 1. Follow Atlassian MCP installation instructions for your environment
 2. Configure authentication using the API token from Section 3.3
 3. Set JIRA Cloud URL: `https://your-domain.atlassian.net`
 
 **Verification:**
 Test the connection in your IDE:
+
 ```
 Activate Security Analyst agent: /bmad-1898:agents:security-analyst
 Run: mcp__atlassian__getJiraIssue with a known issue key
@@ -350,6 +375,7 @@ Expected: Issue details returned successfully
 ```
 
 **Required Tools (verify availability):**
+
 - `mcp__atlassian__getJiraIssue`
 - `mcp__atlassian__updateJiraIssue`
 - `mcp__atlassian__addCommentToJiraIssue`
@@ -360,11 +386,13 @@ Expected: Issue details returned successfully
 Perplexity MCP must be installed and configured separately for your IDE.
 
 **Installation:**
+
 1. Follow Perplexity MCP installation instructions for your specific IDE
 2. Configure MCP server connection in your IDE settings
 3. Restart your IDE to load the MCP configuration
 
 **Verification:**
+
 ```
 In your IDE, check for available tools:
 - mcp__perplexity__search
@@ -373,6 +401,7 @@ In your IDE, check for available tools:
 ```
 
 **If Perplexity tools are unavailable:**
+
 - Verify Perplexity MCP is installed correctly
 - Check your IDE's MCP configuration settings
 - Ensure MCP server is running (if applicable to your setup)
@@ -408,64 +437,64 @@ author: 1898 & Co.
 jira:
   # REQUIRED: Your JIRA Cloud instance ID (UUID format)
   # Find at: admin.atlassian.com → Site details → Cloud ID
-  cloud_id: "YOUR_CLOUD_ID_HERE"  # Example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  cloud_id: 'YOUR_CLOUD_ID_HERE' # Example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
 
   # REQUIRED: Project key where vulnerability tickets are tracked
   # Example: "SEC" for issues like SEC-123
-  project_key: "YOUR_PROJECT_KEY"  # Example: "SEC", "AOD", "VULN"
+  project_key: 'YOUR_PROJECT_KEY' # Example: "SEC", "AOD", "VULN"
 
   # REQUIRED: Custom field IDs (replace with YOUR actual field IDs from Section 4.4)
   custom_fields:
     cve_id:
-      field_id: "customfield_XXXXX"  # Replace XXXXX with your field ID
-      type: "text"
-      label: "CVE ID"
+      field_id: 'customfield_XXXXX' # Replace XXXXX with your field ID
+      type: 'text'
+      label: 'CVE ID'
       validation: "CVE-\\d{4}-\\d{4,}"
 
     affected_systems:
-      field_id: "customfield_XXXXX"  # Replace XXXXX
-      type: "text"
-      label: "Affected Systems"
+      field_id: 'customfield_XXXXX' # Replace XXXXX
+      type: 'text'
+      label: 'Affected Systems'
 
     asset_criticality_rating:
-      field_id: "customfield_XXXXX"  # Replace XXXXX
-      type: "select"
-      label: "Asset Criticality Rating"
-      options: ["Critical", "High", "Medium", "Low"]
+      field_id: 'customfield_XXXXX' # Replace XXXXX
+      type: 'select'
+      label: 'Asset Criticality Rating'
+      options: ['Critical', 'High', 'Medium', 'Low']
 
     system_exposure:
-      field_id: "customfield_XXXXX"  # Replace XXXXX
-      type: "select"
-      label: "System Exposure"
-      options: ["Internet", "Internal", "Isolated"]
+      field_id: 'customfield_XXXXX' # Replace XXXXX
+      type: 'select'
+      label: 'System Exposure'
+      options: ['Internet', 'Internal', 'Isolated']
 
     cvss_score:
-      field_id: "customfield_XXXXX"  # Replace XXXXX
-      type: "number"
-      label: "CVSS Score"
+      field_id: 'customfield_XXXXX' # Replace XXXXX
+      type: 'number'
+      label: 'CVSS Score'
       min: 0.0
       max: 10.0
       decimals: 1
 
     epss_score:
-      field_id: "customfield_XXXXX"  # Replace XXXXX
-      type: "number"
-      label: "EPSS Score"
+      field_id: 'customfield_XXXXX' # Replace XXXXX
+      type: 'number'
+      label: 'EPSS Score'
       min: 0.0
       max: 100.0
       decimals: 2
 
     kev_status:
-      field_id: "customfield_XXXXX"  # Replace XXXXX
-      type: "select"
-      label: "KEV Status"
-      options: ["Yes", "No"]
+      field_id: 'customfield_XXXXX' # Replace XXXXX
+      type: 'select'
+      label: 'KEV Status'
+      options: ['Yes', 'No']
 
     exploit_status:
-      field_id: "customfield_XXXXX"  # Replace XXXXX
-      type: "select"
-      label: "Exploit Status"
-      options: ["Active", "PoC", "None", "Unknown"]
+      field_id: 'customfield_XXXXX' # Replace XXXXX
+      type: 'select'
+      label: 'Exploit Status'
+      options: ['Active', 'PoC', 'None', 'Unknown']
 
 # ============================================================================
 # PRIORITY MAPPING CONFIGURATION
@@ -473,11 +502,11 @@ jira:
 # Maps calculated P1-P5 priorities to your JIRA priority field values
 # IMPORTANT: Use your actual JIRA priority names (case-sensitive)
 priority_mapping:
-  P1: "Critical"    # Highest priority - critical vulnerabilities
-  P2: "High"        # High priority - significant vulnerabilities
-  P3: "Medium"      # Medium priority - moderate vulnerabilities
-  P4: "Low"         # Low priority - minor vulnerabilities
-  P5: "Trivial"     # Lowest priority - minimal vulnerabilities
+  P1: 'Critical' # Highest priority - critical vulnerabilities
+  P2: 'High' # High priority - significant vulnerabilities
+  P3: 'Medium' # Medium priority - moderate vulnerabilities
+  P4: 'Low' # Low priority - minor vulnerabilities
+  P5: 'Trivial' # Lowest priority - minimal vulnerabilities
 
 # ============================================================================
 # REVIEW TRIGGERS CONFIGURATION
@@ -485,80 +514,80 @@ priority_mapping:
 # Defines when security reviews are required based on priority
 review_triggers:
   P1:
-    review_required: true      # Always require review for P1
-    sampling_rate: 100         # Review 100% of P1 enrichments
-    blocking: true             # Block ticket updates until review approved
-    assignment: "senior-reviewer"  # Assign to senior reviewers only
+    review_required: true # Always require review for P1
+    sampling_rate: 100 # Review 100% of P1 enrichments
+    blocking: true # Block ticket updates until review approved
+    assignment: 'senior-reviewer' # Assign to senior reviewers only
 
   P2:
-    review_required: true      # Require review for P2
-    sampling_rate: 50          # Review 50% of P2 enrichments (random sampling)
-    blocking: true             # Block ticket updates until approved
-    assignment: "any"          # Any reviewer can handle P2
+    review_required: true # Require review for P2
+    sampling_rate: 50 # Review 50% of P2 enrichments (random sampling)
+    blocking: true # Block ticket updates until approved
+    assignment: 'any' # Any reviewer can handle P2
 
   P3:
-    review_required: true      # Require review for P3
-    sampling_rate: 20          # Review 20% of P3 enrichments
-    blocking: false            # Non-blocking - update ticket immediately
-    assignment: "any"
+    review_required: true # Require review for P3
+    sampling_rate: 20 # Review 20% of P3 enrichments
+    blocking: false # Non-blocking - update ticket immediately
+    assignment: 'any'
 
   P4:
-    review_required: false     # No review required for P4
-    sampling_rate: 5           # Audit 5% for quality assurance
+    review_required: false # No review required for P4
+    sampling_rate: 5 # Audit 5% for quality assurance
     blocking: false
-    assignment: "any"
+    assignment: 'any'
 
   P5:
-    review_required: false     # No review required for P5
-    sampling_rate: 0           # No sampling for P5
+    review_required: false # No review required for P5
+    sampling_rate: 0 # No sampling for P5
     blocking: false
-    assignment: "any"
+    assignment: 'any'
 
 # ============================================================================
 # REVIEWER ASSIGNMENT CONFIGURATION
 # ============================================================================
 reviewer_assignment:
-  method: "priority-weighted-round-robin"  # Load balancing method
+  method: 'priority-weighted-round-robin' # Load balancing method
 
   # Define your security review team
   reviewers:
-    - name: "Alex"                   # Reviewer name (used in assignments)
-      role: "senior-reviewer"        # Role for assignment rules
-      specializations:               # Optional: expertise areas
-        - "web-vulnerabilities"
-        - "infrastructure"
-      max_concurrent: 5              # Max simultaneous reviews
-      priorities: ["P1", "P2", "P3", "P4", "P5"]  # Priorities this reviewer handles
+    - name: 'Alex' # Reviewer name (used in assignments)
+      role: 'senior-reviewer' # Role for assignment rules
+      specializations: # Optional: expertise areas
+        - 'web-vulnerabilities'
+        - 'infrastructure'
+      max_concurrent: 5 # Max simultaneous reviews
+      priorities: ['P1', 'P2', 'P3', 'P4', 'P5'] # Priorities this reviewer handles
 
-    - name: "Jordan"
-      role: "security-reviewer"
+    - name: 'Jordan'
+      role: 'security-reviewer'
       specializations:
-        - "application-security"
-        - "cloud-security"
+        - 'application-security'
+        - 'cloud-security'
       max_concurrent: 8
-      priorities: ["P2", "P3", "P4", "P5"]
+      priorities: ['P2', 'P3', 'P4', 'P5']
 
-    - name: "Morgan"
-      role: "security-reviewer"
+    - name: 'Morgan'
+      role: 'security-reviewer'
       specializations:
-        - "network-security"
-        - "endpoint-security"
+        - 'network-security'
+        - 'endpoint-security'
       max_concurrent: 8
-      priorities: ["P2", "P3", "P4", "P5"]
+      priorities: ['P2', 'P3', 'P4', 'P5']
 
   # Reviewer pools for specialized reviews
   pools:
-    senior-reviewer: ["Alex"]
-    any: ["Alex", "Jordan", "Morgan"]
+    senior-reviewer: ['Alex']
+    any: ['Alex', 'Jordan', 'Morgan']
 
 # ============================================================================
 # NOTIFICATION CONFIGURATION
 # ============================================================================
 notification:
-  method: "jira-assignment"  # Primary notification method (JIRA assignment)
+  method: 'jira-assignment' # Primary notification method (JIRA assignment)
 
-  additional:                # Optional: additional notification channels
-    - "email"                # Send email notifications (requires email config)
+  additional: # Optional: additional notification channels
+    - 'email' # Send email notifications (requires email config)
     # - "slack"              # Send Slack notifications (requires Slack config)
 
   # Optional: Email configuration (if additional: ["email"] enabled)
@@ -582,31 +611,37 @@ notification:
 After completing configuration, verify each section:
 
 **JIRA Integration:**
+
 - [ ] `cloud_id` is UUID format (not URL)
 - [ ] `project_key` matches your JIRA project
 - [ ] All 8 `custom_fields.*.field_id` values start with `customfield_`
 - [ ] Field IDs are from YOUR JIRA instance (not examples)
 
 **Priority Mapping:**
+
 - [ ] Priority names match YOUR JIRA priority field values (case-sensitive)
 - [ ] All 5 priorities (P1-P5) are mapped
 
 **Review Triggers:**
+
 - [ ] All 5 priorities (P1-P5) have trigger rules defined
 - [ ] `sampling_rate` values are 0-100 (percentage)
 - [ ] `blocking` values are boolean (true/false)
 
 **Reviewer Assignment:**
+
 - [ ] At least one reviewer is defined
 - [ ] All reviewers have `name`, `role`, `max_concurrent`, `priorities`
 - [ ] Senior-reviewer pool includes at least one person
 - [ ] Reviewer names are consistent across sections
 
 **Notification:**
+
 - [ ] Primary `method` is set to "jira-assignment"
 - [ ] If email/Slack enabled, configuration sections are complete
 
 **YAML Syntax:**
+
 - [ ] File validates as valid YAML (use https://www.yamllint.com or VS Code YAML extension)
 - [ ] Indentation uses spaces (not tabs)
 - [ ] Strings with special characters are quoted
@@ -643,6 +678,7 @@ ls .bmad-1898-engineering/config.yaml
 ```
 
 **Checklist:**
+
 - [ ] `.bmad-1898-engineering/` directory exists
 - [ ] `agents/` contains security-analyst.md and security-reviewer.md
 - [ ] `workflows/` contains 5 workflow files
@@ -655,6 +691,7 @@ ls .bmad-1898-engineering/config.yaml
 Verify JIRA connection and custom fields:
 
 **Step 1: Test JIRA Connection**
+
 ```
 1. Activate Security Analyst agent: /bmad-1898:agents:security-analyst
 2. Test Atlassian MCP connection:
@@ -664,6 +701,7 @@ Verify JIRA connection and custom fields:
 
 **Step 2: Verify Custom Fields**
 Create a test JIRA issue and verify all 8 custom fields are visible:
+
 - [ ] CVE ID field appears
 - [ ] Affected Systems field appears
 - [ ] Asset Criticality Rating dropdown has 4 options (Critical, High, Medium, Low)
@@ -674,6 +712,7 @@ Create a test JIRA issue and verify all 8 custom fields are visible:
 - [ ] Exploit Status dropdown has 4 options (Active, PoC, None, Unknown)
 
 **Step 3: Verify Field ID Mapping**
+
 ```
 1. Fetch test issue using Atlassian MCP
 2. Inspect JSON response
@@ -682,6 +721,7 @@ Create a test JIRA issue and verify all 8 custom fields are visible:
 ```
 
 **Checklist:**
+
 - [ ] JIRA Cloud ID configured correctly
 - [ ] Project key matches target project
 - [ ] All 8 custom fields created in JIRA
@@ -693,6 +733,7 @@ Create a test JIRA issue and verify all 8 custom fields are visible:
 Verify agents load and display commands:
 
 **Security Analyst Agent:**
+
 ```
 1. Activate: /bmad-1898:agents:security-analyst
 2. Agent should greet and auto-display *help command list
@@ -705,6 +746,7 @@ Verify agents load and display commands:
 ```
 
 **Security Reviewer Agent:**
+
 ```
 1. Activate: /bmad-1898:agents:security-reviewer
 2. Agent should greet and auto-display *help command list
@@ -718,16 +760,18 @@ Verify agents load and display commands:
 ```
 
 **Checklist:**
+
 - [ ] `/bmad-1898:agents:security-analyst` activates successfully
-- [ ] Security Analyst displays *help with all commands
+- [ ] Security Analyst displays \*help with all commands
 - [ ] `/bmad-1898:agents:security-reviewer` activates successfully
-- [ ] Security Reviewer displays *help with all commands
+- [ ] Security Reviewer displays \*help with all commands
 
 ### 7.4 End-to-End Smoke Test
 
 Complete a full enrichment workflow to verify everything works:
 
 **Step 1: Create Test Ticket**
+
 ```
 1. In JIRA, create new issue:
    - Summary: "TEST-001: CVE-2024-1234 Test Vulnerability"
@@ -737,6 +781,7 @@ Complete a full enrichment workflow to verify everything works:
 ```
 
 **Step 2: Run Enrichment**
+
 ```
 1. Activate Security Analyst: /bmad-1898:agents:security-analyst
 2. Run enrichment: *enrich-ticket SEC-100
@@ -744,6 +789,7 @@ Complete a full enrichment workflow to verify everything works:
 ```
 
 **Step 3: Verify Enrichment Outputs**
+
 ```
 Expected outputs:
 - [ ] Enrichment completes without errors
@@ -760,6 +806,7 @@ Expected outputs:
 ```
 
 **Step 4: Verify Review Trigger (if P1/P2)**
+
 ```
 If calculated priority is P1 or P2:
 - [ ] Review assignment created
@@ -768,6 +815,7 @@ If calculated priority is P1 or P2:
 ```
 
 **Success Criteria:**
+
 - All checkboxes above are complete
 - No errors during enrichment
 - JIRA ticket fully updated with enrichment data
@@ -784,6 +832,7 @@ This quickstart provides a streamlined path through installation, setup, and fir
 ### Quickstart Prerequisites
 
 Before starting the timer:
+
 - [ ] JIRA Cloud account with admin access
 - [ ] AI-enabled IDE installed and configured (Cursor, VS Code + extension, etc.)
 - [ ] BMAD-METHOD framework installed in your project
@@ -793,28 +842,31 @@ Before starting the timer:
 ### Phase 1: Installation (Target: 5 minutes)
 
 **Step 1: Install Expansion Pack**
+
 ```bash
 npx bmad-method install
 # Select: bmad-1898-engineering
 ```
+
 ⏱️ **Checkpoint:** Files installed in `.bmad-1898-engineering/` (hidden directory)
 
 ### Phase 2: JIRA Custom Fields (Target: 10 minutes)
 
 **Step 2: Create Custom Fields**
+
 1. Go to https://admin.atlassian.com → Your JIRA site → Custom fields
 2. Create these 8 fields (click "Create custom field" for each):
 
-| Field Name | Type | Options |
-|------------|------|---------|
-| CVE ID | Text (single line) | - |
-| Affected Systems | Text (multi-line) | - |
-| Asset Criticality Rating | Select (single) | Critical, High, Medium, Low |
-| System Exposure | Select (single) | Internet, Internal, Isolated |
-| CVSS Score | Number | Min: 0.0, Max: 10.0, Decimals: 1 |
-| EPSS Score | Number | Min: 0.0, Max: 100.0, Decimals: 2 |
-| KEV Status | Select (single) | Yes, No |
-| Exploit Status | Select (single) | Active, PoC, None, Unknown |
+| Field Name               | Type               | Options                           |
+| ------------------------ | ------------------ | --------------------------------- |
+| CVE ID                   | Text (single line) | -                                 |
+| Affected Systems         | Text (multi-line)  | -                                 |
+| Asset Criticality Rating | Select (single)    | Critical, High, Medium, Low       |
+| System Exposure          | Select (single)    | Internet, Internal, Isolated      |
+| CVSS Score               | Number             | Min: 0.0, Max: 10.0, Decimals: 1  |
+| EPSS Score               | Number             | Min: 0.0, Max: 100.0, Decimals: 2 |
+| KEV Status               | Select (single)    | Yes, No                           |
+| Exploit Status           | Select (single)    | Active, PoC, None, Unknown        |
 
 **Step 3: Note Field IDs**
 For each field: Click field → Edit → Copy ID from URL (`customfield_XXXXX`)
@@ -824,28 +876,32 @@ For each field: Click field → Edit → Copy ID from URL (`customfield_XXXXX`)
 ### Phase 3: Configuration (Target: 10 minutes)
 
 **Step 4: Get JIRA Cloud ID**
+
 1. Go to https://admin.atlassian.com → Site details
 2. Copy Cloud ID (UUID format)
 
 **Step 5: Configure config.yaml**
+
 1. Open: `.bmad-1898-engineering/config.yaml`
 2. Set these values:
+
    ```yaml
    jira:
-     cloud_id: "{your-cloud-id-from-step-4}"
-     project_key: "{your-project-key}"  # e.g., "SEC"
+     cloud_id: '{your-cloud-id-from-step-4}'
+     project_key: '{your-project-key}' # e.g., "SEC"
      custom_fields:
        cve_id:
-         field_id: "customfield_XXXXX"  # Your ID from Step 3
+         field_id: 'customfield_XXXXX' # Your ID from Step 3
        # ... repeat for all 8 fields
 
    reviewer_assignment:
      reviewers:
-       - name: "{your-name}"
-         role: "senior-reviewer"
+       - name: '{your-name}'
+         role: 'senior-reviewer'
          max_concurrent: 5
-         priorities: ["P1", "P2", "P3", "P4", "P5"]
+         priorities: ['P1', 'P2', 'P3', 'P4', 'P5']
    ```
+
 3. Save file
 
 ⏱️ **Checkpoint:** config.yaml complete, YAML validates
@@ -853,12 +909,14 @@ For each field: Click field → Edit → Copy ID from URL (`customfield_XXXXX`)
 ### Phase 4: First Enrichment (Target: 5 minutes)
 
 **Step 6: Create Test Ticket**
+
 1. In JIRA, create issue:
    - Summary: "CVE-2024-1234 Test Vulnerability"
    - Set CVE ID field: "CVE-2024-1234"
 2. Note issue key (e.g., SEC-100)
 
 **Step 7: Run Enrichment**
+
 ```
 1. In your IDE, activate agent: /bmad-1898:agents:security-analyst
 2. Run command: *enrich-ticket SEC-100
@@ -867,6 +925,7 @@ For each field: Click field → Edit → Copy ID from URL (`customfield_XXXXX`)
 
 **Step 8: Verify Success**
 Check JIRA ticket:
+
 - [ ] Comment added with enrichment summary
 - [ ] CVSS Score populated
 - [ ] EPSS Score populated
@@ -874,6 +933,7 @@ Check JIRA ticket:
 - [ ] Priority calculated
 
 Check local file:
+
 - [ ] `enrichments/SEC-100-enrichment.md` created
 
 ⏱️ **Checkpoint:** ✅ Enrichment successful!
@@ -887,6 +947,7 @@ Check local file:
 - [ ] Ready to enrich real vulnerabilities
 
 **Next Steps:**
+
 - Review Section 6 for advanced configuration options
 - Read the Security Analyst Agent Usage Guide for detailed usage instructions
 - Start enriching real vulnerability tickets
@@ -900,6 +961,7 @@ Common installation and setup issues with solutions.
 ### Issue 1: JIRA Cloud ID Not Found
 
 **Symptoms:**
+
 - Error: "Invalid cloud_id" when agents try to connect to JIRA
 - Authentication failures with Atlassian MCP
 
@@ -907,6 +969,7 @@ Common installation and setup issues with solutions.
 JIRA Cloud ID is NOT the same as your JIRA URL or subdomain.
 
 **Solution:**
+
 1. Go to https://admin.atlassian.com
 2. Select your JIRA site
 3. Navigate to "Settings" → "Site details"
@@ -915,6 +978,7 @@ JIRA Cloud ID is NOT the same as your JIRA URL or subdomain.
 
 **Verification:**
 Cloud ID should be a UUID, NOT a URL or domain name.
+
 - ✅ Correct: `a1b2c3d4-e5f6-7890-abcd-ef1234567890`
 - ❌ Wrong: `your-company.atlassian.net`
 - ❌ Wrong: `https://jira.company.com`
@@ -924,6 +988,7 @@ Cloud ID should be a UUID, NOT a URL or domain name.
 ### Issue 2: Custom Field IDs Incorrect
 
 **Symptoms:**
+
 - Error: "Field does not exist" when updating JIRA
 - Fields not updating after enrichment
 - Error message references field ID like `customfield_10042`
@@ -932,6 +997,7 @@ Cloud ID should be a UUID, NOT a URL or domain name.
 Field IDs in config.yaml don't match your actual JIRA custom field IDs.
 
 **Solution (Method 1 - Admin UI):**
+
 1. Go to https://admin.atlassian.com
 2. Navigate to Products → JIRA → Custom fields
 3. Click on the custom field
@@ -941,6 +1007,7 @@ Field IDs in config.yaml don't match your actual JIRA custom field IDs.
 7. Update config.yaml with this exact ID
 
 **Solution (Method 2 - API Inspection - Most Accurate):**
+
 1. Create a test JIRA issue
 2. Manually set a value in each custom field
 3. Use Atlassian MCP to fetch the issue:
@@ -953,6 +1020,7 @@ Field IDs in config.yaml don't match your actual JIRA custom field IDs.
 7. Update config.yaml with these exact IDs
 
 **Verification:**
+
 - Field IDs must start with `customfield_`
 - Field IDs are unique to YOUR JIRA instance (not from examples)
 - All 8 custom fields have valid field IDs in config.yaml
@@ -962,6 +1030,7 @@ Field IDs in config.yaml don't match your actual JIRA custom field IDs.
 ### Issue 3: Atlassian MCP Not Configured
 
 **Symptoms:**
+
 - Error: Tool `mcp__atlassian__getJiraIssue` not found
 - Agents can't connect to JIRA
 - MCP tools not available in Claude Code
@@ -970,6 +1039,7 @@ Field IDs in config.yaml don't match your actual JIRA custom field IDs.
 Atlassian MCP is not installed or not properly configured.
 
 **Solution:**
+
 1. Install Atlassian MCP separately (not included in expansion pack)
 2. Follow Atlassian MCP setup instructions for your IDE environment
 3. Configure authentication:
@@ -980,18 +1050,21 @@ Atlassian MCP is not installed or not properly configured.
 
 **Verification:**
 In your IDE, verify these tools are available:
+
 - `mcp__atlassian__getJiraIssue`
 - `mcp__atlassian__updateJiraIssue`
 - `mcp__atlassian__addCommentToJiraIssue`
 - `mcp__atlassian__searchJiraIssues`
 
 Test connection:
+
 ```
 mcp__atlassian__getJiraIssue(issueKey: "{existing-issue}")
 Expected: Issue details returned
 ```
 
 **References:**
+
 - Atlassian MCP documentation: [link to official docs]
 - BMAD MCP configuration guide: See BMAD core documentation
 
@@ -1000,17 +1073,20 @@ Expected: Issue details returned
 ### Issue 4: Perplexity Research Fails
 
 **Symptoms:**
+
 - Stage 2 (CVE Research) times out or fails
 - Error: Perplexity tools not available
 - Enrichment completes but missing CVE research data
 
 **Cause:**
+
 - Perplexity MCP not installed or configured
 - Network connectivity issues to Perplexity API
 - MCP server not running
 - API rate limiting
 
 **Solution 1: Install and Configure Perplexity MCP**
+
 ```
 Perplexity MCP is NOT installed by default. You must install it separately:
 
@@ -1024,6 +1100,7 @@ Perplexity MCP is NOT installed by default. You must install it separately:
 ```
 
 **Solution 2: Check Network Connectivity**
+
 - Verify outbound HTTPS access to Perplexity API
 - Check firewall rules allow Perplexity connections
 - Ensure MCP server is running (check IDE MCP status)
@@ -1031,6 +1108,7 @@ Perplexity MCP is NOT installed by default. You must install it separately:
 
 **Solution 3: Use Manual Research Fallback**
 If Perplexity installation is not possible or remains unavailable:
+
 1. Agents will automatically fall back to manual research mode
 2. Manually research CVE using:
    - NIST NVD: https://nvd.nist.gov
@@ -1045,6 +1123,7 @@ If Perplexity installation is not possible or remains unavailable:
 ### Issue 5: YAML Syntax Errors
 
 **Symptoms:**
+
 - Error: "Unable to load config.yaml"
 - Error: "Invalid YAML syntax"
 - Config file fails to parse
@@ -1055,6 +1134,7 @@ YAML is whitespace-sensitive and has strict syntax rules.
 **Common YAML Errors:**
 
 **Error 1: Incorrect Indentation**
+
 ```yaml
 # ❌ Wrong (tabs or wrong spacing)
 jira:
@@ -1066,6 +1146,7 @@ jira:
 ```
 
 **Error 2: Missing Quotes for Special Characters**
+
 ```yaml
 # ❌ Wrong (colon in unquoted string)
 description: Test: CVE-2024-1234
@@ -1075,6 +1156,7 @@ description: "Test: CVE-2024-1234"
 ```
 
 **Error 3: List Formatting**
+
 ```yaml
 # ❌ Wrong (incorrect list syntax)
 priorities: P1, P2, P3
@@ -1089,6 +1171,7 @@ priorities:
 ```
 
 **Solution:**
+
 1. Use YAML validator: https://www.yamllint.com
    - Copy config.yaml contents
    - Paste into validator
@@ -1104,6 +1187,7 @@ priorities:
    - Ensure no trailing spaces
 
 **Verification:**
+
 ```bash
 # Validate YAML syntax (requires Python)
 python -c "import yaml; yaml.safe_load(open('.bmad-1898-engineering/config.yaml'))"
@@ -1117,16 +1201,19 @@ python -c "import yaml; yaml.safe_load(open('.bmad-1898-engineering/config.yaml'
 ### Issue 6: Agent Commands Not Working
 
 **Symptoms:**
+
 - Agent activates but commands like `*enrich-ticket` not recognized
 - Error: "Unknown command"
 - Agent doesn't respond to `*help`
 
 **Cause:**
+
 - Command prefix incorrect (missing `*`)
 - Agent not fully activated
 - File paths incorrect
 
 **Solution:**
+
 1. Verify command syntax:
    - ✅ Correct: `*enrich-ticket SEC-100`
    - ❌ Wrong: `enrich-ticket SEC-100` (missing `*`)
@@ -1145,16 +1232,19 @@ Agent should respond with numbered command list when you type `*help`.
 ### Issue 7: Enrichment File Not Created
 
 **Symptoms:**
+
 - Enrichment completes successfully
 - JIRA updated correctly
 - But no local file in `enrichments/` directory
 
 **Cause:**
+
 - Output directory doesn't exist
 - Permissions issue
 - Path configuration incorrect
 
 **Solution:**
+
 1. Create enrichments directory:
    ```bash
    mkdir -p enrichments
@@ -1177,26 +1267,29 @@ File created at: `enrichments/SEC-100-enrichment.md`
 ### Issue 8: Priority Calculation Incorrect
 
 **Symptoms:**
+
 - Enrichment completes but priority seems wrong
 - P1 assigned to low CVSS vulnerability
 - P5 assigned to critical vulnerability
 
 **Cause:**
+
 - Priority mapping in config.yaml doesn't match JIRA priority values
 - Priority calculation logic issue
 
 **Solution:**
+
 1. Verify JIRA priority values:
    - In JIRA, go to Project Settings → Priorities
    - Note exact priority names (case-sensitive)
 2. Update config.yaml priority_mapping to match:
    ```yaml
    priority_mapping:
-     P1: "Critical"  # Must match JIRA exactly
-     P2: "High"
-     P3: "Medium"
-     P4: "Low"
-     P5: "Trivial"
+     P1: 'Critical' # Must match JIRA exactly
+     P2: 'High'
+     P3: 'Medium'
+     P4: 'Low'
+     P5: 'Trivial'
    ```
 3. Check priority calculation logic in enrichment output:
    - CVSS, EPSS, KEV, Exposure factors
@@ -1212,20 +1305,24 @@ Check `enrichments/{issue-key}-enrichment.md` for priority calculation explanati
 If issues persist after trying troubleshooting steps:
 
 **1. Check Debug Logs**
+
 - Location: `.ai/debug-log.md` (if configured)
 - Contains detailed error messages and stack traces
 
 **2. Review Documentation**
+
 - Configuration Reference & Customization Guide (detailed config.yaml reference)
 - Security Analyst Agent Usage Guide (detailed usage instructions)
 
 **3. Community Support**
+
 - GitHub Issues: [repository-url]/issues
 - Discord: [discord-invite-link]
 - Documentation: [docs-url]
 
 **4. When Reporting Issues**
 Include:
+
 - Error message (exact text)
 - Steps to reproduce
 - Config.yaml (redact sensitive values like cloud_id, API tokens)
@@ -1242,18 +1339,21 @@ Include:
 ### Recommended Learning Path
 
 **1. Security Analyst Agent Usage**
+
 - Comprehensive guide to running enrichments
 - Batch processing workflows
 - Advanced research techniques
 - See: Security Analyst Agent Usage Guide
 
 **2. Security Reviewer Agent Usage**
+
 - How to perform security reviews
 - Approval and change request workflows
 - Review quality standards
 - See: Security Reviewer Agent Usage Guide
 
 **3. Configuration Customization**
+
 - Advanced config.yaml options
 - Custom priority calculations
 - Review trigger tuning
@@ -1261,6 +1361,7 @@ Include:
 - See: Configuration Reference & Customization Guide
 
 **4. Advanced Workflows**
+
 - Vulnerability lifecycle management
 - Batch processing at scale
 - Integration with security tools
@@ -1269,16 +1370,19 @@ Include:
 ### Start Using the System
 
 **For Daily Vulnerability Management:**
+
 1. Activate Security Analyst: `/bmad-1898:agents:security-analyst`
 2. Enrich tickets: `*enrich-ticket {issue-key}`
 3. For batch processing: `*batch-enrich {filter-jql}`
 
 **For Security Reviews:**
+
 1. Activate Security Reviewer: `/bmad-1898:agents:security-reviewer`
 2. Review enrichments: `*review-enrichment {issue-key}`
 3. Approve or request changes
 
 **For Help:**
+
 - Type `*help` in any active agent to see available commands
 - Refer to this installation guide for setup issues
 - Check troubleshooting section (Section 9) for common problems

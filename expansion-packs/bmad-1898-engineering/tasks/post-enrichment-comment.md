@@ -88,7 +88,7 @@ jira:
    ---
    ## 🔴 Security Enrichment: {cve_id}
    *Generated: {timestamp} | Agent: BMAD-1898 v{version} | Research Tool: {research_tool}*
-
+   
    ---
    ```
 

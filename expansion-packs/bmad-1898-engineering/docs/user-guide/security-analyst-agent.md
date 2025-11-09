@@ -5,6 +5,7 @@
 The Security Analyst agent (Alex 🔒) is an AI-powered assistant specializing in vulnerability enrichment, CVE research, and security ticket analysis. This guide provides comprehensive documentation for using the agent effectively to enrich vulnerability tickets with actionable intelligence.
 
 **Agent Profile:**
+
 - **Name:** Alex
 - **ID:** security-analyst
 - **Title:** Security Operations Analyst
@@ -12,12 +13,14 @@ The Security Analyst agent (Alex 🔒) is an AI-powered assistant specializing i
 - **When to Use:** Vulnerability enrichment, CVE research, security ticket analysis, risk assessment
 
 **Agent Persona:**
+
 - **Role:** Security Operations Analyst specializing in vulnerability enrichment
 - **Style:** Thorough, methodical, risk-focused, data-driven
 - **Identity:** CVE researcher who prioritizes based on exploitability and business impact
 - **Focus:** Fast, comprehensive enrichment using AI-assisted research
 
 **Core Principles:**
+
 - Multi-factor risk assessment
 - Evidence-based analysis with authoritative sources
 - Actionable remediation guidance
@@ -35,6 +38,7 @@ To activate the Security Analyst agent in your IDE:
 ```
 
 Upon activation, the agent will:
+
 1. Greet you as Alex, Security Operations Analyst
 2. Automatically run the `*help` command to display available commands
 3. Wait for your instructions
@@ -69,6 +73,7 @@ What would you like me to help you with?
 ### Prerequisites Checklist
 
 Before your first enrichment, ensure:
+
 - [ ] Atlassian MCP connected (JIRA access)
 - [ ] Perplexity MCP connected (AI research)
 - [ ] JIRA custom fields configured (8 fields - see Installation Guide)
@@ -77,6 +82,7 @@ Before your first enrichment, ensure:
 ### Common Usage Patterns
 
 **Pattern 1: Full Enrichment (Most Common)**
+
 ```bash
 # Activate agent
 /bmad-1898:agents:security-analyst
@@ -84,11 +90,13 @@ Before your first enrichment, ensure:
 # Run complete enrichment workflow
 *enrich-ticket AOD-1234
 ```
+
 **Duration:** 10-15 minutes | **Output:** JIRA comment + custom fields + local file + metrics
 
 ---
 
 **Pattern 2: Research First, Enrich Later**
+
 ```bash
 # Research unfamiliar CVE before enrichment
 *research-cve CVE-2024-1234
@@ -96,38 +104,43 @@ Before your first enrichment, ensure:
 # Review research output, then run full enrichment
 *enrich-ticket AOD-1234
 ```
+
 **Use When:** Unfamiliar CVE, need to brief team, or pre-enrichment preparation
 
 ---
 
 **Pattern 3: Priority Triage (Quick Assessment)**
+
 ```bash
 # Calculate priority without full enrichment
 *assess-priority AOD-1234
 ```
+
 **Duration:** 2-3 minutes | **Use When:** Need quick priority decision, handling multiple tickets
 
 ---
 
 **Pattern 4: Threat Intelligence Focus**
+
 ```bash
 # Get MITRE ATT&CK mapping for detection engineering
 *map-attack CVE-2024-1234
 ```
+
 **Duration:** 2-4 minutes | **Use When:** Creating detection rules, threat intel reports, training materials
 
 ---
 
 ### Quick Command Reference
 
-| Command | Syntax | Duration | Primary Use |
-|---------|--------|----------|-------------|
-| Help | `*help` | Instant | Display available commands |
-| Enrich Ticket | `*enrich-ticket {ticket-id}` | 10-15 min | Full enrichment workflow |
-| Research CVE | `*research-cve {cve-id}` | 3-8 min | Standalone CVE research |
-| Assess Priority | `*assess-priority {ticket-id}` | 2-3 min | Quick priority calculation |
-| Map ATT&CK | `*map-attack {cve-id}` | 2-4 min | MITRE ATT&CK mapping |
-| Exit | `*exit` | Instant | Exit agent mode |
+| Command         | Syntax                         | Duration  | Primary Use                |
+| --------------- | ------------------------------ | --------- | -------------------------- |
+| Help            | `*help`                        | Instant   | Display available commands |
+| Enrich Ticket   | `*enrich-ticket {ticket-id}`   | 10-15 min | Full enrichment workflow   |
+| Research CVE    | `*research-cve {cve-id}`       | 3-8 min   | Standalone CVE research    |
+| Assess Priority | `*assess-priority {ticket-id}` | 2-3 min   | Quick priority calculation |
+| Map ATT&CK      | `*map-attack {cve-id}`         | 2-4 min   | MITRE ATT&CK mapping       |
+| Exit            | `*exit`                        | Instant   | Exit agent mode            |
 
 ### Enrichment Workflow At-a-Glance
 
@@ -151,45 +164,49 @@ graph TD
 
 ### Priority Framework Quick Reference
 
-| Priority | CVSS | KEV | Exposure | Criticality | SLA |
-|----------|------|-----|----------|-------------|-----|
-| **P1** | ≥9.0 | Yes | Internet | High/Critical | 24 hours |
-| **P2** | ≥7.0 | - | - | High | 7 days |
-| **P3** | 4.0-6.9 | - | Internal | Medium | 30 days |
-| **P4** | <4.0 | No | Isolated | Low | 90 days |
-| **P5** | <4.0 | No | Isolated | Low + No fix | Best effort |
+| Priority | CVSS    | KEV | Exposure | Criticality   | SLA         |
+| -------- | ------- | --- | -------- | ------------- | ----------- |
+| **P1**   | ≥9.0    | Yes | Internet | High/Critical | 24 hours    |
+| **P2**   | ≥7.0    | -   | -        | High          | 7 days      |
+| **P3**   | 4.0-6.9 | -   | Internal | Medium        | 30 days     |
+| **P4**   | <4.0    | No  | Isolated | Low           | 90 days     |
+| **P5**   | <4.0    | No  | Isolated | Low + No fix  | Best effort |
 
 ### Common Scenarios
 
 **Scenario: Critical Vulnerability on Production Server**
+
 ```bash
 *enrich-ticket AOD-1234  # Comprehensive analysis required for P1/P2
 ```
 
 **Scenario: Medium Vulnerability - Quick Triage Needed**
+
 ```bash
 *assess-priority AOD-1234  # Fast priority decision
 ```
 
 **Scenario: Unknown CVE - Need Intelligence**
+
 ```bash
 *research-cve CVE-2024-1234  # Research before enrichment
 ```
 
 **Scenario: Creating Detection Rules**
+
 ```bash
 *map-attack CVE-2024-1234  # Get ATT&CK mapping for SOC
 ```
 
 ### Troubleshooting Quick Tips
 
-| Issue | Quick Fix |
-|-------|-----------|
-| CVE not found in ticket | Agent will prompt - enter CVE ID manually |
-| Perplexity timeout | Agent auto-retries with fallback - wait or provide manual research |
-| JIRA update fails | Enrichment saved locally - copy to JIRA manually |
-| Business context unknown | Use conservative defaults (ACR: Medium, Exposure: Internal) |
-| Enrichment > 15 min | Simplify research query, skip optional details for P3/P4/P5 |
+| Issue                    | Quick Fix                                                          |
+| ------------------------ | ------------------------------------------------------------------ |
+| CVE not found in ticket  | Agent will prompt - enter CVE ID manually                          |
+| Perplexity timeout       | Agent auto-retries with fallback - wait or provide manual research |
+| JIRA update fails        | Enrichment saved locally - copy to JIRA manually                   |
+| Business context unknown | Use conservative defaults (ACR: Medium, Exposure: Internal)        |
+| Enrichment > 15 min      | Simplify research query, skip optional details for P3/P4/P5        |
 
 ### Ready to Dive Deeper?
 
@@ -202,11 +219,12 @@ graph TD
 
 ## Command Reference
 
-### 1. *help
+### 1. \*help
 
 **Purpose:** Display available commands with descriptions
 
 **Syntax:**
+
 ```
 *help
 ```
@@ -214,11 +232,13 @@ graph TD
 **Output:** Numbered list of all 6 commands with brief descriptions
 
 **When to Use:**
+
 - Agent activation (runs automatically)
 - Refresh command list
 - Find specific command
 
 **Example:**
+
 ```
 User: *help
 
@@ -233,16 +253,18 @@ Agent: Available Commands:
 
 ---
 
-### 2. *enrich-ticket {ticket-id}
+### 2. \*enrich-ticket {ticket-id}
 
 **Purpose:** Execute complete 8-stage enrichment workflow for a vulnerability ticket
 
 **Syntax:**
+
 ```
 *enrich-ticket AOD-1234
 ```
 
 **Parameters:**
+
 - `ticket-id` (required): JIRA ticket ID (e.g., AOD-1234, SEC-567)
 
 **What Happens During Execution:**
@@ -306,23 +328,27 @@ The agent executes all 8 stages of the security alert enrichment workflow:
 **Expected Duration:** 10-15 minutes (with AI assistance)
 
 **Expected Outputs:**
+
 1. JIRA comment with full enrichment
 2. JIRA custom fields updated (CVSS, EPSS, KEV, Priority, etc.)
 3. Local file: `enrichments/{ticket-id}-enrichment.md`
 4. Metrics: Appended to `metrics/enrichment-metrics.csv`
 
 **Prerequisites:**
+
 - JIRA ticket exists and is accessible
 - Ticket contains CVE ID in summary or description
 - Atlassian MCP connected
 - Perplexity MCP available
 
 **Error Handling:**
+
 - **Missing CVE:** Agent prompts user for CVE ID
 - **JIRA not found:** Verify ticket ID and permissions
 - **Perplexity timeout:** Automatic retry with fallback
 
 **Example Usage:**
+
 ```
 User: *enrich-ticket AOD-1234
 
@@ -344,19 +370,22 @@ Agent:
 
 ---
 
-### 3. *research-cve {cve-id}
+### 3. \*research-cve {cve-id}
 
 **Purpose:** Standalone CVE research without JIRA ticket context
 
 **Syntax:**
+
 ```
 *research-cve CVE-2024-1234
 ```
 
 **Parameters:**
+
 - `cve-id` (required): CVE identifier (format: CVE-YYYY-NNNNN)
 
 **When to Use:**
+
 - Pre-enrichment research for unfamiliar CVE
 - Creating CVE briefing for team
 - Research for non-JIRA vulnerability reports
@@ -366,13 +395,14 @@ Agent:
 
 The agent automatically selects the appropriate Perplexity tool based on severity:
 
-| CVSS Range | Tool | Duration | Use Case |
-|------------|------|----------|----------|
+| CVSS Range          | Tool            | Duration | Use Case               |
+| ------------------- | --------------- | -------- | ---------------------- |
 | 9.0-10.0 (Critical) | `deep_research` | 5-10 min | Comprehensive analysis |
-| 7.0-8.9 (High) | `reason` | 3-5 min | Analytical research |
-| < 7.0 (Medium/Low) | `search` | 1-2 min | Quick lookup |
+| 7.0-8.9 (High)      | `reason`        | 3-5 min  | Analytical research    |
+| < 7.0 (Medium/Low)  | `search`        | 1-2 min  | Quick lookup           |
 
 **Research Query Template:**
+
 ```
 CVE-{id} vulnerability details:
 - CVSS score
@@ -390,6 +420,7 @@ CVE-{id} vulnerability details:
 **Output:** Structured CVE research report with all intelligence gathered
 
 **Data Sources:**
+
 - NIST National Vulnerability Database (NVD)
 - CISA Known Exploited Vulnerabilities (KEV) Catalog
 - FIRST Exploit Prediction Scoring System (EPSS)
@@ -398,6 +429,7 @@ CVE-{id} vulnerability details:
 - Proof-of-concept repositories
 
 **Example:**
+
 ```
 User: *research-cve CVE-2024-1234
 
@@ -443,19 +475,22 @@ Sources:
 
 ---
 
-### 4. *assess-priority {ticket-id}
+### 4. \*assess-priority {ticket-id}
 
 **Purpose:** Calculate multi-factor priority for vulnerability without full enrichment
 
 **Syntax:**
+
 ```
 *assess-priority AOD-1234
 ```
 
 **Parameters:**
+
 - `ticket-id` (required): JIRA ticket ID
 
 **When to Use:**
+
 - Standalone priority assessment without full enrichment
 - Re-calculate priority after business context changes
 - Priority validation during review
@@ -464,7 +499,9 @@ Sources:
 **Priority Framework (P1-P5):**
 
 #### P1 (Critical)
+
 **Criteria:**
+
 - CVSS ≥ 9.0 + KEV listed **OR**
 - Internet-exposed Critical asset + Active exploitation
 
@@ -473,7 +510,9 @@ Sources:
 **Example:** CVE-2024-1234 Apache Struts RCE on internet-facing web server
 
 #### P2 (High)
+
 **Criteria:**
+
 - CVSS ≥ 7.0 + High Asset Criticality Rating **OR**
 - CVSS ≥ 9.0 + Medium/Low Asset Criticality Rating
 
@@ -482,7 +521,9 @@ Sources:
 **Example:** Critical SQLi on internal admin panel (not internet-exposed)
 
 #### P3 (Medium)
+
 **Criteria:**
+
 - CVSS 4.0-6.9 + Medium Asset Criticality Rating **OR**
 - CVSS 7.0-8.9 + Low Asset Criticality Rating
 
@@ -491,7 +532,9 @@ Sources:
 **Example:** XSS on low-traffic internal tool
 
 #### P4 (Low)
+
 **Criteria:**
+
 - CVSS < 4.0 **OR**
 - Isolated systems + No active exploitation
 
@@ -500,7 +543,9 @@ Sources:
 **Example:** Information disclosure on isolated test environment
 
 #### P5 (Trivial)
+
 **Criteria:**
+
 - CVSS < 4.0 + Low Asset Criticality Rating + Isolated + No remediation available
 
 **SLA:** Best effort
@@ -541,6 +586,7 @@ Sources:
 **Output:** Priority level, rationale, SLA deadline
 
 **Example:**
+
 ```
 User: *assess-priority AOD-1234
 
@@ -566,19 +612,22 @@ Recommendation: Immediate remediation required
 
 ---
 
-### 5. *map-attack {cve-id}
+### 5. \*map-attack {cve-id}
 
 **Purpose:** Map CVE to MITRE ATT&CK framework for threat intelligence
 
 **Syntax:**
+
 ```
 *map-attack CVE-2024-1234
 ```
 
 **Parameters:**
+
 - `cve-id` (required): CVE identifier
 
 **When to Use:**
+
 - Standalone ATT&CK mapping for briefings
 - Enhancing threat intelligence reports
 - Detection engineering (understanding attack techniques)
@@ -635,6 +684,7 @@ Defense:
 ```
 
 **Example:**
+
 ```
 User: *map-attack CVE-2024-1234
 
@@ -677,11 +727,12 @@ References:
 
 ---
 
-### 6. *exit
+### 6. \*exit
 
 **Purpose:** Exit Security Analyst agent mode and return to standard environment
 
 **Syntax:**
+
 ```
 *exit
 ```
@@ -691,11 +742,13 @@ References:
 **Effect:** Returns to standard Claude Code environment
 
 **When to Use:**
+
 - Enrichment work complete
 - Switching to different task or agent
 - End of work session
 
 **Example:**
+
 ```
 User: *exit
 
@@ -799,16 +852,16 @@ flowchart TD
 
 ### Stage Duration & Decision Points Summary
 
-| Stage | Duration | Key Decision Point | Automation Level |
-|-------|----------|-------------------|------------------|
-| **1: Triage** | 1-2 min | CVE ID found in ticket? | ✅ Fully automated with fallback |
-| **2: AI Research** | 3-5 min | CVSS score determines tool selection | ✅ Fully automated |
-| **3: Business Context** | 2-3 min | Context available in JIRA fields? | ⚠️ Prompts if missing |
-| **4: Remediation** | 2-3 min | Patch available? | ✅ Fully automated |
-| **5: ATT&CK Mapping** | 1-2 min | Vulnerability type determines mapping | ✅ Fully automated |
-| **6: Priority Assessment** | 1-2 min | Multi-factor calculation (CVSS+EPSS+KEV+ACR+Exposure) | ✅ Fully automated |
-| **7: Documentation** | 1 min | Template sections populated? | ✅ Fully automated |
-| **8: JIRA Update** | 1-2 min | JIRA update successful? | ✅ Automated with fallback |
+| Stage                      | Duration | Key Decision Point                                    | Automation Level                 |
+| -------------------------- | -------- | ----------------------------------------------------- | -------------------------------- |
+| **1: Triage**              | 1-2 min  | CVE ID found in ticket?                               | ✅ Fully automated with fallback |
+| **2: AI Research**         | 3-5 min  | CVSS score determines tool selection                  | ✅ Fully automated               |
+| **3: Business Context**    | 2-3 min  | Context available in JIRA fields?                     | ⚠️ Prompts if missing            |
+| **4: Remediation**         | 2-3 min  | Patch available?                                      | ✅ Fully automated               |
+| **5: ATT&CK Mapping**      | 1-2 min  | Vulnerability type determines mapping                 | ✅ Fully automated               |
+| **6: Priority Assessment** | 1-2 min  | Multi-factor calculation (CVSS+EPSS+KEV+ACR+Exposure) | ✅ Fully automated               |
+| **7: Documentation**       | 1 min    | Template sections populated?                          | ✅ Fully automated               |
+| **8: JIRA Update**         | 1-2 min  | JIRA update successful?                               | ✅ Automated with fallback       |
 
 **Total Duration:** 10-15 minutes (typical)
 
@@ -877,6 +930,7 @@ Agent:
 ```
 
 **What Happens:**
+
 - Agent retrieves JIRA ticket via Atlassian MCP
 - Extracts CVE ID from ticket summary/description
 - Identifies affected systems
@@ -922,6 +976,7 @@ Sources:
 ```
 
 **What Happens:**
+
 - Agent selects appropriate Perplexity tool based on CVSS (deep_research for critical)
 - Queries comprehensive CVE intelligence
 - Gathers severity metrics, exploit status, patch information
@@ -953,6 +1008,7 @@ Business Impact:
 ```
 
 **What Happens:**
+
 - Agent analyzes asset criticality from JIRA custom fields
 - Assesses business impact based on system function
 - Identifies compliance requirements
@@ -992,6 +1048,7 @@ Verification Steps:
 ```
 
 **What Happens:**
+
 - Agent provides primary remediation (patch details)
 - Includes workarounds for systems that can't patch immediately
 - Suggests compensating controls for defense-in-depth
@@ -1030,6 +1087,7 @@ Reference:
 ```
 
 **What Happens:**
+
 - Agent maps vulnerability to MITRE ATT&CK framework
 - Identifies relevant tactics and techniques
 - Provides detection implications for SOC
@@ -1058,6 +1116,7 @@ Recommendation: Immediate emergency remediation required
 ```
 
 **What Happens:**
+
 - Agent calculates priority using multi-factor framework
 - Considers CVSS, EPSS, KEV, ACR, exposure, exploit status
 - Determines appropriate priority level (P1-P5)
@@ -1088,6 +1147,7 @@ Recommendation: Immediate emergency remediation required
 ```
 
 **What Happens:**
+
 - Agent generates structured enrichment document using YAML template
 - Populates all 12 required sections
 - Calculates quality score based on completeness and actionability
@@ -1135,6 +1195,7 @@ Enrichment artifacts:
 ```
 
 **What Happens:**
+
 - Agent posts enrichment as JIRA comment (markdown formatted)
 - Updates all 8 JIRA custom fields for filtering/reporting
 - Logs metrics to CSV for performance tracking
@@ -1171,9 +1232,11 @@ CVE-2024-1234 is a critical (CVSS 9.8) remote code execution vulnerability in Ap
 ## Affected Systems & Versions
 
 **Affected Systems:**
+
 - prod-web-01.company.com (Internet-exposed, High criticality)
 
 **Software Versions:**
+
 - Current: Apache Struts 2.5.30
 - Vulnerable: 2.0.0 - 2.5.32
 - Patched: 2.5.33+
@@ -1181,18 +1244,22 @@ CVE-2024-1234 is a critical (CVSS 9.8) remote code execution vulnerability in Ap
 ## Remediation Guidance
 
 **Primary:**
+
 1. Upgrade Apache Struts to 2.5.33+
 
 **Workarounds:**
+
 1. Disable OGNL evaluation in struts.xml
 2. Deploy WAF rules blocking OGNL patterns
 
 **Compensating Controls:**
+
 1. Network segmentation
 2. RASP if available
 3. Enhanced monitoring
 
 **Verification:**
+
 1. Re-scan with vulnerability scanner
 2. Test application functionality
 3. Verify version upgrade
@@ -1258,6 +1325,7 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 ✓ Atlassian MCP and Perplexity MCP are connected
 
 **Preparation Checklist:**
+
 - [ ] CVE ID verified in ticket (correct format: CVE-YYYY-NNNNN)
 - [ ] Affected systems listed
 - [ ] Asset Criticality Rating populated
@@ -1270,11 +1338,13 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 ### 2. Effective CVE Research
 
 **Trust but Verify:**
+
 - Perplexity AI provides excellent research, but always verify critical facts
 - For P1/P2 vulnerabilities, manually verify CISA KEV and vendor advisories
 - Cross-reference CVSS scores with NVD official database
 
 **Research Quality Tips:**
+
 - Check multiple sources for conflicting information
 - Note publication dates (0-day vs. known vulnerability)
 - Look for related CVEs (vulnerability chains)
@@ -1282,6 +1352,7 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 - Verify exploit code authenticity (is it genuine or theoretical?)
 
 **Source Hierarchy (most to least authoritative):**
+
 1. NIST National Vulnerability Database (NVD)
 2. CISA Known Exploited Vulnerabilities (KEV)
 3. Vendor security advisories
@@ -1292,18 +1363,21 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 ### 3. Business Context Assessment
 
 **Collaborate with Stakeholders:**
+
 - Work with asset owners to confirm criticality ratings
 - Consult IT teams for system dependencies
 - Engage compliance teams for regulatory impact
 - Discuss with management for business process impact
 
 **Accurate Impact Documentation:**
+
 - Don't exaggerate severity to drive urgency
 - Don't minimize impact to avoid difficult conversations
 - Document realistic impact based on evidence
 - Consider cascading failures and dependencies
 
 **Regulatory Considerations:**
+
 - PCI-DSS: Credit card processing systems
 - HIPAA: Healthcare data systems
 - SOX: Financial reporting systems
@@ -1314,6 +1388,7 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 **Make Guidance Actionable:**
 
 ✓ **DO:**
+
 - Provide specific patch version numbers
 - Include download links from official sources
 - Document verification steps with example commands
@@ -1321,6 +1396,7 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 - Estimate patching effort (hours/days)
 
 ✗ **DON'T:**
+
 - "Patch the vulnerability" (too vague)
 - Link to generic vendor homepage
 - Assume everyone knows how to verify patches
@@ -1328,6 +1404,7 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 - Ignore testing requirements
 
 **Remediation Structure:**
+
 1. **Primary:** Official patch with version number
 2. **Workarounds:** Temporary mitigations if patch delayed
 3. **Compensating Controls:** Defense-in-depth measures
@@ -1337,20 +1414,22 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 
 **Command Selection Strategy:**
 
-| Situation | Command | Duration |
-|-----------|---------|----------|
-| New vulnerability ticket | `*enrich-ticket` | 10-15 min |
-| Unfamiliar CVE (pre-research) | `*research-cve` | 3-8 min |
-| Priority dispute/re-assessment | `*assess-priority` | 2-3 min |
-| Threat intel/detection engineering | `*map-attack` | 2-4 min |
+| Situation                          | Command            | Duration  |
+| ---------------------------------- | ------------------ | --------- |
+| New vulnerability ticket           | `*enrich-ticket`   | 10-15 min |
+| Unfamiliar CVE (pre-research)      | `*research-cve`    | 3-8 min   |
+| Priority dispute/re-assessment     | `*assess-priority` | 2-3 min   |
+| Threat intel/detection engineering | `*map-attack`      | 2-4 min   |
 
 **Efficiency Tips:**
+
 - Use full enrichment for comprehensive analysis (P1/P2 always)
 - Use standalone commands for quick tasks (learning, validation)
 - Monitor stage progress; investigate if any stage exceeds 2x expected time
 - If Perplexity stalls (>5 min), use manual research fallback
 
 **Batching Strategy:**
+
 - Group similar CVEs for research efficiency
 - Research once, apply to multiple tickets if same CVE affects multiple systems
 - Reuse ATT&CK mappings for vulnerability types
@@ -1360,6 +1439,7 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 **Before Posting to JIRA, Review:**
 
 ✓ **Completeness:**
+
 - [ ] All 12 template sections populated (no "TODO" placeholders)
 - [ ] CVSS, EPSS, KEV data verified
 - [ ] Priority rationale explains all factors
@@ -1367,6 +1447,7 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 - [ ] Sources cited for all claims
 
 ✓ **Accuracy:**
+
 - [ ] CVE ID matches ticket
 - [ ] Affected versions match vendor advisory
 - [ ] Patched versions verified from official source
@@ -1374,6 +1455,7 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 - [ ] SLA deadline accurate (24h/7d/30d/90d)
 
 ✓ **Actionability:**
+
 - [ ] Remediation steps are specific and implementable
 - [ ] Verification steps included
 - [ ] No unexplained technical jargon
@@ -1381,6 +1463,7 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 - [ ] Next steps clearly identified
 
 **Quality Score Targets:**
+
 - P1/P2: Aim for 90+ (Excellent)
 - P3/P4: Aim for 75+ (Good)
 - P5: Aim for 60+ (Adequate)
@@ -1388,6 +1471,7 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 ### 7. Collaboration with Reviewers
 
 **Review Expectations:**
+
 - **P1/P2:** 100% reviewed by Security Reviewer agent
 - **P3/P4/P5:** Sample-based review (10-20%)
 
@@ -1404,12 +1488,14 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 ✗ Repeating same mistakes after feedback
 
 **Blameless Culture:**
+
 - Reviews are learning opportunities, not performance evaluations
 - Everyone makes mistakes; the goal is continuous improvement
 - Share lessons learned with team (anonymized)
 - Celebrate high-quality enrichments
 
 **Document Lessons Learned:**
+
 - Keep personal notes on challenging CVEs
 - Document new sources discovered during research
 - Share interesting ATT&CK mappings with team
@@ -1422,6 +1508,7 @@ Priority elevated to P1 due to combination of critical CVSS, KEV listing, intern
 ### Issue 1: CVE ID Not Found in Ticket
 
 **Symptom:**
+
 ```
 [Stage 1 Error]
 ❌ CVE ID not found in ticket summary or description
@@ -1433,16 +1520,19 @@ JIRA ticket missing CVE identifier in expected fields
 **Solution:**
 
 1. Agent will prompt:
+
    ```
    Please provide CVE ID or vulnerability description:
    ```
 
 2. Provide CVE ID manually:
+
    ```
    CVE-2024-1234
    ```
 
 3. OR provide vulnerability description:
+
    ```
    Apache Struts remote code execution in OGNL evaluation
    ```
@@ -1450,6 +1540,7 @@ JIRA ticket missing CVE identifier in expected fields
 4. Agent resumes workflow from Stage 2
 
 **Prevention:**
+
 - Ensure detection tools include CVE ID in JIRA ticket creation
 - Train team to include CVE in ticket summary
 - Add validation to ticket creation workflow
@@ -1459,6 +1550,7 @@ JIRA ticket missing CVE identifier in expected fields
 ### Issue 2: Perplexity Research Timeout
 
 **Symptom:**
+
 ```
 [Stage 2 Progress]
 🔍 Querying Perplexity AI... (5m 32s)
@@ -1466,6 +1558,7 @@ JIRA ticket missing CVE identifier in expected fields
 ```
 
 **Cause:**
+
 - Perplexity API timeout (network issue)
 - Perplexity rate limiting
 - Complex query taking too long
@@ -1473,6 +1566,7 @@ JIRA ticket missing CVE identifier in expected fields
 **Automatic Solution:**
 
 Agent automatically:
+
 1. Retries with simplified query (removes detailed research items)
 2. Falls back to `search` instead of `deep_research` or `reason`
 3. If retry fails after 2 attempts, prompts for manual research
@@ -1482,6 +1576,7 @@ Agent automatically:
 If automatic retry fails:
 
 1. Agent prompts:
+
    ```
    Perplexity research failed after 2 attempts.
    Please provide CVE research manually or skip this enrichment.
@@ -1497,6 +1592,7 @@ If automatic retry fails:
 2. Research CVE manually using provided sources
 
 3. Provide findings in structured format:
+
    ```
    CVSS: 9.8
    EPSS: 87.34
@@ -1509,6 +1605,7 @@ If automatic retry fails:
 4. Agent continues workflow with manual data
 
 **Prevention:**
+
 - Ensure stable internet connection
 - Verify Perplexity MCP is properly configured
 - For critical enrichments, have backup research plan
@@ -1518,6 +1615,7 @@ If automatic retry fails:
 ### Issue 3: CVSS/EPSS/KEV Data Not Available
 
 **Symptom:**
+
 ```
 [Stage 2 Progress]
 ⚠️ Warning: CVSS score not found in NVD
@@ -1526,6 +1624,7 @@ If automatic retry fails:
 ```
 
 **Cause:**
+
 - CVE is very new (< 24-48 hours old)
 - CVE doesn't exist in NVD yet (reserved but not published)
 - NVD database lag
@@ -1534,22 +1633,27 @@ If automatic retry fails:
 **Solution:**
 
 **For New CVEs (<48 hours):**
+
 1. Check vendor advisory for CVSS (if published)
+
    ```
    Vendor CVSS: 9.8 (from Apache advisory)
    ```
 
 2. Document EPSS as "N/A (new CVE - awaiting FIRST calculation)"
+
    ```
    EPSS: N/A (CVE too new, re-check in 48 hours)
    ```
 
 3. Check KEV manually at:
+
    ```
    https://www.cisa.gov/known-exploited-vulnerabilities-catalog
    ```
 
 4. Document as preliminary:
+
    ```
    Note: Preliminary analysis - awaiting official NVD publication.
    Re-run enrichment after 48-72 hours for complete metrics.
@@ -1558,12 +1662,14 @@ If automatic retry fails:
 5. Set reminder to re-enrich after 48-72 hours
 
 **For Non-Existent CVEs:**
+
 1. Verify CVE ID format (CVE-YYYY-NNNNN)
 2. Check if CVE is reserved but not published
 3. Search vendor advisory for alternative CVE ID
 4. If truly doesn't exist, escalate to senior analyst
 
 **For Database Lag:**
+
 1. Use cached/historical data if available
 2. Cross-reference with vendor data
 3. Document data source and timestamp
@@ -1573,6 +1679,7 @@ If automatic retry fails:
 ### Issue 4: JIRA Update Fails
 
 **Symptom:**
+
 ```
 [Stage 8 Error]
 ❌ Failed to update JIRA ticket AOD-1234
@@ -1589,35 +1696,43 @@ Error: 403 Forbidden - User lacks edit permission
 **Solution by Cause:**
 
 **1. Permissions Issue:**
+
 ```
 Error: 403 Forbidden
 ```
+
 - Verify you have edit permission on ticket (try editing manually in JIRA)
 - Check if ticket is in a restricted project
 - Verify Atlassian MCP auth token is valid
 - Contact JIRA admin for permission grant
 
 **2. Custom Field Error:**
+
 ```
 Error: Field 'customfield_10042' does not exist
 ```
+
 - Verify custom field IDs in project config.yaml
 - Fields may be project-specific (different IDs per project)
 - Check field IDs in JIRA admin: Settings → Issues → Custom Fields
 - Update config.yaml with correct field IDs
 
 **3. Network Issue:**
+
 ```
 Error: ECONNREFUSED
 ```
+
 - Check internet connection
 - Verify JIRA Cloud URL is correct
 - Retry after network restored
 
 **4. Validation Error:**
+
 ```
 Error: Field 'CVSS Score' expects number, got string
 ```
+
 - Check field type in JIRA (Text vs. Number vs. Select)
 - Verify value format matches field constraints
 - Common issues: Decimals in integer fields, invalid select options
@@ -1651,6 +1766,7 @@ Manual steps:
 ### Issue 5: Business Context Unknown
 
 **Symptom:**
+
 ```
 [Stage 3 Progress]
 ⚠️ Asset Criticality Rating not found in ticket
@@ -1667,6 +1783,7 @@ Custom fields not populated in JIRA ticket (detection tool didn't set them)
 **Solution:**
 
 **1. Consult Asset Inventory:**
+
 - Check CMDB (Configuration Management Database)
 - Look up system in asset inventory
 - Verify with IT team or asset owner
@@ -1674,12 +1791,14 @@ Custom fields not populated in JIRA ticket (detection tool didn't set them)
 **2. Determine Asset Criticality:**
 
 Ask yourself:
+
 - Does this system process revenue-critical transactions?
 - Does it handle regulated/sensitive data?
 - What's the business impact if this system goes down?
 - Is it customer-facing or internal-only?
 
 **Criticality Ratings:**
+
 - **Critical:** Revenue-critical, customer-facing, regulated data
 - **High:** Important business function, sensitive data
 - **Medium:** Standard operations, internal tools
@@ -1688,12 +1807,14 @@ Ask yourself:
 **3. Determine System Exposure:**
 
 Check:
+
 - Network diagrams
 - Firewall rules
 - Public IP assignments
 - DNS records
 
 **Exposure Classifications:**
+
 - **Internet:** Publicly accessible from internet
 - **Internal:** Internal network only (behind VPN/firewall)
 - **Isolated:** Air-gapped or highly restricted segment
@@ -1712,6 +1833,7 @@ Follow up with IT team to confirm."
 ```
 
 **5. Follow Up:**
+
 - Document assumption in enrichment
 - Create follow-up task to confirm with asset owner
 - Update ticket when confirmed
@@ -1721,6 +1843,7 @@ Follow up with IT team to confirm."
 ### Issue 6: Enrichment Takes > 15 Minutes
 
 **Symptom:**
+
 ```
 [Enrichment Progress]
 Total duration so far: 18m 45s
@@ -1736,18 +1859,21 @@ Total duration so far: 18m 45s
 **Solutions by Stage:**
 
 **Stage 2 Taking Too Long (>6 min):**
+
 - Simplify Perplexity query (remove less critical research items)
 - Switch to faster tool: `deep_research` → `reason` or `search`
 - Use manual research from NVD/CISA for basic facts
 - Timebox research: Accept "good enough" for non-critical enrichments
 
 **Stage 4 Taking Too Long (>4 min):**
+
 - Focus on vendor advisory for primary remediation
 - Skip non-essential workarounds (prioritize official patch)
 - Generic compensating controls acceptable for P3/P4/P5
 - Document "consult vendor" if remediation unclear
 
 **Stage 5 Taking Too Long (>3 min):**
+
 - Use general ATT&CK mapping if specific technique unclear
 - Common mappings by vulnerability type:
   - RCE → T1190 (Exploit Public-Facing Application)
@@ -1758,14 +1884,15 @@ Total duration so far: 18m 45s
 
 **Time Management by Priority:**
 
-| Priority | Target Duration | Acceptable Duration | Strategy |
-|----------|----------------|---------------------|----------|
-| P1 | 12-15 min | Up to 20 min | Comprehensive, no shortcuts |
-| P2 | 10-12 min | Up to 15 min | Thorough, skip optional items |
-| P3 | 8-10 min | Up to 12 min | Efficient, generic details OK |
-| P4/P5 | 6-8 min | Up to 10 min | Quick, essential info only |
+| Priority | Target Duration | Acceptable Duration | Strategy                      |
+| -------- | --------------- | ------------------- | ----------------------------- |
+| P1       | 12-15 min       | Up to 20 min        | Comprehensive, no shortcuts   |
+| P2       | 10-12 min       | Up to 15 min        | Thorough, skip optional items |
+| P3       | 8-10 min        | Up to 12 min        | Efficient, generic details OK |
+| P4/P5    | 6-8 min         | Up to 10 min        | Quick, essential info only    |
 
 **Timebox Each Stage:**
+
 - If stage exceeds 2x expected time, move to fallback
 - Document time-saving decisions in Analyst Notes
 - Prioritize completeness for P1/P2, efficiency for P3/P4/P5
@@ -1775,6 +1902,7 @@ Total duration so far: 18m 45s
 ### Issue 7: Template Validation Fails
 
 **Symptom:**
+
 ```
 [Stage 7 Error]
 ❌ Template validation failed - missing sections
@@ -1795,6 +1923,7 @@ Identify which sections are missing and why
 **2. Most Common Missing Sections:**
 
 **Related CVEs:**
+
 ```
 If none found during research:
 "None identified at time of enrichment."
@@ -1804,6 +1933,7 @@ If insufficient research time:
 ```
 
 **Verification & Testing:**
+
 ```
 If specific steps unknown:
 "1. Re-scan system with vulnerability scanner after patch
@@ -1812,6 +1942,7 @@ If specific steps unknown:
 ```
 
 **Threat Intelligence:**
+
 ```
 If no active threat intel:
 "No active threat intelligence observed at time of enrichment.
@@ -1821,6 +1952,7 @@ If no active threat intel:
 **3. Populate Placeholder Text for Optional Sections:**
 
 Template sections that can use placeholders:
+
 - Related CVEs: "None identified"
 - Threat Intelligence: "No active exploitation intelligence"
 - Analyst Notes: "Standard enrichment - no special considerations"
@@ -1829,6 +1961,7 @@ Template sections that can use placeholders:
 After populating missing data, regenerate documentation
 
 **Prevention:**
+
 - Follow enrichment workflow completely
 - Don't skip research steps
 - Use placeholders for truly missing data
@@ -1914,6 +2047,7 @@ After populating missing data, regenerate documentation
 # Security Enrichment: AOD-1234
 
 ## Executive Summary
+
 CVE-2024-1234 is a critical (CVSS 9.8) remote code execution vulnerability...
 
 [See full example in "Enrichment Workflow Walkthrough" section above]
@@ -1927,18 +2061,19 @@ CVE-2024-1234 is a critical (CVSS 9.8) remote code execution vulnerability...
 
 **Updated Fields (8 total):**
 
-| Field Name | Type | Example Value | Purpose |
-|------------|------|---------------|---------|
-| CVE ID | Text | CVE-2024-1234 | Primary vulnerability identifier |
-| Affected Systems | Text | prod-web-01.company.com | Impacted assets list |
-| Asset Criticality Rating | Select | High | Business criticality (Critical/High/Medium/Low) |
-| System Exposure | Select | Internet | Attack surface (Internet/Internal/Isolated) |
-| CVSS Score | Number | 9.8 | Severity score (0.0-10.0) |
-| EPSS Score | Number | 87.34 | Exploitation probability (0.0-100.0) |
-| KEV Status | Select | Yes | CISA Known Exploited (Yes/No) |
-| Exploit Status | Select | Active | Exploitation status (Active/PoC/None/Unknown) |
+| Field Name               | Type   | Example Value           | Purpose                                         |
+| ------------------------ | ------ | ----------------------- | ----------------------------------------------- |
+| CVE ID                   | Text   | CVE-2024-1234           | Primary vulnerability identifier                |
+| Affected Systems         | Text   | prod-web-01.company.com | Impacted assets list                            |
+| Asset Criticality Rating | Select | High                    | Business criticality (Critical/High/Medium/Low) |
+| System Exposure          | Select | Internet                | Attack surface (Internet/Internal/Isolated)     |
+| CVSS Score               | Number | 9.8                     | Severity score (0.0-10.0)                       |
+| EPSS Score               | Number | 87.34                   | Exploitation probability (0.0-100.0)            |
+| KEV Status               | Select | Yes                     | CISA Known Exploited (Yes/No)                   |
+| Exploit Status           | Select | Active                  | Exploitation status (Active/PoC/None/Unknown)   |
 
 **Purpose:**
+
 - **Filtering:** Filter tickets by severity, KEV status, priority
 - **Dashboards:** Visualize vulnerability trends, SLA compliance
 - **Reporting:** Generate metrics on enrichment quality, remediation time
@@ -1948,6 +2083,7 @@ CVE-2024-1234 is a critical (CVSS 9.8) remote code execution vulnerability...
 **Verification:**
 
 To verify custom fields were updated:
+
 1. Open JIRA ticket in browser
 2. Check "Details" section (right side panel)
 3. Confirm all 8 fields populated with correct values
@@ -1955,6 +2091,7 @@ To verify custom fields were updated:
 **Troubleshooting:**
 
 If fields not updated:
+
 - Check Stage 8 success message
 - Verify field IDs in config.yaml match JIRA project
 - Confirm user has permission to edit custom fields
@@ -1979,6 +2116,7 @@ If fields not updated:
 5. **Review Input:** Security Reviewer agent reads local file for QA review
 
 **File Naming Convention:**
+
 ```
 {ticket-id}-enrichment.md
 
@@ -1995,6 +2133,7 @@ VULN-9012-enrichment.md
 - **Commit to Git:** For long-term version control and team knowledge base
 
 **Example File Structure:**
+
 ```
 expansion-packs/bmad-1898-engineering/
 ├── enrichments/
@@ -2018,22 +2157,22 @@ expansion-packs/bmad-1898-engineering/
 
 **CSV Columns:**
 
-| Column | Type | Example | Description |
-|--------|------|---------|-------------|
-| ticket_id | String | AOD-1234 | JIRA ticket identifier |
-| cve_id | String | CVE-2024-1234 | CVE identifier |
-| analyst_name | String | Alex (AI) | Analyst who performed enrichment |
-| detection_timestamp | ISO 8601 | 2025-11-08T12:00:00Z | When vulnerability detected |
-| enrichment_start | ISO 8601 | 2025-11-08T14:15:00Z | Enrichment start time |
-| enrichment_end | ISO 8601 | 2025-11-08T14:27:14Z | Enrichment completion time |
-| duration_minutes | Decimal | 12.23 | Total enrichment duration |
-| quality_score | Integer | 94 | Quality score (0-100) |
-| priority | String | P1 | Assigned priority (P1-P5) |
-| cvss_score | Decimal | 9.8 | CVSS severity score |
-| epss_score | Decimal | 87.34 | EPSS exploitation probability |
-| kev_status | String | Yes | CISA KEV status (Yes/No) |
-| exploit_status | String | Active | Exploitation status |
-| sla_deadline | ISO 8601 | 2025-11-09T14:15:00Z | SLA deadline timestamp |
+| Column              | Type     | Example              | Description                      |
+| ------------------- | -------- | -------------------- | -------------------------------- |
+| ticket_id           | String   | AOD-1234             | JIRA ticket identifier           |
+| cve_id              | String   | CVE-2024-1234        | CVE identifier                   |
+| analyst_name        | String   | Alex (AI)            | Analyst who performed enrichment |
+| detection_timestamp | ISO 8601 | 2025-11-08T12:00:00Z | When vulnerability detected      |
+| enrichment_start    | ISO 8601 | 2025-11-08T14:15:00Z | Enrichment start time            |
+| enrichment_end      | ISO 8601 | 2025-11-08T14:27:14Z | Enrichment completion time       |
+| duration_minutes    | Decimal  | 12.23                | Total enrichment duration        |
+| quality_score       | Integer  | 94                   | Quality score (0-100)            |
+| priority            | String   | P1                   | Assigned priority (P1-P5)        |
+| cvss_score          | Decimal  | 9.8                  | CVSS severity score              |
+| epss_score          | Decimal  | 87.34                | EPSS exploitation probability    |
+| kev_status          | String   | Yes                  | CISA KEV status (Yes/No)         |
+| exploit_status      | String   | Active               | Exploitation status              |
+| sla_deadline        | ISO 8601 | 2025-11-09T14:15:00Z | SLA deadline timestamp           |
 
 **Purpose:**
 
@@ -2046,6 +2185,7 @@ expansion-packs/bmad-1898-engineering/
 **Updated:** Append-only (one row added per enrichment)
 
 **Example CSV:**
+
 ```csv
 ticket_id,cve_id,analyst_name,detection_timestamp,enrichment_start,enrichment_end,duration_minutes,quality_score,priority,cvss_score,epss_score,kev_status,exploit_status,sla_deadline
 AOD-1234,CVE-2024-1234,Alex (AI),2025-11-08T12:00:00Z,2025-11-08T14:15:00Z,2025-11-08T14:27:14Z,12.23,94,P1,9.8,87.34,Yes,Active,2025-11-09T14:15:00Z
@@ -2055,6 +2195,7 @@ AOD-1235,CVE-2024-5678,Alex (AI),2025-11-08T13:00:00Z,2025-11-08T15:00:00Z,2025-
 **Analysis Examples:**
 
 **Average enrichment time by priority:**
+
 ```
 P1: 12.5 minutes average
 P2: 10.2 minutes average
@@ -2064,6 +2205,7 @@ P5: 6.3 minutes average
 ```
 
 **Quality score distribution:**
+
 ```
 Excellent (90-100): 65% of enrichments
 Good (75-89): 28% of enrichments
@@ -2072,6 +2214,7 @@ Inadequate (< 60): 2% of enrichments
 ```
 
 **SLA compliance:**
+
 ```
 Met SLA deadline: 94% of enrichments
 Missed SLA deadline: 6% of enrichments
@@ -2109,12 +2252,12 @@ The quality score is calculated based on:
 
 **Score Thresholds:**
 
-| Score Range | Rating | Interpretation |
-|-------------|--------|----------------|
-| 90-100 | Excellent | Comprehensive, well-researched, highly actionable. Exceeds expectations. |
-| 75-89 | Good | Complete, adequate research, actionable. Meets expectations. |
-| 60-74 | Needs Improvement | Some gaps, weak sources, or unclear guidance. Review recommended. |
-| < 60 | Inadequate | Major gaps, poor sources, not actionable. Requires rework. |
+| Score Range | Rating            | Interpretation                                                           |
+| ----------- | ----------------- | ------------------------------------------------------------------------ |
+| 90-100      | Excellent         | Comprehensive, well-researched, highly actionable. Exceeds expectations. |
+| 75-89       | Good              | Complete, adequate research, actionable. Meets expectations.             |
+| 60-74       | Needs Improvement | Some gaps, weak sources, or unclear guidance. Review recommended.        |
+| < 60        | Inadequate        | Major gaps, poor sources, not actionable. Requires rework.               |
 
 **Target Quality Scores by Priority:**
 
@@ -2149,6 +2292,7 @@ Improvement Opportunities:
 **Improvement Tips:**
 
 To achieve 90+ quality scores:
+
 - ✓ Populate all 12 template sections (no "TODO" or "N/A")
 - ✓ Cite authoritative sources (NVD, CISA, vendor advisories)
 - ✓ Provide specific patch versions with verification steps
@@ -2164,6 +2308,7 @@ To achieve 90+ quality scores:
 ### Q1: How long should enrichment take?
 
 **A:** Target 10-15 minutes for comprehensive enrichment with AI assistance. Actual time varies by priority:
+
 - P1: 12-15 min (comprehensive, no shortcuts)
 - P2: 10-12 min (thorough, skip optional items)
 - P3: 8-10 min (efficient, generic details OK)
@@ -2176,6 +2321,7 @@ If enrichment consistently exceeds 15 minutes, consider using standalone command
 ### Q2: Can I use the agent for non-JIRA vulnerabilities?
 
 **A:** Yes! Use the `*research-cve {cve-id}` command for standalone research without JIRA ticket context. This is useful for:
+
 - Pre-enrichment research
 - CVE briefings for team
 - Vulnerability reports from non-JIRA sources
@@ -2195,6 +2341,7 @@ If enrichment consistently exceeds 15 minutes, consider using standalone command
 6. Manually update priority in JIRA if needed
 
 Common reasons for override:
+
 - Business context changed (system now customer-facing)
 - New threat intelligence (active exploitation confirmed)
 - Compliance requirement (regulatory deadline)
@@ -2207,6 +2354,7 @@ Common reasons for override:
 **A:** Not necessarily. Use these trigger criteria:
 
 **Always Enrich:**
+
 - CVSS ≥ 7.0 (High/Critical)
 - CISA KEV listed
 - Internet-exposed systems
@@ -2214,11 +2362,13 @@ Common reasons for override:
 - Active exploitation reported
 
 **Selectively Enrich:**
+
 - CVSS 4.0-6.9 (Medium) on important systems
 - CVSS < 4.0 (Low) on critical assets
 - Unfamiliar CVEs requiring research
 
 **Consider Skipping:**
+
 - CVSS < 4.0 on low-criticality isolated systems
 - Well-known CVEs with existing playbooks
 - Duplicate CVEs (same CVE on multiple systems — enrich once, apply to all)
@@ -2242,6 +2392,7 @@ Common reasons for override:
 5. **Monitoring:** Set reminder to re-check for patch availability
 
 **Example Remediation Guidance (No Patch):**
+
 ```
 Primary Remediation:
 No patch currently available. Vendor estimates fix in Q1 2025.
@@ -2267,17 +2418,20 @@ Re-assess priority if active exploitation increases.
 **A:** If your JIRA project doesn't have the 8 required custom fields:
 
 **Option 1: Create Custom Fields (Recommended)**
+
 1. Contact JIRA admin
 2. Request creation of 8 custom fields (see Installation Guide)
 3. Update config.yaml with field IDs
 4. Re-run enrichment
 
 **Option 2: Skip Custom Fields (Fallback)**
+
 1. Enrichment still completes (JIRA comment posted)
 2. Custom fields update skipped with warning
 3. Manual updates required for filtering/dashboards
 
 **Option 3: Use Alternative Tracking**
+
 1. Track enrichments in spreadsheet
 2. Export metrics CSV to BI tool
 3. Use JIRA comment parsing for dashboards
@@ -2289,12 +2443,14 @@ Re-assess priority if active exploitation increases.
 **A:** Yes! The enrichment template is defined in `expansion-packs/bmad-1898-engineering/templates/security-enrichment-tmpl.yaml`.
 
 **To customize:**
+
 1. Edit template YAML file
 2. Add/remove/modify sections
 3. Update validation rules
 4. Test with sample enrichment
 
 **Common customizations:**
+
 - Add "Regulatory Impact" section for compliance teams
 - Add "Customer Communication" section for customer-facing incidents
 - Customize "Remediation Guidance" format for your change management process
@@ -2307,12 +2463,14 @@ Re-assess priority if active exploitation increases.
 ## Additional Resources
 
 ### Documentation
+
 - **Installation Guide:** `docs/INSTALLATION.md`
 - **Security Alert Enrichment Workflow:** `docs/workflows/security-alert-enrichment-workflow.md`
 - **Security Reviewer Agent Guide:** `docs/user-guide/security-reviewer-agent.md`
 - **Troubleshooting & FAQ:** `docs/TROUBLESHOOTING.md`
 
 ### External Resources
+
 - **NIST NVD:** https://nvd.nist.gov/
 - **CISA KEV Catalog:** https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 - **FIRST EPSS:** https://www.first.org/epss/
@@ -2320,6 +2478,7 @@ Re-assess priority if active exploitation increases.
 - **CWE Database:** https://cwe.mitre.org/
 
 ### Support
+
 - **GitHub Issues:** https://github.com/bmadcode/bmad-method/issues
 - **Discord Community:** https://discord.gg/gk8jAdXWmj
 - **Documentation:** https://docs.bmad.cloud/

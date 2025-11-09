@@ -96,6 +96,7 @@ Elapsed: 8m 45s | Estimated Remaining: 8m
 ```
 
 **Status Indicators:**
+
 - ✅ = Completed successfully
 - 🔄 = Currently executing
 - ⏳ = Pending
@@ -108,12 +109,14 @@ Elapsed: 8m 45s | Estimated Remaining: 8m
 **Duration:** 2-3 minutes
 
 **Actions:**
+
 1. Read JIRA ticket via Atlassian MCP
 2. Extract analyst enrichment comment (posted by Story 3.1 workflow)
 3. Parse enrichment structure (markdown sections)
 4. Extract factual claims for potential verification
 
 **MCP Operations:**
+
 ```
 mcp__atlassian__getJiraIssue
   issueKey: {ticket_id}
@@ -122,6 +125,7 @@ mcp__atlassian__getJiraIssue
 ```
 
 **Enrichment Extraction:**
+
 - Locate enrichment comment (look for "Security Analysis Enrichment" heading)
 - Parse markdown structure (12 expected sections from security-enrichment-tmpl.yaml)
 - Extract analyst name from comment author field
@@ -129,6 +133,7 @@ mcp__atlassian__getJiraIssue
 
 **Claims Extraction:**
 Extract these verifiable claims for Stage 5:
+
 - CVSS score and vector
 - EPSS score
 - CISA KEV status
@@ -137,6 +142,7 @@ Extract these verifiable claims for Stage 5:
 - MITRE ATT&CK technique IDs
 
 **Outputs to collect:**
+
 - `enrichment_document` (full markdown text)
 - `enrichment_sections` (parsed dict of sections)
 - `claims_list` (array of factual claims with sources)
@@ -144,6 +150,7 @@ Extract these verifiable claims for Stage 5:
 - `enrichment_timestamp` (comment created date)
 
 **Error Handling:**
+
 - Ticket not found: Prompt user to verify ticket ID and retry
 - Enrichment comment not found: HALT with "No enrichment found. Ensure Story 3.1 workflow completed for this ticket."
 - MCP connection error: Retry once, then HALT with clear error message
@@ -156,6 +163,7 @@ Extract these verifiable claims for Stage 5:
 **Duration:** 5-7 minutes
 
 **Actions:**
+
 1. Execute all 8 quality dimension checklists against enrichment
 2. Calculate individual dimension scores (0-100%)
 3. Calculate weighted overall quality score
@@ -206,6 +214,7 @@ For each checklist, execute the checklist items and score results:
    - Score: (passed items / total items) × 100
 
 **Overall Score Calculation:**
+
 ```
 overall_score =
   (technical_accuracy × 0.25) +
@@ -219,18 +228,21 @@ overall_score =
 ```
 
 **Quality Classification:**
+
 - **Excellent:** ≥90% overall score
 - **Good:** 75-89% overall score
 - **Needs Improvement:** 60-74% overall score
 - **Inadequate:** <60% overall score
 
 **Outputs to collect:**
+
 - `dimension_scores` (dict with 8 scores)
 - `overall_score` (0-100 percentage)
 - `quality_classification` (string)
 - `checklist_results` (dict with passed/failed items per checklist)
 
 **Error Handling:**
+
 - Checklist file missing: HALT with "Missing checklist: {name}. Ensure Epic 2 complete."
 - Checklist execution error: Log error, assign 0% score to that dimension, continue
 - All checklists fail: HALT with "Unable to execute quality evaluation"
@@ -242,6 +254,7 @@ overall_score =
 **Duration:** 3-4 minutes
 
 **Actions:**
+
 1. Execute task: `categorize-review-findings.md`
 2. Categorize each failed checklist item by severity
 3. Specify location in enrichment where gap occurs
@@ -250,12 +263,14 @@ overall_score =
 6. Link to learning resources
 
 **Inputs:**
+
 - `checklist_results` from Stage 2 (all failed items)
 - `enrichment_sections` from Stage 1
 
 **Categorization Rules:**
 
 **Critical Issues:**
+
 - Factual errors (incorrect CVSS, EPSS, KEV status)
 - Missing or incorrect priority assessment
 - Incorrect or misleading security metrics
@@ -263,6 +278,7 @@ overall_score =
 - Missing executive summary or priority
 
 **Significant Gaps:**
+
 - Missing business context analysis
 - Incomplete remediation guidance (no steps or vague steps)
 - MITRE ATT&CK mapping errors or omissions
@@ -270,12 +286,14 @@ overall_score =
 - Incomplete vulnerability description
 
 **Minor Improvements:**
+
 - Formatting inconsistencies
 - Spelling or grammar errors
 - Optional enhancements (additional context could be helpful)
 - Style improvements
 
 **For Each Gap, Document:**
+
 - Severity: Critical / Significant / Minor
 - Location: Specific section name and line reference
 - Description: What is missing or incorrect
@@ -284,12 +302,14 @@ overall_score =
 - Learning Resource: Link to guide or best practice
 
 **Outputs to collect:**
+
 - `critical_issues` (array of gap objects)
 - `significant_gaps` (array of gap objects)
 - `minor_improvements` (array of gap objects)
 - `total_gaps` (count across all severities)
 
 **Error Handling:**
+
 - Categorization task fails: Perform basic categorization inline
 - No gaps found: Set all arrays to empty, continue
 
@@ -300,6 +320,7 @@ overall_score =
 **Duration:** 2-3 minutes
 
 **Actions:**
+
 1. Analyze enrichment for cognitive biases
 2. Identify specific examples of bias in text
 3. Explain impact of detected biases
@@ -333,17 +354,20 @@ overall_score =
    - Example: Focusing only on recent CVEs, ignoring relevant older vulnerabilities
 
 **For Each Detected Bias:**
+
 - Type: Name of bias
 - Evidence: Specific quote or section exhibiting bias
 - Impact: How this could affect decision-making
 - Debiasing Strategy: Specific recommendation to counteract
 
 **Outputs to collect:**
+
 - `detected_biases` (array of bias objects)
 - `bias_count` (total biases detected)
 - `bias_assessment_summary` (constructive summary)
 
 **Error Handling:**
+
 - No biases detected: Set empty array, note "No significant cognitive biases detected"
 - Bias detection unclear: Mark as "Possible bias" with lower confidence
 
@@ -356,6 +380,7 @@ overall_score =
 **Prerequisite:** `perform_fact_verification = true` and Perplexity MCP available
 
 **Actions:**
+
 1. Execute task: `fact-verify-claims.md`
 2. Verify each factual claim against authoritative sources
 3. Compare analyst claims with verified data
@@ -397,6 +422,7 @@ For each claim type, use Perplexity MCP to verify against authoritative source:
    - Query: "Verify ATT&CK technique {technique_id} is correct for {vulnerability_type}"
 
 **MCP Operations:**
+
 ```
 mcp__perplexity__search (for straightforward factual lookups)
   query: {verification_query}
@@ -410,6 +436,7 @@ mcp__perplexity__reason (for complex comparisons)
 **Discrepancy Documentation:**
 
 For each discrepancy found:
+
 - Claim: What analyst stated
 - Actual: Verified correct value
 - Source: Authoritative source URL
@@ -417,11 +444,13 @@ For each discrepancy found:
 - Impact: How this affects remediation decisions
 
 **Accuracy Score Calculation:**
+
 ```
 accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 ```
 
 **Outputs to collect:**
+
 - `claims_verified` (count)
 - `claims_correct` (count)
 - `accuracy_score` (percentage)
@@ -429,12 +458,14 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 - `verification_sources` (dict of sources used)
 
 **Error Handling:**
+
 - Perplexity timeout: Skip individual claim, mark as "Not Verified"
 - Source unavailable: Note in discrepancies, mark as "Unable to Verify"
 - Rate limit: Wait and retry with exponential backoff (max 3 retries)
 - All verifications fail: Log warning, set accuracy_score = "N/A", continue
 
 **If Skipped (Perplexity unavailable):**
+
 - Set `fact_verification_performed = false`
 - Log: "Fact verification skipped - Perplexity MCP not available"
 - Set all outputs to null/empty
@@ -446,6 +477,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 **Duration:** 2-3 minutes
 
 **Actions:**
+
 1. Load template: `templates/security-review-report-tmpl.yaml`
 2. Populate all required sections with review findings
 3. Start with strengths (positive acknowledgment)
@@ -454,18 +486,20 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 6. Generate markdown review report
 
 **Inputs:**
+
 - All data from Stages 1-5
 
 **Template Sections to Populate:**
 
 1. **Review Metadata:**
+
    ```yaml
-   ticket_id: {ticket_id}
-   cve_id: {extracted from enrichment}
-   enrichment_timestamp: {enrichment_timestamp}
-   reviewer_name: {current_agent_name}
-   review_date: {current_timestamp}
-   review_workflow_version: "1.0"
+   ticket_id: { ticket_id }
+   cve_id: { extracted from enrichment }
+   enrichment_timestamp: { enrichment_timestamp }
+   reviewer_name: { current_agent_name }
+   review_date: { current_timestamp }
+   review_workflow_version: '1.0'
    ```
 
 2. **Executive Summary:**
@@ -479,6 +513,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
    - Examples: "Thorough remediation steps", "Excellent source citations", "Clear business context"
 
 4. **Quality Scores:**
+
    ```
    Technical Accuracy: {technical_accuracy}% (25% weight)
    Completeness: {completeness}% (20% weight)
@@ -530,6 +565,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
     - If Excellent: "Approved - excellent work! Ready for remediation planning"
 
 **Tone Guidelines:**
+
 - **Constructive:** Explain why, not just what
 - **Specific:** Provide examples and exact recommendations
 - **Blameless:** Focus on improvement, not criticism
@@ -538,10 +574,12 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 - **Educational:** Link to resources for learning
 
 **Output:**
+
 - `review_report_markdown` (complete markdown document)
 - `review_filename` (e.g., `{ticket-id}-review-{timestamp}.md`)
 
 **Error Handling:**
+
 - Template missing: HALT with "Review template required: templates/security-review-report-tmpl.yaml"
 - Section population fails: Use placeholder text and log warning
 
@@ -552,6 +590,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 **Duration:** 1 minute
 
 **Actions:**
+
 1. Post review report as JIRA comment
 2. Update ticket status based on findings
 3. Assign ticket back to original analyst
@@ -561,6 +600,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 **JIRA Operations:**
 
 1. **Post Review Comment:**
+
    ```
    mcp__atlassian__addCommentToJiraIssue
      issueKey: {ticket_id}
@@ -622,6 +662,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
      ```
 
 **Outputs:**
+
 - JIRA comment ID (verify posted)
 - Ticket status updated (verify change)
 - Ticket assigned (verify assignee)
@@ -629,6 +670,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 - Metrics logged (verify appended)
 
 **Error Handling:**
+
 - Comment post fails: Retry once, then save locally and prompt user to post manually
 - Status update fails: Log warning, save review locally, continue
 - Assignment fails: Log warning but continue (manual assignment may be needed)
@@ -642,6 +684,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 **Upon successful completion of all stages:**
 
 1. Display completion summary:
+
    ```
    ✅ Security Analysis Review Complete!
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -769,6 +812,7 @@ Before marking workflow complete, validate:
 - ✅ Constructive tone maintained
 
 **Quality Score for Review:**
+
 - Total checks: 10
 - Passed checks / Total checks = Review Quality %
 - Target: 100% (all checks passing)

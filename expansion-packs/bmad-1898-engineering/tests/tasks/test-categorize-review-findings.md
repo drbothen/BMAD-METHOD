@@ -17,80 +17,80 @@ Use these mock checklist results to simulate input from Story 2.2 quality dimens
 
 ```yaml
 checklist_results:
-  - dimension: "Technical Accuracy"
+  - dimension: 'Technical Accuracy'
     total_items: 10
     passed: 7
     failed: 3
     failures:
-      - item_id: "TA-1"
-        description: "CVSS score matches NVD"
-        finding: "Enrichment score 7.5 vs NVD 9.8"
-        section: "Severity Metrics"
-        field: "CVSS Base Score"
-      - item_id: "TA-3"
-        description: "KEV status verified against CISA"
-        finding: "Marked as not exploited, but CISA KEV lists active exploitation"
-        section: "Exploitation Status"
-        field: "KEV Status"
-      - item_id: "TA-5"
-        description: "EPSS score included"
-        finding: "EPSS score not found in enrichment"
-        section: "Severity Metrics"
-        field: "EPSS Score"
+      - item_id: 'TA-1'
+        description: 'CVSS score matches NVD'
+        finding: 'Enrichment score 7.5 vs NVD 9.8'
+        section: 'Severity Metrics'
+        field: 'CVSS Base Score'
+      - item_id: 'TA-3'
+        description: 'KEV status verified against CISA'
+        finding: 'Marked as not exploited, but CISA KEV lists active exploitation'
+        section: 'Exploitation Status'
+        field: 'KEV Status'
+      - item_id: 'TA-5'
+        description: 'EPSS score included'
+        finding: 'EPSS score not found in enrichment'
+        section: 'Severity Metrics'
+        field: 'EPSS Score'
 
-  - dimension: "Completeness"
+  - dimension: 'Completeness'
     total_items: 12
     passed: 10
     failed: 2
     failures:
-      - item_id: "COMP-1"
-        description: "Priority assessment included"
-        finding: "Priority field is empty"
-        section: "Priority Assessment"
-        field: "Priority"
-      - item_id: "COMP-6"
-        description: "Business impact assessment included"
-        finding: "Business impact section missing"
-        section: "Business Context"
-        field: "Business Impact"
+      - item_id: 'COMP-1'
+        description: 'Priority assessment included'
+        finding: 'Priority field is empty'
+        section: 'Priority Assessment'
+        field: 'Priority'
+      - item_id: 'COMP-6'
+        description: 'Business impact assessment included'
+        finding: 'Business impact section missing'
+        section: 'Business Context'
+        field: 'Business Impact'
 
-  - dimension: "Actionability"
+  - dimension: 'Actionability'
     total_items: 8
     passed: 6
     failed: 2
     failures:
-      - item_id: "ACT-1"
-        description: "Remediation guidance provided"
+      - item_id: 'ACT-1'
+        description: 'Remediation guidance provided'
         finding: "Remediation section states 'Update software' (too vague)"
-        section: "Remediation Guidance"
-        field: "Patch Installation"
-      - item_id: "ACT-3"
-        description: "Specific patch version provided"
+        section: 'Remediation Guidance'
+        field: 'Patch Installation'
+      - item_id: 'ACT-3'
+        description: 'Specific patch version provided'
         finding: "States 'latest version' without specifying exact version number"
-        section: "Remediation Guidance"
-        field: "Patch Version"
+        section: 'Remediation Guidance'
+        field: 'Patch Version'
 
-  - dimension: "Structure & Formatting"
+  - dimension: 'Structure & Formatting'
     total_items: 6
     passed: 5
     failed: 1
     failures:
-      - item_id: "SF-2"
-        description: "Consistent heading levels"
-        finding: "Some sections use ### while others use ## for the same level"
-        section: "Document Structure"
-        field: "Heading Levels"
+      - item_id: 'SF-2'
+        description: 'Consistent heading levels'
+        finding: 'Some sections use ### while others use ## for the same level'
+        section: 'Document Structure'
+        field: 'Heading Levels'
 ```
 
 **Mock Enrichment Metadata:**
 
 ```yaml
 enrichment_metadata:
-  cve_id: "CVE-2024-1234"
-  ticket_id: "VULN-123"
-  analyst: "Alice Johnson"
-  reviewer: "Security Reviewer Agent"
-  review_date: "2024-11-08"
+  cve_id: 'CVE-2024-1234'
+  ticket_id: 'VULN-123'
+  analyst: 'Alice Johnson'
+  reviewer: 'Security Reviewer Agent'
+  review_date: '2024-11-08'
 ```
 
 ## Test Cases
@@ -110,24 +110,24 @@ enrichment_metadata:
 
 ```yaml
 failures:
-  - item_id: "TA-1"
-    dimension: "Technical Accuracy"
-    description: "CVSS score matches NVD"
-    finding: "Enrichment score 7.5 vs NVD 9.8"
-    section: "Severity Metrics"
-    field: "CVSS Base Score"
-  - item_id: "TA-3"
-    dimension: "Technical Accuracy"
-    description: "KEV status verified against CISA"
-    finding: "Marked as not exploited, but CISA KEV lists active exploitation"
-    section: "Exploitation Status"
-    field: "KEV Status"
-  - item_id: "COMP-1"
-    dimension: "Completeness"
-    description: "Priority assessment included"
-    finding: "Priority field is empty"
-    section: "Priority Assessment"
-    field: "Priority"
+  - item_id: 'TA-1'
+    dimension: 'Technical Accuracy'
+    description: 'CVSS score matches NVD'
+    finding: 'Enrichment score 7.5 vs NVD 9.8'
+    section: 'Severity Metrics'
+    field: 'CVSS Base Score'
+  - item_id: 'TA-3'
+    dimension: 'Technical Accuracy'
+    description: 'KEV status verified against CISA'
+    finding: 'Marked as not exploited, but CISA KEV lists active exploitation'
+    section: 'Exploitation Status'
+    field: 'KEV Status'
+  - item_id: 'COMP-1'
+    dimension: 'Completeness'
+    description: 'Priority assessment included'
+    finding: 'Priority field is empty'
+    section: 'Priority Assessment'
+    field: 'Priority'
 ```
 
 **Expected Categorization Logic:**
@@ -141,35 +141,35 @@ failures:
 ```yaml
 categorized_findings:
   critical:
-    - id: "CRIT-1"
-      title: "Incorrect CVSS Score"
-      severity: "Critical"
-      location: "Severity Metrics → CVSS Base Score"
-      issue: "Enrichment states CVSS score is 7.5, but NVD lists 9.8 (Critical severity)"
-      impact: "Priority assessment based on 7.5 would be P3 (Medium), but actual 9.8 score warrants P1 (Critical). This could delay critical remediation by weeks."
-      fix: "Update CVSS score to 9.8 and vector string to match NVD. Recalculate priority assessment using correct score."
-      source_checklist: "Technical Accuracy"
-      source_item: "TA-1"
+    - id: 'CRIT-1'
+      title: 'Incorrect CVSS Score'
+      severity: 'Critical'
+      location: 'Severity Metrics → CVSS Base Score'
+      issue: 'Enrichment states CVSS score is 7.5, but NVD lists 9.8 (Critical severity)'
+      impact: 'Priority assessment based on 7.5 would be P3 (Medium), but actual 9.8 score warrants P1 (Critical). This could delay critical remediation by weeks.'
+      fix: 'Update CVSS score to 9.8 and vector string to match NVD. Recalculate priority assessment using correct score.'
+      source_checklist: 'Technical Accuracy'
+      source_item: 'TA-1'
 
-    - id: "CRIT-2"
-      title: "Incorrect KEV Status"
-      severity: "Critical"
-      location: "Exploitation Status → KEV Status"
-      issue: "Enrichment states CVE is not exploited, but CISA KEV catalog lists active exploitation"
-      impact: "Missing critical prioritization factor. KEV listing elevates priority to P1/P2, but enrichment suggests lower priority. Could result in delayed remediation of actively exploited vulnerability."
+    - id: 'CRIT-2'
+      title: 'Incorrect KEV Status'
+      severity: 'Critical'
+      location: 'Exploitation Status → KEV Status'
+      issue: 'Enrichment states CVE is not exploited, but CISA KEV catalog lists active exploitation'
+      impact: 'Missing critical prioritization factor. KEV listing elevates priority to P1/P2, but enrichment suggests lower priority. Could result in delayed remediation of actively exploited vulnerability.'
       fix: "Update KEV status to 'Listed', add date_added from CISA KEV catalog, recalculate priority to P1/P2 based on active exploitation."
-      source_checklist: "Technical Accuracy"
-      source_item: "TA-3"
+      source_checklist: 'Technical Accuracy'
+      source_item: 'TA-3'
 
-    - id: "CRIT-3"
-      title: "Missing Priority Assessment"
-      severity: "Critical"
-      location: "Priority Assessment → Priority"
-      issue: "Priority field is empty - no priority assigned to vulnerability"
-      impact: "Without priority assessment, remediation team cannot determine urgency or scheduling. Critical vulnerability could be missed or deprioritized incorrectly."
-      fix: "Complete priority assessment using CVSS score, KEV status, EPSS score, and business context. Assign P1/P2/P3/P4 priority."
-      source_checklist: "Completeness"
-      source_item: "COMP-1"
+    - id: 'CRIT-3'
+      title: 'Missing Priority Assessment'
+      severity: 'Critical'
+      location: 'Priority Assessment → Priority'
+      issue: 'Priority field is empty - no priority assigned to vulnerability'
+      impact: 'Without priority assessment, remediation team cannot determine urgency or scheduling. Critical vulnerability could be missed or deprioritized incorrectly.'
+      fix: 'Complete priority assessment using CVSS score, KEV status, EPSS score, and business context. Assign P1/P2/P3/P4 priority.'
+      source_checklist: 'Completeness'
+      source_item: 'COMP-1'
 
 findings_summary:
   total_failures: 3
@@ -182,9 +182,9 @@ findings_summary:
 workflow_trigger:
   critical_gaps_detected: true
   critical_gap_count: 3
-  critical_gap_ids: ["CRIT-1", "CRIT-2", "CRIT-3"]
-  blocking_status: "BLOCKED - Critical gaps must be addressed"
-  next_step: "Analyst addresses Critical gaps → Re-review required"
+  critical_gap_ids: ['CRIT-1', 'CRIT-2', 'CRIT-3']
+  blocking_status: 'BLOCKED - Critical gaps must be addressed'
+  next_step: 'Analyst addresses Critical gaps → Re-review required'
 ```
 
 **Validation:**
@@ -213,24 +213,24 @@ workflow_trigger:
 
 ```yaml
 failures:
-  - item_id: "TA-5"
-    dimension: "Technical Accuracy"
-    description: "EPSS score included"
-    finding: "EPSS score not found in enrichment"
-    section: "Severity Metrics"
-    field: "EPSS Score"
-  - item_id: "COMP-6"
-    dimension: "Completeness"
-    description: "Business impact assessment included"
-    finding: "Business impact section missing"
-    section: "Business Context"
-    field: "Business Impact"
-  - item_id: "ACT-1"
-    dimension: "Actionability"
-    description: "Remediation guidance provided"
+  - item_id: 'TA-5'
+    dimension: 'Technical Accuracy'
+    description: 'EPSS score included'
+    finding: 'EPSS score not found in enrichment'
+    section: 'Severity Metrics'
+    field: 'EPSS Score'
+  - item_id: 'COMP-6'
+    dimension: 'Completeness'
+    description: 'Business impact assessment included'
+    finding: 'Business impact section missing'
+    section: 'Business Context'
+    field: 'Business Impact'
+  - item_id: 'ACT-1'
+    dimension: 'Actionability'
+    description: 'Remediation guidance provided'
     finding: "Remediation section states 'Update software' (too vague)"
-    section: "Remediation Guidance"
-    field: "Patch Installation"
+    section: 'Remediation Guidance'
+    field: 'Patch Installation'
 ```
 
 **Expected Categorization Logic:**
@@ -244,37 +244,37 @@ failures:
 ```yaml
 categorized_findings:
   significant:
-    - id: "SIG-1"
-      title: "Missing EPSS Score"
-      severity: "Significant"
-      location: "Severity Metrics → EPSS Score"
-      issue: "EPSS exploitation probability score is not included in enrichment"
+    - id: 'SIG-1'
+      title: 'Missing EPSS Score'
+      severity: 'Significant'
+      location: 'Severity Metrics → EPSS Score'
+      issue: 'EPSS exploitation probability score is not included in enrichment'
       impact: "EPSS provides data-driven exploitation probability, critical for risk-based prioritization. Without EPSS, priority assessment relies solely on CVSS severity, which doesn't reflect exploitation likelihood."
-      fix: "Research EPSS score from FIRST.org and add to Severity Metrics section"
-      resource_title: "FIRST EPSS"
-      resource_url: "https://www.first.org/epss/"
-      source_checklist: "Technical Accuracy"
-      source_item: "TA-5"
+      fix: 'Research EPSS score from FIRST.org and add to Severity Metrics section'
+      resource_title: 'FIRST EPSS'
+      resource_url: 'https://www.first.org/epss/'
+      source_checklist: 'Technical Accuracy'
+      source_item: 'TA-5'
 
-    - id: "SIG-2"
-      title: "Missing Business Impact Assessment"
-      severity: "Significant"
-      location: "Business Context → Business Impact"
-      issue: "Business impact section is missing from enrichment"
-      impact: "Without business impact assessment, remediation team cannot understand how vulnerability affects business operations, data, or systems. Reduces decision-making confidence for prioritization."
-      fix: "Add Business Impact section analyzing: affected assets, business criticality, potential business consequences, and downstream impacts."
-      source_checklist: "Completeness"
-      source_item: "COMP-6"
+    - id: 'SIG-2'
+      title: 'Missing Business Impact Assessment'
+      severity: 'Significant'
+      location: 'Business Context → Business Impact'
+      issue: 'Business impact section is missing from enrichment'
+      impact: 'Without business impact assessment, remediation team cannot understand how vulnerability affects business operations, data, or systems. Reduces decision-making confidence for prioritization.'
+      fix: 'Add Business Impact section analyzing: affected assets, business criticality, potential business consequences, and downstream impacts.'
+      source_checklist: 'Completeness'
+      source_item: 'COMP-6'
 
-    - id: "SIG-3"
-      title: "Vague Remediation Guidance"
-      severity: "Significant"
-      location: "Remediation Guidance → Patch Installation"
+    - id: 'SIG-3'
+      title: 'Vague Remediation Guidance'
+      severity: 'Significant'
+      location: 'Remediation Guidance → Patch Installation'
       issue: "Remediation states 'Update software' without specific patch version or installation steps"
-      impact: "Generic guidance requires remediation team to research exact steps, adding research overhead and delaying remediation. Could result in incorrect or incomplete patching."
-      fix: "Provide specific remediation: exact patch version, download URL, installation commands, verification steps, and rollback plan."
-      source_checklist: "Actionability"
-      source_item: "ACT-1"
+      impact: 'Generic guidance requires remediation team to research exact steps, adding research overhead and delaying remediation. Could result in incorrect or incomplete patching.'
+      fix: 'Provide specific remediation: exact patch version, download URL, installation commands, verification steps, and rollback plan.'
+      source_checklist: 'Actionability'
+      source_item: 'ACT-1'
 
 findings_summary:
   total_failures: 3
@@ -286,8 +286,8 @@ findings_summary:
 
 workflow_trigger:
   critical_gaps_detected: false
-  blocking_status: "NON-BLOCKING - Significant gaps recommended for fix"
-  next_step: "Reviewer approval required for ticket progression"
+  blocking_status: 'NON-BLOCKING - Significant gaps recommended for fix'
+  next_step: 'Reviewer approval required for ticket progression'
 ```
 
 **Validation:**
@@ -316,18 +316,18 @@ workflow_trigger:
 
 ```yaml
 failures:
-  - item_id: "SF-2"
-    dimension: "Structure & Formatting"
-    description: "Consistent heading levels"
-    finding: "Some sections use ### while others use ## for the same level"
-    section: "Document Structure"
-    field: "Heading Levels"
-  - item_id: "ACT-3"
-    dimension: "Actionability"
-    description: "Specific patch version provided"
+  - item_id: 'SF-2'
+    dimension: 'Structure & Formatting'
+    description: 'Consistent heading levels'
+    finding: 'Some sections use ### while others use ## for the same level'
+    section: 'Document Structure'
+    field: 'Heading Levels'
+  - item_id: 'ACT-3'
+    dimension: 'Actionability'
+    description: 'Specific patch version provided'
     finding: "States 'latest version' without specifying exact version number"
-    section: "Remediation Guidance"
-    field: "Patch Version"
+    section: 'Remediation Guidance'
+    field: 'Patch Version'
 ```
 
 **Expected Categorization Logic:**
@@ -340,25 +340,25 @@ failures:
 ```yaml
 categorized_findings:
   minor:
-    - id: "MIN-1"
-      title: "Inconsistent Heading Levels"
-      severity: "Minor"
-      location: "Document Structure → Heading Levels"
-      issue: "Some sections use ### while others use ## for the same heading level"
+    - id: 'MIN-1'
+      title: 'Inconsistent Heading Levels'
+      severity: 'Minor'
+      location: 'Document Structure → Heading Levels'
+      issue: 'Some sections use ### while others use ## for the same heading level'
       impact: "Small impact. Formatting inconsistency may slightly reduce readability but doesn't affect technical content."
-      fix: "Standardize all section headings to use ## for major sections, ### for subsections"
-      source_checklist: "Structure & Formatting"
-      source_item: "SF-2"
+      fix: 'Standardize all section headings to use ## for major sections, ### for subsections'
+      source_checklist: 'Structure & Formatting'
+      source_item: 'SF-2'
 
-    - id: "MIN-2"
-      title: "Enhance Remediation Guidance Specificity"
-      severity: "Minor"
-      location: "Remediation Guidance → Patch Version"
+    - id: 'MIN-2'
+      title: 'Enhance Remediation Guidance Specificity'
+      severity: 'Minor'
+      location: 'Remediation Guidance → Patch Version'
       issue: "Remediation states 'Upgrade to latest version' without specifying exact version number"
-      impact: "Small impact. Remediation team will need to look up exact version, adding minor research overhead."
-      fix: "Specify exact patched version number in remediation guidance"
-      source_checklist: "Actionability"
-      source_item: "ACT-3"
+      impact: 'Small impact. Remediation team will need to look up exact version, adding minor research overhead.'
+      fix: 'Specify exact patched version number in remediation guidance'
+      source_checklist: 'Actionability'
+      source_item: 'ACT-3'
 
 findings_summary:
   total_failures: 2
@@ -370,8 +370,8 @@ findings_summary:
 
 workflow_trigger:
   critical_gaps_detected: false
-  blocking_status: "NON-BLOCKING - Minor improvements optional"
-  next_step: "Proceed with review report generation (Story 2.6)"
+  blocking_status: 'NON-BLOCKING - Minor improvements optional'
+  next_step: 'Proceed with review report generation (Story 2.6)'
 ```
 
 **Validation:**
@@ -404,18 +404,18 @@ Use full mock checklist results from Test Data Setup (8 total failures: 3 Critic
 ```yaml
 categorized_findings:
   critical:
-    - id: "CRIT-1"  # Wrong CVSS score
-    - id: "CRIT-2"  # Wrong KEV status
-    - id: "CRIT-3"  # Missing priority
+    - id: 'CRIT-1' # Wrong CVSS score
+    - id: 'CRIT-2' # Wrong KEV status
+    - id: 'CRIT-3' # Missing priority
 
   significant:
-    - id: "SIG-1"   # Missing EPSS
-    - id: "SIG-2"   # Missing business impact
-    - id: "SIG-3"   # Vague remediation
+    - id: 'SIG-1' # Missing EPSS
+    - id: 'SIG-2' # Missing business impact
+    - id: 'SIG-3' # Vague remediation
 
   minor:
-    - id: "MIN-1"   # Heading inconsistency
-    - id: "MIN-2"   # Unspecific patch version
+    - id: 'MIN-1' # Heading inconsistency
+    - id: 'MIN-2' # Unspecific patch version
 
 findings_summary:
   total_failures: 8
@@ -428,9 +428,9 @@ findings_summary:
 workflow_trigger:
   critical_gaps_detected: true
   critical_gap_count: 3
-  critical_gap_ids: ["CRIT-1", "CRIT-2", "CRIT-3"]
-  blocking_status: "BLOCKED - Critical gaps must be addressed"
-  next_step: "Analyst addresses Critical gaps → Re-review required"
+  critical_gap_ids: ['CRIT-1', 'CRIT-2', 'CRIT-3']
+  blocking_status: 'BLOCKED - Critical gaps must be addressed'
+  next_step: 'Analyst addresses Critical gaps → Re-review required'
 ```
 
 **Validation:**
@@ -458,19 +458,19 @@ workflow_trigger:
 
 ```yaml
 checklist_results:
-  - dimension: "Technical Accuracy"
+  - dimension: 'Technical Accuracy'
     total_items: 10
     passed: 10
     failed: 0
     failures: []
 
-  - dimension: "Completeness"
+  - dimension: 'Completeness'
     total_items: 12
     passed: 12
     failed: 0
     failures: []
 
-  - dimension: "Actionability"
+  - dimension: 'Actionability'
     total_items: 8
     passed: 8
     failed: 0
@@ -492,12 +492,12 @@ findings_summary:
   minor_count: 0
   blocking_issues: false
   requires_rework: false
-  message: "✅ No gaps detected - all quality dimensions passed"
+  message: '✅ No gaps detected - all quality dimensions passed'
 
 workflow_trigger:
   critical_gaps_detected: false
-  blocking_status: "APPROVED - No gaps detected"
-  next_step: "Proceed to report generation (Story 2.6)"
+  blocking_status: 'APPROVED - No gaps detected'
+  next_step: 'Proceed to report generation (Story 2.6)'
 ```
 
 **Validation:**
@@ -525,28 +525,28 @@ workflow_trigger:
 ```yaml
 failures:
   # Ambiguous failure - could be Critical or Significant
-  - item_id: "TA-X"
-    dimension: "Technical Accuracy"
-    description: "Vendor information accurate"
-    finding: "Vendor name appears outdated (may be rebranded)"
-    section: "Vulnerability Overview"
-    field: "Vendor"
+  - item_id: 'TA-X'
+    dimension: 'Technical Accuracy'
+    description: 'Vendor information accurate'
+    finding: 'Vendor name appears outdated (may be rebranded)'
+    section: 'Vulnerability Overview'
+    field: 'Vendor'
 
   # Missing field information
-  - item_id: "COMP-Y"
-    dimension: "Completeness"
-    description: "All sections present"
-    finding: "Some content missing"
-    section: ""
-    field: ""
+  - item_id: 'COMP-Y'
+    dimension: 'Completeness'
+    description: 'All sections present'
+    finding: 'Some content missing'
+    section: ''
+    field: ''
 
   # Unknown dimension
-  - item_id: "UNK-1"
-    dimension: "Unknown Dimension"
-    description: "Some check"
-    finding: "Some issue detected"
-    section: "Some Section"
-    field: "Some Field"
+  - item_id: 'UNK-1'
+    dimension: 'Unknown Dimension'
+    description: 'Some check'
+    finding: 'Some issue detected'
+    section: 'Some Section'
+    field: 'Some Field'
 ```
 
 **Expected Categorization Logic:**
@@ -560,37 +560,37 @@ failures:
 ```yaml
 categorized_findings:
   significant:
-    - id: "SIG-1"
-      title: "Potentially Outdated Vendor Information"
-      severity: "Significant"
-      location: "Vulnerability Overview → Vendor"
-      issue: "Vendor name appears outdated (may be rebranded)"
-      impact: "Vendor information may be incorrect, potentially affecting remediation guidance and patch sourcing."
-      fix: "Verify current vendor name from official sources. Update if vendor has been acquired or rebranded."
-      source_checklist: "Technical Accuracy"
-      source_item: "TA-X"
+    - id: 'SIG-1'
+      title: 'Potentially Outdated Vendor Information'
+      severity: 'Significant'
+      location: 'Vulnerability Overview → Vendor'
+      issue: 'Vendor name appears outdated (may be rebranded)'
+      impact: 'Vendor information may be incorrect, potentially affecting remediation guidance and patch sourcing.'
+      fix: 'Verify current vendor name from official sources. Update if vendor has been acquired or rebranded.'
+      source_checklist: 'Technical Accuracy'
+      source_item: 'TA-X'
 
-    - id: "SIG-2"
-      title: "Incomplete Content"
-      severity: "Significant"
-      location: "Location Unknown"
-      issue: "Some content missing"
-      impact: "Missing content reduces enrichment completeness and may affect decision-making quality."
-      fix: "Review enrichment and add missing content as identified by checklist."
-      source_checklist: "Completeness"
-      source_item: "COMP-Y"
-      notes: "⚠️ Failure missing location information"
+    - id: 'SIG-2'
+      title: 'Incomplete Content'
+      severity: 'Significant'
+      location: 'Location Unknown'
+      issue: 'Some content missing'
+      impact: 'Missing content reduces enrichment completeness and may affect decision-making quality.'
+      fix: 'Review enrichment and add missing content as identified by checklist.'
+      source_checklist: 'Completeness'
+      source_item: 'COMP-Y'
+      notes: '⚠️ Failure missing location information'
 
-    - id: "SIG-3"
-      title: "Quality Issue Detected"
-      severity: "Significant"
-      location: "Some Section → Some Field"
-      issue: "Some issue detected"
-      impact: "Quality issue may affect enrichment usability or accuracy."
-      fix: "Address issue as identified by checklist."
-      source_checklist: "Unknown Dimension"
-      source_item: "UNK-1"
-      notes: "⚠️ Unknown checklist dimension - defaulted to Significant"
+    - id: 'SIG-3'
+      title: 'Quality Issue Detected'
+      severity: 'Significant'
+      location: 'Some Section → Some Field'
+      issue: 'Some issue detected'
+      impact: 'Quality issue may affect enrichment usability or accuracy.'
+      fix: 'Address issue as identified by checklist.'
+      source_checklist: 'Unknown Dimension'
+      source_item: 'UNK-1'
+      notes: '⚠️ Unknown checklist dimension - defaulted to Significant'
 ```
 
 **Validation:**
@@ -618,20 +618,20 @@ categorized_findings:
 
 ```yaml
 failures:
-  - item_id: "TA-1"
-    finding: "CVSS score incorrect"
+  - item_id: 'TA-1'
+    finding: 'CVSS score incorrect'
     # Should map to: NVD URL
 
-  - item_id: "TA-2"
-    finding: "EPSS score missing"
+  - item_id: 'TA-2'
+    finding: 'EPSS score missing'
     # Should map to: FIRST EPSS URL
 
-  - item_id: "TA-3"
-    finding: "KEV status incorrect"
+  - item_id: 'TA-3'
+    finding: 'KEV status incorrect'
     # Should map to: CISA KEV URL
 
-  - item_id: "COMP-4"
-    finding: "MITRE ATT&CK mapping missing"
+  - item_id: 'COMP-4'
+    finding: 'MITRE ATT&CK mapping missing'
     # Should map to: MITRE ATT&CK URL
 ```
 
@@ -639,21 +639,21 @@ failures:
 
 ```yaml
 findings:
-  - failure_type: "CVSS score"
-    resource_title: "NIST NVD CVE-2024-1234"
-    resource_url: "https://nvd.nist.gov/vuln/detail/CVE-2024-1234"
+  - failure_type: 'CVSS score'
+    resource_title: 'NIST NVD CVE-2024-1234'
+    resource_url: 'https://nvd.nist.gov/vuln/detail/CVE-2024-1234'
 
-  - failure_type: "EPSS score"
-    resource_title: "FIRST EPSS"
-    resource_url: "https://www.first.org/epss/"
+  - failure_type: 'EPSS score'
+    resource_title: 'FIRST EPSS'
+    resource_url: 'https://www.first.org/epss/'
 
-  - failure_type: "KEV status"
-    resource_title: "CISA KEV Catalog"
-    resource_url: "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+  - failure_type: 'KEV status'
+    resource_title: 'CISA KEV Catalog'
+    resource_url: 'https://www.cisa.gov/known-exploited-vulnerabilities-catalog'
 
-  - failure_type: "MITRE ATT&CK"
-    resource_title: "MITRE ATT&CK Framework"
-    resource_url: "https://attack.mitre.org/"
+  - failure_type: 'MITRE ATT&CK'
+    resource_title: 'MITRE ATT&CK Framework'
+    resource_url: 'https://attack.mitre.org/'
 ```
 
 **Validation:**
@@ -749,7 +749,7 @@ findings:
 ```yaml
 # Invalid structure - missing required fields
 invalid_checklist:
-  dimension: "Technical Accuracy"
+  dimension: 'Technical Accuracy'
   # Missing: failures list
 ```
 
@@ -773,9 +773,9 @@ invalid_checklist:
 
 ```yaml
 enrichment_metadata:
-  cve_id: ""  # Empty CVE ID
+  cve_id: '' # Empty CVE ID
 failures:
-  - finding: "CVSS score incorrect"
+  - finding: 'CVSS score incorrect'
     # Needs CVE ID for NVD URL
 ```
 
@@ -824,7 +824,7 @@ failures:
 ```yaml
 failures:
   - finding: "Malicious <script>alert('XSS')</script> content"
-  - finding: "Path traversal ../../etc/passwd attempt"
+  - finding: 'Path traversal ../../etc/passwd attempt'
   - section: "Injection [link](javascript:alert('XSS'))"
 ```
 
@@ -871,22 +871,22 @@ failures:
 **Tester:** {name}
 **Task Version:** {version}
 
-| Test ID | Test Name | Status | Notes |
-|---------|-----------|--------|-------|
-| TC-CAT-001 | Critical Issues | ✅ Pass | |
-| TC-CAT-002 | Significant Gaps | ✅ Pass | |
-| TC-CAT-003 | Minor Improvements | ✅ Pass | |
-| TC-CAT-004 | Mixed Severity | ✅ Pass | |
-| TC-CAT-005 | All Passed | ✅ Pass | |
-| TC-CAT-006 | Edge Cases | ✅ Pass | |
-| TC-CAT-007 | Resource Mapping | ✅ Pass | |
-| TC-INT-001 | 2.2 → 2.3 Flow | ✅ Pass | |
-| TC-INT-002 | 2.3 → 2.6 Flow | ✅ Pass | |
-| TC-INT-003 | 2.3 → Epic 3 Trigger | ✅ Pass | |
-| TC-ERR-001 | Invalid Input | ✅ Pass | |
-| TC-ERR-002 | Missing CVE ID | ✅ Pass | |
-| TC-PERF-001 | Large Results | ✅ Pass | |
-| TC-SEC-001 | Input Sanitization | ✅ Pass | |
+| Test ID     | Test Name            | Status  | Notes |
+| ----------- | -------------------- | ------- | ----- |
+| TC-CAT-001  | Critical Issues      | ✅ Pass |       |
+| TC-CAT-002  | Significant Gaps     | ✅ Pass |       |
+| TC-CAT-003  | Minor Improvements   | ✅ Pass |       |
+| TC-CAT-004  | Mixed Severity       | ✅ Pass |       |
+| TC-CAT-005  | All Passed           | ✅ Pass |       |
+| TC-CAT-006  | Edge Cases           | ✅ Pass |       |
+| TC-CAT-007  | Resource Mapping     | ✅ Pass |       |
+| TC-INT-001  | 2.2 → 2.3 Flow       | ✅ Pass |       |
+| TC-INT-002  | 2.3 → 2.6 Flow       | ✅ Pass |       |
+| TC-INT-003  | 2.3 → Epic 3 Trigger | ✅ Pass |       |
+| TC-ERR-001  | Invalid Input        | ✅ Pass |       |
+| TC-ERR-002  | Missing CVE ID       | ✅ Pass |       |
+| TC-PERF-001 | Large Results        | ✅ Pass |       |
+| TC-SEC-001  | Input Sanitization   | ✅ Pass |       |
 
 **Overall Result:** ✅ All Tests Passed
 

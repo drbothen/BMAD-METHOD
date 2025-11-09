@@ -16,22 +16,22 @@ This vulnerability represents one of the most severe security threats identified
 
 ## Severity Metrics (Extended)
 
-| Metric              | Value                      | Context                                         | Additional Details |
-| ------------------- | -------------------------- | ----------------------------------------------- | ------------------ |
-| **CVSS Base Score** | 10.0 (Critical)            | CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H   | Maximum severity |
-| **CVSS Vector**     | AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H | Network exploitable, no authentication required | Scope changed |
-| **EPSS Score**      | 0.95 (99th percentile)     | 95% probability of exploitation in next 30 days | Extremely high risk |
-| **EPSS Percentile** | 99th                       | Higher risk than 99% of all CVEs                | Top 1% threat |
-| **CISA KEV**        | Listed (2024-01-01)        | Active exploitation confirmed by CISA           | Critical infrastructure |
-| **Exploit Status**  | Multiple Public PoCs       | 15+ exploit variants publicly available         | Widespread |
-| **Attack Vector**   | Network                    | Remotely exploitable over network               | Internet-facing |
-| **Attack Complexity** | Low                      | No special conditions required                  | Easy to exploit |
-| **Privileges Required** | None                   | Unauthenticated exploitation possible           | No auth needed |
-| **User Interaction** | None                      | No user interaction needed                      | Fully automated |
-| **Scope**           | Changed                    | Impact beyond vulnerable component              | Lateral movement |
-| **Confidentiality** | High                       | Total information disclosure                    | Complete breach |
-| **Integrity**       | High                       | Total data modification possible                | Complete compromise |
-| **Availability**    | High                       | Total system shutdown possible                  | DoS capability |
+| Metric                  | Value                               | Context                                         | Additional Details      |
+| ----------------------- | ----------------------------------- | ----------------------------------------------- | ----------------------- |
+| **CVSS Base Score**     | 10.0 (Critical)                     | CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H    | Maximum severity        |
+| **CVSS Vector**         | AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H | Network exploitable, no authentication required | Scope changed           |
+| **EPSS Score**          | 0.95 (99th percentile)              | 95% probability of exploitation in next 30 days | Extremely high risk     |
+| **EPSS Percentile**     | 99th                                | Higher risk than 99% of all CVEs                | Top 1% threat           |
+| **CISA KEV**            | Listed (2024-01-01)                 | Active exploitation confirmed by CISA           | Critical infrastructure |
+| **Exploit Status**      | Multiple Public PoCs                | 15+ exploit variants publicly available         | Widespread              |
+| **Attack Vector**       | Network                             | Remotely exploitable over network               | Internet-facing         |
+| **Attack Complexity**   | Low                                 | No special conditions required                  | Easy to exploit         |
+| **Privileges Required** | None                                | Unauthenticated exploitation possible           | No auth needed          |
+| **User Interaction**    | None                                | No user interaction needed                      | Fully automated         |
+| **Scope**               | Changed                             | Impact beyond vulnerable component              | Lateral movement        |
+| **Confidentiality**     | High                                | Total information disclosure                    | Complete breach         |
+| **Integrity**           | High                                | Total data modification possible                | Complete compromise     |
+| **Availability**        | High                                | Total system shutdown possible                  | DoS capability          |
 
 ---
 
@@ -71,12 +71,14 @@ The vulnerability exists across multiple components of the affected systems. Pri
    - Arbitrary file write leading to code execution
 
 **Preconditions:**
+
 - Affected system version 1.0.0 through 10.5.99 installed
 - Web application exposed to network (Internet or internal network)
 - No authentication required for primary exploit
 - Multiple exploit paths available
 
 **Impact (Detailed):**
+
 - Complete system compromise across all CIA triad dimensions
 - Data exfiltration of sensitive customer, financial, and operational data
 - Lateral movement within enterprise networks
@@ -92,18 +94,18 @@ The vulnerability exists across multiple components of the affected systems. Pri
 
 ## Affected Systems (Extended List)
 
-| System Type          | Versions Affected    | Exposure Level     | Criticality | Affected Count | Business Impact |
-| -------------------- | -------------------- | ------------------ | ----------- | -------------- | --------------- |
-| Enterprise App Servers | 1.0.0 - 10.5.99    | Internet-Facing    | Critical    | 50,000+        | $10M+ per breach |
-| Financial Systems    | 1.0.0 - 10.5.99      | Internet-Facing    | Critical    | 25,000+        | $50M+ per breach |
-| Healthcare Platforms | 1.0.0 - 10.5.99      | Internal Network   | Critical    | 15,000+        | HIPAA violations |
-| Government Systems   | 1.0.0 - 10.5.99      | Internal Network   | Critical    | 10,000+        | National security |
-| E-commerce Platforms | 1.0.0 - 10.5.99      | Internet-Facing    | Critical    | 100,000+       | Revenue loss |
-| API Gateways         | 1.0.0 - 10.5.99      | Internet-Facing    | Critical    | 75,000+        | Service disruption |
-| Mobile Backends      | 1.0.0 - 10.5.99      | Internet-Facing    | High        | 200,000+       | Customer data |
-| IoT Management       | 1.0.0 - 10.5.99      | Internet-Facing    | High        | 500,000+       | Device control |
-| Cloud Services       | 1.0.0 - 10.5.99      | Internet-Facing    | Critical    | 1,000,000+     | Multi-tenant breach |
-| Database Servers     | 1.0.0 - 10.5.99      | Internal Network   | Critical    | 50,000+        | Data loss |
+| System Type            | Versions Affected | Exposure Level   | Criticality | Affected Count | Business Impact     |
+| ---------------------- | ----------------- | ---------------- | ----------- | -------------- | ------------------- |
+| Enterprise App Servers | 1.0.0 - 10.5.99   | Internet-Facing  | Critical    | 50,000+        | $10M+ per breach    |
+| Financial Systems      | 1.0.0 - 10.5.99   | Internet-Facing  | Critical    | 25,000+        | $50M+ per breach    |
+| Healthcare Platforms   | 1.0.0 - 10.5.99   | Internal Network | Critical    | 15,000+        | HIPAA violations    |
+| Government Systems     | 1.0.0 - 10.5.99   | Internal Network | Critical    | 10,000+        | National security   |
+| E-commerce Platforms   | 1.0.0 - 10.5.99   | Internet-Facing  | Critical    | 100,000+       | Revenue loss        |
+| API Gateways           | 1.0.0 - 10.5.99   | Internet-Facing  | Critical    | 75,000+        | Service disruption  |
+| Mobile Backends        | 1.0.0 - 10.5.99   | Internet-Facing  | High        | 200,000+       | Customer data       |
+| IoT Management         | 1.0.0 - 10.5.99   | Internet-Facing  | High        | 500,000+       | Device control      |
+| Cloud Services         | 1.0.0 - 10.5.99   | Internet-Facing  | Critical    | 1,000,000+     | Multi-tenant breach |
+| Database Servers       | 1.0.0 - 10.5.99   | Internal Network | Critical    | 50,000+        | Data loss           |
 
 **Total Estimated Affected Systems Worldwide:** 2,000,000+
 
@@ -116,11 +118,13 @@ The vulnerability exists across multiple components of the affected systems. Pri
 **Techniques (Comprehensive):**
 
 ### Initial Access
+
 - **T1190** - Exploit Public-Facing Application (PRIMARY)
 - **T1133** - External Remote Services
 - **T1078** - Valid Accounts (via stolen credentials)
 
 ### Execution
+
 - **T1059.001** - Command and Scripting Interpreter: PowerShell
 - **T1059.003** - Command and Scripting Interpreter: Windows Command Shell
 - **T1059.004** - Command and Scripting Interpreter: Unix Shell
@@ -129,46 +133,56 @@ The vulnerability exists across multiple components of the affected systems. Pri
 - **T1204** - User Execution
 
 ### Persistence
+
 - **T1505.003** - Server Software Component: Web Shell
 - **T1543.002** - Create or Modify System Process: Systemd Service
 - **T1136** - Create Account
 - **T1098** - Account Manipulation
 
 ### Privilege Escalation
+
 - **T1068** - Exploitation for Privilege Escalation
 - **T1548** - Abuse Elevation Control Mechanism
 
 ### Defense Evasion
+
 - **T1070** - Indicator Removal on Host
 - **T1140** - Deobfuscate/Decode Files or Information
 - **T1027** - Obfuscated Files or Information
 
 ### Credential Access
+
 - **T1003** - OS Credential Dumping
 - **T1552** - Unsecured Credentials
 
 ### Discovery
+
 - **T1083** - File and Directory Discovery
 - **T1082** - System Information Discovery
 - **T1087** - Account Discovery
 
 ### Lateral Movement
+
 - **T1021** - Remote Services
 - **T1080** - Taint Shared Content
 
 ### Collection
+
 - **T1005** - Data from Local System
 - **T1074** - Data Staged
 
 ### Command and Control
+
 - **T1071** - Application Layer Protocol
 - **T1573** - Encrypted Channel
 
 ### Exfiltration
+
 - **T1041** - Exfiltration Over C2 Channel
 - **T1048** - Exfiltration Over Alternative Protocol
 
 ### Impact
+
 - **T1486** - Data Encrypted for Impact (Ransomware)
 - **T1490** - Inhibit System Recovery
 - **T1498** - Network Denial of Service
@@ -183,6 +197,7 @@ The vulnerability exists across multiple components of the affected systems. Pri
 **Exploit Maturity:** Weaponized and Automated
 
 **Exploit Sources (15+ variants):**
+
 1. Metasploit Framework - 3 modules (authentication bypass, RCE, persistence)
 2. Exploit-DB - 8 public PoC scripts
 3. GitHub - 50+ public repositories with exploit code
@@ -192,6 +207,7 @@ The vulnerability exists across multiple components of the affected systems. Pri
 7. Penetration testing tools - Native support in major security tools
 
 **Known Exploitation (Confirmed Intelligence):**
+
 - CISA confirmed active exploitation targeting critical infrastructure (January 2024)
 - FBI alert issued for financial sector targeting (February 2024)
 - NSA advisory for government networks (March 2024)
@@ -203,6 +219,7 @@ The vulnerability exists across multiple components of the affected systems. Pri
 - Botnet recruitment campaigns observed
 
 **Exploit Characteristics:**
+
 - Weaponized: Yes (fully automated exploit kits available)
 - Automated: Yes (scanner tools with auto-exploitation)
 - Requires authentication: No (primary vector is unauthenticated)
@@ -214,23 +231,27 @@ The vulnerability exists across multiple components of the affected systems. Pri
 **Threat Actor Activity (Confirmed):**
 
 ### Advanced Persistent Threats (APTs)
+
 - APT28 (Fancy Bear) - Russian state-sponsored, targeting government
 - APT29 (Cozy Bear) - Russian state-sponsored, targeting defense contractors
 - APT41 (Double Dragon) - Chinese state-sponsored, targeting healthcare
 - Lazarus Group - North Korean state-sponsored, targeting financial sector
 
 ### Ransomware Groups
+
 - LockBit 3.0 - Active exploitation since March 2024, 500+ victims
 - BlackCat (ALPHV) - Targeted campaigns against healthcare
 - Royal Ransomware - Focus on critical infrastructure
 - Play Ransomware - Targeting manufacturing sector
 
 ### Financially Motivated
+
 - FIN7 - Targeting retail and e-commerce
 - Carbanak - Banking and financial services
 - Magecart - E-commerce credential theft
 
 ### Cryptominers
+
 - TeamTNT - Cryptocurrency mining operations
 - Kinsing - Linux server targeting
 - 8220 Gang - Cloud infrastructure targeting
@@ -244,11 +265,13 @@ The vulnerability exists across multiple components of the affected systems. Pri
 **Patch Available:** ✅ Yes - Emergency patch released
 
 **Patched Versions:**
+
 - Version 10.6.0 (released 2024-11-01)
 - Version 9.8.5-LTS (long-term support branch)
 - Version 8.9.2-STABLE (stable maintenance branch)
 
 **Vendor Advisories:**
+
 - [Primary Security Bulletin SEC-2024-9999](https://vendor.com/security/SEC-2024-9999)
 - [Emergency Patch Instructions](https://vendor.com/security/emergency-patch-9999)
 - [Patch Deployment Guide](https://vendor.com/docs/patch-deployment)
@@ -361,11 +384,11 @@ The vulnerability exists across multiple components of the affected systems. Pri
 
 **Workaround Deployment Matrix:**
 
-| System Exposure      | Recommended Workarounds                     | Priority |
-| -------------------- | ------------------------------------------ | -------- |
-| Internet-Facing      | Network Isolation + WAF + IPS              | P1       |
-| Internal Network     | WAF + IPS + Network Segmentation           | P2       |
-| Isolated/DMZ         | IPS + Monitoring                            | P3       |
+| System Exposure  | Recommended Workarounds          | Priority |
+| ---------------- | -------------------------------- | -------- |
+| Internet-Facing  | Network Isolation + WAF + IPS    | P1       |
+| Internal Network | WAF + IPS + Network Segmentation | P2       |
+| Isolated/DMZ     | IPS + Monitoring                 | P3       |
 
 ### Compensating Controls (Defense in Depth)
 

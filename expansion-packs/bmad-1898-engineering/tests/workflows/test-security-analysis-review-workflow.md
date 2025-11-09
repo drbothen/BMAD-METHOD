@@ -28,6 +28,7 @@ The following test tickets must be created in your JIRA project before executing
 **Ticket Creation Instructions:**
 
 **TEST-REV-001: Excellent Enrichment Test Ticket**
+
 ```yaml
 Summary: "Apache Struts RCE Vulnerability (CVE-2024-1234)"
 Description: "Critical vulnerability affecting production web servers"
@@ -53,6 +54,7 @@ Comments:
 ```
 
 **TEST-REV-002: Good Enrichment with Minor Gaps Test Ticket**
+
 ```yaml
 Summary: "OpenSSL Vulnerability (CVE-2024-5678)"
 Description: "Moderate vulnerability requiring assessment"
@@ -73,6 +75,7 @@ Comments:
 ```
 
 **TEST-REV-003: Poor Enrichment with Critical Errors Test Ticket**
+
 ```yaml
 Summary: "PostgreSQL Vulnerability (CVE-2024-9999)"
 Description: "Database vulnerability requiring analysis"
@@ -96,6 +99,7 @@ Comments:
 ```
 
 **TEST-REV-004: Enrichment with Cognitive Biases Test Ticket**
+
 ```yaml
 Summary: "WordPress Plugin Vulnerability (CVE-2024-7777)"
 Description: "Plugin vulnerability requiring analysis"
@@ -117,6 +121,7 @@ Comments:
 ```
 
 **TEST-REV-005: Resume Review Workflow Test Ticket**
+
 ```yaml
 Summary: "Django Framework Vulnerability (CVE-2024-3333)"
 Description: "Framework vulnerability requiring review"
@@ -135,6 +140,7 @@ Comments:
 **After Creating Tickets:**
 
 1. **Execute Story 3.1 enrichment workflow** on each test ticket to generate enrichments:
+
    ```
    *enrich-ticket TEST-REV-001
    *enrich-ticket TEST-REV-002
@@ -169,6 +175,7 @@ Create these sample enrichment documents for testing without JIRA (unit tests):
 **JIRA Configuration Prerequisites:**
 
 Before creating test tickets, ensure your JIRA project has:
+
 - ✓ All required custom fields configured (see jira-workflow-standards.md)
 - ✓ "Security Alert" or equivalent issue type
 - ✓ Required workflow statuses (Open, In Progress, Needs Revision, Approved)
@@ -188,6 +195,7 @@ Before creating test tickets, ensure your JIRA project has:
 **Test Ticket:** TEST-REV-001 (Excellent enrichment)
 
 **Prerequisites:**
+
 - Enrichment posted to TEST-REV-001 with all 12 sections
 - All metrics accurate and authoritative sources cited
 - Clear remediation guidance and ATT&CK mapping
@@ -207,6 +215,7 @@ Before creating test tickets, ensure your JIRA project has:
 **Expected Results:**
 
 **Stage 1: Preparation (2-3 min)**
+
 - ✅ Ticket read successfully
 - ✅ Enrichment extracted from comments
 - ✅ All 12 sections parsed
@@ -215,6 +224,7 @@ Before creating test tickets, ensure your JIRA project has:
 - ✅ Progress displayed: "✅ Stage 1: Preparation (completed in Xm Xs)"
 
 **Stage 2: Systematic Evaluation (5-7 min)**
+
 - ✅ All 8 checklists executed successfully
 - ✅ Technical Accuracy: 95-100%
 - ✅ Completeness: 95-100%
@@ -229,6 +239,7 @@ Before creating test tickets, ensure your JIRA project has:
 - ✅ Progress displayed: "✅ Stage 2: Systematic Evaluation (completed in Xm Xs)"
 
 **Stage 3: Gap Identification (3-4 min)**
+
 - ✅ Critical Issues: 0
 - ✅ Significant Gaps: 0-1
 - ✅ Minor Improvements: 0-3
@@ -236,15 +247,18 @@ Before creating test tickets, ensure your JIRA project has:
 - ✅ Progress displayed: "✅ Stage 3: Gap Identification (completed in Xm Xs)"
 
 **Stage 4: Bias Detection (2-3 min)**
+
 - ✅ Bias assessment complete
 - ✅ No significant biases detected (or minimal)
 - ✅ Constructive feedback provided
 - ✅ Progress displayed: "✅ Stage 4: Bias Detection (completed in Xm Xs)"
 
 **Stage 5: Fact Verification (skipped)**
+
 - ✅ Progress displayed: "⏭️ Stage 5: Fact Verification (skipped - user declined)"
 
 **Stage 6: Documentation (2-3 min)**
+
 - ✅ Review report generated with all 12 sections
 - ✅ Strengths section lists 3-5 positive aspects
 - ✅ Constructive tone maintained throughout
@@ -252,6 +266,7 @@ Before creating test tickets, ensure your JIRA project has:
 - ✅ Progress displayed: "✅ Stage 6: Documentation (completed in Xm Xs)"
 
 **Stage 7: Feedback Loop (1 min)**
+
 - ✅ Review posted to JIRA as comment
 - ✅ Ticket status changed to "Approved" (no critical issues)
 - ✅ Ticket assigned to analyst
@@ -260,6 +275,7 @@ Before creating test tickets, ensure your JIRA project has:
 - ✅ Progress displayed: "✅ Stage 7: Feedback Loop (completed in Xs)"
 
 **Overall Success Criteria:**
+
 - ✅ Total duration: <20 minutes
 - ✅ All stages completed successfully
 - ✅ Review posted to JIRA ticket with constructive feedback
@@ -268,6 +284,7 @@ Before creating test tickets, ensure your JIRA project has:
 - ✅ Completion summary displayed with quality score 90%+
 
 **Manual Verification:**
+
 - Open JIRA ticket TEST-REV-001 and verify review comment posted
 - Verify comment contains all 12 sections
 - Verify tone is constructive and acknowledges strengths
@@ -283,6 +300,7 @@ Before creating test tickets, ensure your JIRA project has:
 **Test Ticket:** TEST-REV-002 (Good enrichment with 2-3 missing sections)
 
 **Prerequisites:**
+
 - Enrichment posted with 10/12 sections (missing business context and ATT&CK)
 - Metrics generally accurate
 - Some remediation steps vague
@@ -299,25 +317,30 @@ Before creating test tickets, ensure your JIRA project has:
 **Expected Results:**
 
 **Stage 2: Evaluation**
+
 - Overall Score: 75-89%
 - Quality Classification: "Good"
 
 **Stage 3: Gap Identification**
+
 - Critical Issues: 0
 - Significant Gaps: 2-3 (missing business context, missing ATT&CK, vague remediation)
 - Minor Improvements: 2-5
 
 **Stage 6: Documentation**
+
 - Review acknowledges strengths first
 - Gaps listed constructively with specific recommendations
 - Learning resources provided for each gap
 - Tone remains supportive and blameless
 
 **Stage 7: Feedback**
+
 - Ticket status: "In Progress" or "Approved" (no critical issues)
 - Review posted successfully
 
 **Success Criteria:**
+
 - ✅ Gaps correctly identified
 - ✅ Constructive tone maintained
 - ✅ Specific recommendations provided
@@ -332,6 +355,7 @@ Before creating test tickets, ensure your JIRA project has:
 **Test Ticket:** TEST-REV-003 (Poor enrichment with incorrect CVSS, KEV, and missing priority)
 
 **Prerequisites:**
+
 - Enrichment contains critical errors:
   - Incorrect CVSS score (8.1 vs actual 5.3)
   - Incorrect KEV status (claims Listed, actually Not Listed)
@@ -350,11 +374,13 @@ Before creating test tickets, ensure your JIRA project has:
 **Expected Results:**
 
 **Stage 2: Evaluation**
+
 - Overall Score: <60%
 - Quality Classification: "Inadequate"
 - Technical Accuracy: <50% (critical errors)
 
 **Stage 3: Gap Identification**
+
 - Critical Issues: 3-4
   - Incorrect CVSS score (location: Vulnerability Overview, impact: wrong prioritization, fix: correct to 5.3)
   - Incorrect KEV status (location: Metrics, impact: false urgency, fix: correct to "Not Listed")
@@ -364,6 +390,7 @@ Before creating test tickets, ensure your JIRA project has:
 - Minor Improvements: variable
 
 **Stage 5: Fact Verification (performed)**
+
 - Claims verified: 4-6
 - Accuracy score: <50%
 - Discrepancies found:
@@ -371,17 +398,20 @@ Before creating test tickets, ensure your JIRA project has:
   - KEV: Claimed Listed, Actual Not Listed
 
 **Stage 6: Documentation**
+
 - Critical issues section prominent and detailed
 - Each error has specific correction
 - Tone remains blameless but clear about severity
 - Next steps: "Needs Revision - please address critical issues"
 
 **Stage 7: Feedback**
+
 - Ticket status changed to: "Needs Revision"
 - Review posted with critical issues highlighted
 - Analyst assigned and notified
 
 **Success Criteria:**
+
 - ✅ All critical errors detected
 - ✅ Fact verification identifies discrepancies
 - ✅ Ticket blocked with "Needs Revision" status
@@ -389,6 +419,7 @@ Before creating test tickets, ensure your JIRA project has:
 - ✅ Analyst notified via assignment
 
 **Manual Verification:**
+
 - Open JIRA ticket TEST-REV-003
 - Verify status is "Needs Revision"
 - Verify review comment clearly lists critical errors
@@ -403,6 +434,7 @@ Before creating test tickets, ensure your JIRA project has:
 **Test Ticket:** TEST-REV-004 (Enrichment with multiple cognitive biases)
 
 **Prerequisites:**
+
 - Enrichment contains bias indicators:
   - Anchoring: Over-reliance on CVSS score
   - Confirmation: Emphasizes severity despite low EPSS
@@ -421,9 +453,11 @@ Before creating test tickets, ensure your JIRA project has:
 **Expected Results:**
 
 **Stage 2: Evaluation**
+
 - Cognitive Bias Detection checklist: <80% (biases present)
 
 **Stage 4: Bias Detection**
+
 - Detected Biases: 3-4
   1. Anchoring Bias
      - Evidence: "CVSS 6.5 indicates high severity" (ignores EPSS 0.01)
@@ -443,12 +477,14 @@ Before creating test tickets, ensure your JIRA project has:
      - Debiasing: "Use probabilistic language ('likely', 'possible') when uncertain"
 
 **Stage 6: Documentation**
+
 - Cognitive Bias Assessment section detailed
 - Each bias has specific example quote
 - Debiasing strategies actionable
 - Tone educational, not accusatory
 
 **Success Criteria:**
+
 - ✅ All major biases detected
 - ✅ Specific text examples cited
 - ✅ Debiasing strategies specific and actionable
@@ -478,6 +514,7 @@ Before creating test tickets, ensure your JIRA project has:
 **Expected Results:**
 
 **On Resume:**
+
 - ✅ State file detected: `.workflow-state/review-TEST-REV-005.json`
 - ✅ Prompt displayed: "Resume review from Stage 3? (y/n)"
 - ✅ User selects: `y`
@@ -498,6 +535,7 @@ Before creating test tickets, ensure your JIRA project has:
 - ✅ State file archived on completion
 
 **Success Criteria:**
+
 - ✅ State preserved across interruption
 - ✅ Resume prompt displayed
 - ✅ Data from completed stages loaded correctly
@@ -513,6 +551,7 @@ Before creating test tickets, ensure your JIRA project has:
 **Test Ticket:** TEST-REV-003 (Contains factual errors for verification)
 
 **Prerequisites:**
+
 - Perplexity MCP configured and available
 - Enrichment contains verifiable claims (CVSS, EPSS, KEV, patches)
 
@@ -528,6 +567,7 @@ Before creating test tickets, ensure your JIRA project has:
 **Expected Results:**
 
 **Stage 5: Fact Verification**
+
 - ✅ Perplexity MCP queries executed for each claim type
 - ✅ CVSS verified against NVD
 - ✅ EPSS verified against FIRST
@@ -539,6 +579,7 @@ Before creating test tickets, ensure your JIRA project has:
 - ✅ Progress displayed: "✅ Stage 5: Fact Verification (completed in Xm Xs)"
 
 **Stage 6: Documentation**
+
 - ✅ Fact Verification Results section populated
 - ✅ Accuracy score displayed
 - ✅ Each discrepancy documented with:
@@ -548,6 +589,7 @@ Before creating test tickets, ensure your JIRA project has:
   - Severity: Critical (for CVSS/KEV errors)
 
 **Success Criteria:**
+
 - ✅ Fact verification stage executes
 - ✅ Perplexity MCP queries successful
 - ✅ Discrepancies correctly identified
@@ -563,6 +605,7 @@ Before creating test tickets, ensure your JIRA project has:
 **Test Ticket:** TEST-REV-001 (Any enrichment)
 
 **Prerequisites:**
+
 - Perplexity MCP disabled or unavailable
 
 **Steps:**
@@ -577,22 +620,27 @@ Before creating test tickets, ensure your JIRA project has:
 **Expected Results:**
 
 **Initial Setup:**
+
 - ✅ Warning displayed: "Fact verification will be skipped - Perplexity MCP not available"
 - ✅ No prompt for fact verification (automatically set to skip)
 
 **Stage 5: Fact Verification**
+
 - ✅ Progress displayed: "⏭️ Stage 5: Fact Verification (skipped - Perplexity MCP unavailable)"
 - ✅ Workflow continues to Stage 6
 
 **Stage 6: Documentation**
+
 - ✅ Fact Verification Results section shows: "ℹ️ Fact verification was not performed for this review"
 
 **Overall:**
+
 - ✅ Workflow completes successfully
 - ✅ Review posted to JIRA
 - ✅ No errors due to missing Perplexity
 
 **Success Criteria:**
+
 - ✅ Workflow detects MCP unavailability
 - ✅ Fact verification skipped gracefully
 - ✅ Review report documents skip reason
@@ -607,6 +655,7 @@ Before creating test tickets, ensure your JIRA project has:
 **Test Ticket:** N/A (MCP unavailable prevents ticket read)
 
 **Prerequisites:**
+
 - Atlassian MCP disabled or unavailable
 
 **Steps:**
@@ -619,11 +668,13 @@ Before creating test tickets, ensure your JIRA project has:
 **Expected Results:**
 
 **Initial Setup:**
+
 - ❌ Workflow halts immediately
 - ❌ Error message displayed: "Atlassian MCP required for review workflow. Please configure Atlassian MCP and retry."
 - ❌ No stages executed
 
 **Success Criteria:**
+
 - ✅ Workflow detects required MCP missing
 - ✅ Clear error message displayed
 - ✅ Workflow does not attempt to continue
@@ -647,11 +698,13 @@ Before creating test tickets, ensure your JIRA project has:
 **Expected Results:**
 
 **Stage 1: Preparation**
+
 - ❌ Enrichment extraction fails
 - ❌ Error message: "No enrichment found. Ensure Story 3.1 workflow completed for this ticket."
 - ❌ Workflow halts
 
 **Success Criteria:**
+
 - ✅ Missing enrichment detected
 - ✅ Clear error message with remediation guidance
 - ✅ Workflow does not proceed to evaluation
@@ -674,6 +727,7 @@ Before creating test tickets, ensure your JIRA project has:
 **Expected Results:**
 
 **Per-Stage Duration Targets:**
+
 - Stage 1 (Preparation): ≤3 minutes
 - Stage 2 (Evaluation): ≤7 minutes
 - Stage 3 (Gap Identification): ≤4 minutes
@@ -683,17 +737,20 @@ Before creating test tickets, ensure your JIRA project has:
 - Stage 7 (Feedback Loop): ≤1 minute
 
 **Total Duration:**
+
 - Without fact verification: 12-17 minutes (target: ≤15 min)
 - With fact verification: 15-22 minutes (target: ≤20 min)
 - 90th percentile: ≤20 minutes
 
 **Success Criteria:**
+
 - ✅ Average execution time ≤ 17 minutes
 - ✅ 90th percentile ≤ 20 minutes
 - ✅ No single stage exceeds 2x target duration
 - ✅ Metrics logged to `metrics/review-metrics-{date}.jsonl`
 
 **Metrics Validation:**
+
 - Open `metrics/review-metrics-{date}.jsonl`
 - Verify all 5 executions logged
 - Verify stage durations recorded
@@ -712,18 +769,18 @@ After running all test cases, document results:
 **Tester:** {name}
 **Environment:** {test/staging JIRA instance}
 
-| Test Case | Status | Duration | Notes |
-|-----------|--------|----------|-------|
-| TC-001 Happy Path | ✅ Pass | 16m 30s | All stages successful |
-| TC-002 Minor Gaps | ✅ Pass | 15m 45s | Gaps identified correctly |
-| TC-003 Critical Errors | ✅ Pass | 19m 20s | Fact verification successful |
-| TC-004 Bias Detection | ✅ Pass | 14m 10s | All biases detected |
-| TC-005 Resume | ✅ Pass | 12m 05s | Resume from Stage 3 successful |
-| TC-006 Fact Verification | ✅ Pass | 18m 45s | Perplexity queries successful |
-| TC-007 Perplexity Unavailable | ✅ Pass | 13m 30s | Graceful skip |
-| TC-008 Atlassian Unavailable | ✅ Pass | 0m 05s | Halted correctly |
-| TC-009 No Enrichment | ✅ Pass | 0m 30s | Error detected |
-| TC-010 Performance | ✅ Pass | N/A | 90th %ile: 19m 15s |
+| Test Case                     | Status  | Duration | Notes                          |
+| ----------------------------- | ------- | -------- | ------------------------------ |
+| TC-001 Happy Path             | ✅ Pass | 16m 30s  | All stages successful          |
+| TC-002 Minor Gaps             | ✅ Pass | 15m 45s  | Gaps identified correctly      |
+| TC-003 Critical Errors        | ✅ Pass | 19m 20s  | Fact verification successful   |
+| TC-004 Bias Detection         | ✅ Pass | 14m 10s  | All biases detected            |
+| TC-005 Resume                 | ✅ Pass | 12m 05s  | Resume from Stage 3 successful |
+| TC-006 Fact Verification      | ✅ Pass | 18m 45s  | Perplexity queries successful  |
+| TC-007 Perplexity Unavailable | ✅ Pass | 13m 30s  | Graceful skip                  |
+| TC-008 Atlassian Unavailable  | ✅ Pass | 0m 05s   | Halted correctly               |
+| TC-009 No Enrichment          | ✅ Pass | 0m 30s   | Error detected                 |
+| TC-010 Performance            | ✅ Pass | N/A      | 90th %ile: 19m 15s             |
 
 **Overall Result:** ✅ All tests passed
 **Performance:** Within target (90th percentile: 19m 15s)
@@ -753,6 +810,7 @@ After automated tests, manually verify:
 ## Regression Testing Notes
 
 Run these tests after any changes to:
+
 - Quality dimension checklists (Story 2.2)
 - Review report template (Story 2.6)
 - Categorization logic (Story 2.3)
@@ -761,6 +819,7 @@ Run these tests after any changes to:
 - MCP integration code
 
 **Critical Regressions to Watch:**
+
 - Performance degradation (>25 min execution time)
 - Fact verification accuracy drops
 - Bias detection misses obvious biases

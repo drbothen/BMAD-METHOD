@@ -16,18 +16,18 @@ This vulnerability poses an immediate and severe risk due to the combination of 
 
 ## Severity Metrics
 
-| Metric              | Value                      | Context                                         |
-| ------------------- | -------------------------- | ----------------------------------------------- |
-| **CVSS Base Score** | 9.8 (Critical)             | CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H   |
-| **CVSS Vector**     | AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H | Network exploitable, no authentication required |
-| **EPSS Score**      | 0.85 (97th percentile)     | 85% probability of exploitation in next 30 days |
-| **EPSS Percentile** | 97th                       | Higher risk than 97% of all CVEs                |
-| **CISA KEV**        | Listed (2024-11-01)        | Active exploitation confirmed by CISA           |
-| **Exploit Status**  | Public PoC available       | Exploit code publicly available on GitHub      |
-| **Attack Vector**   | Network                    | Remotely exploitable over network               |
-| **Attack Complexity** | Low                      | No special conditions required                  |
-| **Privileges Required** | None                   | Unauthenticated exploitation possible           |
-| **User Interaction** | None                      | No user interaction needed                      |
+| Metric                  | Value                               | Context                                         |
+| ----------------------- | ----------------------------------- | ----------------------------------------------- |
+| **CVSS Base Score**     | 9.8 (Critical)                      | CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H    |
+| **CVSS Vector**         | AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H | Network exploitable, no authentication required |
+| **EPSS Score**          | 0.85 (97th percentile)              | 85% probability of exploitation in next 30 days |
+| **EPSS Percentile**     | 97th                                | Higher risk than 97% of all CVEs                |
+| **CISA KEV**            | Listed (2024-11-01)                 | Active exploitation confirmed by CISA           |
+| **Exploit Status**      | Public PoC available                | Exploit code publicly available on GitHub       |
+| **Attack Vector**       | Network                             | Remotely exploitable over network               |
+| **Attack Complexity**   | Low                                 | No special conditions required                  |
+| **Privileges Required** | None                                | Unauthenticated exploitation possible           |
+| **User Interaction**    | None                                | No user interaction needed                      |
 
 ---
 
@@ -40,11 +40,13 @@ This vulnerability poses an immediate and severe risk due to the combination of 
 **Attack Mechanism:** The vulnerability exists in the way Apache Struts 2 processes Object-Graph Navigation Language (OGNL) expressions in HTTP requests. Attackers can craft malicious HTTP requests containing specially formatted OGNL expressions that bypass security controls and execute arbitrary code on the server.
 
 **Preconditions:**
+
 - Apache Struts 2 version 2.0.0 through 2.5.32 installed
 - Web application exposed to network (Internet or internal network)
 - No authentication required
 
 **Impact:**
+
 - Complete system compromise
 - Data exfiltration
 - Lateral movement within network
@@ -55,12 +57,12 @@ This vulnerability poses an immediate and severe risk due to the combination of 
 
 ## Affected Systems
 
-| System Type          | Versions Affected    | Exposure Level     | Criticality |
-| -------------------- | -------------------- | ------------------ | ----------- |
-| Apache Struts 2      | 2.0.0 - 2.5.32       | Internet-Facing    | Critical    |
-| Web Applications     | Using Struts 2.x     | Internet-Facing    | Critical    |
-| Enterprise Portals   | Using Struts 2.x     | Internal Network   | High        |
-| API Gateways         | Using Struts 2.x     | Internet-Facing    | Critical    |
+| System Type        | Versions Affected | Exposure Level   | Criticality |
+| ------------------ | ----------------- | ---------------- | ----------- |
+| Apache Struts 2    | 2.0.0 - 2.5.32    | Internet-Facing  | Critical    |
+| Web Applications   | Using Struts 2.x  | Internet-Facing  | Critical    |
+| Enterprise Portals | Using Struts 2.x  | Internal Network | High        |
+| API Gateways       | Using Struts 2.x  | Internet-Facing  | Critical    |
 
 ---
 
@@ -99,16 +101,19 @@ This vulnerability poses an immediate and severe risk due to the combination of 
 **Exploit Maturity:** Functional
 
 **Exploit Sources:**
+
 - Metasploit module available
 - GitHub public PoC repositories (multiple)
 - ExploitDB entry published
 
 **Known Exploitation:**
+
 - CISA confirmed active exploitation in the wild
 - Multiple security vendors report exploitation attempts
 - Honeypot data shows widespread scanning activity
 
 **Exploit Characteristics:**
+
 - Weaponized: Yes
 - Automated: Yes (scanner tools available)
 - Requires authentication: No
@@ -116,6 +121,7 @@ This vulnerability poses an immediate and severe risk due to the combination of 
 - Exploit complexity: Low
 
 **Threat Actor Activity:**
+
 - APT groups known to exploit Struts vulnerabilities
 - Ransomware operators targeting vulnerable systems
 - Cryptocurrency miners deploying through vulnerability
@@ -136,6 +142,7 @@ This vulnerability poses an immediate and severe risk due to the combination of 
 **Patch Priority:** Immediate (P1 - 24 hour SLA)
 
 **Patch Deployment Steps:**
+
 1. Identify all systems running Apache Struts 2.0.0 - 2.5.32
 2. Test patch in staging environment
 3. Schedule emergency maintenance window
@@ -201,16 +208,17 @@ This vulnerability poses an immediate and severe risk due to the combination of 
 
 **Priority Factors:**
 
-| Factor                    | Value      | Weight | Score |
-| ------------------------- | ---------- | ------ | ----- |
-| CVSS Base Score           | 9.8        | 30%    | 9.8   |
-| EPSS Probability          | 0.85       | 25%    | 8.5   |
-| CISA KEV Status           | Listed     | 20%    | 10.0  |
-| Exploit Availability      | Public     | 15%    | 8.0   |
-| Asset Criticality (ACR)   | Critical   | 10%    | 9.0   |
-| **Weighted Average**      |            |        | **9.2** |
+| Factor                  | Value    | Weight | Score   |
+| ----------------------- | -------- | ------ | ------- |
+| CVSS Base Score         | 9.8      | 30%    | 9.8     |
+| EPSS Probability        | 0.85     | 25%    | 8.5     |
+| CISA KEV Status         | Listed   | 20%    | 10.0    |
+| Exploit Availability    | Public   | 15%    | 8.0     |
+| Asset Criticality (ACR) | Critical | 10%    | 9.0     |
+| **Weighted Average**    |          |        | **9.2** |
 
 **Priority Matrix Decision:**
+
 - Weighted score ≥ 9.0 → P1 (Critical)
 - Active exploitation confirmed → P1 (Critical)
 - CISA KEV listed → P1 (Critical)
@@ -224,27 +232,32 @@ This vulnerability poses an immediate and severe risk due to the combination of 
 ## Business Impact Analysis
 
 **Confidentiality Impact:** HIGH
+
 - Complete data breach possible
 - Sensitive customer data at risk
 - Intellectual property theft
 
 **Integrity Impact:** HIGH
+
 - System and data modification possible
 - Database tampering
 - Configuration changes
 
 **Availability Impact:** HIGH
+
 - Denial of service possible
 - Ransomware deployment risk
 - System unavailability
 
 **Regulatory Impact:**
+
 - GDPR: Data breach notification requirements
 - PCI DSS: Immediate remediation required
 - HIPAA: Protected health information at risk
 - SOX: Financial data integrity concerns
 
 **Financial Impact Estimate:**
+
 - Breach cost: $1M - $10M (depending on data exposure)
 - Downtime cost: $50K - $500K per hour
 - Remediation cost: $100K - $500K
@@ -273,10 +286,11 @@ This vulnerability poses an immediate and severe risk due to the combination of 
    - Check for indicators of compromise (IOCs)
 
 **Indicators of Compromise (IOCs):**
+
 - Unusual OGNL expressions in HTTP logs
 - Unexpected process execution from application server
 - Outbound connections to unknown IPs
-- Web shell files (*.jsp, *.jspx) in web directories
+- Web shell files (_.jsp, _.jspx) in web directories
 - Modified configuration files
 
 ---
@@ -291,15 +305,15 @@ This vulnerability poses an immediate and severe risk due to the combination of 
 
 **Recommended Action Timeline:**
 
-| Timeframe      | Action                                    | Owner          |
-| -------------- | ----------------------------------------- | -------------- |
-| Hour 0-4       | Identify all vulnerable systems           | Security Team  |
-| Hour 4-8       | Deploy emergency WAF rules                | Security Team  |
-| Hour 8-12      | Test patch in staging                     | DevOps Team    |
-| Hour 12-24     | Deploy patch to production                | DevOps Team    |
-| Hour 24-48     | Verify patch deployment                   | Security Team  |
-| Hour 48-72     | Hunt for IOCs in environment              | SOC Team       |
-| Week 2         | Conduct post-incident review              | All Teams      |
+| Timeframe  | Action                          | Owner         |
+| ---------- | ------------------------------- | ------------- |
+| Hour 0-4   | Identify all vulnerable systems | Security Team |
+| Hour 4-8   | Deploy emergency WAF rules      | Security Team |
+| Hour 8-12  | Test patch in staging           | DevOps Team   |
+| Hour 12-24 | Deploy patch to production      | DevOps Team   |
+| Hour 24-48 | Verify patch deployment         | Security Team |
+| Hour 48-72 | Hunt for IOCs in environment    | SOC Team      |
+| Week 2     | Conduct post-incident review    | All Teams     |
 
 ---
 

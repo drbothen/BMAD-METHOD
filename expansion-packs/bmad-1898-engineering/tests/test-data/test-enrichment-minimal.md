@@ -11,12 +11,12 @@ CVE-2024-5678 is a **Medium** severity Information Disclosure vulnerability affe
 
 ## Severity Metrics
 
-| Metric              | Value                      | Context                                         |
-| ------------------- | -------------------------- | ----------------------------------------------- |
-| **CVSS Base Score** | 5.3 (Medium)               | CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N   |
-| **EPSS Score**      | 0.12 (45th percentile)     | 12% probability of exploitation in next 30 days |
-| **CISA KEV**        | Not Listed                 | No confirmed active exploitation                |
-| **Exploit Status**  | No public exploit          | No known exploit code available                 |
+| Metric              | Value                  | Context                                         |
+| ------------------- | ---------------------- | ----------------------------------------------- |
+| **CVSS Base Score** | 5.3 (Medium)           | CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N    |
+| **EPSS Score**      | 0.12 (45th percentile) | 12% probability of exploitation in next 30 days |
+| **CISA KEV**        | Not Listed             | No confirmed active exploitation                |
+| **Exploit Status**  | No public exploit      | No known exploit code available                 |
 
 ---
 

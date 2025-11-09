@@ -8,15 +8,15 @@ This document defines the JIRA workflow configuration required for BMAD-1898 Eng
 
 The following JIRA statuses must be configured in your JIRA project to support the complete vulnerability lifecycle workflow (Epic 3, Story 3.3).
 
-| Status Name              | Stage              | Description                                         | SLA Tracking |
-| ------------------------ | ------------------ | --------------------------------------------------- | ------------ |
-| Open                     | Detection          | Initial vulnerability alert from scanner or feed    | Start        |
-| In Progress              | Enrichment         | Security Analyst performing enrichment              | Yes          |
-| In Review                | Quality Assurance  | Security Reviewer performing peer review            | Yes          |
-| Remediation Planning     | Planning           | DevOps team planning patch deployment               | Yes          |
-| Remediation In Progress  | Execution          | Patches/workarounds being deployed                  | Yes          |
-| Verification             | Verification       | Verifying vulnerability successfully remediated     | Yes          |
-| Closed                   | Closure            | Vulnerability lifecycle complete                    | End          |
+| Status Name             | Stage             | Description                                      | SLA Tracking |
+| ----------------------- | ----------------- | ------------------------------------------------ | ------------ |
+| Open                    | Detection         | Initial vulnerability alert from scanner or feed | Start        |
+| In Progress             | Enrichment        | Security Analyst performing enrichment           | Yes          |
+| In Review               | Quality Assurance | Security Reviewer performing peer review         | Yes          |
+| Remediation Planning    | Planning          | DevOps team planning patch deployment            | Yes          |
+| Remediation In Progress | Execution         | Patches/workarounds being deployed               | Yes          |
+| Verification            | Verification      | Verifying vulnerability successfully remediated  | Yes          |
+| Closed                  | Closure           | Vulnerability lifecycle complete                 | End          |
 
 ## Status Transition Rules
 
@@ -24,42 +24,42 @@ The following status transitions define the vulnerability lifecycle workflow. Al
 
 ### Forward Transitions
 
-| From Status              | To Status                | Trigger                                             | Automation |
-| ------------------------ | ------------------------ | --------------------------------------------------- | ---------- |
-| Open                     | In Progress              | Analyst starts enrichment                           | Manual     |
-| In Progress              | In Review                | Enrichment complete, P1/P2 or sampled P3/P4/P5      | Automated  |
-| In Progress              | Remediation Planning     | Enrichment complete, P3/P4/P5 review not required   | Automated  |
-| In Review                | Remediation Planning     | Review approved                                     | Manual     |
-| Remediation Planning     | Remediation In Progress  | Remediation plan approved, execution starts         | Manual     |
-| Remediation In Progress  | Verification             | Remediation deployment complete                     | Manual     |
-| Verification             | Closed                   | Vulnerability verified remediated                   | Manual     |
+| From Status             | To Status               | Trigger                                           | Automation |
+| ----------------------- | ----------------------- | ------------------------------------------------- | ---------- |
+| Open                    | In Progress             | Analyst starts enrichment                         | Manual     |
+| In Progress             | In Review               | Enrichment complete, P1/P2 or sampled P3/P4/P5    | Automated  |
+| In Progress             | Remediation Planning    | Enrichment complete, P3/P4/P5 review not required | Automated  |
+| In Review               | Remediation Planning    | Review approved                                   | Manual     |
+| Remediation Planning    | Remediation In Progress | Remediation plan approved, execution starts       | Manual     |
+| Remediation In Progress | Verification            | Remediation deployment complete                   | Manual     |
+| Verification            | Closed                  | Vulnerability verified remediated                 | Manual     |
 
 ### Reverse Transitions (Rework Loops)
 
-| From Status              | To Status                | Trigger                                             | Automation |
-| ------------------------ | ------------------------ | --------------------------------------------------- | ---------- |
-| In Review                | In Progress              | Review identifies Critical Issues                   | Manual     |
-| Verification             | Remediation In Progress  | Verification failed, vulnerability still exploitable| Manual     |
+| From Status  | To Status               | Trigger                                              | Automation |
+| ------------ | ----------------------- | ---------------------------------------------------- | ---------- |
+| In Review    | In Progress             | Review identifies Critical Issues                    | Manual     |
+| Verification | Remediation In Progress | Verification failed, vulnerability still exploitable | Manual     |
 
 ## Required Custom Fields
 
 The following custom fields must be created in JIRA to support enrichment data capture and reporting.
 
-| Field Name         | Type          | Description                                  | Required | Source        |
-| ------------------ | ------------- | -------------------------------------------- | -------- | ------------- |
-| CVE ID             | Text          | CVE identifier (e.g., CVE-2024-1234)         | Yes      | User input    |
-| CVSS Score         | Number        | CVSS base score (0.0-10.0)                   | Yes      | AI research   |
-| CVSS Vector        | Text          | CVSS vector string                           | No       | AI research   |
-| EPSS Score         | Number        | EPSS exploitation probability (0.0-1.0)      | Yes      | AI research   |
-| KEV Status         | Single Select | CISA KEV status (Yes/No)                     | Yes      | AI research   |
-| Priority Level     | Single Select | Priority (P1/P2/P3/P4/P5)                    | Yes      | Priority calc |
-| Affected Systems   | Labels/Text   | List of affected systems                     | Yes      | User input    |
-| ACR Rating         | Single Select | Asset Criticality (Critical/High/Medium/Low) | Yes      | Config        |
-| System Exposure    | Single Select | Exposure (Internet/Internal/Isolated)        | No       | User input    |
-| Review Status      | Single Select | Review status (Pending/Approved/Needs Revision) | No    | Review agent  |
-| Quality Score      | Number        | Review quality score (0-100)                 | No       | Review agent  |
-| Enrichment Date    | Date          | Date enrichment completed                    | No       | Automation    |
-| SLA Deadline       | Date          | Remediation deadline based on priority       | No       | Priority calc |
+| Field Name       | Type          | Description                                     | Required | Source        |
+| ---------------- | ------------- | ----------------------------------------------- | -------- | ------------- |
+| CVE ID           | Text          | CVE identifier (e.g., CVE-2024-1234)            | Yes      | User input    |
+| CVSS Score       | Number        | CVSS base score (0.0-10.0)                      | Yes      | AI research   |
+| CVSS Vector      | Text          | CVSS vector string                              | No       | AI research   |
+| EPSS Score       | Number        | EPSS exploitation probability (0.0-1.0)         | Yes      | AI research   |
+| KEV Status       | Single Select | CISA KEV status (Yes/No)                        | Yes      | AI research   |
+| Priority Level   | Single Select | Priority (P1/P2/P3/P4/P5)                       | Yes      | Priority calc |
+| Affected Systems | Labels/Text   | List of affected systems                        | Yes      | User input    |
+| ACR Rating       | Single Select | Asset Criticality (Critical/High/Medium/Low)    | Yes      | Config        |
+| System Exposure  | Single Select | Exposure (Internet/Internal/Isolated)           | No       | User input    |
+| Review Status    | Single Select | Review status (Pending/Approved/Needs Revision) | No       | Review agent  |
+| Quality Score    | Number        | Review quality score (0-100)                    | No       | Review agent  |
+| Enrichment Date  | Date          | Date enrichment completed                       | No       | Automation    |
+| SLA Deadline     | Date          | Remediation deadline based on priority          | No       | Priority calc |
 
 ### Custom Field Configuration Notes
 
@@ -111,15 +111,18 @@ lifecycle_stages:
 The following metrics are captured at each lifecycle stage and logged to `metrics/enrichment-metrics.csv`.
 
 ### Detection Stage Metrics
+
 - `detection_timestamp` - When vulnerability first detected
 
 ### Enrichment Stage Metrics
+
 - `enrichment_start_timestamp` - Analyst begins enrichment
 - `enrichment_completion_timestamp` - Enrichment posted to JIRA
 - `enrichment_duration_minutes` - Time spent on enrichment
 - `enrichment_quality_score` - Self-assessed quality (optional)
 
 ### Review Stage Metrics (if review performed)
+
 - `review_start_timestamp` - Reviewer begins review
 - `review_completion_timestamp` - Review report posted
 - `review_duration_minutes` - Time spent on review
@@ -130,18 +133,22 @@ The following metrics are captured at each lifecycle stage and logged to `metric
 - `review_decision` - Approved/Needs Revision
 
 ### Remediation Planning Metrics
+
 - `remediation_planning_start` - Planning begins
 - `remediation_planning_completion` - Plan approved
 
 ### Remediation Execution Metrics
+
 - `remediation_execution_start` - Deployment begins
 - `remediation_execution_completion` - Deployment complete
 
 ### Verification Metrics
+
 - `verification_timestamp` - Verification performed
 - `verification_status` - Pass/Fail
 
 ### Closure Metrics
+
 - `closure_timestamp` - Ticket closed
 - `total_lifecycle_duration_hours` - Detection to Closure
 - `mttr_hours` - Mean Time To Remediate (Detection to Remediation Complete)
@@ -162,15 +169,17 @@ All vulnerability lifecycle activities must maintain complete audit trail:
 
 Priority-based SLAs drive remediation timelines:
 
-| Priority | Severity | EPSS    | KEV | SLA Remediation Deadline |
-| -------- | -------- | ------- | --- | ------------------------ |
-| P1       | Critical | High    | Yes | 24 hours                 |
-| P2       | High     | Medium+ | Any | 72 hours (3 days)        |
-| P3       | Medium   | Any     | No  | 7 days                   |
-| P4       | Low      | Low     | No  | 30 days                  |
-| P5       | Info     | Very Low| No  | 90 days                  |
+| Priority | Severity | EPSS     | KEV | SLA Remediation Deadline |
+| -------- | -------- | -------- | --- | ------------------------ |
+| P1       | Critical | High     | Yes | 24 hours                 |
+| P2       | High     | Medium+  | Any | 7 days                   |
+| P3       | Medium   | Any      | No  | 30 days                  |
+| P4       | Low      | Low      | No  | 90 days                  |
+| P5       | Info     | Very Low | No  | Best effort (no SLA)     |
 
-**Source:** Epic 1 Story 1.7 Multi-Factor Priority Assessment
+**Source:** Epic 1 Story 1.7 Multi-Factor Priority Assessment (lines 66-70)
+
+> **Note:** These SLA values are the authoritative definitions from Story 1.7. Previous versions of this document contained incorrect values (P2: 72 hours, P3: 7 days, P4: 30 days, P5: 90 days) which have been corrected as of 2025-11-08.
 
 ## JIRA Workflow Diagram
 
@@ -203,6 +212,7 @@ graph TD
 BMAD-1898 uses Atlassian MCP server to interact with JIRA. Configure the following in your environment:
 
 ### Required MCP Tools
+
 - `mcp__atlassian__getJiraIssue` - Read ticket data
 - `mcp__atlassian__addCommentToJiraIssue` - Post enrichment/review comments
 - `mcp__atlassian__updateJiraIssue` - Update custom fields
@@ -212,28 +222,28 @@ BMAD-1898 uses Atlassian MCP server to interact with JIRA. Configure the followi
 
 ```yaml
 jira:
-  cloud_id: "your-cloud-id-here"
-  project_key: "SEC"  # Or your security project key
+  cloud_id: 'your-cloud-id-here'
+  project_key: 'SEC' # Or your security project key
 
   custom_fields:
-    cve_id: "customfield_10001"
-    cvss_score: "customfield_10002"
-    epss_score: "customfield_10003"
-    kev_status: "customfield_10004"
-    priority_level: "customfield_10005"
-    affected_systems: "customfield_10006"
-    acr_rating: "customfield_10007"
-    review_status: "customfield_10008"
-    quality_score: "customfield_10009"
+    cve_id: 'customfield_10001'
+    cvss_score: 'customfield_10002'
+    epss_score: 'customfield_10003'
+    kev_status: 'customfield_10004'
+    priority_level: 'customfield_10005'
+    affected_systems: 'customfield_10006'
+    acr_rating: 'customfield_10007'
+    review_status: 'customfield_10008'
+    quality_score: 'customfield_10009'
 
   workflow_statuses:
-    open: "Open"
-    in_progress: "In Progress"
-    in_review: "In Review"
-    remediation_planning: "Remediation Planning"
-    remediation_in_progress: "Remediation In Progress"
-    verification: "Verification"
-    closed: "Closed"
+    open: 'Open'
+    in_progress: 'In Progress'
+    in_review: 'In Review'
+    remediation_planning: 'Remediation Planning'
+    remediation_in_progress: 'Remediation In Progress'
+    verification: 'Verification'
+    closed: 'Closed'
 ```
 
 ## Validation Checklist
@@ -262,6 +272,7 @@ Before deploying BMAD-1898 workflows, validate JIRA configuration:
 
 ## Change Log
 
-| Date       | Version | Description                                  | Author     |
-| ---------- | ------- | -------------------------------------------- | ---------- |
-| 2025-11-08 | 1.0     | Initial JIRA workflow standards document     | Sarah (PO) |
+| Date       | Version | Description                                                                                                    | Author     |
+| ---------- | ------- | -------------------------------------------------------------------------------------------------------------- | ---------- |
+| 2025-11-08 | 1.1     | Corrected SLA definitions to match Story 1.7 (P2: 7d, P3: 30d, P4: 90d, P5: no SLA); previous values incorrect | Sarah (PO) |
+| 2025-11-08 | 1.0     | Initial JIRA workflow standards document                                                                       | Sarah (PO) |

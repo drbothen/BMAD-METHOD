@@ -2,13 +2,14 @@
 
 ## Executive Summary
 
-CVE-2024-0001 tests **special** _characters_ and `markdown` formatting in JIRA comments. This enrichment includes various edge cases: parentheses (like these), brackets [like these], braces {like these}, asterisks *, underscores _, backticks `, and other special characters: @#$%^&*()!
+CVE-2024-0001 tests **special** _characters_ and `markdown` formatting in JIRA comments. This enrichment includes various edge cases: parentheses (like these), brackets [like these], braces {like these}, asterisks _, underscores \_, backticks `, and other special characters: @#$%^&_()!
 
 **CVSS Vector String:** CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
 
 The vulnerability name contains "quotes" and 'apostrophes' and even \`escaped\` characters.
 
 **Key Points:**
+
 - URL with parameters: https://example.com/vuln?id=123&type=test&filter=active
 - Email addresses: security@example.com, alerts+cve@company.org
 - IPv4 addresses: 192.168.1.1, 10.0.0.255
@@ -19,11 +20,11 @@ The vulnerability name contains "quotes" and 'apostrophes' and even \`escaped\` 
 
 ## Severity Metrics with Special Formatting
 
-| Metric | Value | Context w/ *Markdown* | **Bold** & _Italic_ | `Code` |
-|--------|-------|----------------------|---------------------|--------|
-| **CVSS Score** | 9.8 (*Critical*) | CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H | **Network** _Exploitable_ | `Remote` |
-| **EPSS** | 0.85 (97%) | High [exploitation] probability | **High** _Risk_ | `0.8500` |
-| **Status** | 🔴 P1 | [CISA KEV](https://www.cisa.gov/kev) Listed | ✅ **Patch** _Available_ | `v2.0+` |
+| Metric         | Value            | Context w/ _Markdown_                        | **Bold** & _Italic_       | `Code`   |
+| -------------- | ---------------- | -------------------------------------------- | ------------------------- | -------- |
+| **CVSS Score** | 9.8 (_Critical_) | CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H | **Network** _Exploitable_ | `Remote` |
+| **EPSS**       | 0.85 (97%)       | High [exploitation] probability              | **High** _Risk_           | `0.8500` |
+| **Status**     | 🔴 P1            | [CISA KEV](https://www.cisa.gov/kev) Listed  | ✅ **Patch** _Available_  | `v2.0+`  |
 
 ---
 
@@ -31,9 +32,10 @@ The vulnerability name contains "quotes" and 'apostrophes' and even \`escaped\` 
 
 **Description with Complex Formatting:**
 
-The vulnerability exists in the `processInput()` function (located at `src/main/java/com/example/VulnClass.java:142`) where user input is not properly *sanitized* before being passed to the **eval()** method.
+The vulnerability exists in the `processInput()` function (located at `src/main/java/com/example/VulnClass.java:142`) where user input is not properly _sanitized_ before being passed to the **eval()** method.
 
 Attack vector example:
+
 ```bash
 curl -X POST https://vulnerable.example.com/api/process \
   -H "Content-Type: application/json" \
@@ -41,6 +43,7 @@ curl -X POST https://vulnerable.example.com/api/process \
 ```
 
 **Affected code snippet:**
+
 ```java
 public void processInput(String input) {
     // Vulnerable: no validation!
@@ -49,6 +52,7 @@ public void processInput(String input) {
 ```
 
 **SQL Injection Pattern:**
+
 ```sql
 ' OR '1'='1' --
 " UNION SELECT * FROM users --
@@ -56,6 +60,7 @@ public void processInput(String input) {
 ```
 
 **XSS Payloads:**
+
 ```html
 <script>alert('XSS')</script>
 <img src=x onerror="alert('XSS')">
@@ -63,6 +68,7 @@ public void processInput(String input) {
 ```
 
 **Special Regex Patterns:**
+
 - Pattern 1: `^[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9_\-\.]+\.[a-zA-Z]{2,5}$`
 - Pattern 2: `(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}`
 - Pattern 3: `\b(?:\d{1,3}\.){3}\d{1,3}\b`
@@ -86,11 +92,12 @@ public void processInput(String input) {
   - Variants: `/bin/sh`, `/usr/bin/env bash`
 
 **ATT&CK Navigator Layer:**
+
 ```json
 {
   "techniques": [
-    {"techniqueID": "T1190", "score": 100},
-    {"techniqueID": "T1059.001", "score": 85}
+    { "techniqueID": "T1190", "score": 100 },
+    { "techniqueID": "T1059.001", "score": 85 }
   ]
 }
 ```
@@ -134,26 +141,26 @@ public void processInput(String input) {
 
 1. **Immediate Actions** (Hour 0-4)
    - Tier 1: Critical Systems
-     * Internet-facing web servers (priority: highest)
+     - Internet-facing web servers (priority: highest)
        - Subdomain 1: api.example.com
        - Subdomain 2: app.example.com
        - Subdomain 3: portal.example.com
-     * Public API endpoints (priority: high)
+     - Public API endpoints (priority: high)
        - REST API: https://api.example.com/v1/*
        - GraphQL: https://api.example.com/graphql/*
-       - WebSocket: wss://api.example.com/ws/*
+       - WebSocket: wss://api.example.com/ws/\*
    - Tier 2: Internal Systems
-     * Intranet portals (priority: medium)
-     * Internal APIs (priority: medium)
+     - Intranet portals (priority: medium)
+     - Internal APIs (priority: medium)
 
 2. **Short-term Actions** (Hour 4-24)
    - Testing Phase
-     * Unit tests (coverage: 80%+)
+     - Unit tests (coverage: 80%+)
        - Test case 1: Input validation
        - Test case 2: Authentication bypass
        - Test case 3: XSS prevention
-     * Integration tests (coverage: 60%+)
-     * Security tests (penetration testing)
+     - Integration tests (coverage: 60%+)
+     - Security tests (penetration testing)
 
 3. **Long-term Actions** (Week 1+)
    - Security hardening
@@ -162,18 +169,19 @@ public void processInput(String input) {
 
 ### Tables with Special Characters
 
-| System | IP/CIDR | Port/Protocol | Status | Owner | Notes |
-|--------|---------|---------------|--------|-------|-------|
-| web-01 | 192.168.1.10/24 | 443/TCP (HTTPS) | ✅ Patched | ops@example.com | Updated 2024-11-08 |
-| api-01 | 10.0.0.5/16 | 8080/TCP (HTTP) | ⚠️ Testing | api-team@example.com | Patch in staging |
-| db-01 | 172.16.0.100/12 | 5432/TCP (PostgreSQL) | ❌ Vulnerable | dba@example.com | Schedule: 2024-11-09 |
-| app-01 | 2001:db8::1/64 | 80,443/TCP | 🔄 In Progress | dev@example.com | Rolling restart |
+| System | IP/CIDR         | Port/Protocol         | Status         | Owner                | Notes                |
+| ------ | --------------- | --------------------- | -------------- | -------------------- | -------------------- |
+| web-01 | 192.168.1.10/24 | 443/TCP (HTTPS)       | ✅ Patched     | ops@example.com      | Updated 2024-11-08   |
+| api-01 | 10.0.0.5/16     | 8080/TCP (HTTP)       | ⚠️ Testing     | api-team@example.com | Patch in staging     |
+| db-01  | 172.16.0.100/12 | 5432/TCP (PostgreSQL) | ❌ Vulnerable  | dba@example.com      | Schedule: 2024-11-09 |
+| app-01 | 2001:db8::1/64  | 80,443/TCP            | 🔄 In Progress | dev@example.com      | Rolling restart      |
 
 ---
 
 ## Code Blocks with Multiple Languages
 
 ### Python Exploit PoC
+
 ```python
 #!/usr/bin/env python3
 import requests
@@ -205,6 +213,7 @@ if __name__ == "__main__":
 ```
 
 ### Bash Detection Script
+
 ```bash
 #!/bin/bash
 # CVE-2024-0001 Detection Script
@@ -234,6 +243,7 @@ done
 ```
 
 ### PowerShell Remediation
+
 ```powershell
 # CVE-2024-0001 Remediation Script for Windows
 # Requires Administrator privileges
@@ -277,6 +287,7 @@ if ($VulnerableVersions -contains $CurrentVersion) {
 **Calculated Priority:** 🔴 P1 - Critical (Immediate Action Required!)
 
 **Priority Factors:**
+
 - 🔥 CVSS 9.8 (Critical severity)
 - ⚡ EPSS 0.85 (Very high exploitation probability)
 - 🎯 CISA KEV Listed (Active exploitation confirmed)
@@ -288,6 +299,7 @@ if ($VulnerableVersions -contains $CurrentVersion) {
 ### Unicode Characters Test
 
 **International Characters:**
+
 - Spanish: ñ, á, é, í, ó, ú, ü, ¿, ¡
 - French: é, è, ê, ë, à, ù, ç, œ
 - German: ä, ö, ü, ß
@@ -299,10 +311,12 @@ if ($VulnerableVersions -contains $CurrentVersion) {
 - Arabic: اختبار العربية
 
 **Mathematical Symbols:**
+
 - ±, ×, ÷, ≠, ≈, ≤, ≥, ∞, ∑, ∏, √, ∫
 - ⊕, ⊗, ⊥, ∠, ∇, ∂, ∈, ∉, ⊂, ⊃
 
 **Special Symbols:**
+
 - Currency: $, €, £, ¥, ¢, ₹, ₽, ₿
 - Arrows: ←, →, ↑, ↓, ↔, ⇐, ⇒, ⇔
 - Symbols: ©, ®, ™, §, ¶, †, ‡, •, ◦, ‣
@@ -318,12 +332,14 @@ if ($VulnerableVersions -contains $CurrentVersion) {
 **Research Tool:** Perplexity `deep_research` (GPT-4 powered)
 **Research Duration:** 12 minutes (720 seconds)
 **Query Parameters:**
+
 - `topic`: "CVE-2024-0001 vulnerability analysis"
 - `sources`: ["nvd.nist.gov", "cisa.gov", "mitre.org"]
 - `depth`: "comprehensive"
 - `format`: "structured"
 
 **Metadata Object (JSON):**
+
 ```json
 {
   "enrichment_id": "ENR-2024-0001-001",
@@ -335,14 +351,12 @@ if ($VulnerableVersions -contains $CurrentVersion) {
     "severity": "CRITICAL"
   },
   "epss": {
-    "score": 0.8500,
+    "score": 0.85,
     "percentile": 0.97,
     "date": "2024-11-08"
   },
   "tags": ["rce", "unauthenticated", "public-exploit", "cisa-kev"],
-  "affected_systems": [
-    "Vulnerable Framework 1.0.0 - 1.0.2"
-  ],
+  "affected_systems": ["Vulnerable Framework 1.0.0 - 1.0.2"],
   "references": [
     "https://nvd.nist.gov/vuln/detail/CVE-2024-0001",
     "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
@@ -351,25 +365,27 @@ if ($VulnerableVersions -contains $CurrentVersion) {
 ```
 
 **File Paths (Unix/Windows):**
+
 - Unix: `/opt/security/enrichments/CVE-2024-0001/report.md`
 - Windows: `C:\Security\Enrichments\CVE-2024-0001\report.md`
 - UNC: `\\fileserver\security$\enrichments\CVE-2024-0001\report.md`
 
 **Configuration Example (YAML with special chars):**
+
 ```yaml
 enrichment:
-  id: "ENR-2024-0001-001"
-  cve: "CVE-2024-0001"
-  analyst: "Security Analyst Agent (BMAD-1898)"
-  timestamp: "2024-11-08T17:30:00Z"
+  id: 'ENR-2024-0001-001'
+  cve: 'CVE-2024-0001'
+  analyst: 'Security Analyst Agent (BMAD-1898)'
+  timestamp: '2024-11-08T17:30:00Z'
   research:
-    tool: "perplexity::deep_research"
+    tool: 'perplexity::deep_research'
     duration: 12m
     sources:
-      - "nvd.nist.gov"
-      - "cisa.gov"
-      - "mitre.org"
-  priority: "P1"
+      - 'nvd.nist.gov'
+      - 'cisa.gov'
+      - 'mitre.org'
+  priority: 'P1'
   tags: [rce, critical, kev-listed]
   metadata:
     confidence: 0.95
