@@ -23,10 +23,17 @@ The BMAD Obsidian 2nd Brain expansion pack extends the BMAD framework to work se
 Before using this expansion pack, ensure you have:
 
 - **BMAD Core Framework** v4.x+ installed
-- **Obsidian** (latest version recommended)
-- **Node.js** v18+ and npm
+- **Obsidian** v1.7.7+ (latest version recommended)
+- **Claude Desktop** with MCP support
+- **Node.js** v18+ and npm (for testing and utilities)
 - **Docker** (optional, required for Neo4j temporal graph database)
-- **Claude Desktop** or **Cursor/VS Code** with Claude integration
+
+**Required Obsidian Plugins:**
+- Local REST API (for API access)
+- MCP Tools (for Claude integration)
+- Smart Connections (for semantic search)
+
+📖 **See [Plugin Installation Guide](./docs/installation/obsidian-plugins.md) for detailed setup instructions.**
 
 ## Quick Start
 
@@ -42,13 +49,25 @@ Or manually copy the expansion pack to your project's `.bmad-core/expansion-pack
 
 ### 2. Install Required Obsidian Plugins
 
-Open Obsidian and install these community plugins:
+Three essential plugins must be installed and configured:
 
-- **Smart Connections** - For local semantic search
-- **MCP Tools** - For Claude AI integration
-- **Local REST API** - For external tool access
+1. **Local REST API** - Provides HTTP API access to your vault
+2. **MCP Tools** - Bridges Claude Desktop to Obsidian
+3. **Smart Connections** - Enables semantic search with local embeddings
+
+**Optional (but recommended):**
 - **Dataview** - For dynamic note queries
 - **Templater** - For note templates
+
+📖 **Complete Installation Guide**: [docs/installation/obsidian-plugins.md](./docs/installation/obsidian-plugins.md)
+- Step-by-step installation for all three plugins
+- Configuration instructions (API keys, ports, etc.)
+- Troubleshooting common issues
+
+📖 **MCP Server Setup**: [docs/installation/mcp-server-setup.md](./docs/installation/mcp-server-setup.md)
+- Configure Claude Desktop for MCP integration
+- Set up environment variables
+- Verify connection
 
 ### 3. Configure Your Vault
 
@@ -1143,17 +1162,42 @@ See `config.yaml` for detailed configuration options and defaults.
 
 ## Troubleshooting
 
+### MCP Connection Issues
+
+**Quick Checks:**
+- Verify Obsidian is running with Local REST API plugin enabled
+- Check MCP Tools plugin is installed in Obsidian
+- Confirm Claude Desktop is configured with MCP server
+- Run connection test: `node tests/integration/obsidian-mcp-connection-test.js`
+
+📖 **Comprehensive Troubleshooting Guides:**
+- [MCP Server Setup Guide](./docs/installation/mcp-server-setup.md#troubleshooting) - MCP configuration issues
+- [Plugin Installation Guide](./docs/installation/obsidian-plugins.md#troubleshooting) - Plugin setup problems
+- [Error Handling Patterns](./docs/error-handling-patterns.md) - Common error scenarios and solutions
+- [Connection Testing](./tests/integration/README.md) - Automated connection diagnostics
+
+**Common Issues:**
+- **API Key Invalid**: Copy fresh API key from Local REST API settings, update MCP Tools config
+- **Connection Refused**: Ensure Obsidian is running, Local REST API enabled on port 27123
+- **MCP Server Not Found**: Re-run "Install Server" in MCP Tools plugin settings
+- **Authentication Failed**: Verify API key in environment variables or MCP config
+
 ### Agents Not Appearing
 
 - Ensure `slashPrefix: bmad-2b` is set in `config.yaml`
 - Run `npm run build` from BMAD root to rebuild bundles
 - Verify the expansion pack is in `.bmad-core/expansion-packs/`
+- Check Claude Desktop recognizes MCP server: Ask "What MCP servers are available?"
 
 ### Smart Connections Not Working
 
 - Check that the Smart Connections plugin is installed and enabled
-- Verify local embeddings are generated (may take time on first run)
+- Verify local embeddings are generated (may take time on first run - check progress in plugin settings)
+- Ensure vault indexing is complete (Settings → Smart Connections → Index Status)
 - Check Obsidian console for errors (Ctrl+Shift+I / Cmd+Opt+I)
+- Try rebuilding index: Settings → Smart Connections → Rebuild Index
+
+📖 **See**: [Plugin Installation Guide - Smart Connections Troubleshooting](./docs/installation/obsidian-plugins.md#troubleshooting)
 
 ### Neo4j Connection Issues
 
@@ -1164,10 +1208,20 @@ See `config.yaml` for detailed configuration options and defaults.
 
 ## Documentation
 
+### Expansion Pack Documentation
+
+- [Plugin Installation Guide](./docs/installation/obsidian-plugins.md) - Complete setup for Local REST API, MCP Tools, and Smart Connections
+- [MCP Server Configuration](./docs/installation/mcp-server-setup.md) - Configure Claude Desktop for MCP integration
+- [MCP Tools Reference](./docs/mcp-tools-reference.md) - Complete API reference for all MCP tools
+- [Error Handling Patterns](./docs/error-handling-patterns.md) - Common errors and solutions
+- [Connection Testing](./tests/integration/README.md) - Automated connection diagnostics
+
+### External Documentation
+
 - [BMAD Core Documentation](https://github.com/bmadcode/bmad-method)
 - [Obsidian Plugin Docs](https://obsidian.md/plugins)
 - [Neo4j Documentation](https://neo4j.com/docs/)
-- [MCP Documentation](https://modelcontextprotocol.io/)
+- [Model Context Protocol](https://modelcontextprotocol.io/)
 
 ## Contributing
 
