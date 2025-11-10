@@ -1,0 +1,146 @@
+vaults:
+  - id: vault-001
+    name: Personal Vault
+    path: /Users/username/Documents/Vaults/PersonalVault
+    enabled: true
+    organizationMethod: para
+    keyLocations:
+      inbox: 00 Inbox
+      projects: 10 Projects
+      areas: 20 Areas
+      resources: 30 Resources
+      archive: 40 Archive
+      atomicNotes: 50 Atomic Notes
+      mocs: 60 MOCs
+      agentOutput: 99 Agent Output
+      templates: 100 Templates
+    agentsEnabled:
+      - inbox-triage-agent
+      - atomic-note-creator
+      - semantic-linker
+      - query-interpreter
+      - quality-auditor
+    autoProcessing:
+      enabled: true
+      schedule: daily
+      time: '09:00'
+    excludedFolders:
+      - Archive
+      - Templates
+      - .trash
+      - .obsidian
+  - id: vault-002
+    name: Research Vault
+    path: /Users/username/Documents/Vaults/ResearchVault
+    enabled: true
+    organizationMethod: zettelkasten
+    keyLocations:
+      inbox: Inbox
+      atomicNotes: Permanent
+      mocs: Structure Notes
+      resources: Reference
+      archive: Archive
+      agentOutput: AI Generated
+      templates: Templates
+    agentsEnabled:
+      - inbox-triage-agent
+      - atomic-note-creator
+      - semantic-linker
+    autoProcessing:
+      enabled: false
+    excludedFolders:
+      - Archive
+      - Templates
+      - .trash
+  - id: vault-003
+    name: Knowledge Base
+    path: /Users/username/Documents/Vaults/KnowledgeBase
+    enabled: false
+    organizationMethod: lyt
+    keyLocations:
+      inbox: 000 Inbox
+      mocs: 100 MOCs
+      atomicNotes: 200 Notes
+      projects: 300 Projects
+      areas: 400 Areas
+      resources: 500 Resources
+      archive: 900 Archive
+      agentOutput: 950 AI Output
+      templates: 999 Templates
+    agentsEnabled:
+      - semantic-linker
+      - query-interpreter
+    autoProcessing:
+      enabled: false
+    excludedFolders:
+      - .trash
+      - .obsidian
+  - id: vault-004
+    name: Professional Vault
+    path: /Users/username/Documents/Vaults/ProfessionalVault
+    enabled: true
+    organizationMethod: johnny-decimal
+    keyLocations:
+      inbox: 00-09 System/00 Inbox
+      projects: 10-19 Projects
+      areas: 20-29 Areas
+      resources: 30-39 Resources
+      archive: 90-99 Archive/90 Inactive
+      atomicNotes: 40-49 Knowledge/40 Atomic Notes
+      mocs: 40-49 Knowledge/45 MOCs
+      agentOutput: 00-09 System/05 AI Output
+      templates: 00-09 System/09 Templates
+    agentsEnabled:
+      - inbox-triage-agent
+      - atomic-note-creator
+      - semantic-linker
+      - quality-auditor
+    autoProcessing:
+      enabled: true
+      schedule: weekly
+      time: '08:00'
+    excludedFolders:
+      - 90-99 Archive
+      - .trash
+  - id: vault-005
+    name: Custom Workflow Vault
+    path: /Users/username/Documents/Vaults/CustomVault
+    enabled: true
+    organizationMethod: custom
+    keyLocations:
+      inbox: Capture
+      projects: Active
+      areas: Ongoing
+      resources: Library
+      archive: Old
+      atomicNotes: Atoms
+      mocs: Maps
+      agentOutput: AI
+      templates: Meta/Templates
+    agentsEnabled:
+      - inbox-triage-agent
+      - semantic-linker
+    autoProcessing:
+      enabled: false
+    excludedFolders:
+      - Old
+      - .trash
+globalDefaults:
+  autoProcessing:
+    enabled: false
+    schedule: manual
+    time: '09:00'
+  excludedFolders:
+    - .trash
+    - .obsidian
+    - .git
+  agentsEnabled:
+    - inbox-triage-agent
+    - atomic-note-creator
+    - semantic-linker
+    - query-interpreter
+    - quality-auditor
+metadata:
+  version: 1.0.0
+  lastUpdated: '2025-11-10'
+  configSchemaVersion: '1.0'
