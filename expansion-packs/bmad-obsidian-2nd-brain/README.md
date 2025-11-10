@@ -1168,7 +1168,11 @@ See `config.yaml` for detailed configuration options and defaults.
 - Verify Obsidian is running with Local REST API plugin enabled
 - Check MCP Tools plugin is installed in Obsidian
 - Confirm Claude Desktop is configured with MCP server
-- Run connection test: `node tests/integration/obsidian-mcp-connection-test.js`
+- Run connection tests:
+  - Obsidian MCP: `node tests/integration/obsidian-mcp-connection-test.js`
+  - Neo4j: `npm run test:neo4j`
+  - Graphiti MCP: `npm run test:graphiti`
+  - All integration tests: `npm run test:integration`
 
 📖 **Comprehensive Troubleshooting Guides:**
 - [MCP Server Setup Guide](./docs/installation/mcp-server-setup.md#troubleshooting) - MCP configuration issues
@@ -1201,18 +1205,37 @@ See `config.yaml` for detailed configuration options and defaults.
 
 ### Neo4j Connection Issues
 
-- Verify Neo4j is running: `docker ps | grep neo4j`
-- Check credentials match `config.yaml` settings
+**Quick Checks:**
+- Verify Neo4j is running: `docker compose -f docker-compose.neo4j.yml ps`
+- Run connection test: `npm run test:neo4j`
 - Try connecting via browser: http://localhost:7474
-- Set `neo4j.enabled: false` in config to run without temporal tracking
+- Check credentials: Test login at Neo4j Browser with your password
+
+**Common Issues:**
+- **Neo4j not running**: Start with `docker compose -f docker-compose.neo4j.yml up -d`
+- **Authentication failed**: Verify NEO4J_PASSWORD in `.env` file
+- **APOC not available**: Check docker-compose.neo4j.yml includes APOC plugin
+- **Port conflicts**: Ensure ports 7474 and 7687 are not in use
+
+📖 **See**: [Neo4j Setup Guide](./docs/installation/neo4j-setup.md#troubleshooting)
+
+**Graceful Degradation:**
+- The system works without Neo4j - agents will operate in Obsidian-only mode
+- Set `neo4j.enabled: false` in config to disable temporal tracking permanently
 
 ## Documentation
 
 ### Expansion Pack Documentation
 
+#### Installation & Setup
 - [Plugin Installation Guide](./docs/installation/obsidian-plugins.md) - Complete setup for Local REST API, MCP Tools, and Smart Connections
-- [MCP Server Configuration](./docs/installation/mcp-server-setup.md) - Configure Claude Desktop for MCP integration
+- [MCP Server Configuration](./docs/installation/mcp-server-setup.md) - Configure Claude Desktop for MCP integration (including Graphiti)
+- [Neo4j Setup Guide](./docs/installation/neo4j-setup.md) - Install and configure Neo4j (Docker, Desktop, or Aura Cloud)
+- [Graphiti MCP Setup Guide](./docs/installation/graphiti-mcp-setup.md) - Install and configure Graphiti for temporal knowledge tracking
+
+#### Reference Documentation
 - [MCP Tools Reference](./docs/mcp-tools-reference.md) - Complete API reference for all MCP tools
+- [Temporal Schema Design](./docs/temporal-schema.md) - Neo4j schema for temporal knowledge tracking
 - [Error Handling Patterns](./docs/error-handling-patterns.md) - Common errors and solutions
 - [Connection Testing](./tests/integration/README.md) - Automated connection diagnostics
 

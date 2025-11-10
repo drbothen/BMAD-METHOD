@@ -152,4 +152,134 @@ if confidence < 0.7:
   flag_for_review = true
 ```
 
+## Neo4j Integration and Graceful Degradation
+
+**Optional Temporal Knowledge Tracking:**
+
+This agent integrates with **Graphiti MCP** (if available) to create temporal capture events in Neo4j. This enables powerful time-based queries like "What did I capture last week about machine learning?"
+
+**Startup Behavior:**
+
+On activation, the agent checks Neo4j/Graphiti MCP availability:
+
+```
+if neo4j_available:
+  mode = "TEMPORAL_TRACKING_ENABLED"
+  notify_user("Neo4j available - temporal features enabled")
+else:
+  mode = "OBSIDIAN_ONLY"
+  notify_user("Neo4j unavailable - running in Obsidian-only mode")
+```
+
+**Graceful Degradation:**
+
+The agent operates in **two modes**:
+
+### Mode 1: Temporal Tracking Enabled (Neo4j Available)
+
+When Neo4j is accessible, the agent:
+
+1. **Creates CaptureEvents** via `graphiti.add_episode`:
+   - Timestamp: When content was captured
+   - Source URL: Original content source
+   - Capture method: "inbox", "web-clipper", "manual", etc.
+   - Metadata: Browser, device, user context
+
+2. **Links Notes to Events** via `CAPTURED_AT` relationship:
+   - Enables queries: "Notes captured yesterday"
+   - Tracks capture velocity and patterns
+   - Maintains temporal provenance
+
+3. **Creates Date Nodes** via `ON_DATE` relationship:
+   - Groups captures by day/week/month
+   - Enables aggregation queries
+   - Supports temporal analytics
+
+**Example workflow:**
+```
+1. User: *process-inbox
+2. Agent checks: graphiti.health_check()
+3. If available:
+   - For each inbox item:
+     a. Create Obsidian note (always)
+     b. graphiti.add_episode({timestamp, source, method})
+     c. graphiti.add_entity({note_path, title, tags})
+     d. Link Note-[:CAPTURED_AT]->CaptureEvent
+4. If unavailable:
+   - Create Obsidian note only
+   - Skip temporal tracking
+   - Proceed without interruption
+```
+
+### Mode 2: Obsidian-Only (Neo4j Unavailable)
+
+When Neo4j is **not** accessible, the agent:
+
+1. **Skips all Graphiti MCP calls** - no errors, no delays
+2. **Creates Obsidian notes normally** - full functionality preserved
+3. **Notifies user once** (on activation) - "Running in Obsidian-only mode"
+4. **Continues operation** - zero disruption to workflow
+
+**Degraded features:**
+- ❌ No temporal capture events
+- ❌ No time-based queries via Neo4j
+- ❌ No capture analytics/patterns
+- ✅ **All core triage functionality works** (classify, tag, route, quality-check)
+
+**User notification:**
+```
+⚠️  Neo4j Unavailable - Temporal tracking disabled
+    Triage will continue in Obsidian-only mode.
+    All notes will be created and classified normally.
+
+    To enable temporal features:
+    - Start Neo4j: docker compose -f docker-compose.neo4j.yml up -d
+    - Verify Graphiti: npm run test:graphiti
+    - Restart this agent
+```
+
+### Availability Checking
+
+**On activation:**
+```
+try:
+  graphiti.health_check()
+  neo4j_available = true
+catch error:
+  neo4j_available = false
+  log("Neo4j unavailable, proceeding in Obsidian-only mode")
+```
+
+**During operation:**
+- Do NOT retry Neo4j on every capture (wastes time)
+- Cache availability status for session
+- Only re-check if user explicitly requests: `*reconnect-neo4j`
+
+### Recovery from Degraded Mode
+
+If Neo4j becomes available mid-session:
+
+1. User runs `*reconnect-neo4j` command (optional)
+2. Agent re-checks `graphiti.health_check()`
+3. If successful:
+   - Switch to TEMPORAL_TRACKING_ENABLED mode
+   - Notify user: "✓ Neo4j reconnected - temporal tracking enabled"
+4. If still unavailable:
+   - Stay in OBSIDIAN_ONLY mode
+   - Suggest troubleshooting: `npm run test:neo4j`
+
+**Note:** Previously captured notes (while Neo4j was down) are **not** retroactively synced. They remain Obsidian-only unless manually processed.
+
+### Error Handling
+
+**Neo4j connection errors:**
+- Do NOT surface to user during triage (silent degradation)
+- Do NOT retry repeatedly (respect user's time)
+- Do NOT block note creation (Obsidian always works)
+
+**Graphiti MCP errors:**
+- Log for debugging: `Error calling graphiti.add_episode: {error}`
+- Continue with Obsidian note creation
+- User sees successful triage completion
+
 Remember to present all options as numbered lists for easy user selection.

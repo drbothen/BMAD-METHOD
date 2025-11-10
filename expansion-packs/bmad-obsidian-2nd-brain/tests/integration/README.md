@@ -1,10 +1,23 @@
-# Integration Tests for Obsidian MCP Tools
+# Integration Tests
 
-This directory contains integration tests for verifying the connection and functionality of Obsidian MCP Tools with Claude Desktop.
+This directory contains integration tests for verifying Obsidian MCP integration, Neo4j temporal graph database, and Graphiti MCP connectivity.
 
-## Test Files
+## Test Files Overview
+
+| Test File | Status | Purpose | NPM Script |
+|-----------|--------|---------|------------|
+| `obsidian-mcp-connection-test.js` | ✅ Functional | Obsidian MCP connectivity | (direct) |
+| `test-neo4j-connection.js` | ✅ Functional | Neo4j database connectivity | `npm run test:neo4j` |
+| `test-graphiti-mcp-connection.js` | ⚠️ Limited | Graphiti MCP basic tests | `npm run test:graphiti` |
+| `test-graphiti-integration.js` | ⚠️ Reference | Graphiti operations (HTTP wrapper required) | `npm run test:graphiti:integration` |
+
+---
+
+## Obsidian MCP Tests
 
 ### `obsidian-mcp-connection-test.js`
+
+**Status:** ✅ Fully functional
 
 Comprehensive connection testing utility that verifies:
 
@@ -314,6 +327,191 @@ After connection tests pass:
    - [Error Handling Patterns](../../docs/error-handling-patterns.md)
    - [MCP Server Setup Guide](../../docs/installation/mcp-server-setup.md)
 
+---
+
+## Neo4j Database Tests
+
+### `test-neo4j-connection.js`
+
+**Status:** ✅ Fully functional
+
+**Run:** `npm run test:neo4j`
+
+Tests Neo4j database connectivity and setup (8 test suites):
+
+1. **Driver Availability** - Verifies neo4j-driver npm package installed
+2. **Browser HTTP Endpoint** - Tests Neo4j Browser accessibility (port 7474)
+3. **Bolt Connection** - Verifies Bolt protocol connectivity (port 7687)
+4. **Authentication** - Tests database authentication
+5. **Version Detection** - Retrieves Neo4j version information
+6. **APOC Plugin** - Verifies APOC procedures available (100+ expected)
+7. **Write Permissions** - Tests node creation and deletion
+8. **Schema Management** - Tests constraint and index creation
+
+**Prerequisites:**
+- Neo4j running (Docker, Desktop, or Aura)
+- `NEO4J_PASSWORD` environment variable set
+- `neo4j-driver` npm package installed (in devDependencies)
+
+**Example:**
+```bash
+# Set password
+export NEO4J_PASSWORD="your_password"
+
+# Run tests
+npm run test:neo4j
+```
+
+**Expected Output:**
+```
+═══ Neo4j Connection Test Utility ═══
+URI: bolt://localhost:7687
+User: neo4j
+
+✓ Neo4j driver installed
+✓ Neo4j Browser accessible (http://localhost:7474)
+✓ Bolt connection established
+✓ Authentication successful
+✓ Neo4j version detected: 5.x.x
+✓ APOC plugin available (150+ procedures)
+✓ Write operations permitted
+✓ Constraints and indexes can be created
+
+Total tests: 8
+Passed: 8
+Failed: 0
+```
+
+---
+
+## Graphiti MCP Tests
+
+### `test-graphiti-mcp-connection.js`
+
+**Status:** ⚠️ Limited (stdio transport)
+
+**Run:** `npm run test:graphiti`
+
+Tests basic Graphiti MCP server connectivity:
+- Server health check
+- Tool availability verification
+- Basic MCP protocol validation
+
+**Prerequisites:**
+- Graphiti MCP server running
+- Claude Desktop configured
+- Environment variables in .env
+
+**Limitations:** Graphiti MCP uses stdio transport, limiting automated test capability.
+
+### `test-graphiti-integration.js`
+
+**Status:** ⚠️ **REFERENCE IMPLEMENTATION ONLY**
+
+**Run:** `npm run test:graphiti:integration` (will fail without HTTP wrapper)
+
+**IMPORTANT:** This test assumes an HTTP REST wrapper around Graphiti MCP, which does NOT exist by default.
+
+**Why it doesn't work:**
+- Graphiti MCP uses **stdio transport** (MCP protocol), not HTTP
+- Tests assume endpoints like `/mcp/add_episode`, `/mcp/add_entity`, etc.
+- These endpoints don't exist without custom HTTP wrapper
+
+**Purpose of this file:**
+- Reference documentation for expected data structures
+- Example of Phase 1 MCP operations (add_episode, get_episodes, add_entity, add_relation)
+- Blueprint for custom HTTP wrapper (if needed for CI/CD)
+
+**Alternative Testing Methods:**
+
+**Option 1: Test via Agent Usage** (RECOMMENDED)
+```bash
+# 1. Activate inbox-triage-agent in Claude Desktop
+# 2. Process inbox items (creates CaptureEvent nodes)
+# 3. Use semantic-linker-agent (creates relationships)
+# 4. Use query-interpreter-agent (retrieves episodes)
+# 5. Verify in Neo4j Browser: http://localhost:7474
+```
+
+**Option 2: Direct Neo4j Testing**
+```bash
+# 1. Run Neo4j tests
+npm run test:neo4j
+
+# 2. Open Neo4j Browser: http://localhost:7474
+
+# 3. Run example queries
+# Copy from: examples/neo4j/temporal-queries.cypher
+```
+
+**Option 3: Create HTTP Wrapper** (for automated testing)
+- Implement HTTP server proxying to Graphiti MCP stdio
+- Expose endpoints at `http://localhost:8000/mcp/*`
+- Map HTTP requests to MCP tool calls
+
+---
+
+## Recommended Testing Strategy
+
+### Local Development
+
+**Phase 1: Database Setup**
+```bash
+# 1. Start Neo4j
+docker compose -f docker-compose.neo4j.yml up -d
+
+# 2. Test connectivity
+npm run test:neo4j
+```
+
+**Phase 2: Agent Integration** (manual)
+```bash
+# 1. Activate agents in Claude Desktop
+# 2. Test inbox triage workflow
+# 3. Test semantic linking
+# 4. Test temporal queries
+# 5. Verify results in Neo4j Browser
+```
+
+**Phase 3: Schema Validation**
+```bash
+# Open Neo4j Browser: http://localhost:7474
+# Run queries from: examples/neo4j/temporal-queries.cypher
+```
+
+### CI/CD Integration
+
+**Automated tests suitable for CI:**
+- ✅ `npm run test:neo4j` - Database connectivity
+- ✅ Schema validation (Cypher queries)
+- ✅ Docker compose startup verification
+- ❌ Skip Graphiti integration tests (require stdio/interactive Claude)
+
+---
+
+## Environment Variables
+
+Create `.env` file in expansion pack root:
+
+```bash
+# Neo4j Configuration (STORY-016)
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=your_strong_password_here
+
+# Graphiti MCP Configuration (STORY-016)
+OPENAI_API_KEY=sk-your-key-here
+MODEL_NAME=gpt-4o-mini
+
+# Obsidian MCP Configuration (STORY-015)
+OBSIDIAN_API_KEY=your_obsidian_api_key
+OBSIDIAN_HOST=localhost
+OBSIDIAN_PORT=27123
+OBSIDIAN_PROTOCOL=http
+```
+
+---
+
 ## Future Tests
 
 Planned integration tests (not yet implemented):
@@ -322,6 +520,7 @@ Planned integration tests (not yet implemented):
 - Performance benchmarks for different vault sizes (10, 100, 1000 notes)
 - Concurrent operation tests (multiple agents)
 - Error scenario tests (vault not found, permission denied, etc.)
+- Graphiti MCP stdio protocol tests (if MCP client library becomes available)
 
 ## Contributing
 

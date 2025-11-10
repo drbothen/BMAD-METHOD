@@ -980,6 +980,218 @@ Recommendations:
 - Consider manual review for borderline links (0.65-0.7)
 ```
 
+## Neo4j Integration and Graceful Degradation
+
+**Optional Graph Database Integration:**
+
+This agent integrates with **Graphiti MCP** (if available) to create persistent relationship graphs in Neo4j. This enables powerful graph queries like "Show all notes that support this argument" or "Find connection patterns in my knowledge graph."
+
+**Startup Behavior:**
+
+On activation, the agent checks Neo4j/Graphiti MCP availability:
+
+```
+if neo4j_available:
+  mode = "GRAPH_TRACKING_ENABLED"
+  notify_user("Neo4j available - graph features enabled")
+else:
+  mode = "OBSIDIAN_ONLY"
+  notify_user("Neo4j unavailable - running in Obsidian-only mode")
+```
+
+**Graceful Degradation:**
+
+The agent operates in **two modes**:
+
+### Mode 1: Graph Tracking Enabled (Neo4j Available)
+
+When Neo4j is accessible, the agent:
+
+1. **Creates Bidirectional Wikilinks** via `create-bidirectional-link.md`:
+   - Inserts wikilinks in both source and target notes
+   - Adds context sentences explaining relationship
+   - Maintains Obsidian-native linking (always works)
+
+2. **Creates Graph Relationships** via `graphiti.add_relation`:
+   - Relationship type: `CONCEPTUALLY_RELATED`
+   - Properties stored:
+     - `link_type`: One of 7 relationship types (supports, contradicts, etc.)
+     - `confidence`: Float 0.0-1.0 from relationship confidence algorithm
+     - `strength`: Float 0.0-1.0 from link strength calculation
+     - `semantic_similarity`: Original BGE-micro-v2 score
+     - `created_at`: Timestamp when link was created
+     - `created_by`: "semantic-linker-agent"
+     - `context_forward`: Context sentence in source note
+     - `context_backward`: Context sentence in target note
+
+3. **Enables Graph Queries** via Neo4j:
+   - Find all notes that support/contradict a claim
+   - Discover connection patterns (hubs, authorities, bridges)
+   - Analyze graph structure (centrality, clustering)
+   - Track relationship evolution over time
+
+**Example workflow:**
+
+```
+1. User: *suggest-links atomic/note-a.md
+2. Agent checks: graphiti.health_check()
+3. If available:
+   - For each suggested link:
+     a. Create Obsidian wikilinks (always)
+     b. graphiti.add_relation({
+          source_entity_id: note-a-id,
+          target_entity_id: note-b-id,
+          relation_type: "CONCEPTUALLY_RELATED",
+          properties: {
+            link_type: "supports",
+            confidence: 0.87,
+            strength: 0.82,
+            semantic_similarity: 0.76,
+            created_at: "2025-11-09T14:30:00Z",
+            created_by: "semantic-linker-agent",
+            context_forward: "Evidence supports claim...",
+            context_backward: "Claim supported by evidence..."
+          }
+        })
+4. If unavailable:
+   - Create Obsidian wikilinks only
+   - Skip graph database operations
+   - Proceed without interruption
+```
+
+### Mode 2: Obsidian-Only (Neo4j Unavailable)
+
+When Neo4j is **not** accessible, the agent:
+
+1. **Skips all Graphiti MCP calls** - no errors, no delays
+2. **Creates bidirectional wikilinks normally** - full linking functionality preserved
+3. **Notifies user once** (on activation) - "Running in Obsidian-only mode"
+4. **Continues operation** - zero disruption to workflow
+
+**Degraded features:**
+- ❌ No graph database relationships
+- ❌ No Cypher queries for connection patterns
+- ❌ No centrality metrics or graph analysis
+- ❌ No temporal relationship tracking in Neo4j
+- ✅ **All core linking functionality works** (suggest, create, review, feedback learning)
+- ✅ **Bidirectional wikilinks work perfectly** (Obsidian-native)
+- ✅ **Semantic similarity search works** (Smart Connections is independent)
+
+**User notification:**
+
+```
+⚠️  Neo4j Unavailable - Graph tracking disabled
+    Semantic Linker will continue in Obsidian-only mode.
+    All bidirectional links will be created normally.
+    Graph analysis features (*analyze-graph) will use local wikilink traversal.
+
+    To enable graph features:
+    - Start Neo4j: docker compose -f docker-compose.neo4j.yml up -d
+    - Verify Graphiti: npm run test:graphiti
+    - Restart this agent
+```
+
+### Availability Checking
+
+**On activation:**
+
+```
+try:
+  graphiti.health_check()
+  neo4j_available = true
+catch error:
+  neo4j_available = false
+  log("Neo4j unavailable, proceeding in Obsidian-only mode")
+```
+
+**During operation:**
+- Do NOT retry Neo4j on every link creation (wastes time)
+- Cache availability status for session
+- Only re-check if user explicitly requests: `*reconnect-neo4j`
+
+### Recovery from Degraded Mode
+
+If Neo4j becomes available mid-session:
+
+1. User runs `*reconnect-neo4j` command (optional)
+2. Agent re-checks `graphiti.health_check()`
+3. If successful:
+   - Switch to GRAPH_TRACKING_ENABLED mode
+   - Notify user: "✓ Neo4j reconnected - graph tracking enabled"
+   - Future links will create graph relationships
+4. If still unavailable:
+   - Stay in OBSIDIAN_ONLY mode
+   - Suggest troubleshooting: `npm run test:neo4j`
+
+**Note:** Previously created links (while Neo4j was down) are **not** retroactively synced to graph database. They remain Obsidian-only wikilinks unless manually re-processed.
+
+### Error Handling
+
+**Neo4j connection errors:**
+- Do NOT surface to user during link creation (silent degradation)
+- Do NOT retry repeatedly (respect user's time)
+- Do NOT block wikilink creation (Obsidian always works)
+
+**Graphiti MCP errors:**
+- Log for debugging: `Error calling graphiti.add_relation: {error}`
+- Continue with Obsidian wikilink creation
+- User sees successful link creation confirmation
+
+**Graph Analysis in Degraded Mode:**
+
+When `*analyze-graph` command is used without Neo4j:
+
+1. Fall back to **local wikilink traversal**:
+   - Parse markdown files for wikilinks
+   - Build in-memory graph from Obsidian links
+   - Calculate basic metrics (degree, connections)
+
+2. **Limited metrics** (no Neo4j data):
+   - ✓ Degree centrality (count wikilinks)
+   - ✓ Connection count (outgoing/incoming)
+   - ✓ Link type distribution (parse context sentences)
+   - ❌ Betweenness centrality (requires full graph)
+   - ❌ Clustering coefficient (requires full graph)
+   - ❌ Temporal relationship patterns (requires Neo4j timestamps)
+
+3. **User notification**:
+   ```
+   ⚠️  Graph analysis using local wikilinks only (Neo4j unavailable)
+       Some metrics are unavailable without graph database.
+       For full graph analytics, start Neo4j and run *reconnect-neo4j
+   ```
+
+### Bi-Temporal Metadata in Neo4j
+
+When Neo4j is available, all relationships include bi-temporal metadata:
+
+**Valid Time:** When the relationship was intellectually valid
+- Stored in: `created_at` property
+- Represents: When user/agent created the semantic connection
+- Example: "2025-11-09T14:30:00Z"
+
+**Transaction Time:** When the relationship was recorded in Neo4j
+- Stored by: Neo4j system timestamp
+- Represents: Database write timestamp
+- Enables: Historical queries (what did graph look like yesterday?)
+
+**Why Bi-Temporal?**
+
+Enables powerful temporal queries:
+- "What relationships did I discover last week?"
+- "How has my understanding of this concept evolved?"
+- "When did I first connect these ideas?"
+
+**Example Cypher Query:**
+
+```cypher
+// Find all semantic links created last week
+MATCH (a:Note)-[r:CONCEPTUALLY_RELATED]->(b:Note)
+WHERE r.created_at > datetime() - duration('P7D')
+RETURN a.title, r.link_type, b.title, r.created_at
+ORDER BY r.created_at DESC
+```
+
 ## Security Considerations
 
 **Input Validation:**

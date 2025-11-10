@@ -1,0 +1,218 @@
+# Neo4j Docker Compose Configuration
+#
+# Part of BMAD-METHOD™ Obsidian 2nd Brain Expansion Pack
+# Provides optional temporal knowledge tracking via Neo4j graph database
+#
+# SECURITY WARNING:
+# - NEVER commit .env file to git
+# - Set strong NEO4J_PASSWORD in .env
+# - Bind to localhost only (not 0.0.0.0)
+# - Use chmod 600 on this file and .env
+#
+# Documentation: docs/installation/neo4j-setup.md
+
+version: '3.8'
+
+services:
+  neo4j:
+    # Use specific version tag (not 'latest') for reproducibility
+    # Neo4j 5.x Community Edition - free and open source
+    image: neo4j:5
+
+    container_name: obsidian-neo4j
+
+    # Restart policy: restart unless explicitly stopped
+    restart: unless-stopped
+
+    # Ports configuration
+    # Bind to localhost only for security
+    ports:
+      # HTTP interface for Neo4j Browser (web UI)
+      - "127.0.0.1:7474:7474"
+
+      # Bolt protocol for database connections
+      - "127.0.0.1:7687:7687"
+
+      # HTTPS interface (optional, uncomment if needed)
+      # - "127.0.0.1:7473:7473"
+
+    # Environment variables
+    # Use .env file for sensitive values
+    environment:
+      # Authentication
+      # Format: username/password
+      # DO NOT use default passwords in production
+      NEO4J_AUTH: ${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:-please_change_me}
+
+      # APOC (Awesome Procedures on Cypher) configuration
+      # Core library for advanced graph operations
+      NEO4J_PLUGINS: '["apoc"]'
+
+      # APOC security configuration
+      # Allow unrestricted APOC procedures (adjust for production)
+      NEO4J_dbms_security_procedures_unrestricted: apoc.*
+      NEO4J_dbms_security_procedures_allowlist: apoc.*
+
+      # Memory configuration
+      # Heap size: Min and max should be same for consistency
+      # Adjust based on your system resources
+      NEO4J_dbms_memory_heap_initial__size: ${NEO4J_HEAP_INITIAL:-512m}
+      NEO4J_dbms_memory_heap_max__size: ${NEO4J_HEAP_MAX:-1G}
+
+      # Page cache size (for graph storage)
+      # Recommended: ~50% of remaining RAM after heap
+      NEO4J_dbms_memory_pagecache_size: ${NEO4J_PAGECACHE:-512m}
+
+      # Server configuration
+      # Default database name
+      NEO4J_dbms_default__database: ${NEO4J_DEFAULT_DB:-neo4j}
+
+      # Connection configuration
+      # Allow connections from host
+      NEO4J_server_bolt_advertised__address: localhost:7687
+      NEO4J_server_http_advertised__address: localhost:7474
+
+      # Transaction timeout (in seconds)
+      NEO4J_db_transaction_timeout: ${NEO4J_TX_TIMEOUT:-300s}
+
+      # Query timeout (in seconds)
+      NEO4J_db_transaction_query_timeout: ${NEO4J_QUERY_TIMEOUT:-60s}
+
+      # Logging configuration
+      NEO4J_server_logs_debug_level: ${NEO4J_LOG_LEVEL:-INFO}
+
+    # Volume mounts for data persistence
+    volumes:
+      # Main data directory (database files)
+      # Uses named volume for better Docker management
+      - neo4j_data:/data
+
+      # Logs directory (optional, useful for debugging)
+      - neo4j_logs:/logs
+
+      # Import directory (optional, for bulk data import)
+      # Uncomment if you need to import CSV/JSON files
+      # - ./neo4j-import:/var/lib/neo4j/import
+
+      # Plugins directory (optional, for custom plugins)
+      # Uncomment if you need custom plugins beyond APOC
+      # - ./neo4j-plugins:/plugins
+
+    # Health check configuration
+    # Verifies Neo4j is responding to queries
+    # Note: Uses bolt://localhost connection (password not exposed in process list)
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -a bolt://localhost:7687 -u $$NEO4J_USER -p $$NEO4J_PASSWORD 'RETURN 1 AS health' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+    # Resource limits
+    # Prevent Neo4j from consuming all system resources
+    deploy:
+      resources:
+        limits:
+          # Maximum memory allocation
+          memory: ${NEO4J_MEMORY_LIMIT:-2G}
+        reservations:
+          # Minimum guaranteed memory
+          memory: ${NEO4J_MEMORY_RESERVATION:-1G}
+
+    # Network configuration
+    networks:
+      - neo4j_network
+
+# Named volumes for data persistence
+# Data persists even when container is removed
+volumes:
+  neo4j_data:
+    name: obsidian_neo4j_data
+    driver: local
+
+  neo4j_logs:
+    name: obsidian_neo4j_logs
+    driver: local
+
+# Network configuration
+# Isolated network for Neo4j
+networks:
+  neo4j_network:
+    name: obsidian_neo4j_network
+    driver: bridge
+
+# ==============================================================================
+# QUICK START COMMANDS
+# ==============================================================================
+#
+# Start Neo4j:
+#   docker compose -f docker-compose.neo4j.yml up -d
+#
+# Stop Neo4j:
+#   docker compose -f docker-compose.neo4j.yml down
+#
+# View logs:
+#   docker compose -f docker-compose.neo4j.yml logs -f neo4j
+#
+# Check status:
+#   docker compose -f docker-compose.neo4j.yml ps
+#
+# Restart Neo4j:
+#   docker compose -f docker-compose.neo4j.yml restart
+#
+# Access Neo4j Browser:
+#   http://localhost:7474
+#
+# Connection details for applications:
+#   Bolt URL: bolt://localhost:7687
+#   Username: neo4j (or from .env)
+#   Password: (from .env file)
+#
+# ==============================================================================
+# BACKUP & RESTORE
+# ==============================================================================
+#
+# Create backup (while running):
+#   docker exec obsidian-neo4j neo4j-admin database dump neo4j --to-path=/backups
+#   docker cp obsidian-neo4j:/backups/neo4j.dump ./backups/
+#
+# Restore from backup (Neo4j must be stopped):
+#   docker compose -f docker-compose.neo4j.yml down
+#   docker cp ./backups/neo4j.dump obsidian-neo4j:/backups/
+#   docker compose -f docker-compose.neo4j.yml up -d
+#   docker exec obsidian-neo4j neo4j-admin database load neo4j --from-path=/backups
+#
+# ==============================================================================
+# CLEANUP
+# ==============================================================================
+#
+# Remove container (keeps data):
+#   docker compose -f docker-compose.neo4j.yml down
+#
+# Remove container and data (CAUTION: destroys all data):
+#   docker compose -f docker-compose.neo4j.yml down -v
+#
+# Remove unused volumes:
+#   docker volume prune
+#
+# ==============================================================================
+# TROUBLESHOOTING
+# ==============================================================================
+#
+# View detailed logs:
+#   docker compose -f docker-compose.neo4j.yml logs -f neo4j
+#
+# Check container resource usage:
+#   docker stats obsidian-neo4j
+#
+# Access container shell:
+#   docker exec -it obsidian-neo4j bash
+#
+# Verify APOC installation:
+#   docker exec obsidian-neo4j cypher-shell -u neo4j -p <password> \
+#     "CALL apoc.help('apoc') YIELD name RETURN count(name) AS procedures"
+#
+# Check Neo4j version:
+#   docker exec obsidian-neo4j neo4j --version
+#
+# ==============================================================================

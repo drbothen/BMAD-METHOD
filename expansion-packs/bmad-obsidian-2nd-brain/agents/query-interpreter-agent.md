@@ -665,6 +665,319 @@ Cannot execute queries without at least one source."
 - Checking vault size (large vaults may be slow)"
 ```
 
+## Neo4j Integration and Graceful Degradation
+
+**Optional Temporal Knowledge Graph Integration:**
+
+This agent integrates with **Graphiti MCP** (if available) to query the Neo4j temporal knowledge graph. This enables powerful time-based queries like "What did I learn about X last month?" and causal chain discovery.
+
+**Startup Behavior:**
+
+On activation, the agent checks Neo4j/Graphiti MCP availability:
+
+```
+if neo4j_available:
+  mode = "TEMPORAL_QUERIES_ENABLED"
+  notify_user("Neo4j available - temporal and graph queries enabled")
+else:
+  mode = "OBSIDIAN_ONLY"
+  notify_user("Neo4j unavailable - using Obsidian-only mode")
+```
+
+**Graceful Degradation:**
+
+The agent operates in **two modes**:
+
+### Mode 1: Temporal Queries Enabled (Neo4j Available)
+
+When Neo4j is accessible, the agent:
+
+1. **Temporal Intent Queries** via `graphiti.get_episodes`:
+   - Primary strategy: Query capture events by time range
+   - Returns: Notes captured/edited within date range with temporal metadata
+   - Example: "What did I capture last week about machine learning?"
+   - Cypher query: `MATCH (n:Note)-[:CAPTURED_AT]->(e:CaptureEvent) WHERE e.timestamp > datetime() - duration('P7D')`
+
+2. **Causal Intent Queries** via graph traversal:
+   - Primary strategy: Traverse relationship chains (supports, influences, etc.)
+   - Returns: Causal chains showing how concepts connect
+   - Example: "Why do atomic notes improve recall?"
+   - Cypher query: `MATCH path = (a:Note)-[:CONCEPTUALLY_RELATED*1..3]-(b:Note) WHERE a.title CONTAINS 'atomic notes'`
+
+3. **Exploratory Intent Queries** via graph traversal:
+   - Primary strategy: 2-hop graph traversal from seed concept
+   - Returns: All notes within 2 degrees of separation
+   - Example: "Show me everything about productivity"
+   - Cypher query: `MATCH path = (seed:Note)-[:CONCEPTUALLY_RELATED*1..2]-(related:Note) WHERE seed.title CONTAINS 'productivity'`
+
+4. **Relationship Analysis**:
+   - Query relationship types and confidence scores
+   - Discover connection patterns (hubs, authorities, clusters)
+   - Track when relationships were created
+
+**Example workflow (Temporal query):**
+
+```
+1. User: *temporal-query machine learning since 2025-01
+2. Agent checks: graphiti.health_check()
+3. If available:
+   - Execute: graphiti.get_episodes({
+       start_date: "2025-01-01T00:00:00Z",
+       end_date: "2025-11-09T23:59:59Z",
+       query: "machine learning"
+     })
+   - Returns: CaptureEvents with timestamps, notes, metadata
+   - Format: Timeline showing chronological progression
+4. If unavailable:
+   - Fallback: Obsidian file metadata query
+   - Search: vault files with "machine learning" sorted by modified date
+   - Format: Timeline (less precise than Neo4j)
+   - Warn user about degraded capability
+```
+
+**Example workflow (Causal query):**
+
+```
+1. User: *query Why do atomic notes improve recall?
+2. Intent classified: causal (confidence: 0.89)
+3. Agent checks: graphiti.health_check()
+4. If available:
+   - Execute: Neo4j graph traversal query
+   - Find: Notes about "atomic notes" and "recall"
+   - Traverse: CONCEPTUALLY_RELATED relationships with link_type='supports'
+   - Build: Causal chain from atomic notes → recall improvement
+   - Format: Narrative showing reasoning chain
+5. If unavailable:
+   - Fallback: Smart Connections semantic search
+   - Search: Related notes about both concepts
+   - Format: List of related notes (no causal chain)
+   - Warn user about degraded capability
+```
+
+### Mode 2: Obsidian-Only (Neo4j Unavailable)
+
+When Neo4j is **not** accessible, the agent:
+
+1. **Skips all Graphiti MCP calls** - no errors, no delays
+2. **Falls back to Obsidian-native search** - full search functionality preserved
+3. **Notifies user once** (on activation) - "Running in Obsidian-only mode"
+4. **Continues operation** - zero disruption to workflow
+
+**Degraded features by query type:**
+
+**Factual Intent:**
+- ✅ **No degradation** (uses Smart Connections semantic search, not Neo4j)
+
+**Temporal Intent:**
+- ❌ No bi-temporal CaptureEvent queries
+- ❌ No precise capture timestamps
+- ✅ **Fallback works:** File modification dates from Obsidian
+- ⚠️ **Less precise:** File metadata less accurate than capture events
+
+**Causal Intent:**
+- ❌ No graph traversal for causal chains
+- ❌ No relationship-based reasoning
+- ✅ **Fallback works:** Semantic search finds related notes
+- ⚠️ **No chains:** Results are list, not causal narrative
+
+**Comparative Intent:**
+- ✅ **No degradation** (uses parallel Obsidian searches)
+
+**Exploratory Intent:**
+- ❌ No graph traversal (2-hop search unavailable)
+- ✅ **Fallback works:** Broad semantic search (threshold 0.5)
+- ⚠️ **Less comprehensive:** May miss graph-connected notes
+
+**User notification:**
+
+```
+⚠️  Neo4j Unavailable - Temporal and graph queries degraded
+    Query Interpreter will continue in Obsidian-only mode.
+
+    Impact by query type:
+    - ✅ Factual queries: Full functionality
+    - ⚠️ Temporal queries: Using file dates (less precise)
+    - ⚠️ Causal queries: No causal chains (list format instead)
+    - ✅ Comparative queries: Full functionality
+    - ⚠️ Exploratory queries: No graph traversal (semantic only)
+
+    To enable full capabilities:
+    - Start Neo4j: docker compose -f docker-compose.neo4j.yml up -d
+    - Verify Graphiti: npm run test:graphiti
+    - Restart this agent
+```
+
+### Availability Checking
+
+**On activation:**
+
+```
+try:
+  graphiti.health_check()
+  neo4j_available = true
+  sources_available.push("neo4j_graphiti")
+catch error:
+  neo4j_available = false
+  log("Neo4j unavailable, proceeding in Obsidian-only mode")
+  sources_available = ["obsidian_text_search", "smart_connections"]
+```
+
+**During operation:**
+- Do NOT retry Neo4j on every query (wastes time, impacts performance budget)
+- Cache availability status for session
+- Only re-check if user explicitly requests: `*reconnect-neo4j`
+
+**Performance consideration:**
+- Neo4j queries have 1000ms budget (part of 3-second total)
+- If Neo4j is slow (>1000ms), log warning and consider disabling for session
+- Fallback queries must respect performance budget
+
+### Recovery from Degraded Mode
+
+If Neo4j becomes available mid-session:
+
+1. User runs `*reconnect-neo4j` command (optional)
+2. Agent re-checks `graphiti.health_check()`
+3. If successful:
+   - Switch to TEMPORAL_QUERIES_ENABLED mode
+   - Notify user: "✓ Neo4j reconnected - temporal and graph queries enabled"
+   - Update sources_available to include "neo4j_graphiti"
+   - Future queries will use Neo4j when appropriate
+4. If still unavailable:
+   - Stay in OBSIDIAN_ONLY mode
+   - Suggest troubleshooting: `npm run test:neo4j`
+
+### Error Handling
+
+**Neo4j connection errors:**
+- Do NOT surface to user during query execution (silent degradation)
+- Do NOT retry repeatedly (impacts performance budget)
+- Do NOT block Obsidian searches (always work)
+- DO log for debugging: `Neo4j query failed, using fallback`
+
+**Graphiti MCP errors:**
+- Log for debugging: `Error calling graphiti.get_episodes: {error}`
+- Fall back to Obsidian file metadata immediately
+- User sees successful query completion (may not notice fallback)
+- Include warning in results: "Using file dates (Neo4j unavailable)"
+
+**Query timeout with Neo4j:**
+- If Neo4j query takes >1000ms, cancel and fall back
+- Log warning: `Neo4j query timeout, falling back to Obsidian`
+- Preserve total performance budget (<3 seconds)
+
+**Partial source failures:**
+
+When some sources work and others fail:
+
+```
+Sources Status:
+✅ Obsidian text search: 12 results (420ms)
+✅ Smart Connections: 8 results (650ms)
+❌ Neo4j: Unavailable (connection refused)
+
+Using 2/3 sources. Results may be incomplete.
+```
+
+### Temporal Query Fallback Strategy
+
+**With Neo4j (preferred):**
+
+```cypher
+// Query capture events by time range
+MATCH (n:Note)-[:CAPTURED_AT]->(e:CaptureEvent)
+WHERE e.timestamp >= datetime($start_date)
+  AND e.timestamp <= datetime($end_date)
+  AND (n.title CONTAINS $concept OR $concept IN n.tags)
+RETURN n.title, n.path, e.timestamp, e.capture_method
+ORDER BY e.timestamp
+```
+
+**Without Neo4j (fallback):**
+
+```javascript
+// Query Obsidian vault by file metadata
+obsidian.search({
+  query: concept,
+  filters: {
+    modified_after: start_date,
+    modified_before: end_date
+  },
+  sort: "modified_date"
+})
+```
+
+**Trade-offs:**
+
+| Feature | Neo4j (Preferred) | Fallback (File Dates) |
+|---------|-------------------|----------------------|
+| Timestamp precision | Capture time (exact) | File modified time (approximate) |
+| Capture method | Tracked (inbox/web-clipper/manual) | Unknown |
+| Edit history | Full bi-temporal tracking | Only last modified |
+| Multi-source | Distinguishes capture vs edit | Single timestamp |
+| Performance | Fast (indexed) | Fast (OS metadata) |
+
+### Causal Query Fallback Strategy
+
+**With Neo4j (preferred):**
+
+```cypher
+// Traverse relationship chains to build causal reasoning
+MATCH path = (a:Note)-[r:CONCEPTUALLY_RELATED*1..3]-(b:Note)
+WHERE a.title CONTAINS $concept_a
+  AND b.title CONTAINS $concept_b
+  AND ALL(rel IN relationships(path) WHERE rel.link_type IN ['supports', 'influences', 'causes'])
+RETURN path, [rel IN relationships(path) | rel.link_type] AS chain
+ORDER BY length(path)
+LIMIT 5
+```
+
+**Without Neo4j (fallback):**
+
+```javascript
+// Semantic search for related notes (no causal chain)
+smart_connections.search({
+  query: `${concept_a} ${concept_b}`,
+  threshold: 0.6,
+  limit: 20
+})
+```
+
+**Trade-offs:**
+
+| Feature | Neo4j (Preferred) | Fallback (Semantic Search) |
+|---------|-------------------|---------------------------|
+| Causal chains | Yes (multi-hop paths) | No (flat results) |
+| Relationship types | Explicit (supports/influences) | Inferred from content |
+| Reasoning depth | 1-3 hops configurable | Single semantic match |
+| Result format | Narrative showing chain | List of related notes |
+
+### Display Strategy for Degraded Mode
+
+When presenting results in degraded mode, inform user of limitations:
+
+**Temporal query result header (degraded):**
+
+```
+## Timeline (Using file dates - Neo4j unavailable)
+
+⚠️ Showing file modification dates. Capture times unavailable.
+For precise temporal tracking, start Neo4j and run *reconnect-neo4j
+
+[timeline results...]
+```
+
+**Causal query result header (degraded):**
+
+```
+## Related Notes (Causal chain unavailable)
+
+⚠️ Showing semantically related notes. Causal reasoning requires Neo4j.
+For causal chain analysis, start Neo4j and run *reconnect-neo4j
+
+[list results instead of narrative...]
+```
+
 ## Security
 
 Follow security-guidelines.md for all input validation:

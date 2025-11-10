@@ -724,9 +724,580 @@ Once integration verification is complete:
 3. Check decision count: need >= 20 total (approved + rejected)
 4. Deferred decisions don't count toward threshold adjustment
 
+## Neo4j Graphiti MCP Integration Verification
+
+**Story:** STORY-016: Setup Neo4j Graphiti MCP Integration (Optional)
+
+This section covers verification of the Neo4j Graphiti MCP integration for temporal knowledge tracking.
+
+### Prerequisites
+
+Before verifying Neo4j integration:
+
+- [ ] Neo4j 5.x installed (Docker recommended)
+- [ ] Graphiti MCP server installed
+- [ ] Environment variables configured (`.env` file)
+- [ ] Claude Desktop MCP configuration includes graphiti server
+- [ ] All connection tests passing
+
+### Phase 1: Neo4j Environment Verification
+
+#### 1.1 Verify Neo4j Running
+
+```bash
+# If using Docker
+docker compose -f docker-compose.neo4j.yml ps
+
+# Test Neo4j connection
+npm run test:neo4j
+```
+
+**Expected Result:** ✅ Neo4j accessible, all 8 tests pass
+
+#### 1.2 Verify Graphiti MCP Server
+
+```bash
+# Test Graphiti MCP connection
+npm run test:graphiti
+```
+
+**Expected Result:** ✅ Graphiti MCP accessible, 6/7 required tests pass
+
+#### 1.3 Verify Integration Tests
+
+```bash
+# Run comprehensive integration test
+npm run test:graphiti:integration
+```
+
+**Expected Result:** ✅ All Phase 1 MCP operations working (add_episode, add_entity, add_relation, get_episodes)
+
+### Phase 2: Agent Integration with Neo4j
+
+#### 2.1 Inbox Triage Agent with Neo4j
+
+**Activate Agent:**
+
+```
+Load inbox-triage-agent
+```
+
+**Expected Activation:**
+
+```
+📥 Triage Agent Activated
+
+Neo4j available - temporal features enabled
+
+[... agent greeting ...]
+```
+
+**Test Capture with Temporal Tracking:**
+
+```
+*capture https://example.com/article "Test note about machine learning"
+```
+
+**Expected Behavior:**
+
+- ✅ Creates inbox note in Obsidian
+- ✅ Creates CaptureEvent in Neo4j (via graphiti.add_episode)
+- ✅ Links Note to CaptureEvent (CAPTURED_AT relationship)
+- ✅ Stores temporal metadata (timestamp, capture_method, source_url)
+
+**Verify in Neo4j Browser (http://localhost:7474):**
+
+```cypher
+MATCH (n:Note)-[:CAPTURED_AT]->(e:CaptureEvent)
+WHERE e.timestamp > datetime() - duration('PT1H')
+RETURN n.title, e.timestamp, e.metadata
+ORDER BY e.timestamp DESC
+LIMIT 5
+```
+
+**Expected:** Recent captures visible with timestamps
+
+#### 2.2 Semantic Linker Agent with Neo4j
+
+**Activate Agent:**
+
+```
+Load semantic-linker-agent
+```
+
+**Expected Activation:**
+
+```
+🔗 Connector Agent Activated
+
+Neo4j available - graph features enabled
+
+[... agent greeting ...]
+```
+
+**Test Link Creation with Graph Tracking:**
+
+```
+*create-link atomic/note-a.md atomic/note-b.md supports
+```
+
+**Expected Behavior:**
+
+- ✅ Creates bidirectional wikilinks in Obsidian
+- ✅ Creates CONCEPTUALLY_RELATED relationship in Neo4j (via graphiti.add_relation)
+- ✅ Stores relationship properties (link_type, confidence, strength, contexts)
+- ✅ Includes bi-temporal metadata (created_at)
+
+**Verify in Neo4j Browser:**
+
+```cypher
+MATCH (a:Note)-[r:CONCEPTUALLY_RELATED]->(b:Note)
+WHERE r.created_at > datetime() - duration('PT1H')
+RETURN a.title, r.link_type, r.confidence, r.strength, b.title
+ORDER BY r.created_at DESC
+LIMIT 5
+```
+
+**Expected:** Recent semantic links visible with metadata
+
+#### 2.3 Query Interpreter Agent with Neo4j
+
+**Activate Agent:**
+
+```
+Load query-interpreter-agent
+```
+
+**Expected Activation:**
+
+```
+🔍 Query Agent Activated
+
+Neo4j available - temporal and graph queries enabled
+
+[... agent greeting ...]
+```
+
+**Test Temporal Query:**
+
+```
+*temporal-query machine learning since 2024-01
+```
+
+**Expected Behavior:**
+
+- ✅ Queries Neo4j for CaptureEvents (via graphiti.get_episodes)
+- ✅ Returns timeline of notes about "machine learning"
+- ✅ Shows precise capture timestamps
+- ✅ Displays capture methods (inbox, web-clipper, manual)
+- ✅ Format: Chronological timeline
+
+**Test Causal Query:**
+
+```
+*query Why do atomic notes improve recall?
+```
+
+**Expected Behavior:**
+
+- ✅ Queries Neo4j for causal relationship chains
+- ✅ Traverses CONCEPTUALLY_RELATED relationships
+- ✅ Filters by link_type='supports' or 'influences'
+- ✅ Returns narrative showing causal reasoning chain
+- ✅ Format: Narrative with multi-hop explanation
+
+### Phase 3: Graceful Degradation Verification
+
+#### 3.1 Test Agents with Neo4j Offline
+
+**Stop Neo4j:**
+
+```bash
+docker compose -f docker-compose.neo4j.yml down
+```
+
+**Activate Inbox Triage Agent:**
+
+```
+Load inbox-triage-agent
+```
+
+**Expected Degraded Activation:**
+
+```
+📥 Triage Agent Activated
+
+⚠️  Neo4j Unavailable - Temporal tracking disabled
+    Triage will continue in Obsidian-only mode.
+    All notes will be created and classified normally.
+
+    To enable temporal features:
+    - Start Neo4j: docker compose -f docker-compose.neo4j.yml up -d
+    - Verify Graphiti: npm run test:graphiti
+    - Restart this agent
+```
+
+**Test Capture in Degraded Mode:**
+
+```
+*capture https://example.com/article "Test note"
+```
+
+**Expected Behavior:**
+
+- ✅ Creates inbox note in Obsidian (works perfectly)
+- ⏭️ Skips Neo4j CaptureEvent creation (graceful skip)
+- ✅ No errors or crashes
+- ✅ User receives successful completion message
+
+**Verification Checklist:**
+
+- [ ] Agent activates with degraded mode warning
+- [ ] Capture operation completes successfully
+- [ ] No error messages displayed
+- [ ] No unhandled exceptions
+- [ ] Clear guidance on how to enable Neo4j
+
+#### 3.2 Test Semantic Linker in Degraded Mode
+
+**Activate Semantic Linker Agent (Neo4j still offline):**
+
+```
+Load semantic-linker-agent
+```
+
+**Expected Degraded Activation:**
+
+```
+🔗 Connector Agent Activated
+
+⚠️  Neo4j Unavailable - Graph tracking disabled
+    Semantic Linker will continue in Obsidian-only mode.
+    All bidirectional links will be created normally.
+    Graph analysis features (*analyze-graph) will use local wikilink traversal.
+```
+
+**Test Link Creation:**
+
+```
+*create-link atomic/note-a.md atomic/note-b.md supports
+```
+
+**Expected Behavior:**
+
+- ✅ Creates bidirectional wikilinks (works perfectly)
+- ⏭️ Skips Neo4j relationship creation (graceful skip)
+- ✅ No errors
+- ✅ Success message displayed
+
+**Verification Checklist:**
+
+- [ ] Agent works without Neo4j
+- [ ] Bidirectional linking functional
+- [ ] No crashes or errors
+- [ ] Clear degraded mode notification
+
+#### 3.3 Test Query Interpreter in Degraded Mode
+
+**Activate Query Interpreter Agent (Neo4j still offline):**
+
+```
+Load query-interpreter-agent
+```
+
+**Expected Degraded Activation:**
+
+```
+🔍 Query Agent Activated
+
+⚠️  Neo4j Unavailable - Temporal and graph queries degraded
+    Query Interpreter will continue in Obsidian-only mode.
+
+    Impact by query type:
+    - ✅ Factual queries: Full functionality
+    - ⚠️ Temporal queries: Using file dates (less precise)
+    - ⚠️ Causal queries: No causal chains (list format instead)
+    - ✅ Comparative queries: Full functionality
+    - ⚠️ Exploratory queries: No graph traversal (semantic only)
+```
+
+**Test Temporal Query (Fallback Mode):**
+
+```
+*temporal-query machine learning since 2024-01
+```
+
+**Expected Behavior:**
+
+- ✅ Falls back to Obsidian file metadata query
+- ✅ Returns timeline using file modification dates
+- ⚠️ Shows warning about degraded precision
+- ✅ No errors or crashes
+
+**Verification Checklist:**
+
+- [ ] Agent activates with detailed degradation info
+- [ ] Temporal queries fall back to file dates
+- [ ] Causal queries fall back to semantic search
+- [ ] Clear warnings about limitations
+- [ ] No crashes
+
+#### 3.4 Verify Recovery from Degraded Mode
+
+**Restart Neo4j:**
+
+```bash
+docker compose -f docker-compose.neo4j.yml up -d
+
+# Wait for Neo4j to be ready
+npm run test:neo4j
+```
+
+**Reconnect Agents:**
+
+```
+*reconnect-neo4j
+```
+
+**Expected Behavior:**
+
+- ✅ Agents detect Neo4j is back online
+- ✅ Switch to full-featured mode
+- ✅ User notification: "✓ Neo4j reconnected - temporal/graph features enabled"
+- ✅ Future operations use Neo4j
+
+**Verification Checklist:**
+
+- [ ] Reconnection command works
+- [ ] Agents detect Neo4j availability
+- [ ] Mode switch occurs successfully
+- [ ] Clear success notification
+
+### Phase 4: Temporal Query Verification
+
+Run temporal queries from examples to verify schema works:
+
+**Query 1: Notes captured today**
+
+```cypher
+MATCH (n:Note)-[:CAPTURED_AT]->(e:CaptureEvent)
+WHERE date(e.timestamp) = date()
+RETURN n.title, e.timestamp, e.metadata.capture_method
+ORDER BY e.timestamp DESC
+```
+
+**Expected:** Notes captured today with capture methods
+
+**Query 2: Notes captured last 7 days**
+
+```cypher
+MATCH (n:Note)-[:CAPTURED_AT]->(e:CaptureEvent)
+WHERE e.timestamp > datetime() - duration('P7D')
+RETURN n.title, e.timestamp
+ORDER BY e.timestamp DESC
+```
+
+**Expected:** Week's worth of captures
+
+**Query 3: Semantic links created recently**
+
+```cypher
+MATCH (a:Note)-[r:CONCEPTUALLY_RELATED]->(b:Note)
+WHERE r.created_at > datetime() - duration('P7D')
+RETURN a.title, r.link_type, r.confidence, b.title
+ORDER BY r.created_at DESC
+```
+
+**Expected:** Recent semantic links with metadata
+
+**Query 4: Find notes with most connections (hubs)**
+
+```cypher
+MATCH (n:Note)-[:LINKED_TO]-()
+RETURN n.title, n.path, count(*) AS connections
+ORDER BY connections DESC
+LIMIT 10
+```
+
+**Expected:** Most connected notes
+
+**Query 5: Knowledge evolution timeline**
+
+```cypher
+MATCH (n:Note)-[:CAPTURED_AT]->(e:CaptureEvent)
+WHERE "machine-learning" IN n.tags
+RETURN n.title, e.timestamp
+ORDER BY e.timestamp
+```
+
+**Expected:** Chronological progression of ML notes
+
+### Phase 5: Performance Verification
+
+#### 5.1 Measure Operation Performance
+
+**Run integration test and check performance:**
+
+```bash
+npm run test:graphiti:integration
+```
+
+**Performance Requirements:**
+
+| Operation | Target | Actual | Status |
+|-----------|--------|--------|--------|
+| add_episode | < 500ms | - | ⏳ |
+| add_entity | < 500ms | - | ⏳ |
+| add_relation | < 500ms | - | ⏳ |
+| get_episodes | < 800ms | - | ⏳ |
+
+**Expected:** All operations within budget
+
+#### 5.2 Verify Agent Performance
+
+**Query interpreter performance budget: < 3 seconds total**
+
+Test with:
+
+```
+*temporal-query productivity last month
+```
+
+**Expected:** Query completes in < 3 seconds including:
+- Parse query: < 200ms
+- Execute Neo4j query: < 1000ms
+- Merge results: < 500ms
+- Format timeline: < 300ms
+
+### Phase 6: Security Verification
+
+#### 6.1 Environment Variable Security
+
+**Check `.env` file security:**
+
+```bash
+ls -la .env
+```
+
+**Expected:**
+- File permissions: `600` (read/write owner only)
+- Not committed to git
+- Listed in `.gitignore`
+- Strong password (not "password" or "neo4j")
+
+#### 6.2 Cypher Injection Prevention
+
+**Verify parameterized queries:**
+
+Check Neo4j query logs for parameterized queries (no string concatenation):
+
+```bash
+docker compose -f docker-compose.neo4j.yml logs | grep -i cypher
+```
+
+**Expected:** Only parameterized queries visible (no raw user input in queries)
+
+#### 6.3 MCP Configuration Security
+
+**Verify environment variable isolation:**
+
+```bash
+cat ~/Library/Application\ Support/Claude/claude_desktop_config.json | grep PASSWORD
+```
+
+**Expected:** Environment variables referenced, not hardcoded passwords
+
+### Phase 7: Documentation Verification
+
+Verify all Neo4j documentation is complete and accurate:
+
+- [ ] `docs/installation/neo4j-setup.md` - Complete installation guide
+- [ ] `docs/installation/graphiti-mcp-setup.md` - Graphiti installation guide
+- [ ] `docs/installation/mcp-server-setup.md` - Multi-server MCP config
+- [ ] `docs/temporal-schema.md` - Complete schema documentation
+- [ ] `docs/test-reports/graphiti-mcp-integration-test-report.md` - Test report
+- [ ] `examples/neo4j/temporal-queries.cypher` - 50+ example queries
+- [ ] `README.md` - Updated with Neo4j section
+- [ ] Agent files - All 3 Phase 1 agents have Neo4j integration sections
+
+### Phase 8: Complete Integration Test Report
+
+After completing all verification phases, update the test report:
+
+**Location:** `docs/test-reports/graphiti-mcp-integration-test-report.md`
+
+**Required Updates:**
+
+- [ ] Mark all test cases as PASS/FAIL
+- [ ] Fill in actual performance benchmarks
+- [ ] Document any issues found
+- [ ] Update platform compatibility matrix
+- [ ] Add final assessment
+- [ ] Determine if ready for production
+
+### Verification Checklist Summary
+
+**Environment:**
+
+- [ ] Neo4j running and accessible
+- [ ] Graphiti MCP server configured
+- [ ] All connection tests passing (test:neo4j, test:graphiti)
+- [ ] Integration tests passing (test:graphiti:integration)
+
+**Agent Integration:**
+
+- [ ] Inbox Triage Agent works with Neo4j
+- [ ] Semantic Linker Agent creates graph relationships
+- [ ] Query Interpreter Agent runs temporal/causal queries
+
+**Graceful Degradation:**
+
+- [ ] All agents work without Neo4j (Obsidian-only mode)
+- [ ] Clear degradation warnings displayed
+- [ ] No crashes when Neo4j unavailable
+- [ ] Recovery from degraded mode works
+
+**Temporal Queries:**
+
+- [ ] Capture events queryable by time
+- [ ] Semantic links queryable by type
+- [ ] Hub/authority detection works
+- [ ] Knowledge evolution tracking functional
+
+**Performance:**
+
+- [ ] All operations within performance budget
+- [ ] Query interpreter respects 3-second limit
+- [ ] No timeout errors
+
+**Security:**
+
+- [ ] Environment variables secure
+- [ ] Parameterized queries only
+- [ ] No secrets in git
+- [ ] File permissions correct
+
+**Documentation:**
+
+- [ ] All installation guides complete
+- [ ] Test report comprehensive
+- [ ] Example queries provided
+- [ ] Agent documentation updated
+
+**Final Status:**
+
+- [ ] All verification items complete
+- [ ] No blocking issues
+- [ ] Ready for STORY-016 completion
+
 ## References
 
 - **STORY-004:** `/Users/jmagady/Dev/BMAD-METHOD/manuscripts/stories/obsidian-2nd-brain/STORY-004-semantic-linker-agent.yaml`
+- **STORY-016:** `/Users/jmagady/Dev/BMAD-METHOD/manuscripts/stories/obsidian-2nd-brain/STORY-016-neo4j-graphiti-integration.md`
 - **Agent File:** `expansion-packs/bmad-obsidian-2nd-brain/agents/semantic-linker-agent.md`
 - **Test Plan:** `expansion-packs/bmad-obsidian-2nd-brain/tests/semantic-linker-test-plan.md`
 - **Security Guidelines:** `expansion-packs/bmad-obsidian-2nd-brain/data/security-guidelines.md`
+- **Neo4j Setup:** `expansion-packs/bmad-obsidian-2nd-brain/docs/installation/neo4j-setup.md`
+- **Graphiti Setup:** `expansion-packs/bmad-obsidian-2nd-brain/docs/installation/graphiti-mcp-setup.md`
+- **Temporal Schema:** `expansion-packs/bmad-obsidian-2nd-brain/docs/temporal-schema.md`
+- **Integration Test Report:** `expansion-packs/bmad-obsidian-2nd-brain/docs/test-reports/graphiti-mcp-integration-test-report.md`

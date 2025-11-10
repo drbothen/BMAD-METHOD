@@ -681,14 +681,635 @@ To enable verbose logging:
 
 ---
 
+## Graphiti MCP Server Configuration (Optional)
+
+This section covers configuring **Graphiti MCP** alongside the Obsidian MCP server for temporal knowledge tracking with Neo4j.
+
+### What is Graphiti MCP?
+
+Graphiti provides temporal knowledge graph capabilities:
+- Store episodic memories with timestamps (capture events)
+- Track knowledge evolution over time
+- Query by time range ("notes from last week")
+- Create semantic relationships with confidence scores
+
+**Prerequisites:**
+- ✅ Neo4j installed and running (see [neo4j-setup.md](./neo4j-setup.md))
+- ✅ Graphiti MCP server installed (see [graphiti-mcp-setup.md](./graphiti-mcp-setup.md))
+- ✅ Obsidian MCP configured (previous sections)
+
+**Important:** Graphiti is completely optional. The system works without it in Obsidian-only mode.
+
+---
+
+### Multi-Server Configuration Overview
+
+Claude Desktop supports multiple MCP servers running simultaneously. You'll configure:
+
+1. **Obsidian MCP** - Vault access and management
+2. **Graphiti MCP** - Temporal knowledge tracking
+
+Both servers coexist in the same `claude_desktop_config.json` file.
+
+---
+
+### Configuration Template (macOS)
+
+**File:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "/Users/<username>/Documents/<VaultName>/.obsidian/plugins/mcp-tools/bin/mcp-server",
+      "args": [],
+      "env": {
+        "OBSIDIAN_API_KEY": "your-obsidian-api-key-here",
+        "OBSIDIAN_HOST": "localhost",
+        "OBSIDIAN_PORT": "27123"
+      }
+    },
+    "graphiti": {
+      "command": "/Users/<username>/.local/bin/uv",
+      "args": [
+        "run",
+        "--with", "graphiti-core",
+        "--with", "mcp",
+        "graphiti-server"
+      ],
+      "env": {
+        "NEO4J_URI": "bolt://localhost:7687",
+        "NEO4J_USER": "neo4j",
+        "NEO4J_PASSWORD": "${NEO4J_PASSWORD}",
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "MODEL_NAME": "gpt-4o-mini"
+      }
+    }
+  }
+}
+```
+
+**Replace placeholders:**
+- `<username>` - Your macOS username
+- `<VaultName>` - Your Obsidian vault name
+- `your-obsidian-api-key-here` - Actual Obsidian REST API key
+- `${NEO4J_PASSWORD}` - Neo4j password from `.env` file
+- `${OPENAI_API_KEY}` - OpenAI API key
+
+---
+
+### Configuration Template (Windows)
+
+**File:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "C:/Users/<Username>/Documents/<VaultName>/.obsidian/plugins/mcp-tools/bin/mcp-server.exe",
+      "args": [],
+      "env": {
+        "OBSIDIAN_API_KEY": "your-obsidian-api-key-here",
+        "OBSIDIAN_HOST": "localhost",
+        "OBSIDIAN_PORT": "27123"
+      }
+    },
+    "graphiti": {
+      "command": "C:/Users/<Username>/.local/bin/uv.exe",
+      "args": [
+        "run",
+        "--with", "graphiti-core",
+        "--with", "mcp",
+        "graphiti-server"
+      ],
+      "env": {
+        "NEO4J_URI": "bolt://localhost:7687",
+        "NEO4J_USER": "neo4j",
+        "NEO4J_PASSWORD": "${NEO4J_PASSWORD}",
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "MODEL_NAME": "gpt-4o-mini"
+      }
+    }
+  }
+}
+```
+
+**Note:** Use forward slashes (`/`) or escaped backslashes (`\\`) in Windows paths.
+
+---
+
+### Configuration Template (Linux)
+
+**File:** `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "/home/<username>/Documents/<VaultName>/.obsidian/plugins/mcp-tools/bin/mcp-server",
+      "args": [],
+      "env": {
+        "OBSIDIAN_API_KEY": "your-obsidian-api-key-here",
+        "OBSIDIAN_HOST": "localhost",
+        "OBSIDIAN_PORT": "27123"
+      }
+    },
+    "graphiti": {
+      "command": "/home/<username>/.local/bin/uv",
+      "args": [
+        "run",
+        "--with", "graphiti-core",
+        "--with", "mcp",
+        "graphiti-server"
+      ],
+      "env": {
+        "NEO4J_URI": "bolt://localhost:7687",
+        "NEO4J_USER": "neo4j",
+        "NEO4J_PASSWORD": "${NEO4J_PASSWORD}",
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "MODEL_NAME": "gpt-4o-mini"
+      }
+    }
+  }
+}
+```
+
+---
+
+### Environment Variable Configuration
+
+For security, use environment variable substitution instead of hardcoding sensitive values.
+
+#### macOS/Linux Setup
+
+Add to `~/.bashrc` or `~/.zshrc`:
+
+```bash
+# Obsidian MCP
+export OBSIDIAN_API_KEY="your-obsidian-api-key"
+
+# Graphiti MCP
+export NEO4J_PASSWORD="your-neo4j-password"
+export OPENAI_API_KEY="sk-your-openai-key"
+```
+
+Reload shell configuration:
+```bash
+source ~/.bashrc  # or ~/.zshrc
+```
+
+Verify variables are set:
+```bash
+echo $OBSIDIAN_API_KEY
+echo $NEO4J_PASSWORD
+echo $OPENAI_API_KEY
+```
+
+#### Windows Setup
+
+1. Open **System Properties → Environment Variables**
+2. Click **New** under "User variables"
+3. Add variables:
+   - `OBSIDIAN_API_KEY` = your-obsidian-api-key
+   - `NEO4J_PASSWORD` = your-neo4j-password
+   - `OPENAI_API_KEY` = sk-your-openai-key
+4. Click **OK** to save
+5. Restart Claude Desktop
+
+Verify variables (PowerShell):
+```powershell
+echo $env:OBSIDIAN_API_KEY
+echo $env:NEO4J_PASSWORD
+echo $env:OPENAI_API_KEY
+```
+
+---
+
+### Alternative: Hardcoded Configuration (Not Recommended)
+
+If environment variable substitution doesn't work, hardcode values (**security risk**):
+
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      "command": "/path/to/mcp-server",
+      "args": [],
+      "env": {
+        "OBSIDIAN_API_KEY": "a1b2c3d4e5f6g7h8",
+        "OBSIDIAN_HOST": "localhost",
+        "OBSIDIAN_PORT": "27123"
+      }
+    },
+    "graphiti": {
+      "command": "/path/to/uv",
+      "args": ["run", "--with", "graphiti-core", "--with", "mcp", "graphiti-server"],
+      "env": {
+        "NEO4J_URI": "bolt://localhost:7687",
+        "NEO4J_USER": "neo4j",
+        "NEO4J_PASSWORD": "actual-password-here",
+        "OPENAI_API_KEY": "sk-actual-key-here",
+        "MODEL_NAME": "gpt-4o-mini"
+      }
+    }
+  }
+}
+```
+
+**Security warnings:**
+- ⚠️ File contains plaintext credentials
+- ⚠️ Set file permissions: `chmod 600 claude_desktop_config.json`
+- ⚠️ Never commit to version control
+- ⚠️ Rotate credentials if file is compromised
+
+---
+
+### Verifying Multi-Server Configuration
+
+#### Step 1: Validate JSON Syntax
+
+```bash
+# macOS/Linux
+cat ~/Library/Application\ Support/Claude/claude_desktop_config.json | python3 -m json.tool
+
+# Windows PowerShell
+Get-Content $env:APPDATA\Claude\claude_desktop_config.json | python -m json.tool
+
+# Or use online validator
+# https://jsonlint.com/
+```
+
+#### Step 2: Verify Prerequisites
+
+Check that all required services are running:
+
+```bash
+# Check Neo4j (should return "Up")
+docker compose -f docker-compose.neo4j.yml ps
+
+# Check Graphiti (if using Docker)
+docker compose -f ~/Development/graphiti/docker-compose.yml ps
+
+# Test Neo4j connection
+curl http://localhost:7474
+# Expected: Neo4j Browser page
+
+# Test Graphiti health endpoint
+curl http://localhost:8000/health
+# Expected: {"status": "healthy", "neo4j": "connected"}
+```
+
+#### Step 3: Restart Claude Desktop
+
+```bash
+# macOS
+osascript -e 'quit app "Claude"'
+sleep 5
+open -a Claude
+
+# Windows
+# Use Task Manager to end "Claude.exe"
+# Then relaunch from Start Menu
+
+# Linux
+pkill -f claude
+sleep 5
+claude &
+```
+
+#### Step 4: Test Both MCP Servers
+
+Open Claude Desktop and test:
+
+**Test 1: List MCP servers**
+```
+What MCP servers are available?
+```
+
+Expected response should list both:
+- `obsidian`
+- `graphiti`
+
+**Test 2: Test Obsidian MCP**
+```
+List notes in my Obsidian vault
+```
+
+Expected: List of actual notes from your vault
+
+**Test 3: Test Graphiti MCP**
+```
+What Graphiti tools are available?
+```
+
+Expected: List including `add_episode`, `get_episodes`, `add_entity`, `add_relation`
+
+**Test 4: Combined Operation**
+```
+Create a capture event for today with note "Testing Graphiti integration"
+```
+
+Expected: Confirmation of event creation in Neo4j
+
+---
+
+### Troubleshooting Multi-Server Setup
+
+#### Issue: Only Obsidian MCP Works, Not Graphiti
+
+**Symptoms:**
+- Obsidian commands work
+- Graphiti commands fail or are unavailable
+
+**Solutions:**
+
+1. **Check Graphiti command path:**
+   ```bash
+   which uv
+   # Should return: /Users/<username>/.local/bin/uv
+   ```
+
+2. **Verify Neo4j is running:**
+   ```bash
+   docker compose -f docker-compose.neo4j.yml ps
+   # Should show "Up"
+   ```
+
+3. **Test Graphiti manually:**
+   ```bash
+   uv run --with graphiti-core --with mcp graphiti-server
+   # Should start without errors
+   ```
+
+4. **Check Claude Desktop logs:**
+   ```bash
+   # macOS
+   tail -f ~/Library/Logs/Claude/mcp-graphiti.log
+   ```
+
+#### Issue: Environment Variables Not Resolved
+
+**Symptoms:**
+- Error: "Invalid Neo4j password"
+- Or: "OpenAI API key not set"
+
+**Solutions:**
+
+1. **Verify variables are exported:**
+   ```bash
+   echo $NEO4J_PASSWORD
+   echo $OPENAI_API_KEY
+   ```
+
+2. **If empty, export manually:**
+   ```bash
+   export NEO4J_PASSWORD="your-password"
+   export OPENAI_API_KEY="sk-your-key"
+   ```
+
+3. **Restart Claude Desktop from terminal:**
+   ```bash
+   # macOS - launch from terminal to inherit env vars
+   /Applications/Claude.app/Contents/MacOS/Claude &
+   ```
+
+4. **Alternative: Use hardcoded values** (see Alternative configuration above)
+
+#### Issue: JSON Syntax Error
+
+**Symptoms:**
+- Claude Desktop won't start
+- Error: "Failed to parse configuration"
+
+**Solutions:**
+
+1. **Common JSON mistakes:**
+   - Missing comma between server entries
+   - Trailing comma after last entry
+   - Unmatched braces `{}` or brackets `[]`
+   - Unescaped backslashes in paths (Windows)
+
+2. **Validate JSON:**
+   ```bash
+   python3 -m json.tool < claude_desktop_config.json
+   ```
+
+3. **Fix and retry:**
+   - Save corrected file
+   - Restart Claude Desktop
+
+#### Issue: Both Servers Not Working
+
+**Symptoms:**
+- Claude reports no MCP servers available
+- Both Obsidian and Graphiti fail
+
+**Solutions:**
+
+1. **Verify configuration file location:**
+   ```bash
+   # macOS
+   ls -la ~/Library/Application\ Support/Claude/claude_desktop_config.json
+
+   # Windows
+   dir %APPDATA%\Claude\claude_desktop_config.json
+
+   # Linux
+   ls -la ~/.config/Claude/claude_desktop_config.json
+   ```
+
+2. **Check file permissions:**
+   ```bash
+   chmod 600 ~/Library/Application\ Support/Claude/claude_desktop_config.json
+   ```
+
+3. **Restore from backup:**
+   ```bash
+   cp claude_desktop_config.json.backup claude_desktop_config.json
+   ```
+
+4. **Start with minimal config:**
+   - Remove Graphiti entry
+   - Test Obsidian-only
+   - Add Graphiti back incrementally
+
+---
+
+### Testing Temporal Knowledge Tracking
+
+After configuring both MCP servers, test the complete integration:
+
+#### Test 1: Create Capture Event
+
+```
+Using Graphiti, create a capture event for today with the note "Testing temporal tracking"
+```
+
+**Expected:** Confirmation that event was created in Neo4j
+
+#### Test 2: Query Recent Events
+
+```
+Using Graphiti, retrieve capture events from the last 7 days
+```
+
+**Expected:** List including the event just created
+
+#### Test 3: Link Notes
+
+```
+Create a relationship between note "Project Ideas" and note "Implementation Plan" with confidence 0.8
+```
+
+**Expected:** Confirmation of relationship creation
+
+#### Test 4: Verify in Neo4j Browser
+
+1. Open Neo4j Browser: http://localhost:7474
+2. Run Cypher query:
+   ```cypher
+   MATCH (e:CaptureEvent)
+   WHERE e.timestamp > datetime() - duration('P7D')
+   RETURN e.timestamp, e.note
+   ORDER BY e.timestamp DESC
+   LIMIT 10
+   ```
+3. Should see created events
+
+---
+
+### Performance Considerations
+
+#### OpenAI API Usage
+
+Graphiti calls OpenAI for entity extraction. To optimize costs:
+
+```json
+{
+  "mcpServers": {
+    "graphiti": {
+      "env": {
+        "MODEL_NAME": "gpt-4o-mini",
+        ...
+      }
+    }
+  }
+}
+```
+
+**Model options:**
+- `gpt-4o-mini` - Fast, cost-effective (recommended)
+- `gpt-4o` - More accurate, higher cost
+- `gpt-4-turbo` - Balanced
+
+#### Neo4j Connection Pooling
+
+For high-throughput scenarios, adjust Neo4j connection settings in Graphiti `.env`:
+
+```env
+NEO4J_MAX_CONNECTION_POOL_SIZE=50
+NEO4J_QUERY_TIMEOUT=30
+```
+
+---
+
+### Security Best Practices (Multi-Server)
+
+#### Credential Isolation
+
+- ✅ Use separate API keys for Obsidian and OpenAI
+- ✅ Store credentials in password manager
+- ✅ Rotate all credentials every 90 days
+- ✅ Set usage limits on OpenAI dashboard
+- ❌ Don't reuse credentials across systems
+
+#### File Permissions
+
+```bash
+# Secure configuration file
+chmod 600 ~/Library/Application\ Support/Claude/claude_desktop_config.json
+
+# Verify permissions
+ls -la ~/Library/Application\ Support/Claude/claude_desktop_config.json
+# Should show: -rw------- (600)
+```
+
+#### Network Security
+
+- ✅ Neo4j bound to localhost only
+- ✅ Graphiti MCP bound to localhost only
+- ✅ No firewall rules exposing services
+- ❌ Never bind to 0.0.0.0 (all interfaces)
+
+#### Monitoring
+
+Set up monitoring for security events:
+
+1. **Monitor OpenAI API usage** - Check dashboard daily for anomalies
+2. **Monitor Neo4j connections** - Review logs for unauthorized access
+3. **Rotate credentials** on schedule (90 days)
+4. **Audit MCP server access** - Review Claude Desktop logs
+
+---
+
+### Disabling Graphiti (Graceful Degradation)
+
+To disable Graphiti temporarily without removing configuration:
+
+#### Option 1: Stop Neo4j
+
+```bash
+docker compose -f docker-compose.neo4j.yml down
+```
+
+Agents will detect Neo4j unavailable and operate in Obsidian-only mode.
+
+#### Option 2: Comment Out Graphiti in Config
+
+Edit `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "obsidian": {
+      ...
+    }
+    // Temporarily disabled Graphiti
+    // "graphiti": {
+    //   ...
+    // }
+  }
+}
+```
+
+Restart Claude Desktop.
+
+#### Option 3: Remove Graphiti Entry
+
+Delete the entire `"graphiti": {...}` block from config, restart Claude Desktop.
+
+---
+
+### Re-enabling Graphiti
+
+1. Restore Graphiti entry in `claude_desktop_config.json`
+2. Start Neo4j: `docker compose -f docker-compose.neo4j.yml up -d`
+3. Verify Neo4j health: `curl http://localhost:7474`
+4. Restart Claude Desktop
+5. Test: "What Graphiti tools are available?"
+
+---
+
 ## Next Steps
 
-After successfully configuring the MCP server:
+After successfully configuring the MCP server(s):
 
 1. **Test Connection:** Run [connection tests](../tests/integration/obsidian-mcp-connection-test.js)
 2. **Explore MCP Tools:** Review [MCP Tools Reference](../mcp-tools-reference.md)
 3. **Enable Phase 1 Agents:** Start using AI agents for vault management
 4. **Review Error Handling:** See [Error Handling Patterns](../error-handling-patterns.md)
+5. **Test Temporal Features:** If Graphiti configured, test temporal queries
+6. **Review Temporal Schema:** See [Temporal Schema Documentation](../temporal-schema.md)
 
 ---
 
