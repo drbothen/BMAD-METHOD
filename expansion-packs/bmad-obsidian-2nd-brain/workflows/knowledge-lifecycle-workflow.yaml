@@ -1,0 +1,153 @@
+name: knowledge-lifecycle
+title: Knowledge Lifecycle Workflow
+description: |
+  Master continuous lifecycle workflow for comprehensive note management.
+  Guides notes through capture, organization, and periodic review phases.
+
+  This is a Phase 1 basic implementation with 3 core phases. Future phases
+  will add Synthesis (MOC construction), Creation (content briefs), and
+  Gap Detection (research prioritization).
+
+triggers:
+  - intent: "lifecycle workflow"
+  - intent: "full knowledge management cycle"
+
+agents:
+  - inbox-triage-agent
+  - structural-analysis-agent
+  - semantic-linker-agent
+  - quality-auditor-agent
+
+steps:
+  - id: phase1_capture
+    title: "Phase 1: Capture"
+    agent: inbox-triage-agent
+    duration: "Continuous"
+    outputs: categorized_notes
+    exit_criteria: |
+      All inbox items have been categorized and moved to appropriate locations.
+      Inbox folder is empty or contains only notes awaiting additional context.
+    notes: |
+      Use inbox-triage-agent command: *process-inbox
+
+      This phase processes all incoming notes from the inbox:
+      - Categorize notes by type (fleeting, literature, permanent, reference)
+      - Move notes to appropriate vault locations
+      - Add basic metadata tags
+      - Flag notes requiring further organization
+
+      Run this phase whenever inbox accumulates new items (daily recommended).
+
+  - id: phase2_organization
+    title: "Phase 2: Organization"
+    agent: structural-analysis-agent
+    duration: "Continuous"
+    inputs: categorized_notes
+    outputs: structured_notes
+    exit_criteria: |
+      Notes flagged for organization have been analyzed for structure.
+      Fragmentation recommendations applied where appropriate.
+      Notes follow domain standards for size and scope.
+    notes: |
+      Use structural-analysis-agent command: *analyze-atomicity
+
+      This phase ensures notes have proper structure:
+      - Analyze note size and scope (should be 200-500 words)
+      - Identify over-scoped notes (>500 words)
+      - Recommend fragmentation when needed
+      - Apply domain standards (concepts, resources, people, projects)
+
+      Run this phase weekly or when processing new permanent notes.
+
+  - id: phase2_linking
+    title: "Phase 2: Linking"
+    agent: semantic-linker-agent
+    duration: "Continuous"
+    inputs: structured_notes
+    outputs: linked_notes
+    exit_criteria: |
+      Link suggestions generated for newly organized notes.
+      User has reviewed and accepted/rejected suggested links.
+      Notes have at least 2-3 contextual links.
+    notes: |
+      Use semantic-linker-agent commands: *suggest-links, *review-suggestions
+
+      This phase establishes connections between notes:
+      - Generate semantic link suggestions based on content similarity
+      - Present suggestions for user review
+      - Apply accepted links to notes
+      - Ensure notes are well-connected (minimum 2-3 links)
+
+      Run *suggest-links after organizing new notes, then *review-suggestions
+      to process pending suggestions (limit 5-10 at a time).
+
+  - id: phase3_review
+    title: "Phase 3: Periodic Review"
+    agent: quality-auditor-agent
+    duration: "Weekly"
+    inputs: linked_notes
+    outputs: audit_report
+    exit_criteria: |
+      Weekly audit completed with results documented.
+      Critical issues (broken links, stale domain-critical notes) identified.
+      Action items created for vault maintenance.
+    notes: |
+      Use quality-auditor-agent command: *audit-full
+
+      This phase maintains vault health and quality:
+      - Check for broken links
+      - Identify stale notes (domain-critical only, >90 days)
+      - Report orphaned notes (no incoming links)
+      - Generate audit report with actionable items
+
+      Run this phase weekly (suggested: Sunday evening as part of weekly review).
+      Focus on domain-critical notes only - avoid over-maintaining reference material.
+
+outputs:
+  - categorized_notes
+  - structured_notes
+  - linked_notes
+  - audit_report
+
+notes: |
+  ## Lifecycle Workflow Execution
+
+  This workflow is continuous and cyclical rather than time-boxed. Execute phases
+  based on triggers:
+
+  - **Phase 1 (Capture)**: Run daily or when inbox accumulates items
+  - **Phase 2 (Organization + Linking)**: Run weekly or after capture sessions
+  - **Phase 3 (Review)**: Run weekly for vault maintenance
+
+  ## Phase 1 Implementation
+
+  Current implementation covers the 3 core phases:
+  1. Capture - Inbox triage and categorization
+  2. Organization - Structure analysis and semantic linking
+  3. Review - Quality auditing
+
+  ## Future Phase Enhancements
+
+  **Phase 2 Additions** (future):
+  - Synthesis phase: MOC (Map of Content) construction
+  - Aggregate related notes into higher-order structures
+  - Create domain overviews and navigation hubs
+
+  **Phase 3 Additions** (future):
+  - Creation phase: Content brief generation
+  - Transform knowledge into shareable content
+  - Support writing and publication workflows
+
+  **Phase 4 Additions** (future):
+  - Gap Detection phase: Research prioritization
+  - Identify knowledge gaps and research opportunities
+  - Prioritize learning and exploration paths
+
+  ## Integration with Other Workflows
+
+  This lifecycle workflow provides the foundation for:
+  - **Daily Capture Processing**: Focused daily execution of Phases 1-2
+  - **Weekly Review**: Comprehensive Phase 3 execution with exploration
+
+  Use this workflow for understanding the full lifecycle, then use the
+  specialized daily/weekly workflows for routine execution.

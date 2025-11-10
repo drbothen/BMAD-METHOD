@@ -1,0 +1,193 @@
+name: weekly-review
+title: Weekly Review Workflow
+description: |
+  Comprehensive weekly maintenance workflow for vault health and quality.
+  Performs audit checks, batch processes link suggestions, and explores
+  knowledge patterns that emerged during the week.
+
+  Designed for weekly execution (recommended: Sunday evening) as a deeper
+  maintenance routine complementing daily capture processing.
+
+triggers:
+  - intent: "weekly review"
+  - intent: "weekly maintenance"
+  - command: /weekly-review
+  - schedule: "Sunday evening"
+
+agents:
+  - quality-auditor-agent
+  - semantic-linker-agent
+  - query-interpreter-agent
+
+steps:
+  - id: weekly_audit
+    title: "Step 1: Weekly Quality Audit"
+    agent: quality-auditor-agent
+    duration: "15 minutes"
+    outputs: audit_report
+    exit_criteria: |
+      Audit completed with results documented.
+      Critical issues identified (broken links, stale domain-critical notes).
+      Action items created for vault maintenance.
+    notes: |
+      Use quality-auditor-agent command: *audit-full
+
+      Comprehensive vault health check:
+      - Check for broken links (wikilinks and external URLs)
+      - Identify stale notes (domain-critical only, >90 days)
+      - Report orphaned notes (no incoming links)
+      - Generate audit report with actionable items
+
+      Focus on domain-critical notes to avoid over-maintenance of reference material.
+      Document issues in audit report for tracking and resolution.
+
+      Common issues to address:
+      - Broken wikilinks: Update or remove
+      - Stale domain notes: Review and update or archive
+      - Orphaned notes: Add links or confirm intentional isolation
+
+  - id: batch_process_links
+    title: "Step 2: Batch Process Link Suggestions"
+    agent: semantic-linker-agent
+    duration: "15 minutes"
+    inputs: audit_report
+    outputs: processed_links
+    exit_criteria: |
+      Accumulated link suggestions reviewed and processed.
+      Batch accept/reject decisions applied.
+      Remaining suggestion queue cleared or minimal.
+    notes: |
+      Use semantic-linker-agent command: *batch-approve
+
+      Process accumulated link suggestions in batch mode:
+      - Review all pending suggestions (typically 50-100 weekly)
+      - Use batch mode for faster accept/reject workflow
+      - Accept high-confidence suggestions quickly
+      - Reject clearly irrelevant suggestions
+      - Group similar suggestions for pattern-based decisions
+
+      Batch processing is more efficient than daily review for volume.
+      Focus on establishing meaningful connections, not achieving 100% coverage.
+
+      Batch processing tips:
+      - Sort by confidence score (process high-confidence first)
+      - Look for patterns (accept/reject similar suggestions together)
+      - Skip uncertain suggestions (don't force decisions)
+
+  - id: exploratory_queries
+    title: "Step 3: Exploratory Queries"
+    agent: query-interpreter-agent
+    duration: "15 minutes"
+    inputs: processed_links
+    outputs: weekly_insights
+    exit_criteria: |
+      Exploratory queries executed and results reviewed.
+      User has identified emerging patterns and domain growth.
+      Insights captured for future knowledge work.
+    notes: |
+      Use query-interpreter-agent command: *query
+
+      Explore knowledge patterns that emerged this week:
+
+      Query 1: "What emerged this week?"
+      - Surface new notes, connections, and patterns
+      - Identify unexpected linkages
+      - Discover emerging themes
+
+      Query 2: "What domains saw growth?"
+      - Identify active knowledge domains
+      - Spot areas of increased capture and linking
+      - Guide future learning priorities
+
+      Query 3: Custom exploratory query
+      - Based on your current projects and interests
+      - Examples: "Notes related to [active project]", "Gaps in [domain]"
+
+      Document insights in weekly review note or journal entry.
+      Use insights to guide next week's knowledge work focus.
+
+outputs:
+  - audit_report # Vault health and quality issues
+  - processed_links # Link suggestions accepted/rejected
+  - weekly_insights # Patterns and growth areas identified
+
+notes: |
+  ## Weekly Review Execution
+
+  This workflow is designed for weekly execution with a recommended schedule:
+  - **When**: Sunday evening (or your preferred weekly review time)
+  - **Duration**: 30-45 minutes total
+  - **Frequency**: Once per week
+
+  **Step Breakdown**:
+  1. Quality Audit (15 min) - Vault health check
+  2. Batch Link Processing (15 min) - Clear suggestion queue
+  3. Exploratory Queries (15 min) - Discover patterns and insights
+
+  ## Preparation
+
+  Before starting the weekly review:
+  - Complete daily capture processing for the day
+  - Set aside uninterrupted time (30-45 min)
+  - Have weekly review note or journal ready for insights
+  - Clear mindset for reflection and maintenance
+
+  ## Integration with Daily Workflow
+
+  This workflow complements daily capture processing:
+  - **Daily**: Light touch maintenance (inbox zero, quick linking)
+  - **Weekly**: Deep maintenance (comprehensive audit, batch processing, exploration)
+
+  Together, these workflows maintain vault health without daily overhead.
+
+  ## Customization Options
+
+  Adjust based on your vault size and activity level:
+
+  **Large vaults (1000+ notes)**:
+  - Increase audit time to 20 minutes
+  - Focus on recent notes (last 30-90 days) for efficiency
+  - Use filtered queries to reduce result sets
+
+  **High capture weeks**:
+  - Increase link processing time to 20 minutes
+  - May accumulate 100+ suggestions during active weeks
+
+  **Low activity weeks**:
+  - Reduce total time to 20-30 minutes
+  - Skip audit if no critical issues expected
+  - Focus more on exploratory queries for reflection
+
+  ## Success Metrics
+
+  Track these indicators to measure workflow effectiveness:
+  - **Audit issues resolved**: Target 80%+ resolution within week
+  - **Link suggestions processed**: Target 100% weekly backlog clearance
+  - **Insights captured**: 2-3 meaningful patterns identified weekly
+  - **Time to complete**: Within ±20% of 30-45 min estimate
+
+  ## Action Items from Review
+
+  Weekly review typically generates action items:
+  - Fix broken links (priority: high)
+  - Update stale domain-critical notes (priority: medium)
+  - Explore emerging themes (priority: variable)
+  - Archive or consolidate orphaned notes (priority: low)
+
+  Track action items in task management system or project notes.
+  Don't feel obligated to complete all items immediately - prioritize based on impact.
+
+  ## Long-term Benefits
+
+  Consistent weekly reviews provide compounding benefits:
+  - Maintains vault quality and prevents degradation
+  - Surfaces serendipitous connections and insights
+  - Builds awareness of knowledge growth patterns
+  - Creates regular reflection rhythm
+  - Prevents accumulation of maintenance debt
+
+  ## Integration with Knowledge Lifecycle
+
+  This workflow is a focused weekly execution of Phase 3 (Review) from the
+  Knowledge Lifecycle Workflow, with added exploratory elements to surface
+  insights and guide future knowledge work.

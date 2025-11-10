@@ -1,0 +1,177 @@
+name: daily-capture-processing
+title: Daily Capture Processing Workflow
+description: |
+  Routine workflow for daily knowledge work. Process captured notes,
+  review link suggestions, and surface relevant context for the day.
+
+  Designed for twice-daily execution: morning routine (10 min) to start
+  the day with clean inbox and relevant context, and evening routine (10 min)
+  to process the day's captures and maintain vault freshness.
+
+triggers:
+  - intent: "daily workflow"
+  - intent: "morning routine"
+  - intent: "evening routine"
+  - command: /daily-workflow
+
+inputs:
+  - time_of_day # morning or evening
+
+agents:
+  - inbox-triage-agent
+  - semantic-linker-agent
+  - query-interpreter-agent
+  - quality-auditor-agent
+
+steps:
+  # Morning Routine - Start day with clean inbox and relevant context
+  - id: morning_triage
+    title: "Morning: Process Overnight Captures"
+    agent: inbox-triage-agent
+    duration: "5 minutes"
+    outputs: processed_captures
+    exit_criteria: |
+      All inbox items categorized and moved to appropriate locations.
+      Inbox folder is empty or contains only items awaiting context.
+    notes: |
+      Use inbox-triage-agent command: *process-inbox
+
+      Process all items captured overnight or since last session:
+      - Categorize notes by type (fleeting, literature, permanent, reference)
+      - Move to appropriate vault locations
+      - Add basic metadata tags
+      - Flag notes requiring further organization
+
+      Aim for inbox zero but don't force categorization if context is missing.
+
+  - id: morning_review_suggestions
+    title: "Morning: Review Link Suggestions"
+    agent: semantic-linker-agent
+    duration: "5 minutes"
+    inputs: processed_captures
+    outputs: accepted_links
+    exit_criteria: |
+      Reviewed 5-10 pending link suggestions.
+      Accepted links applied to notes.
+      Remaining suggestions kept for later review.
+    notes: |
+      Use semantic-linker-agent command: *review-suggestions
+
+      Review accumulated link suggestions:
+      - Limit to 5-10 suggestions for time management
+      - Accept high-confidence suggestions quickly
+      - Reject clearly irrelevant suggestions
+      - Defer uncertain suggestions for weekly batch processing
+
+      Focus on suggestions for recently processed notes to build context early.
+
+  - id: morning_context
+    title: "Morning: Surface Relevant Notes"
+    agent: query-interpreter-agent
+    duration: "5 minutes"
+    inputs: accepted_links
+    outputs: daily_context
+    exit_criteria: |
+      Query executed successfully.
+      User has reviewed results and identified relevant notes for the day.
+    notes: |
+      Use query-interpreter-agent command: *query
+
+      Surface notes relevant to today's work:
+      - Query: "What notes are relevant for today?"
+      - Query: "Recent notes in [active domain]"
+      - Review results to establish daily context
+      - Open or link relevant notes to daily note
+
+      Customize query based on your active projects and domains.
+
+  # Evening Routine - Process day's captures and quick maintenance
+  - id: evening_triage
+    title: "Evening: Process Day's Captures"
+    agent: inbox-triage-agent
+    duration: "5 minutes"
+    outputs: evening_processed
+    exit_criteria: |
+      All day's captures categorized and moved.
+      Inbox ready for next day.
+    notes: |
+      Use inbox-triage-agent command: *process-inbox
+
+      Process notes captured during the day:
+      - Same categorization process as morning
+      - Aim for inbox zero before ending work
+      - Flag complex items for weekend processing
+
+      This maintains inbox hygiene and prevents accumulation.
+
+  - id: evening_freshness_check
+    title: "Evening: Quick Freshness Check"
+    agent: quality-auditor-agent
+    duration: "5 minutes"
+    inputs: evening_processed
+    outputs: freshness_alerts
+    exit_criteria: |
+      Freshness check completed on domain-critical notes.
+      User notified of any stale notes requiring attention.
+    notes: |
+      Use quality-auditor-agent command: *audit-freshness
+
+      Quick maintenance check:
+      - Check only domain-critical notes (exclude references)
+      - Flag notes stale >90 days in active domains
+      - Create reminders for stale note review
+      - Skip comprehensive audit (save for weekly review)
+
+      This is a light touch check, not a full audit.
+
+outputs:
+  - processed_captures # Notes processed from inbox
+  - accepted_links # Links applied during morning review
+  - daily_context # Relevant notes surfaced for the day
+  - evening_processed # Notes processed during evening triage
+  - freshness_alerts # Stale notes flagged for attention
+
+notes: |
+  ## Daily Workflow Execution
+
+  This workflow is designed for twice-daily execution:
+
+  **Morning Routine** (10 minutes):
+  1. Process overnight captures (5 min)
+  2. Review link suggestions (5 min)
+  3. Surface relevant context (5 min)
+
+  **Evening Routine** (10 minutes):
+  1. Process day's captures (5 min)
+  2. Quick freshness check (5 min)
+
+  Total daily time commitment: 15-20 minutes
+
+  ## Time Management Tips
+
+  - Set specific times for morning and evening routines
+  - Use timers to stay within duration estimates
+  - Don't over-process - some items can wait for weekly review
+  - Focus on high-value activities (inbox zero, building connections)
+
+  ## Customization Options
+
+  Adjust based on your needs:
+  - **Heavy capture days**: Add 5 minutes to triage steps
+  - **Active linking**: Increase suggestion review limit to 15-20
+  - **Minimal maintenance**: Skip evening freshness check on light days
+
+  ## Integration with Other Workflows
+
+  This workflow is a focused daily execution of the broader Knowledge Lifecycle:
+  - Executes Phases 1-2 of the lifecycle (Capture + Organization)
+  - Complements weekly review workflow for comprehensive maintenance
+  - Provides daily rhythm while weekly review provides depth
+
+  ## Success Metrics
+
+  Track these indicators to measure workflow effectiveness:
+  - Inbox items remaining at end of day (target: 0-3)
+  - Link suggestions processed per week (target: 50-100)
+  - Daily context relevance (subjective: high/medium/low)
+  - Time to complete workflow (target: within ±20% of estimates)

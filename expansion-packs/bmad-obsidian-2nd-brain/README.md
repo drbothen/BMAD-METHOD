@@ -1028,13 +1028,105 @@ npm run validate
 
 ## Available Workflows
 
-Workflows will be populated in future releases:
+Workflow files orchestrate multiple agents to execute complex knowledge management routines systematically. All workflows are located in `workflows/` directory.
 
-- Capture & Triage Workflow
-- Organization & Linking Workflow
+### Knowledge Lifecycle Workflow
+
+**File:** `knowledge-lifecycle-workflow.yaml`
+**Purpose:** Master continuous lifecycle for note management from capture to review
+**Duration:** Continuous (lifecycle-based, not time-boxed)
+**Agents:** Inbox Triage, Structural Analysis, Semantic Linker, Quality Auditor
+
+**Phases:**
+
+1. **Phase 1: Capture** - Inbox triage and categorization using Inbox Triage Agent
+2. **Phase 2: Organization** - Structure analysis and semantic linking
+3. **Phase 3: Periodic Review** - Quality auditing and vault maintenance
+
+**When to use:**
+
+- Setting up your continuous knowledge management system
+- Understanding the full lifecycle of notes in your vault
+- Planning long-term knowledge management strategy
+
+**Execution:** This is a lifecycle framework rather than a time-boxed workflow. Execute phases based on triggers (daily for capture, weekly for organization and review).
+
+### Daily Capture Processing Workflow
+
+**File:** `daily-capture-processing-workflow.yaml`
+**Purpose:** Daily routine for processing captured notes and reviewing suggestions
+**Duration:** 15-20 minutes (10 min morning + 10 min evening)
+**Agents:** Inbox Triage, Semantic Linker, Query Interpreter, Quality Auditor
+
+**Morning Routine (10 min):**
+
+1. Process overnight captures (5 min)
+2. Review link suggestions (5 min)
+3. Surface relevant notes for the day (5 min)
+
+**Evening Routine (10 min):**
+
+1. Process day's captures (5 min)
+2. Quick freshness check on critical notes (5 min)
+
+**When to use:**
+
+- Daily note capture habits
+- Maintaining inbox zero
+- Surfacing relevant context for your day's work
+
+**Execution:** Run twice daily at consistent times (e.g., 9am and 6pm). Input parameter: `time_of_day` (morning or evening).
+
+### Weekly Review Workflow
+
+**File:** `weekly-review-workflow.yaml`
+**Purpose:** Weekly maintenance including audit, link processing, and exploratory queries
+**Duration:** 30-45 minutes
+**Agents:** Quality Auditor, Semantic Linker, Query Interpreter
+
+**Steps:**
+
+1. **Weekly Quality Audit (15 min)** - Comprehensive vault health check
+   - Check for broken links (wikilinks and external URLs)
+   - Identify stale notes (domain-critical only, >90 days)
+   - Report orphaned notes (no incoming links)
+
+2. **Batch Link Processing (15 min)** - Clear suggestion queue
+   - Review accumulated suggestions (typically 50-100 weekly)
+   - Accept/reject in batch mode for efficiency
+   - Focus on high-confidence suggestions
+
+3. **Exploratory Queries (15 min)** - Discover patterns and insights
+   - Query: "What emerged this week?"
+   - Query: "What domains saw growth?"
+   - Custom queries based on active projects
+
+**When to use:**
+
+- Weekly vault maintenance and quality assurance
+- Accumulated link suggestions need batch processing
+- Exploring emerging patterns in your knowledge base
+
+**Execution:** Run weekly at consistent time (recommended: Sunday evening). Requires uninterrupted 30-45 minute block.
+
+### Workflow Customization
+
+Workflows can be customized by:
+
+- Adjusting duration estimates based on vault size
+- Modifying exit criteria to match your quality standards
+- Adding or removing steps based on your needs
+- Changing agent command parameters in workflow files
+
+See `workflows/README.md` for detailed usage instructions and customization options.
+
+### Future Workflows (Phase 2+)
+
+Planned for future releases:
+
 - Synthesis & MOC Creation Workflow
 - Content Generation Workflow
-- Review & Refinement Workflow
+- Gap Detection & Research Prioritization Workflow
 
 ## Configuration
 
