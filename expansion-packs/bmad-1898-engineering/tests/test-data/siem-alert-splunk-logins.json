@@ -1,0 +1,59 @@
+{
+  "id": "TEST-SIEM-001",
+  "key": "AOD-6234",
+  "fields": {
+    "summary": "Splunk Notable - Multiple Failed Login Attempts Followed by Success",
+    "issuetype": {
+      "name": "Event Alert",
+      "id": "10100"
+    },
+    "project": {
+      "key": "AOD",
+      "name": "Security Operations"
+    },
+    "priority": {
+      "name": "Medium",
+      "id": "3"
+    },
+    "status": {
+      "name": "Open",
+      "id": "1"
+    },
+    "created": "2025-11-09T11:15:42.000-0500",
+    "updated": "2025-11-09T11:15:42.000-0500",
+    "description": "# Alert Overview\n\n**Alert Source**: Splunk Enterprise Security (SIEM)\n**Alert Type**: Correlation Rule / Notable Event\n**Severity**: Medium\n**Detection Time**: 2025-11-09 11:12:35 EST\n**Alert ID**: SPLUNK-2025-110911-LOGIN-089\n**Correlation Rule**: \"Brute Force Login Attempt - Multiple Failures Followed by Success\"\n\n## Alert Description\n\nSplunk detected a pattern of 15 failed login attempts followed by a successful login within a 5-minute window for user account \"jdoe@company.com\" accessing the VPN gateway. This pattern matches the correlation rule for potential credential stuffing or brute force attacks.\n\n**Correlation Rule Logic**:\n- Threshold: 10+ failed login attempts within 5 minutes\n- Followed by: Successful login from same source IP within 10 minutes\n- Risk Score: 60/100 (Medium)\n- MITRE ATT&CK: T1110 (Brute Force), T1078 (Valid Accounts)\n\n## Network Identifiers\n\n**Source Information:**\n- IP Address: 73.158.64.25\n- Geolocation: United States, California, San Francisco\n- ISP: Comcast Cable Communications\n- Reverse DNS: c-73-158-64-25.hsd1.ca.comcast.net (residential ISP)\n- First Seen: 2025-11-09 11:08:12 (new source IP for this user)\n\n**Destination Information:**\n- IP Address: 203.45.67.100 (External IP - VPN Gateway)\n- Internal Service: Cisco AnyConnect VPN Gateway\n- Hostname: vpn-gateway-primary.company.com\n- Asset Owner: Network Infrastructure Team\n- Criticality: HIGH (corporate network access point)\n\n**User Account Information:**\n- Username: jdoe@company.com\n- Display Name: Jane Doe\n- Department: Finance\n- Job Title: Senior Financial Analyst\n- Account Status: Active\n- Last Known Login: 2025-11-08 17:42:15 (from office IP 10.200.15.45)\n- Typical Login Pattern: M-F 8:00-18:00 EST, office network only\n\n## Timeline\n\n### Failed Login Attempts (15 total)\n\n- **2025-11-09 11:08:12** - Failed login attempt #1 (reason: incorrect password)\n- **2025-11-09 11:08:25** - Failed login attempt #2 (reason: incorrect password)\n- **2025-11-09 11:08:38** - Failed login attempt #3 (reason: incorrect password)\n- **2025-11-09 11:08:51** - Failed login attempt #4 (reason: incorrect password)\n- **2025-11-09 11:09:04** - Failed login attempt #5 (reason: incorrect password)\n- **2025-11-09 11:09:17** - Failed login attempt #6 (reason: incorrect password)\n- **2025-11-09 11:09:30** - Failed login attempt #7 (reason: incorrect password)\n- **2025-11-09 11:09:43** - Failed login attempt #8 (reason: incorrect password)\n- **2025-11-09 11:09:56** - Failed login attempt #9 (reason: incorrect password)\n- **2025-11-09 11:10:09** - Failed login attempt #10 (reason: incorrect password)\n- **2025-11-09 11:10:22** - Failed login attempt #11 (reason: incorrect password)\n- **2025-11-09 11:10:35** - Failed login attempt #12 (reason: incorrect password)\n- **2025-11-09 11:10:48** - Failed login attempt #13 (reason: incorrect password)\n- **2025-11-09 11:11:01** - Failed login attempt #14 (reason: incorrect password)\n- **2025-11-09 11:11:14** - Failed login attempt #15 (reason: incorrect password)\n\n### Successful Login\n\n- **2025-11-09 11:11:27** - Successful VPN authentication\n  - Authentication Method: Username/password + MFA (push notification)\n  - MFA Device: iPhone 13 (serial: XXXX-XXXX-1234)\n  - MFA Response Time: 3 seconds (user accepted push)\n  - Session Duration: 2 hours 14 minutes (active session)\n  - VPN IP Assigned: 10.250.45.78\n\n### Post-Login Activity\n\n- **2025-11-09 11:12:00** - User accessed corporate email (Outlook Web Access)\n- **2025-11-09 11:18:45** - User accessed finance file share (\\\\fileserver\\finance\\Q4-Reports)\n- **2025-11-09 11:25:12** - User accessed SAP ERP system (normal finance workflows)\n- **2025-11-09 11:35:30** - User joined Teams meeting (Finance Q4 Review)\n- **2025-11-09 13:41:15** - VPN session still active (normal activity patterns)\n\n## Additional Context\n\n**User Behavior Analysis:**\n- User typically logs in from office network (10.200.0.0/16)\n- This is first remote VPN login in 3 months\n- User's laptop (LAPTOP-JDOE-01) reports location: San Francisco, CA (matches source IP geolocation)\n- User submitted IT ticket yesterday (2025-11-08): \"Reset VPN password - forgot credentials\"\n- IT Help Desk reset VPN password on 2025-11-08 at 16:30 EST\n\n**Password Reset Context:**\n- IT Ticket #HD-2025-3421: \"VPN Password Reset Request\"\n- Ticket Created: 2025-11-08 16:15 EST\n- Verification Method: Phone call to user's registered mobile (verified identity)\n- Password Reset: 2025-11-08 16:30 EST\n- Temporary Password Provided: Yes (user required to change on first login)\n\n**MFA Context:**\n- MFA device registered: 2023-05-12 (iPhone 13, user's primary device)\n- MFA push notification accepted in 3 seconds (typical user response time: 2-5 seconds)\n- No MFA bypass or fallback codes used\n- User's MFA device location: San Francisco, CA (geolocation matches source IP)\n\n**Alternative Explanations:**\n1. **Password Change Learning Curve**: User may have mistyped new temporary password multiple times before getting it correct\n2. **Password Manager Sync Issue**: User's password manager may not have synced the new password yet\n3. **User Error**: User may have been trying old password variations before remembering password reset\n4. **Legitimate Brute Force**: User legitimately trying to remember/guess their new password\n\n**Threat Intelligence:**\n- Source IP reputation: Clean (no blocklists, no prior malicious activity)\n- Source IP history: No prior login attempts for any corporate accounts\n- Source IP ASN: Residential ISP (Comcast), not a known botnet or VPN provider\n- No credential stuffing campaigns targeting this organization in past 30 days\n\n## Disposition Options\n\n1. **True Positive**: Credential stuffing attack or account compromise\n2. **False Positive**: Correlation rule triggered incorrectly (unlikely given pattern)\n3. **Benign True Positive**: Legitimate user struggling with new password after reset\n\n## Investigation Requirements\n\n- Contact Jane Doe to confirm she initiated the VPN login attempts\n- Verify user's physical location (San Francisco) aligns with her expected location\n- Review IT ticket #HD-2025-3421 for password reset legitimacy\n- Check if user traveled to San Francisco recently (expense reports, calendar)\n- Validate MFA device is user's registered iPhone (not compromised)\n- Review post-login activity for suspicious behavior (data exfiltration, lateral movement)\n- Assess if password reset workflow was socially engineered (verify phone verification)\n- Determine if user received phishing emails or MFA fatigue attacks recently\n- Consider user education on password managers and secure password practices\n",
+    "reporter": {
+      "name": "splunk-integration",
+      "displayName": "Splunk ES Integration Bot",
+      "emailAddress": "noreply@splunk.local"
+    },
+    "assignee": null,
+    "labels": [
+      "siem-alert",
+      "splunk",
+      "brute-force",
+      "vpn-login",
+      "correlation-rule",
+      "medium-priority"
+    ],
+    "customfield_10050": "Event Alert",
+    "customfield_10051": "Brute Force Login Attempt",
+    "customfield_10052": "Medium",
+    "customfield_10053": null,
+    "customfield_10054": null
+  },
+  "metadata": {
+    "testPurpose": "Test SIEM correlation rule alert investigation with Benign True Positive disposition",
+    "expectedDisposition": "Benign True Positive (BTP) - Legitimate user struggling with new password after IT reset",
+    "expectedInvestigationTime": "10-15 minutes",
+    "keyTestingPoints": [
+      "SIEM correlation rule analysis",
+      "Alternative explanations considered (password reset, user error)",
+      "Contextual evidence integration (IT ticket, MFA validation, post-login behavior)",
+      "Confidence level assessment (high confidence in BTP determination)",
+      "User behavior baseline comparison",
+      "Threat intelligence integration (IP reputation clean)"
+    ],
+    "notes": "This scenario tests nuanced investigation where correlation rule correctly identifies pattern but context reveals benign explanation. Tests investigator's ability to consider alternative hypotheses and assess confidence levels."
+  }
+}

@@ -59,7 +59,8 @@ Available Commands:
 3. *research-cve {cve-id} - Standalone CVE research
 4. *assess-priority {ticket-id} - Calculate multi-factor priority
 5. *map-attack {cve-id} - Map CVE to MITRE ATT&CK framework
-6. *exit - Exit Security Analyst agent mode
+6. *investigate-event {ticket-id} - Investigate security event alerts (ICS/IDS/SIEM)
+7. *exit - Exit Security Analyst agent mode
 
 What would you like me to help you with?
 ```
@@ -133,14 +134,15 @@ Before your first enrichment, ensure:
 
 ### Quick Command Reference
 
-| Command         | Syntax                         | Duration  | Primary Use                |
-| --------------- | ------------------------------ | --------- | -------------------------- |
-| Help            | `*help`                        | Instant   | Display available commands |
-| Enrich Ticket   | `*enrich-ticket {ticket-id}`   | 10-15 min | Full enrichment workflow   |
-| Research CVE    | `*research-cve {cve-id}`       | 3-8 min   | Standalone CVE research    |
-| Assess Priority | `*assess-priority {ticket-id}` | 2-3 min   | Quick priority calculation |
-| Map ATT&CK      | `*map-attack {cve-id}`         | 2-4 min   | MITRE ATT&CK mapping       |
-| Exit            | `*exit`                        | Instant   | Exit agent mode            |
+| Command          | Syntax                           | Duration  | Primary Use                         |
+| ---------------- | -------------------------------- | --------- | ----------------------------------- |
+| Help             | `*help`                          | Instant   | Display available commands          |
+| Enrich Ticket    | `*enrich-ticket {ticket-id}`     | 10-15 min | Full enrichment workflow            |
+| Research CVE     | `*research-cve {cve-id}`         | 3-8 min   | Standalone CVE research             |
+| Assess Priority  | `*assess-priority {ticket-id}`   | 2-3 min   | Quick priority calculation          |
+| Map ATT&CK       | `*map-attack {cve-id}`           | 2-4 min   | MITRE ATT&CK mapping                |
+| Investigate Event| `*investigate-event {ticket-id}` | 15-25 min | Event alert investigation (ICS/IDS/SIEM) |
+| Exit             | `*exit`                          | Instant   | Exit agent mode                     |
 
 ### Enrichment Workflow At-a-Glance
 
@@ -198,6 +200,12 @@ graph TD
 *map-attack CVE-2024-1234  # Get ATT&CK mapping for SOC
 ```
 
+**Scenario: ICS Alert Investigation (Claroty/IDS/SIEM)**
+
+```bash
+*investigate-event AOD-4052  # Full event investigation with disposition determination
+```
+
 ### Troubleshooting Quick Tips
 
 | Issue                    | Quick Fix                                                          |
@@ -248,7 +256,8 @@ Agent: Available Commands:
 3. *research-cve {cve-id} - Standalone CVE research
 4. *assess-priority {ticket-id} - Calculate multi-factor priority
 5. *map-attack {cve-id} - Map CVE to MITRE ATT&CK framework
-6. *exit - Exit Security Analyst agent mode
+6. *investigate-event {ticket-id} - Investigate security event alerts (ICS/IDS/SIEM)
+7. *exit - Exit Security Analyst agent mode
 ```
 
 ---
@@ -727,7 +736,287 @@ References:
 
 ---
 
-### 6. \*exit
+### 6. \*investigate-event {ticket-id}
+
+**Purpose:** Investigate security event alerts from ICS/IDS/SIEM platforms and determine disposition (TP/FP/BTP)
+
+**Syntax:**
+
+```
+*investigate-event AOD-4052
+```
+
+**Parameters:**
+
+- `ticket-id` (required): JIRA ticket ID for event alert (e.g., AOD-4052, SEC-789)
+
+**When to Use:**
+
+- Claroty ICS alerts (industrial control system detections)
+- Snort IDS alerts (intrusion detection signatures)
+- Splunk SIEM alerts (security information and event management)
+- Any security event requiring investigation and disposition determination
+
+**What Happens During Execution:**
+
+The agent executes a hypothesis-driven investigation workflow based on NIST SP 800-61:
+
+1. **Alert Triage** (~2-3 min)
+   - Extract alert metadata (platform, rule ID, severity, timestamp)
+   - Document network identifiers (IPs, hostnames, protocols, ports)
+   - Identify affected assets and criticality
+
+2. **Evidence Collection** (~5-8 min)
+   - Gather logs from relevant sources (firewall, IDS, host logs)
+   - Correlate events across multiple data sources
+   - Identify historical patterns and previous occurrences
+   - Document asset communication patterns
+
+3. **Technical Analysis** (~4-6 min)
+   - Validate protocol behavior (expected vs. observed)
+   - Assess potential attack vectors
+   - Evaluate asset context (function, business impact)
+   - Consider ICS/SCADA-specific implications if applicable
+
+4. **Disposition Determination** (~2-3 min)
+   - **True Positive (TP):** Malicious activity confirmed
+   - **False Positive (FP):** Alert incorrect, no malicious activity
+   - **Benign True Positive (BTP):** Real activity, but authorized/expected
+   - Assign confidence level (High/Medium/Low)
+   - Document reasoning with specific evidence
+
+5. **Recommendations & Next Actions** (~2-3 min)
+   - Immediate actions (containment, escalation, tuning)
+   - Long-term improvements (detection tuning, process changes)
+   - Escalation requirements (SOC lead, incident response team)
+
+**Expected Duration:** 15-25 minutes (varies by complexity)
+
+**Expected Outputs:**
+
+1. JIRA comment with full investigation report
+2. JIRA custom fields updated (Disposition, Confidence Level, Escalation Required)
+3. Local file: `investigations/{ticket-id}-investigation.md`
+
+**Prerequisites:**
+
+- JIRA ticket exists and contains event alert details
+- Atlassian MCP connected
+- Access to relevant log sources (or logs provided in ticket)
+
+**Disposition Framework:**
+
+**True Positive (TP):**
+- Malicious activity confirmed with evidence
+- Attack signatures match known threat patterns
+- Unauthorized access or policy violations observed
+- **Action:** Escalate to incident response, containment required
+
+**False Positive (FP):**
+- Alert triggered incorrectly
+- No corresponding activity in logs
+- Detection logic error or misinterpretation
+- **Action:** Recommend signature tuning, document root cause
+
+**Benign True Positive (BTP):**
+- Real activity detected, but authorized/expected
+- Legitimate business process or administrative task
+- Approved change or maintenance activity
+- **Action:** Recommend exception/whitelist, document authorization
+
+**Investigation Methodology:**
+
+The investigation follows a hypothesis-driven approach:
+
+1. **Formulate Hypothesis:** What might explain this alert?
+2. **Collect Evidence:** What data supports or refutes the hypothesis?
+3. **Test Hypothesis:** Does the evidence confirm malicious intent?
+4. **Determine Disposition:** TP/FP/BTP based on evidence weight
+5. **Document Reasoning:** Clear rationale for conclusion
+
+**Common ICS/IDS/SIEM Alert Types:**
+
+**ICS (Claroty):**
+- Unauthorized SSH connections in control environments
+- Protocol violations (Modbus, DNP3, IEC 104)
+- Firmware changes or configuration updates
+- New device appearances on OT network
+
+**IDS (Snort):**
+- Exploit attempt signatures
+- Port scan detections
+- Malware communication patterns
+- Policy violations (unauthorized protocols)
+
+**SIEM (Splunk):**
+- Multiple failed login attempts
+- Privilege escalation indicators
+- Data exfiltration patterns
+- Anomalous user behavior
+
+**Example Usage:**
+
+```
+User: *investigate-event AOD-4052
+
+Agent:
+🔍 Security Event Investigation
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Ticket: AOD-4052
+Type: Event Alert (Claroty ICS)
+Alert: SSH Connection in Control Environments (#317)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[Stage 1: Alert Triage]
+✅ Platform: Claroty (ICS detection engine)
+✅ Severity: Medium
+✅ Rule ID: #317
+✅ Detection Time: 2025-11-08 14:23:15 UTC
+✅ Affected Asset: PLC-ZONE-3-01 (Critical - production control)
+
+[Stage 2: Evidence Collection]
+✅ Source IP: 192.168.10.45 (Engineering workstation)
+✅ Destination IP: 10.20.30.15 (PLC-ZONE-3-01)
+✅ Port: 22 (SSH)
+✅ Historical Context: First SSH connection to this PLC in 90 days
+✅ Communication Pattern: Engineering workstation routinely accesses PLCs
+
+[Stage 3: Technical Analysis]
+✅ Protocol Validation: Valid SSH handshake, successful authentication
+✅ Attack Vector Assessment: No exploit indicators, normal SSH session
+✅ Asset Context: PLC manages production line, SSH access rarely needed
+✅ Business Impact: SSH enabled for troubleshooting, not typical operations
+
+[Stage 4: Disposition Determination]
+Disposition: Benign True Positive (BTP)
+Confidence: High
+
+Reasoning:
+✓ Valid SSH connection from authorized engineering workstation
+✓ Authentication successful using approved credentials
+✓ Correlation with maintenance window (scheduled 2025-11-08 14:00)
+✓ Engineer confirmed activity (authorized firmware update)
+✓ No malicious indicators observed (exploit attempts, persistence)
+
+[Stage 5: Recommendations]
+Immediate Actions:
+1. No containment required (authorized activity)
+2. Verify firmware update completed successfully
+3. Close ticket after change documentation review
+
+Long-term Improvements:
+1. Create Claroty exception for engineering workstation → PLCs during maintenance windows
+2. Implement change management integration (auto-suppress alerts during approved changes)
+3. Document SSH access procedures for future reference
+
+Escalation Required: No
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Investigation Complete!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Duration: 18 minutes 32 seconds
+Disposition: Benign True Positive (BTP)
+Confidence: High
+Next Step: Update change documentation, create detection exception
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Investigation artifacts:
+📄 JIRA: https://company.atlassian.net/browse/AOD-4052
+📄 Local: investigations/AOD-4052-investigation.md
+```
+
+**Cognitive Bias Awareness:**
+
+The investigation process emphasizes avoiding common cognitive biases:
+
+- **Automation Bias:** Don't blindly trust alert severity or platform classification
+- **Anchoring Bias:** Don't fixate on first hypothesis; consider alternatives
+- **Confirmation Bias:** Actively seek evidence that refutes your hypothesis
+- **Availability Bias:** Don't over-rely on recent/memorable similar incidents
+
+**ICS/SCADA-Specific Considerations:**
+
+When investigating ICS alerts:
+
+- **Safety Implications:** Consider physical safety (could this affect industrial processes?)
+- **Legacy Systems:** Many ICS devices have limited logging or outdated security
+- **Change Sensitivity:** ICS environments are change-averse; understand operational constraints
+- **Protocol Knowledge:** Understand OT protocols (Modbus, DNP3, BACnet, etc.)
+- **Air-Gap Assumptions:** Verify network segmentation (IT/OT separation)
+
+**Troubleshooting Tips:**
+
+| Issue                      | Solution                                                                  |
+| -------------------------- | ------------------------------------------------------------------------- |
+| Insufficient evidence      | Request additional logs from SOC or asset owner                           |
+| Unclear disposition        | Assign "Low confidence" and escalate to senior analyst                    |
+| Missing business context   | Contact asset owner to confirm expected behavior                          |
+| First-time alert type      | Reference knowledge base (Story 7.7) for investigation best practices     |
+| Disposition disagreement   | Document both perspectives and escalate to team lead for final decision   |
+
+**Event Investigation Workflow Diagram:**
+
+```mermaid
+flowchart TD
+    Start([User: *investigate-event AOD-4052]) --> Stage1[Stage 1: Alert Triage]
+
+    Stage1 --> ExtractMeta[Extract Alert Metadata<br/>Platform, Rule ID, Severity]
+    ExtractMeta --> IdentifyAsset[Identify Affected Assets<br/>IPs, Hostnames, Criticality]
+    IdentifyAsset --> Stage2[Stage 2: Evidence Collection]
+
+    Stage2 --> GatherLogs[Gather Logs from Sources<br/>Firewall, IDS, Host Logs]
+    GatherLogs --> Correlate[Correlate Events<br/>Cross Multiple Data Sources]
+    Correlate --> Historical[Check Historical Patterns<br/>Previous Occurrences]
+    Historical --> Stage3[Stage 3: Technical Analysis]
+
+    Stage3 --> ValidateProto[Validate Protocol Behavior<br/>Expected vs. Observed]
+    ValidateProto --> AssessVector[Assess Attack Vectors<br/>Potential Exploitation]
+    AssessVector --> EvalContext[Evaluate Asset Context<br/>Function, Business Impact]
+    EvalContext --> ICSCheck{ICS/SCADA<br/>Environment?}
+    ICSCheck -->|Yes| ICSConsider[Consider Safety Implications<br/>OT Protocol Knowledge]
+    ICSCheck -->|No| Stage4[Stage 4: Disposition Determination]
+    ICSConsider --> Stage4
+
+    Stage4 --> Hypothesis[Formulate Hypothesis<br/>What explains this alert?]
+    Hypothesis --> TestHypothesis[Test Against Evidence<br/>Support or Refute]
+    TestHypothesis --> Disposition{Determine<br/>Disposition}
+
+    Disposition -->|Malicious Activity| TP[True Positive TP<br/>Evidence confirms attack]
+    Disposition -->|Alert Error| FP[False Positive FP<br/>No malicious activity]
+    Disposition -->|Authorized Activity| BTP[Benign True Positive BTP<br/>Real but expected]
+
+    TP --> Confidence[Assign Confidence Level<br/>High/Medium/Low]
+    FP --> Confidence
+    BTP --> Confidence
+
+    Confidence --> Stage5[Stage 5: Recommendations]
+
+    Stage5 --> Immediate{Immediate<br/>Actions?}
+    Immediate -->|TP| Escalate[Escalate to IR<br/>Containment Required]
+    Immediate -->|FP| Tuning[Recommend Signature Tuning<br/>Document Root Cause]
+    Immediate -->|BTP| Exception[Create Exception/Whitelist<br/>Document Authorization]
+
+    Escalate --> LongTerm[Long-term Improvements<br/>Detection Tuning, Process Changes]
+    Tuning --> LongTerm
+    Exception --> LongTerm
+
+    LongTerm --> Complete([Investigation Complete<br/>JIRA Updated, Report Saved])
+
+    style Start fill:#e1f5ff,stroke:#0066cc,stroke-width:3px
+    style Stage1 fill:#fff4e6,stroke:#ff9800
+    style Stage2 fill:#fff4e6,stroke:#ff9800
+    style Stage3 fill:#fff4e6,stroke:#ff9800
+    style Stage4 fill:#fff4e6,stroke:#ff9800
+    style Stage5 fill:#fff4e6,stroke:#ff9800
+    style TP fill:#f8d7da,stroke:#721c24
+    style FP fill:#fff3cd,stroke:#856404
+    style BTP fill:#d4edda,stroke:#155724
+    style Complete fill:#d4edda,stroke:#28a745,stroke-width:3px
+```
+
+---
+
+### 7. \*exit
 
 **Purpose:** Exit Security Analyst agent mode and return to standard environment
 

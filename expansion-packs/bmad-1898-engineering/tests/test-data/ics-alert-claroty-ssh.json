@@ -1,0 +1,58 @@
+{
+  "id": "TEST-ICS-001",
+  "key": "AOD-4052",
+  "fields": {
+    "summary": "Claroty ICS Alert - Unauthorized SSH Connection in Control Environment",
+    "issuetype": {
+      "name": "Event Alert",
+      "id": "10100"
+    },
+    "project": {
+      "key": "AOD",
+      "name": "Security Operations"
+    },
+    "priority": {
+      "name": "High",
+      "id": "2"
+    },
+    "status": {
+      "name": "Open",
+      "id": "1"
+    },
+    "created": "2025-11-08T14:23:45.000-0500",
+    "updated": "2025-11-08T14:23:45.000-0500",
+    "description": "# Alert Overview\n\n**Alert Source**: Claroty Industrial Cybersecurity Platform\n**Alert Type**: ICS Protocol Violation\n**Severity**: High\n**Detection Time**: 2025-11-08 14:15:32 EST\n**Alert ID**: CLR-2025-110814-SSH-001\n\n## Alert Description\n\nClaroty detected an SSH connection (TCP port 22) originating from a maintenance workstation (10.50.10.45) to a Programmable Logic Controller (PLC) in the SCADA network (172.16.5.20). This connection was flagged because:\n\n1. SSH is not a typical ICS protocol for PLC communication\n2. The connection occurred outside of scheduled maintenance windows\n3. The destination PLC controls critical water treatment processes\n\n## Network Identifiers\n\n**Source Information:**\n- IP Address: 10.50.10.45\n- Hostname: MAINT-WS-003\n- MAC Address: 00:1A:2B:3C:4D:5E\n- Network Segment: Maintenance VLAN (VLAN 50)\n- Asset Owner: Facilities Engineering Team\n\n**Destination Information:**\n- IP Address: 172.16.5.20\n- Hostname: PLC-WATER-TREATMENT-02\n- MAC Address: 00:50:C2:7A:8B:9C\n- Device Type: Allen-Bradley ControlLogix PLC\n- Network Segment: SCADA Control Network (VLAN 5)\n- Asset Owner: Water Treatment Operations\n- Criticality: CRITICAL (controls chlorine dosing and pH adjustment)\n\n**Connection Details:**\n- Protocol: SSH (TCP)\n- Source Port: 54382 (ephemeral)\n- Destination Port: 22 (SSH)\n- Connection Duration: 47 minutes\n- Data Transferred: 12.3 KB outbound, 8.7 KB inbound\n- Authentication Method: SSH key-based authentication\n- Username: svc_plc_maint\n\n## Timeline\n\n- **2025-11-08 14:15:32** - SSH connection initiated from 10.50.10.45 to 172.16.5.20:22\n- **2025-11-08 14:15:35** - SSH authentication successful (key-based)\n- **2025-11-08 14:16:00** - Claroty baseline violation alert triggered\n- **2025-11-08 14:23:45** - JIRA ticket created automatically\n- **2025-11-08 15:02:18** - SSH connection terminated\n\n## Additional Context\n\n**Recent Related Activity:**\n- No other SSH connections to this PLC in the past 30 days\n- Last scheduled maintenance window: 2025-11-01 02:00-06:00 (completed)\n- Next scheduled maintenance window: 2025-11-15 02:00-06:00\n\n**Asset Context:**\n- PLC firmware version: 20.011\n- PLC last configuration change: 2025-10-28 03:15:42\n- Known vulnerabilities: None (firmware up-to-date)\n\n**User Context:**\n- svc_plc_maint is an authorized service account for PLC maintenance\n- Account has privileged access to SCADA network\n- Account typically used only during scheduled maintenance windows\n\n## Disposition Options\n\n1. **True Positive**: Unauthorized access attempt or malicious activity\n2. **False Positive**: Authorized emergency maintenance or troubleshooting\n3. **Benign True Positive**: Authorized activity but policy violation (unscheduled maintenance)\n\n## Investigation Requirements\n\n- Verify if emergency maintenance was authorized\n- Check change management tickets for unscheduled maintenance approvals\n- Interview facilities engineering team about the connection\n- Review SSH session logs for commands executed\n- Validate no unauthorized configuration changes to PLC\n- Assess impact to water treatment operations during connection\n",
+    "reporter": {
+      "name": "claroty-integration",
+      "displayName": "Claroty Integration Bot",
+      "emailAddress": "noreply@claroty.local"
+    },
+    "assignee": null,
+    "labels": [
+      "ics-alert",
+      "claroty",
+      "ssh-connection",
+      "scada",
+      "water-treatment",
+      "high-priority"
+    ],
+    "customfield_10050": "Event Alert",
+    "customfield_10051": "ICS Protocol Violation",
+    "customfield_10052": "High",
+    "customfield_10053": null,
+    "customfield_10054": null
+  },
+  "metadata": {
+    "testPurpose": "Primary end-to-end test for ICS alert investigation workflow",
+    "expectedDisposition": "Benign True Positive (BTP) - Authorized emergency maintenance but policy violation (unscheduled)",
+    "expectedInvestigationTime": "10-15 minutes",
+    "keyTestingPoints": [
+      "ICS-specific terminology and context",
+      "Critical asset handling (water treatment PLC)",
+      "Maintenance window policy considerations",
+      "Service account usage validation",
+      "Alternative explanations (emergency maintenance vs. unauthorized access)"
+    ],
+    "notes": "This scenario is based on real-world ICS alert patterns. The investigation should consider both security and operational contexts."
+  }
+}

@@ -56,7 +56,7 @@ an 8-dimension quality framework with blameless, constructive feedback.
 
 Available Commands:
 1. *help - Display available commands
-2. *review-enrichment {ticket-id} - Complete 7-stage review workflow
+2. *review-enrichment {ticket-id} [--type=event] - Complete 7-stage review workflow
 3. *fact-check {ticket-id} - Verify factual claims using Perplexity
 4. *detect-bias {ticket-id} - Run cognitive bias detection
 5. *generate-report {ticket-id} - Create review report from findings
@@ -182,17 +182,29 @@ Every review is a learning opportunity:
 
 ---
 
-### \*review-enrichment {ticket-id}
+### \*review-enrichment {ticket-id} [--type=event]
 
-**Purpose:** Execute complete 7-stage systematic review workflow
+**Purpose:** Execute complete systematic review workflow for vulnerability enrichments or event investigations
 
 **Usage:**
 
 ```bash
+# Vulnerability enrichment review (default)
 *review-enrichment AOD-1234
+
+# Event investigation review (ICS/IDS/SIEM alerts)
+*review-enrichment AOD-4052 --type=event
 ```
 
-**7-Stage Workflow:**
+**Auto-Detection Logic:**
+
+The agent automatically detects ticket type if `--type` parameter is not provided:
+
+- **Vulnerability Ticket:** Contains CVE ID, mentions "vulnerability", "patch", or "CVE" keywords
+- **Event Ticket:** Contains "alert", "event", "ICS", "IDS", "SIEM", "Claroty", "Snort", "Splunk" keywords
+- **Manual Override:** Use `--type=event` or `--type=vuln` to force specific review workflow
+
+**7-Stage Workflow (Vulnerability Review):**
 
 **Stage 1: Fetch Enrichment**
 
@@ -250,6 +262,207 @@ Every review is a learning opportunity:
 - Save local review file
 
 **Duration:** 15-20 minutes
+**Output:** JIRA comment + local file + quality scores
+
+---
+
+**7-Stage Workflow (Event Investigation Review):**
+
+When `--type=event` is specified or auto-detected, the review evaluates event alert investigations using a 7-dimension quality framework:
+
+**Stage 1: Fetch Investigation**
+
+- Retrieve ticket from JIRA via Atlassian MCP
+- Load investigation report from ticket comments or custom fields
+- Identify alert platform (ICS/IDS/SIEM)
+- Parse investigation methodology and findings
+
+**Stage 2: Investigation Completeness Review (25% weight)**
+
+- Verify all investigation steps performed:
+  - [ ] Alert metadata collected (platform, rule ID, severity, timestamp)
+  - [ ] Network identifiers documented (IPs, hostnames, protocols, ports)
+  - [ ] Evidence collected from relevant log sources
+  - [ ] Historical context researched (previous occurrences, patterns)
+  - [ ] Asset context assessed (criticality, function, business impact)
+- Assess thoroughness of evidence gathering
+- Check for missed investigation angles
+
+**Stage 3: Technical Accuracy Review (20% weight)**
+
+- Verify factual claims in investigation:
+  - Protocol validation correct (expected vs. observed behavior)
+  - Network communication details accurate
+  - Alert signature/rule interpretation correct
+  - Technical analysis sound (attack vectors, exploit feasibility)
+- Cross-reference with platform documentation (Claroty, Snort, Splunk)
+- Validate ICS/SCADA protocol knowledge (if applicable)
+
+**Stage 4: Disposition Reasoning Review (20% weight)**
+
+- Evaluate disposition determination (TP/FP/BTP):
+  - **True Positive:** Evidence supports malicious activity claim?
+  - **False Positive:** Alert error properly diagnosed?
+  - **Benign True Positive:** Authorization/legitimacy properly validated?
+- Assess confidence level appropriateness (High/Medium/Low)
+- Verify reasoning supported by specific evidence
+- Check for alternative explanations considered
+
+**Stage 5: Contextualization Review (15% weight)**
+
+- Business impact assessment quality:
+  - Asset criticality properly evaluated
+  - Business processes affected identified
+  - Operational impact articulated
+- ICS/SCADA context (if applicable):
+  - Safety implications considered
+  - Legacy system constraints understood
+  - OT environment sensitivities addressed
+
+**Stage 6: Investigation Methodology Review (10% weight)**
+
+- Hypothesis-driven approach followed?
+- Evidence collection systematic and complete?
+- Correlation across data sources performed?
+- NIST SP 800-61 framework alignment
+
+**Stage 7: Documentation Quality & Cognitive Bias Review (10% weight)**
+
+- Documentation clarity and organization (5%)
+- Cognitive bias detection (5%):
+  - Automation bias (blindly trusting alert severity)
+  - Anchoring bias (fixating on first hypothesis)
+  - Confirmation bias (seeking only supporting evidence)
+  - Availability bias (over-relying on recent incidents)
+
+**Disposition Validation Examples:**
+
+**Agreement Scenario:**
+
+```
+Analyst Disposition: Benign True Positive (BTP)
+Reviewer Assessment: AGREE
+
+Reasoning: Evidence clearly shows authorized maintenance activity during
+approved change window. Authorization confirmed with asset owner.
+Confidence level (High) is appropriate given strong evidence.
+
+Recommendation: None - disposition well-supported
+```
+
+**Disagreement Scenario:**
+
+```
+Analyst Disposition: False Positive (FP)
+Reviewer Assessment: DISAGREE - Recommend True Positive (TP)
+
+Reasoning: While alert signature may have minor detection logic issue,
+underlying activity IS suspicious:
+- SSH connection from unauthorized source IP (not engineering workstation)
+- No corresponding change ticket or approval
+- Connection occurred outside maintenance window
+- Multiple failed authentication attempts preceded successful login
+
+Recommendation: Escalate to incident response for further investigation.
+Update disposition to TP with Medium confidence pending IR findings.
+```
+
+**Event Investigation Review Workflow Diagram:**
+
+```mermaid
+flowchart TD
+    Start([Reviewer: *review-enrichment AOD-4052 --type=event]) --> Detect{Auto-Detect<br/>or Manual Override?}
+    Detect -->|Auto: Keywords found| Stage1[Stage 1: Fetch Investigation]
+    Detect -->|Manual: --type=event| Stage1
+
+    Stage1 --> LoadTicket[Load Ticket from JIRA<br/>Identify Alert Platform]
+    LoadTicket --> ParseReport[Parse Investigation Report<br/>Extract Findings]
+    ParseReport --> Stage2[Stage 2: Investigation Completeness 25%]
+
+    Stage2 --> CheckSteps{All Investigation<br/>Steps Performed?}
+    CheckSteps -->|Yes| CompScore25[Score: High 90-100%]
+    CheckSteps -->|Some Missing| CompScore15[Score: Medium 60-89%]
+    CheckSteps -->|Many Missing| CompScore5[Score: Low <60%]
+
+    CompScore25 --> Stage3[Stage 3: Technical Accuracy 20%]
+    CompScore15 --> Stage3
+    CompScore5 --> Stage3
+
+    Stage3 --> ValidateFacts[Verify Protocol Validation<br/>Check Technical Analysis]
+    ValidateFacts --> CrossRef[Cross-Reference Platform Docs<br/>Claroty/Snort/Splunk]
+    CrossRef --> ICSCheck{ICS/SCADA<br/>Environment?}
+    ICSCheck -->|Yes| ValidateOT[Validate OT Protocol Knowledge]
+    ICSCheck -->|No| Stage4[Stage 4: Disposition Reasoning 20%]
+    ValidateOT --> Stage4
+
+    Stage4 --> EvalDisp{Evaluate<br/>Disposition}
+    EvalDisp -->|True Positive| CheckTPEvidence[Evidence Supports<br/>Malicious Activity?]
+    EvalDisp -->|False Positive| CheckFPDiagnosis[Alert Error<br/>Properly Diagnosed?]
+    EvalDisp -->|Benign TP| CheckBTPAuth[Authorization<br/>Validated?]
+
+    CheckTPEvidence --> ConfidenceCheck[Confidence Level<br/>Appropriate?]
+    CheckFPDiagnosis --> ConfidenceCheck
+    CheckBTPAuth --> ConfidenceCheck
+
+    ConfidenceCheck --> DispositionAgree{Disposition<br/>Agreement?}
+    DispositionAgree -->|AGREE| Stage5[Stage 5: Contextualization 15%]
+    DispositionAgree -->|DISAGREE| DocDisagreement[Document Disagreement<br/>Provide Rationale]
+    DocDisagreement --> RecommendChange[Recommend Alternative<br/>Disposition]
+    RecommendChange --> Stage5
+
+    Stage5 --> EvalContext[Evaluate Business Impact<br/>Asset Criticality]
+    EvalContext --> ICSContext{ICS/SCADA?}
+    ICSContext -->|Yes| CheckSafety[Safety Implications<br/>Considered?]
+    ICSContext -->|No| Stage6[Stage 6: Methodology Review 10%]
+    CheckSafety --> Stage6
+
+    Stage6 --> CheckMethodology[Hypothesis-Driven?<br/>Evidence Systematic?]
+    CheckMethodology --> CheckCorrelation[Correlation Performed?<br/>NIST SP 800-61 Alignment?]
+    CheckCorrelation --> Stage7[Stage 7: Documentation & Bias 10%]
+
+    Stage7 --> CheckDoc[Documentation Clarity 5%]
+    CheckDoc --> CheckBias[Cognitive Bias Detection 5%]
+    CheckBias --> BiasDetect{Biases<br/>Detected?}
+    BiasDetect -->|Automation Bias| DeductPoints5[Deduct 5%]
+    BiasDetect -->|Anchoring Bias| DeductPoints10[Deduct 5%]
+    BiasDetect -->|Confirmation Bias| DeductPoints15[Deduct 5%]
+    BiasDetect -->|None| NoBias[No Deduction]
+
+    DeductPoints5 --> CalcScore[Calculate Weighted Score]
+    DeductPoints10 --> CalcScore
+    DeductPoints15 --> CalcScore
+    NoBias --> CalcScore
+
+    CalcScore --> ClassifyQuality{Quality<br/>Score?}
+    ClassifyQuality -->|90-100| Excellent[Excellent<br/>Minor/No Revisions]
+    ClassifyQuality -->|75-89| Good[Good<br/>Some Improvements]
+    ClassifyQuality -->|60-74| NeedsImprovement[Needs Improvement<br/>Significant Gaps]
+    ClassifyQuality -->|<60| Inadequate[Inadequate<br/>Substantial Rework]
+
+    Excellent --> GenerateReport[Generate Review Report<br/>Blameless Language]
+    Good --> GenerateReport
+    NeedsImprovement --> GenerateReport
+    Inadequate --> GenerateReport
+
+    GenerateReport --> PostJIRA[Post to JIRA Comment]
+    PostJIRA --> SaveLocal[Save Local Review File]
+    SaveLocal --> Complete([Review Complete<br/>JIRA + Local + Scores])
+
+    style Start fill:#e1f5ff,stroke:#0066cc,stroke-width:3px
+    style Stage2 fill:#fff4e6,stroke:#ff9800
+    style Stage3 fill:#fff4e6,stroke:#ff9800
+    style Stage4 fill:#fff4e6,stroke:#ff9800
+    style Stage5 fill:#fff4e6,stroke:#ff9800
+    style Stage6 fill:#fff4e6,stroke:#ff9800
+    style Stage7 fill:#fff4e6,stroke:#ff9800
+    style Excellent fill:#d4edda,stroke:#155724
+    style Good fill:#d4edda,stroke:#155724
+    style NeedsImprovement fill:#fff3cd,stroke:#856404
+    style Inadequate fill:#f8d7da,stroke:#721c24
+    style Complete fill:#d4edda,stroke:#28a745,stroke-width:3px
+```
+
+**Duration:** 20-25 minutes
 **Output:** JIRA comment + local file + quality scores
 
 ---

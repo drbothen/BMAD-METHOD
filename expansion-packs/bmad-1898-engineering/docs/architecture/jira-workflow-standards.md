@@ -246,6 +246,244 @@ jira:
     closed: 'Closed'
 ```
 
+## Event Alert Issue Type (Epic 7)
+
+### Overview
+
+The Event Alert issue type supports security event investigation workflow for ICS/IDS/SIEM platform alerts (added in Epic 7: Testing & Validation - Event Investigation capabilities).
+
+**Distinction from Vulnerability Issue Type:**
+
+| Aspect                | Vulnerability Issue Type                | Event Alert Issue Type                            |
+| --------------------- | --------------------------------------- | ------------------------------------------------- |
+| **Trigger**           | CVE published, scanner detection        | ICS/IDS/SIEM platform alert triggered             |
+| **Focus**             | Vulnerability impact assessment         | Disposition determination (TP/FP/BTP)             |
+| **Timeline**          | Days to weeks (remediation planning)    | Minutes to hours (active incident investigation)  |
+| **Primary Output**    | Remediation plan, priority calculation  | Disposition decision, escalation determination    |
+| **Escalation**        | Based on priority (P1/P2 immediate)     | Based on disposition (TP → IR team escalation)    |
+| **Agent**             | `security-analyst` (*enrich-ticket)     | `security-analyst` (*investigate-event)           |
+
+### Required Custom Fields (Event Alert)
+
+The following custom fields are specific to Event Alert issue type:
+
+| Field Name             | Type          | Description                                          | Required | Source          |
+| ---------------------- | ------------- | ---------------------------------------------------- | -------- | --------------- |
+| Alert Platform         | Single Select | Detection platform (Claroty/Snort/Splunk/Other)     | Yes      | User input      |
+| Alert Rule ID          | Text          | Platform-specific rule ID (e.g., Claroty #317)       | Yes      | User input      |
+| Alert Severity         | Single Select | Platform severity (Critical/High/Medium/Low/Info)    | Yes      | Platform        |
+| Detection Timestamp    | DateTime      | When alert was triggered                             | Yes      | Platform        |
+| Source IP              | Text          | Source IP address of alert activity                  | No       | Platform        |
+| Destination IP         | Text          | Destination IP address                               | No       | Platform        |
+| Protocol               | Text          | Network protocol (SSH/HTTP/Modbus/etc)               | No       | Platform        |
+| Affected Asset         | Text          | Asset involved in alert (HMI-01, PLC-02, etc)        | Yes      | User input      |
+| Asset Criticality      | Single Select | Asset criticality (Critical/High/Medium/Low)         | Yes      | Config          |
+| Disposition            | Single Select | Investigation result (TP/FP/BTP)                     | Yes      | Analyst         |
+| Disposition Confidence | Single Select | Confidence level (High/Medium/Low)                   | Yes      | Analyst         |
+| Escalation Required    | Single Select | Escalate to IR team? (Yes/No/Pending)                | Yes      | Analyst         |
+| Investigation Duration | Number        | Minutes spent investigating (for metrics)            | No       | Automation      |
+| Reviewer Agree         | Single Select | Reviewer disposition agreement (Agree/Disagree/N/A)  | No       | Reviewer        |
+| Quality Score (Event)  | Number        | Review quality score 0-100 (7 dimensions)            | No       | Reviewer        |
+
+**Single Select Field Values:**
+
+```yaml
+alert_platform:
+  - Claroty
+  - Snort
+  - Splunk
+  - Other
+
+disposition:
+  - True Positive (TP)
+  - False Positive (FP)
+  - Benign True Positive (BTP)
+
+disposition_confidence:
+  - High
+  - Medium
+  - Low
+
+escalation_required:
+  - Yes
+  - No
+  - Pending
+
+reviewer_agree:
+  - Agree
+  - Disagree (see comments)
+  - N/A (not reviewed)
+```
+
+### Event Alert Workflow Statuses
+
+Event Alert investigations use a simplified workflow compared to vulnerability lifecycle:
+
+| Status Name           | Description                                        | Duration (Typical) |
+| --------------------- | -------------------------------------------------- | ------------------ |
+| Open                  | Alert received, awaiting investigation             | < 5 minutes        |
+| Investigating         | Analyst performing 5-stage investigation           | 15-25 minutes      |
+| Under Review          | Peer review of investigation (optional)            | 20-25 minutes      |
+| Awaiting Escalation   | TP confirmed, pending IR team handoff              | < 30 minutes       |
+| Escalated to IR       | Incident response team handling (TP only)          | Hours to days      |
+| Resolved              | Investigation complete, disposition documented     | N/A                |
+| Closed                | Ticket closed (FP/BTP) or IR complete (TP)         | N/A                |
+
+### Event Alert Workflow Diagram
+
+```mermaid
+graph TD
+    A[Open] --> B[Investigating]
+    B --> C{Disposition?}
+
+    C -->|True Positive TP| D[Awaiting Escalation]
+    D --> E[Escalated to IR]
+    E --> F[Closed]
+
+    C -->|False Positive FP| G{Review Required?}
+    C -->|Benign TP BTP| G
+
+    G -->|Yes| H[Under Review]
+    H --> I{Reviewer Agrees?}
+    I -->|Agree| J[Resolved]
+    I -->|Disagree| B
+
+    G -->|No| J
+    J --> F
+
+    style A fill:#f0f0f0
+    style B fill:#e1f5ff
+    style C fill:#fff4e1
+    style D fill:#ffcccc
+    style E fill:#ff9999
+    style H fill:#fff4e1
+    style J fill:#ccffcc
+    style F fill:#d0d0d0
+```
+
+### Event Alert Workflow Transitions
+
+| From Status       | To Status         | Trigger                                         | Automation |
+| ----------------- | ----------------- | ----------------------------------------------- | ---------- |
+| Open              | Investigating     | Analyst starts investigation                    | Manual     |
+| Investigating     | Awaiting Escalation | Disposition = TP, escalation required         | Automated  |
+| Investigating     | Under Review      | Disposition = FP/BTP, review required           | Manual     |
+| Investigating     | Resolved          | Disposition = FP/BTP, review not required       | Manual     |
+| Awaiting Escalation | Escalated to IR | IR team accepts handoff                         | Manual     |
+| Under Review      | Resolved          | Reviewer agrees with disposition                | Manual     |
+| Under Review      | Investigating     | Reviewer disagrees (return for re-investigation)| Manual     |
+| Resolved          | Closed            | Final documentation complete                    | Manual     |
+| Escalated to IR   | Closed            | IR investigation complete                       | Manual     |
+
+### Escalation Logic
+
+**True Positive (TP):**
+```yaml
+if disposition == "TP" and confidence in ["High", "Medium"]:
+  status_transition: "Awaiting Escalation" → "Escalated to IR"
+  notification: CISO, SOC Lead, Asset Owner
+  actions:
+    - Create IR incident ticket (link to event alert)
+    - Preserve forensic evidence
+    - Document containment recommendations
+```
+
+**False Positive (FP):**
+```yaml
+if disposition == "FP":
+  status_transition: "Investigating" → "Resolved" (or "Under Review" if sampling required)
+  notification: Detection Engineering Team
+  actions:
+    - Document root cause (signature tuning, misconfiguration)
+    - Create tuning recommendation ticket
+    - No IR escalation
+```
+
+**Benign True Positive (BTP):**
+```yaml
+if disposition == "BTP":
+  status_transition: "Investigating" → "Resolved" (or "Under Review" if sampling required)
+  notification: SOC Lead (informational)
+  actions:
+    - Document authorization trail (change ticket, asset owner)
+    - Create detection exception ticket
+    - No IR escalation
+```
+
+### Event Investigation Metrics
+
+The following metrics are captured for event investigations (logged to `metrics/event-investigation-metrics.csv`):
+
+```csv
+ticket_id,alert_platform,alert_rule_id,alert_severity,detection_timestamp,
+investigation_start,investigation_end,investigation_duration_minutes,
+disposition,disposition_confidence,escalation_required,
+evidence_sources_count,historical_context_gathered,business_context_gathered,
+asset_owner_contacted,change_ticket_correlated,
+reviewer_agree,review_quality_score,review_duration_minutes,
+cognitive_bias_detected,closure_timestamp
+```
+
+### Configuration Example (config.yaml)
+
+```yaml
+jira:
+  issue_types:
+    event_alert:
+      custom_fields:
+        alert_platform: 'customfield_10020'
+        alert_rule_id: 'customfield_10021'
+        alert_severity: 'customfield_10022'
+        detection_timestamp: 'customfield_10023'
+        source_ip: 'customfield_10024'
+        destination_ip: 'customfield_10025'
+        protocol: 'customfield_10026'
+        affected_asset: 'customfield_10027'
+        asset_criticality: 'customfield_10028'
+        disposition: 'customfield_10029'
+        disposition_confidence: 'customfield_10030'
+        escalation_required: 'customfield_10031'
+        investigation_duration: 'customfield_10032'
+        reviewer_agree: 'customfield_10033'
+        quality_score_event: 'customfield_10034'
+
+      workflow_statuses:
+        open: 'Open'
+        investigating: 'Investigating'
+        under_review: 'Under Review'
+        awaiting_escalation: 'Awaiting Escalation'
+        escalated_to_ir: 'Escalated to IR'
+        resolved: 'Resolved'
+        closed: 'Closed'
+```
+
+### Audit Trail (Event Alerts)
+
+Event alert investigations maintain similar audit trail to vulnerability enrichment:
+
+1. **JIRA Comments:** Investigation reports posted as comments
+2. **Investigation Artifacts:** `expansion-packs/bmad-1898-engineering/investigations/{ticket-id}-investigation.md`
+3. **Review Reports:** `expansion-packs/bmad-1898-engineering/reviews/{ticket-id}-event-review.md`
+4. **Metrics Logging:** `metrics/event-investigation-metrics.csv`
+5. **Timestamps:** All status transitions logged in JIRA history
+6. **Attribution:** Analyst/reviewer names in assignee/comments
+
+### SLA Definitions (Event Alerts)
+
+Event alerts use time-based SLAs (not priority-based like vulnerabilities):
+
+| Alert Severity | Investigation SLA | Review SLA (if required) | Escalation SLA (TP only) |
+| -------------- | ----------------- | ------------------------ | ------------------------ |
+| Critical       | 1 hour            | 2 hours                  | Immediate (< 30 min)     |
+| High           | 4 hours           | 8 hours                  | 1 hour                   |
+| Medium         | 24 hours          | 48 hours                 | 4 hours                  |
+| Low            | 72 hours          | N/A (no review)          | 8 hours                  |
+| Info           | Best effort       | N/A                      | N/A                      |
+
+**Note:** These SLAs are based on detection platform severity, NOT calculated priority. Event alerts require rapid response to determine if active attack is occurring.
+
+---
+
 ## Validation Checklist
 
 Before deploying BMAD-1898 workflows, validate JIRA configuration:
