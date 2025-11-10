@@ -29,27 +29,27 @@ evidence:
 nfr_validation:
   security:
     status: PASS
-    notes: 'Outstanding - comprehensive input validation (CVE ID regex, ticket sanitization, path validation), sanitization (XSS prevention, error sanitization), HTTPS-only API calls, rate limiting (1 query/sec, max 10-20 queries), DoS prevention (timeouts, session limits), and audit logging'
+    notes: "Outstanding - comprehensive input validation (CVE ID regex, ticket sanitization, path validation), sanitization (XSS prevention, error sanitization), HTTPS-only API calls, rate limiting (1 query/sec, max 10-20 queries), DoS prevention (timeouts, session limits), and audit logging"
   performance:
     status: PASS
-    notes: 'Good - appropriate rate limiting (1 query/sec) and timeouts (30s per query, 5min total) for use case. Estimated execution time documented (10-15s critical mode, 30-60s comprehensive mode)'
+    notes: "Good - appropriate rate limiting (1 query/sec) and timeouts (30s per query, 5min total) for use case. Estimated execution time documented (10-15s critical mode, 30-60s comprehensive mode)"
   reliability:
     status: PASS
-    notes: 'Excellent - graceful degradation when Perplexity MCP unavailable, retry logic for transient failures, fail-safe design continues on individual query failures, clear distinction between unable-to-verify vs discrepancy'
+    notes: "Excellent - graceful degradation when Perplexity MCP unavailable, retry logic for transient failures, fail-safe design continues on individual query failures, clear distinction between unable-to-verify vs discrepancy"
   maintainability:
     status: PASS
-    notes: 'Excellent - clear documentation throughout, follows BMAD task patterns, well-structured with consistent organization, explicit source authority hierarchy, comprehensive examples'
+    notes: "Excellent - clear documentation throughout, follows BMAD task patterns, well-structured with consistent organization, explicit source authority hierarchy, comprehensive examples"
 
 # Recommendations for future enhancements
 recommendations:
   immediate: []
   future:
-    - action: 'Consider adding dry run mode for testing without actual MCP calls (would enable automated CI/CD testing)'
-      refs: ['expansion-packs/bmad-1898-engineering/tasks/fact-verify-claims.md']
-    - action: 'Validate Perplexity MCP integration in practice with real CVE data (manual testing recommended)'
-      refs: ['expansion-packs/bmad-1898-engineering/tasks/fact-verify-claims.md']
-    - action: 'Consider caching Perplexity responses for repeated queries within same session (performance optimization)'
-      refs: ['expansion-packs/bmad-1898-engineering/tasks/fact-verify-claims.md']
+    - action: "Consider adding dry run mode for testing without actual MCP calls (would enable automated CI/CD testing)"
+      refs: ["expansion-packs/bmad-1898-engineering/tasks/fact-verify-claims.md"]
+    - action: "Validate Perplexity MCP integration in practice with real CVE data (manual testing recommended)"
+      refs: ["expansion-packs/bmad-1898-engineering/tasks/fact-verify-claims.md"]
+    - action: "Consider caching Perplexity responses for repeated queries within same session (performance optimization)"
+      refs: ["expansion-packs/bmad-1898-engineering/tasks/fact-verify-claims.md"]
 
 # Risk summary (low risk - no critical concerns)
 risk_summary:
@@ -61,4 +61,4 @@ risk_summary:
   recommendations:
     must_fix: []
     monitor:
-      - 'Monitor Perplexity MCP integration performance and reliability in production use'
+      - "Monitor Perplexity MCP integration performance and reliability in production use"

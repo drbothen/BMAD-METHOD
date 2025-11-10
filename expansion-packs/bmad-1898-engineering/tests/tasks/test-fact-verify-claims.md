@@ -614,3 +614,741 @@ To execute these tests manually:
 - Security tests are critical - all must pass before production use
 - Test with variety of CVEs: recent, old, KEV-listed, not listed
 - Verify task handles edge cases: missing data, conflicting sources, errors
+
+---
+
+# Event Investigation Verification Tests (Story 7.6)
+
+## Test Data Setup - Event Investigation
+
+### Mock Perplexity Responses for Event Verification
+
+**Mock IP Ownership Response (Correct):**
+
+```json
+{
+  "asn": "AS15169",
+  "organization": "Google LLC",
+  "country": "United States",
+  "source": "WHOIS via RIPEstat"
+}
+```
+
+**Mock Geolocation Response (Correct):**
+
+```json
+{
+  "country": "United States",
+  "city": "Mountain View",
+  "coordinates": "37.4056° N, 122.0775° W",
+  "source": "MaxMind GeoIP2"
+}
+```
+
+**Mock Threat Intelligence Response (Malicious):**
+
+```json
+{
+  "reputation": "Malicious",
+  "associated_with": "Emotet botnet C2 server",
+  "first_seen": "2024-10-15",
+  "confidence": "High",
+  "sources": "ThreatFox, AbusIPDB (127 reports)"
+}
+```
+
+**Mock Protocol/Port Response (Standard):**
+
+```json
+{
+  "standard_port": 22,
+  "protocol": "SSH",
+  "iana_assignment": "Yes",
+  "common_usage": "Standard",
+  "source": "IANA Port Registry"
+}
+```
+
+## Event Investigation Test Cases
+
+### Test Case E-1: IP Ownership Verification - Valid Public IP
+
+**Objective:** Verify task correctly verifies IP ownership and ASN
+
+**Test ID:** TC-EVENT-001
+
+**Prerequisites:**
+
+- Perplexity MCP available
+- Mock IP ownership response configured
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-001
+Claim: "Source IP 8.8.8.8 belongs to Google LLC ASN 15169"
+```
+
+**Expected Perplexity Query:**
+
+```
+IP address 8.8.8.8 ASN ownership and organization - provide ASN number, organization name, and country. Use authoritative sources like WHOIS, RIPEstat, or IPInfo.
+```
+
+**Expected Response:**
+
+- ASN: AS15169
+- Organization: Google LLC
+- Country: United States
+- Source: WHOIS via RIPEstat
+
+**Expected Result:**
+
+- Claim Type: ip_ownership
+- Verification Status: ✅ MATCH
+- Verified Value: AS15169, Google LLC
+- Source: WHOIS via RIPEstat
+- Notes: Claim is accurate
+
+**Pass Criteria:**
+
+- ✅ IP ownership claim verified successfully
+- ✅ ASN matches (AS15169)
+- ✅ Organization matches (Google LLC)
+- ✅ Status = MATCH
+- ✅ Source documented
+
+---
+
+### Test Case E-2: IP Ownership Verification - Private IP
+
+**Objective:** Verify task handles private IP addresses correctly
+
+**Test ID:** TC-EVENT-002
+
+**Prerequisites:**
+
+- Perplexity MCP available
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-002
+Claim: "Source IP 10.0.0.5 belongs to internal finance network"
+```
+
+**Expected Behavior:**
+
+1. Detect IP is private (10.0.0.0/8 range)
+2. Skip external verification
+3. Mark as "Unable to Verify"
+
+**Expected Result:**
+
+- Claim Type: ip_ownership
+- Verification Status: ⚠️ UNABLE TO VERIFY
+- Source: N/A - Private IP address
+- Notes: Cannot verify private IP ownership via external sources. Requires internal asset database.
+
+**Pass Criteria:**
+
+- ✅ Private IP detected (10.x.x.x)
+- ✅ No Perplexity query executed
+- ✅ Status = "Unable to Verify"
+- ✅ Note explains why verification skipped
+- ✅ NOT counted as discrepancy
+
+---
+
+### Test Case E-3: Geolocation Verification - Correct Location
+
+**Objective:** Verify task correctly verifies IP geolocation
+
+**Test ID:** TC-EVENT-003
+
+**Prerequisites:**
+
+- Perplexity MCP available
+- Mock geolocation response configured
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-003
+Claim: "IP 8.8.8.8 is located in Mountain View, United States"
+```
+
+**Expected Perplexity Query:**
+
+```
+IP address 8.8.8.8 geolocation country city coordinates - provide country, city, latitude, longitude. Use authoritative sources like MaxMind GeoIP, IP2Location, or ipstack.
+```
+
+**Expected Response:**
+
+- Country: United States
+- City: Mountain View
+- Coordinates: 37.4056° N, 122.0775° W
+- Source: MaxMind GeoIP2
+
+**Expected Result:**
+
+- Claim Type: geolocation
+- Verification Status: ✅ MATCH
+- Verified Value: Mountain View, United States (37.4056° N, 122.0775° W)
+- Source: MaxMind GeoIP2 via IPInfo
+
+**Pass Criteria:**
+
+- ✅ Geolocation claim verified successfully
+- ✅ Country matches
+- ✅ City matches
+- ✅ Status = MATCH
+- ✅ Coordinates documented
+
+---
+
+### Test Case E-4: Geolocation Verification - Location Mismatch
+
+**Objective:** Verify task detects incorrect geolocation claims
+
+**Test ID:** TC-EVENT-004
+
+**Prerequisites:**
+
+- Perplexity MCP available
+- Mock geolocation response shows different location
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-004
+Claim: "IP 203.0.113.10 is located in Paris, France"
+```
+
+**Expected Perplexity Query:**
+
+```
+IP address 203.0.113.10 geolocation country city coordinates - provide country, city, latitude, longitude. Use authoritative sources like MaxMind GeoIP, IP2Location, or ipstack.
+```
+
+**Expected Response:**
+
+- Country: Japan
+- City: Tokyo
+- Coordinates: 35.6762° N, 139.6503° E
+- Source: MaxMind GeoIP2
+
+**Expected Result:**
+
+- Claim Type: geolocation
+- Verification Status: ❌ MISMATCH (Significant Discrepancy)
+- Verified Value: Tokyo, Japan (35.6762° N, 139.6503° E)
+- Source: MaxMind GeoIP2 via IPInfo
+- Discrepancy: Claimed location (Paris, France) does not match verified location (Tokyo, Japan)
+- Recommendation: Correct geolocation claim to Tokyo, Japan
+
+**Pass Criteria:**
+
+- ✅ Geolocation mismatch detected
+- ✅ Status = MISMATCH
+- ✅ Discrepancy severity = Significant
+- ✅ Both locations documented
+- ✅ Recommendation provided
+
+---
+
+### Test Case E-5: Threat Intelligence Verification - Malicious IP Confirmed
+
+**Objective:** Verify task correctly verifies threat intelligence claims
+
+**Test ID:** TC-EVENT-005
+
+**Prerequisites:**
+
+- Perplexity MCP available
+- Mock threat intel response configured
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-005
+Claim: "IP 198.51.100.25 is associated with Emotet botnet"
+```
+
+**Expected Perplexity Query:**
+
+```
+Threat intelligence for IP 198.51.100.25 - is this IP associated with malicious activity, botnets, or malware campaigns? Check AbusIPDB, ThreatFox, AlienVault OTX, and VirusTotal. Provide specific threat associations if found.
+```
+
+**Expected Response:**
+
+- Reputation: Malicious
+- Associated with: Emotet botnet C2 server
+- First Seen: 2024-10-15
+- Confidence: High
+- Sources: ThreatFox, AbusIPDB (127 reports)
+
+**Expected Result:**
+
+- Claim Type: threat_intelligence
+- Verification Status: ✅ MATCH
+- Verified Value: Emotet botnet C2 server, first seen 2024-10-15
+- Source: ThreatFox, AbusIPDB (127 reports)
+- Confidence: High
+- Notes: Multiple threat intel sources confirm association with Emotet campaign
+
+**Pass Criteria:**
+
+- ✅ Threat intel claim verified successfully
+- ✅ Status = MATCH
+- ✅ Threat association confirmed (Emotet)
+- ✅ Confidence level documented
+- ✅ Multiple sources cited
+
+---
+
+### Test Case E-6: Threat Intelligence Verification - Clean IP Claimed Malicious
+
+**Objective:** Verify task detects false positive threat claims
+
+**Test ID:** TC-EVENT-006
+
+**Prerequisites:**
+
+- Perplexity MCP available
+- Mock threat intel response shows clean IP
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-006
+Claim: "IP 8.8.8.8 is associated with malware distribution"
+```
+
+**Expected Perplexity Query:**
+
+```
+Threat intelligence for IP 8.8.8.8 - is this IP associated with malicious activity, botnets, or malware campaigns? Check AbusIPDB, ThreatFox, AlienVault OTX, and VirusTotal. Provide specific threat associations if found.
+```
+
+**Expected Response:**
+
+- Reputation: Clean
+- Associated with: Google Public DNS
+- Sources: ThreatFox (no reports), AbusIPDB (0 reports)
+
+**Expected Result:**
+
+- Claim Type: threat_intelligence
+- Verification Status: ❌ MISMATCH (Significant Discrepancy)
+- Verified Value: Clean - Google Public DNS
+- Source: ThreatFox, AbusIPDB (0 reports)
+- Discrepancy: Analyst claimed malicious but IP is clean (Google Public DNS)
+- Impact: False positive threat claim
+- Recommendation: Remove or correct threat claim
+
+**Pass Criteria:**
+
+- ✅ False positive detected
+- ✅ Status = MISMATCH
+- ✅ Discrepancy severity = Significant
+- ✅ Impact documented (false positive)
+- ✅ Recommendation to remove claim
+
+---
+
+### Test Case E-7: Protocol/Port Validation - Standard Port
+
+**Objective:** Verify task validates standard protocol/port combinations
+
+**Test ID:** TC-EVENT-007
+
+**Prerequisites:**
+
+- Perplexity MCP available
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-007
+Claim: "SSH connection on port 22"
+```
+
+**Expected Perplexity Query:**
+
+```
+Is SSH protocol typically used on port 22? Provide IANA standard port assignment. Note if this is a non-standard or unusual combination.
+```
+
+**Expected Response:**
+
+- Standard Port: 22
+- Protocol: SSH
+- IANA Assignment: Yes
+- Common Usage: Standard
+- Source: IANA Port Registry
+
+**Expected Result:**
+
+- Claim Type: protocol_port
+- Verification Status: ✅ MATCH (Standard)
+- Verified Value: SSH standard port is 22 (IANA)
+- Source: IANA Port Registry
+- Notes: Standard port/protocol combination
+
+**Pass Criteria:**
+
+- ✅ Protocol/port claim verified
+- ✅ Status = MATCH
+- ✅ Identified as standard combination
+- ✅ IANA source cited
+
+---
+
+### Test Case E-8: Protocol/Port Validation - Unusual Port
+
+**Objective:** Verify task flags unusual protocol/port combinations
+
+**Test ID:** TC-EVENT-008
+
+**Prerequisites:**
+
+- Perplexity MCP available
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-008
+Claim: "SSH connection on port 8080"
+```
+
+**Expected Perplexity Query:**
+
+```
+Is SSH protocol typically used on port 8080? Provide IANA standard port assignment. Note if this is a non-standard or unusual combination.
+```
+
+**Expected Response:**
+
+- Standard Port: 22
+- Protocol: SSH
+- Port 8080: Non-standard (typically HTTP alternate)
+- IANA Assignment: No
+- Common Usage: Unusual
+- Source: IANA Port Registry
+
+**Expected Result:**
+
+- Claim Type: protocol_port
+- Verification Status: ❌ UNUSUAL COMBINATION
+- Verified Value: SSH standard port is 22 (IANA)
+- Source: IANA Port Registry
+- Notes: Port 8080 is non-standard for SSH. This may indicate evasion or misconfiguration.
+- Recommendation: Investigate why SSH is using non-standard port
+
+**Pass Criteria:**
+
+- ✅ Unusual combination detected
+- ✅ Status = UNUSUAL
+- ✅ Standard port documented (22)
+- ✅ Security note provided (evasion/misconfiguration)
+- ✅ Recommendation to investigate
+
+---
+
+### Test Case E-9: Historical Pattern Verification - With Atlassian MCP
+
+**Objective:** Verify task validates historical pattern claims when Atlassian MCP is available
+
+**Test ID:** TC-EVENT-009
+
+**Prerequisites:**
+
+- Atlassian MCP available (mcp**atlassian**\*)
+- JIRA historical data available
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-009
+Claim: "This alert fires daily at 02:00 UTC"
+```
+
+**Expected Behavior:**
+
+1. Check for Atlassian MCP availability → AVAILABLE
+2. Query JIRA for historical tickets: `summary ~ "Alert-Name-Pattern" AND created >= -30d`
+3. Analyze frequency and timing patterns
+
+**Mock JIRA Response:**
+
+- Tickets Found: 15 in last 30 days
+- Occurrence Pattern: 2-3 times per week
+- Time Pattern: Varying times (not consistent 02:00 UTC)
+
+**Expected Result:**
+
+- Claim Type: historical_pattern
+- Verification Status: ❌ MISMATCH
+- Verified Value: Alert fires 2-3 times per week at varying times (JIRA query: 15 tickets in last 30 days)
+- Source: JIRA historical ticket search
+- Discrepancy: Claimed daily pattern does not match actual 2-3x weekly pattern
+- Recommendation: Update frequency claim to "2-3 times per week" based on historical data
+
+**Pass Criteria:**
+
+- ✅ Atlassian MCP availability detected
+- ✅ JIRA query constructed correctly
+- ✅ Frequency mismatch detected
+- ✅ Status = MISMATCH
+- ✅ Historical data documented
+- ✅ Recommendation provided
+
+---
+
+### Test Case E-10: Historical Pattern Verification - Without Atlassian MCP
+
+**Objective:** Verify task gracefully skips historical pattern verification when Atlassian MCP unavailable
+
+**Test ID:** TC-EVENT-010
+
+**Prerequisites:**
+
+- Atlassian MCP NOT available
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-010
+Claim: "This alert fires daily at 02:00 UTC"
+```
+
+**Expected Behavior:**
+
+1. Check for Atlassian MCP availability → UNAVAILABLE
+2. Skip historical pattern verification
+3. Note in report
+
+**Expected Result:**
+
+- Claim Type: historical_pattern
+- Verification Status: ⚠️ SKIPPED
+- Reason: Atlassian MCP unavailable
+- Recommendation: Manually verify alert frequency via JIRA or monitoring system
+
+**Pass Criteria:**
+
+- ✅ Atlassian MCP unavailability detected
+- ✅ Historical pattern verification skipped
+- ✅ Status = SKIPPED
+- ✅ Reason documented
+- ✅ Manual verification recommended
+- ✅ NOT counted as discrepancy
+
+---
+
+### Test Case E-11: Event Verification - Backward Compatibility (CVE Still Works)
+
+**Objective:** Verify extending task for events doesn't break CVE verification
+
+**Test ID:** TC-EVENT-011
+
+**Prerequisites:**
+
+- Perplexity MCP available
+- claim_type parameter or CVE ID detection
+
+**Test Data:**
+
+```markdown
+# Mock CVE Enrichment Document (Original Format)
+
+CVE: CVE-2024-1234
+CVSS Base Score: 9.8
+claim_type: cve
+```
+
+**Expected Behavior:**
+
+1. Detect claim_type = cve OR presence of CVE ID
+2. Route to CVE verification workflow (Step 3-CVE)
+3. Execute CVE verification as before Story 7.6
+
+**Expected Result:**
+
+- Verification Type: CVE Verification
+- CVE claims verified using existing logic
+- Report format: CVE Fact Verification Report
+- All TC-FACT-001 through TC-FACT-008 tests still pass
+
+**Pass Criteria:**
+
+- ✅ CVE verification still works after event extension
+- ✅ No regression in CVE verification logic
+- ✅ Correct routing to Step 3-CVE
+- ✅ All existing CVE tests pass
+
+---
+
+### Test Case E-12: Event Verification - Invalid IP Address Format
+
+**Objective:** Verify task handles malformed IP addresses securely
+
+**Test ID:** TC-EVENT-012
+
+**Prerequisites:**
+
+- Perplexity MCP available
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-012
+Claim: "Source IP 999.999.999.999 belongs to Acme Corp"
+```
+
+**Expected Behavior:**
+
+1. Input validation detects invalid IP format (octets > 255)
+2. Security validation failure logged
+3. Skip verification for invalid IP
+4. Report security validation failure
+
+**Expected Result:**
+
+- IP Address Validation: FAILED
+- Verification Status: ⚠️ SECURITY VALIDATION FAILED
+- Note: "⚠️ Security validation failed for IP address: 999.999.999.999"
+- No Perplexity query executed
+
+**Pass Criteria:**
+
+- ✅ Invalid IP format detected
+- ✅ IP validation regex fails (octets 0-255)
+- ✅ No Perplexity query with invalid IP
+- ✅ Security validation failure logged
+- ✅ User notified of validation failure
+- ✅ Task continues with other valid claims
+
+---
+
+### Test Case E-13: Event Verification - Rate Limiting Compliance
+
+**Objective:** Verify task respects rate limiting (1 query/second)
+
+**Test ID:** TC-EVENT-013
+
+**Prerequisites:**
+
+- Perplexity MCP available
+- Multiple event claims to verify
+
+**Test Data:**
+
+```markdown
+# Mock Event Investigation Document
+
+Investigation ID: ALERT-2024-11-09-013
+Claims:
+
+- IP 8.8.8.8 ownership
+- IP 8.8.8.8 geolocation
+- IP 8.8.8.8 threat intel
+- IP 1.1.1.1 ownership
+- SSH on port 22
+```
+
+**Expected Behavior:**
+
+1. Execute 5 Perplexity queries
+2. Implement 1-second delay between each query
+3. Total execution time ≥ 5 seconds (5 queries + 4 delays)
+
+**Expected Result:**
+
+- Queries Executed: 5
+- Delays Observed: 4 (between queries)
+- Total Execution Time: ≥ 5 seconds
+- Rate Limit Compliance: ✅ YES
+
+**Pass Criteria:**
+
+- ✅ 1-second delay enforced between queries
+- ✅ Total execution time ≥ (query_count) seconds
+- ✅ No rate limit errors from Perplexity
+- ✅ All queries complete successfully
+
+---
+
+## Event Investigation Test Execution Checklist
+
+### Event Verification Tests
+
+- [ ] **TC-EVENT-001:** IP Ownership - Valid Public IP
+- [ ] **TC-EVENT-002:** IP Ownership - Private IP (Unable to Verify)
+- [ ] **TC-EVENT-003:** Geolocation - Correct Location
+- [ ] **TC-EVENT-004:** Geolocation - Location Mismatch
+- [ ] **TC-EVENT-005:** Threat Intel - Malicious IP Confirmed
+- [ ] **TC-EVENT-006:** Threat Intel - Clean IP Claimed Malicious
+- [ ] **TC-EVENT-007:** Protocol/Port - Standard Port
+- [ ] **TC-EVENT-008:** Protocol/Port - Unusual Port
+- [ ] **TC-EVENT-009:** Historical Pattern - With Atlassian MCP
+- [ ] **TC-EVENT-010:** Historical Pattern - Without Atlassian MCP
+- [ ] **TC-EVENT-011:** Backward Compatibility - CVE Still Works
+- [ ] **TC-EVENT-012:** Invalid IP Address Format
+- [ ] **TC-EVENT-013:** Rate Limiting Compliance
+
+### Test Results Template - Event Investigation
+
+```markdown
+## Event Investigation Test Execution Results - [Date]
+
+**Tester:** [Name]
+**Environment:** [Dev/Staging/Production]
+**Perplexity MCP:** [Available/Unavailable]
+**Atlassian MCP:** [Available/Unavailable]
+
+| Test ID      | Test Name                          | Status  | Notes                             |
+| ------------ | ---------------------------------- | ------- | --------------------------------- |
+| TC-EVENT-001 | IP Ownership - Valid Public IP     | ✅ PASS | ASN verified correctly            |
+| TC-EVENT-002 | IP Ownership - Private IP          | ✅ PASS | Skipped with proper note          |
+| TC-EVENT-003 | Geolocation - Correct              | ✅ PASS | Location matched                  |
+| TC-EVENT-004 | Geolocation - Mismatch             | ✅ PASS | Discrepancy detected              |
+| TC-EVENT-005 | Threat Intel - Malicious Confirmed | ✅ PASS | Threat association verified       |
+| TC-EVENT-006 | Threat Intel - False Positive      | ✅ PASS | False claim detected              |
+| TC-EVENT-007 | Protocol/Port - Standard           | ✅ PASS | Standard combination verified     |
+| TC-EVENT-008 | Protocol/Port - Unusual            | ✅ PASS | Unusual port flagged              |
+| TC-EVENT-009 | Historical - With Atlassian MCP    | ✅ PASS | Frequency mismatch detected       |
+| TC-EVENT-010 | Historical - Without Atlassian MCP | ✅ PASS | Skipped gracefully                |
+| TC-EVENT-011 | Backward Compatibility - CVE       | ✅ PASS | No regression in CVE verification |
+| TC-EVENT-012 | Invalid IP Address                 | ✅ PASS | Invalid IP rejected securely      |
+| TC-EVENT-013 | Rate Limiting                      | ✅ PASS | 1s delays enforced                |
+
+**Overall Result:** [PASS/FAIL]
+**Event Verification Issues Found:** [Count]
+**Blockers:** [Count]
+```
