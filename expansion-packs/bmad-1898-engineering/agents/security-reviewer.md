@@ -59,17 +59,73 @@ commands:
   - help: Show numbered list of available commands to allow selection
 
   - review-enrichment:
-      description: Complete review workflow using 8 quality dimension checklists
-      usage: '*review-enrichment {ticket-id}'
+      description: Complete review workflow using quality dimension checklists (polymorphic - auto-detects CVE enrichment vs event investigation)
+      usage: '*review-enrichment {ticket-id} [--type=auto|cve|event]'
+      parameters:
+        ticket-id: JIRA ticket identifier (required)
+        type: |
+          Review type (optional, default=auto)
+            - auto: Auto-detect ticket type (default)
+            - cve: Force CVE enrichment review workflow
+            - event: Force event investigation review workflow
       workflow:
-        - Execute review-security-enrichment.md task
-        - Run all 8 quality dimension checklists (Technical Accuracy, Completeness, Actionability, Contextualization, Documentation Quality, Attack Mapping Validation, Cognitive Bias, Source Citation)
-        - Calculate dimension scores and overall quality score
-        - Identify and categorize gaps (Critical/Significant/Minor)
-        - Detect cognitive biases using cognitive-bias-patterns.md guide
-        - Generate security-review-report from template with constructive recommendations
-        - Acknowledge strengths before presenting improvement opportunities
-      blocking: 'HALT for: Missing ticket-id | Invalid enrichment document | Unable to locate enrichment file | Enrichment file not found in expected location'
+        - 'STEP 1: Determine Review Type'
+        - 'If --type=auto or omitted: Auto-detect ticket type using detection logic below'
+        - 'If --type=cve: Force CVE enrichment review workflow'
+        - 'If --type=event: Force event investigation review workflow'
+        - 'AUTO-DETECTION LOGIC (when --type=auto):'
+        - '  Check 1: JIRA Issue Type field'
+        - '    - "Event Alert" or "ICS Alert" → Event investigation workflow'
+        - '    - "Security Vulnerability" → CVE enrichment workflow'
+        - '  Check 2: Ticket description for CVE-ID pattern'
+        - '    - Contains "CVE-YYYY-NNNNN" → CVE enrichment workflow'
+        - '    - Contains ICS/IDS/SIEM keywords (Claroty, Nozomi, Splunk, QRadar, alert signature) → Event investigation workflow'
+        - '  Check 3: Comment structure'
+        - '    - Contains "Security Analysis Enrichment" heading → CVE enrichment workflow'
+        - '    - Contains "Alert Name/Signature" or "Disposition:" field → Event investigation workflow'
+        - '  Check 4: If still ambiguous, prompt user'
+        - '    - "Unable to determine ticket type. Is this (1) CVE enrichment or (2) Event investigation?"'
+        - '    - User selects option, proceed with selected workflow'
+        - 'STEP 2: Execute appropriate review workflow'
+        - 'IF CVE ENRICHMENT WORKFLOW:'
+        - '  - Execute review-security-enrichment.md task'
+        - '  - Run 8 CVE quality dimension checklists (Technical Accuracy, Completeness, Actionability, Contextualization, Documentation Quality, Attack Mapping Validation, Cognitive Bias, Source Citation)'
+        - '  - Calculate dimension scores and overall quality score'
+        - '  - Identify and categorize gaps (Critical/Significant/Minor)'
+        - '  - Detect cognitive biases using cognitive-bias-patterns.md guide'
+        - '  - Generate security-review-report from template with constructive recommendations'
+        - 'IF EVENT INVESTIGATION WORKFLOW:'
+        - '  - Execute review-security-enrichment.md task (reuse, it handles both types)'
+        - '  - Run 7 event investigation quality dimension checklists:'
+        - '    1. investigation-completeness-checklist.md (Weight: 25%)'
+        - '    2. investigation-technical-accuracy-checklist.md (Weight: 20%)'
+        - '    3. disposition-reasoning-checklist.md (Weight: 20%)'
+        - '    4. investigation-contextualization-checklist.md (Weight: 15%)'
+        - '    5. investigation-methodology-checklist.md (Weight: 10%)'
+        - '    6. investigation-documentation-quality-checklist.md (Weight: 5%)'
+        - '    7. investigation-cognitive-bias-checklist.md (Weight: 5%)'
+        - '  - Calculate dimension scores: (Passed / Total) × 100'
+        - '  - Calculate overall score using weighted formula: Overall = (Completeness×0.25) + (Accuracy×0.20) + (Disposition×0.20) + (Context×0.15) + (Methodology×0.10) + (Documentation×0.05) + (Bias×0.05)'
+        - '  - Assign quality classification: Excellent (90-100%), Good (75-89%), Needs Improvement (60-74%), Inadequate (<60%)'
+        - '  - Perform disposition validation:'
+        - '    * Extract analyst disposition from investigation document (TP/FP/BTP)'
+        - '    * Reviewer independently assesses disposition based on evidence'
+        - '    * Compare analyst disposition vs. reviewer disposition'
+        - '    * If agreement: Confirm disposition with brief reasoning'
+        - '    * If disagreement: Provide detailed reasoning with specific evidence supporting alternate disposition'
+        - '    * Flag disposition uncertainty if confidence level is Low'
+        - '  - Identify and categorize gaps (Critical/Significant/Minor)'
+        - '  - Detect cognitive biases using cognitive-bias-patterns.md guide'
+        - '  - Generate security-event-investigation-review-report from template with constructive recommendations'
+        - 'STEP 3: Post review feedback to JIRA ticket'
+        - '  - Post review report as comment'
+        - '  - Update custom fields if configured (Review Status, Quality Score, Disposition Agreement)'
+        - 'STEP 4: Acknowledge strengths before presenting improvement opportunities'
+      examples:
+        - '*review-enrichment AOD-4052                    # Auto-detect (will detect Event Alert)'
+        - '*review-enrichment AOD-4052 --type=event       # Force event investigation review'
+        - '*review-enrichment SEC-1234 --type=cve         # Force CVE enrichment review'
+      blocking: 'HALT for: Missing ticket-id | Invalid enrichment/investigation document | Unable to locate document | Unsupported ticket type (error with manual override instructions) | Missing investigation document for event review'
 
   - fact-check:
       description: Verify factual claims using Perplexity and authoritative sources
@@ -123,7 +179,9 @@ dependencies:
   templates:
     - security-review-report-tmpl.yaml
     - fact-verification-report-tmpl.yaml
+    - security-event-investigation-review-report-tmpl.yaml
   checklists:
+    # CVE enrichment quality checklists (8 checklists)
     - technical-accuracy-checklist.md
     - completeness-checklist.md
     - actionability-checklist.md
@@ -132,6 +190,14 @@ dependencies:
     - attack-mapping-validation-checklist.md
     - cognitive-bias-checklist.md
     - source-citation-checklist.md
+    # Event investigation quality checklists (7 checklists - Story 7.2)
+    - investigation-completeness-checklist.md
+    - investigation-technical-accuracy-checklist.md
+    - disposition-reasoning-checklist.md
+    - investigation-contextualization-checklist.md
+    - investigation-methodology-checklist.md
+    - investigation-documentation-quality-checklist.md
+    - investigation-cognitive-bias-checklist.md
   data:
     - bmad-kb.md
     - cognitive-bias-patterns.md

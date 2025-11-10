@@ -1,0 +1,399 @@
+# Security Event Investigation Review Report Template
+# Powered by BMAD™ Core
+#
+# This template structures event investigation review findings into comprehensive
+# constructive feedback reports with disposition agreement/disagreement tracking.
+# It provides blameless, educational feedback that acknowledges strengths first,
+# identifies gaps, and provides specific recommendations.
+
+template:
+  id: security-event-investigation-review-report-v1
+  name: Security Event Investigation Review Report
+  version: "1.0"
+  output:
+    format: markdown
+    filename: event-investigation-review-{{ticket_id}}.md
+    title: "Event Investigation Review: {{ticket_id}} - {{alert_id}}"
+
+workflow:
+  mode: automated
+  # No elicitation - template processes data from quality evaluation outputs
+
+instructions: |
+  When generating this review report:
+
+  BLAMELESS LANGUAGE REQUIREMENTS:
+  - Always acknowledge strengths BEFORE identifying gaps
+  - Use "we" language (collaborative), not "you" language (accusatory)
+  - Frame gaps as "opportunities for improvement" not "failures" or "errors"
+  - Provide specific, actionable recommendations for every gap
+  - Link gaps to learning resources (educational approach)
+  - Maintain constructive, respectful tone throughout
+
+  AVOID THESE PATTERNS:
+  - "You missed..." → USE: "An opportunity to strengthen this analysis would be adding..."
+  - "This is wrong..." → USE: "Consider revising this to reflect..."
+  - "You failed to..." → USE: "Including X would make this more comprehensive..."
+  - "This is incomplete..." → USE: "This section could benefit from..."
+  - "Critical error..." → USE: "Critical issue requiring immediate attention..."
+
+  CONSTRUCTIVE PATTERNS TO USE:
+  - "An opportunity to strengthen this analysis would be..."
+  - "Adding X would make this more comprehensive..."
+  - "Consider including..."
+  - "This section could benefit from..."
+  - "A helpful addition would be..."
+  - "Building on the strong foundation here, we could enhance..."
+
+  DISPOSITION AGREEMENT/DISAGREEMENT HANDLING:
+  - If agreeing with analyst disposition: Confirm with supporting evidence
+  - If disagreeing: Explain reasoning clearly with specific evidence and logic
+  - Avoid blame for disposition disagreements - frame as collaborative analysis
+  - Use "Reviewer's assessment suggests..." not "You got it wrong..."
+
+sections:
+  - id: review_metadata
+    title: Review Metadata
+    instruction: |
+      Provide review metadata including ticket/alert identifiers, analyst/reviewer names,
+      review date, and overall quality score with classification.
+
+      Variables used:
+      - ticket_id: JIRA ticket identifier
+      - alert_id: Alert rule/signature identifier
+      - alert_type: ICS/IDS/SIEM
+      - investigation_timestamp: When investigation was performed
+      - analyst_name: Name of the analyst who performed investigation
+      - reviewer_name: Name of the reviewer
+      - review_date: Date of review (YYYY-MM-DD)
+      - overall_score: Weighted quality score (0-100)
+      - quality_classification: Excellent/Good/Needs Improvement/Inadequate
+    template: |
+      **Ticket:** {{ticket_id}}
+      **Alert ID:** {{alert_id}}
+      **Alert Type:** {{alert_type}}
+      **Investigation Date:** {{investigation_timestamp}}
+      **Analyst:** {{analyst_name}}
+      **Reviewer:** {{reviewer_name}}
+      **Review Date:** {{review_date}}
+      **Overall Quality Score:** {{overall_score}}% ({{quality_classification}})
+
+  - id: executive_summary
+    title: Executive Summary
+    instruction: |
+      Provide a 2-3 sentence summary of review findings. Start positive by acknowledging
+      what was done well, then note key areas for improvement. Include disposition
+      agreement status. Maintain constructive tone.
+
+      Variables used:
+      - summary: Pre-written summary text (2-3 sentences)
+      - disposition: TP/FP/BTP
+      - disposition_agreement: Agree/Disagree/Uncertain
+    template: |
+      {{summary}}
+
+      **Analyst Disposition:** {{disposition}}
+      **Disposition Agreement:** {{disposition_agreement}}
+
+  - id: strengths
+    title: Strengths & What Went Well
+    instruction: |
+      Acknowledge what the analyst did well to set a constructive tone. Start reviews
+      with positives. Use checkmark emoji (✅) for each strength.
+
+      This section is critical for blameless feedback - it demonstrates that the reviewer
+      recognizes good work before identifying gaps.
+
+      Variables used:
+      - strengths: Array of strength statements (3-5 items)
+
+      Note: Use {{#each}} syntax for iteration, access items with {{this}}
+    template: |
+      {{#each strengths}}
+      - ✅ {{this}}
+      {{/each}}
+
+  - id: quality_scores
+    title: Quality Dimension Scores
+    instruction: |
+      Display quality dimension scores with weighted contributions showing how each
+      dimension contributes to the overall score. Include all seven quality dimensions
+      from Story 7.2 event investigation quality checklists.
+
+      The weighted scoring demonstrates transparency in score calculation.
+
+      Variables used:
+      - investigation_completeness_score: Score 0-100
+      - investigation_completeness_weight: 25
+      - investigation_completeness_contribution: Calculated weighted points
+      - technical_accuracy_score: Score 0-100
+      - technical_accuracy_weight: 20
+      - technical_accuracy_contribution: Calculated weighted points
+      - disposition_reasoning_score: Score 0-100
+      - disposition_reasoning_weight: 20
+      - disposition_reasoning_contribution: Calculated weighted points
+      - contextualization_score: Score 0-100
+      - contextualization_weight: 15
+      - contextualization_contribution: Calculated weighted points
+      - methodology_score: Score 0-100
+      - methodology_weight: 10
+      - methodology_contribution: Calculated weighted points
+      - documentation_quality_score: Score 0-100
+      - documentation_quality_weight: 5
+      - documentation_quality_contribution: Calculated weighted points
+      - cognitive_bias_score: Score 0-100
+      - cognitive_bias_weight: 5
+      - cognitive_bias_contribution: Calculated weighted points
+      - overall_score: Weighted average score
+      - quality_classification: Excellent/Good/Needs Improvement/Inadequate
+    template: |
+      | Dimension | Score | Weight | Contribution |
+      |-----------|-------|--------|--------------|
+      | Investigation Completeness | {{investigation_completeness_score}}% | {{investigation_completeness_weight}}% | {{investigation_completeness_contribution}} pts |
+      | Technical Accuracy | {{technical_accuracy_score}}% | {{technical_accuracy_weight}}% | {{technical_accuracy_contribution}} pts |
+      | Disposition Reasoning | {{disposition_reasoning_score}}% | {{disposition_reasoning_weight}}% | {{disposition_reasoning_contribution}} pts |
+      | Contextualization | {{contextualization_score}}% | {{contextualization_weight}}% | {{contextualization_contribution}} pts |
+      | Investigation Methodology | {{methodology_score}}% | {{methodology_weight}}% | {{methodology_contribution}} pts |
+      | Documentation Quality | {{documentation_quality_score}}% | {{documentation_quality_weight}}% | {{documentation_quality_contribution}} pts |
+      | Cognitive Bias | {{cognitive_bias_score}}% | {{cognitive_bias_weight}}% | {{cognitive_bias_contribution}} pts |
+
+      **Overall Quality Score:** {{overall_score}}% ({{quality_classification}})
+
+  - id: critical_issues
+    title: Critical Issues (Must Fix)
+    instruction: |
+      List Critical severity issues that must be fixed before the investigation can proceed.
+      These are typically:
+      - Incorrect disposition that could lead to security incidents
+      - Missing critical evidence or context
+      - Factual errors in technical analysis
+      - Flawed reasoning that invalidates conclusions
+
+      Use constructive language: describe the issue, explain the impact, provide the fix,
+      and link to learning resources. Use red circle emoji (🔴) to indicate severity.
+
+      Variables used:
+      - critical_issues: Array of issue objects with properties:
+        - title: Brief issue description
+        - location: Where in the investigation (section name)
+        - description: What is wrong (factual, not blaming)
+        - impact: Why this matters / security impact
+        - recommendation: Specific actionable fix
+        - resource_title: Learning resource title
+        - resource_url: Learning resource URL
+
+      Note: Use {{#each}} with {{this.property}} to access object properties
+      Note: Use {{@index}} to get current iteration number (0-based), add 1 for display
+    template: |
+      {{#each critical_issues}}
+      ### 🔴 Critical Issue {{@index}}: {{this.title}}
+      **Location:** {{this.location}}
+      **Issue:** {{this.description}}
+      **Impact:** {{this.impact}}
+      **Recommended Fix:** {{this.recommendation}}
+      **Learn More:** [{{this.resource_title}}]({{this.resource_url}})
+
+      {{/each}}
+
+  - id: significant_gaps
+    title: Significant Gaps (Should Fix)
+    instruction: |
+      List Significant severity gaps that should be addressed to improve investigation quality.
+      These are typically:
+      - Missing recommended evidence sources
+      - Incomplete analysis sections
+      - Gaps in methodology documentation
+      - Missing alternative explanations
+
+      Use constructive language: frame as opportunities for improvement. Use yellow
+      circle emoji (🟡) to indicate severity.
+
+      Variables used:
+      - significant_gaps: Array of gap objects with same structure as critical_issues
+    template: |
+      {{#each significant_gaps}}
+      ### 🟡 Significant Gap {{@index}}: {{this.title}}
+      **Location:** {{this.location}}
+      **Issue:** {{this.description}}
+      **Impact:** {{this.impact}}
+      **Recommended Fix:** {{this.recommendation}}
+      **Learn More:** [{{this.resource_title}}]({{this.resource_url}})
+
+      {{/each}}
+
+  - id: minor_improvements
+    title: Minor Improvements (Nice to Have)
+    instruction: |
+      List Minor improvements that would enhance clarity or completeness but are
+      not critical. These are typically:
+      - Additional context that would be helpful
+      - Documentation formatting improvements
+      - Additional evidence sources
+      - Enhanced methodology notes
+
+      Use blue circle emoji (🔵) to indicate severity. Structure is simpler than
+      Critical/Significant - just suggestion and benefit.
+
+      Variables used:
+      - minor_improvements: Array of improvement objects with properties:
+        - title: Brief description
+        - description: Suggestion text
+        - benefit: Why this would help
+    template: |
+      {{#each minor_improvements}}
+      ### 🔵 Minor Improvement {{@index}}: {{this.title}}
+      **Suggestion:** {{this.description}}
+      **Benefit:** {{this.benefit}}
+
+      {{/each}}
+
+  - id: disposition_assessment
+    title: Disposition Assessment
+    instruction: |
+      Display disposition comparison between analyst and reviewer. This section is
+      unique to event investigation reviews and tracks whether the reviewer agrees
+      with the analyst's disposition determination.
+
+      If agreement='yes': Confirm why the disposition is correct with supporting evidence
+      If agreement='no': Explain reasoning for alternate disposition with specific evidence
+      If agreement='uncertain': Explain what additional investigation is needed
+
+      Use constructive, collaborative language. Avoid blame for disagreements.
+
+      Variables used:
+      - analyst_disposition: TP/FP/BTP (from investigation)
+      - reviewer_disposition: TP/FP/BTP (reviewer's assessment)
+      - agreement: yes/no/uncertain
+      - reasoning: Explanation with evidence and logic
+    template: |
+      **Analyst Disposition:** {{analyst_disposition}}
+      **Reviewer Disposition:** {{reviewer_disposition}}
+      **Agreement:** {{agreement}}
+
+      **Reasoning:**
+      {{reasoning}}
+
+  - id: cognitive_bias_assessment
+    title: Cognitive Bias Assessment
+    instruction: |
+      Display cognitive bias assessment results. If biases were detected, list each
+      with type, description, example from the investigation, and debiasing strategy.
+      If no biases detected, show positive confirmation.
+
+      Event investigations are particularly susceptible to automation bias (over-reliance
+      on alert platform disposition suggestions).
+
+      Use conditional rendering with {{#if}} to check if biases were detected.
+
+      Variables used:
+      - cognitive_biases_detected: Boolean (true/false)
+      - cognitive_biases: Array of bias objects with properties:
+        - type: Bias name (Confirmation Bias, Automation Bias, etc.)
+        - description: What this bias is
+        - example: Specific example from the investigation
+        - mitigation: Debiasing strategy
+    template: |
+      {{#if cognitive_biases_detected}}
+      **Biases Detected:**
+      {{#each cognitive_biases}}
+      - **{{this.type}}:** {{this.description}}
+        - **Example:** {{this.example}}
+        - **Debiasing Strategy:** {{this.mitigation}}
+      {{/each}}
+      {{else}}
+      ✅ No systematic cognitive biases detected. Investigation appears objective and data-driven.
+      {{/if}}
+
+  - id: recommendations
+    title: Recommended Actions
+    instruction: |
+      Provide prioritized action items organized into three priority levels:
+      - Priority 1 (Do First): Critical fixes, must complete before proceeding
+      - Priority 2 (Do Next): Significant improvements, should complete for quality
+      - Priority 3 (When Time Permits): Minor enhancements, nice to have
+
+      Additionally provide investigation-specific improvements (methodology, data sources, tools).
+
+      Variables used:
+      - priority1_actions: Array of action strings
+      - priority2_actions: Array of action strings
+      - priority3_actions: Array of action strings
+      - investigation_improvements: Array of improvement strings
+    template: |
+      **Priority 1 (Do First):**
+      {{#each priority1_actions}}
+      - {{this}}
+      {{/each}}
+
+      **Priority 2 (Do Next):**
+      {{#each priority2_actions}}
+      - {{this}}
+      {{/each}}
+
+      **Priority 3 (When Time Permits):**
+      {{#each priority3_actions}}
+      - {{this}}
+      {{/each}}
+
+      **Investigation Methodology Improvements:**
+      {{#each investigation_improvements}}
+      - {{this}}
+      {{/each}}
+
+  - id: learning_resources
+    title: Learning Resources
+    instruction: |
+      Provide curated learning resources relevant to the identified gaps. Link to:
+      - Event investigation best practices
+      - Log analysis techniques
+      - Disposition determination guidance
+      - BMAD-1898 knowledge base articles
+      - Security operations references
+
+      Variables used:
+      - learning_resources: Array of resource objects with properties:
+        - title: Resource title
+        - url: Resource URL
+        - topic: What this resource teaches
+    template: |
+      {{#each learning_resources}}
+      - [{{this.title}}]({{this.url}}) - {{this.topic}}
+      {{/each}}
+
+  - id: next_steps
+    title: Next Steps
+    instruction: |
+      Provide clear next steps for the analyst based on review findings:
+      - Critical issues → Investigation needs revision
+      - Significant gaps → Review recommended before closure
+      - Minor improvements only → Optional enhancements
+      - Excellent investigation → Approved for closure
+
+      Variables used:
+      - next_steps_guidance: Text guidance based on findings severity
+    template: |
+      {{next_steps_guidance}}
+
+      **Standard Process:**
+      1. Address Critical Issues (must-fix before ticket proceeds)
+      2. Address Significant Gaps (improve quality)
+      3. Consider Minor Improvements (enhance clarity)
+      4. Update investigation documentation in JIRA
+      5. Re-submit for review if Critical Issues found
+
+  - id: reviewer_notes
+    title: Reviewer Notes
+    instruction: |
+      Optional free-form notes from the reviewer. Use this for:
+      - Additional context not captured in structured sections
+      - Encouragement and coaching
+      - Process improvement suggestions
+      - Acknowledgment of challenging investigations
+      - Recognition of exceptional work
+
+      Maintain supportive, constructive tone. This is the personal touch.
+
+      Variables used:
+      - reviewer_notes: Free-form text from reviewer (optional)
+    template: |
+      {{reviewer_notes}}
