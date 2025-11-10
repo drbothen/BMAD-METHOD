@@ -114,12 +114,12 @@ Extract and structure the enrichment content from JIRA or local storage, parse i
 
 ### Error Handling
 
-| Error | Resolution |
-|-------|------------|
-| **Enrichment Not Found** | Check JIRA comments, check local file, prompt user for enrichment location |
+| Error                                    | Resolution                                                                  |
+| ---------------------------------------- | --------------------------------------------------------------------------- |
+| **Enrichment Not Found**                 | Check JIRA comments, check local file, prompt user for enrichment location  |
 | **Parsing Failure** (malformed markdown) | Attempt flexible parsing, flag formatting issue, continue with partial data |
-| **Missing Sections** | Document as completeness gap (will be caught in Stage 2) |
-| **Multiple Enrichment Comments** | Use most recent or prompt reviewer for selection |
+| **Missing Sections**                     | Document as completeness gap (will be caught in Stage 2)                    |
+| **Multiple Enrichment Comments**         | Use most recent or prompt reviewer for selection                            |
 
 ### Performance Optimization
 
@@ -155,16 +155,16 @@ Execute 8 quality dimension checklists sequentially:
 
 **Purpose:** Verify all technical claims are factually correct and properly sourced.
 
-| Item | Check |
-|------|-------|
-| 1 | CVSS score matches NVD or vendor advisory (±0.0 tolerance) |
-| 2 | CVSS vector string is valid (syntax: `AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H`) |
-| 3 | EPSS score is current (<7 days old) and in valid range (0-100%) |
-| 4 | KEV status verified against CISA KEV catalog |
-| 5 | Affected versions match vendor advisory exactly |
-| 6 | Patched versions are specific and correct (not vague: "latest") |
-| 7 | Exploit status matches threat intelligence (Exploit-DB, Metasploit) |
-| 8 | ATT&CK T-numbers are valid (exist in MITRE ATT&CK matrix) |
+| Item | Check                                                                       |
+| ---- | --------------------------------------------------------------------------- |
+| 1    | CVSS score matches NVD or vendor advisory (±0.0 tolerance)                  |
+| 2    | CVSS vector string is valid (syntax: `AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H`) |
+| 3    | EPSS score is current (<7 days old) and in valid range (0-100%)             |
+| 4    | KEV status verified against CISA KEV catalog                                |
+| 5    | Affected versions match vendor advisory exactly                             |
+| 6    | Patched versions are specific and correct (not vague: "latest")             |
+| 7    | Exploit status matches threat intelligence (Exploit-DB, Metasploit)         |
+| 8    | ATT&CK T-numbers are valid (exist in MITRE ATT&CK matrix)                   |
 
 **Scoring:** Pass/Fail per item → percentage (e.g., 7/8 = 87.5%)
 
@@ -174,20 +174,20 @@ Execute 8 quality dimension checklists sequentially:
 
 **Purpose:** Ensure all required sections are populated with meaningful content.
 
-| Item | Check |
-|------|-------|
-| 1 | Executive Summary present and concise (2-3 sentences) |
-| 2 | Vulnerability Details complete (description, CWE, attack vector) |
-| 3 | Severity Metrics included (CVSS, EPSS, KEV) |
-| 4 | Affected Systems documented (products, versions, count/criticality) |
-| 5 | Remediation Guidance provided (patch, workaround, verification) |
-| 6 | MITRE ATT&CK Mapping present (tactics, techniques) |
-| 7 | Business Impact Assessment included (ACR, exposure, processes) |
-| 8 | Threat Intelligence researched (exploitation status, trends) |
-| 9 | Verification steps provided (how to test remediation) |
-| 10 | References cited (NVD, vendor advisory, etc.) |
-| 11 | Related CVEs researched (or explicitly stated "None identified") |
-| 12 | Analyst Notes included (methodology, challenges, assumptions) |
+| Item | Check                                                               |
+| ---- | ------------------------------------------------------------------- |
+| 1    | Executive Summary present and concise (2-3 sentences)               |
+| 2    | Vulnerability Details complete (description, CWE, attack vector)    |
+| 3    | Severity Metrics included (CVSS, EPSS, KEV)                         |
+| 4    | Affected Systems documented (products, versions, count/criticality) |
+| 5    | Remediation Guidance provided (patch, workaround, verification)     |
+| 6    | MITRE ATT&CK Mapping present (tactics, techniques)                  |
+| 7    | Business Impact Assessment included (ACR, exposure, processes)      |
+| 8    | Threat Intelligence researched (exploitation status, trends)        |
+| 9    | Verification steps provided (how to test remediation)               |
+| 10   | References cited (NVD, vendor advisory, etc.)                       |
+| 11   | Related CVEs researched (or explicitly stated "None identified")    |
+| 12   | Analyst Notes included (methodology, challenges, assumptions)       |
 
 **Scoring:** Sections complete / 12 → percentage
 
@@ -197,14 +197,14 @@ Execute 8 quality dimension checklists sequentially:
 
 **Purpose:** Verify remediation guidance is clear, specific, and actionable.
 
-| Item | Check |
-|------|-------|
-| 1 | Remediation steps are clear and specific (not vague: "patch soon") |
-| 2 | Patch version or workaround provided (specific version numbers) |
-| 3 | Verification steps included (how to confirm remediation) |
-| 4 | Compensating controls listed (if patching delayed or not possible) |
-| 5 | Guidance appropriate for target audience (technical detail level) |
-| 6 | Estimated effort noted (patch window, reboot required, testing time) |
+| Item | Check                                                                |
+| ---- | -------------------------------------------------------------------- |
+| 1    | Remediation steps are clear and specific (not vague: "patch soon")   |
+| 2    | Patch version or workaround provided (specific version numbers)      |
+| 3    | Verification steps included (how to confirm remediation)             |
+| 4    | Compensating controls listed (if patching delayed or not possible)   |
+| 5    | Guidance appropriate for target audience (technical detail level)    |
+| 6    | Estimated effort noted (patch window, reboot required, testing time) |
 
 **Scoring:** Actionable items present / 6 → percentage
 
@@ -214,14 +214,14 @@ Execute 8 quality dimension checklists sequentially:
 
 **Purpose:** Ensure enrichment includes relevant business and environmental context.
 
-| Item | Check |
-|------|-------|
-| 1 | Asset Criticality Rating (ACR) assessed (Critical/High/Medium/Low) |
-| 2 | System Exposure classified (Internet-facing/Internal/Air-gapped) |
-| 3 | Business processes affected identified (specific systems/services) |
-| 4 | Business impact clearly articulated (revenue, compliance, reputation) |
-| 5 | Priority rationale references business context (not just CVSS) |
-| 6 | Stakeholders identified (teams/individuals to notify) |
+| Item | Check                                                                 |
+| ---- | --------------------------------------------------------------------- |
+| 1    | Asset Criticality Rating (ACR) assessed (Critical/High/Medium/Low)    |
+| 2    | System Exposure classified (Internet-facing/Internal/Air-gapped)      |
+| 3    | Business processes affected identified (specific systems/services)    |
+| 4    | Business impact clearly articulated (revenue, compliance, reputation) |
+| 5    | Priority rationale references business context (not just CVSS)        |
+| 6    | Stakeholders identified (teams/individuals to notify)                 |
 
 **Scoring:** Context elements present / 6 → percentage
 
@@ -231,14 +231,14 @@ Execute 8 quality dimension checklists sequentially:
 
 **Purpose:** Ensure professional, clear, well-organized documentation.
 
-| Item | Check |
-|------|-------|
-| 1 | Markdown formatting correct (headings, lists, tables, code blocks) |
-| 2 | Spelling and grammar professional (no typos, clear sentences) |
-| 3 | Section headings consistent (capitalization, structure) |
-| 4 | Lists and tables formatted properly (aligned, complete) |
-| 5 | Clarity - no ambiguous language (e.g., "some systems" → "5 production web servers") |
-| 6 | Organization logical (sections flow naturally, no redundancy) |
+| Item | Check                                                                               |
+| ---- | ----------------------------------------------------------------------------------- |
+| 1    | Markdown formatting correct (headings, lists, tables, code blocks)                  |
+| 2    | Spelling and grammar professional (no typos, clear sentences)                       |
+| 3    | Section headings consistent (capitalization, structure)                             |
+| 4    | Lists and tables formatted properly (aligned, complete)                             |
+| 5    | Clarity - no ambiguous language (e.g., "some systems" → "5 production web servers") |
+| 6    | Organization logical (sections flow naturally, no redundancy)                       |
 
 **Scoring:** Quality elements present / 6 → percentage
 
@@ -248,13 +248,13 @@ Execute 8 quality dimension checklists sequentially:
 
 **Purpose:** Verify MITRE ATT&CK mapping is accurate and useful.
 
-| Item | Check |
-|------|-------|
-| 1 | Tactics are valid ATT&CK tactics (e.g., Initial Access, Execution) |
-| 2 | Techniques have valid T-numbers (format: T1234, exist in matrix) |
-| 3 | Mapping appropriate for vulnerability type (e.g., RCE → Execution, not Exfiltration) |
-| 4 | Detection implications included (how to detect exploitation) |
-| 5 | Defense recommendations aligned with ATT&CK mitigations |
+| Item | Check                                                                                |
+| ---- | ------------------------------------------------------------------------------------ |
+| 1    | Tactics are valid ATT&CK tactics (e.g., Initial Access, Execution)                   |
+| 2    | Techniques have valid T-numbers (format: T1234, exist in matrix)                     |
+| 3    | Mapping appropriate for vulnerability type (e.g., RCE → Execution, not Exfiltration) |
+| 4    | Detection implications included (how to detect exploitation)                         |
+| 5    | Defense recommendations aligned with ATT&CK mitigations                              |
 
 **Scoring:** Mapping elements correct / 5 → percentage
 
@@ -278,13 +278,13 @@ _(Performed in Stage 4, score incorporated here)_
 
 **Purpose:** Ensure all factual claims are properly sourced with authoritative references.
 
-| Item | Check |
-|------|-------|
-| 1 | All factual claims have sources (CVSS, EPSS, KEV, versions, exploit status) |
-| 2 | Sources are authoritative (NIST, CISA, vendor advisories, not blogs) |
-| 3 | URLs included for all sources (clickable, not generic domain names) |
-| 4 | Sources are current (not outdated advisories, check publication dates) |
-| 5 | No reliance on non-authoritative sources alone (Reddit, forums require verification) |
+| Item | Check                                                                                |
+| ---- | ------------------------------------------------------------------------------------ |
+| 1    | All factual claims have sources (CVSS, EPSS, KEV, versions, exploit status)          |
+| 2    | Sources are authoritative (NIST, CISA, vendor advisories, not blogs)                 |
+| 3    | URLs included for all sources (clickable, not generic domain names)                  |
+| 4    | Sources are current (not outdated advisories, check publication dates)               |
+| 5    | No reliance on non-authoritative sources alone (Reddit, forums require verification) |
 
 **Scoring:** Citation elements present / 5 → percentage
 
@@ -307,26 +307,26 @@ Quality Score = (
 
 **Example Calculation:**
 
-| Dimension | Score | Weight | Weighted |
-|-----------|-------|--------|----------|
-| Technical Accuracy | 87.5% | 0.25 | 21.88 |
-| Completeness | 91.7% | 0.20 | 18.34 |
-| Actionability | 83.3% | 0.15 | 12.50 |
-| Contextualization | 100% | 0.15 | 15.00 |
-| Documentation Quality | 100% | 0.10 | 10.00 |
-| Attack Mapping | 80.0% | 0.05 | 4.00 |
-| Cognitive Bias | 90.0% | 0.05 | 4.50 |
-| Source Citation | 100% | 0.05 | 5.00 |
-| **Overall** | | | **91.22** |
+| Dimension             | Score | Weight | Weighted  |
+| --------------------- | ----- | ------ | --------- |
+| Technical Accuracy    | 87.5% | 0.25   | 21.88     |
+| Completeness          | 91.7% | 0.20   | 18.34     |
+| Actionability         | 83.3% | 0.15   | 12.50     |
+| Contextualization     | 100%  | 0.15   | 15.00     |
+| Documentation Quality | 100%  | 0.10   | 10.00     |
+| Attack Mapping        | 80.0% | 0.05   | 4.00      |
+| Cognitive Bias        | 90.0% | 0.05   | 4.50      |
+| Source Citation       | 100%  | 0.05   | 5.00      |
+| **Overall**           |       |        | **91.22** |
 
 ### Quality Classification
 
-| Score Range | Classification | Meaning |
-|-------------|----------------|---------|
-| 90-100 | **Excellent** | Exemplary work, minimal gaps, ready for immediate use |
-| 75-89 | **Good** | High quality, minor improvements recommended |
-| 60-74 | **Needs Improvement** | Significant gaps present, requires revision |
-| <60 | **Inadequate** | Critical issues, return to analyst for substantial rework |
+| Score Range | Classification        | Meaning                                                   |
+| ----------- | --------------------- | --------------------------------------------------------- |
+| 90-100      | **Excellent**         | Exemplary work, minimal gaps, ready for immediate use     |
+| 75-89       | **Good**              | High quality, minor improvements recommended              |
+| 60-74       | **Needs Improvement** | Significant gaps present, requires revision               |
+| <60         | **Inadequate**        | Critical issues, return to analyst for substantial rework |
 
 ### Outputs
 
@@ -344,11 +344,11 @@ Quality Score = (
 
 ### Error Handling
 
-| Error | Resolution |
-|-------|------------|
-| **Missing Data for Verification** | Mark as "Unable to verify", note in gap, score as fail for that item |
-| **Checklist Execution Error** | Skip problematic item, note in review report, continue evaluation |
-| **External Source Unavailable** | Note unavailability, proceed with available data, flag for re-verification |
+| Error                             | Resolution                                                                 |
+| --------------------------------- | -------------------------------------------------------------------------- |
+| **Missing Data for Verification** | Mark as "Unable to verify", note in gap, score as fail for that item       |
+| **Checklist Execution Error**     | Skip problematic item, note in review report, continue evaluation          |
+| **External Source Unavailable**   | Note unavailability, proceed with available data, flag for re-verification |
 
 ### Performance Optimization
 
@@ -399,6 +399,7 @@ Apply the following categorization rules to each gap:
 - **Missing or incorrect remediation guidance:** No patch/workaround provided
 
 **Example:**
+
 > **Gap:** CVSS score is 8.1 but enrichment states 9.3
 > **Category:** Critical
 > **Impact:** Incorrect severity leads to wrong prioritization and SLA violation
@@ -418,6 +419,7 @@ Apply the following categorization rules to each gap:
 - **Business impact not articulated:** Generic statements, no specific processes
 
 **Example:**
+
 > **Gap:** Remediation provides patch but no workaround for systems that can't patch immediately
 > **Category:** Significant
 > **Impact:** Teams with patch restrictions (production freeze) have no interim mitigation
@@ -436,6 +438,7 @@ Apply the following categorization rules to each gap:
 - **Optional enhancements:** Additional context that's helpful but not required
 
 **Example:**
+
 > **Gap:** Spelling error: "critial" should be "critical"
 > **Category:** Minor
 > **Impact:** Professionalism, minor distraction
@@ -456,6 +459,7 @@ For each gap, document:
 #### 4. Prioritize Gaps
 
 Order gaps by severity:
+
 1. Critical (address immediately)
 2. Significant (address before approval)
 3. Minor (address if time permits)
@@ -476,11 +480,11 @@ Order gaps by severity:
 
 ### Error Handling
 
-| Error | Resolution |
-|-------|------------|
+| Error                            | Resolution                                                                     |
+| -------------------------------- | ------------------------------------------------------------------------------ |
 | **Ambiguous Gap Categorization** | Default to higher severity (conservative), note uncertainty in gap description |
-| **No Gaps Found** | Validate this is correct (Excellent enrichment), document strengths instead |
-| **Too Many Gaps** (>20) | Consolidate similar gaps, provide summary findings |
+| **No Gaps Found**                | Validate this is correct (Excellent enrichment), document strengths instead    |
+| **Too Many Gaps** (>20)          | Consolidate similar gaps, provide summary findings                             |
 
 ### Common Issues
 
@@ -522,12 +526,14 @@ Detect 5 cognitive bias types using pattern matching and indicators:
 - Related CVEs research finds only high-severity CVEs in same product, ignores fixed or low-severity issues
 
 **Example:**
+
 > **Bias Detected:** Confirmation Bias
 > **Evidence:** Threat Intelligence section states "Public PoC available, active exploitation confirmed" but does not mention EPSS score of 3.2% indicating low probability of exploitation.
 > **Impact:** May lead to over-prioritization
 > **Debiasing Recommendation:** Research both exploitation and non-exploitation indicators. Explicitly note when evidence contradicts initial assessment. Ask: "What evidence would change my conclusion?"
 
 **Debiasing Strategy:**
+
 - Consider alternative perspectives and contradictory evidence
 - Research both exploitation AND non-exploitation indicators
 - Include mitigating factors in priority rationale
@@ -548,12 +554,14 @@ Detect 5 cognitive bias types using pattern matching and indicators:
 - Initial affected version range not updated when vendor advisory provides more accurate data
 
 **Example:**
+
 > **Bias Detected:** Anchoring Bias
 > **Evidence:** Priority set to P1 based on CVSS 9.1, but EPSS 1.2%, KEV=No, Internal exposure, and Low ACR all suggest lower priority (P3 more appropriate).
 > **Impact:** Resource misallocation, real P1 issues may be delayed
 > **Debiasing Recommendation:** Verify initial CVSS against multiple sources. Consider all priority factors equally using the multi-factor priority matrix. Re-evaluate priority after gathering all data, not just after CVSS.
 
 **Debiasing Strategy:**
+
 - Verify initial CVSS against multiple authoritative sources
 - Use multi-factor priority assessment (CVSS + EPSS + KEV + ACR + Exposure)
 - Re-evaluate initial assessments after gathering all data
@@ -574,12 +582,14 @@ Detect 5 cognitive bias types using pattern matching and indicators:
 - Risk assessment references recent organizational pain point not relevant to current CVE
 
 **Example:**
+
 > **Bias Detected:** Availability Bias
 > **Evidence:** Business impact states "could lead to widespread compromise like Log4Shell incident" but this CVE requires authentication and affects only 2 internal systems.
 > **Impact:** Unnecessarily alarmist messaging, reduces credibility
 > **Debiasing Recommendation:** Balance recent incidents with historical data. Assess this CVE on its own technical merits and organizational context. Avoid analogies to unrelated high-profile incidents unless technically justified.
 
 **Debiasing Strategy:**
+
 - Balance recent incidents with historical data and base rates
 - Assess each CVE on its own technical merits
 - Avoid dramatic analogies to unrelated incidents (unless technically valid)
@@ -601,12 +611,14 @@ Detect 5 cognitive bias types using pattern matching and indicators:
 - Threat intelligence states "no exploitation" definitively without noting intelligence gaps
 
 **Example:**
+
 > **Bias Detected:** Overconfidence Bias
 > **Evidence:** Threat Intelligence states "No active exploitation" definitively, but only cites Exploit-DB and does not acknowledge potential intelligence gaps or non-public exploits.
 > **Impact:** False sense of security, may delay remediation inappropriately
 > **Debiasing Recommendation:** Acknowledge uncertainty in threat intelligence. Use probabilistic language: "No public exploitation observed as of [date] per [sources], but intelligence gaps may exist." Cite evidence for all definitive claims.
 
 **Debiasing Strategy:**
+
 - Acknowledge uncertainty and limitations of available data
 - Use probabilistic language when appropriate (likely, probable, may, suggests)
 - Cite evidence for all definitive claims
@@ -628,12 +640,14 @@ Detect 5 cognitive bias types using pattern matching and indicators:
 - Vendor patch history ignored (e.g., vendor has history of slow patches, but not noted)
 
 **Example:**
+
 > **Bias Detected:** Recency Bias
 > **Evidence:** Related CVEs section lists only CVEs from the last 3 months. Historical context shows this product had 15 critical RCE CVEs over the past 2 years, suggesting systemic issues that inform remediation strategy (consider replacing product).
 > **Impact:** Misses pattern of repeated vulnerabilities that may inform strategic decisions
 > **Debiasing Recommendation:** Include historical context when researching CVEs. Check for patterns over 1-2 years. If systemic issues exist, recommend strategic remediation (product replacement, architectural change) in addition to tactical patching.
 
 **Debiasing Strategy:**
+
 - Include historical context and trends (6-12 months minimum, 1-2 years ideal)
 - Research CVE exploitation over time, not just recent activity
 - Consider vendor patch history and track record
@@ -644,12 +658,12 @@ Detect 5 cognitive bias types using pattern matching and indicators:
 
 ### Bias Scoring
 
-| Bias Count/Severity | Score | Assessment |
-|---------------------|-------|------------|
-| No biases detected | 100% | Objective analysis |
-| 1 minor bias | 80-90% | Minimal concern |
-| 2-3 minor or 1 moderate | 60-79% | Notable bias present |
-| 4+ minor or 2+ moderate | <60% | Significant bias concerns |
+| Bias Count/Severity     | Score  | Assessment                |
+| ----------------------- | ------ | ------------------------- |
+| No biases detected      | 100%   | Objective analysis        |
+| 1 minor bias            | 80-90% | Minimal concern           |
+| 2-3 minor or 1 moderate | 60-79% | Notable bias present      |
+| 4+ minor or 2+ moderate | <60%   | Significant bias concerns |
 
 ### Outputs
 
@@ -666,11 +680,11 @@ Detect 5 cognitive bias types using pattern matching and indicators:
 
 ### Error Handling
 
-| Error | Resolution |
-|-------|------------|
+| Error                        | Resolution                                                                                                  |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | **Uncertain Bias Detection** | Note as "Possible [bias type]" with caveat, provide debiasing recommendation anyway as learning opportunity |
-| **No Bias Indicators** | Document as "No cognitive biases detected" (positive finding) |
-| **Borderline Cases** | Document as learning opportunity in review, not critical gap |
+| **No Bias Indicators**       | Document as "No cognitive biases detected" (positive finding)                                               |
+| **Borderline Cases**         | Document as learning opportunity in review, not critical gap                                                |
 
 ### Common Issues
 
@@ -690,13 +704,13 @@ Verify critical factual claims against authoritative sources to ensure technical
 
 ### When to Perform Fact Verification
 
-| Priority | Verification Requirement |
-|----------|-------------------------|
-| P1 (Critical) | **Mandatory** - Verify all claims |
-| P2 (High) | **Mandatory** - Verify all claims |
-| P3 (Medium) | **25% Sampling** - Verify if randomly selected or Technical Accuracy score <70% |
-| P4 (Low) | **Skip** - Unless Technical Accuracy score <70% |
-| P5 (Informational) | **Skip** - Unless Technical Accuracy score <70% |
+| Priority           | Verification Requirement                                                        |
+| ------------------ | ------------------------------------------------------------------------------- |
+| P1 (Critical)      | **Mandatory** - Verify all claims                                               |
+| P2 (High)          | **Mandatory** - Verify all claims                                               |
+| P3 (Medium)        | **25% Sampling** - Verify if randomly selected or Technical Accuracy score <70% |
+| P4 (Low)           | **Skip** - Unless Technical Accuracy score <70%                                 |
+| P5 (Informational) | **Skip** - Unless Technical Accuracy score <70%                                 |
 
 ### Inputs
 
@@ -717,6 +731,7 @@ Verify critical factual claims against authoritative sources to ensure technical
 **Cross-Check:** Vendor security advisory
 
 **Procedure:**
+
 1. Navigate to NVD page for CVE
 2. Extract Base Score and Vector String from CVSS v3.x section
 3. Compare to enrichment claim
@@ -726,6 +741,7 @@ Verify critical factual claims against authoritative sources to ensure technical
 **Discrepancy Threshold:** >0.5 CVSS points
 
 **Example Verification:**
+
 ```
 Claim: "CVSS: 8.1 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N)"
 NVD:   "CVSS: 8.1 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N)"
@@ -740,6 +756,7 @@ Result: ✓ Verified
 **API:** https://api.first.org/data/v1/epss?cve=CVE-YYYY-NNNNN
 
 **Procedure:**
+
 1. Query EPSS API or website for CVE
 2. Check EPSS score (0-100%) and date
 3. Verify date is within 7 days of enrichment date
@@ -748,6 +765,7 @@ Result: ✓ Verified
 **Discrepancy Threshold:** >5% EPSS difference or date >7 days old
 
 **Example Verification:**
+
 ```
 Claim: "EPSS: 45.2% (as of 2024-11-01)"
 EPSS:  "EPSS: 45.7% (as of 2024-11-05)"
@@ -755,6 +773,7 @@ Result: ✓ Verified (within 5% tolerance, date acceptable if enrichment created
 ```
 
 **Special Cases:**
+
 - **New CVEs (<48 hours):** EPSS may not be available yet. Note as "Preliminary - EPSS pending" and skip verification.
 
 ---
@@ -764,6 +783,7 @@ Result: ✓ Verified (within 5% tolerance, date acceptable if enrichment created
 **Primary Source:** CISA KEV Catalog - https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 
 **Procedure:**
+
 1. Search KEV catalog by CVE ID (Ctrl+F on page or download CSV)
 2. Check if CVE is present
 3. If present, note "Date Added to KEV"
@@ -772,6 +792,7 @@ Result: ✓ Verified (within 5% tolerance, date acceptable if enrichment created
 **Discrepancy Threshold:** Yes vs No = **Critical Gap**
 
 **Example Verification:**
+
 ```
 Claim: "KEV: Yes (added 2024-03-15)"
 KEV:   CVE-2024-1234 present, dateAdded: 2024-03-15
@@ -786,6 +807,7 @@ Result: ✓ Verified
 **Cross-Check:** NVD "Affected Configurations" section
 
 **Procedure:**
+
 1. Locate vendor security advisory (URL should be in References section)
 2. Extract affected version ranges
 3. Extract fixed/patched versions
@@ -795,6 +817,7 @@ Result: ✓ Verified
 **Discrepancy Threshold:** Version mismatch, missing version ranges, vague versions ("latest")
 
 **Example Verification:**
+
 ```
 Claim: "Affected: Apache Struts 2.0.0 - 2.5.30, Fixed: 2.5.31"
 Vendor Advisory: "Versions 2.0.0 through 2.5.30 are affected. Upgrade to 2.5.31 or later."
@@ -806,12 +829,14 @@ Result: ✓ Verified
 #### 5. Verify Exploit Status
 
 **Sources:**
+
 - **Exploit-DB:** https://www.exploit-db.com/ (search by CVE)
 - **Metasploit:** https://www.rapid7.com/db/ (search modules)
 - **GitHub:** Search for "CVE-YYYY-NNNNN PoC" or "CVE-YYYY-NNNNN exploit"
 - **Optional:** Perplexity MCP for recent threat intelligence
 
 **Procedure:**
+
 1. Search Exploit-DB for public exploits
 2. Check Metasploit module database
 3. Search GitHub for proof-of-concept code
@@ -821,6 +846,7 @@ Result: ✓ Verified
 **Discrepancy Threshold:** "None" claimed but PoC exists = **Significant Gap**
 
 **Example Verification:**
+
 ```
 Claim: "Exploit Status: Public PoC available on GitHub"
 GitHub: Repository found at https://github.com/user/CVE-2024-1234-PoC
@@ -833,15 +859,16 @@ Result: ✓ Verified
 
 For each discrepancy found:
 
-| Field | Description |
-|-------|-------------|
-| **Claim Made** | Exact text from enrichment |
-| **Actual Value** | Correct value per authoritative source |
-| **Source** | URL and timestamp of authoritative source |
-| **Severity** | Critical / Significant / Minor |
-| **Recommendation** | Specific correction needed |
+| Field              | Description                               |
+| ------------------ | ----------------------------------------- |
+| **Claim Made**     | Exact text from enrichment                |
+| **Actual Value**   | Correct value per authoritative source    |
+| **Source**         | URL and timestamp of authoritative source |
+| **Severity**       | Critical / Significant / Minor            |
+| **Recommendation** | Specific correction needed                |
 
 **Example Discrepancy:**
+
 ```
 Claim Made: "CVSS: 9.3"
 Actual Value: "CVSS: 8.1 per NVD"
@@ -866,12 +893,12 @@ Recommendation: Update CVSS score to 8.1 and verify against https://nvd.nist.gov
 
 ### Error Handling
 
-| Error | Resolution |
-|-------|------------|
-| **Source Unavailable** | Note "Unable to verify - [source] unavailable as of [date]", recommend re-verification when available |
-| **Conflicting Sources** | Document all sources and conflict, recommend analyst clarification or defer to highest-authority source (NVD > Vendor > Industry) |
-| **Verification Timeout** | Skip optional verifications, focus on critical claims (CVSS, KEV), note incomplete verification |
-| **New CVE (<48 hours)** | EPSS/NVD may be preliminary or missing, note as "Preliminary data - re-verify in 72 hours" |
+| Error                    | Resolution                                                                                                                        |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Source Unavailable**   | Note "Unable to verify - [source] unavailable as of [date]", recommend re-verification when available                             |
+| **Conflicting Sources**  | Document all sources and conflict, recommend analyst clarification or defer to highest-authority source (NVD > Vendor > Industry) |
+| **Verification Timeout** | Skip optional verifications, focus on critical claims (CVSS, KEV), note incomplete verification                                   |
+| **New CVE (<48 hours)**  | EPSS/NVD may be preliminary or missing, note as "Preliminary data - re-verify in 72 hours"                                        |
 
 ### Performance Optimization
 
@@ -908,6 +935,7 @@ Generate comprehensive, blameless review report with 12 sections, constructive f
 #### Section 1: Review Metadata
 
 **Content:**
+
 - **Ticket ID:** JIRA-1234
 - **CVE ID:** CVE-2024-1234
 - **Analyst:** Jane Smith
@@ -924,11 +952,13 @@ Generate comprehensive, blameless review report with 12 sections, constructive f
 **Purpose:** 2-3 sentence concise overview with constructive tone.
 
 **Tone Guidelines:**
+
 - Lead with overall assessment
 - Acknowledge effort and strengths
 - Note gaps constructively (not blame)
 
 **Example:**
+
 > Solid enrichment with accurate technical analysis and comprehensive remediation guidance. Some gaps in business context detail and source citations could be improved to enhance actionability. Overall assessment: **Good** (86.5/100).
 
 ---
@@ -938,11 +968,13 @@ Generate comprehensive, blameless review report with 12 sections, constructive f
 **Purpose:** Always lead with strengths (blameless culture), acknowledge specific positive work.
 
 **Guidelines:**
+
 - Identify 3-5 specific strengths
 - Be specific, not generic ("Good CVSS" → "CVSS verified against both NVD and vendor advisory")
 - Celebrate exceptional work
 
 **Example:**
+
 ```markdown
 ## Strengths & What Went Well
 
@@ -961,17 +993,17 @@ Generate comprehensive, blameless review report with 12 sections, constructive f
 
 **Format: Table**
 
-| Dimension | Score | Weight | Weighted | Assessment |
-|-----------|-------|--------|----------|------------|
-| Technical Accuracy | 87.5% | 25% | 21.88 | Good |
-| Completeness | 91.7% | 20% | 18.34 | Excellent |
-| Actionability | 83.3% | 15% | 12.50 | Good |
-| Contextualization | 66.7% | 15% | 10.00 | Needs Improvement |
-| Documentation Quality | 100% | 10% | 10.00 | Excellent |
-| Attack Mapping | 80.0% | 5% | 4.00 | Good |
-| Cognitive Bias | 90.0% | 5% | 4.50 | Excellent |
-| Source Citation | 80.0% | 5% | 4.00 | Good |
-| **Overall** | | | **86.22** | **Good** |
+| Dimension             | Score | Weight | Weighted  | Assessment        |
+| --------------------- | ----- | ------ | --------- | ----------------- |
+| Technical Accuracy    | 87.5% | 25%    | 21.88     | Good              |
+| Completeness          | 91.7% | 20%    | 18.34     | Excellent         |
+| Actionability         | 83.3% | 15%    | 12.50     | Good              |
+| Contextualization     | 66.7% | 15%    | 10.00     | Needs Improvement |
+| Documentation Quality | 100%  | 10%    | 10.00     | Excellent         |
+| Attack Mapping        | 80.0% | 5%     | 4.00      | Good              |
+| Cognitive Bias        | 90.0% | 5%     | 4.50      | Excellent         |
+| Source Citation       | 80.0% | 5%     | 4.00      | Good              |
+| **Overall**           |       |        | **86.22** | **Good**          |
 
 ---
 
@@ -980,15 +1012,18 @@ Generate comprehensive, blameless review report with 12 sections, constructive f
 **Purpose:** Flag issues requiring immediate attention.
 
 **Guidelines:**
+
 - Only include if Critical gaps exist
 - Use urgent but not alarmist language
 - Provide specific corrective actions
 
 **Example:**
+
 ```markdown
 ## Critical Issues
 
 ### 1. CVSS Score Discrepancy
+
 - **Issue:** Enrichment states CVSS 9.3, but NVD shows 8.1
 - **Impact:** Incorrect severity leads to wrong prioritization and SLA violation
 - **Action Required:** Update CVSS to 8.1, re-verify priority assessment
@@ -1005,15 +1040,18 @@ Generate comprehensive, blameless review report with 12 sections, constructive f
 **Purpose:** List important quality issues that should be addressed.
 
 **Guidelines:**
+
 - Constructive language (not blame)
 - Specific recommendations with effort estimates
 - Link learning resources
 
 **Example:**
+
 ```markdown
 ## Significant Gaps
 
 ### 1. Missing Business Context Detail
+
 - **Gap:** Business Impact Assessment states "affects production systems" but doesn't identify specific processes or services
 - **Impact:** Stakeholders can't assess business risk or prioritize remediation resources
 - **Recommendation:** Identify specific affected business processes (e.g., "Customer checkout system, revenue-generating") and estimate financial/operational impact
@@ -1021,6 +1059,7 @@ Generate comprehensive, blameless review report with 12 sections, constructive f
 - **Effort:** 10 minutes
 
 ### 2. Incomplete Source Citations
+
 - **Gap:** EPSS score cited without source URL
 - **Impact:** Reviewers can't verify claim, reduces trust in analysis
 - **Recommendation:** Add source URL: https://www.first.org/epss/ and access date
@@ -1035,11 +1074,13 @@ Generate comprehensive, blameless review report with 12 sections, constructive f
 **Purpose:** Optional enhancements, lower priority.
 
 **Guidelines:**
+
 - Phrased as suggestions, not requirements
 - "Consider," "could be enhanced," "optional"
 - Brief, not detailed
 
 **Example:**
+
 ```markdown
 ## Minor Improvements
 
@@ -1055,19 +1096,22 @@ Generate comprehensive, blameless review report with 12 sections, constructive f
 **Purpose:** Non-judgmental feedback on objectivity.
 
 **Guidelines:**
+
 - Educational tone, not accusatory
 - Specific examples from enrichment
 - Debiasing strategies as learning opportunity
 - If no biases: Celebrate objectivity
 
 **Example (Bias Detected):**
+
 ```markdown
 ## Cognitive Bias Assessment
 
 ### Possible Confirmation Bias
+
 **Observation:** Threat Intelligence section focuses on exploitation evidence (PoC available, active scanning) but doesn't mention EPSS score of 3.2%, which suggests low actual exploitation probability.
 
-**Learning Opportunity:** When researching threat intelligence, actively seek both confirming and disconfirming evidence. Ask "What evidence would suggest this is *not* being actively exploited?"
+**Learning Opportunity:** When researching threat intelligence, actively seek both confirming and disconfirming evidence. Ask "What evidence would suggest this is _not_ being actively exploited?"
 
 **Debiasing Strategy:** Include both exploitation indicators (PoC, scanning) AND non-exploitation indicators (EPSS, absence from threat feeds) to present balanced threat assessment.
 
@@ -1075,6 +1119,7 @@ Generate comprehensive, blameless review report with 12 sections, constructive f
 ```
 
 **Example (No Bias):**
+
 ```markdown
 ## Cognitive Bias Assessment
 
@@ -1088,6 +1133,7 @@ No cognitive biases detected. Analysis demonstrates balanced consideration of bo
 **Purpose:** Transparency on verification performed.
 
 **Example (Verification Performed):**
+
 ```markdown
 ## Fact Verification Results
 
@@ -1095,18 +1141,19 @@ No cognitive biases detected. Analysis demonstrates balanced consideration of bo
 **Claims Verified:** 5/5
 **Discrepancies Found:** 0
 
-| Claim | Result | Source |
-|-------|--------|--------|
-| CVSS 8.1 | ✓ Verified | NVD (https://nvd.nist.gov/vuln/detail/CVE-2024-1234) |
-| EPSS 45.2% | ✓ Verified | FIRST EPSS (https://api.first.org/data/v1/epss?cve=CVE-2024-1234) |
-| KEV: Yes | ✓ Verified | CISA KEV Catalog (https://www.cisa.gov/known-exploited-vulnerabilities-catalog) |
-| Affected: 2.0.0-2.5.30 | ✓ Verified | Vendor Advisory (https://vendor.com/security/CVE-2024-1234) |
-| Fixed: 2.5.31 | ✓ Verified | Vendor Advisory |
+| Claim                  | Result     | Source                                                                          |
+| ---------------------- | ---------- | ------------------------------------------------------------------------------- |
+| CVSS 8.1               | ✓ Verified | NVD (https://nvd.nist.gov/vuln/detail/CVE-2024-1234)                            |
+| EPSS 45.2%             | ✓ Verified | FIRST EPSS (https://api.first.org/data/v1/epss?cve=CVE-2024-1234)               |
+| KEV: Yes               | ✓ Verified | CISA KEV Catalog (https://www.cisa.gov/known-exploited-vulnerabilities-catalog) |
+| Affected: 2.0.0-2.5.30 | ✓ Verified | Vendor Advisory (https://vendor.com/security/CVE-2024-1234)                     |
+| Fixed: 2.5.31          | ✓ Verified | Vendor Advisory                                                                 |
 
 All factual claims verified successfully against authoritative sources.
 ```
 
 **Example (Verification Skipped):**
+
 ```markdown
 ## Fact Verification Results
 
@@ -1121,21 +1168,26 @@ All factual claims verified successfully against authoritative sources.
 **Purpose:** Prioritized, actionable next steps with educational links.
 
 **Format:**
+
 ```markdown
 ## Recommendations & Learning Resources
 
 ### High Priority (Address Before Approval)
+
 1. **Update CVSS Score** - [CVSS Calculator](https://www.first.org/cvss/calculator/3.1)
 2. **Add Business Process Details** - [Business Impact Assessment Guide](link)
 
 ### Medium Priority (Recommended)
+
 3. **Add Source Citations** - [Source Citation Checklist](link)
 4. **Expand Remediation Workarounds** - [Compensating Controls Guide](link)
 
 ### Low Priority (Optional Enhancements)
+
 5. **Improve Formatting** - [Documentation Style Guide](link)
 
 ### Additional Learning Resources
+
 - [Vulnerability Management Knowledge Base](link-to-kb)
 - [Cognitive Bias Patterns Guide](link-to-bias-guide)
 - [MITRE ATT&CK Mapping Guide](link-to-attack-guide)
@@ -1148,11 +1200,13 @@ All factual claims verified successfully against authoritative sources.
 **Purpose:** Foster discussion and collaborative learning.
 
 **Guidelines:**
+
 - Open-ended questions
 - Non-judgmental, curious tone
 - Encourage reflection and knowledge sharing
 
 **Example:**
+
 ```markdown
 ## Conversation Starters
 
@@ -1174,6 +1228,7 @@ Feel free to reach out to discuss any aspect of this review!
 **Purpose:** Clear, specific action items with timeline.
 
 **Example (Critical Issues Present):**
+
 ```markdown
 ## Next Steps
 
@@ -1187,6 +1242,7 @@ Once critical and significant gaps are addressed, this enrichment will be approv
 ```
 
 **Example (Approved):**
+
 ```markdown
 ## Next Steps
 
@@ -1203,26 +1259,31 @@ Excellent work! This enrichment demonstrates strong technical analysis and clear
 ### Blameless Tone Guidelines
 
 **Avoid Blame Language:**
+
 - ❌ "You failed to include..."
 - ❌ "This is wrong..."
 - ❌ "You didn't verify..."
 - ❌ "Poor quality..."
 
 **Use Constructive Language:**
+
 - ✅ "This section could be enhanced by..."
 - ✅ "Consider adding... to improve..."
 - ✅ "This claim would benefit from verification..."
 - ✅ "Opportunities for improvement..."
 
 **Focus on Work, Not Person:**
+
 - ❌ "You were biased..."
 - ✅ "The analysis shows signs of confirmation bias..."
 
 **Assume Good Intent:**
+
 - ✅ "Great effort on this section; adding [X] would make it even stronger"
 - ✅ "I can see you researched this thoroughly; one additional source would complete the picture"
 
 **Growth-Oriented Framing:**
+
 - ✅ "Learning opportunity: [topic]"
 - ✅ "For future enrichments, consider..."
 - ✅ "This is a common challenge; here's a strategy..."
@@ -1244,11 +1305,11 @@ Excellent work! This enrichment demonstrates strong technical analysis and clear
 
 ### Error Handling
 
-| Error | Resolution |
-|-------|------------|
+| Error                       | Resolution                                                                                                                                                                         |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **No Strengths Identified** | Look harder - even inadequate enrichments have some positive elements (effort, structure, attempt at research). If truly none, note "Effort appreciated" as minimum acknowledgment |
-| **Report Too Long** | Summarize, consolidate similar gaps, provide detail in linked findings. Aim for <2000 words for readability |
-| **Tone Slips into Blame** | Automated tone checker, rephrase using constructive language guidelines |
+| **Report Too Long**         | Summarize, consolidate similar gaps, provide detail in linked findings. Aim for <2000 words for readability                                                                        |
+| **Tone Slips into Blame**   | Automated tone checker, rephrase using constructive language guidelines                                                                                                            |
 
 ### Performance Optimization
 
@@ -1285,12 +1346,14 @@ Deliver review report to analyst via JIRA, transition ticket to appropriate stat
 **Tool:** `mcp__atlassian__addCommentToJiraIssue`
 
 **Parameters:**
+
 - `issueIdOrKey`: JIRA ticket ID (e.g., "SEC-1234")
 - `comment`: Full 12-section review report (markdown format)
 
 **Format:** Markdown (JIRA supports markdown in comments)
 
 **Example:**
+
 ```
 mcp__atlassian__addCommentToJiraIssue({
   issueIdOrKey: "SEC-1234",
@@ -1304,16 +1367,17 @@ mcp__atlassian__addCommentToJiraIssue({
 
 **Decision Logic:**
 
-| Condition | Transition To | Reason |
-|-----------|---------------|--------|
-| Critical issues present | **In Progress** | Return to analyst for immediate fixes |
-| Quality score ≥75% AND no Critical issues | **Remediation Planning** | Approved, ready for remediation team |
+| Condition                                   | Transition To                    | Reason                                       |
+| ------------------------------------------- | -------------------------------- | -------------------------------------------- |
+| Critical issues present                     | **In Progress**                  | Return to analyst for immediate fixes        |
+| Quality score ≥75% AND no Critical issues   | **Remediation Planning**         | Approved, ready for remediation team         |
 | Quality score 60-74% AND no Critical issues | **Needs Improvement** (optional) | Analyst decides: fix or proceed with caveats |
-| Quality score <60% | **In Progress** | Substantial rework required |
+| Quality score <60%                          | **In Progress**                  | Substantial rework required                  |
 
 **Tool:** `mcp__atlassian__transitionJiraIssue`
 
 **Example:**
+
 ```
 // Critical issues → return to analyst
 mcp__atlassian__transitionJiraIssue({
@@ -1334,11 +1398,11 @@ mcp__atlassian__transitionJiraIssue({
 
 **Decision Logic:**
 
-| Transition | Assignment |
-|------------|------------|
-| In Progress (returned) | Original analyst (from metadata) |
-| Remediation Planning | Remediation team lead or leave with analyst |
-| Needs Improvement | Original analyst (optional) |
+| Transition             | Assignment                                  |
+| ---------------------- | ------------------------------------------- |
+| In Progress (returned) | Original analyst (from metadata)            |
+| Remediation Planning   | Remediation team lead or leave with analyst |
+| Needs Improvement      | Original analyst (optional)                 |
 
 **Tool:** `mcp__atlassian__updateJiraIssue`
 
@@ -1351,11 +1415,13 @@ mcp__atlassian__transitionJiraIssue({
 **Format:** Markdown (identical to JIRA comment)
 
 **Purpose:**
+
 - Audit trail
 - Offline access
 - Batch analysis of review patterns
 
 **Example:**
+
 ```
 reviews/
 ├── SEC-1234-review.md
@@ -1370,6 +1436,7 @@ reviews/
 **Location:** `metrics/review-metrics.csv`
 
 **Columns:**
+
 - `ticket_id`: JIRA ticket ID (e.g., SEC-1234)
 - `cve_id`: CVE identifier (e.g., CVE-2024-1234)
 - `analyst`: Analyst name
@@ -1384,12 +1451,14 @@ reviews/
 - `approval_status`: Approved/Returned/Needs Improvement
 
 **Example Entry:**
+
 ```csv
 ticket_id,cve_id,analyst,reviewer,review_date,review_duration_min,quality_score,quality_classification,critical_gaps_count,significant_gaps_count,minor_gaps_count,approval_status
 SEC-1234,CVE-2024-1234,Jane Smith,John Doe,2024-11-08,18,86.5,Good,0,2,3,Approved
 ```
 
 **Purpose:**
+
 - Track reviewer performance and workload
 - Identify analyst training needs
 - Measure quality trends over time
@@ -1400,6 +1469,7 @@ SEC-1234,CVE-2024-1234,Jane Smith,John Doe,2024-11-08,18,86.5,Good,0,2,3,Approve
 #### 6. Send Notifications (Optional)
 
 **If Configured:**
+
 - **Email:** Send review summary to analyst email
 - **Slack:** Post notification to #security-reviews channel
 - **Primary:** JIRA assignment notification (automatic)
@@ -1426,13 +1496,13 @@ SEC-1234,CVE-2024-1234,Jane Smith,John Doe,2024-11-08,18,86.5,Good,0,2,3,Approve
 
 ### Error Handling
 
-| Error | Resolution |
-|-------|------------|
-| **JIRA Comment Post Failure** | Save locally, provide manual copy instructions to reviewer, retry MCP call |
+| Error                         | Resolution                                                                                                      |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **JIRA Comment Post Failure** | Save locally, provide manual copy instructions to reviewer, retry MCP call                                      |
 | **Ticket Transition Failure** | Verify workflow permissions, check JIRA workflow allows transition, manual transition if needed, note in review |
-| **Assignment Failure** | Verify user exists and is active, manual assignment if needed, note in review |
-| **Metrics Logging Failure** | Log to backup file `metrics/review-metrics-backup.csv`, investigate CSV file permissions, alert admin |
-| **File Write Failure** | Check directory exists, check permissions, create directory if needed, alert reviewer |
+| **Assignment Failure**        | Verify user exists and is active, manual assignment if needed, note in review                                   |
+| **Metrics Logging Failure**   | Log to backup file `metrics/review-metrics-backup.csv`, investigate CSV file permissions, alert admin           |
+| **File Write Failure**        | Check directory exists, check permissions, create directory if needed, alert reviewer                           |
 
 ### Performance Optimization
 
@@ -1442,11 +1512,11 @@ SEC-1234,CVE-2024-1234,Jane Smith,John Doe,2024-11-08,18,86.5,Good,0,2,3,Approve
 
 ### Common Issues
 
-| Issue | Resolution |
-|-------|-----------|
+| Issue                                      | Resolution                                                                                             |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
 | **JIRA workflow doesn't allow transition** | Override with admin permissions, or manual transition with explanation, or use different transition ID |
-| **Analyst no longer active** | Assign to team lead or project admin, note in review report |
-| **Metrics CSV file locked** | Use backup file, retry after delay, alert admin to investigate file lock |
+| **Analyst no longer active**               | Assign to team lead or project admin, note in review report                                            |
+| **Metrics CSV file locked**                | Use backup file, retry after delay, alert admin to investigate file lock                               |
 | **Network failure during JIRA operations** | Retry with exponential backoff, save all data locally, alert reviewer to manually post if retries fail |
 
 ---
@@ -1476,6 +1546,7 @@ For each gap (failed checklist item):
 #### Critical Gaps
 
 **Criteria:** Issues that could lead to:
+
 - Incorrect remediation decisions or actions
 - Wrong prioritization causing SLA violations
 - Security risks (dangerous advice, missing critical info)
@@ -1581,13 +1652,13 @@ For each gap (failed checklist item):
 
 ### Edge Case Handling
 
-| Scenario | Categorization | Reasoning |
-|----------|----------------|-----------|
-| CVSS 6.9 vs 7.0 (Medium vs High threshold) | **CRITICAL** | Crosses severity boundary affecting priority |
-| EPSS 49.9% vs 50.1% | **MINOR** if no priority change | Precision difference, no practical impact if priority still correct |
-| KEV status unknown (not Yes/No, but "Unable to verify") | **SIGNIFICANT** | Should be verifiable; inability to verify is documentation gap |
-| Multiple gaps of same type (3 missing source citations) | **Consolidate** | One SIGNIFICANT gap: "Multiple source citations missing (3 instances)" |
-| Vendor CVSS 8.1 vs NVD CVSS 7.8 | **SIGNIFICANT** | Discrepancy should be noted and explained (Base vs Temporal), not necessarily wrong |
+| Scenario                                                | Categorization                  | Reasoning                                                                           |
+| ------------------------------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------- |
+| CVSS 6.9 vs 7.0 (Medium vs High threshold)              | **CRITICAL**                    | Crosses severity boundary affecting priority                                        |
+| EPSS 49.9% vs 50.1%                                     | **MINOR** if no priority change | Precision difference, no practical impact if priority still correct                 |
+| KEV status unknown (not Yes/No, but "Unable to verify") | **SIGNIFICANT**                 | Should be verifiable; inability to verify is documentation gap                      |
+| Multiple gaps of same type (3 missing source citations) | **Consolidate**                 | One SIGNIFICANT gap: "Multiple source citations missing (3 instances)"              |
+| Vendor CVSS 8.1 vs NVD CVSS 7.8                         | **SIGNIFICANT**                 | Discrepancy should be noted and explained (Base vs Temporal), not necessarily wrong |
 
 ---
 
@@ -1601,14 +1672,15 @@ For each gap (failed checklist item):
 
 **Detection Patterns:**
 
-| Indicator | Example | Why It's Bias |
-|-----------|---------|---------------|
-| **One-sided research** | Threat Intelligence lists only exploitation evidence, ignores low EPSS | Ignoring contradictory data |
+| Indicator                           | Example                                                                                 | Why It's Bias                     |
+| ----------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------- |
+| **One-sided research**              | Threat Intelligence lists only exploitation evidence, ignores low EPSS                  | Ignoring contradictory data       |
 | **Cherry-picking priority factors** | Priority rationale mentions CVSS 8.1 and KEV=Yes, ignores EPSS 2% and Internal exposure | Selecting only supporting factors |
-| **Remediation tunnel vision** | Only researches patching, ignores workarounds or compensating controls | Not considering alternatives |
-| **Selective sourcing** | Cites only sources supporting high severity, ignores vendor advisory downgrading | Confirmation-seeking sourcing |
+| **Remediation tunnel vision**       | Only researches patching, ignores workarounds or compensating controls                  | Not considering alternatives      |
+| **Selective sourcing**              | Cites only sources supporting high severity, ignores vendor advisory downgrading        | Confirmation-seeking sourcing     |
 
 **Debiasing Strategies:**
+
 - Ask: "What evidence would change my conclusion?"
 - Actively seek disconfirming evidence
 - Research both exploitation AND non-exploitation indicators
@@ -1623,14 +1695,15 @@ For each gap (failed checklist item):
 
 **Detection Patterns:**
 
-| Indicator | Example | Why It's Bias |
-|-----------|---------|---------------|
-| **CVSS dominance** | Priority set to P1 solely based on CVSS 9.1, ignoring EPSS 1%, KEV=No, Internal, Low ACR (should be P3) | First metric (CVSS) dominates |
-| **Vendor CVSS accepted uncritically** | Vendor advisory states CVSS 8.5, not verified against NVD (which shows 7.2) | First source accepted as truth |
-| **Initial assessment persists** | Initial assessment "Critical" persists despite evidence suggesting Medium | Anchor resists updating |
-| **First attack vector assumed only** | First-discovered RCE vector anchors analysis, doesn't investigate local privilege escalation also present | First finding dominates |
+| Indicator                             | Example                                                                                                   | Why It's Bias                  |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| **CVSS dominance**                    | Priority set to P1 solely based on CVSS 9.1, ignoring EPSS 1%, KEV=No, Internal, Low ACR (should be P3)   | First metric (CVSS) dominates  |
+| **Vendor CVSS accepted uncritically** | Vendor advisory states CVSS 8.5, not verified against NVD (which shows 7.2)                               | First source accepted as truth |
+| **Initial assessment persists**       | Initial assessment "Critical" persists despite evidence suggesting Medium                                 | Anchor resists updating        |
+| **First attack vector assumed only**  | First-discovered RCE vector anchors analysis, doesn't investigate local privilege escalation also present | First finding dominates        |
 
 **Debiasing Strategies:**
+
 - Verify initial CVSS against multiple sources (NVD + vendor)
 - Use multi-factor priority assessment (CVSS + EPSS + KEV + ACR + Exposure)
 - Re-evaluate initial assessments after gathering ALL data
@@ -1645,14 +1718,15 @@ For each gap (failed checklist item):
 
 **Detection Patterns:**
 
-| Indicator | Example | Why It's Bias |
-|-----------|---------|---------------|
-| **Recent incident analogy** | "Could lead to widespread compromise like Log4Shell" - but this CVE requires auth and affects 2 internal systems | Memorable incident distorts assessment |
-| **Media influence** | Priority escalated because CVE appeared in news, despite low EPSS | Publicity inflates perceived risk |
-| **Recent exploit focus** | Threat Intelligence focuses on exploit published last week, ignores that CVE is 2 years old with no prior exploitation | Recent event overweighted |
-| **Organizational pain point** | Risk inflated because similar vulnerability caused outage last month | Recent local event biases current assessment |
+| Indicator                     | Example                                                                                                                | Why It's Bias                                |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| **Recent incident analogy**   | "Could lead to widespread compromise like Log4Shell" - but this CVE requires auth and affects 2 internal systems       | Memorable incident distorts assessment       |
+| **Media influence**           | Priority escalated because CVE appeared in news, despite low EPSS                                                      | Publicity inflates perceived risk            |
+| **Recent exploit focus**      | Threat Intelligence focuses on exploit published last week, ignores that CVE is 2 years old with no prior exploitation | Recent event overweighted                    |
+| **Organizational pain point** | Risk inflated because similar vulnerability caused outage last month                                                   | Recent local event biases current assessment |
 
 **Debiasing Strategies:**
+
 - Base rate consideration: What's the actual exploitation rate (EPSS)?
 - Assess CVE on its own technical merits, not analogies
 - Balance recent incidents with historical data
@@ -1667,15 +1741,16 @@ For each gap (failed checklist item):
 
 **Detection Patterns:**
 
-| Indicator | Example | Why It's Bias |
-|-----------|---------|---------------|
-| **Definitive claims without sources** | "This will be exploited" vs "EPSS suggests 45% probability of exploitation" | Certainty without evidence |
-| **No caveats or limitations** | "No active exploitation" - without noting intelligence gaps or non-public exploits | Ignoring uncertainty |
-| **Single-path remediation** | "Apply patch v2.5.31" with no alternatives, presented as only option | Overconfident in one approach |
-| **Absolute language** | "Always," "never," "definitely," "impossible" without qualification | Unwarranted certainty |
-| **Priority without uncertainty** | P1 assigned without considering edge cases or ambiguous factors | No acknowledgment of judgment call |
+| Indicator                             | Example                                                                            | Why It's Bias                      |
+| ------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------- |
+| **Definitive claims without sources** | "This will be exploited" vs "EPSS suggests 45% probability of exploitation"        | Certainty without evidence         |
+| **No caveats or limitations**         | "No active exploitation" - without noting intelligence gaps or non-public exploits | Ignoring uncertainty               |
+| **Single-path remediation**           | "Apply patch v2.5.31" with no alternatives, presented as only option               | Overconfident in one approach      |
+| **Absolute language**                 | "Always," "never," "definitely," "impossible" without qualification                | Unwarranted certainty              |
+| **Priority without uncertainty**      | P1 assigned without considering edge cases or ambiguous factors                    | No acknowledgment of judgment call |
 
 **Debiasing Strategies:**
+
 - Acknowledge uncertainty and data limitations
 - Use probabilistic language (likely, probable, may, suggests)
 - Cite evidence for all definitive claims
@@ -1691,14 +1766,15 @@ For each gap (failed checklist item):
 
 **Detection Patterns:**
 
-| Indicator | Example | Why It's Bias |
-|-----------|---------|---------------|
-| **Short-term threat intelligence** | Threat Intelligence considers only last 30 days | Ignores historical exploitation patterns |
-| **Recent CVEs only** | Related CVEs lists only CVEs from last 3 months, misses that product has 15 critical RCEs over 2 years | Pattern of systemic issues missed |
-| **Recent-focused exploit status** | "No exploitation" based on last week's data, ignores that exploit was active 6 months ago | Historical context ignored |
-| **Current org priority influence** | Priority inflated because organization currently focused on RCE vulnerabilities (recent initiative) | Organizational recency affects technical assessment |
+| Indicator                          | Example                                                                                                | Why It's Bias                                       |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| **Short-term threat intelligence** | Threat Intelligence considers only last 30 days                                                        | Ignores historical exploitation patterns            |
+| **Recent CVEs only**               | Related CVEs lists only CVEs from last 3 months, misses that product has 15 critical RCEs over 2 years | Pattern of systemic issues missed                   |
+| **Recent-focused exploit status**  | "No exploitation" based on last week's data, ignores that exploit was active 6 months ago              | Historical context ignored                          |
+| **Current org priority influence** | Priority inflated because organization currently focused on RCE vulnerabilities (recent initiative)    | Organizational recency affects technical assessment |
 
 **Debiasing Strategies:**
+
 - Include historical context (6-12 months minimum, 1-2 years ideal)
 - Research CVE exploitation over time, not just recent activity
 - Check vendor patch history and track record
@@ -1714,12 +1790,12 @@ For each gap (failed checklist item):
 
 #### Tier 1: Primary Authoritative Sources (Always Trust)
 
-| Source | Use For | URL Pattern | Notes |
-|--------|---------|-------------|-------|
-| **NIST NVD** | CVSS scores, affected configurations, CWE mappings | `https://nvd.nist.gov/vuln/detail/CVE-YYYY-NNNNN` | Most authoritative for CVSS Base scores |
-| **CISA KEV Catalog** | KEV status, date added to KEV | `https://www.cisa.gov/known-exploited-vulnerabilities-catalog` | Authoritative for US federal compliance (BOD 22-01) |
-| **FIRST EPSS** | EPSS scores (exploitation probability) | `https://www.first.org/epss/` or `https://api.first.org/data/v1/epss?cve=` | Updated daily, authoritative for probability estimates |
-| **Vendor Security Advisories** | Product-specific details, affected/fixed versions, vendor CVSS | Vendor official security pages | Highest authority for version info |
+| Source                         | Use For                                                        | URL Pattern                                                                | Notes                                                  |
+| ------------------------------ | -------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **NIST NVD**                   | CVSS scores, affected configurations, CWE mappings             | `https://nvd.nist.gov/vuln/detail/CVE-YYYY-NNNNN`                          | Most authoritative for CVSS Base scores                |
+| **CISA KEV Catalog**           | KEV status, date added to KEV                                  | `https://www.cisa.gov/known-exploited-vulnerabilities-catalog`             | Authoritative for US federal compliance (BOD 22-01)    |
+| **FIRST EPSS**                 | EPSS scores (exploitation probability)                         | `https://www.first.org/epss/` or `https://api.first.org/data/v1/epss?cve=` | Updated daily, authoritative for probability estimates |
+| **Vendor Security Advisories** | Product-specific details, affected/fixed versions, vendor CVSS | Vendor official security pages                                             | Highest authority for version info                     |
 
 **When to Use:** All mandatory fact verification (CVSS, KEV, EPSS, versions)
 
@@ -1727,12 +1803,12 @@ For each gap (failed checklist item):
 
 #### Tier 2: Secondary Authoritative Sources (Cross-Reference)
 
-| Source | Use For | URL Pattern | Notes |
-|--------|---------|-------------|-------|
-| **CVE.org (MITRE)** | CVE metadata, descriptions, initial disclosures | `https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-YYYY-NNNNN` | Good for descriptions, less detail than NVD |
-| **Security Bulletins** | Vendor-specific guidance (Microsoft, Adobe, Oracle) | Vendor bulletin pages | Cross-reference for version info |
-| **CWE Database** | Vulnerability type classification | `https://cwe.mitre.org/data/definitions/XXX.html` | Authoritative for weakness types |
-| **MITRE ATT&CK** | Tactics and techniques (T-numbers) | `https://attack.mitre.org/techniques/TXXXX/` | Authoritative for ATT&CK mappings |
+| Source                 | Use For                                             | URL Pattern                                                     | Notes                                       |
+| ---------------------- | --------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------- |
+| **CVE.org (MITRE)**    | CVE metadata, descriptions, initial disclosures     | `https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-YYYY-NNNNN` | Good for descriptions, less detail than NVD |
+| **Security Bulletins** | Vendor-specific guidance (Microsoft, Adobe, Oracle) | Vendor bulletin pages                                           | Cross-reference for version info            |
+| **CWE Database**       | Vulnerability type classification                   | `https://cwe.mitre.org/data/definitions/XXX.html`               | Authoritative for weakness types            |
+| **MITRE ATT&CK**       | Tactics and techniques (T-numbers)                  | `https://attack.mitre.org/techniques/TXXXX/`                    | Authoritative for ATT&CK mappings           |
 
 **When to Use:** Cross-reference Tier 1 data, verify ATT&CK mappings, understand vulnerability types
 
@@ -1740,12 +1816,12 @@ For each gap (failed checklist item):
 
 #### Tier 3: Industry Sources (Context Only)
 
-| Source | Use For | URL Pattern | Notes |
-|--------|---------|-------------|-------|
-| **Exploit-DB** | Exploit availability, PoC verification | `https://www.exploit-db.com/` | Check exploit status, not for CVSS/priority |
-| **Metasploit** | Exploit module existence | `https://www.rapid7.com/db/` | Indicates weaponization level |
-| **Security Blogs** | Threat context, trends, analysis | Trusted blogs: Krebs, Schneier, vendor blogs | Context only, verify claims |
-| **Threat Intelligence Platforms** | Exploitation trends, threat actor activity | Commercial platforms (if available) | Useful for threat intelligence, not authoritative for CVSS |
+| Source                            | Use For                                    | URL Pattern                                  | Notes                                                      |
+| --------------------------------- | ------------------------------------------ | -------------------------------------------- | ---------------------------------------------------------- |
+| **Exploit-DB**                    | Exploit availability, PoC verification     | `https://www.exploit-db.com/`                | Check exploit status, not for CVSS/priority                |
+| **Metasploit**                    | Exploit module existence                   | `https://www.rapid7.com/db/`                 | Indicates weaponization level                              |
+| **Security Blogs**                | Threat context, trends, analysis           | Trusted blogs: Krebs, Schneier, vendor blogs | Context only, verify claims                                |
+| **Threat Intelligence Platforms** | Exploitation trends, threat actor activity | Commercial platforms (if available)          | Useful for threat intelligence, not authoritative for CVSS |
 
 **When to Use:** Verify exploit status, gather threat intelligence context, understand trends
 
@@ -1753,12 +1829,12 @@ For each gap (failed checklist item):
 
 #### Tier 4: Community Sources (Verify Before Using)
 
-| Source | Use For | URL Pattern | Notes |
-|--------|---------|-------------|-------|
-| **GitHub PoC Repositories** | Proof-of-concept existence | `https://github.com/search?q=CVE-YYYY-NNNNN` | Treat as indicators, verify quality; don't validate exploit functionality |
-| **Reddit / Forums** | Context, discussion | Various | Never use as sole source, good for "what are people saying" context |
-| **Social Media** | Breaking news, initial disclosures | Twitter, Mastodon | Useful for breaking news, verify immediately with Tier 1/2 |
-| **General Search** | Last resort for obscure CVEs | Google, Bing | Always cross-reference findings with higher tiers |
+| Source                      | Use For                            | URL Pattern                                  | Notes                                                                     |
+| --------------------------- | ---------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------- |
+| **GitHub PoC Repositories** | Proof-of-concept existence         | `https://github.com/search?q=CVE-YYYY-NNNNN` | Treat as indicators, verify quality; don't validate exploit functionality |
+| **Reddit / Forums**         | Context, discussion                | Various                                      | Never use as sole source, good for "what are people saying" context       |
+| **Social Media**            | Breaking news, initial disclosures | Twitter, Mastodon                            | Useful for breaking news, verify immediately with Tier 1/2                |
+| **General Search**          | Last resort for obscure CVEs       | Google, Bing                                 | Always cross-reference findings with higher tiers                         |
 
 **When to Use:** Last resort, breaking news awareness, always verify with higher-tier sources
 
@@ -1766,17 +1842,17 @@ For each gap (failed checklist item):
 
 ### Verification Priority Matrix
 
-| Claim Type | Priority | Tier Required | Verification Frequency |
-|------------|----------|---------------|------------------------|
-| **CVSS Score** | Mandatory | Tier 1 (NVD) | P1/P2: Always, P3: 25%, P4/P5: If Tech Accuracy <70% |
-| **KEV Status** | Mandatory | Tier 1 (CISA) | P1/P2: Always, P3: 25%, P4/P5: If Tech Accuracy <70% |
-| **Priority Assessment** | Mandatory | Tier 1 (multiple) | P1/P2: Always (verify all factors), P3-P5: Spot check |
-| **EPSS Score** | High | Tier 1 (FIRST) | P1/P2: Always, P3: If cited, P4/P5: Optional |
-| **Patched Versions** | High | Tier 1 (Vendor) | P1/P2: Always, P3: If cited, P4/P5: Optional |
-| **Affected Versions** | High | Tier 1 (Vendor) + Tier 2 (NVD) | P1/P2: Always, P3: If critical to org, P4/P5: Optional |
-| **Exploit Status** | Medium | Tier 2 + Tier 3 | P1/P2: If claimed "Active", P3: If claimed "Active", P4/P5: Optional |
-| **ATT&CK Mapping** | Medium | Tier 2 (MITRE ATT&CK) | P1/P2: Spot check T-numbers, P3-P5: If time permits |
-| **Threat Intelligence** | Low (Context) | Tier 3 | P1/P2: Optional for context, P3-P5: Not required |
+| Claim Type              | Priority      | Tier Required                  | Verification Frequency                                               |
+| ----------------------- | ------------- | ------------------------------ | -------------------------------------------------------------------- |
+| **CVSS Score**          | Mandatory     | Tier 1 (NVD)                   | P1/P2: Always, P3: 25%, P4/P5: If Tech Accuracy <70%                 |
+| **KEV Status**          | Mandatory     | Tier 1 (CISA)                  | P1/P2: Always, P3: 25%, P4/P5: If Tech Accuracy <70%                 |
+| **Priority Assessment** | Mandatory     | Tier 1 (multiple)              | P1/P2: Always (verify all factors), P3-P5: Spot check                |
+| **EPSS Score**          | High          | Tier 1 (FIRST)                 | P1/P2: Always, P3: If cited, P4/P5: Optional                         |
+| **Patched Versions**    | High          | Tier 1 (Vendor)                | P1/P2: Always, P3: If cited, P4/P5: Optional                         |
+| **Affected Versions**   | High          | Tier 1 (Vendor) + Tier 2 (NVD) | P1/P2: Always, P3: If critical to org, P4/P5: Optional               |
+| **Exploit Status**      | Medium        | Tier 2 + Tier 3                | P1/P2: If claimed "Active", P3: If claimed "Active", P4/P5: Optional |
+| **ATT&CK Mapping**      | Medium        | Tier 2 (MITRE ATT&CK)          | P1/P2: Spot check T-numbers, P3-P5: If time permits                  |
+| **Threat Intelligence** | Low (Context) | Tier 3                         | P1/P2: Optional for context, P3-P5: Not required                     |
 
 ---
 
@@ -1811,30 +1887,35 @@ When sources conflict:
 ## Fact Verification Checklist
 
 ### 1. CVSS Verification
+
 - [ ] Check NVD: https://nvd.nist.gov/vuln/detail/CVE-2024-1234
 - [ ] Claimed: 8.1 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N)
 - [ ] NVD Shows: 8.1 ✓
 - [ ] Result: Verified ✓
 
 ### 2. EPSS Verification
+
 - [ ] Check FIRST: https://api.first.org/data/v1/epss?cve=CVE-2024-1234
 - [ ] Claimed: 45.2% (as of 2024-11-01)
 - [ ] FIRST Shows: 45.7% (as of 2024-11-05)
 - [ ] Result: Verified (within 5% tolerance) ✓
 
 ### 3. KEV Verification
+
 - [ ] Check CISA: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
 - [ ] Claimed: KEV=Yes (added 2024-03-15)
 - [ ] CISA Shows: CVE-2024-1234 present, dateAdded: 2024-03-15
 - [ ] Result: Verified ✓
 
 ### 4. Version Verification
+
 - [ ] Check Vendor: https://vendor.com/security/CVE-2024-1234
 - [ ] Claimed: Affected 2.0.0-2.5.30, Fixed 2.5.31
 - [ ] Vendor Shows: "Versions 2.0.0 through 2.5.30 affected, fixed in 2.5.31"
 - [ ] Result: Verified ✓
 
 ### 5. Exploit Status Verification
+
 - [ ] Check Exploit-DB: https://www.exploit-db.com/ (search CVE-2024-1234)
 - [ ] Check GitHub: https://github.com/search?q=CVE-2024-1234+PoC
 - [ ] Claimed: Public PoC available
@@ -1850,15 +1931,15 @@ When sources conflict:
 
 ### Appendix A: Review Workflow Quick Reference
 
-| Stage | Duration | Key Actions | Outputs |
-|-------|----------|-------------|---------|
-| 1. Preparation | 2-3 min | Retrieve enrichment, parse sections, extract claims | Structured data, claims list |
-| 2. Quality Evaluation | 5-7 min | Execute 8 checklists, calculate score | Dimension scores, overall score, classification |
-| 3. Gap Categorization | 3-4 min | Categorize gaps, generate recommendations | Categorized gaps, recommendations |
-| 4. Bias Detection | 2-3 min | Detect 5 bias types, assess objectivity | Detected biases, debiasing strategies |
-| 5. Fact Verification | 3-5 min | Verify claims against authoritative sources | Verified claims, discrepancies |
-| 6. Report Documentation | 2-3 min | Generate 12-section review report | Blameless review report |
-| 7. Feedback Loop | 1 min | Post to JIRA, transition ticket, log metrics | JIRA updated, metrics logged |
+| Stage                   | Duration | Key Actions                                         | Outputs                                         |
+| ----------------------- | -------- | --------------------------------------------------- | ----------------------------------------------- |
+| 1. Preparation          | 2-3 min  | Retrieve enrichment, parse sections, extract claims | Structured data, claims list                    |
+| 2. Quality Evaluation   | 5-7 min  | Execute 8 checklists, calculate score               | Dimension scores, overall score, classification |
+| 3. Gap Categorization   | 3-4 min  | Categorize gaps, generate recommendations           | Categorized gaps, recommendations               |
+| 4. Bias Detection       | 2-3 min  | Detect 5 bias types, assess objectivity             | Detected biases, debiasing strategies           |
+| 5. Fact Verification    | 3-5 min  | Verify claims against authoritative sources         | Verified claims, discrepancies                  |
+| 6. Report Documentation | 2-3 min  | Generate 12-section review report                   | Blameless review report                         |
+| 7. Feedback Loop        | 1 min    | Post to JIRA, transition ticket, log metrics        | JIRA updated, metrics logged                    |
 
 **Total:** 15-20 minutes
 
@@ -1866,12 +1947,12 @@ When sources conflict:
 
 ### Appendix B: Quality Score Interpretation Guide
 
-| Score Range | Classification | Typical Gaps | Recommended Action |
-|-------------|----------------|--------------|-------------------|
-| 90-100 | Excellent | 0-2 minor gaps | Approve immediately, celebrate quality work |
-| 75-89 | Good | 2-5 minor or 1-2 significant gaps | Approve with optional improvement suggestions |
-| 60-74 | Needs Improvement | 3+ significant gaps or 1 critical | Return for revision or approve with caveats (analyst decides) |
-| <60 | Inadequate | Multiple critical or 5+ significant gaps | Return for substantial rework, may require re-enrichment |
+| Score Range | Classification    | Typical Gaps                             | Recommended Action                                            |
+| ----------- | ----------------- | ---------------------------------------- | ------------------------------------------------------------- |
+| 90-100      | Excellent         | 0-2 minor gaps                           | Approve immediately, celebrate quality work                   |
+| 75-89       | Good              | 2-5 minor or 1-2 significant gaps        | Approve with optional improvement suggestions                 |
+| 60-74       | Needs Improvement | 3+ significant gaps or 1 critical        | Return for revision or approve with caveats (analyst decides) |
+| <60         | Inadequate        | Multiple critical or 5+ significant gaps | Return for substantial rework, may require re-enrichment      |
 
 ---
 

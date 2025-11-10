@@ -16,7 +16,7 @@
 
 - **Total Items:** 6
 - **Passed Items:** [count after review]
-- **Score:** (Passed / 6) × 100 = ____%
+- **Score:** (Passed / 6) × 100 = \_\_\_\_%
 
 ## Guidance
 
@@ -56,6 +56,7 @@
    - Next actions (alert tuning, escalation, monitoring)
 
 **Well-Structured Example:**
+
 ```
 # SSH Connection Investigation - 2024-11-09
 
@@ -84,6 +85,7 @@
 ```
 
 **Poorly Structured Example:**
+
 ```
 Alert from Claroty. SSH traffic. Checked some logs. Looks like backup. False positive. Close ticket.
 ```
@@ -120,20 +122,24 @@ Alert from Claroty. SSH traffic. Checked some logs. Looks like backup. False pos
 **Common Error Types:**
 
 **Spelling Errors:**
+
 - "Conektion" → "Connection"
 - "Authentification" → "Authentication"
 - "Occured" → "Occurred"
 
 **Capitalization Errors:**
+
 - "false Positive" → "False Positive" or "false positive" (be consistent)
 - "ssh" → "SSH" (acronyms capitalized)
 
 **Grammar Errors:**
+
 - "Connection was occurred" → "Connection occurred"
 - "Logs was reviewed" → "Logs were reviewed"
 - "Disposition are False Positive" → "Disposition is False Positive"
 
 **Technical Term Errors:**
+
 - "IP adress" → "IP address"
 - "Mac address" → "MAC address"
 - "Firewall rule's" → "Firewall rules" (unnecessary apostrophe)
@@ -143,6 +149,7 @@ Alert from Claroty. SSH traffic. Checked some logs. Looks like backup. False pos
 ### Key Findings Summary
 
 **Why Summaries Matter:**
+
 - Busy stakeholders (managers, IR team) need quick answers
 - Enables rapid triage (is this critical or routine?)
 - Improves searchability (can find key info without reading full investigation)
@@ -150,6 +157,7 @@ Alert from Claroty. SSH traffic. Checked some logs. Looks like backup. False pos
 **Good Summary Examples:**
 
 **Example 1: Executive Summary**
+
 ```
 ## Executive Summary
 
@@ -167,6 +175,7 @@ Alert from Claroty. SSH traffic. Checked some logs. Looks like backup. False pos
 ```
 
 **Example 2: Key Findings Highlights**
+
 ```
 ## Key Findings
 
@@ -178,6 +187,7 @@ Alert from Claroty. SSH traffic. Checked some logs. Looks like backup. False pos
 ```
 
 **Poor Summary (Missing):**
+
 ```
 [No summary section - reader must read entire 5-page investigation to understand conclusion]
 ```
@@ -193,7 +203,9 @@ Source: /var/log/auth.log on file-server-backup.corp.local (10.10.5.25)
 Timestamp: 2024-11-09 14:30:00 UTC
 Entry:
 ```
+
 Nov 09 14:30:00 file-server-backup sshd[12345]: Accepted publickey for backup_user from 10.50.1.100 port 54321 ssh2: RSA SHA256:aa:bb:cc:dd:ee:ff
+
 ```
 
 **Interpretation:**
@@ -207,9 +219,11 @@ Nov 09 14:30:00 file-server-backup sshd[12345]: Accepted publickey for backup_us
 ```
 Checked logs. SSH connection succeeded.
 ```
+
 (Which logs? When? What did they say? How can this be verified?)
 
 **Key Elements of Good References:**
+
 - Source system clearly identified
 - Timestamp in consistent format (UTC preferred)
 - Actual log excerpt (verbatim, not paraphrased)
@@ -219,16 +233,19 @@ Checked logs. SSH connection succeeded.
 ### Timestamp Consistency
 
 **Why Timestamp Consistency Matters:**
+
 - Enables correlation across systems
 - Prevents confusion (UTC vs. local time errors are common)
 - Professional appearance
 - Supports timeline reconstruction
 
 **Recommended Format:** ISO 8601 with timezone
+
 - `2024-11-09 14:32:15 UTC`
 - `2024-11-09T14:32:15Z` (ISO 8601 with Z = UTC)
 
 **Consistent Example:**
+
 ```
 Alert Detection: 2024-11-09 14:32:15 UTC
 Event Occurrence: 2024-11-09 14:30:00 UTC
@@ -237,6 +254,7 @@ Investigation Start: 2024-11-09 14:35:00 UTC
 ```
 
 **Inconsistent Example (Problematic):**
+
 ```
 Alert Detection: 11/9/2024 2:32 PM
 Event Occurrence: Nov 09 14:30 (which timezone?)
@@ -245,11 +263,13 @@ Investigation Start: 2024-11-09T14:35:00Z (different format)
 ```
 
 **Timezone Handling:**
+
 - **Preferred:** Use UTC for all timestamps (universal, no DST ambiguity)
 - **Acceptable:** Use local time if clearly marked (e.g., "14:30:00 EST")
 - **Problematic:** Mix UTC and local time without clear labels
 
 **Consistency Check:**
+
 - Pick ONE timestamp format and use it throughout the document
 - Always include timezone (UTC, EST, PST, etc.)
 - If converting timezones, show conversion (e.g., "14:30 UTC (9:30 AM EST)")
@@ -294,6 +314,7 @@ Alert detected SSH connection from authorized jump server (10.50.1.100) to backu
 ```
 
 **Quality Score:** 6/6 = 100%
+
 - ✓ Logical structure (clear sections, flow)
 - ✓ Professional tone ("Investigation confirmed" vs. "totally obvious")
 - ✓ No significant typos
@@ -321,6 +342,7 @@ close ticket
 ```
 
 **Quality Score:** 0/6 = 0%
+
 - ✗ No logical structure (random fragments)
 - ✗ Unprofessional tone ("probly fine", "badness")
 - ✗ Multiple typos (clartoy, 1.1OO, Dispositoin, probly, its)
@@ -337,12 +359,14 @@ close ticket
 Documentation quality is important for communication and professionalism, but **substance matters more than style**. An investigation with perfect grammar but wrong conclusions is worse than one with typos but correct disposition.
 
 **Prioritization:**
+
 1. **Correctness** (Accuracy, Completeness, Disposition) → 65% combined weight
 2. **Context** (Contextualization, Methodology) → 25% combined weight
 3. **Communication** (Documentation Quality) → 5% weight
 4. **Bias Detection** (Cognitive Bias) → 5% weight
 
 **When Documentation Quality Becomes Critical:**
+
 - External reporting (customers, regulators, executives)
 - Incident response hand-off (IR team needs clear details)
 - Compliance documentation (audit trail, regulatory requirements)

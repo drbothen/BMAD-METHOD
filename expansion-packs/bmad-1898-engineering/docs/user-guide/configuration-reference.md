@@ -73,25 +73,30 @@ flowchart LR
 ### Minimum Viable Configuration (5 Steps)
 
 **Step 1: Get JIRA Cloud ID** (2 minutes)
+
 - Method: Use browser console (fastest)
 - Login to JIRA → F12 → Run: `AP.context.getContext().then((c) => console.log(c.cloudId))`
 - Copy UUID to `config.yaml` → `jira.cloud_id`
 
 **Step 2: Create JIRA Custom Fields** (5 minutes)
+
 - Go to JIRA Admin → Custom Fields → Create 8 fields (see table in Section 3)
 - Required field types: 3 text, 3 select, 2 number
 - Associate fields with your security project
 
 **Step 3: Map Field IDs** (3 minutes)
+
 - Create test issue → Populate all fields
 - Run API: `GET /rest/api/3/issue/YOUR-ISSUE-ID`
 - Copy `customfield_XXXXX` IDs to `config.yaml` → `jira.custom_fields`
 
 **Step 4: Set Priority Mapping** (2 minutes)
+
 - Check JIRA priorities: Settings → Issues → Priorities
 - Update `config.yaml` → `priority_mapping` to match your JIRA priority names
 
 **Step 5: Configure Reviewers** (3 minutes)
+
 - Add at least 1 reviewer to `config.yaml` → `reviewer_assignment.reviewers`
 - Set `max_concurrent: 10` for solo reviewer
 - Add reviewer to all priority pools in `assignment_rules`
@@ -142,6 +147,7 @@ reviewer_assignment:
 **Template 2: Small Team (2-3 Reviewers)**
 
 Use template 1, add more reviewers to `reviewers` list and split pools:
+
 - P1/P2: Senior reviewers only
 - P3/P4/P5: All reviewers
 
@@ -1512,6 +1518,7 @@ ORDER BY
 ```
 
 **Expected Output:**
+
 ```
 priority | total_enrichments | avg_duration_minutes | min_duration_minutes | max_duration_minutes
 ---------|-------------------|---------------------|---------------------|---------------------
@@ -1541,6 +1548,7 @@ print(approval_rates.round(2))
 ```
 
 **Expected Output:**
+
 ```
              approval_rate_%  total_reviews
 reviewer
@@ -1564,6 +1572,7 @@ Taylor                 90.10             75
    - Format as percentage
 
 **Alternative Excel Formula:**
+
 ```excel
 // Calculate SLA compliance rate for P1 tickets
 =COUNTIFS(A:A,"P1",K:K,"TRUE") / COUNTIF(A:A,"P1")
@@ -1585,6 +1594,7 @@ ORDER BY date DESC, priority;
 ```
 
 **Export to CSV and visualize in:**
+
 - Excel: Insert → Line Chart → X-axis: date, Y-axis: avg_quality_score, Series: priority
 - Python: `df.plot(x='date', y='avg_quality_score', kind='line', hue='priority')`
 - Grafana: Time series panel with SQL query
@@ -2607,6 +2617,7 @@ This configuration reference guide has covered:
 **Maintainer:** 1898 & Co. Security Operations Team
 
 **Enhancement Changelog v1.1:**
+
 - ✨ Added Quick Start Guide with 15-minute configuration workflow
 - 📊 Added 3 Mermaid workflow diagrams for visual guidance
 - 🔍 Added 6 practical metrics query examples (SQL, Python, Excel)

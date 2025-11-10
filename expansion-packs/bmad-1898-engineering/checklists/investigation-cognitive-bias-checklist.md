@@ -16,7 +16,7 @@
 
 - **Total Items:** 6
 - **Passed Items:** [count after review]
-- **Score:** (Passed / 6) × 100 = ____%
+- **Score:** (Passed / 6) × 100 = \_\_\_\_%
 
 ## Guidance
 
@@ -25,16 +25,19 @@
 **Definition:** Seeking or interpreting evidence to confirm pre-existing beliefs while dismissing contradicting evidence.
 
 **Event Investigation Context:**
+
 - Initial hypothesis: "This SSH connection is lateral movement"
 - Confirmation bias: Only collecting evidence supporting malicious activity, ignoring evidence of authorized activity
 
 **Detection Questions:**
+
 - Did investigation seek evidence AGAINST the initial hypothesis?
 - Were alternative explanations actively explored?
 - Was contradicting evidence acknowledged and evaluated fairly?
 - Are limitations or uncertainties noted?
 
 **Red Flags:**
+
 - Only documenting evidence supporting malicious interpretation
 - Ignoring historical baseline showing normal pattern
 - Dismissing asset DB confirmation of authorized source without investigation
@@ -97,16 +100,19 @@ Conclusion: Evidence refutes initial hypothesis → False Positive
 **Definition:** Over-relying on the first piece of information encountered (the "anchor") when making decisions.
 
 **Event Investigation Context:**
+
 - Alert severity = "High" → Analyst assumes risk is high without independent assessment
 - Alert says "Suspicious" → Analyst concludes activity is malicious without verification
 
 **Detection Questions:**
+
 - Is disposition based on multiple factors beyond alert severity?
 - Did analyst independently assess risk using context (asset criticality, business impact)?
 - Is alert severity treated as one input, not the final answer?
 - Were mitigating factors (authorized activity, historical pattern, false positive history) given appropriate weight?
 
 **Red Flags:**
+
 - Disposition mirrors alert severity exactly (Alert: High → Disposition: High Risk TP) without independent analysis
 - Ignoring business context that lowers actual risk
 - Alert description copied verbatim as investigation conclusion
@@ -162,16 +168,19 @@ Disposition: False Positive (despite High alert severity, evidence indicates aut
 **Definition:** Overestimating the likelihood or importance of events that are easily recalled, often because they are recent or emotionally impactful.
 
 **Event Investigation Context:**
+
 - Recent ransomware incident involving SSH → Analyst assumes all SSH alerts are ransomware-related
 - Memorable lateral movement attack last month → Every SSH connection now looks like lateral movement
 
 **Detection Questions:**
+
 - Is risk assessment data-driven (actual historical frequency, actual threat intel)?
 - Does investigation mention recent incidents without establishing relevance?
 - Are rare but memorable events given disproportionate weight?
 - Is current alert assessed on its own merits vs. recent emotional context?
 
 **Red Flags:**
+
 - Referencing last week's incident without showing connection to current alert
 - Elevating severity because alert "looks like" recent breach
 - Using phrases like "could be another SolarWinds" or "might be ransomware like last month"
@@ -239,17 +248,20 @@ Disposition: False Positive
 **Definition:** Giving disproportionate weight to recent events or information while undervaluing historical patterns or persistent risks.
 
 **Event Investigation Context:**
+
 - Only checking last 24 hours of logs → Missing 90-day daily pattern
 - Prioritizing today's alert over established baseline
 - Assuming recent behavior is representative, ignoring long-term trends
 
 **Detection Questions:**
+
 - Did investigation review appropriate historical timeframe (30/60/90 days)?
 - Are conclusions based on long-term patterns vs. recent snapshot?
 - Is established baseline given appropriate weight vs. recent change?
 - Were historical false positives for this rule reviewed?
 
 **Red Flags:**
+
 - Only reviewing last few hours or days of activity
 - Ignoring established baseline that contradicts recent observation
 - Treating first-time occurrence as suspicious without checking historical pattern
@@ -302,6 +314,7 @@ Disposition: False Positive (Authorized scheduled activity)
 **Definition:** Over-relying on automated systems (alert platforms, SIEM correlation rules, security tools) without independent verification of their conclusions.
 
 **Event Investigation Context:**
+
 - Alert says "High Severity" → Analyst disposition: High Severity (no independent assessment)
 - Alert says "Malicious Activity" → Analyst disposition: True Positive (no evidence validation)
 - SIEM correlation rule fires → Analyst accepts correlation without reviewing individual events
@@ -309,6 +322,7 @@ Disposition: False Positive (Authorized scheduled activity)
 **Why Automation Bias Matters in Event Investigation:**
 
 Alert systems are valuable but imperfect:
+
 - ✓ Detect patterns faster than humans
 - ✓ Monitor 24/7/365 without fatigue
 - ✗ Generate false positives (tuning is never perfect)
@@ -316,6 +330,7 @@ Alert systems are valuable but imperfect:
 - ✗ Static rules may not adapt to environmental changes
 
 **Detection Questions:**
+
 - Did analyst collect independent evidence beyond alert metadata?
 - Was alert severity independently verified based on asset criticality and business context?
 - Did analyst verify alert's technical claims (IPs, protocols, attack description)?
@@ -448,10 +463,12 @@ Alert rule APT_Lateral_Movement_Pattern_V3 appears overly sensitive to SSH conne
 **Definition:** Considering multiple explanations for observed behavior, not just the initial assumption.
 
 **Event Investigation Context:**
+
 - Initial hypothesis: "This is lateral movement"
 - Alternative hypotheses: "This is scheduled maintenance", "This is authorized backup", "This is vulnerability scanning"
 
 **Why Alternatives Matter:**
+
 - Prevents confirmation bias (forces consideration of other explanations)
 - Improves accuracy (best explanation emerges from comparison)
 - Demonstrates rigor (shows investigation considered multiple scenarios)
@@ -459,6 +476,7 @@ Alert rule APT_Lateral_Movement_Pattern_V3 appears overly sensitive to SSH conne
 **Minimum Requirement:** At least 2 alternative scenarios evaluated
 
 **Detection Questions:**
+
 - Were multiple competing explanations considered?
 - Were alternatives explicitly stated and evaluated?
 - Was reasoning provided for accepting/rejecting each alternative?
@@ -499,24 +517,28 @@ Alert rule APT_Lateral_Movement_Pattern_V3 appears overly sensitive to SSH conne
 ## Bias Severity Classification
 
 **No Bias (6/6 passed):**
+
 - Investigation demonstrates objective, evidence-based analysis
 - Multiple perspectives considered
 - Conclusions independent of automated assessments
 - Quality: Excellent
 
 **Minor Bias (4-5/6 passed):**
+
 - One bias type detected with limited impact on conclusion
 - Disposition likely still correct despite bias
 - Example: Minor anchoring to alert severity but evidence-based disposition
 - Quality: Good, recommend debiasing techniques
 
 **Moderate Bias (2-3/6 passed):**
+
 - Multiple bias types detected OR single severe bias
 - Disposition questionable due to bias influence
 - Example: Confirmation bias + automation bias leading to unsupported TP classification
 - Quality: Needs Improvement, disposition may require revision
 
 **Severe Bias (0-1/6 passed):**
+
 - Multiple severe biases detected
 - Disposition likely incorrect due to bias
 - Investigation lacks objectivity and rigor
@@ -527,32 +549,38 @@ Alert rule APT_Lateral_Movement_Pattern_V3 appears overly sensitive to SSH conne
 ## Debiasing Strategies
 
 **Counter Confirmation Bias:**
+
 - Devil's advocate: Actively argue against your initial hypothesis
 - Seek disconfirming evidence: "What evidence would prove me wrong?"
 - Pre-mortem: "If this disposition is wrong, why would it be wrong?"
 
 **Counter Anchoring Bias:**
+
 - Multi-factor assessment: Evaluate severity, criticality, impact independently
 - Blind assessment: Assess evidence before seeing alert classification
 - Question the anchor: "Is this alert severity accurate for this specific context?"
 
 **Counter Availability Bias:**
+
 - Base rate reasoning: "What % of similar alerts are actually malicious?"
 - Statistical data: Use SIEM metrics, historical FP rates
 - Separate recent events: "Is this alert related to recent incident, or am I assuming similarity?"
 
 **Counter Recency Bias:**
+
 - Historical context: Always review 30/60/90 day patterns
 - Trend analysis: Is recent behavior consistent with long-term baseline?
 - Time-independent assessment: Evaluate based on all available history, not just recent
 
 **Counter Automation Bias:**
+
 - Treat alerts as hypotheses: Alert says X, does evidence confirm X?
 - Independent verification: Collect evidence beyond alert metadata
 - Question automation: "Could the alert be wrong? Under what conditions?"
 - Context integration: Alert can't know about scheduled maintenance, authorized changes
 
 **General Debiasing:**
+
 - Peer review: Second analyst reviews disposition (catches individual biases)
 - Checklist adherence: Follow systematic process (reduces cognitive shortcuts)
 - Document reasoning: Explicit logic forces critical thinking
@@ -567,11 +595,13 @@ Alert rule APT_Lateral_Movement_Pattern_V3 appears overly sensitive to SSH conne
 Bias detection is valuable but subjective and difficult to measure objectively. Unlike technical accuracy (factually right/wrong) or completeness (present/missing), bias detection requires inferring analyst mental state from documentation.
 
 **Prioritization:**
+
 - **Substance** (Completeness, Accuracy, Disposition, Context, Methodology) = 90% combined
 - **Bias Detection** = 5% (catches systematic reasoning errors)
 - **Documentation** = 5% (communication quality)
 
 **When Bias Detection Becomes Critical:**
+
 - High-stakes decisions (critical assets, potential breaches, escalation decisions)
 - Pattern of repeated errors (analyst consistently reaches wrong conclusions)
 - Controversial dispositions (internal disagreement on TP vs. FP)

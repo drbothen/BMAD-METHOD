@@ -35,7 +35,7 @@ This document defines test cases for the `investigate-event-alert.md` task, cove
 
 **Objective:** Verify automatic detection of ICS alert from ticket metadata
 
-**Test Ticket:** TEST-EVENT-001 (or actual ticket ID: ****\_****)
+**Test Ticket:** TEST-EVENT-001 (or actual ticket ID: \***\*\_\*\***)
 
 **Ticket Data:**
 
@@ -66,7 +66,7 @@ Description: "ICS security platform Claroty detected unauthorized SSH connection
 
 **Objective:** Verify automatic detection of IDS alert from ticket content
 
-**Test Ticket:** TEST-EVENT-002 (or actual ticket ID: ****\_****)
+**Test Ticket:** TEST-EVENT-002 (or actual ticket ID: \***\*\_\*\***)
 
 **Ticket Data:**
 
@@ -97,7 +97,7 @@ Description: "IDS detected suspicious traffic pattern. SID: 12345..."
 
 **Objective:** Verify automatic detection of SIEM correlation alert
 
-**Test Ticket:** TEST-EVENT-003 (or actual ticket ID: ****\_****)
+**Test Ticket:** TEST-EVENT-003 (or actual ticket ID: \***\*\_\*\***)
 
 **Ticket Data:**
 
@@ -128,7 +128,7 @@ Description: "SIEM correlation rule detected 15 failed login attempts from 192.1
 
 **Objective:** Handle ambiguous alerts requiring manual classification
 
-**Test Ticket:** TEST-EVENT-007 (or actual ticket ID: ****\_****)
+**Test Ticket:** TEST-EVENT-007 (or actual ticket ID: \***\*\_\*\***)
 
 **Ticket Data:**
 
@@ -160,7 +160,7 @@ Description: "Security team flagged unusual traffic patterns..."
 
 **Objective:** Execute full investigation workflow from triage to JIRA update
 
-**Test Ticket:** TEST-EVENT-004 (or actual ticket ID: ****\_****)
+**Test Ticket:** TEST-EVENT-004 (or actual ticket ID: \***\*\_\*\***)
 
 **Ticket Data:**
 
@@ -348,7 +348,7 @@ Tuning: "Consider adding scanner IP to whitelist or adjusting alert sensitivity 
 
 **Objective:** Handle missing critical network identifier
 
-**Test Ticket:** TEST-EVENT-005 (or actual ticket ID: ****\_****)
+**Test Ticket:** TEST-EVENT-005 (or actual ticket ID: \***\*\_\*\***)
 
 **Ticket Data:**
 
@@ -459,7 +459,7 @@ Description: "Alert detected but source IP not captured"
 **Expected Result:**
 
 - ⚠️ Warning: "This appears to be a CVE vulnerability ticket"
-- ✅ Guidance: "Use *enrich-ticket command for CVE enrichment instead"
+- ✅ Guidance: "Use \*enrich-ticket command for CVE enrichment instead"
 - ❌ Task halts with recommendation
 - ✅ No attempt to process as event alert
 
@@ -783,14 +783,14 @@ JIRA ticket updated successfully.
 | TC-027: Completion Summary Display       | ⬜     |       |
 
 **Total:** 27 test cases
-**Pass Rate:** **%
+**Pass Rate:** \*\*%
 
 ## Test Execution Notes
 
-**Tester:** ******\_\_\_******
-**Date:** ******\_\_\_******
-**Environment:** ******\_\_\_******
-**JIRA Instance:** ******\_\_\_******
+**Tester:** **\*\***\_\_\_**\*\***
+**Date:** **\*\***\_\_\_**\*\***
+**Environment:** **\*\***\_\_\_**\*\***
+**JIRA Instance:** **\*\***\_\_\_**\*\***
 
 ## **Issues Found:**
 

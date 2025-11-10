@@ -16,7 +16,7 @@
 
 - **Total Items:** 6
 - **Passed Items:** [count after review]
-- **Score:** (Passed / 6) × 100 = ____%
+- **Score:** (Passed / 6) × 100 = \_\_\_\_%
 
 ## Guidance
 
@@ -26,17 +26,20 @@
 A testable explanation or investigative question that guides your analysis.
 
 **Good Hypothesis Examples:**
+
 - "SSH connection represents unauthorized lateral movement"
 - "Alert triggered due to authorized maintenance activity during change window"
 - "Brute force attempt from compromised internal workstation"
 - "False positive caused by automated backup process"
 
 **Poor Hypothesis Examples:**
+
 - "Something suspicious happened" (too vague, not testable)
 - "This is definitely malicious" (conclusion, not hypothesis)
 - No hypothesis stated (investigation lacks direction)
 
 **Hypothesis-Driven Process:**
+
 1. **State Hypothesis:** Based on alert, state initial working hypothesis
 2. **Identify Evidence Needed:** What data would confirm or refute hypothesis?
 3. **Collect Evidence:** Gather relevant logs, context, historical data
@@ -44,6 +47,7 @@ A testable explanation or investigative question that guides your analysis.
 5. **Refine or Conclude:** If refuted, form new hypothesis and repeat; if confirmed, document conclusion
 
 **Example:**
+
 ```
 Initial Hypothesis: SSH connection from 10.50.1.100 to 10.10.5.25 represents unauthorized lateral movement
 
@@ -69,6 +73,7 @@ Conclusion: False Positive - Authorized backup operation
 ### Multiple Data Sources
 
 **Why Multiple Sources Matter:**
+
 - Single source may be incomplete or misleading
 - Corroboration increases confidence
 - Different sources provide different perspectives (network vs. endpoint vs. application)
@@ -76,21 +81,25 @@ Conclusion: False Positive - Authorized backup operation
 **Common Data Sources:**
 
 **Network Sources (3 examples):**
+
 1. Firewall logs (connection attempts, blocked traffic, source/dest IPs)
 2. IDS/IPS logs (Claroty, Snort, Suricata - signature matches, payload analysis)
 3. NetFlow/IPFIX (traffic patterns, bandwidth, protocols)
 
 **Endpoint Sources (3 examples):**
+
 1. Endpoint Detection & Response (EDR) logs (process execution, file modifications, registry changes)
 2. Windows Event Logs (authentication events, process creation, service changes)
 3. Antivirus/Anti-malware logs (detections, quarantines, scan results)
 
 **Application/System Sources (3 examples):**
+
 1. Application logs (SSH auth logs, web server access logs, database query logs)
 2. SIEM correlation rules (aggregated events, cross-source correlation)
 3. Authentication logs (Active Directory, RADIUS, LDAP)
 
 **Contextual Sources (3 examples):**
+
 1. Asset management database (asset ownership, criticality, business function)
 2. Configuration Management Database (CMDB) - system relationships, dependencies
 3. Change management system (scheduled changes, maintenance windows, approvals)
@@ -98,6 +107,7 @@ Conclusion: False Positive - Authorized backup operation
 **Minimum Requirement:** At least 3 different sources (demonstrates thoroughness)
 
 **Example - Good Multi-Source Investigation:**
+
 ```
 Data Sources Consulted (5 sources):
 1. Claroty IDS logs → Full alert details, packet capture
@@ -108,6 +118,7 @@ Data Sources Consulted (5 sources):
 ```
 
 **Example - Poor Single-Source Investigation:**
+
 ```
 Data Source: Claroty alert only
 (No firewall logs, no SSH logs, no asset DB, no historical context)
@@ -116,19 +127,23 @@ Data Source: Claroty alert only
 ### Scope Bounding
 
 **Well-Bounded Scope:**
+
 - Time range justified (e.g., "Reviewed 90 days to establish baseline")
 - Systems included explained (e.g., "Analyzed source and destination only, no lateral investigation needed")
 - Search parameters clear (e.g., "Searched for source IP 10.50.1.100 connections to any destination")
 
 **Too Broad (Over-Investigation):**
+
 - "Reviewed all SSH connections across entire network for last year" (for single alert)
 - Investigating unrelated systems without justification
 
 **Too Narrow (Under-Investigation):**
+
 - "Only reviewed alert metadata, no additional logs" (insufficient evidence)
 - "Only checked last 1 hour" (missed historical pattern over 90 days)
 
 **Example:**
+
 ```
 Investigation Scope:
 - Time Range: 90 days (establish baseline pattern for source IP)
@@ -140,6 +155,7 @@ Investigation Scope:
 ### Documentation of Investigation Steps
 
 **Well-Documented Steps:**
+
 ```
 Investigation Steps:
 1. Reviewed Claroty alert details (Rule ID: 4782, Severity: High, Detection Time: 14:32:15 UTC)
@@ -153,6 +169,7 @@ Investigation Steps:
 ```
 
 **Poorly Documented Steps:**
+
 ```
 Investigation Steps:
 - Checked logs
@@ -162,11 +179,13 @@ Investigation Steps:
 ### Dead Ends and Negative Findings
 
 **Why Document Dead Ends?**
+
 - Shows thoroughness (you didn't skip important checks)
 - Prevents duplicate work (others know what was already checked)
 - Supports disposition (absence of evidence is evidence of absence when searching in right places)
 
 **Examples of Negative Findings:**
+
 ```
 Dead Ends / Negative Findings:
 - Checked threat intelligence feeds (VirusTotal, AbuseIPDB, Recorded Future) → No matches for source IP (expected for internal IP)
@@ -180,12 +199,14 @@ Dead Ends / Negative Findings:
 ### Peer Consultation
 
 **When to Consult Others:**
+
 - Low confidence disposition on critical asset (better safe than sorry)
 - Unfamiliar attack vector or technology (e.g., ICS protocol you don't know)
 - Conflicting evidence (different sources tell different story)
 - High-stakes decision (critical asset, potential data breach, compliance implications)
 
 **Examples of Good Consultation:**
+
 ```
 Peer Consultation:
 - Consulted with IT Operations team to confirm backup schedule (Email from John Smith, IT Ops Manager, 2024-11-09 15:00 UTC)
@@ -194,6 +215,7 @@ Peer Consultation:
 ```
 
 **No Consultation Needed (Document Why):**
+
 ```
 Peer Consultation: Not required
 - High confidence disposition (multiple corroborating evidence sources)
@@ -275,6 +297,7 @@ Disposition: False Positive
 Sound methodology increases consistency and quality across investigations. While good methodology alone doesn't guarantee correct conclusions (evidence quality matters more), poor methodology leads to missed evidence, confirmation bias, and unreliable results.
 
 **Impact of Poor Methodology:**
+
 - No hypothesis → Unfocused investigation, missed evidence
 - Single data source → Incomplete picture, misleading conclusions
 - No documentation → Can't reproduce, can't verify

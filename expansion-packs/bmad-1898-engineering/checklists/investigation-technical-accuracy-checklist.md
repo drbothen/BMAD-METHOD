@@ -17,29 +17,33 @@
 
 - **Total Items:** 7
 - **Passed Items:** [count after review]
-- **Score:** (Passed / 7) × 100 = ____%
+- **Score:** (Passed / 7) × 100 = \_\_\_\_%
 
 ## Guidance
 
 ### Verification Procedures
 
 **IP Address Validation:**
+
 - IPv4 format: 0-255.0-255.0-255.0-255 (e.g., 10.50.1.100 ✓, 192.168.1.256 ✗)
 - Private ranges: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
 - Public vs. private correctly identified
 - CIDR notation correct (e.g., /24 = 255.255.255.0)
 
 **Protocol/Port Validation:**
+
 - Common services: SSH (22/TCP), HTTP (80/TCP), HTTPS (443/TCP), DNS (53/UDP), RDP (3389/TCP)
 - Protocol/port mismatch detected (e.g., "HTTP on port 22" is likely wrong)
 - Ephemeral ports (49152-65535) identified correctly
 
 **Alert Rule Verification:**
+
 - Rule ID matches alert platform documentation
 - Alert description matches observed behavior
 - Detection logic understood (not just copied from alert text)
 
 **Technical Terminology Standards:**
+
 - Lateral movement: Post-compromise movement between systems (not initial access)
 - C2 (Command & Control): Attacker-controlled infrastructure for managing compromised systems
 - Exfiltration: Unauthorized data transfer out of network
@@ -119,24 +123,28 @@ Conclusion: This is active exploitation attempting to establish persistent C2 ba
 ### Common Technical Errors
 
 **IP Address Errors:**
+
 - Typos: 10.50.1.1OO (O instead of 0)
 - Invalid octets: 192.168.1.300 (>255)
 - Incorrect subnet masks: /33 (>32)
 - Public/private confusion: Calling 10.x.x.x "external"
 
 **Protocol/Port Errors:**
+
 - SSH over UDP (SSH is TCP-only)
 - HTTP on port 22 (likely SSH, not HTTP)
 - "Port 443/UDP" for HTTPS (HTTPS is TCP)
 - Impossible port: 99999 (max 65535)
 
 **Log Interpretation Errors:**
+
 - Timestamp confusion (UTC vs. local time)
 - Field misidentification (source IP as destination)
 - Status code misinterpretation (200 = success, 404 = not found)
 - Log level confusion (INFO vs. ERROR)
 
 **Terminology Errors:**
+
 - "Lateral movement" for initial access
 - "Exploit" for brute force
 - "C2" for any outbound connection
@@ -150,6 +158,7 @@ Conclusion: This is active exploitation attempting to establish persistent C2 ba
 Technical inaccuracies undermine all conclusions. An investigation with incorrect IP addresses, wrong protocols, or misinterpreted logs cannot produce reliable dispositions, regardless of how complete or well-documented it is.
 
 **Impact of Technical Errors:**
+
 - Wrong IPs → Can't identify assets or validate claims
 - Wrong protocols → Misunderstand attack vectors or miss legitimate activity
 - Misinterpreted logs → Wrong evidence, wrong conclusions
@@ -158,14 +167,17 @@ Technical inaccuracies undermine all conclusions. An investigation with incorrec
 **Severity Classification:**
 
 **Critical Errors (Investigation Invalid):**
+
 - IP address typos preventing asset identification
 - Protocol errors changing attack vector assessment
 - Log misinterpretation reversing disposition (FP ↔ TP)
 
 **Moderate Errors (Investigation Questionable):**
+
 - Terminology misuse causing confusion
 - Minor contradictions between evidence sections
 
 **Minor Errors (Investigation Acceptable):**
+
 - Formatting inconsistencies
 - Redundant technical details

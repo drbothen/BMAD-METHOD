@@ -40,24 +40,27 @@
 
 - **Total Items:** 19
 - **Passed Items:** [count after review]
-- **Score:** (Passed / 19) × 100 = ____%
+- **Score:** (Passed / 19) × 100 = \_\_\_\_%
 
 ## Guidance
 
 ### Completeness vs. Over-Investigation
 
 **Appropriate Completeness:**
+
 - All 19 items addressed, even if briefly
 - Evidence proportional to alert severity and asset criticality
 - Investigation stopped when disposition is clear with high confidence
 
 **Signs of Incomplete Investigation:**
+
 - Missing alert metadata (can't reproduce or validate alert)
 - No correlation performed (event analyzed in isolation)
 - No historical context (can't distinguish anomaly from baseline)
 - No alternative explanations considered (confirmation bias risk)
 
 **Signs of Over-Investigation:**
+
 - Low-severity false positive on non-critical asset with exhaustive forensics
 - Extensive investigation after disposition already clear with high confidence
 - Collecting excessive evidence that doesn't change disposition
@@ -115,6 +118,7 @@ Disposition: False Positive
 ```
 
 **Missing Items:**
+
 - No alert rule ID
 - No timestamps
 - No asset identification (hostnames, types, criticality)
@@ -130,18 +134,22 @@ Disposition: False Positive
 ### Common Gaps
 
 **Missing Alert Metadata (items 1-5):**
+
 - Impact: Can't reproduce alert or validate accuracy
 - Fix: Always capture full alert details at start of investigation
 
 **Missing Network Identifiers (items 6-10):**
+
 - Impact: Can't assess risk or validate disposition
 - Fix: Document full network context (IPs, hostnames, protocols, asset types)
 
 **Skipping Investigation Steps (items 11-15):**
+
 - Impact: Shallow analysis, missed context, wrong disposition
 - Fix: Follow systematic process (logs → correlation → history → ownership → context)
 
 **No Evidence or Alternatives (items 16-19):**
+
 - Impact: Disposition unsupported, bias risk, can't verify conclusions
 - Fix: Document evidence, actively seek alternative explanations, note dead ends
 
@@ -152,12 +160,14 @@ Disposition: False Positive
 Completeness is the foundation of quality. An incomplete investigation cannot be accurate, no matter how well-written or technically sound the documented portions are. Missing any of these 19 items significantly increases the risk of incorrect dispositions.
 
 **Critical Items (Must Have):**
+
 - Alert metadata (enables alert validation and tuning)
 - Network identifiers (enables asset identification and risk assessment)
 - Evidence documentation (supports disposition and enables verification)
 - Alternative explanations (prevents confirmation bias)
 
 **Investigation Failure Modes:**
+
 - Most false positives missed: Incomplete correlation or historical context
 - Most false negatives generated: Insufficient evidence collection or no alternatives considered
 - Most incorrect escalations: Missing business context or asset criticality

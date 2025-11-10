@@ -2,7 +2,9 @@
 
 ## Purpose
 
-Execute the complete Security Analysis Review Workflow for systematic peer review of security enrichments. This task orchestrates all 7 workflow stages defined in `workflows/security-analysis-review-workflow.yaml` to ensure quality assurance is thorough and constructive.
+Execute the complete Security Analysis Review Workflow for systematic peer review of security analyses (CVE enrichments OR event investigations). This task orchestrates all 7 workflow stages defined in `workflows/security-analysis-review-workflow.yaml` to ensure quality assurance is thorough and constructive.
+
+**Polymorphic Task:** This task adapts its behavior based on the `investigation_type` parameter, executing different checklists, templates, and fact verification logic for CVE enrichments vs. event investigations while maintaining the same 7-stage framework.
 
 ## Prerequisites
 
@@ -10,22 +12,35 @@ Execute the complete Security Analysis Review Workflow for systematic peer revie
 - (Optional) Perplexity MCP server for fact verification
 - JIRA configuration in `config.yaml` with required fields
 - Security Reviewer agent activated
-- Valid JIRA ticket ID with completed enrichment (Story 3.1)
-- All 8 quality dimension checklists available in `checklists/`
+- Valid JIRA ticket ID with completed analysis (CVE enrichment from Story 3.1 OR event investigation from Story 7.1)
+- **For CVE reviews:** All 8 CVE quality dimension checklists available in `checklists/`
+- **For event reviews:** All 7 event investigation quality checklists available in `checklists/` (Story 7.2)
 
 ## Workflow Overview
 
 This task executes a 7-stage review workflow:
 
-1. **Preparation** - Extract enrichment from JIRA ticket and parse structure
-2. **Systematic Evaluation** - Execute 8 quality dimension checklists
-3. **Gap Identification** - Categorize findings as Critical/Significant/Minor
-4. **Bias Detection** - Identify cognitive biases with debiasing strategies
-5. **Fact Verification (Optional)** - Verify claims against authoritative sources
-6. **Documentation** - Generate constructive review report
+1. **Preparation** - Extract analysis from JIRA ticket and parse structure (CVE or event format)
+2. **Systematic Evaluation** - Execute quality dimension checklists (8 for CVE, 7 for events)
+3. **Gap Identification** - Categorize findings as Critical/Significant/Minor (type-specific criteria)
+4. **Bias Detection** - Identify cognitive biases with debiasing strategies (automation bias added for events)
+5. **Fact Verification (Optional)** - Verify claims against authoritative sources (type-specific sources)
+6. **Documentation** - Generate constructive review report (using type-specific template)
 7. **Feedback Loop** - Post review to JIRA and notify analyst
 
 **Target Duration:** 15-20 minutes
+
+**Investigation Type Routing:**
+
+| Stage                | CVE Enrichment                   | Event Investigation                                  |
+| -------------------- | -------------------------------- | ---------------------------------------------------- |
+| 1. Preparation       | Parse CVE structure              | Parse event structure                                |
+| 2. Evaluation        | 8 CVE checklists                 | 7 event checklists                                   |
+| 3. Gaps              | CVE-specific criteria            | Event-specific criteria                              |
+| 4. Bias              | 5 standard biases                | Add automation bias                                  |
+| 5. Fact Verification | NVD, CISA KEV, EPSS              | IP/threat intel, protocols                           |
+| 6. Documentation     | security-review-report-tmpl.yaml | security-event-investigation-review-report-tmpl.yaml |
+| 7. Feedback          | JIRA integration                 | JIRA integration                                     |
 
 ## Task Execution
 
@@ -36,8 +51,31 @@ This task executes a 7-stage review workflow:
    - Validate workflow structure and stage definitions
    - Initialize workflow state tracking
 
-2. **Validate dependencies:**
-   - Verify all 8 quality checklists exist:
+2. **Validate MCP availability:**
+   - Check Atlassian MCP connection (REQUIRED)
+   - If unavailable: HALT with "Atlassian MCP required for review workflow"
+   - Check Perplexity MCP connection (OPTIONAL)
+   - If unavailable: Log warning "Fact verification will be skipped - Perplexity MCP not available"
+
+3. **Check for resume state:**
+   - Look for `.workflow-state/review-{ticket-id}.json` progress file
+   - If found, ask user: "Resume review from Stage {X}? (y/n)"
+   - If yes, load saved state (which includes investigation_type) and skip to last incomplete stage
+   - If no or not found, continue to step 4
+
+4. **Elicit investigation type:**
+   - Ask: "What type of investigation are you reviewing?\n 1. CVE enrichment\n 2. Event investigation"
+   - Validate input: Must be '1', '2', 'cve', or 'event'
+   - Set `investigation_type`:
+     - If input = '1' or 'cve': Set `investigation_type = 'cve'`
+     - If input = '2' or 'event': Set `investigation_type = 'event'`
+     - Else: Display error "Invalid investigation type. Must be 'cve' or 'event'" and re-prompt
+   - Store investigation_type for routing logic throughout workflow
+
+5. **Validate type-specific dependencies:**
+
+   **IF investigation_type = 'cve':**
+   - Verify all 8 CVE quality checklists exist:
      - `checklists/technical-accuracy-checklist.md`
      - `checklists/completeness-checklist.md`
      - `checklists/actionability-checklist.md`
@@ -46,32 +84,38 @@ This task executes a 7-stage review workflow:
      - `checklists/attack-mapping-validation-checklist.md`
      - `checklists/cognitive-bias-checklist.md`
      - `checklists/source-citation-checklist.md`
-   - Verify required template exists:
+   - Verify CVE template exists:
      - `templates/security-review-report-tmpl.yaml`
+   - If any CVE dependencies missing, HALT with error:
+     - "Missing required CVE dependencies: {list}. Please ensure Epic 2 tasks are available."
+
+   **ELSE IF investigation_type = 'event':**
+   - Verify all 7 event investigation quality checklists exist:
+     - `checklists/event-investigation-completeness-checklist.md`
+     - `checklists/event-investigation-accuracy-checklist.md`
+     - `checklists/event-investigation-disposition-reasoning-checklist.md`
+     - `checklists/event-investigation-context-checklist.md`
+     - `checklists/event-investigation-methodology-checklist.md`
+     - `checklists/event-investigation-documentation-checklist.md`
+     - `checklists/event-investigation-bias-checklist.md`
+   - Verify event template exists:
+     - `templates/security-event-investigation-review-report-tmpl.yaml`
+   - If any event dependencies missing, HALT with error:
+     - "Missing required event investigation dependencies: {list}. Please ensure Story 7.2 and 7.3 are complete."
+
+   **Common tasks (both types):**
    - Verify required tasks exist:
      - `tasks/categorize-review-findings.md` (Stage 3)
      - `tasks/fact-verify-claims.md` (Stage 5, optional)
-   - If any dependencies missing, HALT with error:
-     - "Missing required dependencies: {list}. Please ensure Epic 2 tasks are available."
+   - If common dependencies missing, HALT with error:
+     - "Missing required task dependencies: {list}"
 
-3. **Validate MCP availability:**
-   - Check Atlassian MCP connection (REQUIRED)
-   - If unavailable: HALT with "Atlassian MCP required for review workflow"
-   - Check Perplexity MCP connection (OPTIONAL)
-   - If unavailable: Log warning "Fact verification will be skipped - Perplexity MCP not available"
-
-4. **Check for resume state:**
-   - Look for `.workflow-state/review-{ticket-id}.json` progress file
-   - If found, ask user: "Resume review from Stage {X}? (y/n)"
-   - If yes, load saved state and skip to last incomplete stage
-   - If no or not found, start fresh from Stage 1
-
-5. **Elicit ticket ID:**
+6. **Elicit ticket ID:**
    - Ask: "Please provide the JIRA ticket ID to review (e.g., AOD-1234):"
    - Validate format: `{PROJECT_KEY}-{NUMBER}`
    - Store ticket ID for workflow tracking
 
-6. **Elicit fact verification preference:**
+7. **Elicit fact verification preference:**
    - If Perplexity MCP available, ask: "Perform optional fact verification? (y/n)"
    - If yes: Set `perform_fact_verification = true`
    - If no: Set `perform_fact_verification = false`
@@ -111,11 +155,11 @@ Elapsed: 8m 45s | Estimated Remaining: 8m
 **Actions:**
 
 1. Read JIRA ticket via Atlassian MCP
-2. Extract analyst enrichment comment (posted by Story 3.1 workflow)
-3. Parse enrichment structure (markdown sections)
+2. Extract analyst analysis comment (CVE enrichment OR event investigation)
+3. Parse analysis structure (markdown sections)
 4. Extract factual claims for potential verification
 
-**MCP Operations:**
+**MCP Operations (same for both types):**
 
 ```
 mcp__atlassian__getJiraIssue
@@ -124,16 +168,19 @@ mcp__atlassian__getJiraIssue
   expand: ["comments"]
 ```
 
-**Enrichment Extraction:**
+**IF investigation_type = 'cve':**
+
+**CVE Enrichment Extraction:**
 
 - Locate enrichment comment (look for "Security Analysis Enrichment" heading)
 - Parse markdown structure (12 expected sections from security-enrichment-tmpl.yaml)
 - Extract analyst name from comment author field
 - Extract enrichment timestamp
 
-**Claims Extraction:**
+**CVE Claims Extraction:**
 Extract these verifiable claims for Stage 5:
 
+- CVE-ID
 - CVSS score and vector
 - EPSS score
 - CISA KEV status
@@ -143,20 +190,52 @@ Extract these verifiable claims for Stage 5:
 
 **Outputs to collect:**
 
-- `enrichment_document` (full markdown text)
-- `enrichment_sections` (parsed dict of sections)
+- `analysis_document` (full markdown text)
+- `analysis_sections` (parsed dict of sections)
 - `claims_list` (array of factual claims with sources)
 - `analyst_name` (comment author)
-- `enrichment_timestamp` (comment created date)
+- `analysis_timestamp` (comment created date)
+- `cve_id` (extracted CVE identifier)
 
-**Error Handling:**
+**ELSE IF investigation_type = 'event':**
+
+**Event Investigation Extraction:**
+
+- Locate investigation comment (look for "Security Event Investigation" or similar heading)
+- Parse markdown structure (expected sections from event investigation template)
+- Extract analyst name from comment author field
+- Extract investigation timestamp
+
+**Event Investigation Claims Extraction:**
+Extract these verifiable claims for Stage 5:
+
+- Alert metadata (Severity, Sensor, Detection Engine, Rule ID, Category, Timestamp)
+- Network identifiers (Hostname, IP addresses, Ports, Protocols, ASN)
+- Disposition (True Positive determination, Next Action)
+- Investigation history (Previously Seen, Previously Alerted, Communication Pattern)
+- Evidence (specific IP ownership, geolocation, threat intelligence references)
+- Alert rule description/behavior
+
+**Outputs to collect:**
+
+- `analysis_document` (full markdown text)
+- `analysis_sections` (parsed dict of sections)
+- `claims_list` (array of factual claims: IPs, protocols, timestamps, rule IDs, threat intel)
+- `analyst_name` (comment author)
+- `analysis_timestamp` (comment created date)
+- `alert_metadata` (severity, rule ID, sensor, etc.)
+- `disposition` (True Positive determination)
+
+**Error Handling (both types):**
 
 - Ticket not found: Prompt user to verify ticket ID and retry
-- Enrichment comment not found: HALT with "No enrichment found. Ensure Story 3.1 workflow completed for this ticket."
+- Analysis comment not found:
+  - IF investigation_type = 'cve': HALT with "No CVE enrichment found. Ensure Story 3.1 workflow completed for this ticket."
+  - IF investigation_type = 'event': HALT with "No event investigation found. Ensure Story 7.1 workflow completed for this ticket."
 - MCP connection error: Retry once, then HALT with clear error message
-- Malformed enrichment: Log warning but continue (gaps will be caught in evaluation)
+- Malformed analysis: Log warning but continue (gaps will be caught in evaluation)
 
-**Save progress:** Write state to `.workflow-state/review-{ticket-id}.json`
+**Save progress:** Write state to `.workflow-state/review-{ticket-id}.json` (include investigation_type in state)
 
 ### Stage 2: Systematic Quality Evaluation
 
@@ -164,12 +243,14 @@ Extract these verifiable claims for Stage 5:
 
 **Actions:**
 
-1. Execute all 8 quality dimension checklists against enrichment
+1. Execute quality dimension checklists against analysis (8 for CVE, 7 for events)
 2. Calculate individual dimension scores (0-100%)
-3. Calculate weighted overall quality score
+3. Calculate weighted overall quality score (using type-specific weights)
 4. Classify quality level (Excellent/Good/Needs Improvement/Inadequate)
 
-**Checklist Execution Sequence:**
+**IF investigation_type = 'cve':**
+
+**CVE Checklist Execution Sequence:**
 
 For each checklist, execute the checklist items and score results:
 
@@ -213,7 +294,7 @@ For each checklist, execute the checklist items and score results:
    - Check authoritative sources cited correctly
    - Score: (passed items / total items) × 100
 
-**Overall Score Calculation:**
+**CVE Overall Score Calculation:**
 
 ```
 overall_score =
@@ -227,13 +308,6 @@ overall_score =
   (source_citation × 0.05)
 ```
 
-**Quality Classification:**
-
-- **Excellent:** ≥90% overall score
-- **Good:** 75-89% overall score
-- **Needs Improvement:** 60-74% overall score
-- **Inadequate:** <60% overall score
-
 **Outputs to collect:**
 
 - `dimension_scores` (dict with 8 scores)
@@ -241,9 +315,79 @@ overall_score =
 - `quality_classification` (string)
 - `checklist_results` (dict with passed/failed items per checklist)
 
-**Error Handling:**
+**ELSE IF investigation_type = 'event':**
 
-- Checklist file missing: HALT with "Missing checklist: {name}. Ensure Epic 2 complete."
+**Event Investigation Checklist Execution Sequence:**
+
+For each checklist, execute the checklist items and score results:
+
+1. **Completeness (25% weight):**
+   - Execute `checklists/event-investigation-completeness-checklist.md`
+   - Check all required investigation elements present (alert metadata, network identifiers, disposition, evidence)
+   - Score: (passed items / total items) × 100
+
+2. **Accuracy (20% weight):**
+   - Execute `checklists/event-investigation-accuracy-checklist.md`
+   - Check factual correctness of IP addresses, protocols, timestamps, alert rule descriptions
+   - Score: (passed items / total items) × 100
+
+3. **Disposition Reasoning (20% weight):**
+   - Execute `checklists/event-investigation-disposition-reasoning-checklist.md`
+   - Check disposition (True Positive/False Positive) is well-justified with evidence
+   - Score: (passed items / total items) × 100
+
+4. **Context (15% weight):**
+   - Execute `checklists/event-investigation-context-checklist.md`
+   - Check historical patterns, asset context, business impact considered
+   - Score: (passed items / total items) × 100
+
+5. **Methodology (10% weight):**
+   - Execute `checklists/event-investigation-methodology-checklist.md`
+   - Check investigation followed systematic process, threat intelligence consulted
+   - Score: (passed items / total items) × 100
+
+6. **Documentation (5% weight):**
+   - Execute `checklists/event-investigation-documentation-checklist.md`
+   - Check clarity, structure, formatting, reproducibility
+   - Score: (passed items / total items) × 100
+
+7. **Cognitive Bias (5% weight):**
+   - Execute `checklists/event-investigation-bias-checklist.md`
+   - Check for automation bias, confirmation bias, anchoring bias
+   - Score: (passed items / total items) × 100
+
+**Event Overall Score Calculation:**
+
+```
+overall_score =
+  (completeness × 0.25) +
+  (accuracy × 0.20) +
+  (disposition_reasoning × 0.20) +
+  (context × 0.15) +
+  (methodology × 0.10) +
+  (documentation × 0.05) +
+  (cognitive_bias × 0.05)
+```
+
+**Outputs to collect:**
+
+- `dimension_scores` (dict with 7 scores)
+- `overall_score` (0-100 percentage)
+- `quality_classification` (string)
+- `checklist_results` (dict with passed/failed items per checklist)
+
+**Quality Classification (both types):**
+
+- **Excellent:** ≥90% overall score
+- **Good:** 75-89% overall score
+- **Needs Improvement:** 60-74% overall score
+- **Inadequate:** <60% overall score
+
+**Error Handling (both types):**
+
+- Checklist file missing:
+  - IF investigation_type = 'cve': HALT with "Missing CVE checklist: {name}. Ensure Epic 2 complete."
+  - IF investigation_type = 'event': HALT with "Missing event checklist: {name}. Ensure Story 7.2 complete."
 - Checklist execution error: Log error, assign 0% score to that dimension, continue
 - All checklists fail: HALT with "Unable to execute quality evaluation"
 
@@ -256,8 +400,8 @@ overall_score =
 **Actions:**
 
 1. Execute task: `categorize-review-findings.md`
-2. Categorize each failed checklist item by severity
-3. Specify location in enrichment where gap occurs
+2. Categorize each failed checklist item by severity (using type-specific criteria)
+3. Specify location in analysis where gap occurs
 4. Explain impact of each gap
 5. Provide specific recommended fix
 6. Link to learning resources
@@ -265,9 +409,12 @@ overall_score =
 **Inputs:**
 
 - `checklist_results` from Stage 2 (all failed items)
-- `enrichment_sections` from Stage 1
+- `analysis_sections` from Stage 1
+- `investigation_type` (for routing categorization rules)
 
-**Categorization Rules:**
+**IF investigation_type = 'cve':**
+
+**CVE Categorization Rules:**
 
 **Critical Issues:**
 
@@ -292,7 +439,37 @@ overall_score =
 - Optional enhancements (additional context could be helpful)
 - Style improvements
 
-**For Each Gap, Document:**
+**ELSE IF investigation_type = 'event':**
+
+**Event Investigation Categorization Rules:**
+
+**Critical Issues:**
+
+- Incorrect disposition (True Positive/False Positive determination unsupported by evidence)
+- Missing or fabricated evidence
+- Wrong IP addresses or network data
+- No confidence level or reasoning for disposition
+- Missing alert metadata (rule ID, severity, sensor)
+- Disposition contradicts evidence presented
+
+**Significant Gaps:**
+
+- Incomplete investigation (missing historical correlation, threat intelligence lookup)
+- Weak disposition reasoning (lacks specific evidence references)
+- Missing context (no asset criticality, business impact, or historical patterns)
+- No investigation history (Previously Seen, Previously Alerted not checked)
+- Missing communication pattern analysis for network alerts
+- Incomplete network identifiers (missing ASN, geolocation, or protocol details)
+
+**Minor Improvements:**
+
+- Formatting inconsistencies
+- Spelling or grammar errors
+- Documentation clarity issues
+- Optional enhancements (additional threat intelligence sources could be consulted)
+- Style improvements
+
+**For Each Gap, Document (both types):**
 
 - Severity: Critical / Significant / Minor
 - Location: Specific section name and line reference
@@ -301,14 +478,14 @@ overall_score =
 - Recommendation: Specific fix to apply
 - Learning Resource: Link to guide or best practice
 
-**Outputs to collect:**
+**Outputs to collect (both types):**
 
 - `critical_issues` (array of gap objects)
 - `significant_gaps` (array of gap objects)
 - `minor_improvements` (array of gap objects)
 - `total_gaps` (count across all severities)
 
-**Error Handling:**
+**Error Handling (both types):**
 
 - Categorization task fails: Perform basic categorization inline
 - No gaps found: Set all arrays to empty, continue
@@ -321,12 +498,14 @@ overall_score =
 
 **Actions:**
 
-1. Analyze enrichment for cognitive biases
+1. Analyze analysis for cognitive biases (using type-specific bias types)
 2. Identify specific examples of bias in text
 3. Explain impact of detected biases
 4. Suggest debiasing strategies
 
-**Bias Types to Check:**
+**IF investigation_type = 'cve':**
+
+**CVE Bias Types to Check:**
 
 1. **Confirmation Bias:**
    - Selectively emphasizing evidence that confirms initial severity assessment
@@ -353,20 +532,55 @@ overall_score =
    - Ignoring historical patterns or older but relevant data
    - Example: Focusing only on recent CVEs, ignoring relevant older vulnerabilities
 
-**For Each Detected Bias:**
+**ELSE IF investigation_type = 'event':**
+
+**Event Investigation Bias Types to Check:**
+
+1. **Automation Bias (Event-Specific):**
+   - Blindly trusting alert system without independent verification
+   - Accepting alert severity/classification without questioning
+   - Example: "Alert says High severity, so it must be critical" (without examining actual evidence)
+   - Example: Trusting IDS signature match without validating payload or behavior
+
+2. **Anchoring Bias:**
+   - Over-relying on alert severity rating
+   - Not adjusting disposition despite evidence to contrary
+   - Example: Keeping True Positive disposition despite benign traffic patterns
+
+3. **Confirmation Bias:**
+   - Selectively emphasizing evidence that confirms initial disposition
+   - Ignoring contradictory evidence (e.g., legitimate business traffic pattern)
+   - Example: "IP is flagged as suspicious, so traffic must be malicious" (ignoring context)
+
+4. **Availability Heuristic:**
+   - Overweighting recent or memorable incidents
+   - "This is like last week's incident" comparisons without technical similarity
+   - Example: Treating all SSH alerts as equally suspicious
+
+5. **Overconfidence Bias:**
+   - Excessive certainty without sufficient evidence
+   - Absolute statements ("This is definitely a True Positive")
+   - Example: "Attack is imminent" without corroborating evidence
+
+6. **Recency Bias:**
+   - Giving too much weight to recent events
+   - Ignoring historical patterns or baseline behavior
+   - Example: Flagging normal traffic as suspicious because similar alert fired recently
+
+**For Each Detected Bias (both types):**
 
 - Type: Name of bias
 - Evidence: Specific quote or section exhibiting bias
 - Impact: How this could affect decision-making
 - Debiasing Strategy: Specific recommendation to counteract
 
-**Outputs to collect:**
+**Outputs to collect (both types):**
 
 - `detected_biases` (array of bias objects)
 - `bias_count` (total biases detected)
 - `bias_assessment_summary` (constructive summary)
 
-**Error Handling:**
+**Error Handling (both types):**
 
 - No biases detected: Set empty array, note "No significant cognitive biases detected"
 - Bias detection unclear: Mark as "Possible bias" with lower confidence
@@ -382,12 +596,14 @@ overall_score =
 **Actions:**
 
 1. Execute task: `fact-verify-claims.md`
-2. Verify each factual claim against authoritative sources
+2. Verify each factual claim against authoritative sources (type-specific sources)
 3. Compare analyst claims with verified data
 4. Document discrepancies with corrections
 5. Calculate accuracy score
 
-**Claims to Verify:**
+**IF investigation_type = 'cve':**
+
+**CVE Claims to Verify:**
 
 For each claim type, use Perplexity MCP to verify against authoritative source:
 
@@ -421,7 +637,45 @@ For each claim type, use Perplexity MCP to verify against authoritative source:
    - Source: MITRE ATT&CK (https://attack.mitre.org/)
    - Query: "Verify ATT&CK technique {technique_id} is correct for {vulnerability_type}"
 
-**MCP Operations:**
+**ELSE IF investigation_type = 'event':**
+
+**Event Investigation Claims to Verify:**
+
+For each claim type, use Perplexity MCP to verify against authoritative source:
+
+1. **IP Address Ownership:**
+   - Claim: {analyst_ip_ownership} (e.g., "Source IP 192.0.2.50 belongs to Acme Corp ASN 64512")
+   - Source: ASN lookup, WHOIS query
+   - Query: "What is the ASN and organization for IP address {ip_address}? Verify ownership."
+
+2. **Geolocation:**
+   - Claim: {analyst_geolocation} (e.g., "IP 203.0.113.10 is located in Tokyo, Japan")
+   - Source: Geolocation databases
+   - Query: "What is the geolocation (city, country) for IP address {ip_address}?"
+
+3. **Threat Intelligence:**
+   - Claim: {analyst_threat_intel} (e.g., "IP 198.51.100.25 is associated with Emotet botnet")
+   - Source: Threat intel feeds (AbuseIPDB, ThreatFox, AlienVault OTX)
+   - Query: "Is IP {ip_address} flagged as malicious? Check AbuseIPDB, ThreatFox, AlienVault OTX for threat intelligence."
+
+4. **Protocol/Port Validity:**
+   - Claim: {analyst_protocol_port} (e.g., "SSH typically uses port 22")
+   - Source: IANA port registry
+   - Query: "What is the standard port for {protocol}? Is port {port_number} valid for {protocol}?"
+
+5. **Alert Rule Accuracy:**
+   - Claim: {analyst_alert_rule} (e.g., "Claroty rule #317 detects SSH connections in control environments")
+   - Source: Alert rule documentation (if available)
+   - Query: "Describe alert rule {rule_id} from {detection_system}. What does it detect?"
+   - Note: May not be verifiable via public sources; mark as "Unable to Verify - Proprietary Rule"
+
+6. **Historical Patterns:**
+   - Claim: {analyst_historical_pattern} (e.g., "This alert has fired 15 times in the past 6 months")
+   - Source: JIRA search for historical occurrences
+   - Query: Use `mcp__atlassian__searchJiraIssues` with JQL: `summary ~ "{alert_name}" AND created >= -6M`
+   - Verify count matches analyst claim
+
+**MCP Operations (both types):**
 
 ```
 mcp__perplexity__search (for straightforward factual lookups)
@@ -431,9 +685,13 @@ mcp__perplexity__search (for straightforward factual lookups)
 mcp__perplexity__reason (for complex comparisons)
   query: "Compare analyst claim '{claim}' with authoritative source data for accuracy"
   force_model: false
+
+mcp__atlassian__searchJiraIssues (for historical pattern verification - events only)
+  jql: {historical_search_query}
+  cloudId: {from_config}
 ```
 
-**Discrepancy Documentation:**
+**Discrepancy Documentation (both types):**
 
 For each discrepancy found:
 
@@ -441,15 +699,15 @@ For each discrepancy found:
 - Actual: Verified correct value
 - Source: Authoritative source URL
 - Severity: Critical / Significant / Minor
-- Impact: How this affects remediation decisions
+- Impact: How this affects remediation decisions (CVE) or disposition accuracy (events)
 
-**Accuracy Score Calculation:**
+**Accuracy Score Calculation (both types):**
 
 ```
 accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 ```
 
-**Outputs to collect:**
+**Outputs to collect (both types):**
 
 - `claims_verified` (count)
 - `claims_correct` (count)
@@ -457,7 +715,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 - `discrepancies` (array of discrepancy objects)
 - `verification_sources` (dict of sources used)
 
-**Error Handling:**
+**Error Handling (both types):**
 
 - Perplexity timeout: Skip individual claim, mark as "Not Verified"
 - Source unavailable: Note in discrepancies, mark as "Unable to Verify"
@@ -478,7 +736,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 
 **Actions:**
 
-1. Load template: `templates/security-review-report-tmpl.yaml`
+1. Load template based on investigation_type (CVE or event)
 2. Populate all required sections with review findings
 3. Start with strengths (positive acknowledgment)
 4. Document gaps constructively with specific recommendations
@@ -488,6 +746,13 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 **Inputs:**
 
 - All data from Stages 1-5
+- `investigation_type` (for template selection)
+
+**IF investigation_type = 'cve':**
+
+**CVE Template and Sections:**
+
+Load template: `templates/security-review-report-tmpl.yaml`
 
 **Template Sections to Populate:**
 
@@ -564,7 +829,94 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
     - If Minor only: "Optional improvements suggested - proceed with remediation planning"
     - If Excellent: "Approved - excellent work! Ready for remediation planning"
 
-**Tone Guidelines:**
+**ELSE IF investigation_type = 'event':**
+
+**Event Investigation Template and Sections:**
+
+Load template: `templates/security-event-investigation-review-report-tmpl.yaml`
+
+**Template Sections to Populate:**
+
+1. **Review Metadata:**
+
+   ```yaml
+   ticket_id: { ticket_id }
+   alert_metadata: { severity, rule_id, sensor, etc. from Stage 1 }
+   investigation_timestamp: { analysis_timestamp }
+   reviewer_name: { current_agent_name }
+   review_date: { current_timestamp }
+   review_workflow_version: '1.0'
+   ```
+
+2. **Executive Summary:**
+   - Quality classification: {quality_classification}
+   - Overall score: {overall_score}%
+   - High-level summary: 2-3 sentences summarizing key findings
+   - Disposition assessment: Agree/Disagree with analyst's True Positive determination
+
+3. **Strengths:**
+   - List 3-5 positive aspects from investigation
+   - Acknowledge what analyst did well
+   - Examples: "Thorough threat intelligence research", "Clear disposition reasoning", "Good historical context"
+
+4. **Quality Scores:**
+
+   ```
+   Completeness: {completeness}% (25% weight)
+   Accuracy: {accuracy}% (20% weight)
+   Disposition Reasoning: {disposition_reasoning}% (20% weight)
+   Context: {context}% (15% weight)
+   Methodology: {methodology}% (10% weight)
+   Documentation: {documentation}% (5% weight)
+   Cognitive Bias: {cognitive_bias}% (5% weight)
+
+   Overall Quality Score: {overall_score}%
+   ```
+
+5. **Disposition Assessment:**
+   - Analyst's Disposition: {disposition from Stage 1}
+   - Reviewer's Assessment: Agree / Disagree
+   - Reasoning: Explanation for agreement or disagreement
+   - If disagree: Recommended disposition with evidence
+
+6. **Critical Issues:** (if any)
+   - List each critical issue with location, impact, recommendation
+   - If none: "✅ No critical issues identified"
+
+7. **Significant Gaps:** (if any)
+   - List each significant gap with location, impact, recommendation
+   - If none: "✅ No significant gaps identified"
+
+8. **Minor Improvements:** (if any)
+   - List minor improvements as optional suggestions
+   - If none: "No minor improvements needed"
+
+9. **Cognitive Bias Assessment:**
+   - List detected biases (including automation bias) with examples and debiasing strategies
+   - If none: "✅ No significant cognitive biases detected"
+
+10. **Fact Verification Results:** (if performed)
+    - Accuracy score: {accuracy_score}%
+    - Claims verified: {claims_verified} (IPs, geolocation, threat intel, protocols)
+    - Discrepancies: List each discrepancy with correction
+    - If not performed: "ℹ️ Fact verification was not performed for this review"
+
+11. **Recommendations:**
+    - Prioritized action items for analyst
+    - Order: Critical fixes → Significant improvements → Minor suggestions
+    - Each recommendation specific and actionable
+
+12. **Learning Resources:**
+    - Links to relevant guides, best practices, knowledge base articles
+    - Customized to address identified gaps
+
+13. **Next Steps:**
+    - If Critical Issues (especially incorrect disposition): "Status changed to 'Needs Revision' - please re-investigate and address critical issues"
+    - If Significant Gaps: "Please review significant gaps and update investigation"
+    - If Minor only: "Optional improvements suggested - proceed with response actions"
+    - If Excellent: "Approved - excellent work! Proceed with recommended next actions"
+
+**Tone Guidelines (both types):**
 
 - **Constructive:** Explain why, not just what
 - **Specific:** Provide examples and exact recommendations
@@ -573,14 +925,16 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
 - **Actionable:** Every finding has a clear next step
 - **Educational:** Link to resources for learning
 
-**Output:**
+**Output (both types):**
 
 - `review_report_markdown` (complete markdown document)
 - `review_filename` (e.g., `{ticket-id}-review-{timestamp}.md`)
 
-**Error Handling:**
+**Error Handling (both types):**
 
-- Template missing: HALT with "Review template required: templates/security-review-report-tmpl.yaml"
+- Template missing:
+  - IF investigation_type = 'cve': HALT with "Review template required: templates/security-review-report-tmpl.yaml"
+  - IF investigation_type = 'event': HALT with "Review template required: templates/security-event-investigation-review-report-tmpl.yaml"
 - Section population fails: Use placeholder text and log warning
 
 **Save progress:** Update state file
@@ -646,6 +1000,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
      ```json
      {
        "workflow_id": "security-analysis-review-v1",
+       "investigation_type": "{investigation_type}",
        "ticket_id": "{ticket_id}",
        "reviewer": "{reviewer_name}",
        "review_date": "{timestamp}",
@@ -660,6 +1015,7 @@ accuracy_score = (verified_correct_claims / total_claims_checked) × 100
        "accuracy_score": {accuracy_score}
      }
      ```
+   - Note: investigation_type field enables tracking review metrics separately for CVE vs. event investigations
 
 **Outputs:**
 
@@ -748,6 +1104,7 @@ When workflow is interrupted:
 ```json
 {
   "workflow_id": "security-analysis-review-v1",
+  "investigation_type": "cve",
   "ticket_id": "AOD-1234",
   "started_at": "2025-11-08T14:30:00Z",
   "current_stage": 3,
@@ -758,7 +1115,7 @@ When workflow is interrupted:
   "perform_fact_verification": true,
   "data": {
     "stage1": {
-      "enrichment_document": "...",
+      "analysis_document": "...",
       "analyst_name": "John Doe",
       "claims_list": [...]
     },

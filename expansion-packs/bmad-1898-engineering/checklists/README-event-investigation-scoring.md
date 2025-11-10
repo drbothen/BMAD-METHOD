@@ -108,6 +108,7 @@ Overall Score = (Completeness × 0.25) + (Accuracy × 0.20) + (Disposition × 0.
 ### Example Calculation
 
 **Investigation Dimension Scores:**
+
 - Investigation Completeness: 18/19 passed = 95%
 - Technical Accuracy: 6/7 passed = 86%
 - Disposition Reasoning: 7/7 passed = 100%
@@ -117,6 +118,7 @@ Overall Score = (Completeness × 0.25) + (Accuracy × 0.20) + (Disposition × 0.
 - Cognitive Bias: 6/6 passed = 100%
 
 **Overall Score Calculation:**
+
 ```
 Overall = (95 × 0.25) + (86 × 0.20) + (100 × 0.20) + (71 × 0.15) + (83 × 0.10) + (83 × 0.05) + (100 × 0.05)
         = 23.75 + 17.2 + 20.0 + 10.65 + 8.3 + 4.15 + 5.0
@@ -132,6 +134,7 @@ Overall = (95 × 0.25) + (86 × 0.20) + (100 × 0.20) + (71 × 0.15) + (83 × 0.
 ### Excellent: 90-100%
 
 **Characteristics:**
+
 - Exemplary investigation with minor or no gaps
 - All critical items passed (completeness, accuracy, disposition)
 - Strong methodology and context integration
@@ -139,6 +142,7 @@ Overall = (95 × 0.25) + (86 × 0.20) + (100 × 0.20) + (71 × 0.15) + (83 × 0.
 - Objective analysis (no significant biases)
 
 **Typical Issues (Minor):**
+
 - 1-2 missing contextual items (e.g., SLA implications not noted)
 - Minor documentation inconsistencies
 - Non-critical evidence gaps that don't affect disposition
@@ -150,6 +154,7 @@ Overall = (95 × 0.25) + (86 × 0.20) + (100 × 0.20) + (71 × 0.15) + (83 × 0.
 ### Good: 75-89%
 
 **Characteristics:**
+
 - Solid investigation with some improvements needed
 - Core elements present (evidence, disposition, reasoning)
 - Adequate context and methodology
@@ -157,6 +162,7 @@ Overall = (95 × 0.25) + (86 × 0.20) + (100 × 0.20) + (71 × 0.15) + (83 × 0.
 - Minor biases detected with limited impact
 
 **Typical Issues (Moderate):**
+
 - Missing some investigation steps (e.g., no historical context)
 - Limited contextualization (asset criticality assessed but business impact not)
 - Only 1 alternative hypothesis considered (requirement: 2+)
@@ -169,6 +175,7 @@ Overall = (95 × 0.25) + (86 × 0.20) + (100 × 0.20) + (71 × 0.15) + (83 × 0.
 ### Needs Improvement: 60-74%
 
 **Characteristics:**
+
 - Significant gaps requiring revision
 - Disposition may be correct but poorly supported
 - Important context missing
@@ -176,6 +183,7 @@ Overall = (95 × 0.25) + (86 × 0.20) + (100 × 0.20) + (71 × 0.15) + (83 × 0.
 - Moderate biases affecting conclusions
 
 **Typical Issues (Significant):**
+
 - Missing critical evidence (no logs collected beyond alert)
 - Weak disposition reasoning (assertion without evidence)
 - No alternatives considered (confirmation bias risk)
@@ -189,6 +197,7 @@ Overall = (95 × 0.25) + (86 × 0.20) + (100 × 0.20) + (71 × 0.15) + (83 × 0.
 ### Inadequate: <60%
 
 **Characteristics:**
+
 - Major deficiencies, investigation must be redone
 - Disposition likely incorrect
 - Missing most required elements
@@ -196,6 +205,7 @@ Overall = (95 × 0.25) + (86 × 0.20) + (100 × 0.20) + (71 × 0.15) + (83 × 0.
 - Severe biases detected
 
 **Typical Issues (Critical):**
+
 - Completeness <50% (most investigation steps skipped)
 - Technical errors (wrong IPs, misinterpreted logs)
 - No disposition reasoning (assertion only)
@@ -213,6 +223,7 @@ These patterns help identify common investigation failures specific to event inv
 ### 1. Missing Evidence Pattern
 
 **Indicators:**
+
 - No logs collected beyond alert metadata
 - No correlation performed (event analyzed in isolation)
 - No historical context (can't distinguish anomaly from baseline)
@@ -221,15 +232,18 @@ These patterns help identify common investigation failures specific to event inv
 **Impact:** Cannot verify disposition, high risk of incorrect conclusion
 
 **Detected By:**
+
 - Investigation Completeness checklist (items 11-15: Investigation steps)
 - Investigation Methodology checklist (item 2: Multiple data sources)
 
 **Example:**
+
 ```
 Alert: SSH Connection 10.50.1.100 → 10.10.5.25
 Investigation: Internal SSH traffic
 Disposition: False Positive
 ```
+
 Missing: Logs, correlation, historical pattern, asset verification
 
 ---
@@ -237,6 +251,7 @@ Missing: Logs, correlation, historical pattern, asset verification
 ### 2. Weak Disposition Reasoning Pattern
 
 **Indicators:**
+
 - Conclusion without evidence ("This is normal" - no supporting data)
 - No alternatives considered (confirmation bias risk)
 - Missing confidence level (uncertainty not acknowledged)
@@ -245,15 +260,18 @@ Missing: Logs, correlation, historical pattern, asset verification
 **Impact:** Unsupported disposition, cannot verify or trust conclusion
 
 **Detected By:**
+
 - Disposition Reasoning checklist (all 7 items)
 - Cognitive Bias checklist (items 1, 6: Confirmation bias, alternatives)
 
 **Example:**
+
 ```
 Disposition: False Positive
 Reasoning: Looks like normal activity
 Next Actions: Close ticket
 ```
+
 Missing: Evidence, alternatives, confidence level, escalation logic
 
 ---
@@ -261,6 +279,7 @@ Missing: Evidence, alternatives, confidence level, escalation logic
 ### 3. Incomplete Correlation Pattern
 
 **Indicators:**
+
 - Single event analyzed in isolation
 - No timeline reconstruction (before/after events not reviewed)
 - No related events identified
@@ -269,10 +288,12 @@ Missing: Evidence, alternatives, confidence level, escalation logic
 **Impact:** Missed attack patterns, incomplete understanding of incident scope
 
 **Detected By:**
+
 - Investigation Completeness checklist (item 12: Correlation performed)
 - Investigation Methodology checklist (item 2: Multiple data sources)
 
 **Example:**
+
 ```
 Alert: Suspicious outbound connection at 14:35 UTC
 Investigation: Reviewed firewall logs for destination IP
@@ -289,6 +310,7 @@ Missing Correlation:
 ### 4. Insufficient Contextualization Pattern
 
 **Indicators:**
+
 - No asset criticality assessed
 - No business impact assessment
 - Asset type unknown (server? workstation? ICS device?)
@@ -297,10 +319,12 @@ Missing Correlation:
 **Impact:** Cannot prioritize response, may over/under-escalate
 
 **Detected By:**
+
 - Investigation Contextualization checklist (items 1-4: Asset criticality, business impact, affected systems, risk level)
 - Cognitive Bias checklist (item 2: Anchoring bias - over-relying on alert severity)
 
 **Example:**
+
 ```
 Alert: Critical Severity - Port Scan Detected
 Disposition: True Positive
@@ -311,6 +335,7 @@ Missing Context:
 - Target = Development server (non-production)
 - Scheduled activity during approved scan window
 ```
+
 Without context, FP escalated as critical incident
 
 ---
@@ -318,6 +343,7 @@ Without context, FP escalated as critical incident
 ### 5. Shallow Methodology Pattern
 
 **Indicators:**
+
 - No hypothesis stated (investigation lacks direction)
 - Single data source only (alert metadata only)
 - No negative findings documented ("didn't check X" vs. "checked X, found nothing")
@@ -326,9 +352,11 @@ Without context, FP escalated as critical incident
 **Impact:** Unreliable results, can't verify methodology, inconsistent quality
 
 **Detected By:**
+
 - Investigation Methodology checklist (all 6 items)
 
 **Example:**
+
 ```
 Alert: Malware Detection
 Investigation: Ran AV scan, no detection
@@ -336,6 +364,7 @@ Disposition: False Positive
 ```
 
 **Shallow Methodology:**
+
 - No hypothesis ("What triggered alert? Process? File? Network?")
 - Single source (AV only - didn't check EDR, logs, network traffic)
 - No steps ("Ran AV scan" - what exactly? Full scan? Quick scan? Which files?)
@@ -346,6 +375,7 @@ Disposition: False Positive
 ### 6. Automation Bias Pattern
 
 **Indicators:**
+
 - Alert disposition = investigation disposition (no independent verification)
 - Alert severity copied to risk assessment (no context considered)
 - Alert description parroted as conclusion
@@ -354,11 +384,13 @@ Disposition: False Positive
 **Impact:** Missed false positives, incorrect escalations, wasted resources
 
 **Detected By:**
+
 - Cognitive Bias checklist (item 5: Automation bias)
 - Investigation Completeness checklist (item 16: Evidence documented)
 - Disposition Reasoning checklist (item 2: Evidence support)
 
 **Example:**
+
 ```
 Alert: Critical - APT Lateral Movement Detected
 Investigation: Alert system classified this as Critical APT activity
@@ -367,12 +399,14 @@ Escalation: Immediate IR response
 ```
 
 **Automation Bias Detected:**
+
 - No verification of "APT" claim (no APT indicators checked)
 - Severity = alert severity (no independent assessment)
 - Disposition = alert classification (no evidence collection)
 - Escalation based on automation, not analyst judgment
 
 **Correct Approach:**
+
 - Treat alert as hypothesis: "Alert claims APT - does evidence support this?"
 - Collect independent evidence (logs, correlation, historical pattern)
 - Assess severity based on context (asset criticality, business impact)

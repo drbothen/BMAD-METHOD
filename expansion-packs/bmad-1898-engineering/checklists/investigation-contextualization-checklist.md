@@ -17,13 +17,14 @@
 
 - **Total Items:** 7
 - **Passed Items:** [count after review]
-- **Score:** (Passed / 7) × 100 = ____%
+- **Score:** (Passed / 7) × 100 = \_\_\_\_%
 
 ## Guidance
 
 ### Asset Criticality Levels
 
 **Critical Assets:**
+
 - Business-critical production systems (revenue-generating applications, core infrastructure)
 - Systems containing highly sensitive data (PII, financial data, intellectual property, credentials)
 - Single points of failure (no redundancy)
@@ -32,12 +33,14 @@
 - Examples: Domain controllers, customer database servers, payment processing systems, SCADA HMI
 
 **High Criticality Assets:**
+
 - Important production systems with some redundancy
 - Systems containing sensitive but not critical data
 - Key operational systems (but not single points of failure)
 - Examples: Application servers, file servers, network infrastructure, VPN gateways
 
 **Medium Criticality Assets:**
+
 - Standard production systems with full redundancy
 - Development/staging environments
 - General user workstations
@@ -45,6 +48,7 @@
 - Examples: Web servers (behind load balancer), department file shares, developer laptops
 
 **Low Criticality Assets:**
+
 - Test/lab systems
 - Decommissioned or unused systems
 - Isolated non-production environments
@@ -53,6 +57,7 @@
 ### Business Impact Assessment
 
 **Questions to Answer:**
+
 1. What business function does this asset support?
 2. What happens if this asset is compromised or unavailable?
 3. Who is affected? (internal teams, customers, partners)
@@ -63,6 +68,7 @@
 **Impact Levels:**
 
 **High Business Impact:**
+
 - Revenue loss >$100k/hour
 - Service outage affecting >1000 users or all customers
 - Data breach requiring regulatory notification
@@ -70,12 +76,14 @@
 - Example: E-commerce platform down during peak shopping hours
 
 **Medium Business Impact:**
+
 - Revenue loss $10k-$100k/hour
 - Service degradation affecting 100-1000 users
 - Sensitive data exposure (but not PII/financial)
 - Example: Internal CRM system slow or unavailable
 
 **Low Business Impact:**
+
 - Revenue loss <$10k/hour
 - Service outage affecting <100 users
 - No sensitive data exposure
@@ -170,6 +178,7 @@ Disposition: False Positive
 **Scenario 1: Same Technical Evidence, Different Context → Different Disposition**
 
 **Case A: Test Environment**
+
 ```
 Alert: SQL Injection Attempt
 Target: 10.100.50.25 (test-db-server.lab.local)
@@ -187,6 +196,7 @@ Next Actions: No action required (expected activity in test environment)
 ```
 
 **Case B: Production Environment**
+
 ```
 Alert: SQL Injection Attempt
 Target: 10.10.20.25 (customer-db-prod.corp.local)
@@ -215,38 +225,48 @@ Next Actions:
 ### Common Contextualization Failures
 
 **Failure 1: Treating All Assets Equally**
+
 ```
 Disposition: False Positive (SSH traffic is normal)
 ```
+
 ❌ No consideration of asset criticality (domain controller vs. test VM have very different risk profiles)
 
 **Failure 2: Ignoring Business Impact**
+
 ```
 Disposition: True Positive (malicious activity detected)
 Next Actions: Close ticket
 ```
+
 ❌ If TP, why close? Business impact not assessed, so severity of response unclear
 
 **Failure 3: Missing Compliance Requirements**
+
 ```
 Investigation: Brute force attack detected on login server
 Disposition: False Positive (login attempts from authorized IP range)
 ```
+
 ❌ Even if FP, compliance may require logging/reporting of brute force attempts (e.g., PCI-DSS 10.2.4)
 
 **Failure 4: Not Checking Maintenance Windows**
+
 ```
 Alert: Unusual administrative activity at 02:00 AM
 Disposition: True Positive (suspicious timing)
 ```
+
 ❌ Didn't check if 02:00 AM is scheduled maintenance window (common for backups, patching)
 
 **Failure 5: Ignoring Environment**
+
 ```
 Alert: Port scan detected from 10.50.1.100
 Disposition: True Positive (reconnaissance activity)
 Escalation: Immediate escalation
 ```
+
 ❌ Didn't check if source is authorized vulnerability scanner in development environment
 
 ### Weighting Rationale
@@ -254,12 +274,14 @@ Escalation: Immediate escalation
 **Why 15% (Third Highest Weight)?**
 
 Context transforms technical findings into business decisions. The same alert on a test system vs. production database requires completely different responses. Without context:
+
 - Low-risk events get over-escalated (wasted resources)
 - High-risk events get under-escalated (missed incidents)
 - Compliance violations go undetected (regulatory fines)
 - Business impact not communicated (poor stakeholder decisions)
 
 **Context Determines:**
+
 - Escalation urgency (Critical asset = faster response)
 - Investigation depth (High impact = deeper investigation)
 - Notification requirements (Compliance triggers reporting)

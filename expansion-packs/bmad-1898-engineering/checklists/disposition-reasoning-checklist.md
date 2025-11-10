@@ -17,24 +17,27 @@
 
 - **Total Items:** 7
 - **Passed Items:** [count after review]
-- **Score:** (Passed / 7) × 100 = ____%
+- **Score:** (Passed / 7) × 100 = \_\_\_\_%
 
 ## Guidance
 
 ### Disposition Definitions
 
 **True Positive (TP):**
+
 - Alert correctly identified malicious, unauthorized, or policy-violating activity
 - Requires escalation or remediation
 - Examples: Actual lateral movement, real malware execution, unauthorized access
 
 **False Positive (FP):**
+
 - Alert triggered on legitimate, authorized, or expected activity
 - No security concern, no escalation needed
 - May require alert tuning to reduce noise
 - Examples: Authorized administrative activity, legitimate business processes
 
 **Benign True Positive (BTP):**
+
 - Alert correctly detected the behavior described (true positive)
 - BUT behavior is authorized, expected, or non-malicious (benign)
 - Tuning recommended to exclude known-good patterns
@@ -43,6 +46,7 @@
 ### Confidence Level Guidelines
 
 **High Confidence:**
+
 - Multiple corroborating evidence sources
 - Historical pattern confirms current assessment
 - Asset ownership and context verified
@@ -50,12 +54,14 @@
 - Example: "6 months of daily logs confirm scheduled backup operation"
 
 **Medium Confidence:**
+
 - Sufficient evidence for disposition but some gaps
 - Reasonable assumptions made (documented)
 - Minor inconsistencies explained
 - Example: "Likely authorized activity based on timing and source, but asset owner not yet contacted"
 
 **Low Confidence:**
+
 - Limited evidence available
 - Significant information gaps
 - Conflicting indicators present
@@ -65,6 +71,7 @@
 ### Escalation Decision Criteria
 
 **Escalate When:**
+
 - Disposition = True Positive (confirmed malicious/unauthorized)
 - Confidence = Low AND asset criticality = High/Critical (better safe than sorry)
 - Context indicates potential business impact regardless of disposition
@@ -72,6 +79,7 @@
 - Unusual activity on critical asset without clear explanation
 
 **Close (No Escalation) When:**
+
 - Disposition = False Positive or BTP with High confidence
 - Evidence clearly indicates authorized/expected activity
 - Asset criticality = Low AND no business impact
@@ -142,6 +150,7 @@ The alert looks like normal SSH traffic between internal systems. The IPs are bo
 ```
 
 **Missing Items:**
+
 1. ✗ Clear disposition stated - Yes, but no definition or context
 2. ✗ Evidence supporting disposition - No specific evidence cited
 3. ✗ Alternative explanations - None considered
@@ -193,51 +202,65 @@ The alert looks like normal SSH traffic between internal systems. The IPs are bo
 ### Common Disposition Reasoning Failures
 
 **Failure Pattern 1: Assertion Without Evidence**
+
 ```
 Disposition: False Positive
 Reasoning: This is normal activity.
 ```
+
 ❌ No evidence, no justification, no verification
 
 **Failure Pattern 2: Evidence Without Logic**
+
 ```
 Evidence: SSH connection from 10.50.1.100 to 10.10.5.25 occurred at 02:00 UTC
 Disposition: True Positive - malicious lateral movement
 ```
+
 ❌ Evidence doesn't support conclusion (no explanation of why routine timing = malicious)
 
 **Failure Pattern 3: No Alternatives Considered**
+
 ```
 Disposition: False Positive
 Reasoning: Source IP is authorized jump server, so this is legitimate
 ```
+
 ❌ No consideration of jump server compromise, stolen credentials, or insider threat
 
 **Failure Pattern 4: Missing Confidence Level**
+
 ```
 Disposition: False Positive
 Reasoning: Likely authorized activity based on source IP
 ```
+
 ❌ "Likely" suggests uncertainty but no confidence level stated, limits decision quality
 
 **Failure Pattern 5: No Escalation Logic**
+
 ```
 Disposition: True Positive
 Next Actions: Escalate to SOC
 ```
+
 ❌ No explanation of why escalation needed, no criteria applied, no urgency level
 
 **Failure Pattern 6: Context Ignored**
+
 ```
 Disposition: False Positive
 Reasoning: Just SSH traffic
 ```
+
 ❌ No consideration of asset criticality (could be critical production server), business impact, or timing
 
 **Failure Pattern 7: Vague Next Actions**
+
 ```
 Next Actions: Monitor
 ```
+
 ❌ "Monitor" is not actionable (monitor what? how long? what triggers action?)
 
 ### Weighting Rationale
@@ -247,6 +270,7 @@ Next Actions: Monitor
 The disposition decision is the primary output of the investigation. All other work (completeness, accuracy, context, methodology) exists to support a correct disposition. An investigation can be 100% complete and accurate, but if the disposition reasoning is flawed, the entire investigation fails its purpose.
 
 **Impact of Poor Disposition Reasoning:**
+
 - False positives marked as true positive → Waste IR resources, alert fatigue
 - True positives marked as false positive → Security incidents missed, breaches undetected
 - Weak reasoning → Dispositions overturned by reviewers, rework required
@@ -256,6 +280,7 @@ The disposition decision is the primary output of the investigation. All other w
 **Quality Thresholds:**
 
 **Excellent (6-7/7 passed):**
+
 - Disposition clearly justified with multiple evidence sources
 - Multiple alternatives evaluated and rejected with reasoning
 - Confidence level appropriate to evidence quality
@@ -263,18 +288,21 @@ The disposition decision is the primary output of the investigation. All other w
 - Context appropriately factored into decision
 
 **Good (5/7 passed):**
+
 - Disposition supported by adequate evidence
 - At least 2 alternatives considered
 - Confidence level stated
 - Escalation decision reasonable
 
 **Needs Improvement (3-4/7 passed):**
+
 - Disposition stated but weak evidence
 - Only 1 alternative considered or none
 - Confidence level missing or unjustified
 - Escalation decision unclear
 
 **Inadequate (<3/7 passed):**
+
 - Disposition assertion without evidence
 - No alternatives considered
 - No confidence level

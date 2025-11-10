@@ -76,7 +76,7 @@ This task executes a 7-stage event investigation workflow:
    - Set `alert_platform_type` = "SIEM"
 
    **If ambiguous:**
-   - Prompt user: "Unable to auto-detect alert type. Please select:\n  1. ICS/SCADA Alert\n  2. IDS/IPS Alert\n  3. SIEM Correlation Alert"
+   - Prompt user: "Unable to auto-detect alert type. Please select:\n 1. ICS/SCADA Alert\n 2. IDS/IPS Alert\n 3. SIEM Correlation Alert"
    - Accept numeric selection or full text
    - Validate selection before proceeding
 
@@ -329,9 +329,9 @@ Historical Context: (previous occurrences or 'none')
    - Document asset function and business purpose
    - Assess business impact if compromised
    - Identify environmental factors (test vs prod, maintenance windows)
-   - Elicit: "Asset function: _____"
-   - Elicit: "Business impact if compromised: _____"
-   - Elicit: "Environmental factors (maintenance/testing/changes): _____"
+   - Elicit: "Asset function: **\_**"
+   - Elicit: "Business impact if compromised: **\_**"
+   - Elicit: "Environmental factors (maintenance/testing/changes): **\_**"
    - Store as `asset_context` fields
 
 **Outputs to collect:**
@@ -400,6 +400,7 @@ Environmental Factors: (e.g., "Maintenance window active", "Test environment")
    - Activity is legitimate but triggered detection
 
 3. **Elicit disposition from analyst:**
+
    ```
    📊 Disposition Assessment
 
@@ -413,6 +414,7 @@ Environmental Factors: (e.g., "Maintenance window active", "Test environment")
    ```
 
 4. **Elicit confidence level:**
+
    ```
    Confidence Level in this disposition:
    1. High - Strong evidence supporting disposition
@@ -424,6 +426,7 @@ Environmental Factors: (e.g., "Maintenance window active", "Test environment")
    ```
 
 5. **Elicit disposition reasoning:**
+
    ```
    Provide detailed reasoning for this disposition:
    (Explain evidence and logic connecting to conclusion)
@@ -431,6 +434,7 @@ Environmental Factors: (e.g., "Maintenance window active", "Test environment")
    ```
 
 6. **Elicit alternative dispositions considered:**
+
    ```
    What alternative dispositions did you consider and why were they ruled out?
    > _____
@@ -444,6 +448,7 @@ Environmental Factors: (e.g., "Maintenance window active", "Test environment")
    - If Low confidence → Escalate for senior analyst review
 
 8. **Elicit recommended next actions:**
+
    ```
    Recommended Next Actions:
    1. Escalate to Incident Response
@@ -577,6 +582,7 @@ If tuning needed, specify recommendations: _____
 **Upon successful completion:**
 
 1. **Display completion summary:**
+
    ```
    ✅ Event Investigation Complete!
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -623,6 +629,7 @@ For permanent errors (authentication, missing data):
 **Error:** "Source IP not found in ticket"
 
 **Handling:**
+
 - Prompt user for required information
 - Flag gap: "⚠️ Source IP not available in ticket - manually provided"
 - Continue with user-provided data
@@ -632,6 +639,7 @@ For permanent errors (authentication, missing data):
 **Error:** "Unable to detect alert platform type"
 
 **Handling:**
+
 - Prompt user to select from ICS/IDS/SIEM options
 - Provide generic investigation template
 - Document manual platform classification
@@ -641,6 +649,7 @@ For permanent errors (authentication, missing data):
 **Error:** "No log evidence provided"
 
 **Handling:**
+
 - Flag gap: "⚠️ No logs collected - investigation incomplete"
 - Allow disposition determination with warning
 - Document evidence limitations in investigation report
@@ -651,6 +660,7 @@ For permanent errors (authentication, missing data):
 **Error:** "Failed to post comment after 3 retries"
 
 **Handling:**
+
 - Save investigation document locally (priority)
 - Display error: "JIRA update failed. Investigation saved locally."
 - Provide manual posting instructions
@@ -661,6 +671,7 @@ For permanent errors (authentication, missing data):
 **Warning:** "Confidence level: Low"
 
 **Handling:**
+
 - Automatically recommend escalation
 - Document in report: "Low confidence - recommend peer review"
 - Suggest senior analyst consultation
