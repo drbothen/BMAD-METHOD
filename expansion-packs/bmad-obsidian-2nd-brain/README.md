@@ -71,16 +71,43 @@ Three essential plugins must be installed and configured:
 
 ### 3. Configure Your Vault
 
-Update the `config.yaml` file with your vault paths and preferences:
+The expansion pack supports multiple Obsidian vaults with different organizational methods (PARA, Zettelkasten, LYT, Johnny Decimal, Custom).
 
-```yaml
-vault:
-  inbox: inbox # Where new notes arrive
-  archive: archive # Long-term storage
-  mocs: mocs # Maps of Content
-  daily_notes: daily-notes
-  periodic_reviews: reviews
+**Quick Setup - Interactive Wizard:**
+
+```bash
+# Run the interactive configuration wizard
+node expansion-packs/bmad-obsidian-2nd-brain/tools/vault-cli.js configure
 ```
+
+The wizard will:
+- Auto-detect your Obsidian vaults
+- Analyze vault structure and detect organization method
+- Configure agents and auto-processing preferences
+- Save configuration to `vault-mappings.yaml`
+
+**Quick Setup - Manual Commands:**
+
+```bash
+# Discover vaults
+node expansion-packs/bmad-obsidian-2nd-brain/tools/vault-cli.js detect-vaults
+
+# Add a vault
+node expansion-packs/bmad-obsidian-2nd-brain/tools/vault-cli.js vault:add /path/to/vault
+
+# List configured vaults
+node expansion-packs/bmad-obsidian-2nd-brain/tools/vault-cli.js vault:list
+
+# Enable/disable vaults
+node expansion-packs/bmad-obsidian-2nd-brain/tools/vault-cli.js vault:enable <vault-id>
+node expansion-packs/bmad-obsidian-2nd-brain/tools/vault-cli.js vault:disable <vault-id>
+```
+
+📖 **Complete Vault Configuration Guide**: [docs/installation/vault-setup.md](./docs/installation/vault-setup.md)
+- Detailed CLI command reference
+- Organization method explanations
+- Multi-vault configuration examples
+- Troubleshooting tips
 
 ### 4. (Optional) Set Up Neo4j Temporal Database
 
