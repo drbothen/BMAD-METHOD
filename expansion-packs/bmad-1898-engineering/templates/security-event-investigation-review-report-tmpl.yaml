@@ -7,13 +7,13 @@
 # identifies gaps, and provides specific recommendations.
 
 template:
-  id: security-event-investigation-review-report-v1
+  id: security-event-investigation-review-report-v2
   name: Security Event Investigation Review Report
-  version: "1.0"
+  version: "2.0"
   output:
     format: markdown
     filename: event-investigation-review-{{ticket_id}}.md
-    title: "Event Investigation Review: {{ticket_id}} - {{alert_id}}"
+    title: "🔍 Event Investigation Review: {{ticket_id}}"
 
 workflow:
   mode: automated
@@ -69,30 +69,49 @@ sections:
       - overall_score: Weighted quality score (0-100)
       - quality_classification: Excellent/Good/Needs Improvement/Inadequate
     template: |
-      **Ticket:** {{ticket_id}}
-      **Alert ID:** {{alert_id}}
-      **Alert Type:** {{alert_type}}
-      **Investigation Date:** {{investigation_timestamp}}
-      **Analyst:** {{analyst_name}}
-      **Reviewer:** {{reviewer_name}}
-      **Review Date:** {{review_date}}
+      **Ticket:** {{ticket_id}}<br>
+      **Alert ID:** {{alert_id}}<br>
+      **Alert Type:** {{alert_type}}<br>
+      **Investigation Date:** {{investigation_timestamp}}<br>
+      **Analyst:** {{analyst_name}}<br>
+      **Reviewer:** {{reviewer_name}}<br>
+      **Review Date:** {{review_date}}<br>
       **Overall Quality Score:** {{overall_score}}% ({{quality_classification}})
 
   - id: executive_summary
     title: Executive Summary
     instruction: |
-      Provide a 2-3 sentence summary of review findings. Start positive by acknowledging
-      what was done well, then note key areas for improvement. Include disposition
-      agreement status. Maintain constructive tone.
+      Provide a comprehensive multi-paragraph summary (2-4 paragraphs) of review findings:
+
+      Paragraph 1: Acknowledge what was done well (strengths-first approach)
+      Paragraph 2: Note key areas for improvement with "Building on..." language
+      Paragraph 3 (optional): Additional context or significance
+
+      Then show three-way disposition comparison for quick reference:
+      - Analyst Disposition
+      - Reviewer Disposition (your independent assessment)
+      - Disposition Agreement status
+
+      Use constructive, collaborative tone. Frame gaps as opportunities.
 
       Variables used:
-      - summary: Pre-written summary text (2-3 sentences)
-      - disposition: TP/FP/BTP
-      - disposition_agreement: Agree/Disagree/Uncertain
+      - summary_paragraph1: Strengths acknowledgment (what went well)
+      - summary_paragraph2: Key improvement areas (building on foundation)
+      - summary_paragraph3: Optional additional context
+      - analyst_disposition: TP/FP/BTP or "Not Stated"
+      - reviewer_disposition: TP/FP/BTP (your independent assessment)
+      - disposition_agreement: Agree/Disagree/Cannot Assess (if no analyst disposition)
     template: |
-      {{summary}}
+      {{summary_paragraph1}}
 
-      **Analyst Disposition:** {{disposition}}
+      {{summary_paragraph2}}
+
+      {{#if summary_paragraph3}}
+      {{summary_paragraph3}}
+
+      {{/if}}
+      **Analyst Disposition:** {{analyst_disposition}}<br>
+      **Reviewer Disposition:** {{reviewer_disposition}}<br>
       **Disposition Agreement:** {{disposition_agreement}}
 
   - id: strengths
@@ -183,14 +202,17 @@ sections:
         - resource_url: Learning resource URL
 
       Note: Use {{#each}} with {{this.property}} to access object properties
-      Note: Use {{@index}} to get current iteration number (0-based), add 1 for display
+      Note: {{@index}} is 0-based. Use helper function to add 1 for human-readable numbering
     template: |
       {{#each critical_issues}}
-      ### 🔴 Critical Issue {{@index}}: {{this.title}}
-      **Location:** {{this.location}}
-      **Issue:** {{this.description}}
+      ### 🔴 Critical Issue {{add @index 1}}: {{this.title}}
+
+      **Location:** {{this.location}}<br>
+      **Issue:** {{this.description}}<br>
       **Impact:** {{this.impact}}
+
       **Recommended Fix:** {{this.recommendation}}
+
       **Learn More:** [{{this.resource_title}}]({{this.resource_url}})
 
       {{/each}}
@@ -212,11 +234,14 @@ sections:
       - significant_gaps: Array of gap objects with same structure as critical_issues
     template: |
       {{#each significant_gaps}}
-      ### 🟡 Significant Gap {{@index}}: {{this.title}}
-      **Location:** {{this.location}}
-      **Issue:** {{this.description}}
+      ### 🟡 Significant Gap {{add @index 1}}: {{this.title}}
+
+      **Location:** {{this.location}}<br>
+      **Issue:** {{this.description}}<br>
       **Impact:** {{this.impact}}
+
       **Recommended Fix:** {{this.recommendation}}
+
       **Learn More:** [{{this.resource_title}}]({{this.resource_url}})
 
       {{/each}}
@@ -241,8 +266,9 @@ sections:
         - benefit: Why this would help
     template: |
       {{#each minor_improvements}}
-      ### 🔵 Minor Improvement {{@index}}: {{this.title}}
-      **Suggestion:** {{this.description}}
+      ### 🔵 Minor Improvement {{add @index 1}}: {{this.title}}
+
+      **Suggestion:** {{this.description}}<br>
       **Benefit:** {{this.benefit}}
 
       {{/each}}
@@ -266,12 +292,49 @@ sections:
       - agreement: yes/no/uncertain
       - reasoning: Explanation with evidence and logic
     template: |
-      **Analyst Disposition:** {{analyst_disposition}}
-      **Reviewer Disposition:** {{reviewer_disposition}}
+      **Analyst Disposition:** {{analyst_disposition}}<br>
+      **Reviewer Disposition:** {{reviewer_disposition}}<br>
       **Agreement:** {{agreement}}
 
       **Reasoning:**
+
       {{reasoning}}
+
+  - id: fact_verification
+    title: Fact Verification Results
+    instruction: |
+      Display fact-checking results for key technical claims made in the investigation.
+      This builds credibility and demonstrates independent verification of analyst findings.
+
+      Show:
+      - Overall accuracy score (percentage of claims verified as correct)
+      - Number of claims verified
+      - List each claim with verification result (CORRECT/INCORRECT/UNVERIFIABLE)
+
+      This section demonstrates reviewer due diligence in independently verifying
+      technical facts using authoritative sources (vendor docs, CVE databases, threat intel).
+
+      Variables used:
+      - accuracy_score: Percentage (0-100) of verified claims that are correct
+      - claims_verified_count: Number of technical claims reviewed
+      - verified_claims: Array of claim objects with properties:
+        - claim_number: Sequential number (1, 2, 3...)
+        - claim_text: The claim being verified
+        - verification_result: CORRECT/INCORRECT/UNVERIFIABLE
+        - verification_source: Optional - authoritative source used (e.g., "Datadog docs", "CVE-2023-1234 NVD entry")
+    template: |
+      **Accuracy Score:** {{accuracy_score}}% {{#if accuracy_score}}({{#if (gte accuracy_score 90)}}all verified claims correct{{else if (gte accuracy_score 75)}}most claims correct{{else}}significant discrepancies{{/if}}){{/if}}<br>
+      **Claims Verified:** {{claims_verified_count}}
+
+      {{#each verified_claims}}
+      {{#if (eq this.verification_result "CORRECT")}}✅{{else if (eq this.verification_result "INCORRECT")}}❌{{else}}⚠️{{/if}} **Claim {{this.claim_number}}:** {{this.claim_text}} - **{{this.verification_result}}**{{#if this.verification_source}} (Source: {{this.verification_source}}){{/if}}<br>
+      {{/each}}
+
+      {{#if (lt accuracy_score 100)}}
+      **Note:** Factual discrepancies detected. See Critical/Significant Issues sections for details.
+      {{else}}
+      No factual discrepancies detected - all technical claims in the investigation are accurate.
+      {{/if}}
 
   - id: cognitive_bias_assessment
     title: Cognitive Bias Assessment
@@ -301,42 +364,36 @@ sections:
         - **Debiasing Strategy:** {{this.mitigation}}
       {{/each}}
       {{else}}
-      ✅ No systematic cognitive biases detected. Investigation appears objective and data-driven.
+      ✅ No significant cognitive biases detected.{{#if cognitive_bias_note}} {{cognitive_bias_note}}{{/if}}
       {{/if}}
 
   - id: recommendations
     title: Recommended Actions
     instruction: |
-      Provide prioritized action items organized into three priority levels:
-      - Priority 1 (Do First): Critical fixes, must complete before proceeding
-      - Priority 2 (Do Next): Significant improvements, should complete for quality
-      - Priority 3 (When Time Permits): Minor enhancements, nice to have
+      Provide prioritized action items organized into three priority levels with descriptors:
+      - Priority 1 (Do First - Critical): Critical fixes, must complete before proceeding
+      - Priority 2 (Do Next - Significant): Significant improvements, should complete for quality
+      - Priority 3 (When Time Permits - Minor): Minor enhancements, nice to have
 
-      Additionally provide investigation-specific improvements (methodology, data sources, tools).
+      Use clear, actionable language. Each action should be specific enough to execute.
 
       Variables used:
-      - priority1_actions: Array of action strings
-      - priority2_actions: Array of action strings
-      - priority3_actions: Array of action strings
-      - investigation_improvements: Array of improvement strings
+      - priority1_actions: Array of action strings (critical fixes)
+      - priority2_actions: Array of action strings (significant improvements)
+      - priority3_actions: Array of action strings (minor enhancements)
     template: |
-      **Priority 1 (Do First):**
+      **Priority 1 (Do First - Critical):**
       {{#each priority1_actions}}
       - {{this}}
       {{/each}}
 
-      **Priority 2 (Do Next):**
+      **Priority 2 (Do Next - Significant):**
       {{#each priority2_actions}}
       - {{this}}
       {{/each}}
 
-      **Priority 3 (When Time Permits):**
+      **Priority 3 (When Time Permits - Minor):**
       {{#each priority3_actions}}
-      - {{this}}
-      {{/each}}
-
-      **Investigation Methodology Improvements:**
-      {{#each investigation_improvements}}
       - {{this}}
       {{/each}}
 
@@ -364,36 +421,94 @@ sections:
     title: Next Steps
     instruction: |
       Provide clear next steps for the analyst based on review findings:
-      - Critical issues → Investigation needs revision
-      - Significant gaps → Review recommended before closure
+      - Critical issues → Investigation requires completion/revision
+      - Significant gaps → Improvements recommended before closure
       - Minor improvements only → Optional enhancements
       - Excellent investigation → Approved for closure
 
+      Include:
+      - Contextual guidance paragraph
+      - Checklist-style standard process
+      - Estimated time to complete improvements (if rework needed)
+
       Variables used:
       - next_steps_guidance: Text guidance based on findings severity
+      - requires_rework: Boolean - true if critical issues exist
+      - estimated_time_minutes_low: Low end of time estimate (e.g., 15)
+      - estimated_time_minutes_high: High end of time estimate (e.g., 20)
     template: |
       {{next_steps_guidance}}
 
       **Standard Process:**
-      1. Address Critical Issues (must-fix before ticket proceeds)
-      2. Address Significant Gaps (improve quality)
-      3. Consider Minor Improvements (enhance clarity)
-      4. Update investigation documentation in JIRA
-      5. Re-submit for review if Critical Issues found
+      {{#if requires_rework}}
+      - ✅ Address Critical Issues ({{priority1_count}} issues) - Must complete before proceeding
+      - ⬜ Address Significant Gaps ({{priority2_count}} gaps)
+      - ⬜ Update investigation documentation in JIRA
+      {{#if priority3_actions}}
+      - ⬜ Consider Minor Improvements (when time permits)
+      {{/if}}
+      {{#if disposition_agreement}}{{#if (eq disposition_agreement "Disagree")}}
+      - ⬜ Re-submit for review (Required due to disposition disagreement)
+      {{else}}
+      - ⬜ Re-submit for review (Required for this investigation)
+      {{/if}}{{/if}}
+
+      **Estimated Time to Complete:** {{estimated_time_minutes_low}}-{{estimated_time_minutes_high}} minutes{{#if completion_note}} {{completion_note}}{{/if}}
+      {{else}}
+      - ✅ Investigation quality is {{quality_classification}}
+      {{#if priority2_actions}}
+      - ⬜ Address Significant Gaps (optional improvements)
+      {{/if}}
+      {{#if priority3_actions}}
+      - ⬜ Consider Minor Improvements (when time permits)
+      {{/if}}
+      - ⬜ Proceed with ticket closure
+      {{/if}}
 
   - id: reviewer_notes
     title: Reviewer Notes
     instruction: |
-      Optional free-form notes from the reviewer. Use this for:
-      - Additional context not captured in structured sections
-      - Encouragement and coaching
-      - Process improvement suggestions
-      - Acknowledgment of challenging investigations
-      - Recognition of exceptional work
+      PERSONALIZED free-form notes from the reviewer. This is the human touch that
+      transforms a structured report into mentorship and coaching.
 
-      Maintain supportive, constructive tone. This is the personal touch.
+      PERSONALIZATION REQUIREMENTS:
+      - Address analyst BY NAME (e.g., "Thomas, thank you for...")
+      - Reference SPECIFIC work from this investigation (e.g., "your thorough alert metadata documentation...")
+      - Acknowledge SPECIFIC strengths (e.g., "The investigation demonstrates strong attention to detail in capturing...")
+      - Frame improvement as GROWTH OPPORTUNITY (e.g., "The primary opportunity for growth here is...")
+      - End with INVITATION for dialogue (e.g., "Feel free to reach out if you'd like to discuss...")
+
+      Use this section for:
+      - Encouragement and coaching (personalized to analyst's work)
+      - Recognition of exceptional work or improvement from previous investigations
+      - Acknowledgment of challenging investigations
+      - Constructive guidance for skill development
+      - Building rapport and trust (blameless culture)
+
+      TONE: Supportive, constructive, mentoring, collaborative
 
       Variables used:
-      - reviewer_notes: Free-form text from reviewer (optional)
+      - analyst_name: Analyst's name for personalization
+      - reviewer_name: Your name (sign the notes)
+      - reviewer_notes: Free-form text addressing analyst by name with specific feedback
     template: |
       {{reviewer_notes}}
+
+      — {{reviewer_name}}
+      Security Review Specialist
+
+  - id: attribution
+    title: ""
+    instruction: |
+      Attribution footer for AI-assisted reviews. Shows transparency about tooling
+      and collaboration between human reviewer and AI.
+
+      Variables used:
+      - co_author_name: Human reviewer's name (e.g., "Joshua Magady")
+    template: |
+
+      ---
+
+      🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+      Co-Authored-By: {{co_author_name}}
