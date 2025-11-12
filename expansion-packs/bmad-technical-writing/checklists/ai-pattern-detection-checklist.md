@@ -29,9 +29,10 @@ cd {{config.root}}/data/tools
 source nlp-env/bin/activate  # macOS/Linux
 # OR nlp-env\Scripts\activate  # Windows
 
-# Run dual score diagnostic analysis
+# Run dual score diagnostic analysis (adaptive mode for fast diagnostics)
 python analyze_ai_patterns.py PATH_TO_FILE \
   --show-scores \
+  --profile full \
   --quality-target 85 \
   --detection-target 30 \
   --domain-terms "Domain,Specific,Terms"
@@ -46,13 +47,18 @@ deactivate
 source nlp-env/bin/activate
 python analyze_ai_patterns.py ../manuscript/chapters/chapter-03.md \
   --show-scores \
+  --profile full \
   --domain-terms "Docker,Kubernetes,PostgreSQL"
 deactivate
 ```
 
 ### Interpret Diagnostic Scores
 
-**Quality Score (0-100, higher=better)**:
+**⚠️ LABEL SYSTEM NOTE**:
+- **Dimension quality labels** (what scores dimensions get): **EXCELLENT / GOOD / NEEDS WORK / POOR** (new positive labels)
+- **Detection Risk labels** (how likely to be detected): **VERY HIGH / HIGH / MEDIUM / LOW / VERY LOW** (unchanged)
+
+**Quality Score (0-100, higher=better)** - Overall quality assessment:
 
 - [ ] **95-100**: EXCEPTIONAL - Already reads like authentic human writing ✅
 - [ ] **85-94**: EXCELLENT - Minimal AI signatures, light polish only ✅
@@ -60,7 +66,7 @@ deactivate
 - [ ] **50-69**: MIXED - Moderate AI patterns, systematic editing required ⚠️
 - [ ] **<50**: AI-LIKE - Substantial work needed or regenerate ❌
 
-**Detection Risk (0-100, lower=better)**:
+**Detection Risk (0-100, lower=better)** - Likelihood of AI detection:
 
 - [ ] **0-14**: VERY LOW - Safe from detection ✅
 - [ ] **15-29**: LOW - Unlikely to be flagged ✅
@@ -608,27 +614,29 @@ Transfer scores from each section:
 
 ### Overall Assessment
 
-**Interpretation**:
+**Interpretation** (using new positive dimension labels):
 
-- **All or most ✅** = MINIMAL HUMANIZATION NEEDED
+- **All or most ✅** = MINIMAL HUMANIZATION NEEDED (Quality ≥85, dimensions GOOD/EXCELLENT)
   - Content already reads naturally
   - Light polish recommended
   - Estimated effort: 15-30 min per 1000 words
 
-- **Mix of ✅ and ⚠️** = LIGHT TO MODERATE HUMANIZATION NEEDED
+- **Mix of ✅ and ⚠️** = LIGHT TO MODERATE HUMANIZATION NEEDED (Quality 70-84, some NEEDS WORK)
   - Systematic editing required
-  - Focus on ⚠️ and ❌ areas
+  - Focus on ⚠️ and ❌ areas (NEEDS WORK / POOR dimensions)
   - Estimated effort: 30-60 min per 1000 words
 
-- **Multiple ⚠️ and some ❌** = SUBSTANTIAL HUMANIZATION NEEDED
+- **Multiple ⚠️ and some ❌** = SUBSTANTIAL HUMANIZATION NEEDED (Quality 50-69, multiple NEEDS WORK/POOR)
   - Comprehensive editing workflow required
   - Address all dimensions systematically
   - Estimated effort: 60-90 min per 1000 words
 
-- **Multiple ❌** = EXTENSIVE HUMANIZATION NEEDED
+- **Multiple ❌** = EXTENSIVE HUMANIZATION NEEDED (Quality <50, many POOR dimensions)
   - Consider regeneration with humanization prompt
   - If editing: multi-pass workflow essential
   - Estimated effort: 90+ min per 1000 words
+
+**Note**: Dimension scores now use positive labels (EXCELLENT/GOOD/NEEDS WORK/POOR) instead of confusing impact labels.
 
 ---
 

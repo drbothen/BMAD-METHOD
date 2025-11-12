@@ -93,11 +93,12 @@ cd {{config.root}}/data/tools
 source nlp-env/bin/activate
 ```
 
-**Run initial dual score analysis with notes**:
+**Run initial dual score analysis with notes** (adaptive mode for fast workflow):
 
 ```bash
 python analyze_ai_patterns.py PATH_TO_FILE \
   --show-scores \
+  --profile full \
   --quality-target {{quality_target}} \
   --detection-target {{detection_target}} \
   --domain-terms "Domain,Specific,Terms" \
@@ -110,12 +111,15 @@ python analyze_ai_patterns.py PATH_TO_FILE \
 ```bash
 python analyze_ai_patterns.py ../manuscript/chapters/chapter-03.md \
   --show-scores \
+  --profile full \
   --quality-target 85 \
   --detection-target 30 \
   --domain-terms "Docker,Kubernetes,PostgreSQL" \
   --history-notes "Baseline measurement of AI-generated draft" \
   > chapter-03-iteration-0.txt
 ```
+
+**Note**: Uses adaptive mode (default) for fast iteration feedback. For final validation after targets met, use `--mode full` for maximum accuracy.
 
 **Review output and document baseline**:
 
@@ -228,11 +232,12 @@ Iteration {{N}} Changes:
 
 #### 4.2. Re-analyze After Changes
 
-**Run dual score analysis again with notes** (environment should still be activated):
+**Run dual score analysis again with notes** (adaptive mode for quick feedback):
 
 ```bash
 python analyze_ai_patterns.py PATH_TO_FILE \
   --show-scores \
+  --profile full \
   --quality-target {{quality_target}} \
   --detection-target {{detection_target}} \
   --history-notes "Iteration {{N}}: [describe what you changed]" \
@@ -244,6 +249,7 @@ python analyze_ai_patterns.py PATH_TO_FILE \
 ```bash
 python analyze_ai_patterns.py ../manuscript/chapters/chapter-03.md \
   --show-scores \
+  --profile full \
   --quality-target 85 \
   --detection-target 30 \
   --history-notes "Iteration 2: Reduced AI vocab by 60%, varied sentence lengths" \
@@ -274,13 +280,13 @@ Detection: IMPROVING (-5.1 pts)
 
 ```bash
 # See full optimization journey
-python analyze_ai_patterns.py FILE.md --show-history-full
+python analyze_ai_patterns.py FILE.md --profile full --show-history-full
 
 # Compare first vs current iteration
-python analyze_ai_patterns.py FILE.md --compare-history "first,last"
+python analyze_ai_patterns.py FILE.md --profile full --compare-history "first,last"
 
 # See which dimensions improved most
-python analyze_ai_patterns.py FILE.md --show-dimension-trends
+python analyze_ai_patterns.py FILE.md --profile full --show-dimension-trends
 ```
 
 #### 4.3. Evaluate Progress and Decide
@@ -373,7 +379,7 @@ Lessons Learned:
 **View complete optimization journey**:
 
 ```bash
-python analyze_ai_patterns.py FILE.md --show-history-full
+python analyze_ai_patterns.py FILE.md --profile full --show-history-full
 ```
 
 Shows:
@@ -389,10 +395,10 @@ Shows:
 
 ```bash
 # Compare first and last iterations
-python analyze_ai_patterns.py FILE.md --compare-history "first,last"
+python analyze_ai_patterns.py FILE.md --profile full --compare-history "first,last"
 
 # Compare specific iteration numbers
-python analyze_ai_patterns.py FILE.md --compare-history "1,4"
+python analyze_ai_patterns.py FILE.md --profile full --compare-history "1,4"
 ```
 
 Shows side-by-side:
@@ -405,7 +411,7 @@ Shows side-by-side:
 **View dimension-level trends**:
 
 ```bash
-python analyze_ai_patterns.py FILE.md --show-dimension-trends
+python analyze_ai_patterns.py FILE.md --profile full --show-dimension-trends
 ```
 
 Identifies:
@@ -417,7 +423,7 @@ Identifies:
 **View raw metric trends**:
 
 ```bash
-python analyze_ai_patterns.py FILE.md --show-raw-metric-trends
+python analyze_ai_patterns.py FILE.md --profile full --show-raw-metric-trends
 ```
 
 Shows sparkline charts for:
@@ -431,10 +437,10 @@ Shows sparkline charts for:
 
 ```bash
 # Export to CSV for Excel/Google Sheets
-python analyze_ai_patterns.py FILE.md --export-history csv
+python analyze_ai_patterns.py FILE.md --profile full --export-history csv
 
 # Export to JSON for programmatic analysis
-python analyze_ai_patterns.py FILE.md --export-history json
+python analyze_ai_patterns.py FILE.md --profile full --export-history json
 ```
 
 CSV includes:
@@ -548,19 +554,24 @@ cd {{config.root}}/data/tools
 source nlp-env/bin/activate  # macOS/Linux
 # OR nlp-env\Scripts\activate  # Windows
 
-# Baseline analysis
-python analyze_ai_patterns.py FILE.md --show-scores \
+# Baseline analysis (adaptive mode - fast workflow)
+python analyze_ai_patterns.py FILE.md --show-scores --profile full \
   --quality-target 85 --detection-target 30 \
   --domain-terms "Term1,Term2,Term3" \
   > iteration-0-baseline.txt
 
-# Subsequent iterations (same command)
-python analyze_ai_patterns.py FILE.md --show-scores \
+# Subsequent iterations (adaptive mode - quick feedback)
+python analyze_ai_patterns.py FILE.md --show-scores --profile full \
   --quality-target 85 --detection-target 30 \
   > iteration-N-analysis.txt
 
-# JSON output for automation
-python analyze_ai_patterns.py FILE.md --show-scores --format json \
+# Final validation (full mode - maximum accuracy)
+python analyze_ai_patterns.py FILE.md --show-scores --profile full --mode full \
+  --quality-target 85 --detection-target 30 \
+  > final-validation.txt
+
+# JSON output for automation (adaptive mode)
+python analyze_ai_patterns.py FILE.md --show-scores --profile full --format json \
   > iteration-N.json
 
 # Deactivate when done

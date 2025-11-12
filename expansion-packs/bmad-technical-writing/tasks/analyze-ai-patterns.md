@@ -18,9 +18,10 @@ The tool supports **three analysis modes**:
    - **Best for**: LLM optimization, iterative improvement, first-time analysis
 
 2. **Standard Analysis** (Legacy) - default behavior
-   - 6 dimension scores (HIGH/MEDIUM/LOW/VERY LOW)
+   - 6 dimension scores (OLD labels: HIGH/MEDIUM/LOW/VERY LOW - see note below)
    - Overall assessment
    - **Best for**: Quick overview, batch comparison
+   - **Note**: This mode still uses the old label system. For new positive labels (EXCELLENT/GOOD/NEEDS WORK/POOR), use Dual Score Analysis mode.
 
 3. **Detailed Diagnostic** - `--detailed`
    - Line-by-line issues with context and suggestions
@@ -152,21 +153,66 @@ source nlp-env/bin/activate  # macOS/Linux
 # OR nlp-env\Scripts\activate  # Windows
 ```
 
-**Command for dual scoring**:
+**Standard Analysis Command (Recommended for most workflows)**:
 
 ```bash
 python analyze_ai_patterns.py PATH_TO_FILE \
   --show-scores \
+  --profile full \
   [--quality-target N] \
   [--detection-target N] \
   [--domain-terms "term1,term2,term3"]
 ```
 
-**Example**:
+- Uses **adaptive mode** (default): 30-240s per file
+- Analyzes **all 12 dimensions** with intelligent sampling
+- **Best for**: Regular workflow, iterative humanization, quick feedback
+
+**Maximum Accuracy Command (For final validation)**:
+
+```bash
+python analyze_ai_patterns.py PATH_TO_FILE \
+  --show-scores \
+  --profile full \
+  --mode full \
+  [--quality-target N] \
+  [--detection-target N] \
+  [--domain-terms "term1,term2,term3"]
+```
+
+- Uses **full mode**: 5-20 minutes per file
+- Analyzes **100% of document** content (no sampling)
+- **Best for**: Final QA check, publication readiness validation
+
+**When to use which mode:**
+
+| Use Case | Recommended Mode | Rationale |
+|----------|------------------|-----------|
+| Initial baseline analysis | Adaptive (default) | Fast enough for workflow |
+| During humanization iterations | Adaptive (default) | Quick feedback loop |
+| Testing specific edits | Adaptive (default) | See results immediately |
+| Final QA before publication | Full (`--mode full`) | Maximum accuracy |
+| Publisher compliance check | Full (`--mode full`) | Highest confidence |
+| Batch analysis of many files | Adaptive (default) | Time-efficient |
+
+**Example (Standard - Iterative Work)**:
 
 ```bash
 python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
   --show-scores \
+  --profile full \
+  --quality-target 85 \
+  --detection-target 30 \
+  --domain-terms "Docker,Kubernetes,PostgreSQL,Redis,GraphQL"
+```
+
+**Example (Maximum Accuracy - Final Check)**:
+
+```bash
+python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
+  --show-scores \
+  --profile full \
+  --mode full \
   --quality-target 85 \
   --detection-target 30 \
   --domain-terms "Docker,Kubernetes,PostgreSQL,Redis,GraphQL"
@@ -244,10 +290,12 @@ python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
 **Expected output**: Detailed text report with:
 
 - Summary header (words, sentences, paragraphs)
-- 6 dimension scores (HIGH/MEDIUM/LOW/VERY LOW)
+- 6 dimension scores (using OLD label system: HIGH/MEDIUM/LOW/VERY LOW)
 - Overall assessment
 - Detailed metrics breakdown
 - Specific recommendations
+
+**Note**: Standard Analysis mode uses the legacy label system. For the new positive label system (EXCELLENT/GOOD/NEEDS WORK/POOR), use Dual Score Analysis mode with `--show-scores`.
 
 ### 5. Interpret Dual Score Results (If Using --show-scores)
 
@@ -327,21 +375,25 @@ Strategy: Do Actions 1 and 2 first (12 pts gain, ~1 hour)
 
 ### 5a. Interpret Standard Results (Legacy Mode)
 
+**⚠️ LEGACY LABEL SYSTEM**: This section describes the OLD label system (HIGH/MEDIUM/LOW/VERY LOW) used in Standard Analysis mode. The new positive label system (EXCELLENT/GOOD/NEEDS WORK/POOR) is available in Dual Score Analysis mode (`--show-scores`).
+
 **Review each dimension score**:
 
-**Perplexity (Vocabulary)**:
+**Perplexity (Vocabulary)** - OLD labels:
 
 - HIGH (≤2 AI words per 1k): Natural vocabulary
 - MEDIUM (2-5 per 1k): Acceptable
 - LOW (5-10 per 1k): Needs improvement
 - VERY LOW (>10 per 1k): Heavily AI-generated
 
-**Burstiness (Sentence Variation)**:
+**Burstiness (Sentence Variation)** - OLD labels:
 
 - HIGH (StdDev ≥10): Strong variation
 - MEDIUM (StdDev 6-10): Moderate variation
 - LOW (StdDev 3-6): Weak variation
 - VERY LOW (StdDev <3): Uniform, AI-like
+
+**Note**: For intuitive quality labels, use Dual Score Analysis mode which provides EXCELLENT/GOOD/NEEDS WORK/POOR labels that directly indicate quality level.
 
 **Structure (Organization)**:
 
@@ -356,7 +408,7 @@ Strategy: Do Actions 1 and 2 first (12 pts gain, ~1 hour)
 - Count contractions
 - Higher = more authentic voice
 
-**Technical (Expertise)**:
+**Technical (Expertise)** - OLD labels:
 
 - Check domain terms per 1k words
 - HIGH (>20 per 1k): Strong technical content
@@ -713,7 +765,7 @@ Estimated time: [TIME] minutes
 
    ```bash
    source nlp-env/bin/activate  # Don't forget this!
-   python analyze_ai_patterns.py chapter-03.md > before-analysis.txt
+   python analyze_ai_patterns.py chapter-03.md --show-scores --profile full > before-analysis.txt
    ```
 
 2. **Apply humanization edits** using `humanize-post-generation.md` task
@@ -721,22 +773,23 @@ Estimated time: [TIME] minutes
 3. **Run analysis AFTER humanization**, save output:
 
    ```bash
-   python analyze_ai_patterns.py chapter-03.md > after-analysis.txt
+   python analyze_ai_patterns.py chapter-03.md --show-scores --profile full > after-analysis.txt
    ```
 
 4. **Compare metrics**:
+   - Quality Score: Should increase toward 85+ (EXCELLENT)
+   - Detection Risk: Should decrease toward <30 (LOW risk)
    - AI vocabulary per 1k: Should decrease by 50-80%
    - Sentence StdDev: Should increase (higher burstiness)
    - Heading depth: Should decrease to 3 or less
    - Em-dashes per page: Should decrease to 1-2
-   - Overall assessment: Should improve 1-2 levels
 
-**Success indicators**:
+**Success indicators** (using new positive labels with `--show-scores`):
 
-- Perplexity: Improved from LOW → MEDIUM or MEDIUM → HIGH
-- Burstiness: Improved from LOW → MEDIUM or MEDIUM → HIGH
-- Formatting: Improved from LOW → MEDIUM or MEDIUM → HIGH
-- Overall: Moved toward MINIMAL/LIGHT humanization needed
+- Overall Quality Score: Improved from NEEDS WORK → GOOD or GOOD → EXCELLENT
+- Detection Risk: Reduced from HIGH → MEDIUM or MEDIUM → LOW
+- Individual dimensions: Multiple dimensions improved to GOOD or EXCELLENT
+- Path-to-target: Fewer actions needed or lower effort required
 
 ## Output Deliverable
 
@@ -815,17 +868,23 @@ python -m spacy download en_core_web_sm
 # Activate environment first
 source nlp-env/bin/activate  # macOS/Linux
 
-# Single file, text report
-python analyze_ai_patterns.py FILE.md
+# Standard dual scoring (adaptive mode - 30-240s, recommended for iterative work)
+python analyze_ai_patterns.py FILE.md --show-scores --profile full
 
-# Single file with domain terms
-python analyze_ai_patterns.py FILE.md --domain-terms "Term1,Term2,Term3"
+# Maximum accuracy (full mode - 5-20min, use for final QA)
+python analyze_ai_patterns.py FILE.md --show-scores --profile full --mode full
 
-# Batch analysis, TSV output
+# With domain terms (adaptive mode)
+python analyze_ai_patterns.py FILE.md --show-scores --profile full --domain-terms "Term1,Term2,Term3"
+
+# Batch analysis, TSV output (uses standard mode for tabular data)
 python analyze_ai_patterns.py --batch DIRECTORY --format tsv > report.tsv
 
-# JSON output for automation
-python analyze_ai_patterns.py FILE.md --format json > report.json
+# JSON output for automation (adaptive mode)
+python analyze_ai_patterns.py FILE.md --show-scores --profile full --format json > report.json
+
+# JSON output for final validation (full mode)
+python analyze_ai_patterns.py FILE.md --show-scores --profile full --mode full --format json > report.json
 
 # Deactivate when done
 deactivate
@@ -842,9 +901,13 @@ cd /Users/author/manuscript-project/.bmad-technical-writing/data/tools
 # Activate virtual environment
 source nlp-env/bin/activate
 
-# Run analysis with domain terms
+# Run baseline analysis (adaptive mode - fast feedback for workflow)
 python analyze_ai_patterns.py \
   ../manuscript/chapters/chapter-03.md \
+  --show-scores \
+  --profile full \
+  --quality-target 85 \
+  --detection-target 30 \
   --domain-terms "Docker,Kubernetes,PostgreSQL,Redis,Nginx" \
   > chapter-03-baseline-analysis.txt
 
@@ -855,17 +918,45 @@ cat chapter-03-baseline-analysis.txt
 deactivate
 ```
 
-**Output interpretation**:
+**Output interpretation** (using new positive label system with `--show-scores`):
 
 ```
-Perplexity:    LOW       (8.2 AI words per 1k)
-Burstiness:    MEDIUM    (StdDev 7.3)
-Structure:     LOW       (H-depth: 5, Formulaic: 12)
-Voice:         LOW       (1st-person: 2, Contractions: 3)
-Technical:     HIGH      (Domain terms: 34)
-Formatting:    VERY LOW  (Em-dashes: 6.8 per page)
+DUAL SCORES
+────────────────────────────────────────────────────────────────────────────────
 
-OVERALL: SUBSTANTIAL humanization required
+Quality Score:       67.0 / 100  NEEDS WORK - Noticeable AI patterns
+Detection Risk:      42.0 / 100  MEDIUM - May be flagged
+
+Targets:            Quality ≥85, Detection ≤30
+Gap to Target:      Quality needs +18.0 pts, Detection needs -12.0 pts
+Effort Required:    MODERATE
+
+DIMENSION SCORES (12 dimensions)
+────────────────────────────────────────────────────────────────────────────────
+
+Tier 1 - Advanced Detection:
+  Predictability (GLTR):     NEEDS WORK  (5.0/10.0)
+  Advanced Lexical:          GOOD        (7.5/10.0)
+
+Tier 2 - Core Patterns:
+  Perplexity (AI Vocab):     NEEDS WORK  (6.2/10.0)
+  Burstiness (Sent. Var):    GOOD        (7.3/10.0)
+  Formatting:                POOR        (3.2/5.0)
+
+PATH TO TARGET (4 actions, sorted by ROI)
+────────────────────────────────────────────────────────────────────────────────
+
+1. Predictability (GLTR) (Effort: HIGH)
+   Current: 5.0/10.0 → Gain: +5.0 pts → Cumulative: 72.0
+   Action: Vary word choices, use unexpected phrasing
+
+2. Formatting (Effort: LOW)
+   Current: 3.2/5.0 → Gain: +1.8 pts → Cumulative: 73.8
+   Action: Reduce em-dashes to 1-2 per page
+
+3. Voice & Authenticity (Effort: MEDIUM)
+   Current: 2.0/8.0 → Gain: +6.0 pts → Cumulative: 79.8
+   Action: Add contractions, first-person perspective
 ```
 
 **Action**: Create work plan focusing on:

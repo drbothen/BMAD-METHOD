@@ -45,9 +45,11 @@ cd {{config.root}}/data/tools
 source nlp-env/bin/activate  # macOS/Linux
 # OR nlp-env\Scripts\activate  # Windows
 
-# Run dual score analysis
+# Run final QA analysis (full mode for maximum accuracy)
 python analyze_ai_patterns.py PATH_TO_HUMANIZED_FILE \
   --show-scores \
+  --profile full \
+  --mode full \
   --quality-target 85 \
   --detection-target 30 \
   --domain-terms "Domain,Specific,Terms" \
@@ -60,9 +62,11 @@ python analyze_ai_patterns.py PATH_TO_HUMANIZED_FILE \
 # Activate environment first
 source nlp-env/bin/activate
 
-# Run dual score analysis
+# Run final QA analysis (full mode - maximum accuracy for publication decision)
 python analyze_ai_patterns.py ../{{config.manuscript.chapters}}/chapter-03.md \
   --show-scores \
+  --profile full \
+  --mode full \
   --quality-target 85 \
   --detection-target 30 \
   --domain-terms "Docker,Kubernetes,PostgreSQL" \
@@ -211,6 +215,7 @@ source nlp-env/bin/activate
 
 # Compare first iteration (baseline) vs current (humanized)
 python analyze_ai_patterns.py PATH_TO_HUMANIZED_FILE \
+  --profile full \
   --compare-history "first,last"
 ```
 
@@ -268,14 +273,14 @@ Top Dimension Improvements:
 
 - Quality Score: **+15 to +30 points**
 - Detection Risk: **-10 to -20 points**
-- All Tier 1 dimensions: **MEDIUM or higher**
+- All Tier 1 dimensions: **GOOD or EXCELLENT** (new positive labels)
 - Critical signals addressed: **Em-dashes ≤2/page, Heading depth ≤3**
 
 **See complete optimization journey**:
 
 ```bash
 # View all iterations with trend analysis
-python analyze_ai_patterns.py PATH_TO_FILE --show-history-full
+python analyze_ai_patterns.py PATH_TO_FILE --profile full --show-history-full
 ```
 
 **If no history exists** (manual comparison fallback):
@@ -295,9 +300,9 @@ Compare current scores against pre-humanization baseline manually using the QA r
 
 **Validation**:
 
-- [ ] Overall assessment: MINIMAL or LIGHT humanization needed
-- [ ] No dimension scored VERY LOW
-- [ ] Em-dash test passed (d2 per page)
+- [ ] Overall assessment: MINIMAL or LIGHT humanization needed (legacy mode) OR Quality Score ≥85 (dual score mode)
+- [ ] No dimension scored VERY LOW (legacy) OR POOR (new positive labels)
+- [ ] Em-dash test passed (≤2 per page)
 - [ ] Read-aloud test passed (sounds natural)
 - [ ] Technical accuracy preserved (100%)
 
@@ -307,19 +312,21 @@ Compare current scores against pre-humanization baseline manually using the QA r
 
 **Publication Readiness Decision Matrix**:
 
-| Scenario                           | Decision                          | Action                                             |
-| ---------------------------------- | --------------------------------- | -------------------------------------------------- |
-| Overall: MINIMAL, all dims eMEDIUM | **PASS - Publication Ready**      | Proceed to technical review                        |
-| Overall: LIGHT, all dims eMEDIUM   | **PASS - Publication Ready**      | Proceed to technical review                        |
-| Overall: MODERATE, no VERY LOW     | **CONDITIONAL PASS**              | Document known issues, proceed with caution        |
-| Overall: MODERATE, any VERY LOW    | **FAIL - Additional Work Needed** | Apply targeted humanization to VERY LOW dimensions |
-| Overall: SUBSTANTIAL or EXTENSIVE  | **FAIL - Major Revisions Needed** | Re-apply full humanization workflow                |
-| Technical accuracy compromised     | **FAIL - Fix Immediately**        | Revert and re-humanize carefully                   |
-| Em-dashes >3 per page              | **FAIL - Critical AI Signal**     | Apply Pass 5.1 (em-dash reduction)                 |
+| Scenario                                              | Decision                          | Action                                                      |
+| ----------------------------------------------------- | --------------------------------- | ----------------------------------------------------------- |
+| Quality ≥85 OR Overall: MINIMAL, all dims GOOD+       | **PASS - Publication Ready**      | Proceed to technical review                                 |
+| Quality 80-84 OR Overall: LIGHT, all dims GOOD+       | **PASS - Publication Ready**      | Proceed to technical review                                 |
+| Quality 70-79 OR Overall: MODERATE, no POOR scores    | **CONDITIONAL PASS**              | Document known issues, proceed with caution                 |
+| Quality 60-69 OR Overall: MODERATE, any POOR          | **FAIL - Additional Work Needed** | Apply targeted humanization to POOR/NEEDS WORK dimensions   |
+| Quality <60 OR Overall: SUBSTANTIAL or EXTENSIVE      | **FAIL - Major Revisions Needed** | Re-apply full humanization workflow                         |
+| Technical accuracy compromised                        | **FAIL - Fix Immediately**        | Revert and re-humanize carefully                            |
+| Em-dashes >3 per page                                 | **FAIL - Critical AI Signal**     | Apply Pass 5.1 (em-dash reduction)                          |
+
+**Note**: "Quality" refers to Dual Score Analysis Quality Score. "Overall" refers to Legacy Standard Analysis mode assessment. "GOOD+" means GOOD or EXCELLENT (new positive labels).
 
 ### 9. Document QA Results
 
-**Create quality assurance report**:
+**Create quality assurance report using Dual Score Analysis**:
 
 ```
 HUMANIZATION QA REPORT
@@ -329,16 +336,26 @@ File: [filename]
 Date: [date]
 Humanized by: [editor name]
 
-QUANTITATIVE SCORES:
---------------------
-Perplexity:    [SCORE] ([detail])
-Burstiness:    [SCORE] ([detail])
-Structure:     [SCORE] ([detail])
-Voice:         [SCORE] ([detail])
-Technical:     [SCORE] ([detail])
-Formatting:    [SCORE] ([detail])
+DUAL SCORES (from --show-scores analysis):
+------------------------------------------
+Quality Score:       [XX.X] / 100  [EXCELLENT/GOOD/NEEDS WORK/POOR]
+Detection Risk:      [XX.X] / 100  [VERY LOW/LOW/MEDIUM/HIGH/VERY HIGH]
 
-Overall: [ASSESSMENT]
+Targets:            Quality ≥[target], Detection ≤[target]
+Gap to Target:      Quality [+/-X.X pts], Detection [+/-X.X pts]
+
+TOP DIMENSION SCORES (12 dimensions):
+-------------------------------------
+Tier 1 - Advanced Detection:
+  Predictability (GLTR):     [EXCELLENT/GOOD/NEEDS WORK/POOR]  ([X.X]/10.0)
+  Advanced Lexical:          [EXCELLENT/GOOD/NEEDS WORK/POOR]  ([X.X]/10.0)
+
+Tier 2 - Core Patterns:
+  Perplexity (AI Vocab):     [EXCELLENT/GOOD/NEEDS WORK/POOR]  ([X.X]/10.0)
+  Burstiness (Sent. Var):    [EXCELLENT/GOOD/NEEDS WORK/POOR]  ([X.X]/10.0)
+  Structure:                 [EXCELLENT/GOOD/NEEDS WORK/POOR]  ([X.X]/5.0)
+  Formatting:                [EXCELLENT/GOOD/NEEDS WORK/POOR]  ([X.X]/5.0)
+  Voice & Authenticity:      [EXCELLENT/GOOD/NEEDS WORK/POOR]  ([X.X]/8.0)
 
 CRITICAL AI SIGNALS:
 --------------------
@@ -353,12 +370,11 @@ Read-aloud test:          [PASS/FAIL]
 Technical accuracy:       [PASS/FAIL]
 Publisher compliance:     [PASS/FAIL]
 
-BEFORE/AFTER (if available):
-----------------------------
-AI vocabulary:     [before] � [after] ([X%] reduction)
-Em-dashes/page:    [before] � [after]
-Sentence StdDev:   [before] � [after]
-Overall:           [before] � [after]
+HISTORICAL TREND (if available):
+--------------------------------
+Quality:       [IMPROVING/STABLE/WORSENING]  ([+/-X.X pts])
+Detection:     [IMPROVING/STABLE/WORSENING]  ([+/-X.X pts])
+Iterations:    [N] scores tracked
 
 PUBLICATION READINESS:
 ----------------------
@@ -390,12 +406,14 @@ Next Steps:
 
 - Create targeted work plan for failed dimensions
 - Re-apply specific humanization passes:
-  - VERY LOW Perplexity � Pass 2 (vocabulary humanization)
-  - VERY LOW Burstiness � Pass 3 (sentence variation)
-  - VERY LOW Structure � Pass 3.3 (transitions) + Pass 6 (headings)
-  - VERY LOW Voice � Pass 4 (voice refinement)
-  - VERY LOW Formatting � Pass 5 (formatting humanization)
+  - POOR/NEEDS WORK Perplexity → Pass 2 (vocabulary humanization)
+  - POOR/NEEDS WORK Burstiness → Pass 3 (sentence variation)
+  - POOR/NEEDS WORK Structure → Pass 3.3 (transitions) + Pass 6 (headings)
+  - POOR/NEEDS WORK Voice → Pass 4 (voice refinement)
+  - POOR/NEEDS WORK Formatting → Pass 5 (formatting humanization)
 - Re-run QA check after additional editing
+
+**Note**: Use dual score Quality Score and dimension scores with new positive labels (EXCELLENT/GOOD/NEEDS WORK/POOR) for clearer quality assessment.
 
 ## Output Deliverable
 
@@ -424,13 +442,13 @@ Next Steps:
 
 ## Common Pitfalls to Avoid
 
-L Skipping quantitative analysis (relying only on "feels right")
-L Accepting SUBSTANTIAL/EXTENSIVE scores for publication
-L Ignoring em-dash density (strongest AI detection signal)
-L Not verifying technical accuracy after humanization
-L Treating CONDITIONAL PASS as full PASS without documenting risks
-L Not comparing before/after metrics to validate improvement
-L Proceeding to publication with any VERY LOW dimension scores
+❌ Skipping quantitative analysis (relying only on "feels right")
+❌ Accepting SUBSTANTIAL/EXTENSIVE scores OR Quality <70 for publication
+❌ Ignoring em-dash density (strongest AI detection signal)
+❌ Not verifying technical accuracy after humanization
+❌ Treating CONDITIONAL PASS as full PASS without documenting risks
+❌ Not comparing before/after metrics to validate improvement
+❌ Proceeding to publication with any POOR dimension scores (new labels) or VERY LOW (legacy labels)
 
 ## Integration with Humanization Workflow
 
@@ -454,17 +472,17 @@ L Proceeding to publication with any VERY LOW dimension scores
 
 **For technical books (PacktPub, O'Reilly, Manning, etc.)**:
 
-- Target: MINIMAL or LIGHT overall assessment
-- All dimensions: MEDIUM or higher
-- Em-dashes: d2 per page (strict)
-- Heading depth: d3 levels
+- Target: Quality Score ≥90 OR MINIMAL overall assessment (legacy mode)
+- All dimensions: GOOD or EXCELLENT (new labels)
+- Em-dashes: ≤2 per page (strict)
+- Heading depth: ≤3 levels
 - Technical accuracy: 100% preserved
 
 **For blog posts or articles**:
 
-- Target: LIGHT or MODERATE acceptable
-- Perplexity and Burstiness: MEDIUM minimum
-- Voice: MEDIUM or higher (more important for blog content)
+- Target: Quality Score ≥85 OR LIGHT overall assessment (legacy mode)
+- Perplexity and Burstiness: GOOD minimum (new labels)
+- Voice: GOOD or higher (more important for blog content)
 - Technical accuracy: 100% preserved
 
 **For internal documentation**:
@@ -478,14 +496,16 @@ L Proceeding to publication with any VERY LOW dimension scores
 
 **5-Minute Fast Check** (if time-constrained):
 
-- [ ] Run analysis tool, check overall assessment
-- [ ] Overall: MINIMAL or LIGHT? � PASS
-- [ ] Overall: MODERATE with no VERY LOW? � CONDITIONAL PASS
-- [ ] Overall: SUBSTANTIAL/EXTENSIVE or any VERY LOW? � FAIL
-- [ ] Read 2 paragraphs aloud � Sounds natural?
-- [ ] Check em-dashes � d2 per page?
-- [ ] If all yes � PASS, proceed
-- [ ] If any no � FAIL, apply targeted edits
+- [ ] Run analysis tool with `--show-scores --profile full --mode full`, check Quality Score
+- [ ] Quality ≥85 OR Overall: MINIMAL/LIGHT? → PASS
+- [ ] Quality 70-84 OR Overall: MODERATE with no POOR scores? → CONDITIONAL PASS
+- [ ] Quality <70 OR Overall: SUBSTANTIAL/EXTENSIVE or any POOR? → FAIL
+- [ ] Read 2 paragraphs aloud → Sounds natural?
+- [ ] Check em-dashes → ≤2 per page?
+- [ ] If all yes → PASS, proceed
+- [ ] If any no → FAIL, apply targeted edits
+
+**Note**: Use Dual Score Analysis (`--show-scores`) for quantitative Quality Score. For legacy mode, use overall assessment labels.
 
 ## Notes
 
