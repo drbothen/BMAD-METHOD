@@ -9,12 +9,16 @@ Analyzes structural patterns in markdown documents including:
 
 Mechanical structure (deep nesting, perfect parallelism, uniform sections) is a
 strong AI signature, while varied, organic structure is human-like.
+
+Refactored in Story 1.4 to use DimensionStrategy pattern with self-registration.
 """
 
 import re
 import statistics
-from typing import Dict, List, Any, Tuple
-from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
+from typing import Dict, List, Any, Optional, Tuple
+from ai_pattern_analyzer.dimensions.base_strategy import DimensionStrategy
+from ai_pattern_analyzer.core.analysis_config import AnalysisConfig, DEFAULT_CONFIG
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 from ai_pattern_analyzer.core.results import HeadingIssue
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
 from ai_pattern_analyzer.scoring.domain_thresholds import (
@@ -27,21 +31,68 @@ from marko.block import Quote, Heading, List as MarkoList, Paragraph, FencedCode
 from marko.inline import Link
 
 
-class StructureAnalyzer(DimensionAnalyzer):
-    """Analyzes structure dimension - headings, sections, and list patterns."""
+class StructureDimension(DimensionStrategy):
+    """
+    Analyzes structure dimension - headings, sections, and list patterns.
+
+    Weight: 4.0% of total score
+    Tier: CORE
+
+    Detects:
+    - Excessive heading depth (AI signature)
+    - Perfect heading parallelism (mechanical structure)
+    - Verbose headings (AI tendency)
+    """
 
     def __init__(self):
-        """Initialize the StructureAnalyzer with compiled regex patterns."""
+        """Initialize and self-register with dimension registry."""
         super().__init__()
         self._heading_pattern = re.compile(r'^(#{1,6})\s+(.+)$', re.MULTILINE)
+        # Self-register with registry
+        DimensionRegistry.register(self)
 
-    def analyze(self, text: str, lines: List[str] = None, **kwargs) -> Dict[str, Any]:
+    # ========================================================================
+    # REQUIRED PROPERTIES - DimensionStrategy Contract
+    # ========================================================================
+
+    @property
+    def dimension_name(self) -> str:
+        """Return dimension identifier."""
+        return "structure"
+
+    @property
+    def weight(self) -> float:
+        """Return dimension weight (4% of total score)."""
+        return 4.0
+
+    @property
+    def tier(self) -> str:
+        """Return dimension tier."""
+        return "CORE"
+
+    @property
+    def description(self) -> str:
+        """Return dimension description."""
+        return "Analyzes heading structure, section organization, and list patterns"
+
+    # ========================================================================
+    # ANALYSIS METHODS
+    # ========================================================================
+
+    def analyze(
+        self,
+        text: str,
+        lines: List[str] = None,
+        config: Optional[AnalysisConfig] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
         """
         Analyze text for structural patterns.
 
         Args:
             text: Full text content
             lines: Text split into lines (optional)
+            config: Analysis configuration (None = current behavior)
             **kwargs: Additional parameters:
                 - word_count: Word count for AST methods
                 - domain: DocumentDomain enum for threshold selection (default: GENERAL)
@@ -49,73 +100,165 @@ class StructureAnalyzer(DimensionAnalyzer):
         Returns:
             Dict with structure analysis results
         """
+        config = config or DEFAULT_CONFIG
+        total_text_length = len(text)
+
+        # Prepare text based on mode (FAST/ADAPTIVE/SAMPLING/FULL)
+        prepared = self._prepare_text(text, config, self.dimension_name)
+
         # Get word count from kwargs if available
         word_count = kwargs.get('word_count', len(text.split()))
 
         # Get domain for threshold selection (default to GENERAL)
         domain = kwargs.get('domain', DocumentDomain.GENERAL)
 
-        # Phase 1-2: Basic structure analysis
-        structure = self._analyze_structure(text)
-        headings = self._analyze_headings(text)
-        section_var = self._calculate_section_variance(text)
-        list_depth = self._calculate_list_nesting_depth(text)
+        # Handle sampled analysis (returns list of (position, sample_text) tuples)
+        if isinstance(prepared, list):
+            samples = prepared
+            sample_results = []
 
-        # Phase 3: Advanced structure analysis
-        heading_length = self._calculate_heading_length_analysis(text)
-        subsection_asym = self._calculate_subsection_asymmetry(text)
-        h4_subsection_asym = self._calculate_h4_subsection_asymmetry(text)
-        heading_depth_var = self._calculate_heading_depth_variance(text)
-        code_blocks = self._analyze_code_blocks(text)
-        heading_hierarchy = self._analyze_heading_hierarchy_enhanced(text)
-        blockquote_patterns = self._analyze_blockquote_patterns(text, word_count)
-        link_anchor_quality = self._analyze_link_anchor_quality(text, word_count)
-        enhanced_list_structure = self._analyze_enhanced_list_structure_ast(text)
-        code_block_patterns = self._analyze_code_block_patterns_ast(text)
+            for position, sample_text in samples:
+                # Phase 1-2: Basic structure analysis
+                structure = self._analyze_structure(sample_text)
+                headings = self._analyze_headings(sample_text)
+                section_var = self._calculate_section_variance(sample_text)
+                list_depth = self._calculate_list_nesting_depth(sample_text)
 
-        # Calculate multi-level combined score (if sufficient data available)
-        combined_score = None
+                # Phase 3: Advanced structure analysis
+                heading_length = self._calculate_heading_length_analysis(sample_text)
+                subsection_asym = self._calculate_subsection_asymmetry(sample_text)
+                h4_subsection_asym = self._calculate_h4_subsection_asymmetry(sample_text)
+                heading_depth_var = self._calculate_heading_depth_variance(sample_text)
+                code_blocks = self._analyze_code_blocks(sample_text)
+                heading_hierarchy = self._analyze_heading_hierarchy_enhanced(sample_text)
+                blockquote_patterns = self._analyze_blockquote_patterns(sample_text, word_count)
+                link_anchor_quality = self._analyze_link_anchor_quality(sample_text, word_count)
+                enhanced_list_structure = self._analyze_enhanced_list_structure_ast(sample_text)
+                code_block_patterns = self._analyze_code_block_patterns_ast(sample_text)
 
-        # Use None for insufficient data to signal neutral scoring
-        section_cv = section_var.get('cv', 0.0) if section_var.get('section_count', 0) > 1 else None
-        h3_cv = subsection_asym.get('cv', 0.0) if subsection_asym.get('assessment') != 'INSUFFICIENT_DATA' else None
-        h4_cv = h4_subsection_asym.get('cv', 0.0) if h4_subsection_asym.get('assessment') != 'INSUFFICIENT_DATA' else None
+                # Calculate multi-level combined score (if sufficient data available)
+                combined_score = None
 
-        # Only calculate combined score if we have at least some real data
-        if section_cv is not None or h3_cv is not None or h4_cv is not None:
-            try:
-                combined_score = calculate_combined_structure_score(
-                    section_length_cv=section_cv,
-                    h3_subsection_cv=h3_cv,
-                    h4_subsection_cv=h4_cv,
-                    domain=domain
-                )
-            except Exception as e:
-                # Gracefully handle any calculation errors
-                combined_score = {
-                    'error': str(e),
-                    'combined_score': 0.0,
-                    'combined_assessment': 'ERROR'
-                }
+                # Use None for insufficient data to signal neutral scoring
+                section_cv = section_var.get('cv', 0.0) if section_var.get('section_count', 0) > 1 else None
+                h3_cv = subsection_asym.get('cv', 0.0) if subsection_asym.get('assessment') != 'INSUFFICIENT_DATA' else None
+                h4_cv = h4_subsection_asym.get('cv', 0.0) if h4_subsection_asym.get('assessment') != 'INSUFFICIENT_DATA' else None
 
+                # Only calculate combined score if we have at least some real data
+                if section_cv is not None or h3_cv is not None or h4_cv is not None:
+                    try:
+                        combined_score = calculate_combined_structure_score(
+                            section_length_cv=section_cv,
+                            h3_subsection_cv=h3_cv,
+                            h4_subsection_cv=h4_cv,
+                            domain=domain
+                        )
+                    except Exception as e:
+                        # Gracefully handle any calculation errors
+                        combined_score = {
+                            'error': str(e),
+                            'combined_score': 0.0,
+                            'combined_assessment': 'ERROR'
+                        }
+
+                sample_results.append({
+                    'structure': structure,
+                    'headings': headings,
+                    'section_variance': section_var,
+                    'list_nesting': list_depth,
+                    'heading_length': heading_length,
+                    'subsection_asymmetry': subsection_asym,
+                    'h4_subsection_asymmetry': h4_subsection_asym,
+                    'heading_depth_variance': heading_depth_var,
+                    'code_blocks': code_blocks,
+                    'heading_hierarchy_enhanced': heading_hierarchy,
+                    'blockquote_patterns': blockquote_patterns,
+                    'link_anchor_quality': link_anchor_quality,
+                    'enhanced_list_structure': enhanced_list_structure,
+                    'code_block_patterns': code_block_patterns,
+                    'combined_structure_score': combined_score,
+                })
+
+            # Aggregate metrics from all samples
+            aggregated = self._aggregate_sampled_metrics(sample_results)
+            analyzed_length = sum(len(sample_text) for _, sample_text in samples)
+            samples_analyzed = len(samples)
+
+        # Handle direct analysis (returns string - truncated or full text)
+        else:
+            analyzed_text = prepared
+            # Phase 1-2: Basic structure analysis
+            structure = self._analyze_structure(analyzed_text)
+            headings = self._analyze_headings(analyzed_text)
+            section_var = self._calculate_section_variance(analyzed_text)
+            list_depth = self._calculate_list_nesting_depth(analyzed_text)
+
+            # Phase 3: Advanced structure analysis
+            heading_length = self._calculate_heading_length_analysis(analyzed_text)
+            subsection_asym = self._calculate_subsection_asymmetry(analyzed_text)
+            h4_subsection_asym = self._calculate_h4_subsection_asymmetry(analyzed_text)
+            heading_depth_var = self._calculate_heading_depth_variance(analyzed_text)
+            code_blocks = self._analyze_code_blocks(analyzed_text)
+            heading_hierarchy = self._analyze_heading_hierarchy_enhanced(analyzed_text)
+            blockquote_patterns = self._analyze_blockquote_patterns(analyzed_text, word_count)
+            link_anchor_quality = self._analyze_link_anchor_quality(analyzed_text, word_count)
+            enhanced_list_structure = self._analyze_enhanced_list_structure_ast(analyzed_text)
+            code_block_patterns = self._analyze_code_block_patterns_ast(analyzed_text)
+
+            # Calculate multi-level combined score (if sufficient data available)
+            combined_score = None
+
+            # Use None for insufficient data to signal neutral scoring
+            section_cv = section_var.get('cv', 0.0) if section_var.get('section_count', 0) > 1 else None
+            h3_cv = subsection_asym.get('cv', 0.0) if subsection_asym.get('assessment') != 'INSUFFICIENT_DATA' else None
+            h4_cv = h4_subsection_asym.get('cv', 0.0) if h4_subsection_asym.get('assessment') != 'INSUFFICIENT_DATA' else None
+
+            # Only calculate combined score if we have at least some real data
+            if section_cv is not None or h3_cv is not None or h4_cv is not None:
+                try:
+                    combined_score = calculate_combined_structure_score(
+                        section_length_cv=section_cv,
+                        h3_subsection_cv=h3_cv,
+                        h4_subsection_cv=h4_cv,
+                        domain=domain
+                    )
+                except Exception as e:
+                    # Gracefully handle any calculation errors
+                    combined_score = {
+                        'error': str(e),
+                        'combined_score': 0.0,
+                        'combined_assessment': 'ERROR'
+                    }
+
+            aggregated = {
+                'structure': structure,
+                'headings': headings,
+                'section_variance': section_var,
+                'list_nesting': list_depth,
+                'heading_length': heading_length,
+                'subsection_asymmetry': subsection_asym,
+                'h4_subsection_asymmetry': h4_subsection_asym,
+                'heading_depth_variance': heading_depth_var,
+                'code_blocks': code_blocks,
+                'heading_hierarchy_enhanced': heading_hierarchy,
+                'blockquote_patterns': blockquote_patterns,
+                'link_anchor_quality': link_anchor_quality,
+                'enhanced_list_structure': enhanced_list_structure,
+                'code_block_patterns': code_block_patterns,
+                'combined_structure_score': combined_score,
+            }
+            analyzed_length = len(analyzed_text)
+            samples_analyzed = 1
+
+        # Add consistent metadata
         return {
-            'structure': structure,
-            'headings': headings,
-            'section_variance': section_var,
-            'list_nesting': list_depth,
-            # Phase 3 additions
-            'heading_length': heading_length,
-            'subsection_asymmetry': subsection_asym,
-            'h4_subsection_asymmetry': h4_subsection_asym,
-            'heading_depth_variance': heading_depth_var,
-            'code_blocks': code_blocks,
-            'heading_hierarchy_enhanced': heading_hierarchy,
-            'blockquote_patterns': blockquote_patterns,
-            'link_anchor_quality': link_anchor_quality,
-            'enhanced_list_structure': enhanced_list_structure,
-            'code_block_patterns': code_block_patterns,
-            # Multi-level combined scoring (research-backed)
-            'combined_structure_score': combined_score,
+            **aggregated,
+            'available': True,
+            'analysis_mode': config.mode.value,
+            'samples_analyzed': samples_analyzed,
+            'total_text_length': total_text_length,
+            'analyzed_text_length': analyzed_length,
+            'coverage_percentage': (analyzed_length / total_text_length * 100.0) if total_text_length > 0 else 0.0
         }
 
     def analyze_detailed(self, lines: List[str], html_comment_checker=None) -> List[HeadingIssue]:
@@ -131,9 +274,125 @@ class StructureAnalyzer(DimensionAnalyzer):
         """
         return self._analyze_headings_detailed(lines, html_comment_checker)
 
+    # ========================================================================
+    # SCORING METHODS - DimensionStrategy Contract
+    # ========================================================================
+
+    def calculate_score(self, metrics: Dict[str, Any]) -> float:
+        """
+        Calculate 0-100 score based on structure metrics.
+
+        Scoring logic extracted from dual_score_calculator.py.
+        Counts structural issues (deep nesting, parallelism, verbosity) and
+        maps to score: 0 issues = 100, 1-2 issues = 75, 3-4 issues = 50, 5+ = 25.
+
+        Algorithm:
+        - Heading depth >= 5: +2 issues, >= 4: +1 issue
+        - High parallelism (>= 0.8): +2 issues, medium (>= 0.6): +1 issue
+        - Verbose headings (> 30% of headings): +1 issue
+
+        Args:
+            metrics: Output from analyze() method
+
+        Returns:
+            Score from 0.0 (AI-like) to 100.0 (human-like)
+        """
+        issues = 0
+
+        # Heading depth
+        heading_depth = metrics.get('heading_depth', 0)
+        if heading_depth >= 5:
+            issues += 2
+        elif heading_depth >= 4:
+            issues += 1
+
+        # Heading parallelism (mechanical structure)
+        parallelism = metrics.get('heading_parallelism_score', 0)
+        if parallelism >= THRESHOLDS.HEADING_PARALLELISM_HIGH:
+            issues += 2
+        elif parallelism >= THRESHOLDS.HEADING_PARALLELISM_MEDIUM:
+            issues += 1
+
+        # Verbose headings
+        total_headings = metrics.get('total_headings', 1)
+        verbose_count = metrics.get('verbose_headings_count', 0)
+        if verbose_count > total_headings * THRESHOLDS.HEADING_VERBOSE_RATIO:
+            issues += 1
+
+        # Score based on issues (inverse mapping)
+        if issues == 0:
+            score = 100.0
+        elif issues <= 2:
+            score = 75.0
+        elif issues <= 4:
+            score = 50.0
+        else:
+            score = 25.0
+
+        self._validate_score(score)
+        return score
+
+    def get_recommendations(self, score: float, metrics: Dict[str, Any]) -> List[str]:
+        """
+        Generate actionable recommendations based on score and metrics.
+
+        Args:
+            score: Current score from calculate_score()
+            metrics: Raw metrics from analyze()
+
+        Returns:
+            List of recommendation strings
+        """
+        recommendations = []
+
+        # Heading depth recommendation
+        heading_depth = metrics.get('heading_depth', 0)
+        if heading_depth >= 4:
+            recommendations.append(
+                f"Reduce heading depth from {heading_depth} to ≤3 levels. "
+                f"Deep nesting (H4, H5, H6) is an AI signature."
+            )
+
+        # Parallelism recommendation
+        parallelism = metrics.get('heading_parallelism_score', 0)
+        if parallelism >= THRESHOLDS.HEADING_PARALLELISM_MEDIUM:
+            recommendations.append(
+                f"Break perfect heading parallelism (score: {parallelism:.2f}). "
+                f"Vary heading structures to appear more organic."
+            )
+
+        # Verbose headings recommendation
+        total_headings = metrics.get('total_headings', 1)
+        verbose_count = metrics.get('verbose_headings_count', 0)
+        if total_headings > 0 and verbose_count > total_headings * THRESHOLDS.HEADING_VERBOSE_RATIO:
+            recommendations.append(
+                f"Shorten verbose headings ({verbose_count}/{total_headings} headings are >8 words). "
+                f"Target 3-6 words per heading."
+            )
+
+        return recommendations
+
+    def get_tiers(self) -> Dict[str, Tuple[float, float]]:
+        """
+        Define score tier ranges for this dimension.
+
+        Returns:
+            Dict mapping tier name to (min_score, max_score) tuple
+        """
+        return {
+            'excellent': (90.0, 100.0),
+            'good': (75.0, 89.9),
+            'acceptable': (50.0, 74.9),
+            'poor': (0.0, 49.9)
+        }
+
+    # ========================================================================
+    # LEGACY COMPATIBILITY
+    # ========================================================================
+
     def score(self, analysis_results: Dict[str, Any]) -> tuple:
         """
-        Calculate structure score.
+        Calculate structure score (legacy method).
 
         Args:
             analysis_results: Results dict with heading and structure metrics
@@ -306,14 +565,14 @@ class StructureAnalyzer(DimensionAnalyzer):
         section_lengths = []
         for section in sections[1:]:  # Skip preamble before first H2
             # Take only the content (skip the heading line itself)
-            lines = section.split('\n', 1)
+            lines = section.split('n', 1)
             if len(lines) > 1:
                 content = lines[1]
             else:
                 content = ""
 
             # Count words, excluding code blocks
-            content_no_code = re.sub(r'```[\s\S]*?```', '', content)
+            content_no_code = re.sub(r'```[sS]*?```', '', content)
             words = len(content_no_code.split())
             if words > 0:  # Only count non-empty sections
                 section_lengths.append(words)
@@ -1141,7 +1400,7 @@ class StructureAnalyzer(DimensionAnalyzer):
     def _analyze_link_anchor_quality_regex(self, text: str, word_count: int) -> Dict:
         """Fallback regex-based link anchor analysis when AST unavailable."""
         # Extract markdown links: [anchor](url)
-        link_pattern = r'\[([^\]]+)\]\([^\)]+\)'
+        link_pattern = r'\[([^\]]+)\]\(([^\)]+)\)'
         matches = re.findall(link_pattern, text)
 
         if len(matches) == 0:
@@ -1157,7 +1416,7 @@ class StructureAnalyzer(DimensionAnalyzer):
         generic_count = 0
         generic_examples = []
 
-        for anchor in matches:
+        for anchor, url in matches:
             is_generic = any(re.search(pattern, anchor, re.IGNORECASE)
                            for pattern in generic_patterns)
             if is_generic:
@@ -1279,7 +1538,15 @@ class StructureAnalyzer(DimensionAnalyzer):
         code_blocks = self._walk_ast(ast, FencedCode)
 
         if len(code_blocks) == 0:
-            return {'total_blocks': 0, 'score': 4.0, 'assessment': 'NO_CODE_BLOCKS'}
+            return {
+                'total_blocks': 0,
+                'with_language': 0,
+                'language_declaration_ratio': 0.0,
+                'avg_length': 0.0,
+                'length_cv': 0.0,
+                'score': 4.0,
+                'assessment': 'NO_CODE_BLOCKS'
+            }
 
         # Count language declarations
         with_language = sum(1 for block in code_blocks if hasattr(block, 'lang') and block.lang)
@@ -1328,7 +1595,15 @@ class StructureAnalyzer(DimensionAnalyzer):
         matches = re.findall(pattern, text, re.DOTALL)
 
         if len(matches) == 0:
-            return {'total_blocks': 0, 'score': 4.0, 'assessment': 'NO_CODE_BLOCKS'}
+            return {
+                'total_blocks': 0,
+                'with_language': 0,
+                'language_declaration_ratio': 0.0,
+                'avg_length': 0.0,
+                'length_cv': 0.0,
+                'score': 4.0,
+                'assessment': 'NO_CODE_BLOCKS'
+            }
 
         with_language = sum(1 for lang, _ in matches if lang)
         language_ratio = with_language / len(matches)
@@ -1356,3 +1631,10 @@ class StructureAnalyzer(DimensionAnalyzer):
             'score': score,
             'assessment': assessment
         }
+
+
+# Backward compatibility alias
+StructureAnalyzer = StructureDimension
+
+# Module-level singleton - triggers self-registration on module import
+_instance = StructureDimension()

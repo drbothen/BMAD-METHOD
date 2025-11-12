@@ -6,7 +6,7 @@ detailed findings, and exception types.
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 
 # ============================================================================
@@ -71,6 +71,7 @@ class EmDashInstance:
     line_number: int
     context: str
     suggestion: str
+    problem: str = ""  # Optional problem description
 
 
 @dataclass
@@ -102,17 +103,6 @@ class SyntacticIssue:
     sentence: str
     issue_type: str  # 'passive', 'shallow', 'subordination'
     metric_value: float
-    problem: str
-    suggestion: str
-
-
-@dataclass
-class StylometricIssue:
-    """Stylometric AI marker with location"""
-    line_number: int
-    marker_type: str  # 'however', 'moreover', 'moreover_cluster'
-    context: str
-    frequency: float  # per 1k words
     problem: str
     suggestion: str
 
@@ -153,7 +143,6 @@ class DetailedAnalysis:
     # ADVANCED: New detailed findings
     burstiness_issues: List[SentenceBurstinessIssue] = field(default_factory=list)
     syntactic_issues: List[SyntacticIssue] = field(default_factory=list)
-    stylometric_issues: List[StylometricIssue] = field(default_factory=list)
     formatting_issues: List[FormattingIssue] = field(default_factory=list)
     high_predictability_segments: List[HighPredictabilitySegment] = field(default_factory=list)
 
@@ -419,6 +408,9 @@ class AnalysisResults:
     hapax_percentage: Optional[float] = None  # Words appearing once (vocabulary richness)
     however_per_1k: Optional[float] = None  # AI marker: 5-10 per 1k (human: 1-3)
     moreover_per_1k: Optional[float] = None  # AI marker: 3-8 per 1k (human: 0-2)
+    however_count: Optional[int] = None  # Total count of "however"
+    moreover_count: Optional[int] = None  # Total count of "moreover"
+    total_ai_markers_per_1k: Optional[float] = None  # Combined however+moreover per 1k
     punctuation_density: Optional[float] = None  # Punctuation frequency
     ttr_stability: Optional[float] = None  # TTR variance across sections
 
@@ -438,17 +430,25 @@ class AnalysisResults:
     roberta_prediction_variance: Optional[float] = None  # Consistency across chunks
     roberta_consistent_predictions: Optional[bool] = None  # All chunks agree
 
-    # Dimension scores (calculated)
+    # Story 1.4.11: Core dimension scores (12 total)
     perplexity_score: str = ""  # HIGH/MEDIUM/LOW/VERY LOW
     burstiness_score: str = ""
     structure_score: str = ""
     voice_score: str = ""
-    technical_score: str = ""
     formatting_score: str = ""
-    syntactic_score: str = ""  # Syntactic naturalness
+    readability_score: str = ""  # NEW: Readability metrics (Flesch, Gunning Fog)
+    lexical_score: str = ""  # NEW: Basic lexical diversity (TTR, unique words)
     sentiment_score: str = ""  # Sentiment variation
+    syntactic_score: str = ""  # Syntactic naturalness
+    predictability_score: str = ""  # NEW: GLTR-based predictability (replaces gltr_score)
+    advanced_lexical_score: str = ""  # HDD/Yule's K/MATTR/RTTR
+    transition_marker_score: str = ""  # NEW: Transition marker patterns
 
-    # NEW: Enhanced structural dimension scores
+    # Legacy/derived scores
+    technical_score: str = ""  # Derived from voice dimension
+    ai_detection_score: str = ""  # RoBERTa AI detector score (legacy)
+
+    # Enhanced structural dimension scores (legacy, Phase 1 patterns)
     bold_italic_score: str = ""  # Bold/italic formatting patterns
     list_usage_score: str = ""  # List structure and distribution
     punctuation_score: str = ""  # Punctuation clustering patterns
@@ -457,10 +457,11 @@ class AnalysisResults:
     heading_hierarchy_score: str = ""  # Heading level adherence
     structural_patterns_score: str = ""  # Phase 1: Paragraph CV, Section Variance, List Nesting
 
-    # ADVANCED: AI detection scores (ensemble)
-    gltr_score: str = ""  # GLTR token ranking score
-    advanced_lexical_score: str = ""  # HDD/Yule's K score
-    stylometric_score: str = ""  # Comprehensive stylometrics
-    ai_detection_score: str = ""  # RoBERTa AI detector score
-
     overall_assessment: str = ""
+
+    # Story 1.10: Dynamic Reporting System fields
+    # These fields are populated by the dynamic reporter and must reflect exactly 12 dimensions in v5.0.0
+    dimension_results: Dict[str, Dict[str, Any]] = field(default_factory=dict)  # Should have 12 keys
+    overall_score: float = 0.0  # Numeric overall score (0-100)
+    execution_time: float = 0.0  # Analysis execution time in seconds
+    dimension_count: int = 0  # Number of dimensions analyzed - MUST be 12 in v5.0.0

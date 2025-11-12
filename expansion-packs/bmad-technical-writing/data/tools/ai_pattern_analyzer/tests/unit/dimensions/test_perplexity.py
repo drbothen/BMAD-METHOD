@@ -4,11 +4,14 @@ Tests for PerplexityAnalyzer - AI vocabulary and formulaic transitions detection
 
 import pytest
 from ai_pattern_analyzer.dimensions.perplexity import PerplexityAnalyzer
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 
 
 @pytest.fixture
 def analyzer():
     """Create PerplexityAnalyzer instance."""
+    # Clear registry before each test to avoid duplicate registration errors
+    DimensionRegistry.clear()
     return PerplexityAnalyzer()
 
 

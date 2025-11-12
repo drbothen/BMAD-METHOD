@@ -4,17 +4,22 @@ Tests for VoiceAnalyzer - voice and authenticity markers detection.
 
 import pytest
 from ai_pattern_analyzer.dimensions.voice import VoiceAnalyzer
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 
 
 @pytest.fixture
 def analyzer():
     """Create VoiceAnalyzer instance."""
+    # Clear registry before each test to avoid duplicate registration errors
+    DimensionRegistry.clear()
     return VoiceAnalyzer()
 
 
 @pytest.fixture
 def analyzer_with_domain_terms():
     """Create VoiceAnalyzer with domain terms."""
+    # Clear registry before each test to avoid duplicate registration errors
+    DimensionRegistry.clear()
     return VoiceAnalyzer(domain_terms=[r'\bAPI\b', r'\bendpoint\b', r'\bHTTPS?\b'])
 
 
@@ -58,11 +63,13 @@ class TestInit:
 
     def test_init_no_domain_terms(self):
         """Test initialization without domain terms."""
+        DimensionRegistry.clear()
         analyzer = VoiceAnalyzer()
         assert analyzer.domain_terms == []
 
     def test_init_with_domain_terms(self):
         """Test initialization with domain terms."""
+        DimensionRegistry.clear()
         terms = [r'\bAPI\b', r'\bHTTPS?\b']
         analyzer = VoiceAnalyzer(domain_terms=terms)
         assert analyzer.domain_terms == terms

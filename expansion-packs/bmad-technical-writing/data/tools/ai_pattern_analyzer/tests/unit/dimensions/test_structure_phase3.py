@@ -13,11 +13,14 @@ These tests target the advanced AST-based methods added in Phase 3:
 
 import pytest
 from ai_pattern_analyzer.dimensions.structure import StructureAnalyzer
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 
 
 @pytest.fixture
 def analyzer():
     """Create analyzer instance."""
+    # Clear registry before each test to avoid duplicate registration errors
+    DimensionRegistry.clear()
     return StructureAnalyzer()
 
 

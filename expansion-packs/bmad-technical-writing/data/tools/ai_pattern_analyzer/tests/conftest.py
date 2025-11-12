@@ -367,3 +367,22 @@ def word_count():
 def page_count():
     """Standard page count for testing (250 words per page)."""
     return 2
+
+
+# ============================================================================
+# Test Isolation Fixtures
+# ============================================================================
+
+@pytest.fixture(autouse=True)
+def clear_dimension_registry():
+    """
+    Clear DimensionRegistry before each test to ensure test isolation.
+
+    This fixture automatically runs before every test function to prevent
+    cross-test contamination. Required when running full test suite.
+    """
+    from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
+    DimensionRegistry.clear()
+    yield
+    # Optional: cleanup after test as well
+    DimensionRegistry.clear()

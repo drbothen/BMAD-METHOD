@@ -4,11 +4,14 @@ Tests for BurstinessAnalyzer - sentence and paragraph length variation detection
 
 import pytest
 from ai_pattern_analyzer.dimensions.burstiness import BurstinessAnalyzer
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 
 
 @pytest.fixture
 def analyzer():
     """Create BurstinessAnalyzer instance."""
+    # Clear registry before each test to avoid duplicate registration errors
+    DimensionRegistry.clear()
     return BurstinessAnalyzer()
 
 

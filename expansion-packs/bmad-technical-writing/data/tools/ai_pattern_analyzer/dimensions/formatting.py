@@ -9,50 +9,148 @@ Analyzes formatting patterns including:
 
 Research: Em-dash overuse is the single strongest AI detection signal.
 ChatGPT uses 10x more em-dashes and bold formatting than human writers.
+
+Refactored in Story 1.4 to use DimensionStrategy pattern with self-registration.
 """
 
 import re
 import statistics
-from typing import Dict, List, Any
-from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
+from typing import Dict, List, Any, Optional, Tuple
+from ai_pattern_analyzer.dimensions.base_strategy import DimensionStrategy
+from ai_pattern_analyzer.core.analysis_config import AnalysisConfig, DEFAULT_CONFIG
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 from ai_pattern_analyzer.core.results import EmDashInstance, FormattingIssue
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
 from ai_pattern_analyzer.utils.text_processing import count_words
 
 
-class FormattingAnalyzer(DimensionAnalyzer):
-    """Analyzes formatting dimension - em-dash, bold/italic, quotations."""
+class FormattingDimension(DimensionStrategy):
+    """
+    Analyzes formatting dimension - em-dash, bold/italic, quotations.
 
-    def analyze(self, text: str, lines: List[str] = None, **kwargs) -> Dict[str, Any]:
+    Weight: 4.0% of total score
+    Tier: CORE
+
+    Detects:
+    - Em-dash overuse (95% AI detection accuracy)
+    - Bold/italic overuse (ChatGPT uses 10x more)
+    - Mechanical formatting distribution
+    """
+
+    def __init__(self):
+        """Initialize and self-register with dimension registry."""
+        super().__init__()
+        # Self-register with registry
+        DimensionRegistry.register(self)
+
+    # ========================================================================
+    # REQUIRED PROPERTIES - DimensionStrategy Contract
+    # ========================================================================
+
+    @property
+    def dimension_name(self) -> str:
+        """Return dimension identifier."""
+        return "formatting"
+
+    @property
+    def weight(self) -> float:
+        """Return dimension weight (4% of total score)."""
+        return 4.0
+
+    @property
+    def tier(self) -> str:
+        """Return dimension tier."""
+        return "CORE"
+
+    @property
+    def description(self) -> str:
+        """Return dimension description."""
+        return "Analyzes em-dash overuse, bold/italic patterns, and formatting consistency"
+
+    # ========================================================================
+    # ANALYSIS METHODS
+    # ========================================================================
+
+    def analyze(
+        self,
+        text: str,
+        lines: List[str] = None,
+        config: Optional[AnalysisConfig] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
         """
         Analyze text for formatting patterns.
 
         Args:
             text: Full text content
             lines: Text split into lines (optional)
+            config: Analysis configuration (None = current behavior)
             **kwargs: Additional parameters
 
         Returns:
             Dict with formatting analysis results
         """
-        # Phase 1-2: Basic formatting analysis
-        formatting = self._analyze_formatting(text)
-        bold_italic = self._analyze_bold_italic_patterns(text)
+        config = config or DEFAULT_CONFIG
+        total_text_length = len(text)
 
-        # Phase 3: Advanced formatting analysis
-        list_usage = self._analyze_list_usage(text)
-        punctuation = self._analyze_punctuation_clustering(text)
-        whitespace = self._analyze_whitespace_patterns(text)
-        punctuation_spacing_cv = self._analyze_punctuation_spacing_cv(text)
+        # Prepare text based on mode (FAST/ADAPTIVE/SAMPLING/FULL)
+        prepared = self._prepare_text(text, config, self.dimension_name)
 
+        # Handle sampled analysis (returns list of (position, sample_text) tuples)
+        if isinstance(prepared, list):
+            samples = prepared
+            sample_results = []
+
+            for position, sample_text in samples:
+                formatting = self._analyze_formatting(sample_text)
+                bold_italic = self._analyze_bold_italic_patterns(sample_text)
+                list_usage = self._analyze_list_usage(sample_text)
+                punctuation = self._analyze_punctuation_clustering(sample_text)
+                whitespace = self._analyze_whitespace_patterns(sample_text)
+                punctuation_spacing_cv = self._analyze_punctuation_spacing_cv(sample_text)
+                sample_results.append({
+                    'formatting': formatting,
+                    'bold_italic': bold_italic,
+                    'list_usage': list_usage,
+                    'punctuation_clustering': punctuation,
+                    'whitespace_patterns': whitespace,
+                    'punctuation_spacing_cv': punctuation_spacing_cv,
+                })
+
+            # Aggregate metrics from all samples
+            aggregated = self._aggregate_sampled_metrics(sample_results)
+            analyzed_length = sum(len(sample_text) for _, sample_text in samples)
+            samples_analyzed = len(samples)
+
+        # Handle direct analysis (returns string - truncated or full text)
+        else:
+            analyzed_text = prepared
+            formatting = self._analyze_formatting(analyzed_text)
+            bold_italic = self._analyze_bold_italic_patterns(analyzed_text)
+            list_usage = self._analyze_list_usage(analyzed_text)
+            punctuation = self._analyze_punctuation_clustering(analyzed_text)
+            whitespace = self._analyze_whitespace_patterns(analyzed_text)
+            punctuation_spacing_cv = self._analyze_punctuation_spacing_cv(analyzed_text)
+            aggregated = {
+                'formatting': formatting,
+                'bold_italic': bold_italic,
+                'list_usage': list_usage,
+                'punctuation_clustering': punctuation,
+                'whitespace_patterns': whitespace,
+                'punctuation_spacing_cv': punctuation_spacing_cv,
+            }
+            analyzed_length = len(analyzed_text)
+            samples_analyzed = 1
+
+        # Add consistent metadata
         return {
-            'formatting': formatting,
-            'bold_italic': bold_italic,
-            # Phase 3 additions
-            'list_usage': list_usage,
-            'punctuation_clustering': punctuation,
-            'whitespace_patterns': whitespace,
-            'punctuation_spacing_cv': punctuation_spacing_cv,
+            **aggregated,
+            'available': True,
+            'analysis_mode': config.mode.value,
+            'samples_analyzed': samples_analyzed,
+            'total_text_length': total_text_length,
+            'analyzed_text_length': analyzed_length,
+            'coverage_percentage': (analyzed_length / total_text_length * 100.0) if total_text_length > 0 else 0.0
         }
 
     def analyze_detailed(self, lines: List[str], html_comment_checker=None) -> Dict[str, Any]:
@@ -124,10 +222,152 @@ class FormattingAnalyzer(DimensionAnalyzer):
         else:
             return (2.0, "VERY LOW")
 
+    # ========================================================================
+    # SCORING METHODS - DimensionStrategy Contract
+    # ========================================================================
+
+    def calculate_score(self, metrics: Dict[str, Any]) -> float:
+        """
+        Calculate 0-100 score based on formatting metrics.
+
+        Scoring logic extracted from dual_score_calculator.py.
+        Lower formatting issues = higher score (human-like).
+        High em-dash usage and bold density = low score (AI-like).
+
+        Algorithm:
+        - Em-dash per page: >10 = VERY LOW, 5-10 = LOW, 3-5 = MEDIUM, <3 = HIGH
+        - Bold per 1k: >50 = VERY LOW, 20-50 = LOW, 10-20 = MEDIUM, <10 = HIGH
+        - Formatting consistency: >0.7 = AI-like, <0.5 = human-like
+
+        Args:
+            metrics: Output from analyze() method
+
+        Returns:
+            Score from 0.0 (AI-like) to 100.0 (human-like)
+        """
+        issues = 0
+
+        # Get nested formatting metrics
+        formatting = metrics.get('formatting', {})
+        bold_italic = metrics.get('bold_italic', {})
+
+        # Calculate em-dashes per page (assuming ~300 words per page)
+        em_dashes = formatting.get('em_dashes', 0)
+        word_count = count_words('')  # Will be calculated from text if available
+        # For scoring, we use the pre-calculated metrics
+        em_per_page = em_dashes / 3 if word_count == 0 else (em_dashes / word_count * 300)
+
+        # Primary signal: em-dashes per page
+        if em_per_page > 10:
+            issues += 3  # Very strong AI signal
+        elif em_per_page > 5:
+            issues += 2
+        elif em_per_page > THRESHOLDS.EM_DASH_MAX_PER_PAGE:
+            issues += 1
+
+        # Bold density (ChatGPT uses 10x more bold)
+        bold_per_1k = bold_italic.get('bold_per_1k', 0)
+        if bold_per_1k > THRESHOLDS.BOLD_EXTREME_AI_PER_1K:
+            issues += 3  # Extreme AI marker
+        elif bold_per_1k > THRESHOLDS.BOLD_AI_MIN_PER_1K:
+            issues += 2
+        elif bold_per_1k > THRESHOLDS.BOLD_HUMAN_MAX_PER_1K:
+            issues += 1
+
+        # Formatting consistency (mechanical distribution)
+        consistency = bold_italic.get('formatting_consistency', 0)
+        if consistency > THRESHOLDS.FORMATTING_CONSISTENCY_AI_THRESHOLD:
+            issues += 2
+        elif consistency > THRESHOLDS.FORMATTING_CONSISTENCY_MEDIUM:
+            issues += 1
+
+        # Convert issues to 0-100 score
+        if issues == 0:
+            score = 100.0
+        elif issues <= 2:
+            score = 75.0
+        elif issues <= 4:
+            score = 50.0
+        else:
+            score = 25.0
+
+        self._validate_score(score)
+        return score
+
+    def get_recommendations(self, score: float, metrics: Dict[str, Any]) -> List[str]:
+        """
+        Generate actionable recommendations based on score and metrics.
+
+        Args:
+            score: Current score from calculate_score()
+            metrics: Raw metrics from analyze()
+
+        Returns:
+            List of recommendation strings
+        """
+        recommendations = []
+
+        # Get nested metrics
+        formatting = metrics.get('formatting', {})
+        bold_italic = metrics.get('bold_italic', {})
+
+        em_dashes = formatting.get('em_dashes', 0)
+        bold_per_1k = bold_italic.get('bold_per_1k', 0)
+        italic_per_1k = bold_italic.get('italic_per_1k', 0)
+        consistency = bold_italic.get('formatting_consistency', 0)
+
+        # Em-dash recommendations
+        if em_dashes > 5:
+            recommendations.append(
+                f"Reduce em-dash usage ({em_dashes} found). Replace with periods, semicolons, "
+                f"commas, or parentheses for more natural flow."
+            )
+
+        # Bold density recommendations
+        if bold_per_1k > THRESHOLDS.BOLD_AI_MIN_PER_1K:
+            recommendations.append(
+                f"Reduce bold formatting ({bold_per_1k:.1f} per 1k words, target <{THRESHOLDS.BOLD_HUMAN_MAX_PER_1K}). "
+                f"Overuse of bold is a strong AI signal."
+            )
+
+        # Italic recommendations
+        if italic_per_1k > 15:
+            recommendations.append(
+                f"Reduce italic usage ({italic_per_1k:.1f} per 1k words). "
+                f"Excessive emphasis formatting is characteristic of AI writing."
+            )
+
+        # Formatting consistency recommendations
+        if consistency > THRESHOLDS.FORMATTING_CONSISTENCY_AI_THRESHOLD:
+            recommendations.append(
+                f"Vary formatting distribution (consistency={consistency:.2f}). "
+                f"Mechanical, evenly-spaced formatting suggests AI generation."
+            )
+
+        return recommendations
+
+    def get_tiers(self) -> Dict[str, Tuple[float, float]]:
+        """
+        Define score tier ranges for this dimension.
+
+        Returns:
+            Dict mapping tier name to (min_score, max_score) tuple
+        """
+        return {
+            'excellent': (90.0, 100.0),
+            'good': (75.0, 89.9),
+            'acceptable': (50.0, 74.9),
+            'poor': (0.0, 49.9)
+        }
+
+    # ========================================================================
+    # HELPER METHODS
+    # ========================================================================
+
     def _count_words(self, text: str) -> int:
         """Count total words in text"""
         # Remove code blocks
-        text = re.sub(r'```[\s\S]*?```', '', text)
+        text = re.sub(r'```[sS]*?```', '', text)
         # Count words
         words = re.findall(r"\b[\w'-]+\b", text)
         return len(words)
@@ -339,7 +579,7 @@ class FormattingAnalyzer(DimensionAnalyzer):
         Key markers: em-dash cascading, Oxford comma consistency, semicolon usage.
         """
         word_count = self._count_words(text)
-        paragraphs = [p.strip() for p in re.split(r'\n\s*\n', text) if p.strip()]
+        paragraphs = [p.strip() for p in re.split(r'ns*n', text) if p.strip()]
 
         # Em-dash cascading analysis (AI shows declining frequency pattern)
         em_dash_positions = []
@@ -395,7 +635,7 @@ class FormattingAnalyzer(DimensionAnalyzer):
         Analyze whitespace and paragraph structure patterns.
         Humans vary paragraph length for pacing; AI produces uniform paragraphs.
         """
-        paragraphs = [p.strip() for p in re.split(r'\n\s*\n', text) if p.strip()]
+        paragraphs = [p.strip() for p in re.split(r'ns*n', text) if p.strip()]
 
         # Paragraph length variance (higher = more human)
         para_lengths = [len(p.split()) for p in paragraphs]
@@ -410,7 +650,7 @@ class FormattingAnalyzer(DimensionAnalyzer):
             uniformity = 1.0  # Single paragraph = perfectly uniform
 
         # Blank line analysis
-        lines = text.split('\n')
+        lines = text.split('n')
         blank_lines = [i for i, line in enumerate(lines) if not line.strip()]
         blank_count = len(blank_lines)
 
@@ -514,3 +754,10 @@ class FormattingAnalyzer(DimensionAnalyzer):
             'semicolon_count': len(semicolon_positions),
             'emdash_count': len(emdash_positions)
         }
+
+
+# Backward compatibility alias
+FormattingAnalyzer = FormattingDimension
+
+# Module-level singleton - triggers self-registration on module import
+_instance = FormattingDimension()

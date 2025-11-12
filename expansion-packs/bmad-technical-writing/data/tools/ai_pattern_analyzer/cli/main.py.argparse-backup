@@ -1,0 +1,505 @@
+"""
+CLI main entry point - core orchestration logic.
+
+This module contains the main() function and supporting functions for running
+the AI Pattern Analyzer from the command line.
+"""
+
+import sys
+from pathlib import Path
+
+from ai_pattern_analyzer.core.analyzer import AIPatternAnalyzer
+from ai_pattern_analyzer.core.analysis_config import AnalysisConfig, AnalysisMode
+from ai_pattern_analyzer.cli.args import parse_arguments, parse_domain_terms
+from ai_pattern_analyzer.cli.formatters import (
+    format_report,
+    format_detailed_report,
+    format_dual_score_report
+)
+
+
+def create_analysis_config(args):
+    """
+    Create AnalysisConfig from CLI arguments.
+
+    Args:
+        args: Parsed arguments
+
+    Returns:
+        AnalysisConfig instance
+    """
+    # Default config if mode not specified (backward compatibility)
+    if not hasattr(args, 'mode') or args.mode is None:
+        return AnalysisConfig(mode=AnalysisMode.ADAPTIVE)
+
+    return AnalysisConfig(
+        mode=AnalysisMode(args.mode),
+        sampling_sections=args.samples,
+        sampling_chars_per_section=args.sample_size,
+        sampling_strategy=args.sample_strategy
+    )
+
+
+def show_dry_run_config(file_path: str, config: AnalysisConfig, args):
+    """Display configuration for dry-run mode."""
+    import os
+
+    file_size = os.path.getsize(file_path)
+    pages = file_size / 2000
+
+    print("=" * 75)
+    print("ANALYSIS CONFIGURATION (DRY RUN)")
+    print("=" * 75)
+    print(f"File: {file_path}")
+    print(f"Size: {file_size:,} characters (~{pages:.0f} pages)")
+    print()
+    print(f"Mode: {config.mode.value.upper()}")
+    print()
+
+    if config.mode == AnalysisMode.FAST:
+        print("Behavior: Truncate to 2000 chars per dimension")
+        print("Expected time: 5-15 seconds")
+        print("Coverage: ~1-5% of document")
+        if pages > 10:
+            print()
+            print("⚠  Warning: FAST mode only analyzes first page.")
+            print("   For accurate results on long documents, use --mode adaptive")
+
+    elif config.mode == AnalysisMode.ADAPTIVE:
+        if file_size < 5000:
+            print("Behavior: Full analysis (document < 5k chars)")
+            print("Expected time: 10-30 seconds")
+            print("Coverage: 100%")
+        elif file_size < 50000:
+            samples = 5
+            print(f"Behavior: Sample {samples} sections throughout document")
+            print("Expected time: 30-90 seconds")
+            print(f"Coverage: ~{(samples * 2000 / file_size * 100):.1f}%")
+        else:
+            samples = 10
+            print(f"Behavior: Sample {samples} sections throughout document")
+            print("Expected time: 60-240 seconds")
+            print(f"Coverage: ~{(samples * 2000 / file_size * 100):.1f}%")
+
+    elif config.mode == AnalysisMode.SAMPLING:
+        print(f"Behavior: Sample {config.sampling_sections} sections")
+        print(f"          {config.sampling_chars_per_section} chars per section")
+        print(f"          Strategy: {config.sampling_strategy}")
+        total = config.sampling_sections * config.sampling_chars_per_section
+        print(f"Expected time: {30 + config.sampling_sections * 10}-{60 + config.sampling_sections * 20} seconds")
+        print(f"Coverage: ~{(total / file_size * 100):.1f}%")
+
+    elif config.mode == AnalysisMode.FULL:
+        print("Behavior: Analyze entire document, no truncation")
+        print(f"Expected time: {pages * 2:.0f}-{pages * 10:.0f} seconds")
+        print("Coverage: 100%")
+        if pages > 100:
+            print()
+            print("⚠  Warning: FULL mode on large documents is VERY SLOW")
+            print("   Consider --mode adaptive for faster results (30-240s)")
+
+    print()
+
+    # Show integration with other features
+    if hasattr(args, 'detailed') and args.detailed:
+        print("Additional: Detailed diagnostics enabled")
+    if hasattr(args, 'show_scores') and args.show_scores:
+        print("Additional: Dual score analysis enabled")
+    if hasattr(args, 'no_track_history') and not args.no_track_history:
+        print("Additional: History tracking enabled")
+
+    print()
+    print("To run analysis: Remove --dry-run flag")
+    print("=" * 75)
+
+
+def show_coverage_stats(result, config: AnalysisConfig, file_path: str):
+    """Display coverage statistics after analysis."""
+    import os
+
+    file_size = os.path.getsize(file_path)
+
+    print()
+    print("=" * 75)
+    print("COVERAGE STATISTICS")
+    print("=" * 75)
+
+    # Calculate actual coverage from metadata if available
+    if hasattr(result, 'metadata') and 'coverage' in result.metadata:
+        actual_coverage = result.metadata['coverage']
+        chars_analyzed = result.metadata.get('chars_analyzed', 0)
+        print(f"Characters analyzed: {chars_analyzed:,} of {file_size:,} ({actual_coverage:.1f}%)")
+    else:
+        # Estimate based on mode
+        if config.mode == AnalysisMode.FAST:
+            est_coverage = min(2000 * 12 / file_size * 100, 100)  # 12 dimensions × 2000 chars
+            print(f"Mode: FAST (estimated ~{est_coverage:.1f}% coverage)")
+        elif config.mode == AnalysisMode.FULL:
+            print(f"Mode: FULL (100% coverage)")
+        elif config.mode in [AnalysisMode.SAMPLING, AnalysisMode.ADAPTIVE]:
+            total = config.sampling_sections * config.sampling_chars_per_section
+            est_coverage = min(total / file_size * 100, 100)
+            print(f"Mode: {config.mode.value.upper()}")
+            print(f"Sections sampled: {config.sampling_sections}")
+            print(f"Characters per section: {config.sampling_chars_per_section:,}")
+            print(f"Estimated coverage: ~{est_coverage:.1f}%")
+
+    print("=" * 75)
+    print()
+
+
+def handle_history_commands(args):
+    """
+    Handle history viewing commands (--show-history-full, --compare-history, etc.).
+
+    Args:
+        args: Parsed arguments
+
+    Returns:
+        Exit code (0 for success)
+    """
+    from ai_pattern_analyzer.history.trends import (
+        generate_full_history_report,
+        generate_comparison_report,
+        generate_dimension_trend_report,
+        generate_raw_metric_trends
+    )
+
+    analyzer = AIPatternAnalyzer()
+    history = analyzer.load_score_history(args.file)
+
+    if len(history.scores) == 0:
+        print(f"No history found for {args.file}", file=sys.stderr)
+        print("Run analysis with --show-scores first to create history.", file=sys.stderr)
+        return 1
+
+    # Generate and print requested report
+    if args.show_history_full:
+        print(generate_full_history_report(history))
+
+    elif args.compare_history:
+        # Parse iteration specifiers (e.g., "first,last" or "1,5")
+        parts = args.compare_history.split(',')
+        if len(parts) != 2:
+            print('Error: --compare-history requires two iterations separated by comma', file=sys.stderr)
+            return 1
+
+        # Convert to indices
+        def parse_iteration(spec: str, history_len: int) -> int:
+            spec = spec.strip().lower()
+            if spec == 'first':
+                return 0
+            elif spec == 'last':
+                return history_len - 1
+            else:
+                try:
+                    idx = int(spec)
+                    if idx < 0 or idx >= history_len:
+                        raise ValueError(f"Iteration {idx} out of range (0-{history_len-1})")
+                    return idx
+                except ValueError as e:
+                    raise ValueError(f"Invalid iteration specifier: {spec}")
+
+        try:
+            idx1 = parse_iteration(parts[0], len(history.scores))
+            idx2 = parse_iteration(parts[1], len(history.scores))
+            print(generate_comparison_report(history, idx1, idx2))
+        except ValueError as e:
+            print(f"Error: {e}", file=sys.stderr)
+            return 1
+
+    elif args.show_dimension_trends:
+        print(generate_dimension_trend_report(history))
+
+    elif args.show_raw_metric_trends:
+        print(generate_raw_metric_trends(history))
+
+    elif args.export_history:
+        if args.export_history == 'csv':
+            output_file = args.file.replace('.md', '-history.csv')
+            history.export_to_csv(output_file)
+            print(f"History exported to: {output_file}")
+        elif args.export_history == 'json':
+            output_file = args.file.replace('.md', '-history.json')
+            import json
+            with open(output_file, 'w') as f:
+                json.dump(history.to_dict(), f, indent=2)
+            print(f"History exported to: {output_file}")
+
+    return 0
+
+
+def run_single_file_analysis(args, analyzer):
+    """
+    Run analysis on a single file.
+
+    Args:
+        args: Parsed arguments
+        analyzer: AIPatternAnalyzer instance
+
+    Returns:
+        List of results and calculated dual score
+    """
+    import time
+
+    try:
+        # Create config
+        config = create_analysis_config(args)
+
+        # Dry run
+        if hasattr(args, 'dry_run') and args.dry_run:
+            show_dry_run_config(args.file, config, args)
+            return [], None
+
+        # Display mode info (unless quiet)
+        quiet_mode = hasattr(args, 'quiet') and args.quiet
+        if not quiet_mode:
+            print(f"\nAnalyzing: {args.file}")
+            print(f"Mode: {config.mode.value.upper()}", end='')
+
+            if config.mode in [AnalysisMode.SAMPLING, AnalysisMode.ADAPTIVE]:
+                print(f" (sampling: {config.sampling_sections} × {config.sampling_chars_per_section} chars, {config.sampling_strategy})")
+            else:
+                print()
+
+            if hasattr(args, 'show_coverage') and args.show_coverage:
+                print("Coverage statistics will be shown after analysis")
+            print()
+
+        # Run analysis with timing
+        start_time = time.time()
+        result = analyzer.analyze_file(args.file, config=config)
+        elapsed = time.time() - start_time
+
+        # Add mode info to results metadata (for history tracking)
+        if not hasattr(result, 'metadata'):
+            result.metadata = {}
+        result.metadata['analysis_mode'] = config.mode.value
+        result.metadata['analysis_time_seconds'] = elapsed
+
+        # Calculate dual score for history and optimization (if score summary shown)
+        calculated_dual_score = None
+        if not args.no_score_summary and args.format == 'text':
+            try:
+                calculated_dual_score = analyzer.calculate_dual_score(
+                    result,
+                    detection_target=args.detection_target,
+                    quality_target=args.quality_target
+                )
+
+                # Save to history (unless disabled)
+                if not args.no_track_history:
+                    history = analyzer.load_score_history(args.file)
+                    history.add_score(calculated_dual_score, notes=args.history_notes)
+                    analyzer.save_score_history(history)
+
+            except Exception as e:
+                # Don't fail if history tracking fails
+                print(f"Warning: Could not calculate/save score history: {e}", file=sys.stderr)
+
+        # Show coverage if requested
+        if hasattr(args, 'show_coverage') and args.show_coverage and not quiet_mode:
+            show_coverage_stats(result, config, args.file)
+
+        # Display elapsed time (unless quiet)
+        if not quiet_mode:
+            print(f"\nCompleted in {elapsed:.1f} seconds")
+
+        return [result], calculated_dual_score
+
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def run_batch_analysis(args, analyzer):
+    """
+    Run batch analysis on directory.
+
+    Args:
+        args: Parsed arguments
+        analyzer: AIPatternAnalyzer instance
+
+    Returns:
+        List of results and None for dual_score
+    """
+    # Create config once (applies to all files)
+    config = create_analysis_config(args)
+
+    # Dry run for batch
+    if hasattr(args, 'dry_run') and args.dry_run:
+        print(f"\nBatch Analysis Configuration (DRY RUN)")
+        print(f"Directory: {args.batch}")
+        print(f"Mode: {config.mode.value.upper()}")
+        if config.mode in [AnalysisMode.SAMPLING, AnalysisMode.ADAPTIVE]:
+            print(f"Sampling: {config.sampling_sections} × {config.sampling_chars_per_section} chars ({config.sampling_strategy})")
+        print(f"\nMode will be applied to all .md files in directory")
+        return [], None
+
+    batch_dir = Path(args.batch)
+    if not batch_dir.is_dir():
+        print(f"Error: {args.batch} is not a directory", file=sys.stderr)
+        sys.exit(1)
+
+    md_files = sorted(batch_dir.glob('**/*.md'))
+    if not md_files:
+        print(f"Error: No .md files found in {args.batch}", file=sys.stderr)
+        sys.exit(1)
+
+    # Display batch mode info (unless quiet)
+    quiet_mode = hasattr(args, 'quiet') and args.quiet
+    if not quiet_mode:
+        print(f"\nBatch Analysis Mode: {config.mode.value.upper()}")
+        if config.mode in [AnalysisMode.SAMPLING, AnalysisMode.ADAPTIVE]:
+            print(f"Sampling: {config.sampling_sections} × {config.sampling_chars_per_section} chars")
+        print(f"Files to analyze: {len(md_files)}")
+        print()
+
+    results = []
+    for md_file in md_files:
+        try:
+            if not quiet_mode:
+                print(f"Analyzing: {md_file.name}...", end=' ', flush=True)
+
+            result = analyzer.analyze_file(str(md_file), config=config)
+            results.append(result)
+
+            if not quiet_mode:
+                print("✓")
+        except Exception as e:
+            print(f"Error analyzing {md_file}: {e}", file=sys.stderr)
+
+    if not quiet_mode:
+        print(f"\nCompleted {len(results)} of {len(md_files)} files")
+
+    return results, None
+
+
+def main():
+    """Main CLI entry point."""
+    args = parse_arguments()
+
+    # Handle history viewing commands (don't run analysis)
+    if any([args.show_history_full, args.compare_history, args.show_dimension_trends,
+            args.show_raw_metric_trends, args.export_history]):
+        if not args.file:
+            print('Error: History viewing commands require a FILE argument', file=sys.stderr)
+            sys.exit(1)
+        sys.exit(handle_history_commands(args))
+
+    # Parse domain terms
+    domain_terms = parse_domain_terms(args.domain_terms) if hasattr(args, 'domain_terms') else None
+
+    # Initialize analyzer
+    analyzer = AIPatternAnalyzer(domain_terms=domain_terms)
+
+    # Detailed analysis mode
+    if args.detailed:
+        try:
+            detailed_result = analyzer.analyze_file_detailed(args.file)
+            output_text = format_detailed_report(detailed_result, args.format)
+
+            if args.output:
+                with open(args.output, 'w', encoding='utf-8') as f:
+                    f.write(output_text)
+                print(f"Detailed analysis written to {args.output}", file=sys.stderr)
+            else:
+                print(output_text)
+            sys.exit(0)
+
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+
+    # Scores detailed mode
+    elif hasattr(args, 'scores_detailed') and args.scores_detailed:
+        try:
+            result = analyzer.analyze_file(args.file)
+
+            # Calculate dual score
+            dual_score = analyzer.calculate_dual_score(
+                result,
+                detection_target=args.detection_target,
+                quality_target=args.quality_target
+            )
+
+            # Load and save history (unless disabled)
+            if not args.no_track_history:
+                history = analyzer.load_score_history(args.file)
+                history.add_score(dual_score, notes=args.history_notes)
+                analyzer.save_score_history(history)
+            else:
+                from ai_pattern_analyzer.history.tracker import ScoreHistory
+                history = ScoreHistory(file_path=args.file, scores=[])
+
+            # Generate dual score section
+            dual_score_section = format_dual_score_report(
+                dual_score,
+                history,
+                args.format,
+                as_detailed_section=True
+            )
+
+            # Generate full report
+            output_text = format_report(
+                result,
+                args.format,
+                include_score_summary=False,
+                detection_target=args.detection_target,
+                quality_target=args.quality_target,
+                dual_score_section=dual_score_section
+            )
+
+            if args.output:
+                with open(args.output, 'w', encoding='utf-8') as f:
+                    f.write(output_text)
+                print(f"Analysis written to {args.output}", file=sys.stderr)
+            else:
+                print(output_text)
+            sys.exit(0)
+
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+
+    # Standard analysis mode
+    if args.batch:
+        results, calculated_dual_score = run_batch_analysis(args, analyzer)
+    else:
+        results, calculated_dual_score = run_single_file_analysis(args, analyzer)
+
+    # Format and output
+    output_lines = []
+
+    if args.format == 'tsv' and len(results) > 1:
+        # TSV batch output with header
+        output_lines.append(format_report(results[0], 'tsv').split('\n')[0])  # Header
+        for r in results:
+            output_lines.append(format_report(r, 'tsv').split('\n')[1])  # Data row
+    else:
+        # Individual reports
+        for r in results:
+            dual_score_param = calculated_dual_score if (len(results) == 1 and not args.batch) else None
+
+            output_lines.append(format_report(
+                r,
+                args.format,
+                include_score_summary=not args.no_score_summary,
+                detection_target=args.detection_target,
+                quality_target=args.quality_target,
+                dual_score=dual_score_param
+            ))
+
+    output_text = '\n'.join(output_lines)
+
+    # Write output
+    if args.output:
+        with open(args.output, 'w', encoding='utf-8') as f:
+            f.write(output_text)
+        print(f"Analysis written to {args.output}", file=sys.stderr)
+    else:
+        print(output_text)
+
+
+if __name__ == '__main__':
+    main()

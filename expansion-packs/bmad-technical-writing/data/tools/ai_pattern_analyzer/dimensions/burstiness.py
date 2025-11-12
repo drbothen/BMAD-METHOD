@@ -3,40 +3,135 @@ Burstiness dimension analyzer.
 
 Analyzes sentence and paragraph length variation - a core metric from GPTZero methodology.
 Low variation (low burstiness) is a strong AI signal, while high variation is human-like.
+
+Refactored in Story 1.4 to use DimensionStrategy pattern with self-registration.
 """
 
 import re
 import statistics
-from typing import Dict, List, Any
-from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
+from typing import Dict, List, Any, Optional, Tuple
+from ai_pattern_analyzer.dimensions.base_strategy import DimensionStrategy
+from ai_pattern_analyzer.core.analysis_config import AnalysisConfig, DEFAULT_CONFIG
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 from ai_pattern_analyzer.core.results import SentenceBurstinessIssue
 from ai_pattern_analyzer.utils.text_processing import safe_ratio
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
 
 
-class BurstinessAnalyzer(DimensionAnalyzer):
-    """Analyzes burstiness dimension - sentence and paragraph variation."""
+class BurstinessDimension(DimensionStrategy):
+    """
+    Analyzes burstiness dimension - sentence and paragraph variation.
 
-    def analyze(self, text: str, lines: List[str] = None, **kwargs) -> Dict[str, Any]:
+    Weight: 6.0% of total score
+    Tier: CORE
+
+    Detects:
+    - Low sentence length variation (AI signature)
+    - Uniform paragraph lengths (AI signature)
+    """
+
+    def __init__(self):
+        """Initialize and self-register with dimension registry."""
+        super().__init__()
+        # Self-register with registry
+        DimensionRegistry.register(self)
+
+    # ========================================================================
+    # REQUIRED PROPERTIES - DimensionStrategy Contract
+    # ========================================================================
+
+    @property
+    def dimension_name(self) -> str:
+        """Return dimension identifier."""
+        return "burstiness"
+
+    @property
+    def weight(self) -> float:
+        """Return dimension weight (6% of total score)."""
+        return 6.0
+
+    @property
+    def tier(self) -> str:
+        """Return dimension tier."""
+        return "CORE"
+
+    @property
+    def description(self) -> str:
+        """Return dimension description."""
+        return "Analyzes sentence and paragraph length variation (GPTZero burstiness metric)"
+
+    # ========================================================================
+    # ANALYSIS METHODS
+    # ========================================================================
+
+    def analyze(
+        self,
+        text: str,
+        lines: List[str] = None,
+        config: Optional[AnalysisConfig] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
         """
         Analyze text for sentence and paragraph variation.
 
         Args:
             text: Full text content
             lines: Text split into lines (optional)
+            config: Analysis configuration (None = current behavior)
             **kwargs: Additional parameters
 
         Returns:
             Dict with burstiness analysis results
         """
-        sentence_burst = self._analyze_sentence_burstiness(text)
-        paragraph_var = self._analyze_paragraph_variation(text)
-        paragraph_cv = self._calculate_paragraph_cv(text)
+        config = config or DEFAULT_CONFIG
+        total_text_length = len(text)
 
+        # Prepare text based on mode (FAST/ADAPTIVE/SAMPLING/FULL)
+        prepared = self._prepare_text(text, config, self.dimension_name)
+
+        # Handle sampled analysis (returns list of (position, sample_text) tuples)
+        if isinstance(prepared, list):
+            samples = prepared
+            sample_results = []
+
+            for position, sample_text in samples:
+                sentence_burst = self._analyze_sentence_burstiness(sample_text)
+                paragraph_var = self._analyze_paragraph_variation(sample_text)
+                paragraph_cv = self._calculate_paragraph_cv(sample_text)
+                sample_results.append({
+                    'sentence_burstiness': sentence_burst,
+                    'paragraph_variation': paragraph_var,
+                    'paragraph_cv': paragraph_cv,
+                })
+
+            # Aggregate metrics from all samples
+            aggregated = self._aggregate_sampled_metrics(sample_results)
+            analyzed_length = sum(len(sample_text) for _, sample_text in samples)
+            samples_analyzed = len(samples)
+
+        # Handle direct analysis (returns string - truncated or full text)
+        else:
+            analyzed_text = prepared
+            sentence_burst = self._analyze_sentence_burstiness(analyzed_text)
+            paragraph_var = self._analyze_paragraph_variation(analyzed_text)
+            paragraph_cv = self._calculate_paragraph_cv(analyzed_text)
+            aggregated = {
+                'sentence_burstiness': sentence_burst,
+                'paragraph_variation': paragraph_var,
+                'paragraph_cv': paragraph_cv,
+            }
+            analyzed_length = len(analyzed_text)
+            samples_analyzed = 1
+
+        # Add consistent metadata
         return {
-            'sentence_burstiness': sentence_burst,
-            'paragraph_variation': paragraph_var,
-            'paragraph_cv': paragraph_cv,
+            **aggregated,
+            'available': True,
+            'analysis_mode': config.mode.value,
+            'samples_analyzed': samples_analyzed,
+            'total_text_length': total_text_length,
+            'analyzed_text_length': analyzed_length,
+            'coverage_percentage': (analyzed_length / total_text_length * 100.0) if total_text_length > 0 else 0.0
         }
 
     def analyze_detailed(self, lines: List[str], html_comment_checker=None) -> List[SentenceBurstinessIssue]:
@@ -51,6 +146,125 @@ class BurstinessAnalyzer(DimensionAnalyzer):
             List of SentenceBurstinessIssue objects
         """
         return self._analyze_burstiness_issues_detailed(lines, html_comment_checker)
+
+    # ========================================================================
+    # SCORING METHODS - DimensionStrategy Contract
+    # ========================================================================
+
+    def calculate_score(self, metrics: Dict[str, Any]) -> float:
+        """
+        Calculate 0-100 score based on burstiness metrics.
+
+        Scoring logic extracted from dual_score_calculator.py.
+        High burstiness (high variation) = high score (human-like).
+        Low burstiness (uniform lengths) = low score (AI-like).
+
+        Algorithm:
+        - Sentence stdev >= 8 AND good short/long mix = HIGH (100 score)
+        - Sentence stdev >= 5 = MEDIUM (75 score)
+        - Sentence stdev >= 3 = LOW (50 score)
+        - Sentence stdev < 3 = VERY LOW (25 score)
+
+        Args:
+            metrics: Output from analyze() method
+
+        Returns:
+            Score from 0.0 (AI-like) to 100.0 (human-like)
+        """
+        score = 100.0
+
+        sentence_burst = metrics.get('sentence_burstiness', {})
+        total_sentences = sentence_burst.get('total_sentences', 0)
+
+        if total_sentences == 0:
+            # Insufficient data - return neutral score
+            return 50.0
+
+        stdev = sentence_burst.get('stdev', 0)
+        short_count = sentence_burst.get('short', 0)
+        long_count = sentence_burst.get('long', 0)
+
+        short_pct = safe_ratio(short_count, total_sentences)
+        long_pct = safe_ratio(long_count, total_sentences)
+
+        # Score based on stdev and sentence length distribution
+        if stdev >= 8 and short_pct >= THRESHOLDS.SHORT_SENTENCE_MIN_RATIO and long_pct >= THRESHOLDS.LONG_SENTENCE_MIN_RATIO:
+            score = 100.0
+        elif stdev >= 5:
+            score = 75.0
+        elif stdev >= THRESHOLDS.SENTENCE_STDEV_LOW:  # >= 3
+            score = 50.0
+        else:
+            score = 25.0
+
+        self._validate_score(score)
+        return score
+
+    def get_recommendations(self, score: float, metrics: Dict[str, Any]) -> List[str]:
+        """
+        Generate actionable recommendations based on score and metrics.
+
+        Args:
+            score: Current score from calculate_score()
+            metrics: Raw metrics from analyze()
+
+        Returns:
+            List of recommendation strings
+        """
+        recommendations = []
+
+        sentence_burst = metrics.get('sentence_burstiness', {})
+        stdev = sentence_burst.get('stdev', 0)
+        short_count = sentence_burst.get('short', 0)
+        long_count = sentence_burst.get('long', 0)
+        total_sentences = sentence_burst.get('total_sentences', 0)
+
+        if total_sentences == 0:
+            return recommendations
+
+        short_pct = safe_ratio(short_count, total_sentences) * 100
+        long_pct = safe_ratio(long_count, total_sentences) * 100
+
+        # Recommendation for low variation
+        if stdev < 5:
+            recommendations.append(
+                f"Increase sentence length variation (current σ={stdev:.1f}, target σ≥8). "
+                f"Mix short (5-10 words), medium (15-25 words), and long (30-45 words) sentences."
+            )
+
+        # Recommendation for insufficient short sentences
+        if short_pct < THRESHOLDS.SHORT_SENTENCE_MIN_RATIO * 100:
+            recommendations.append(
+                f"Add more short sentences (currently {short_pct:.0f}%, target ≥{THRESHOLDS.SHORT_SENTENCE_MIN_RATIO * 100:.0f}%). "
+                f"Short punchy sentences increase burstiness."
+            )
+
+        # Recommendation for insufficient long sentences
+        if long_pct < THRESHOLDS.LONG_SENTENCE_MIN_RATIO * 100:
+            recommendations.append(
+                f"Add more complex long sentences (currently {long_pct:.0f}%, target ≥{THRESHOLDS.LONG_SENTENCE_MIN_RATIO * 100:.0f}%). "
+                f"Long sentences with clauses increase variation."
+            )
+
+        return recommendations
+
+    def get_tiers(self) -> Dict[str, Tuple[float, float]]:
+        """
+        Define score tier ranges for this dimension.
+
+        Returns:
+            Dict mapping tier name to (min_score, max_score) tuple
+        """
+        return {
+            'excellent': (90.0, 100.0),
+            'good': (75.0, 89.9),
+            'acceptable': (50.0, 74.9),
+            'poor': (0.0, 49.9)
+        }
+
+    # ========================================================================
+    # LEGACY COMPATIBILITY
+    # ========================================================================
 
     def score(self, analysis_results: Dict[str, Any]) -> tuple:
         """
@@ -91,7 +305,7 @@ class BurstinessAnalyzer(DimensionAnalyzer):
             if line.strip().startswith('#'):
                 continue
             # Remove list markers
-            line = re.sub(r'^\s*[-*+0-9]+[\.)]\s*', '', line)
+            line = re.sub(r'^\s*[-*+0-9]+[.)]\s*', '', line)
             lines.append(line)
 
         clean_text = '\n'.join(lines)
@@ -293,3 +507,10 @@ class BurstinessAnalyzer(DimensionAnalyzer):
                 para_start_line = line_num + 1
 
         return issues
+
+
+# Backward compatibility alias
+BurstinessAnalyzer = BurstinessDimension
+
+# Module-level singleton - triggers self-registration on module import
+_instance = BurstinessDimension()

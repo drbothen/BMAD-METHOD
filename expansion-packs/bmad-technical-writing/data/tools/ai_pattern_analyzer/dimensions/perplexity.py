@@ -3,11 +3,15 @@ Perplexity dimension analyzer.
 
 Analyzes AI vocabulary usage and formulaic transitions - two of the strongest
 signals for AI-generated content detection.
+
+Refactored in Story 1.4 to use DimensionStrategy pattern with self-registration.
 """
 
 import re
-from typing import Dict, List, Any
-from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
+from typing import Dict, List, Any, Tuple, Optional
+from ai_pattern_analyzer.dimensions.base_strategy import DimensionStrategy
+from ai_pattern_analyzer.core.analysis_config import AnalysisConfig, DEFAULT_CONFIG
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 from ai_pattern_analyzer.core.results import VocabInstance, TransitionInstance
 from ai_pattern_analyzer.utils.pattern_matching import AI_VOCABULARY, FORMULAIC_TRANSITIONS
 from ai_pattern_analyzer.utils.text_processing import count_words
@@ -69,27 +73,116 @@ TRANSITION_REPLACEMENTS = {
 }
 
 
-class PerplexityAnalyzer(DimensionAnalyzer):
-    """Analyzes perplexity dimension - AI vocabulary and formulaic transitions."""
+class PerplexityDimension(DimensionStrategy):
+    """
+    Analyzes perplexity dimension - AI vocabulary and formulaic transitions.
 
-    def analyze(self, text: str, lines: List[str] = None, **kwargs) -> Dict[str, Any]:
+    Weight: 5.0% of total score
+    Tier: CORE
+
+    Detects:
+    - AI-typical vocabulary (delve, leverage, robust, etc.)
+    - Formulaic transitions (Furthermore, Moreover, etc.)
+    """
+
+    def __init__(self):
+        """Initialize and self-register with dimension registry."""
+        super().__init__()
+        # Self-register with registry
+        DimensionRegistry.register(self)
+
+    # ========================================================================
+    # REQUIRED PROPERTIES - DimensionStrategy Contract
+    # ========================================================================
+
+    @property
+    def dimension_name(self) -> str:
+        """Return dimension identifier."""
+        return "perplexity"
+
+    @property
+    def weight(self) -> float:
+        """Return dimension weight (5% of total score)."""
+        return 5.0
+
+    @property
+    def tier(self) -> str:
+        """Return dimension tier."""
+        return "CORE"
+
+    @property
+    def description(self) -> str:
+        """Return dimension description."""
+        return "Analyzes vocabulary predictability and AI-typical word patterns"
+
+    # ========================================================================
+    # ANALYSIS METHODS
+    # ========================================================================
+
+    def analyze(
+        self,
+        text: str,
+        lines: List[str] = None,
+        config: Optional[AnalysisConfig] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
         """
         Analyze text for AI vocabulary and formulaic transitions.
 
         Args:
             text: Full text content
             lines: Text split into lines (optional)
+            config: Analysis configuration (None = current behavior)
             **kwargs: Additional parameters
 
         Returns:
             Dict with perplexity analysis results
         """
-        ai_vocab = self._analyze_ai_vocabulary(text)
-        formulaic = self._analyze_formulaic_transitions(text)
+        config = config or DEFAULT_CONFIG
+        total_text_length = len(text)
 
+        # Prepare text based on mode (FAST/ADAPTIVE/SAMPLING/FULL)
+        prepared = self._prepare_text(text, config, self.dimension_name)
+
+        # Handle sampled analysis (returns list of (position, sample_text) tuples)
+        if isinstance(prepared, list):
+            samples = prepared
+            sample_results = []
+
+            for position, sample_text in samples:
+                ai_vocab = self._analyze_ai_vocabulary(sample_text)
+                formulaic = self._analyze_formulaic_transitions(sample_text)
+                sample_results.append({
+                    'ai_vocabulary': ai_vocab,
+                    'formulaic_transitions': formulaic
+                })
+
+            # Aggregate metrics from all samples
+            aggregated = self._aggregate_sampled_metrics(sample_results)
+            analyzed_length = sum(len(sample_text) for _, sample_text in samples)
+            samples_analyzed = len(samples)
+
+        # Handle direct analysis (returns string - truncated or full text)
+        else:
+            analyzed_text = prepared
+            ai_vocab = self._analyze_ai_vocabulary(analyzed_text)
+            formulaic = self._analyze_formulaic_transitions(analyzed_text)
+            aggregated = {
+                'ai_vocabulary': ai_vocab,
+                'formulaic_transitions': formulaic,
+            }
+            analyzed_length = len(analyzed_text)
+            samples_analyzed = 1
+
+        # Add consistent metadata
         return {
-            'ai_vocabulary': ai_vocab,
-            'formulaic_transitions': formulaic,
+            **aggregated,
+            'available': True,
+            'analysis_mode': config.mode.value,
+            'samples_analyzed': samples_analyzed,
+            'total_text_length': total_text_length,
+            'analyzed_text_length': analyzed_length,
+            'coverage_percentage': (analyzed_length / total_text_length * 100.0) if total_text_length > 0 else 0.0
         }
 
     def analyze_detailed(self, lines: List[str], html_comment_checker=None) -> Dict[str, Any]:
@@ -111,6 +204,110 @@ class PerplexityAnalyzer(DimensionAnalyzer):
             'transition_instances': transition_instances,
         }
 
+    # ========================================================================
+    # SCORING METHODS - DimensionStrategy Contract
+    # ========================================================================
+
+    def calculate_score(self, metrics: Dict[str, Any]) -> float:
+        """
+        Calculate 0-100 score based on perplexity metrics.
+
+        Scoring logic extracted from dual_score_calculator.py.
+        Uses same thresholds as original implementation for backward compatibility.
+
+        Algorithm:
+        - AI vocabulary per 1k words: 0-2.0 = HIGH (100 score), 2.0-5.0 = MEDIUM (75 score),
+          5.0-10.0 = LOW (50 score), 10.0+ = VERY LOW (25 score)
+        - Formulaic transitions: 0-1 = good, 2-3 = medium penalty, 4+ = high penalty
+
+        Args:
+            metrics: Output from analyze() method
+
+        Returns:
+            Score from 0.0 (AI-like) to 100.0 (human-like)
+        """
+        score = 100.0
+
+        # Extract metrics
+        ai_vocab_per_1k = metrics.get('ai_vocabulary', {}).get('per_1k', 0)
+        transition_count = metrics.get('formulaic_transitions', {}).get('count', 0)
+
+        # Penalty for AI vocabulary (using THRESHOLDS constants)
+        if ai_vocab_per_1k <= THRESHOLDS.AI_VOCAB_MEDIUM_THRESHOLD:  # <= 2.0
+            vocab_penalty = 0
+        elif ai_vocab_per_1k <= THRESHOLDS.AI_VOCAB_LOW_THRESHOLD:  # <= 5.0
+            vocab_penalty = 25
+        elif ai_vocab_per_1k <= THRESHOLDS.AI_VOCAB_VERY_LOW_THRESHOLD:  # <= 10.0
+            vocab_penalty = 50
+        else:  # > 10.0
+            vocab_penalty = 75
+
+        # Penalty for formulaic transitions
+        if transition_count <= 1:
+            transition_penalty = 0
+        elif transition_count <= 3:
+            transition_penalty = 15
+        else:
+            transition_penalty = 25
+
+        score -= vocab_penalty
+        score -= transition_penalty
+
+        self._validate_score(score)
+        return max(0.0, min(100.0, score))
+
+    def get_recommendations(self, score: float, metrics: Dict[str, Any]) -> List[str]:
+        """
+        Generate actionable recommendations based on score and metrics.
+
+        Args:
+            score: Current score from calculate_score()
+            metrics: Raw metrics from analyze()
+
+        Returns:
+            List of recommendation strings
+        """
+        recommendations = []
+
+        ai_vocab = metrics.get('ai_vocabulary', {})
+        transitions = metrics.get('formulaic_transitions', {})
+
+        # Recommendation for AI vocabulary
+        if ai_vocab.get('per_1k', 0) >= THRESHOLDS.AI_VOCAB_MEDIUM_THRESHOLD:  # >= 2.0
+            words_list = ', '.join(ai_vocab.get('words', [])[:5])
+            recommendations.append(
+                f"Reduce AI vocabulary from {ai_vocab.get('per_1k', 0):.1f} to <{THRESHOLDS.AI_VOCAB_MEDIUM_THRESHOLD} per 1k words. "
+                f"Replace words like: {words_list}"
+            )
+
+        # Recommendation for formulaic transitions
+        if transitions.get('count', 0) > 1:
+            examples = ', '.join(transitions.get('transitions', [])[:3])
+            recommendations.append(
+                f"Reduce formulaic transitions (found {transitions.get('count', 0)}). "
+                f"Replace transitions like: {examples}"
+            )
+
+        return recommendations
+
+    def get_tiers(self) -> Dict[str, Tuple[float, float]]:
+        """
+        Define score tier ranges for this dimension.
+
+        Returns:
+            Dict mapping tier name to (min_score, max_score) tuple
+        """
+        return {
+            'excellent': (90.0, 100.0),
+            'good': (75.0, 89.9),
+            'acceptable': (50.0, 74.9),
+            'poor': (0.0, 49.9)
+        }
+
+    # ========================================================================
+    # LEGACY COMPATIBILITY
+    # ========================================================================
+
     def score(self, analysis_results: Dict[str, Any]) -> tuple:
         """
         Calculate perplexity score.
@@ -124,13 +321,13 @@ class PerplexityAnalyzer(DimensionAnalyzer):
         ai_per_1k = analysis_results.get('ai_vocabulary_per_1k', 0)
 
         if ai_per_1k <= THRESHOLDS.AI_VOCAB_MEDIUM_THRESHOLD:
-            return (10.0, "HIGH")
+            return (10.0, "EXCELLENT")
         elif ai_per_1k <= THRESHOLDS.AI_VOCAB_LOW_THRESHOLD:
-            return (7.0, "MEDIUM")
+            return (7.0, "GOOD")
         elif ai_per_1k <= THRESHOLDS.AI_VOCAB_VERY_LOW_THRESHOLD:
-            return (4.0, "LOW")
+            return (4.0, "NEEDS WORK")
         else:
-            return (2.0, "VERY LOW")
+            return (2.0, "POOR")
 
     def _analyze_ai_vocabulary(self, text: str) -> Dict:
         """Detect AI-characteristic vocabulary."""
@@ -224,3 +421,10 @@ class PerplexityAnalyzer(DimensionAnalyzer):
                     ))
 
         return instances
+
+
+# Backward compatibility alias
+PerplexityAnalyzer = PerplexityDimension
+
+# Module-level singleton - triggers self-registration on module import
+_instance = PerplexityDimension()

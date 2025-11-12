@@ -1,0 +1,2 @@
+[console_scripts]
+analyze-ai-patterns = ai_pattern_analyzer.cli.main:main

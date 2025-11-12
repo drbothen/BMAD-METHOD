@@ -18,3 +18,4 @@ transformers>=4.30.0
 scipy>=1.10.0
 
 # Utilities
+click>=8.0.0

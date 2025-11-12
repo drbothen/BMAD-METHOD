@@ -4,6 +4,7 @@ Tests for SyntacticAnalyzer - syntactic complexity and structure patterns.
 
 import pytest
 from ai_pattern_analyzer.dimensions.syntactic import SyntacticAnalyzer
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 
 # All dependencies are now required
 HAS_SPACY = True
@@ -12,6 +13,8 @@ HAS_SPACY = True
 @pytest.fixture
 def analyzer():
     """Create SyntacticAnalyzer instance."""
+    # Clear registry before each test to avoid duplicate registration errors
+    DimensionRegistry.clear()
     return SyntacticAnalyzer()
 
 

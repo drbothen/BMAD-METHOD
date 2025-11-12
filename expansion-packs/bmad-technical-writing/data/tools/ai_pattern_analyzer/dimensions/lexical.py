@@ -10,12 +10,16 @@ Analyzes lexical diversity and vocabulary patterns:
 Requires optional dependency: nltk (for advanced metrics)
 
 Low lexical diversity (repetitive vocabulary) is an AI signature.
+
+Refactored in Story 1.4 to use DimensionStrategy pattern with self-registration.
 """
 
 import re
 import sys
-from typing import Dict, List, Any
-from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
+from typing import Dict, List, Any, Optional, Tuple
+from ai_pattern_analyzer.dimensions.base_strategy import DimensionStrategy
+from ai_pattern_analyzer.core.analysis_config import AnalysisConfig, DEFAULT_CONFIG
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
 
 # Required imports
@@ -23,28 +27,112 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer
 
 
-class LexicalAnalyzer(DimensionAnalyzer):
-    """Analyzes lexical dimension - vocabulary diversity (TTR)."""
+class LexicalDimension(DimensionStrategy):
+    """
+    Analyzes lexical dimension - vocabulary diversity (TTR, MTLD).
 
-    def analyze(self, text: str, lines: List[str] = None, **kwargs) -> Dict[str, Any]:
+    Weight: 3.0% of total score
+    Tier: SUPPORTING
+
+    Detects:
+    - Low lexical diversity (repetitive vocabulary - AI signature)
+    - Vocabulary richness patterns
+    """
+
+    def __init__(self):
+        """Initialize and self-register with dimension registry."""
+        super().__init__()
+        # Self-register with registry
+        DimensionRegistry.register(self)
+
+    # ========================================================================
+    # REQUIRED PROPERTIES - DimensionStrategy Contract
+    # ========================================================================
+
+    @property
+    def dimension_name(self) -> str:
+        """Return dimension identifier."""
+        return "lexical"
+
+    @property
+    def weight(self) -> float:
+        """Return dimension weight (3% of total score)."""
+        return 3.0
+
+    @property
+    def tier(self) -> str:
+        """Return dimension tier."""
+        return "SUPPORTING"
+
+    @property
+    def description(self) -> str:
+        """Return dimension description."""
+        return "Analyzes vocabulary diversity using TTR, MTLD, and stemmed diversity"
+
+    # ========================================================================
+    # ANALYSIS METHODS
+    # ========================================================================
+
+    def analyze(
+        self,
+        text: str,
+        lines: List[str] = None,
+        config: Optional[AnalysisConfig] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
         """
         Analyze text for lexical diversity.
 
         Args:
             text: Full text content
             lines: Text split into lines (optional)
+            config: Analysis configuration (None = current behavior)
             **kwargs: Additional parameters
 
         Returns:
             Dict with lexical analysis results
         """
-        lexical = self._analyze_lexical_diversity(text)
+        config = config or DEFAULT_CONFIG
+        total_text_length = len(text)
 
-        nltk_metrics = self._analyze_nltk_lexical(text)
-        lexical.update(nltk_metrics)
+        # Prepare text based on mode (FAST/ADAPTIVE/SAMPLING/FULL)
+        prepared = self._prepare_text(text, config, self.dimension_name)
 
+        # Handle sampled analysis (returns list of (position, sample_text) tuples)
+        if isinstance(prepared, list):
+            samples = prepared
+            sample_results = []
+
+            for position, sample_text in samples:
+                lexical = self._analyze_lexical_diversity(sample_text)
+                nltk_metrics = self._analyze_nltk_lexical(sample_text)
+                lexical.update(nltk_metrics)
+                sample_results.append({'lexical_diversity': lexical})
+
+            # Aggregate metrics from all samples
+            aggregated = self._aggregate_sampled_metrics(sample_results)
+            analyzed_length = sum(len(sample_text) for _, sample_text in samples)
+            samples_analyzed = len(samples)
+
+        # Handle direct analysis (returns string - truncated or full text)
+        else:
+            analyzed_text = prepared
+            lexical = self._analyze_lexical_diversity(analyzed_text)
+            nltk_metrics = self._analyze_nltk_lexical(analyzed_text)
+            lexical.update(nltk_metrics)
+            aggregated = {'lexical_diversity': lexical}
+            analyzed_length = len(analyzed_text)
+            samples_analyzed = 1
+
+        # Add consistent metadata
         return {
-            'lexical_diversity': lexical,
+            **aggregated,
+            'available': True,
+            'analysis_mode': config.mode.value,
+            'samples_analyzed': samples_analyzed,
+            'total_text_length': total_text_length,
+            'analyzed_text_length': analyzed_length,
+            'coverage_percentage': (analyzed_length / total_text_length * 100.0) if total_text_length > 0 else 0.0
         }
 
     def analyze_detailed(self, lines: List[str], html_comment_checker=None) -> Dict[str, Any]:
@@ -59,7 +147,7 @@ class LexicalAnalyzer(DimensionAnalyzer):
             Dict with analysis results
         """
         # Lexical analysis is typically aggregate, not line-by-line
-        text = '\n'.join(lines)
+        text = 'n'.join(lines)
         return self.analyze(text, lines)
 
     def score(self, analysis_results: Dict[str, Any]) -> tuple:
@@ -83,15 +171,116 @@ class LexicalAnalyzer(DimensionAnalyzer):
         else:
             return (2.0, "VERY LOW")
 
+    # ========================================================================
+    # SCORING METHODS - DimensionStrategy Contract
+    # ========================================================================
+
+    def calculate_score(self, metrics: Dict[str, Any]) -> float:
+        """
+        Calculate 0-100 score based on lexical diversity metrics.
+
+        Scoring logic extracted from dual_score_calculator.py.
+        Higher lexical diversity = higher score (human-like).
+        Low diversity (repetitive vocabulary) = low score (AI-like).
+
+        Algorithm:
+        - TTR >= 0.60 = HIGH (100 score)
+        - TTR >= 0.45 = MEDIUM (75 score)
+        - TTR >= 0.30 = LOW (50 score)
+        - TTR < 0.30 = VERY LOW (25 score)
+
+        Args:
+            metrics: Output from analyze() method
+
+        Returns:
+            Score from 0.0 (AI-like) to 100.0 (human-like)
+        """
+        lexical = metrics.get('lexical_diversity', {})
+        ttr = lexical.get('diversity', 0.0)
+
+        if ttr >= 0.60:
+            score = 100.0
+        elif ttr >= 0.45:
+            score = 75.0
+        elif ttr >= 0.30:
+            score = 50.0
+        else:
+            score = 25.0
+
+        self._validate_score(score)
+        return score
+
+    def get_recommendations(self, score: float, metrics: Dict[str, Any]) -> List[str]:
+        """
+        Generate actionable recommendations based on score and metrics.
+
+        Args:
+            score: Current score from calculate_score()
+            metrics: Raw metrics from analyze()
+
+        Returns:
+            List of recommendation strings
+        """
+        recommendations = []
+
+        lexical = metrics.get('lexical_diversity', {})
+        ttr = lexical.get('diversity', 0.0)
+        unique_words = lexical.get('unique', 0)
+        mtld = lexical.get('mtld_score', 0)
+
+        if ttr < 0.45:
+            recommendations.append(
+                f"Increase vocabulary diversity (TTR={ttr:.2f}, target ≥0.45). "
+                f"Use synonyms and varied expressions to avoid repetition."
+            )
+
+        if ttr < 0.30:
+            recommendations.append(
+                f"Very low lexical diversity detected (TTR={ttr:.2f}). "
+                f"This is a strong AI signature. Rewrite using more varied vocabulary."
+            )
+
+        if mtld > 0 and mtld < 50:
+            recommendations.append(
+                f"MTLD score is low ({mtld:.1f}). "
+                f"Increase vocabulary variety throughout the text, not just locally."
+            )
+
+        if unique_words > 0 and unique_words < 100:
+            recommendations.append(
+                f"Limited vocabulary ({unique_words} unique words). "
+                f"Expand word choice and use more specific terminology."
+            )
+
+        return recommendations
+
+    def get_tiers(self) -> Dict[str, Tuple[float, float]]:
+        """
+        Define score tier ranges for this dimension.
+
+        Returns:
+            Dict mapping tier name to (min_score, max_score) tuple
+        """
+        return {
+            'excellent': (90.0, 100.0),
+            'good': (75.0, 89.9),
+            'acceptable': (50.0, 74.9),
+            'poor': (0.0, 49.9)
+        }
+
+    # ========================================================================
+    # HELPER METHODS
+    # ========================================================================
+
     def _analyze_lexical_diversity(self, text: str) -> Dict:
         """Calculate Type-Token Ratio (lexical diversity)."""
         # Remove code blocks
-        text = re.sub(r'```[\s\S]*?```', '', text)
+        text = re.sub(r'```[sS]*?```', '', text)
         # Get all words (lowercase for uniqueness)
         words = [w.lower() for w in re.findall(r"\b[\w'-]+\b", text)]
 
         if not words:
-            return {'unique': 0, 'diversity': 0}
+            return {'unique': 0, 'diversity': 0.0}
 
         unique = len(set(words))
         diversity = unique / len(words)
@@ -105,7 +294,7 @@ class LexicalAnalyzer(DimensionAnalyzer):
         """Enhanced lexical diversity using NLTK."""
         try:
             # Remove code blocks
-            text = re.sub(r'```[\s\S]*?```', '', text)
+            text = re.sub(r'```[sS]*?```', '', text)
 
             # Tokenize
             words = word_tokenize(text.lower())
@@ -163,3 +352,10 @@ class LexicalAnalyzer(DimensionAnalyzer):
         backward = _mtld_direction(words[::-1])
 
         return (forward + backward) / 2
+
+
+# Backward compatibility alias
+LexicalAnalyzer = LexicalDimension
+
+# Module-level singleton - triggers self-registration on module import
+_instance = LexicalDimension()

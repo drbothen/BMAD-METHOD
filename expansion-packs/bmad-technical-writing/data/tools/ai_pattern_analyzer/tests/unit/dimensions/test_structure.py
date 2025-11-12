@@ -15,6 +15,7 @@ including 9 Phase 3 AST-based methods for advanced structural analysis.
 import pytest
 from unittest.mock import Mock, MagicMock, patch
 from ai_pattern_analyzer.dimensions.structure import StructureAnalyzer
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 from ai_pattern_analyzer.core.results import HeadingIssue
 
 
@@ -25,6 +26,8 @@ from ai_pattern_analyzer.core.results import HeadingIssue
 @pytest.fixture
 def analyzer():
     """Create a StructureAnalyzer instance."""
+    # Clear registry before each test to avoid duplicate registration errors
+    DimensionRegistry.clear()
     return StructureAnalyzer()
 
 

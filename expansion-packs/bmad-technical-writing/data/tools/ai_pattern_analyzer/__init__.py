@@ -7,7 +7,7 @@ This package provides a modular architecture for AI pattern analysis while
 maintaining backward compatibility with code that imported from the original
 analyze_ai_patterns.py file.
 
-Version: 4.0.0 (Modular Architecture)
+Version: 5.0.0 (Breaking Changes - Deprecated Dimension Removal)
 """
 
 # Core analyzer and result classes
@@ -23,7 +23,6 @@ from ai_pattern_analyzer.core.results import (
     TransitionInstance,
     SentenceBurstinessIssue,
     SyntacticIssue,
-    StylometricIssue,
     FormattingIssue,
     HighPredictabilitySegment
 )
@@ -64,7 +63,6 @@ __all__ = [
     'TransitionInstance',
     'SentenceBurstinessIssue',
     'SyntacticIssue',
-    'StylometricIssue',
     'FormattingIssue',
     'HighPredictabilitySegment',
     # Scoring
@@ -83,4 +81,4 @@ __all__ = [
     'format_dual_score_report',
 ]
 
-__version__ = '4.0.0'
+__version__ = '5.0.0'  # Major version bump - BREAKING CHANGES (Story 2.0)

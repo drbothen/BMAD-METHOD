@@ -4,11 +4,14 @@ Tests for LexicalAnalyzer - vocabulary diversity and richness detection.
 
 import pytest
 from ai_pattern_analyzer.dimensions.lexical import LexicalAnalyzer
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 
 
 @pytest.fixture
 def analyzer():
     """Create LexicalAnalyzer instance."""
+    # Clear registry before each test to avoid duplicate registration errors
+    DimensionRegistry.clear()
     return LexicalAnalyzer()
 
 

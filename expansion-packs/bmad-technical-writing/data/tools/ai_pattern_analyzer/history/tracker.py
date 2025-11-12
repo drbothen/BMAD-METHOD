@@ -71,6 +71,8 @@ class HistoricalScore:
     total_paragraphs: int = 0
     notes: str = ""
     history_version: str = "2.0"
+    analysis_mode: str = "adaptive"  # Analysis mode used (fast, adaptive, sampling, full)
+    analysis_time_seconds: float = 0.0  # Time taken for analysis
 
     # Aggregate scores (v1.0 compatibility)
     detection_risk: float = 0.0
@@ -99,6 +101,8 @@ class HistoricalScore:
             'total_paragraphs': self.total_paragraphs,
             'notes': self.notes,
             'history_version': self.history_version,
+            'analysis_mode': self.analysis_mode,
+            'analysis_time_seconds': self.analysis_time_seconds,
             'detection_risk': self.detection_risk,
             'quality_score': self.quality_score,
             'detection_interpretation': self.detection_interpretation,
@@ -137,6 +141,8 @@ class HistoricalScore:
             total_paragraphs=data.get('total_paragraphs', 0),
             notes=data.get('notes', ''),
             history_version=version,
+            analysis_mode=data.get('analysis_mode', 'adaptive'),
+            analysis_time_seconds=data.get('analysis_time_seconds', 0.0),
             detection_risk=data.get('detection_risk', 0.0),
             quality_score=data.get('quality_score', 0.0),
             detection_interpretation=data.get('detection_interpretation', ''),

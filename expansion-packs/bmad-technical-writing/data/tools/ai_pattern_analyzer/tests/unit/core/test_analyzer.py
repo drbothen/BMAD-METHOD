@@ -91,16 +91,18 @@ class TestInitialization:
         assert analyzer.domain_terms == analyzer.DOMAIN_TERMS_DEFAULT
         assert analyzer.lines == []
 
-        # Check all dimension analyzers are initialized
-        assert analyzer.perplexity_analyzer is not None
-        assert analyzer.burstiness_analyzer is not None
-        assert analyzer.structure_analyzer is not None
-        assert analyzer.formatting_analyzer is not None
-        assert analyzer.voice_analyzer is not None
-        assert analyzer.syntactic_analyzer is not None
-        assert analyzer.lexical_analyzer is not None
-        assert analyzer.stylometric_analyzer is not None
-        assert analyzer.advanced_analyzer is not None
+        # Check dimensions are initialized (new registry-based architecture)
+        assert analyzer.dimensions is not None
+        assert isinstance(analyzer.dimensions, dict)
+        # Verify core dimensions are loaded
+        assert 'perplexity' in analyzer.dimensions
+        assert 'burstiness' in analyzer.dimensions
+        assert 'structure' in analyzer.dimensions
+        assert 'formatting' in analyzer.dimensions
+        assert 'voice' in analyzer.dimensions
+        assert 'lexical' in analyzer.dimensions
+        assert 'readability' in analyzer.dimensions
+        assert 'sentiment' in analyzer.dimensions
 
     def test_init_custom_domain_terms(self, analyzer_with_domain_terms):
         """Test initialization with custom domain terms."""
@@ -535,70 +537,13 @@ class TestFlattenOptionalMetrics:
         assert metrics.get('mtld_score') == 85.0
         assert metrics.get('stemmed_diversity') == 0.68
 
-    def test_flatten_with_gltr(self, analyzer):
-        """Test flattening when GLTR metrics are present - Lines 403-406."""
-        advanced_results = {
-            'gltr': {
-                'top10_percentage': 55.0,
-                'other_metric': 123
-            }
-        }
-
-        metrics = AIPatternAnalyzer._flatten_optional_metrics(
-            analyzer, {}, {}, {}, advanced_results
-        )
-
-        # Verify GLTR metrics are extracted (Lines 403-406 covered)
-        assert metrics.get('gltr_top10_percentage') == 55.0
-        assert metrics.get('gltr_score') == "HIGH"  # < 60 = HIGH
-
-    def test_flatten_with_gltr_low_score(self, analyzer):
-        """Test GLTR score calculation when top10 >= 60 - Line 406."""
-        advanced_results = {
-            'gltr': {
-                'top10_percentage': 75.0
-            }
-        }
-
-        metrics = AIPatternAnalyzer._flatten_optional_metrics(
-            analyzer, {}, {}, {}, advanced_results
-        )
-
-        # Verify LOW score when >= 60 (Line 406 else branch)
-        assert metrics.get('gltr_score') == "LOW"
-
-    def test_flatten_with_advanced_lexical(self, analyzer):
-        """Test flattening when advanced lexical metrics are present - Lines 408-412."""
-        advanced_results = {
-            'advanced_lexical': {
-                'hdd': 0.70,
-                'yules_k': 150.0
-            }
-        }
-
-        metrics = AIPatternAnalyzer._flatten_optional_metrics(
-            analyzer, {}, {}, {}, advanced_results
-        )
-
-        # Verify advanced lexical metrics are extracted (Lines 408-412 covered)
-        assert metrics.get('hdd_score') == 0.70
-        assert metrics.get('yules_k') == 150.0
-        assert metrics.get('advanced_lexical_score') == "HIGH"  # > 0.65 = HIGH
-
-    def test_flatten_with_advanced_lexical_low(self, analyzer):
-        """Test advanced lexical score when HDD <= 0.65 - Line 412."""
-        advanced_results = {
-            'advanced_lexical': {
-                'hdd': 0.60
-            }
-        }
-
-        metrics = AIPatternAnalyzer._flatten_optional_metrics(
-            analyzer, {}, {}, {}, advanced_results
-        )
-
-        # Verify LOW score when <= 0.65 (Line 412 else branch)
-        assert metrics.get('advanced_lexical_score') == "LOW"
+    # Story 2.0: Removed 4 deprecated tests for v5.0.0
+    # - test_flatten_with_gltr
+    # - test_flatten_with_gltr_low_score
+    # - test_flatten_with_advanced_lexical
+    # - test_flatten_with_advanced_lexical_low
+    # These tested the old _flatten_optional_metrics signature with advanced_results parameter
+    # which was removed when AdvancedDimension was split into PredictabilityDimension and AdvancedLexicalDimension
 
 
 class TestAssessOverallBranches:

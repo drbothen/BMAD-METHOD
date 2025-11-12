@@ -11,14 +11,18 @@ Analyzes syntactic complexity and patterns:
 Requires optional dependency: spaCy
 
 Research: +10% accuracy improvement with enhanced syntactic features
+
+Refactored in Story 1.4 to use DimensionStrategy pattern with self-registration.
 """
 
 import re
 import sys
 import statistics
-from typing import Dict, List, Any
-from ai_pattern_analyzer.dimensions.base import DimensionAnalyzer
+from typing import Dict, List, Any, Tuple, Optional
+from ai_pattern_analyzer.dimensions.base_strategy import DimensionStrategy
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 from ai_pattern_analyzer.core.results import SyntacticIssue
+from ai_pattern_analyzer.core.analysis_config import AnalysisConfig, DEFAULT_CONFIG
 from ai_pattern_analyzer.scoring.dual_score import THRESHOLDS
 
 # Required imports
@@ -26,25 +30,128 @@ import spacy
 nlp_spacy = spacy.load('en_core_web_sm')
 
 
-class SyntacticAnalyzer(DimensionAnalyzer):
-    """Analyzes syntactic dimension - sentence structure complexity."""
+class SyntacticDimension(DimensionStrategy):
+    """
+    Analyzes syntactic dimension - sentence structure complexity.
 
-    def analyze(self, text: str, lines: List[str] = None, **kwargs) -> Dict[str, Any]:
+    Weight: 2.0% of total score
+    Tier: ADVANCED
+
+    Detects:
+    - Low syntactic complexity (AI signature)
+    - Mechanical sentence structure repetition
+    - Shallow dependency trees
+    """
+
+    def __init__(self):
+        """Initialize and self-register with dimension registry."""
+        super().__init__()
+        # Self-register with registry
+        DimensionRegistry.register(self)
+
+    # ========================================================================
+    # REQUIRED PROPERTIES - DimensionStrategy Contract
+    # ========================================================================
+
+    @property
+    def dimension_name(self) -> str:
+        """Return dimension identifier."""
+        return "syntactic"
+
+    @property
+    def weight(self) -> float:
+        """Return dimension weight (2% of total score)."""
+        return 2.0
+
+    @property
+    def tier(self) -> str:
+        """Return dimension tier."""
+        return "ADVANCED"
+
+    @property
+    def description(self) -> str:
+        """Return dimension description."""
+        return "Analyzes syntactic complexity, dependency depth, and structural patterns"
+
+    # ========================================================================
+    # ANALYSIS METHODS
+    # ========================================================================
+
+    def analyze(
+        self,
+        text: str,
+        lines: List[str] = None,
+        config: Optional[AnalysisConfig] = None,
+        **kwargs
+    ) -> Dict[str, Any]:
         """
-        Analyze text for syntactic patterns.
+        Analyze syntactic patterns with configurable modes.
+
+        Modes:
+        - FAST: Analyze first 100k chars (current behavior)
+        - ADAPTIVE: Sample for >100k chars (5-7 sections)
+        - SAMPLING: User-configured sampling
+        - FULL: Analyze entire document (slow for very long docs)
 
         Args:
             text: Full text content
             lines: Text split into lines (optional)
+            config: Analysis configuration (None = ADAPTIVE)
             **kwargs: Additional parameters
 
         Returns:
-            Dict with syntactic analysis results
+            Dict with syntactic analysis results + metadata:
+            - syntactic_repetition_score: Structural repetition (0-1)
+            - pos_diversity: POS tag diversity (0-1)
+            - avg_dependency_depth: Avg tree depth (AI: 2-3, Human: 4-6)
+            - subordination_index: Subordinate clauses ratio
+            - passive_constructions: Count of passive voice
+            - morphological_richness: Unique lemma count
+            - available: Whether analysis succeeded
+            - analysis_mode: Mode used (fast/adaptive/sampling/full)
+            - samples_analyzed: Number of samples processed
+            - total_text_length: Full document length
+            - analyzed_text_length: Actual chars analyzed
+            - coverage_percentage: % of document analyzed
         """
-        syntactic = self._analyze_syntactic_patterns(text)
+        config = config or DEFAULT_CONFIG
+        total_text_length = len(text)
 
+        # Prepare text based on mode (FAST/ADAPTIVE/SAMPLING/FULL)
+        prepared = self._prepare_text(text, config, self.dimension_name)
+
+        # Handle sampled analysis (returns list of (position, sample_text) tuples)
+        if isinstance(prepared, list):
+            samples = prepared
+            sample_results = []
+
+            for position, sample_text in samples:
+                syntactic_metrics = self._analyze_syntactic_patterns(sample_text)
+                sample_results.append(syntactic_metrics)
+
+            # Aggregate metrics from all samples
+            aggregated = self._aggregate_syntactic_metrics(sample_results)
+            analyzed_length = sum(len(sample_text) for _, sample_text in samples)
+            samples_analyzed = len(samples)
+
+        # Handle direct analysis (returns string - truncated or full text)
+        else:
+            analyzed_text = prepared
+            syntactic_metrics = self._analyze_syntactic_patterns(analyzed_text)
+            aggregated = syntactic_metrics
+            analyzed_length = len(analyzed_text)
+            samples_analyzed = 1
+
+        # Add consistent metadata
         return {
-            'syntactic': syntactic,
+            'syntactic': aggregated,
+            **aggregated,  # Flatten for backward compatibility
+            'available': True,
+            'analysis_mode': config.mode.value,
+            'samples_analyzed': samples_analyzed,
+            'total_text_length': total_text_length,
+            'analyzed_text_length': analyzed_length,
+            'coverage_percentage': (analyzed_length / total_text_length * 100.0) if total_text_length > 0 else 0.0
         }
 
     def analyze_detailed(self, lines: List[str], html_comment_checker=None) -> List[SyntacticIssue]:
@@ -85,22 +192,136 @@ class SyntacticAnalyzer(DimensionAnalyzer):
         else:
             return (2.0, "VERY LOW")  # Mechanical repetition (AI-like)
 
+    # ========================================================================
+    # SCORING METHODS - DimensionStrategy Contract
+    # ========================================================================
+
+    def calculate_score(self, metrics: Dict[str, Any]) -> float:
+        """
+        Calculate 0-100 score based on syntactic metrics.
+
+        Scoring logic extracted from dual_score_calculator.py.
+        Higher syntactic variety = higher score (human-like).
+        Mechanical repetition = low score (AI-like).
+
+        Algorithm:
+        - Syntactic repetition <= 0.3 = HIGH (100 score)
+        - Syntactic repetition <= 0.5 = MEDIUM (75 score)
+        - Syntactic repetition <= 0.7 = LOW (50 score)
+        - Syntactic repetition > 0.7 = VERY LOW (25 score)
+
+        Args:
+            metrics: Output from analyze() method
+
+        Returns:
+            Score from 0.0 (AI-like) to 100.0 (human-like)
+        """
+        syntactic = metrics.get('syntactic')
+        if not syntactic:
+            return 50.0  # Neutral score for missing data
+
+        repetition = syntactic.get('syntactic_repetition_score', 0.5)
+
+        # Lower repetition = more varied (better)
+        if repetition <= 0.3:
+            score = 100.0  # Varied structures
+        elif repetition <= 0.5:
+            score = 75.0
+        elif repetition <= 0.7:
+            score = 50.0
+        else:
+            score = 25.0  # Mechanical repetition (AI-like)
+
+        self._validate_score(score)
+        return score
+
+    def get_recommendations(self, score: float, metrics: Dict[str, Any]) -> List[str]:
+        """
+        Generate actionable recommendations based on score and metrics.
+
+        Args:
+            score: Current score from calculate_score()
+            metrics: Raw metrics from analyze()
+
+        Returns:
+            List of recommendation strings
+        """
+        recommendations = []
+
+        syntactic = metrics.get('syntactic', {})
+        repetition = syntactic.get('syntactic_repetition_score', 0.5)
+        avg_depth = syntactic.get('avg_dependency_depth', 0)
+        subordination = syntactic.get('subordination_index', 0)
+
+        if repetition > 0.5:
+            recommendations.append(
+                f"Reduce syntactic repetition (score={repetition:.2f}, target ≤0.3). "
+                f"Vary sentence structures: use different clause orderings, mix simple/complex/compound sentences."
+            )
+
+        if avg_depth < 3:
+            recommendations.append(
+                f"Increase sentence complexity (depth={avg_depth:.1f}, target ≥4). "
+                f"Use subordinate clauses, relative clauses, and embedded structures."
+            )
+
+        if subordination < 0.15:
+            recommendations.append(
+                f"Add more subordination (index={subordination:.2f}, target ≥0.15). "
+                f"Use 'because', 'although', 'while', 'when' to create complex relationships."
+            )
+
+        if repetition > 0.7:
+            recommendations.append(
+                "Very high structural repetition detected (strong AI signal). "
+                "This suggests mechanical sentence generation. Thoroughly rewrite with varied syntax."
+            )
+
+        return recommendations
+
+    def get_tiers(self) -> Dict[str, Tuple[float, float]]:
+        """
+        Define score tier ranges for this dimension.
+
+        Returns:
+            Dict mapping tier name to (min_score, max_score) tuple
+        """
+        return {
+            'excellent': (90.0, 100.0),
+            'good': (75.0, 89.9),
+            'acceptable': (50.0, 74.9),
+            'poor': (0.0, 49.9)
+        }
+
+    # ========================================================================
+    # HELPER METHODS
+    # ========================================================================
+
     def _analyze_syntactic_patterns(self, text: str) -> Dict:
         """
         Enhanced syntactic analysis using spaCy.
+
+        NOTE: This method no longer truncates text - truncation/sampling
+        is handled by caller via _prepare_text().
 
         Metrics:
         - Dependency tree depth (AI: 2-3, Human: 4-6)
         - Subordination index (AI: <0.1, Human: >0.15)
         - Passive constructions (AI tends to overuse)
         - Morphological richness (unique lemmas)
+
+        Args:
+            text: Text to analyze (pre-truncated/sampled by caller)
+
+        Returns:
+            Dict with syntactic metrics
         """
         try:
             # Remove code blocks
             text = re.sub(r'```[\s\S]*?```', '', text)
 
-            # Process with spaCy (limit to first 100k chars for performance)
-            doc = nlp_spacy(text[:100000])
+            # Process with spaCy (now processes full text, pre-truncated/sampled by caller)
+            doc = nlp_spacy(text)
 
             # Extract sentence structures (POS patterns)
             sentence_structures = []
@@ -178,6 +399,53 @@ class SyntacticAnalyzer(DimensionAnalyzer):
             print(f"Warning: Syntactic analysis failed: {e}", file=sys.stderr)
             return {'available': False}
 
+    def _aggregate_syntactic_metrics(self, sample_metrics: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Aggregate syntactic metrics from multiple samples.
+
+        Strategy:
+        - Repetition score, POS diversity, subordination index: Mean across samples
+        - Avg dependency depth: Mean across samples (all samples contribute equally)
+        - Passive constructions: Sum across samples
+        - Morphological richness: Sum of unique lemmas (union, not sum of counts)
+
+        NOTE: For simplicity, we use unweighted means for most metrics.
+        Future enhancement: weight by sentence count or text length.
+
+        Args:
+            sample_metrics: List of syntactic metric dicts from each sample
+
+        Returns:
+            Aggregated syntactic metrics dict
+        """
+        if not sample_metrics:
+            return {'available': False}
+
+        if len(sample_metrics) == 1:
+            return sample_metrics[0]
+
+        # Extract values for each metric (handle missing keys gracefully)
+        repetition_scores = [m.get('syntactic_repetition_score', 0) for m in sample_metrics]
+        pos_diversities = [m.get('pos_diversity', 0) for m in sample_metrics]
+        avg_depths = [m.get('avg_dependency_depth', 0) for m in sample_metrics]
+        subordination_indices = [m.get('subordination_index', 0) for m in sample_metrics]
+
+        # Counts to sum
+        passive_counts = [m.get('passive_constructions', 0) for m in sample_metrics]
+        morphological_counts = [m.get('morphological_richness', 0) for m in sample_metrics]
+
+        # Calculate means
+        return {
+            'available': True,
+            'syntactic_repetition_score': round(sum(repetition_scores) / len(repetition_scores), 3),
+            'pos_diversity': round(sum(pos_diversities) / len(pos_diversities), 3),
+            'avg_dependency_depth': round(sum(avg_depths) / len(avg_depths), 2),
+            'avg_tree_depth': round(sum(avg_depths) / len(avg_depths), 2),  # Alias
+            'subordination_index': round(sum(subordination_indices) / len(subordination_indices), 3),
+            'passive_constructions': sum(passive_counts),
+            'morphological_richness': sum(morphological_counts)  # Sum of unique lemmas from each sample
+        }
+
     def _analyze_syntactic_issues_detailed(self, lines: List[str], html_comment_checker=None) -> List[SyntacticIssue]:
         """Detect syntactic complexity issues (passive voice, shallow trees, low subordination)."""
         issues = []
@@ -248,3 +516,10 @@ class SyntacticAnalyzer(DimensionAnalyzer):
             print(f"Warning: Syntactic analysis failed: {e}", file=sys.stderr)
 
         return issues
+
+
+# Backward compatibility alias
+SyntacticAnalyzer = SyntacticDimension
+
+# Module-level singleton - triggers self-registration on module import
+_instance = SyntacticDimension()

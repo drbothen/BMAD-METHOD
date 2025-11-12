@@ -14,6 +14,7 @@ Em-dash analysis is the STRONGEST AI signal (95% accuracy).
 
 import pytest
 from ai_pattern_analyzer.dimensions.formatting import FormattingAnalyzer
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
 from ai_pattern_analyzer.core.results import EmDashInstance, FormattingIssue
 
 
@@ -24,6 +25,8 @@ from ai_pattern_analyzer.core.results import EmDashInstance, FormattingIssue
 @pytest.fixture
 def analyzer():
     """Create a FormattingAnalyzer instance."""
+    # Clear registry before each test to avoid duplicate registration errors
+    DimensionRegistry.clear()
     return FormattingAnalyzer()
 
 

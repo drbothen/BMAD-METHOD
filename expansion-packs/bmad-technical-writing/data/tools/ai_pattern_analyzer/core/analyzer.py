@@ -23,6 +23,7 @@ from ai_pattern_analyzer.core.results import (
     VocabInstance, HeadingIssue, UniformParagraph,
     EmDashInstance, TransitionInstance
 )
+from ai_pattern_analyzer.core.analysis_config import AnalysisConfig, DEFAULT_CONFIG
 
 # Scoring and history
 from ai_pattern_analyzer.scoring.dual_score import (
@@ -32,16 +33,11 @@ from ai_pattern_analyzer.scoring.dual_score import (
 from ai_pattern_analyzer.history.tracker import ScoreHistory, HistoricalScore
 from ai_pattern_analyzer.utils.text_processing import safe_divide, safe_ratio
 
-# Dimension analyzers
-from ai_pattern_analyzer.dimensions.perplexity import PerplexityAnalyzer
-from ai_pattern_analyzer.dimensions.burstiness import BurstinessAnalyzer
-from ai_pattern_analyzer.dimensions.structure import StructureAnalyzer
-from ai_pattern_analyzer.dimensions.formatting import FormattingAnalyzer
-from ai_pattern_analyzer.dimensions.voice import VoiceAnalyzer
-from ai_pattern_analyzer.dimensions.syntactic import SyntacticAnalyzer
-from ai_pattern_analyzer.dimensions.lexical import LexicalAnalyzer
-from ai_pattern_analyzer.dimensions.stylometric import StylometricAnalyzer
-from ai_pattern_analyzer.dimensions.advanced import AdvancedAnalyzer
+# Registry-based dimension loading (Story 1.4.11)
+from ai_pattern_analyzer.core.dimension_registry import DimensionRegistry
+from ai_pattern_analyzer.core.dimension_loader import DimensionLoader
+
+# Dual score calculator
 from ai_pattern_analyzer.scoring.dual_score_calculator import calculate_dual_score as _calculate_dual_score
 
 # Required dependencies
@@ -126,18 +122,21 @@ class AIPatternAnalyzer:
         r'\bSIEM\b', r'\bIDS\b', r'\bIPS\b',
     ]
 
-    def __init__(self, domain_terms: Optional[List[str]] = None):
+    def __init__(
+        self,
+        domain_terms: Optional[List[str]] = None,
+        config: Optional[AnalysisConfig] = None
+    ):
         """
-        Initialize analyzer with optional custom domain terms.
-
-        Pre-compiles all regex patterns for 20-30% performance improvement.
-        Instantiates all dimension analyzers.
+        Initialize analyzer with config-driven dimension loading.
 
         Args:
-            domain_terms: Optional list of domain-specific regex patterns
+            domain_terms: Optional technical terms for voice analysis
+            config: Optional AnalysisConfig (uses DEFAULT_CONFIG if not provided)
         """
         self.domain_terms = domain_terms or self.DOMAIN_TERMS_DEFAULT
         self.lines = []  # Will store line-by-line content for detailed mode
+        self.config = config or DEFAULT_CONFIG
 
         # HTML comment pattern (metadata blocks to ignore)
         self._html_comment_pattern = re.compile(r'<!--.*?-->', re.DOTALL)
@@ -146,16 +145,38 @@ class AIPatternAnalyzer:
         self._markdown_parser = None
         self._ast_cache = {}
 
-        # Initialize all dimension analyzers
-        self.perplexity_analyzer = PerplexityAnalyzer()
-        self.burstiness_analyzer = BurstinessAnalyzer()
-        self.structure_analyzer = StructureAnalyzer()
-        self.formatting_analyzer = FormattingAnalyzer()
-        self.voice_analyzer = VoiceAnalyzer()
-        self.syntactic_analyzer = SyntacticAnalyzer()
-        self.lexical_analyzer = LexicalAnalyzer()
-        self.stylometric_analyzer = StylometricAnalyzer()
-        self.advanced_analyzer = AdvancedAnalyzer()
+        # Story 1.4.11: Config-driven dimension loading via DimensionLoader
+        # Register custom profiles from config if provided
+        if self.config.custom_profiles:
+            for profile_name, dimensions in self.config.custom_profiles.items():
+                DimensionLoader.register_custom_profile(profile_name, dimensions)
+                print(f"Registered custom profile '{profile_name}' with dimensions: {dimensions}",
+                      file=sys.stderr)
+
+        # Load ONLY configured dimensions (lazy, selective loading)
+        loader = DimensionLoader()
+        load_results = loader.load_from_config(self.config)
+
+        # Validate load results
+        if load_results['failed']:
+            failed_str = ', '.join(f"{k}: {v}" for k, v in load_results['failed'].items())
+            raise RuntimeError(f"Failed to load dimensions: {failed_str}")
+
+        # Build dimensions dict from ONLY the dimensions loaded in this session
+        self.dimensions = {}
+        for dim_name in load_results['loaded']:
+            if DimensionRegistry.has(dim_name):
+                self.dimensions[dim_name] = DimensionRegistry.get(dim_name)
+
+        # Log what was loaded
+        loaded_count = len(load_results['loaded'])
+        profile = self.config.dimension_profile
+        print(f"Loaded {loaded_count} dimensions from profile '{profile}': {load_results['loaded']}",
+              file=sys.stderr)
+
+        # Validate expected dimensions loaded
+        if loaded_count == 0:
+            raise RuntimeError("No dimensions loaded - cannot perform analysis")
 
     # ========================================================================
     # AST PARSING HELPERS (marko)
@@ -236,7 +257,11 @@ class AIPatternAnalyzer:
     # MAIN ANALYSIS METHOD
     # ========================================================================
 
-    def analyze_file(self, file_path: str) -> AnalysisResults:
+    def analyze_file(
+        self,
+        file_path: str,
+        config: Optional[AnalysisConfig] = None
+    ) -> AnalysisResults:
         """
         Analyze a single markdown file for AI patterns.
 
@@ -245,6 +270,7 @@ class AIPatternAnalyzer:
 
         Args:
             file_path: Path to markdown file to analyze
+            config: Analysis configuration (None = current behavior, uses DEFAULT_CONFIG)
 
         Returns:
             AnalysisResults object with complete analysis
@@ -252,6 +278,9 @@ class AIPatternAnalyzer:
         Raises:
             FileNotFoundError: If file doesn't exist
         """
+        # Story 1.4.6: Infrastructure only - config parameter added, threaded to all dimensions
+        config = config or DEFAULT_CONFIG
+
         path = Path(file_path)
         if not path.exists():
             raise FileNotFoundError(f"File not found: {file_path}")
@@ -265,21 +294,47 @@ class AIPatternAnalyzer:
         # Split into lines for detailed analysis
         lines = text.splitlines()
 
-        # Run all dimension analyses
+        # Run all dimension analyses (Story 1.4.11: Registry-based analysis)
         word_count = self._count_words(text)
 
-        # Core analyses using dimension analyzers
-        perplexity_results = self.perplexity_analyzer.analyze(text, lines)
-        burstiness_results = self.burstiness_analyzer.analyze(text, lines)
-        structure_results = self.structure_analyzer.analyze(text, lines, word_count=word_count)
-        formatting_results = self.formatting_analyzer.analyze(text, lines, word_count=word_count)
-        voice_results = self.voice_analyzer.analyze(text, lines)
+        # Registry-based dimension analysis loop
+        dimension_results = {}
+        for dim_name, dim in self.dimensions.items():
+            try:
+                # Prepare kwargs based on dimension needs
+                kwargs = {'config': config}
 
-        # Enhanced analyses (optional dependencies)
-        syntactic_results = self.syntactic_analyzer.analyze(text, lines)
-        lexical_results = self.lexical_analyzer.analyze(text, lines)
-        stylometric_results = self.stylometric_analyzer.analyze(text, lines)
-        advanced_results = self.advanced_analyzer.analyze(text, lines)
+                # Dimension-specific kwargs
+                if dim_name in ['structure', 'formatting']:
+                    kwargs['word_count'] = word_count
+
+                # Execute analysis
+                result = dim.analyze(text, lines, **kwargs)
+                dimension_results[dim_name] = result
+
+            except Exception as e:
+                print(f"Warning: {dim_name} analysis failed: {e}", file=sys.stderr)
+                dimension_results[dim_name] = {'available': False, 'error': str(e)}
+
+        # Story 1.10.1: Enrich dimension results with tier/weight/score metadata
+        dimension_results = self._enrich_dimension_results(dimension_results)
+
+        # Extract dimension results for backward compatibility with result building
+        # These may be empty dicts if dimension not loaded
+        perplexity_results = dimension_results.get('perplexity', {})
+        burstiness_results = dimension_results.get('burstiness', {})
+        structure_results = dimension_results.get('structure', {})
+        formatting_results = dimension_results.get('formatting', {})
+        voice_results = dimension_results.get('voice', {})
+        syntactic_results = dimension_results.get('syntactic', {})
+        sentiment_results = dimension_results.get('sentiment', {})
+        lexical_results = dimension_results.get('lexical', {})
+
+        # New dimensions from Story 1.4.5
+        predictability_results = dimension_results.get('predictability', {})
+        readability_results = dimension_results.get('readability', {})
+        advanced_lexical_results = dimension_results.get('advanced_lexical', {})
+        transition_marker_results = dimension_results.get('transition_marker', {})
 
         # Calculate pages (estimate: 750 words per page)
         estimated_pages = max(1, word_count / 750)
@@ -294,7 +349,9 @@ class AIPatternAnalyzer:
         structure = structure_results.get('structure', {})
         headings = structure_results.get('headings', {})
         voice = voice_results.get('voice', {})
+        technical = voice_results.get('technical_depth', {})
         formatting = formatting_results.get('formatting', {})
+        sentiment = sentiment_results.get('sentiment', {})
 
         results = AnalysisResults(
             file_path=file_path,
@@ -343,8 +400,14 @@ class AIPatternAnalyzer:
             direct_address_count=voice.get('direct_address', 0),
             contraction_count=voice.get('contractions', 0),
 
-            domain_terms_count=0,  # TODO: Implement domain term detection
-            domain_terms_list=[],
+            # Sentiment / AI Detection Ensemble
+            roberta_sentiment_variance=sentiment.get('variance'),
+            roberta_sentiment_mean=sentiment.get('mean'),
+            roberta_emotionally_flat=sentiment.get('emotionally_flat'),
+
+            # Domain terms (from voice analyzer technical_depth)
+            domain_terms_count=technical.get('count', 0),
+            domain_terms_list=technical.get('terms', []),
 
             em_dash_count=formatting.get('em_dashes', 0),
             em_dashes_per_page=formatting.get('em_dashes', 0) / estimated_pages,
@@ -352,28 +415,355 @@ class AIPatternAnalyzer:
             italic_markdown_count=formatting.get('italics', 0),
 
             # Enhanced metrics from dimension analyzers
+            # Story 2.0: Removed deprecated stylometric_results, advanced_results parameters
             **self._flatten_optional_metrics(syntactic_results, lexical_results,
-                                             stylometric_results, advanced_results,
                                              formatting_results, burstiness_results,
                                              structure_results)
         )
 
-        # Calculate all dimension scores
-        results.perplexity_score = self.perplexity_analyzer.score(perplexity_results)[1]
-        results.burstiness_score = self.burstiness_analyzer.score(burstiness_results.get('sentence_burstiness', {}))[1]
-        results.structure_score = self.structure_analyzer.score(structure_results)[1]
-        results.voice_score = self.voice_analyzer.score(voice_results)[1]
-        results.formatting_score = self.formatting_analyzer.score(formatting_results)[1]
-        results.syntactic_score = self.syntactic_analyzer.score(syntactic_results)[1] if syntactic_results.get('syntactic') else "UNKNOWN"
-        results.stylometric_score = self.stylometric_analyzer.score(stylometric_results)[1] if stylometric_results else "UNKNOWN"
+        # Story 1.4.11: Registry-based dimension scoring
+        # Story 2.0: v5.0.0 has exactly 12 dimensions (removed deprecated 'stylometric')
+        # Initialize all known score fields to UNKNOWN (for dimensions not loaded)
+        all_dimensions = ['perplexity', 'burstiness', 'structure', 'formatting', 'voice',
+                         'readability', 'lexical', 'sentiment', 'syntactic', 'predictability',
+                         'advanced_lexical', 'transition_marker']
+        for dim_name in all_dimensions:
+            score_field = f"{dim_name}_score"
+            setattr(results, score_field, "UNKNOWN")
 
-        # Technical score (TODO: implement domain term detection)
-        results.technical_score = "MEDIUM"
+        # Calculate scores for all loaded dimensions dynamically
+        for dim_name, dim in self.dimensions.items():
+            dim_result = dimension_results.get(dim_name, {})
+
+            # Skip if dimension analysis failed or unavailable
+            if not dim_result or not dim_result.get('available', True):
+                score_field = f"{dim_name}_score"
+                setattr(results, score_field, "UNKNOWN")
+                continue
+
+            try:
+                # Prepare metrics for calculate_score()
+                # Each dimension expects different metric structure
+                if dim_name == 'burstiness':
+                    metrics = dim_result.get('sentence_burstiness', {})
+                elif dim_name == 'voice':
+                    # Voice expects full dim_result with 'voice' key
+                    # The voice dict already contains total_words from analyze()
+                    metrics = dim_result
+                else:
+                    metrics = dim_result
+
+                # Calculate score using dimension's calculate_score method
+                raw_score = dim.calculate_score(metrics)
+
+                # Convert to category
+                category = self._convert_score_to_category(raw_score)
+
+                # Set score field dynamically
+                score_field = f"{dim_name}_score"
+                setattr(results, score_field, category)
+
+            except Exception as e:
+                print(f"Warning: Failed to score {dim_name}: {e}", file=sys.stderr)
+                score_field = f"{dim_name}_score"
+                setattr(results, score_field, "UNKNOWN")
+
+        # Special handling for legacy field names
+        # ai_detection_score is from sentiment dimension
+        if 'sentiment' in self.dimensions and hasattr(results, 'sentiment_score'):
+            results.ai_detection_score = results.sentiment_score
+
+        # Technical score (TODO: implement domain term detection in voice dimension)
+        if not hasattr(results, 'technical_score'):
+            results.technical_score = "MEDIUM"
 
         # Overall assessment
         results.overall_assessment = self._assess_overall(results)
 
+        # Store dimension results for dynamic reporting (Story 1.10)
+        results.dimension_results = dimension_results
+        results.dimension_count = len(dimension_results)  # Number of dimensions analyzed
+
         return results
+
+    def analyze_text(
+        self,
+        text: str,
+        config: Optional[AnalysisConfig] = None
+    ) -> AnalysisResults:
+        """
+        Analyze text directly for AI patterns (without file I/O).
+
+        This method provides the same analysis as analyze_file but operates on
+        text strings directly. Useful for testing and integration scenarios.
+
+        Args:
+            text: Text content to analyze
+            config: Analysis configuration (None = current behavior, uses DEFAULT_CONFIG)
+
+        Returns:
+            AnalysisResults object with complete analysis
+        """
+        import tempfile
+        from pathlib import Path
+
+        # Create a temporary file and delegate to analyze_file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False, encoding='utf-8') as f:
+            f.write(text)
+            temp_file = f.name
+
+        try:
+            results = self.analyze_file(temp_file, config=config)
+            return results
+        finally:
+            # Clean up temp file
+            Path(temp_file).unlink(missing_ok=True)
+
+    def _enrich_dimension_results(self, dimension_results: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Enrich raw dimension outputs with tier/weight/score metadata.
+
+        Transforms raw dimension analysis outputs into enriched structure expected
+        by DynamicReporter, adding tier classification, weights, scores, and
+        tier mapping thresholds while preserving all original raw outputs.
+
+        Args:
+            dimension_results: Raw dimension analysis outputs from analyze loop
+                Example input:
+                {
+                    'perplexity': {
+                        'ai_vocabulary': {'count': 5, 'percentage': 2.1},
+                        'formulaic_transitions': {'count': 3}
+                    },
+                    'burstiness': {
+                        'sentence_burstiness': {'cv': 0.15, 'score': 45.0}
+                    }
+                }
+
+        Returns:
+            Enriched dimension_results with added metadata:
+            {
+                'perplexity': {
+                    'tier': 'CORE',
+                    'score': 80.0,
+                    'weight': 0.20,
+                    'tier_mapping': {'low': [0, 40], 'medium': [40, 70], 'high': [70, 100]},
+                    # Original raw outputs preserved:
+                    'ai_vocabulary': {'count': 5, 'percentage': 2.1},
+                    'formulaic_transitions': {'count': 3}
+                },
+                'burstiness': {
+                    'tier': 'CORE',
+                    'score': 45.0,
+                    'weight': 0.20,
+                    'tier_mapping': {'low': [0, 40], 'medium': [40, 70], 'high': [70, 100]},
+                    # Original raw outputs preserved:
+                    'sentence_burstiness': {'cv': 0.15, 'score': 45.0}
+                }
+            }
+        """
+        # Input validation (AC11)
+        if not isinstance(dimension_results, dict):
+            print("Warning: dimension_results is not a dict, returning as-is", file=sys.stderr)
+            return dimension_results
+
+        enriched = {}
+
+        for dim_name, raw_output in dimension_results.items():
+            # Input validation: check raw_output is dict
+            if not isinstance(raw_output, dict):
+                print(f"Warning: {dim_name} output is not a dict, skipping enrichment", file=sys.stderr)
+                enriched[dim_name] = raw_output
+                continue
+
+            # Skip failed dimensions (have 'error' field and 'available': False)
+            if raw_output.get('error') or raw_output.get('available') is False:
+                enriched[dim_name] = raw_output  # Keep error info, don't enrich
+                continue
+
+            # Get dimension metadata from registry
+            tier = self._get_dimension_tier(dim_name)
+            weight = self._get_dimension_weight(tier)
+
+            # Extract normalized score from raw output
+            score = self._extract_dimension_score(dim_name, raw_output)
+
+            # Bounds check score (AC11)
+            if score < 0.0 or score > 100.0:
+                print(f"Warning: {dim_name} score {score} out of bounds, clamping to [0, 100]", file=sys.stderr)
+                score = max(0.0, min(100.0, score))
+
+            # Get tier mapping/thresholds
+            tier_mapping = self._get_tier_mapping(dim_name)
+
+            # Create enriched entry (preserves all raw outputs via spread)
+            enriched[dim_name] = {
+                'tier': tier,
+                'score': score,
+                'weight': weight,
+                'tier_mapping': tier_mapping,
+                **raw_output  # Preserve all original outputs
+            }
+
+        return enriched
+
+    def _get_dimension_tier(self, dim_name: str) -> str:
+        """
+        Get tier classification for dimension from registry.
+
+        Args:
+            dim_name: Dimension name (e.g., 'perplexity', 'burstiness')
+
+        Returns:
+            Tier string: 'CORE', 'ADVANCED', 'STRUCTURAL', 'SUPPORTING', or 'UNKNOWN'
+        """
+        try:
+            dimensions = DimensionRegistry.get_all()
+            for dim in dimensions:
+                if dim.dimension_name == dim_name:
+                    return dim.tier
+            print(f"Warning: Dimension {dim_name} not found in registry, using 'UNKNOWN'", file=sys.stderr)
+            return 'UNKNOWN'
+        except Exception as e:
+            print(f"Error: Getting tier for {dim_name}: {e}", file=sys.stderr)
+            return 'UNKNOWN'
+
+    def _get_dimension_weight(self, tier: str) -> float:
+        """
+        Get weight based on tier.
+
+        Weight Assignment by Tier:
+        - CORE: 0.20 (highest priority)
+        - ADVANCED: 0.10 (medium-high priority)
+        - STRUCTURAL: 0.10 (medium priority)
+        - SUPPORTING: 0.05 (lower priority)
+        - UNKNOWN: 0.05 (default)
+
+        Args:
+            tier: Tier string from registry
+
+        Returns:
+            Weight as float
+        """
+        tier_weights = {
+            'CORE': 0.20,
+            'ADVANCED': 0.10,
+            'STRUCTURAL': 0.10,
+            'SUPPORTING': 0.05,
+            'UNKNOWN': 0.05
+        }
+        weight = tier_weights.get(tier, 0.05)
+
+        # Bounds check (AC11)
+        if weight < 0.0:
+            print(f"Warning: Weight {weight} for tier {tier} is negative, using 0.05", file=sys.stderr)
+            return 0.05
+
+        return weight
+
+    def _extract_dimension_score(self, dim_name: str, raw_output: Dict) -> float:
+        """
+        Extract normalized score (0-100) from dimension's raw output.
+
+        Dimensions store scores in different formats. This method handles
+        the variations and provides a consistent 0-100 score.
+
+        Extraction Strategy:
+        1. Check for 'overall_score' field (preferred)
+        2. Check for 'score' field
+        3. Check for dimension-specific score fields
+        4. Calculate from metrics if possible
+        5. Default to 50.0 (neutral) if no score found
+
+        Args:
+            dim_name: Dimension name for dimension-specific logic
+            raw_output: Raw dimension analysis output dict
+
+        Returns:
+            Normalized score 0-100
+        """
+        # Strategy 1: Direct overall_score
+        if 'overall_score' in raw_output:
+            try:
+                return float(raw_output['overall_score'])
+            except (TypeError, ValueError) as e:
+                print(f"Warning: Error converting overall_score for {dim_name}: {e}", file=sys.stderr)
+
+        # Strategy 2: Direct score field
+        if 'score' in raw_output:
+            try:
+                return float(raw_output['score'])
+            except (TypeError, ValueError) as e:
+                print(f"Warning: Error converting score for {dim_name}: {e}", file=sys.stderr)
+
+        # Strategy 3: Dimension-specific extraction
+        try:
+            if dim_name == 'burstiness':
+                # Burstiness stores score in sentence_burstiness.score
+                if 'sentence_burstiness' in raw_output:
+                    sb = raw_output['sentence_burstiness']
+                    if isinstance(sb, dict) and 'score' in sb:
+                        return float(sb['score'])
+
+            elif dim_name == 'perplexity':
+                # Perplexity might store in metrics or calculate from sub-metrics
+                if 'metrics' in raw_output:
+                    metrics = raw_output['metrics']
+                    if isinstance(metrics, dict) and 'overall_score' in metrics:
+                        return float(metrics['overall_score'])
+
+            elif dim_name == 'structure':
+                # Structure might have structural_score
+                if 'structural_score' in raw_output:
+                    return float(raw_output['structural_score'])
+
+            # Add other dimension-specific extractions as needed
+            # For dimensions following standard format, this section can be minimal
+
+        except (KeyError, TypeError, ValueError) as e:
+            print(f"Warning: Error extracting score for {dim_name}: {e}, using default 50.0", file=sys.stderr)
+
+        # Strategy 4: Call dimension's calculate_score() method if available
+        if dim_name in self.dimensions:
+            dimension = self.dimensions[dim_name]
+            if hasattr(dimension, 'calculate_score') and callable(dimension.calculate_score):
+                try:
+                    score = dimension.calculate_score(raw_output)
+                    # Bounds check
+                    if 0.0 <= score <= 100.0:
+                        return float(score)
+                    else:
+                        print(f"Warning: {dim_name}.calculate_score() returned {score} (out of bounds), clamping", file=sys.stderr)
+                        return max(0.0, min(100.0, float(score)))
+                except Exception as e:
+                    print(f"Warning: Error calling {dim_name}.calculate_score(): {e}", file=sys.stderr)
+
+        # Strategy 5: Default to neutral score
+        print(f"Warning: No score found for dimension {dim_name}, defaulting to 50.0 (neutral)", file=sys.stderr)
+        return 50.0
+
+    def _get_tier_mapping(self, dim_name: str) -> Dict:
+        """
+        Get tier thresholds for dimension.
+
+        Standard Tier Thresholds:
+        - low: [0, 40] - AI-likely, needs attention
+        - medium: [40, 70] - Mixed characteristics
+        - high: [70, 100] - Human-like, acceptable
+
+        Args:
+            dim_name: Dimension name (for future custom thresholds)
+
+        Returns:
+            Dict with tier ranges
+        """
+        # Standard thresholds for all dimensions
+        # Future enhancement: allow dimension-specific overrides
+        return {
+            'low': [0, 40],
+            'medium': [40, 70],
+            'high': [70, 100]
+        }
 
     def _count_words(self, text: str) -> int:
         """Count total words in text, excluding code blocks."""
@@ -383,11 +773,43 @@ class AIPatternAnalyzer:
         words = re.findall(r"\b[\w'-]+\b", text)
         return len(words)
 
+    def _convert_score_to_category(self, raw_score: float, available: bool = True) -> str:
+        """
+        Convert 0-100 score to quality category with positive labeling.
+
+        Scoring Convention:
+        - 100.0 = most human-like (perfect score, no AI patterns)
+        - 0.0 = most AI-like (worst score, strong AI patterns)
+        Higher scores are better.
+
+        Args:
+            raw_score: Raw score from 0-100 (higher = more human-like)
+            available: Whether the metric is available
+
+        Returns:
+            Category string: EXCELLENT, GOOD, NEEDS WORK, POOR, or UNKNOWN
+        """
+        if not available:
+            return "UNKNOWN"
+
+        # Positive labeling - higher scores get better labels
+        if raw_score >= 85:
+            return "EXCELLENT"  # 85-100: Minimal AI patterns detected
+        elif raw_score >= 70:
+            return "GOOD"       # 70-84: Some AI patterns, mostly human-like
+        elif raw_score >= 50:
+            return "NEEDS WORK" # 50-69: Noticeable AI patterns
+        else:
+            return "POOR"       # 0-49: Strong AI patterns detected
+
     def _flatten_optional_metrics(self, syntactic_results, lexical_results,
-                                  stylometric_results, advanced_results,
                                   formatting_results=None, burstiness_results=None,
                                   structure_results=None) -> Dict:
-        """Flatten optional metrics from dimension analyzers into flat dict for AnalysisResults."""
+        """
+        Flatten optional metrics from dimension analyzers into flat dict for AnalysisResults.
+
+        Story 2.0: Removed deprecated stylometric_results and advanced_results parameters.
+        """
         metrics = {}
 
         # Syntactic metrics
@@ -403,24 +825,11 @@ class AIPatternAnalyzer:
             metrics['mtld_score'] = lexical_results['lexical_diversity'].get('mtld_score')
             metrics['stemmed_diversity'] = lexical_results['lexical_diversity'].get('stemmed_diversity')
 
-        # Advanced metrics
-        if advanced_results.get('gltr'):
-            gltr = advanced_results['gltr']
-            metrics['gltr_top10_percentage'] = gltr.get('top10_percentage')
-            metrics['gltr_score'] = "HIGH" if gltr.get('top10_percentage', 100) < 60 else "LOW"
-
-        if advanced_results.get('advanced_lexical'):
-            adv_lex = advanced_results['advanced_lexical']
-            metrics['hdd_score'] = adv_lex.get('hdd')
-            metrics['yules_k'] = adv_lex.get('yules_k')
-            metrics['advanced_lexical_score'] = "HIGH" if adv_lex.get('hdd', 0) > 0.65 else "LOW"
-
-        # MATTR/RTTR metrics (textacy-based advanced lexical diversity)
-        if advanced_results.get('available'):
-            metrics['mattr'] = advanced_results.get('mattr')
-            metrics['mattr_assessment'] = advanced_results.get('mattr_assessment')
-            metrics['rttr'] = advanced_results.get('rttr')
-            metrics['rttr_assessment'] = advanced_results.get('rttr_assessment')
+        # Story 2.0: Removed deprecated stylometric and advanced metrics extraction
+        # These metrics are now provided by the new dimension system:
+        # - Stylometric metrics → ReadabilityDimension, TransitionMarkerDimension
+        # - GLTR metrics → PredictabilityDimension
+        # - Advanced lexical metrics → AdvancedLexicalDimension
 
         # Formatting metrics (Phase 3 enhancements)
         if formatting_results:
@@ -596,7 +1005,7 @@ class AIPatternAnalyzer:
 
     def _assess_overall(self, results: AnalysisResults) -> str:
         """Calculate overall assessment based on all dimension scores."""
-        score_map = {"HIGH": 3, "MEDIUM": 2, "LOW": 1, "VERY LOW": 0, "UNKNOWN": 2}
+        score_map = {"EXCELLENT": 3, "GOOD": 2, "NEEDS WORK": 1, "POOR": 0, "UNKNOWN": 2}
 
         scores = [
             score_map[results.perplexity_score],
@@ -724,12 +1133,23 @@ class AIPatternAnalyzer:
         em_dash_instances = self._analyze_em_dashes_detailed()
         transition_instances = self._analyze_transitions_detailed()
 
-        # Advanced detailed analyses
-        burstiness_issues = self.burstiness_analyzer.analyze_detailed(self.lines, html_checker) if hasattr(self.burstiness_analyzer, 'analyze_detailed') else []
-        syntactic_issues = self.syntactic_analyzer.analyze_detailed(self.lines, html_checker) if hasattr(self.syntactic_analyzer, 'analyze_detailed') else []
-        stylometric_issues = self.stylometric_analyzer.analyze_detailed(self.lines, html_checker) if hasattr(self.stylometric_analyzer, 'analyze_detailed') else []
-        formatting_issues = self.formatting_analyzer.analyze_detailed(self.lines, html_checker) if hasattr(self.formatting_analyzer, 'analyze_detailed') else []
-        high_pred_segments = self.advanced_analyzer.analyze_detailed(self.lines, html_checker) if hasattr(self.advanced_analyzer, 'analyze_detailed') else []
+        # Advanced detailed analyses (using new dimensions dict pattern)
+        burstiness_dim = self.dimensions.get('burstiness')
+        burstiness_issues = burstiness_dim.analyze_detailed(self.lines, html_checker) if burstiness_dim and hasattr(burstiness_dim, 'analyze_detailed') else []
+
+        syntactic_dim = self.dimensions.get('syntactic')
+        syntactic_issues = syntactic_dim.analyze_detailed(self.lines, html_checker) if syntactic_dim and hasattr(syntactic_dim, 'analyze_detailed') else []
+
+        # Story 2.0: Removed deprecated 'stylometric' dimension
+        # Stylometric functionality replaced by ReadabilityDimension and TransitionMarkerDimension
+
+        formatting_dim = self.dimensions.get('formatting')
+        formatting_issues = formatting_dim.analyze_detailed(self.lines, html_checker) if formatting_dim and hasattr(formatting_dim, 'analyze_detailed') else []
+
+        # Story 2.0: High predictability segments come from PredictabilityDimension (GLTR analysis)
+        # Removed fallback to 'advanced_lexical' (deprecated AdvancedDimension split in Story 1.4.5)
+        predictability_dim = self.dimensions.get('predictability')
+        high_pred_segments = predictability_dim.analyze_detailed(self.lines, html_checker) if predictability_dim and hasattr(predictability_dim, 'analyze_detailed') else []
 
         # Build summary dict from standard results
         summary = {
@@ -748,9 +1168,10 @@ class AIPatternAnalyzer:
             'heading_depth': standard_results.heading_depth,
             'heading_parallelism': standard_results.heading_parallelism_score,
             # Advanced metrics
-            'gltr_score': getattr(standard_results, 'gltr_score', "N/A"),
+            # Story 2.0: Removed deprecated 'gltr_score' and 'stylometric_score' fields
+            # gltr_score → predictability_score (PredictabilityDimension)
+            # stylometric_score → readability_score + transition_marker_score
             'advanced_lexical_score': getattr(standard_results, 'advanced_lexical_score', "N/A"),
-            'stylometric_score': getattr(standard_results, 'stylometric_score', "N/A"),
             'ai_detection_score': getattr(standard_results, 'ai_detection_score', "N/A"),
         }
 
@@ -766,7 +1187,7 @@ class AIPatternAnalyzer:
             # Advanced detailed findings
             burstiness_issues=burstiness_issues[:10] if isinstance(burstiness_issues, list) else [],
             syntactic_issues=syntactic_issues[:20] if isinstance(syntactic_issues, list) else [],
-            stylometric_issues=stylometric_issues[:15] if isinstance(stylometric_issues, list) else [],
+            # Story 2.0: Removed stylometric_issues (deprecated StylometricDimension)
             formatting_issues=formatting_issues[:15] if isinstance(formatting_issues, list) else [],
             high_predictability_segments=high_pred_segments[:10] if isinstance(high_pred_segments, list) else [],
         )

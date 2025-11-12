@@ -28,7 +28,8 @@ import textstat
 
 
 def format_dual_score_report(dual_score: DualScore, history: Optional[ScoreHistory] = None,
-                             output_format: str = 'text', as_detailed_section: bool = False) -> str:
+                             output_format: str = 'text', as_detailed_section: bool = False,
+                             mode: Optional[str] = None) -> str:
     """
     Format dual score report with optimization path.
 
@@ -37,6 +38,7 @@ def format_dual_score_report(dual_score: DualScore, history: Optional[ScoreHisto
         history: Optional score history for trend analysis
         output_format: Output format ('text' or 'json')
         as_detailed_section: If True, formats as continuation of standard report (skips header)
+        mode: Optional analysis mode used (e.g., 'fast', 'adaptive', 'sampling', 'full')
     """
 
     if output_format == 'json':
@@ -58,6 +60,10 @@ def format_dual_score_report(dual_score: DualScore, history: Optional[ScoreHisto
             'file_path': dual_score.file_path,
             'total_words': dual_score.total_words
         }
+
+        # Include mode if provided
+        if mode:
+            data['analysis_mode'] = mode
 
         if history and len(history.scores) > 0:
             data['history'] = {
@@ -86,14 +92,16 @@ Effort Required:    {dual_score.estimated_effort}
 """
         else:
             # Standalone report (with full header)
+            mode_str = f" (Mode: {mode.upper()})" if mode else ""
             report = f"""
 {'=' * 80}
-DUAL SCORE ANALYSIS - OPTIMIZATION REPORT
+DUAL SCORE ANALYSIS - OPTIMIZATION REPORT{mode_str}
 {'=' * 80}
 
 File: {dual_score.file_path}
 Words: {dual_score.total_words}
 Timestamp: {dual_score.timestamp}
+{f'Analysis Mode: {mode.upper()}' if mode else ''}
 
 {'─' * 80}
 DUAL SCORES
@@ -180,12 +188,20 @@ To reach Quality Score ≥{dual_score.quality_target:.0f}:
         return report
 
 
-def format_detailed_report(analysis: DetailedAnalysis, output_format: str = 'text') -> str:
-    """Format detailed analysis with line numbers and suggestions"""
+def format_detailed_report(analysis: DetailedAnalysis, output_format: str = 'text',
+                          mode: Optional[str] = None) -> str:
+    """
+    Format detailed analysis with line numbers and suggestions.
+
+    Args:
+        analysis: DetailedAnalysis object with analysis results
+        output_format: Output format ('text' or 'json')
+        mode: Optional analysis mode used (e.g., 'fast', 'adaptive', 'sampling', 'full')
+    """
 
     if output_format == 'json':
         # Convert dataclasses to dict for JSON serialization
-        return json.dumps({
+        data = {
             'file_path': analysis.file_path,
             'summary': analysis.summary,
             # Original detailed findings
@@ -197,19 +213,27 @@ def format_detailed_report(analysis: DetailedAnalysis, output_format: str = 'tex
             # ADVANCED: New detailed findings for LLM-driven fixes
             'burstiness_issues': [asdict(b) for b in analysis.burstiness_issues],
             'syntactic_issues': [asdict(s) for s in analysis.syntactic_issues],
-            'stylometric_issues': [asdict(s) for s in analysis.stylometric_issues],
+            # Story 2.0: Removed deprecated 'stylometric_issues' (StylometricDimension removed in v5.0.0)
             'formatting_issues': [asdict(f) for f in analysis.formatting_issues],
             'high_predictability_segments': [asdict(h) for h in analysis.high_predictability_segments],
-        }, indent=2)
+        }
+
+        # Include mode if provided
+        if mode:
+            data['analysis_mode'] = mode
+
+        return json.dumps(data, indent=2)
 
     else:  # text format
         s = analysis.summary
+        mode_str = f" (Mode: {mode.upper()})" if mode else ""
         report = f"""
 {'=' * 80}
-AI PATTERN ANALYSIS - DETAILED DIAGNOSTIC REPORT
+AI PATTERN ANALYSIS - DETAILED DIAGNOSTIC REPORT{mode_str}
 {'=' * 80}
 
 File: {analysis.file_path}
+{f'Analysis Mode: {mode.upper()}' if mode else ''}
 Overall Assessment: {s['overall_assessment']}
 
 {'─' * 80}
@@ -483,54 +507,10 @@ SYNTACTIC COMPLEXITY: Good variation ✓
 
 """
 
-        # ADVANCED: Stylometric Issues
-        if analysis.stylometric_issues:
-            # Group by marker type
-            however_issues = [s for s in analysis.stylometric_issues if s.marker_type == 'however']
-            moreover_issues = [s for s in analysis.stylometric_issues if s.marker_type == 'moreover']
-            cluster_issues = [s for s in analysis.stylometric_issues if s.marker_type == 'however_cluster']
-
-            report += f"""
-{'─' * 80}
-STYLOMETRIC AI MARKERS ({len(analysis.stylometric_issues)} total)
-{'─' * 80}
-
-"""
-            if however_issues:
-                report += f""""HOWEVER" USAGE ({len(however_issues)} instances - AI marker):
-"""
-                for styl in however_issues[:5]:
-                    report += f"""  Line {styl.line_number}: {styl.context}
-    → {styl.suggestion}
-
-"""
-
-            if moreover_issues:
-                report += f"""
-"MOREOVER" USAGE ({len(moreover_issues)} instances - strong AI signature):
-"""
-                for styl in moreover_issues[:5]:
-                    report += f"""  Line {styl.line_number}: {styl.context}
-    → {styl.suggestion}
-
-"""
-
-            if cluster_issues:
-                report += f"""
-CLUSTERED MARKERS ({len(cluster_issues)} clusters - strong AI signature):
-"""
-                for styl in cluster_issues:
-                    report += f"""  {styl.context}
-    → {styl.suggestion}
-
-"""
-        else:
-            report += f"""
-{'─' * 80}
-STYLOMETRIC MARKERS: Natural writing patterns ✓
-{'─' * 80}
-
-"""
+        # Story 2.0: Removed deprecated stylometric issues section
+        # StylometricDimension removed in v5.0.0 - functionality replaced by:
+        # - ReadabilityDimension (readability metrics)
+        # - TransitionMarkerDimension (transition marker analysis)
 
         # ADVANCED: Formatting Issues
         if analysis.formatting_issues:
@@ -654,7 +634,8 @@ def format_report(results: AnalysisResults,
                   detection_target: float = 30.0,
                   quality_target: float = 85.0,
                   dual_score = None,
-                  dual_score_section: str = None) -> str:
+                  dual_score_section: str = None,
+                  mode: Optional[str] = None) -> str:
     """
     Format analysis results for output.
 
@@ -666,10 +647,15 @@ def format_report(results: AnalysisResults,
         quality_target: Target quality score
         dual_score: Optional pre-calculated DualScore object (avoids recalculation)
         dual_score_section: Optional pre-formatted dual score section to insert at top
+        mode: Optional analysis mode used (e.g., 'fast', 'adaptive', 'sampling', 'full')
     """
 
     if output_format == 'json':
-        return json.dumps(asdict(results), indent=2)
+        data = asdict(results)
+        # Include mode if provided
+        if mode:
+            data['analysis_mode'] = mode
+        return json.dumps(data, indent=2)
 
     elif output_format == 'tsv':
         # TSV header and row
@@ -679,7 +665,7 @@ def format_report(results: AnalysisResults,
             'sent_min', 'sent_max', 'short', 'medium', 'long',
             'lexical_diversity', 'headings', 'h_depth', 'h_parallel',
             'em_dashes_pg', 'perplexity', 'burstiness', 'structure',
-            'voice', 'technical', 'formatting', 'overall'
+            'voice', 'technical', 'formatting', 'overall', 'mode'
         ]
 
         row = [
@@ -695,19 +681,40 @@ def format_report(results: AnalysisResults,
             results.perplexity_score, results.burstiness_score,
             results.structure_score, results.voice_score,
             results.technical_score, results.formatting_score,
-            results.overall_assessment
+            results.overall_assessment,
+            mode or 'N/A'
         ]
 
         return '\t'.join(header) + '\n' + '\t'.join(str(v) for v in row)
 
     else:  # text format
         r = results
+        mode_str = f" (Mode: {mode.upper()})" if mode else ""
+
+        # Helper function for None-safe numeric formatting
+        def fmt(value, format_spec='.2f', default='N/A'):
+            """Format a value or return default if None."""
+            if value is None:
+                return default
+            try:
+                return f"{value:{format_spec}}"
+            except (ValueError, TypeError):
+                return default
+
+        # Helper function for None-safe string formatting (for scores)
+        def fmt_score(value, width=12, default='UNKNOWN'):
+            """Format a score string or return default if None."""
+            if value is None:
+                return f"{default:<{width}s}"
+            return f"{value:<{width}s}"
+
         report = f"""
 {'=' * 80}
-AI PATTERN ANALYSIS REPORT
+AI PATTERN ANALYSIS REPORT{mode_str}
 {'=' * 80}
 
 File: {r.file_path}
+{f'Analysis Mode: {mode.upper()}' if mode else ''}
 Words: {r.total_words} | Sentences: {r.total_sentences} | Paragraphs: {r.total_paragraphs}
 """
 
@@ -720,41 +727,74 @@ Words: {r.total_words} | Sentences: {r.total_sentences} | Paragraphs: {r.total_p
 DIMENSION SCORES
 {'─' * 80}
 
-Perplexity (Vocabulary):    {r.perplexity_score:12s}  (AI words: {r.ai_vocabulary_count}, {r.ai_vocabulary_per_1k}/1k)
-Burstiness (Sentence Var):  {r.burstiness_score:12s}  (μ={r.sentence_mean_length}, σ={r.sentence_stdev}, range={r.sentence_range})
-Structure (Organization):   {r.structure_score:12s}  (Formulaic: {r.formulaic_transitions_count}, H-depth: {r.heading_depth})
-Voice (Authenticity):       {r.voice_score:12s}  (1st-person: {r.first_person_count}, You: {r.direct_address_count})
-Technical (Expertise):      {r.technical_score:12s}  (Domain terms: {r.domain_terms_count})
-Formatting (Em-dashes):     {r.formatting_score:12s}  ({r.em_dashes_per_page:.1f} per page)"""
+Perplexity (Vocabulary):    {fmt_score(r.perplexity_score)}  (AI words: {r.ai_vocabulary_count}, {r.ai_vocabulary_per_1k}/1k)
+Burstiness (Sentence Var):  {fmt_score(r.burstiness_score)}  (μ={r.sentence_mean_length}, σ={r.sentence_stdev}, range={r.sentence_range})
+Structure (Organization):   {fmt_score(r.structure_score)}  (Formulaic: {r.formulaic_transitions_count}, H-depth: {r.heading_depth})
+Voice (Authenticity):       {fmt_score(r.voice_score)}  (1st-person: {r.first_person_count}, You: {r.direct_address_count})
+Technical (Expertise):      {fmt_score(r.technical_score)}  (Domain terms: {r.domain_terms_count})
+Formatting (Em-dashes):     {fmt_score(r.formatting_score)}  ({r.em_dashes_per_page:.1f} per page)"""
 
         # Add enhanced dimensions if available
         if r.syntactic_score and r.syntactic_score != "UNKNOWN":
             report += f"""
-Syntactic (Naturalness):    {r.syntactic_score:12s}  (Repetition: {r.syntactic_repetition_score:.2f}, POS div: {r.pos_diversity:.2f})"""
+Syntactic (Naturalness):    {fmt_score(r.syntactic_score)}  (Repetition: {fmt(r.syntactic_repetition_score)}, POS div: {fmt(r.pos_diversity)})"""
 
         if r.sentiment_score and r.sentiment_score != "UNKNOWN":
             report += f"""
-Sentiment (Variation):      {r.sentiment_score:12s}  (Variance: {r.sentiment_variance:.3f}, Mean: {r.sentiment_mean:.2f})"""
+Sentiment (Variation):      {fmt_score(r.sentiment_score)}  (Variance: {fmt(r.sentiment_variance, '.3f')}, Mean: {fmt(r.sentiment_mean)})"""
 
-        # NEW: Enhanced structural dimensions (always present)
-        report += f"""
+        # Add remaining dimensions from full profile
+        if r.readability_score and r.readability_score != "UNKNOWN":
+            report += f"""
+Readability (Complexity):   {fmt_score(r.readability_score)}  (Flesch: {fmt(r.flesch_reading_ease)}, Grade: {fmt(r.flesch_kincaid_grade)})"""
+
+        if r.lexical_score and r.lexical_score != "UNKNOWN":
+            report += f"""
+Lexical (Diversity):        {fmt_score(r.lexical_score)}  (TTR: {fmt(r.lexical_diversity, '.3f')}, Unique: {r.unique_words})"""
+
+        if r.predictability_score and r.predictability_score != "UNKNOWN":
+            report += f"""
+Predictability (GLTR):      {fmt_score(r.predictability_score)}  (Top-10: {fmt(r.gltr_top10_percentage, '.1f')}%, Likelihood: {fmt(r.gltr_likelihood, '.2f')})"""
+
+        if r.advanced_lexical_score and r.advanced_lexical_score != "UNKNOWN":
+            report += f"""
+Advanced Lexical (Richness): {fmt_score(r.advanced_lexical_score)}  (HDD: {fmt(r.hdd_score, '.2f')}, Yule's K: {fmt(r.yules_k, '.1f')})"""
+
+        if r.transition_marker_score and r.transition_marker_score != "UNKNOWN":
+            report += f"""
+Transition Markers:         {fmt_score(r.transition_marker_score)}  (Formulaic: {r.formulaic_transitions_count})"""
+
+        # NEW: Enhanced structural dimensions (only show if data available)
+        if (r.bold_italic_score or r.list_usage_score or r.punctuation_score or r.whitespace_score):
+            report += f"""
 
 {'─' * 80}
 ENHANCED STRUCTURAL ANALYSIS
 {'─' * 80}
+"""
+            if r.bold_italic_score:
+                report += f"""
+Bold/Italic Patterns:       {r.bold_italic_score:12s}  (Bold: {fmt(r.bold_per_1k_words, '.1f')}/1k, Consistency: {fmt(r.formatting_consistency_score)})"""
 
-Bold/Italic Patterns:       {r.bold_italic_score:12s}  (Bold: {r.bold_per_1k_words:.1f}/1k, Consistency: {r.formatting_consistency_score:.2f})
-List Usage:                 {r.list_usage_score:12s}  (Items: {r.total_list_items}, Ratio O/U: {r.ordered_to_unordered_ratio:.2f})
-Punctuation Clustering:     {r.punctuation_score:12s}  (Em-dash cascade: {r.em_dash_cascading_score:.2f}, Oxford: {r.oxford_comma_consistency:.2f})
-Whitespace Patterns:        {r.whitespace_score:12s}  (Para uniformity: {r.paragraph_uniformity_score:.2f}, Variance: {r.paragraph_length_variance:.0f})"""
+            if r.list_usage_score:
+                report += f"""
+List Usage:                 {r.list_usage_score:12s}  (Items: {r.total_list_items or 0}, Ratio O/U: {fmt(r.ordered_to_unordered_ratio)})"""
 
-        if r.code_block_count > 0:
+            if r.punctuation_score:
+                report += f"""
+Punctuation Clustering:     {r.punctuation_score:12s}  (Em-dash cascade: {fmt(r.em_dash_cascading_score)}, Oxford: {fmt(r.oxford_comma_consistency)})"""
+
+            if r.whitespace_score:
+                report += f"""
+Whitespace Patterns:        {r.whitespace_score:12s}  (Para uniformity: {fmt(r.paragraph_uniformity_score)}, Variance: {fmt(r.paragraph_length_variance, '.0f')})"""
+
+        if r.code_block_count and r.code_block_count > 0:
             report += f"""
-Code Structure:             {r.code_structure_score:12s}  (Blocks: {r.code_block_count}, Lang consistency: {r.code_lang_consistency:.2f})"""
+Code Structure:             {r.code_structure_score:12s}  (Blocks: {r.code_block_count}, Lang consistency: {fmt(r.code_lang_consistency)})"""
 
-        if r.total_headings >= 3:
+        if r.total_headings and r.total_headings >= 3:
             report += f"""
-Heading Hierarchy:          {r.heading_hierarchy_score:12s}  (Skips: {r.heading_hierarchy_skips}, Adherence: {r.heading_strict_adherence:.2f})"""
+Heading Hierarchy:          {r.heading_hierarchy_score:12s}  (Skips: {r.heading_hierarchy_skips or 0}, Adherence: {fmt(r.heading_strict_adherence)})"""
 
         # NEW: Phase 1 High-ROI Structural Patterns
         report += f"""
@@ -763,46 +803,49 @@ Heading Hierarchy:          {r.heading_hierarchy_score:12s}  (Skips: {r.heading_
 STRUCTURAL PATTERNS
 {'─' * 80}"""
 
-        # Paragraph CV
-        para_icon = "✓" if r.paragraph_cv >= 0.4 else ("⚠" if r.paragraph_cv >= 0.3 else "✗")
-        report += f"""
+        # Paragraph CV (only show if data available)
+        if r.paragraph_cv is not None:
+            para_icon = "✓" if r.paragraph_cv >= 0.4 else ("⚠" if r.paragraph_cv >= 0.3 else "✗")
+            report += f"""
 
-Paragraph Length CV:     {r.paragraph_cv:.2f}  {para_icon} {r.paragraph_cv_assessment}
-  Mean: {r.paragraph_cv_mean:.0f} words, StdDev: {r.paragraph_cv_stddev:.0f} words
-  {r.paragraph_count} paragraphs analyzed"""
+Paragraph Length CV:     {fmt(r.paragraph_cv)}  {para_icon} {r.paragraph_cv_assessment or 'N/A'}
+  Mean: {fmt(r.paragraph_cv_mean, '.0f')} words, StdDev: {fmt(r.paragraph_cv_stddev, '.0f')} words
+  {r.paragraph_count or 0} paragraphs analyzed"""
 
-        if r.paragraph_cv < 0.35:
-            report += """
+            if r.paragraph_cv < 0.35:
+                report += """
   → ACTION: Vary paragraph lengths (mix 50-100, 150-250, 300-400 word paragraphs)"""
 
-        # Section Variance
-        sec_icon = "✓" if r.section_variance_pct >= 40 else ("⚠" if r.section_variance_pct >= 15 else "✗")
-        report += f"""
-
-Section Length Variance: {r.section_variance_pct:.1f}% {sec_icon} {r.section_variance_assessment}
-  {r.section_count} sections analyzed"""
-
-        if r.section_uniform_clusters > 0:
+        # Section Variance (only show if data available)
+        if r.section_variance_pct is not None:
+            sec_icon = "✓" if r.section_variance_pct >= 40 else ("⚠" if r.section_variance_pct >= 15 else "✗")
             report += f"""
+
+Section Length Variance: {fmt(r.section_variance_pct, '.1f')}% {sec_icon} {r.section_variance_assessment or 'N/A'}
+  {r.section_count or 0} sections analyzed"""
+
+            if r.section_uniform_clusters and r.section_uniform_clusters > 0:
+                report += f"""
   {r.section_uniform_clusters} uniform clusters detected (3+ similar-length sections)"""
 
-        if r.section_variance_pct < 20:
-            report += """
+            if r.section_variance_pct and r.section_variance_pct < 20:
+                report += """
   → ACTION: Combine/split sections to create asymmetry (target: 40%+ variance)"""
 
-        # List Nesting Depth
-        list_icon = "✓" if r.list_max_depth <= 3 else ("⚠" if r.list_max_depth <= 4 else "✗")
-        if r.list_max_depth > 0:
-            report += f"""
+        # List Nesting Depth (only show if data available)
+        if r.list_max_depth is not None:
+            list_icon = "✓" if r.list_max_depth <= 3 else ("⚠" if r.list_max_depth <= 4 else "✗")
+            if r.list_max_depth > 0:
+                report += f"""
 
-List Nesting Depth:      Max {r.list_max_depth} levels {list_icon} {r.list_depth_assessment}
-  {r.list_total_items} list items analyzed, Avg depth: {r.list_avg_depth:.1f}"""
+List Nesting Depth:      Max {r.list_max_depth} levels {list_icon} {r.list_depth_assessment or 'N/A'}
+  {r.list_total_items or 0} list items analyzed, Avg depth: {fmt(r.list_avg_depth, '.1f')}"""
 
-            if r.list_max_depth > 4:
-                report += """
+                if r.list_max_depth > 4:
+                    report += """
   → ACTION: Flatten deep lists, break into separate sections"""
-        else:
-            report += f"""
+            else:
+                report += f"""
 
 List Nesting Depth:      No lists detected"""
 
@@ -1121,8 +1164,8 @@ RECOMMENDATIONS
                 trans_rec += f"\n   Examples: {examples}"
             critical.append(trans_rec)
 
-        # GLTR score (if available)
-        if r.gltr_score in ["LOW", "VERY LOW"]:
+        # Predictability score (Story 2.0: gltr_score → predictability_score)
+        if r.predictability_score in ["LOW", "VERY LOW"]:
             critical.append(f"⚠ PREDICTABILITY: High GLTR score detected - rephrase predictable segments")
 
         # Sentiment variation (if available)
@@ -1196,9 +1239,8 @@ RECOMMENDATIONS
         if r.syntactic_repetition_score is not None and r.syntactic_repetition_score > 0.015:
             important.append(f"• STRUCTURAL REPETITION: Reduce syntactic patterns (score: {r.syntactic_repetition_score:.3f})")
 
-        # Stylometric markers (if available)
-        if r.stylometric_score in ["LOW", "VERY LOW"]:
-            important.append("• STYLOMETRIC MARKERS: Reduce AI-typical discourse markers (however/moreover frequency)")
+        # Story 2.0: Removed deprecated stylometric_score check
+        # Stylometric functionality replaced by ReadabilityDimension and TransitionMarkerDimension
 
         # Advanced lexical (if available)
         if r.advanced_lexical_score in ["LOW", "VERY LOW"]:

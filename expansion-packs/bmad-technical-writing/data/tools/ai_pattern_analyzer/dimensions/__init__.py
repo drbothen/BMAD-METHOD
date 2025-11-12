@@ -2,4 +2,7 @@
 Analysis dimensions module - contains all dimension analyzers.
 """
 
-__all__ = []
+from .base import DimensionAnalyzer
+from .base_strategy import DimensionStrategy, DimensionTier
+
+__all__ = ['DimensionAnalyzer', 'DimensionStrategy', 'DimensionTier']

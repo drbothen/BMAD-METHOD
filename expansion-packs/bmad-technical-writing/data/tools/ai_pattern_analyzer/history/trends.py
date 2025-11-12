@@ -288,8 +288,17 @@ def generate_comparison_report(history: ScoreHistory, idx1: int, idx2: int) -> s
     output.append(f"ITERATION COMPARISON: Iteration {idx1+1} vs. Iteration {idx2+1}")
     output.append("=" * 80)
     output.append("")
+
+    # Show metadata comparison
+    mode1 = score1.analysis_mode.upper() if hasattr(score1, 'analysis_mode') and score1.analysis_mode else 'N/A'
+    mode2 = score2.analysis_mode.upper() if hasattr(score2, 'analysis_mode') and score2.analysis_mode else 'N/A'
+    time1 = f"{score1.analysis_time_seconds:.1f}s" if hasattr(score1, 'analysis_time_seconds') and score1.analysis_time_seconds > 0 else 'N/A'
+    time2 = f"{score2.analysis_time_seconds:.1f}s" if hasattr(score2, 'analysis_time_seconds') and score2.analysis_time_seconds > 0 else 'N/A'
+
+    output.append(f"Iteration {idx1+1}: {score1.timestamp[:10]} | Mode: {mode1} | Time: {time1}")
+    output.append(f"Iteration {idx2+1}: {score2.timestamp[:10]} | Mode: {mode2} | Time: {time2}")
+    output.append("")
     output.append(f"                               Iteration {idx1+1:<7} Iteration {idx2:<7} Change      Impact")
-    output.append(f"                               ({score1.timestamp[:10]})  ({score2.timestamp[:10]})")
     output.append("-" * 80)
 
     # Aggregate scores
@@ -494,6 +503,9 @@ def generate_full_history_report(history: ScoreHistory) -> str:
         output.append("")
         output.append(f"ITERATION {i}: {score.notes or 'No notes'}")
         output.append(f"Timestamp:     {score.timestamp}")
+        output.append(f"Mode:          {score.analysis_mode.upper() if hasattr(score, 'analysis_mode') and score.analysis_mode else 'N/A'}")
+        if hasattr(score, 'analysis_time_seconds') and score.analysis_time_seconds > 0:
+            output.append(f"Analysis Time: {score.analysis_time_seconds:.1f}s")
         output.append(f"Quality:       {score.quality_score:.1f} / 100  ({score.quality_interpretation})")
         output.append(f"Detection:     {score.detection_risk:.1f} / 100  ({score.detection_interpretation})")
         output.append(f"Total Words:   {score.total_words}")
