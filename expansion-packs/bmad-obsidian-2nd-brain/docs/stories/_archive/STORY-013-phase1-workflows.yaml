@@ -1,0 +1,86 @@
+---
+story_id: STORY-013
+title: Create Phase 1 Workflows (3 workflows)
+epic_id: EPIC-001
+phase: 1
+priority: medium
+estimated_effort: 12 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want predefined workflows that orchestrate multiple agents
+  So that I can execute complex knowledge management routines systematically
+
+acceptance_criteria:
+  - Create workflows/ directory
+  - Create knowledge-lifecycle-workflow.yaml (basic version)
+  - Create daily-capture-processing-workflow.yaml
+  - Create weekly-review-workflow.yaml
+  - All workflows specify phases, agents, tasks, and exit criteria
+  - Workflows include duration estimates
+  - Workflows reference agent commands and task dependencies
+
+technical_notes: |
+  Workflow 1: knowledge-lifecycle-workflow.yaml (basic)
+  - Purpose: Orchestrate complete knowledge journey from capture through retrieval
+  - Phases:
+    1. Capture: Inbox Triage Agent
+    2. Organization: Structural Analysis + Semantic Linker
+    3. Periodic Review: Quality Auditor
+  - Note: Phase 2 will add synthesis, Phase 3 creation, Phase 4 gap detection
+  - Duration: Continuous (lifecycle)
+  - Used by: All users as master workflow
+
+  Workflow 2: daily-capture-processing-workflow.yaml
+  - Purpose: Routine workflow for daily knowledge work
+  - Schedule: Daily (morning and evening)
+  - Morning Routine (10 min):
+    1. Inbox Triage Agent: Process overnight captures
+    2. Semantic Linker Agent: Review pending suggestions (5-10)
+    3. Query Interpreter Agent: Surface relevant notes for day's work
+  - Evening Routine (10 min):
+    1. Inbox Triage Agent: Process day's captures
+    2. Quality Auditor Agent: Quick freshness check (critical notes only)
+  - Duration: 15-20 minutes total
+  - Used by: Daily knowledge workers
+
+  Workflow 3: weekly-review-workflow.yaml
+  - Purpose: Weekly maintenance and synthesis
+  - Schedule: Weekly (e.g., Sunday evening)
+  - Steps (30-45 min total):
+    1. Quality Auditor Agent: Run weekly audit (15 min)
+       - Check for broken links
+       - Identify stale notes (domain-critical only)
+       - Report orphaned notes
+    2. Semantic Linker Agent: Batch process link suggestions (15 min)
+       - Review accumulated suggestions
+       - Accept/reject in batch
+    3. Query Interpreter Agent: Exploratory queries (15 min)
+       - "What emerged this week?"
+       - "What domains saw growth?"
+  - Duration: 30-45 minutes
+  - Used by: Weekly reviewers (GTD practitioners, etc.)
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-002: Inbox Triage Agent
+  - STORY-003: Structural Analysis Agent
+  - STORY-004: Semantic Linker Agent
+  - STORY-005: Query Interpreter Agent
+  - STORY-006: Quality Auditor Agent
+
+testing:
+  - Execute daily capture processing workflow (morning + evening)
+  - Execute weekly review workflow end-to-end
+  - Verify phase transitions and exit criteria
+  - Test duration estimates (should be accurate ±20%)
+
+definition_of_done:
+  - All 3 workflow files created in workflows/
+  - Workflows specify phases, agents, tasks, exit criteria
+  - Duration estimates provided
+  - Agent commands and task dependencies documented
+  - Workflows tested end-to-end
+  - Documentation added to user guide

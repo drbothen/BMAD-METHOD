@@ -1,0 +1,297 @@
+# <!-- Powered by BMAD™ Core -->
+---
+template:
+  id: temporal-narrative-template-v1
+  name: Temporal Evolution Narrative
+  version: 1.0
+  description: Template for documenting how concepts evolved over time with phase analysis and understanding shifts (Phase 2)
+  output:
+    format: markdown
+    filename: "temporal-{{sanitized_concept}}-{{generated_date}}.md"
+
+variables:
+  - name: concept_title
+    description: Title of concept being analyzed
+    required: true
+  - name: concept_path
+    description: Path to original note
+    required: true
+  - name: analysis_date
+    description: Date narrative was generated
+    required: true
+  - name: time_span
+    description: Duration from first capture to present (e.g., "301 days", "10 months")
+    required: true
+  - name: overview
+    description: 2-3 sentence summary of concept evolution
+    required: true
+  - name: phase_narratives
+    description: Narrative content for each evolution phase
+    required: true
+  - name: key_shifts
+    description: Major understanding shifts with explanations
+    required: true
+  - name: influences
+    description: Sources and factors that shaped understanding
+    required: true
+  - name: maturation_metrics
+    description: Metrics comparison vs vault averages
+    required: true
+  - name: conclusion
+    description: Summary assessment with recommendations
+    required: true
+  - name: timeline_visualization
+    description: ASCII or Mermaid timeline code
+    required: false
+    default: ""
+  - name: generated_date
+    description: Date for filename in YYYY-MM-DD format
+    required: true
+  - name: sanitized_concept
+    description: Sanitized concept name for filename
+    required: true
+
+workflow:
+  elicitation: false
+  mode: template
+
+sections:
+  - id: frontmatter
+    title: Frontmatter
+    type: template-text
+    instruction: |
+      Generate YAML frontmatter with metadata about the temporal narrative.
+      Type should be 'temporal_narrative'.
+      Analysis date tracks when this narrative was generated.
+    template: |
+      ---
+      title: Temporal Evolution - {{concept_title}}
+      type: temporal_narrative
+      subject: "{{concept_path}}"
+      analysis_date: {{analysis_date}}
+      time_span: {{time_span}}
+      tags: [temporal-analysis, evolution]
+      ---
+
+  - id: title_overview
+    title: Title and Overview
+    type: paragraphs
+    instruction: |
+      Start with H1 title and overview section.
+      Overview should be 2-3 sentences summarizing the evolution arc.
+    template: |
+      # Temporal Evolution: [[{{concept_title}}]]
+
+      ## Overview
+
+      {{overview}}
+
+  - id: timeline_visualization
+    title: Timeline Visualization
+    type: paragraphs
+    condition: timeline_visualization is not empty
+    instruction: |
+      Include ASCII timeline or Mermaid diagram showing evolution phases.
+      This provides visual overview before detailed narrative.
+    template: |
+      ## Evolution Timeline
+
+      {{timeline_visualization}}
+
+  - id: phase_narratives
+    title: Phase-by-Phase Evolution
+    type: paragraphs
+    instruction: |
+      Detailed narratives for each evolution phase: capture, development, maturation, maintenance.
+      Each phase should include:
+      - Duration
+      - Key activities (edit frequency, link creation)
+      - Milestones
+      - Transition triggers
+    template: |
+      ## Evolution Phases
+
+      {{phase_narratives}}
+
+  - id: key_shifts
+    title: Understanding Shifts
+    type: paragraphs
+    instruction: |
+      Document major changes in thinking with:
+      - Date of shift
+      - Type (contradiction, source integration, synthesis, perspective)
+      - Description of what changed
+      - Context explaining why shift matters
+    template: |
+      ## Key Understanding Shifts
+
+      {{key_shifts}}
+
+  - id: influences
+    title: Influences
+    type: paragraphs
+    instruction: |
+      List sources, experiences, and factors that shaped understanding:
+      - External sources (books, articles, papers)
+      - Personal experiences or experiments
+      - Conversations or collaborations
+      - Related concepts that informed thinking
+    template: |
+      ## Influences
+
+      {{influences}}
+
+  - id: maturation_metrics
+    title: Maturation Metrics
+    type: paragraphs
+    instruction: |
+      Quantitative analysis comparing concept to vault averages:
+      - Days to evergreen
+      - Edit velocity
+      - Link accumulation rate
+      - Reference velocity
+      - Maturation speed index
+      Include interpretation (fast/slow/normal maturer) and reasons
+    template: |
+      ## Maturation Metrics vs. Vault Average
+
+      {{maturation_metrics}}
+
+  - id: conclusion
+    title: Conclusion
+    type: paragraphs
+    instruction: |
+      Synthesize findings with:
+      - Total evolution duration
+      - Pattern assessment (healthy/rich development vs stagnant)
+      - Current phase and status
+      - Recommendations for maintenance or next steps
+    template: |
+      ## Conclusion
+
+      {{conclusion}}
+
+examples:
+  - |
+    ---
+    title: Temporal Evolution - Spaced Repetition
+    type: temporal_narrative
+    subject: "notes/Spaced Repetition.md"
+    analysis_date: 2024-11-11T10:30:00Z
+    time_span: 301 days
+    tags: [temporal-analysis, evolution]
+    ---
+
+    # Temporal Evolution: [[Spaced Repetition]]
+
+    ## Overview
+
+    This concept evolved from a simple definition captured on 2024-01-15 to a nuanced understanding of memory consolidation algorithms over 301 days. Development shows 3 major understanding shifts and fast maturation (1.62x vault average speed).
+
+    ## Evolution Timeline
+
+    ```
+    CAPTURE          DEVELOPMENT        MATURATION          MAINTENANCE
+    Jan 15-17        Jan 18 - Mar 10    Mar 11 - Sep 15     Sep 16 - Present
+    (2 days)         (52 days)          (6 months)          (2 months)
+    ████             ████████████████████████████████████████████████
+    Edits: 3         Edits: 22          Edits: 3            Edits: 0
+    ```
+
+    ## Evolution Phases
+
+    ### Capture Phase (Jan 15-17, 2024)
+    **Duration**: 2 days
+
+    Captured from article on learning techniques. Initial note was brief definition: "Review material at increasing intervals." 3 rapid edits over 2 days articulated core idea.
+
+    ### Development Phase (Jan 18 - Mar 10, 2024)
+    **Duration**: 52 days | Edit velocity: 2.1 edits/week
+
+    **Key milestones:**
+
+    **Jan 20**: Promoted to evergreen (5 days after capture - fast maturation)
+
+    **Jan 25**: First connections made to [[Forgetting Curve]] and [[Ebbinghaus Research]]
+
+    **Feb 15**: **Understanding Shift** - Initially thought fixed intervals were optimal. After reading Wozniak's SM-2 algorithm paper, realized adaptive scheduling is superior. Added detailed notes on interval calculation.
+
+    **Mar 5**: **Synthesis Achievement** - Connected [[Spaced Repetition]], [[Interleaving]], and [[Desirable Difficulties]] to form broader understanding of effective learning strategies.
+
+    ### Maturation Phase (Mar 11 - Sep 15, 2024)
+    **Duration**: 6 months | Link accumulation: 4.2 links/month
+
+    Content stabilized with clear structure. Edits were refinements, not restructuring. Added to [[Learning Strategies MOC]] on Apr 5. Referenced by 12 new notes (avg 2 refs/month).
+
+    **May 20**: **Perspective Shift** - After experimenting with Anki for 3 months, shifted from theoretical understanding to practical implementation notes. Added section on common pitfalls.
+
+    ### Current State (Maintenance Phase)
+    **As of Nov 11, 2024**
+
+    Evergreen note serving as reference for learning strategy discussions. Rarely edited (last edit: Oct 3), but frequently referenced (28 total backlinks).
+
+    ## Key Understanding Shifts
+
+    ### 1. Feb 15, 2024: Contradiction
+
+    Initially believed fixed intervals were optimal for spaced repetition. Reading Wozniak's SuperMemo SM-2 algorithm paper revealed that adaptive algorithms (which adjust intervals based on recall performance) significantly outperform fixed schedules.
+
+    This shift represents a fundamental change in understanding. The introduction of contradictory information suggests encountering new evidence that challenged initial assumptions.
+
+    ### 2. Mar 5, 2024: Synthesis
+
+    Connected [[Spaced Repetition]], [[Interleaving]], and [[Desirable Difficulties]] into integrated understanding of learning strategies. Recognized these aren't isolated techniques but complementary approaches to effective memory consolidation.
+
+    Connecting multiple related concepts demonstrates conceptual maturation. Synthesis represents moving beyond isolated facts to integrated understanding.
+
+    ### 3. May 20, 2024: Perspective
+
+    Shifted from theoretical knowledge (how spaced repetition works) to practical expertise (common implementation pitfalls, optimal Anki settings, realistic expectations). 3 months of hands-on experimentation transformed understanding from academic to experiential.
+
+    This shift in perspective indicates evolving sophistication in thinking about the topic. The same content viewed through a different lens.
+
+    ## Influences
+
+    Key sources that shaped understanding:
+
+    - **Wozniak, P. "SuperMemo SM-2 Algorithm"** (cited 3 times) - Introduced adaptive interval concepts
+    - **Ahrens, S. "How to Take Smart Notes"** (cited 2 times) - Connected spaced repetition to broader PKM practices
+    - **Personal Anki experimentation** (May-Aug 2024) - Provided practical insights beyond theory
+
+    Additionally, personal experimentation and practical application informed perspective shifts, particularly the transition from theoretical to practical understanding.
+
+    ## Maturation Metrics vs. Vault Average
+
+    **Days to Evergreen**: 5 days
+    - Vault Average: 18 days
+    - **72% faster** ✓
+
+    **Edit Velocity (Development Phase)**: 2.1 edits/week
+    - Vault Average: 1.4 edits/week
+    - **50% higher** ✓
+
+    **Link Accumulation Rate (Maturation Phase)**: 4.2 links/month
+    - Vault Average: 2.8 links/month
+    - **50% higher** ✓
+
+    **Reference Velocity**: 1.9 refs/month
+    - Vault Average: 0.8 refs/month
+    - **138% higher** ✓
+
+    **Maturation Speed Index**: 1.62 (fast maturer ⚡)
+
+    **Interpretation**: This concept matured significantly faster than vault average across all dimensions. Likely reasons: high practical relevance, clear external sources, active experimentation, and alignment with personal interests in knowledge management.
+
+    ## Conclusion
+
+    This concept evolved over 10 months from initial capture to current maintenance phase. Maturation to evergreen status took 5 days (72% faster than vault average).
+
+    Development pattern shows rich conceptual evolution with 3 major understanding shifts. The note's integration into the broader knowledge network is above average (138% higher reference velocity), indicating strong foundational status in the learning strategies domain.
+
+    **Maturation Speed Index**: 1.62 (fast maturer)
+
+    **Recommendations**:
+    - Maintain currency with quarterly reviews
+    - Consider creating sub-notes for specific algorithms (SM-2, FSRS) if detail grows
+    - Monitor for splitting if note exceeds 500 lines (currently healthy size)
+    - Continue as reference hub for learning strategy discussions

@@ -1,0 +1,767 @@
+---
+story_id: STORY-085
+title: Create Phase 3 Tasks (Creation & Publishing)
+epic_id: EPIC-001
+phase: 3
+priority: high
+estimated_effort: 20 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a content creator
+  I want executable task procedures for Phase 3 operations
+  So that agents can create content briefs and publish content systematically
+
+acceptance_criteria:
+  - Create 10 task files for Phase 3 (5 content brief tasks, 5 publication tasks)
+  - All tasks follow standard task format (purpose, inputs, process, outputs, quality)
+  - Content Brief tasks: create-content-brief, query-knowledge-base, extract-arguments, identify-angles, detect-brief-gaps
+  - Publication tasks: format-publication, generate-bibliography, check-privacy, validate-publication, create-publication-manifest
+  - Tasks integrate with Content Brief and Publication Formatter agents
+  - Tasks specify platform-specific formatting rules
+  - All tasks tested and validated
+
+tasks_subtasks: |
+  - [ ] Task 1: Create Content Brief Tasks (AC2)
+
+    - [ ] Create create-content-brief.md:
+      - Purpose: Orchestrate content brief creation from knowledge base
+      - Inputs:
+        * topic: text (content topic, e.g., "Machine Learning")
+        * content_type: article|presentation|video|tutorial
+        * target_audience: text (e.g., "intermediate developers")
+        * vault_path: text (Obsidian vault root)
+      - Process:
+        1. Query knowledge base (execute query-knowledge-base task)
+        2. Extract arguments from retrieved notes (execute extract-arguments task)
+        3. Identify unique angles (execute identify-angles task)
+        4. Detect knowledge gaps (execute detect-brief-gaps task)
+        5. Create citation manifest (list all used notes)
+        6. Load content-brief-tmpl.yaml template
+        7. Populate brief sections:
+           - Topic definition
+           - Target audience
+           - Creation type
+           - Core arguments (with supporting notes)
+           - Supporting evidence (≥3 pieces)
+           - Unique angles
+           - Counterarguments (if applicable)
+           - Knowledge gaps
+           - Citation manifest
+           - Temporal context (if relevant)
+           - Tone and length targets
+        8. Validate using brief-completeness-checklist.md
+        9. Fix validation failures
+        10. Save final brief
+      - Outputs:
+        * Content brief markdown file
+        * Citation manifest
+        * Knowledge gaps list (if any)
+        * Validation report
+      - Quality Criteria:
+        * ≥1 core argument with evidence
+        * ≥3 pieces of supporting evidence
+        * ≥1 unique angle identified
+        * All wikilinks resolve
+        * Citation manifest complete
+      - Used by: Content Brief Agent
+
+    - [ ] Create query-knowledge-base.md:
+      - Purpose: Query knowledge base for relevant notes on topic
+      - Inputs:
+        * topic: text (search query)
+        * query_strategy: [semantic, tags, moc, links, hybrid]
+        * vault_path: text (Obsidian vault root)
+        * use_neo4j: boolean (whether to use Neo4j for queries)
+      - Process:
+        1. Route query to Query Interpreter Agent
+        2. Execute query based on strategy:
+           - **Semantic**: Search by meaning/concepts
+             * Use embeddings or full-text search
+             * Rank by semantic relevance
+           - **Tags**: Filter by tags
+             * Query: #machine-learning
+             * Return: All tagged notes
+           - **MOC**: Navigate via Maps of Content
+             * Start: [[Machine Learning MOC]]
+             * Follow: Links to related notes
+           - **Links**: Follow link graph
+             * Query: Notes linking to [[Gradient Descent]]
+             * Return: Connected notes
+           - **Hybrid**: Combine multiple strategies
+             * Semantic + Tags + MOC traversal
+        3. If Neo4j enabled:
+           - Execute Cypher query
+           - Return graph results
+        4. If Neo4j disabled:
+           - Use Obsidian search
+           - Fall back to file system search
+        5. Rank results by relevance
+        6. Filter out private/excluded notes
+        7. Return note list with relevance scores
+      - Outputs:
+        * note_list: list (relevant notes with metadata)
+          - note_id: text
+          - note_title: text
+          - relevance_score: number [0.0-1.0]
+          - note_path: text
+          - excerpt: text (relevant snippet)
+        * query_strategy_used: text
+        * result_count: number
+      - Quality Criteria:
+        * All relevant notes retrieved
+        * Results ranked by relevance
+        * Private notes excluded
+        * No broken note references
+      - Used by: Content Brief Agent
+
+    - [ ] Create extract-arguments.md:
+      - Purpose: Extract core claims and supporting evidence from notes
+      - Inputs:
+        * note_list: list (from query-knowledge-base)
+        * vault_path: text (Obsidian vault root)
+      - Process:
+        1. For each note in note_list:
+           - Read note content
+           - Identify claims (assertions, statements, conclusions)
+           - Extract evidence for each claim:
+             * Empirical: Data, experiments, observations
+             * Theoretical: Frameworks, models, principles
+             * Anecdotal: Examples, case studies
+             * Authority: Expert opinions, citations
+           - Assess evidence strength (strong/moderate/weak)
+           - Identify counterarguments (if present in notes)
+        2. Organize arguments hierarchically:
+           - Primary argument (main thesis)
+           - Supporting arguments (2-5 key points)
+           - Evidence per argument (≥1 piece)
+        3. Create argument structure:
+           ```yaml
+           primary_argument:
+             claim: "..."
+             evidence: [...]
+           supporting_arguments:
+             - claim: "..."
+               evidence: [...]
+           counterarguments:
+             - claim: "..."
+               evidence: [...]
+           ```
+        4. Generate argument extraction report
+      - Outputs:
+        * primary_argument: dict (claim + evidence)
+        * supporting_arguments: list (claims + evidence)
+        * counterarguments: list (opposing claims + evidence)
+        * argument_count: number
+        * evidence_count: number
+      - Quality Criteria:
+        * ≥1 primary argument identified
+        * Each argument has ≥1 evidence piece
+        * Evidence types correctly categorized
+        * Evidence strength accurately assessed
+      - Used by: Content Brief Agent
+
+    - [ ] Create identify-angles.md:
+      - Purpose: Identify unique perspectives and differentiation angles
+      - Inputs:
+        * topic: text
+        * note_list: list (from query-knowledge-base)
+        * arguments: dict (from extract-arguments)
+      - Process:
+        1. Analyze KB coverage of topic:
+           - What concepts are well-covered?
+           - What connections are unique to KB?
+           - What insights are KB-specific?
+        2. Compare to existing public content (if user provides examples):
+           - What's commonly known? (standard angles)
+           - What's underexplored? (differentiated angles)
+           - What's misunderstood? (corrective angles)
+        3. Identify KB-specific insights:
+           - Unique synthesis (combining ideas in novel ways)
+           - Counterintuitive findings (unexpected patterns)
+           - Practical applications (real-world usage from projects)
+           - Personal experience (first-hand insights)
+        4. Categorize angles:
+           - **Novel**: Rarely covered elsewhere
+           - **Differentiated**: Common topic, unique perspective
+           - **Standard**: Well-covered angle (avoid unless necessary)
+        5. Prioritize angles:
+           - Novel and differentiated angles first
+           - Consider audience needs
+           - Align with KB strengths
+        6. Generate angle identification report
+      - Outputs:
+        * angles: list
+          - angle_description: text
+          - angle_type: novel|differentiated|standard
+          - uniqueness_score: number [0.0-1.0]
+          - supporting_notes: list
+          - audience_value: text (why valuable)
+        * recommended_angle: dict (top angle to pursue)
+      - Quality Criteria:
+        * ≥1 unique angle identified
+        * Angles accurately categorized by type
+        * Uniqueness scores justified
+        * Recommended angle aligns with KB strengths
+      - Used by: Content Brief Agent
+
+    - [ ] Create detect-brief-gaps.md:
+      - Purpose: Identify missing information during brief creation
+      - Inputs:
+        * arguments: dict (from extract-arguments)
+        * citation_manifest: list (notes used)
+        * topic: text
+        * vault_path: text
+      - Process:
+        1. Analyze arguments for completeness:
+           - Claim without evidence? (need sources)
+           - Incomplete argument? (missing premise)
+           - Unaddressed counterargument? (need rebuttal)
+           - Unsupported comparison? (need comparative analysis)
+           - Vague concept? (need definition or explanation)
+        2. Check citation manifest coverage:
+           - Are key concepts cited?
+           - Are claims backed by sources?
+           - Are comparisons supported?
+        3. Categorize gaps by severity:
+           - **Critical**: Blocks content creation (must research)
+           - **High**: Weakens argument (should research)
+           - **Medium**: Would improve content (nice to have)
+           - **Low**: Optional enrichment (defer)
+        4. For each gap:
+           - Describe what's missing
+           - Explain why it matters
+           - Suggest research approach
+           - Estimate effort to fill gap
+        5. Generate gap detection report
+      - Outputs:
+        * gaps: list
+          - gap_id: UUID
+          - gap_description: text
+          - gap_type: [evidence, premise, rebuttal, comparison, definition]
+          - severity: critical|high|medium|low
+          - research_approach: text
+          - estimated_effort: text (e.g., "2 hours")
+        * critical_gap_count: number
+        * brief_blocked: boolean (true if critical gaps present)
+      - Quality Criteria:
+        * All gaps accurately identified
+        * Severity levels correctly assigned
+        * Research approaches feasible
+        * Critical gaps flagged appropriately
+      - Used by: Content Brief Agent
+
+  - [ ] Task 2: Create Publication Tasks (AC3)
+
+    - [ ] Create format-publication.md:
+      - Purpose: Convert content to target platform format
+      - Inputs:
+        * content_path: text (path to content file)
+        * target_platform: [html, pdf, markdown, medium, substack, github, blog]
+        * wikilink_strategy: [urls, plaintext, remove, preserve]
+        * url_mapping: dict (note name → public URL) - optional
+      - Process:
+        1. Load content file
+        2. Identify target platform requirements:
+           - HTML: Semantic tags, hyperlinks, embedded media
+           - PDF: LaTeX or markdown → PDF, styling, page layout
+           - Markdown: Standard markdown, portable format
+           - Medium: Medium-flavored markdown, large images, pull quotes
+           - Substack: Email-friendly, short paragraphs, minimal images
+           - GitHub: GitHub-flavored markdown, code highlighting
+           - Blog: Platform-specific (Hugo/Jekyll), SEO metadata
+        3. Transform wikilinks based on strategy:
+           - **URLs**: `[[Note]]` → `[Note](https://url.com/note)`
+           - **Plain text**: `[[Note]]` → `Note` or `*Note*`
+           - **Remove**: `[[Note]]` → `Note`
+           - **Preserve**: `[[Note]]` → `[Note]` (reference marker)
+        4. Convert Obsidian-specific syntax:
+           - Callouts → Styled blocks (HTML) or quotes (markdown)
+           - Dataview queries → Static rendered output
+           - Embedded notes → Inline content or references
+           - Internal syntax → Target platform syntax
+        5. Apply platform-specific formatting:
+           - Image sizing and positioning
+           - Code block syntax highlighting
+           - Pull quotes or callouts
+           - Headers and footers (PDF)
+           - Frontmatter (blog platforms)
+        6. Optimize for platform:
+           - Medium: Large centered images, pull quotes
+           - Substack: Short paragraphs, mobile-friendly
+           - PDF: Professional styling, page breaks
+           - Blog: SEO metadata, responsive design
+        7. Generate formatted output file
+      - Outputs:
+        * formatted_content: text (content in target format)
+        * output_file_path: text
+        * transformation_log: list (changes made)
+        * warnings: list (potential issues)
+      - Quality Criteria:
+        * All wikilinks transformed correctly
+        * Platform-specific syntax applied
+        * No broken formatting
+        * Output renders correctly on target platform
+      - Used by: Publication Formatter Agent
+
+    - [ ] Create generate-bibliography.md:
+      - Purpose: Generate formatted bibliography in selected citation style
+      - Inputs:
+        * citation_manifest: list (from content brief)
+        * citation_style: [APA, MLA, Chicago, IEEE]
+        * vault_path: text (for extracting note metadata)
+      - Process:
+        1. Load citation manifest (list of notes used)
+        2. For each cited note:
+           - Extract bibliographic metadata from frontmatter:
+             * author: text
+             * year: number
+             * title: text
+             * source: text (journal, book, website)
+             * url: text
+             * type: [book, article, website, paper]
+           - Fall back to defaults if metadata missing:
+             * title: Note title or filename
+             * author: "Personal notes"
+             * year: Note creation year
+           - Handle incomplete metadata gracefully
+        3. Format citation according to style:
+           - **APA**: Author, A. A. (Year). *Title*. Source. URL
+           - **MLA**: Author Last, First. "Title." Source, Year.
+           - **Chicago**: Author Last, First. *Title*. Source, Year.
+           - **IEEE**: [1] A. A. Author, "Title," Source, Year.
+        4. Sort citations:
+           - APA/MLA/Chicago: Alphabetically by author
+           - IEEE: Numerically (order of appearance)
+        5. Load bibliography-tmpl.yaml template
+        6. Populate bibliography:
+           - Citation list
+           - Sources by type (books, articles, websites)
+           - Access dates (for web sources)
+           - URLs (full URLs for all online sources)
+        7. Generate bibliography section
+      - Outputs:
+        * bibliography: text (formatted citation list)
+        * citation_count: number
+        * incomplete_citations: list (missing metadata)
+        * bibliography_file_path: text
+      - Quality Criteria:
+        * All citations formatted correctly
+        * Style conventions followed precisely
+        * Citations sorted appropriately
+        * Incomplete metadata flagged
+      - Used by: Publication Formatter Agent
+
+    - [ ] Create check-privacy.md:
+      - Purpose: Validate privacy compliance before publication
+      - Inputs:
+        * content_path: text (content file to check)
+        * vault_path: text (Obsidian vault root)
+      - Process:
+        1. Load publication-privacy-checklist.md
+        2. Check required items:
+           ✓ No #private tags in content
+           ✓ No notes from /private/ folders included
+           ✓ Frontmatter privacy flags checked (private: true)
+           ✓ No email addresses (except author's public email)
+           ✓ No phone numbers
+           ✓ No street addresses
+           ✓ No SSNs or personal IDs
+           ✓ No confidential work information
+           ✓ All personal names have consent or are public figures
+        3. Run PII detection:
+           - Email addresses: Regex `\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b`
+           - Phone numbers: Regex `\b\d{3}[-.]?\d{3}[-.]?\d{4}\b`
+           - SSNs: Regex `\b\d{3}-\d{2}-\d{4}\b`
+           - Addresses: Pattern matching (street, city, state, zip)
+        4. Check for private content markers:
+           - Scan for #private tags
+           - Check frontmatter `private: true`
+           - Look for `CONFIDENTIAL`, `INTERNAL`, `DO NOT SHARE` markers
+        5. Identify privacy violations:
+           - List all PII detected
+           - List all private content markers
+           - Categorize severity (critical/warning)
+        6. Generate privacy report:
+           - Pass/fail status
+           - Violations found
+           - Recommendations for redaction/removal
+      - Outputs:
+        * privacy_check_passed: boolean
+        * violations: list
+          - violation_type: [email, phone, ssn, address, private_tag, confidential]
+          - severity: critical|warning
+          - location: text (where in content)
+          - recommendation: text (how to fix)
+        * required_items_passed: number / total
+        * privacy_report: text
+      - Quality Criteria:
+        * All required items checked
+        * PII accurately detected
+        * Private content identified
+        * Clear recommendations provided
+      - Used by: Publication Formatter Agent
+
+    - [ ] Create validate-publication.md:
+      - Purpose: Validate publication quality and completeness
+      - Inputs:
+        * formatted_content_path: text (formatted publication file)
+        * publication_manifest: dict (metadata)
+        * target_platform: text
+      - Process:
+        1. Load publication-quality-checklist.md
+        2. Check required items:
+           ✓ All wikilinks converted to target format
+           ✓ Bibliography generated and formatted
+           ✓ No private/confidential content included
+           ✓ No PII without explicit consent
+           ✓ All images/media have proper permissions
+           ✓ Source attribution complete
+           ✓ Target format correct (HTML, PDF, markdown, etc.)
+           ✓ Version number assigned
+           ✓ Publication date set
+           ✓ Content status set (draft/review/published)
+        3. Validate formatting:
+           - Check for broken links (HTML/web)
+           - Verify images render correctly
+           - Test code blocks (if present)
+           - Check layout (PDF)
+        4. Validate metadata:
+           - Author specified
+           - Title present
+           - Description provided
+           - Copyright/license specified
+        5. Platform-specific checks:
+           - Medium: Images large, pull quotes present
+           - PDF: Page numbers, table of contents, headers/footers
+           - GitHub: Code syntax highlighting works
+           - Blog: Frontmatter complete
+        6. Generate validation report:
+           - Pass/fail status
+           - Required items passed/failed
+           - Optional items passed/failed
+           - Warnings and recommendations
+      - Outputs:
+        * validation_passed: boolean
+        * required_items_passed: number / total
+        * optional_items_passed: number / total
+        * warnings: list
+        * recommendations: list
+        * validation_report: text
+      - Quality Criteria:
+        * All required items checked
+        * Platform-specific validation applied
+        * Clear pass/fail determination
+        * Actionable recommendations
+      - Used by: Publication Formatter Agent
+
+    - [ ] Create create-publication-manifest.md:
+      - Purpose: Generate publication metadata and tracking manifest
+      - Inputs:
+        * title: text
+        * content_type: [article, presentation, video, tutorial]
+        * target_platform: text
+        * format: text (html, pdf, markdown)
+        * citation_style: text (APA, MLA, Chicago, IEEE)
+        * source_brief_path: text (link to content brief)
+        * notes_cited: list (citation manifest)
+        * word_count: number
+        * public_url: text (if published)
+      - Process:
+        1. Load publication-manifest-tmpl.yaml template
+        2. Generate publication ID (UUID)
+        3. Populate manifest sections:
+           - publication_id
+           - title, author
+           - content_type, target_platform, format
+           - citation_style
+           - publication_date (today)
+           - version (default: "1.0")
+           - status (draft/review/published)
+           - source_brief (link to brief)
+           - source_notes_used (count)
+           - citation_count
+           - word_count, character_count, reading_time
+           - privacy_checked, quality_checked (validation results)
+           - tags, description
+           - copyright, license_url
+           - notes_cited (full citation manifest)
+           - public_url (if published)
+        4. Calculate metrics:
+           - Character count: len(content)
+           - Estimated reading time: word_count / 200 words per minute
+        5. Save manifest file
+      - Outputs:
+        * publication_manifest: dict (all metadata)
+        * manifest_file_path: text
+        * publication_id: UUID
+      - Quality Criteria:
+        * All required fields populated
+        * Metrics calculated correctly
+        * Manifest saved successfully
+        * UUID generated properly
+      - Used by: Publication Formatter Agent
+
+  - [ ] Task 3: Document task format and integration (AC11)
+    - [ ] Define standard task structure:
+      - Purpose statement
+      - Input requirements
+      - Step-by-step process
+      - Output specifications
+      - Quality criteria
+      - Used by (which agents)
+    - [ ] Document task integration patterns:
+      - How agents load and execute tasks
+      - Task dependencies (which tasks call other tasks)
+      - Query routing integration
+      - Validation integration
+    - [ ] Create task execution examples
+    - [ ] Document task versioning strategy
+
+technical_notes: |
+  ## Task Design Philosophy
+
+  Phase 3 tasks enable **content creation and publishing**:
+  - Content Brief tasks: Transform KB into content plans
+  - Publication tasks: Format and publish content safely
+  - All tasks are executable procedures with clear inputs/outputs
+
+  ## Content Brief Task Integration
+
+  **create-content-brief** orchestrates subtasks:
+  1. query-knowledge-base.md → Retrieve relevant notes
+  2. extract-arguments.md → Identify claims and evidence
+  3. identify-angles.md → Find unique perspectives
+  4. detect-brief-gaps.md → Identify missing info
+  5. Assemble all into content brief document
+
+  **Workflow:**
+  1. User: "Create content brief for Machine Learning"
+  2. Content Brief Agent → query-knowledge-base.md (semantic + MOC)
+  3. Content Brief Agent → extract-arguments.md (analyze notes)
+  4. Content Brief Agent → identify-angles.md (find uniqueness)
+  5. Content Brief Agent → detect-brief-gaps.md (check completeness)
+  6. Content Brief Agent → create-content-brief.md (assemble brief)
+  7. Validate using brief-completeness-checklist.md
+
+  ## Publication Task Integration
+
+  **format-publication** orchestrates publishing workflow:
+  1. format-publication.md → Convert to target format
+  2. generate-bibliography.md → Create citation list
+  3. check-privacy.md → Validate privacy compliance
+  4. validate-publication.md → Check quality
+  5. create-publication-manifest.md → Generate metadata
+
+  **Workflow:**
+  1. User: "Publish article to Medium"
+  2. Publication Formatter Agent → format-publication.md (convert to Medium markdown)
+  3. Publication Formatter Agent → generate-bibliography.md (APA style)
+  4. Publication Formatter Agent → check-privacy.md (scan for PII)
+  5. Publication Formatter Agent → validate-publication.md (quality check)
+  6. Publication Formatter Agent → create-publication-manifest.md (metadata)
+  7. Output: Formatted article + bibliography + manifest
+
+  ## Query Strategy Selection
+
+  **When to use each query strategy:**
+  - **Semantic**: Broad topics, concept exploration
+    * Example: "machine learning optimization" → Returns conceptually related notes
+  - **Tags**: Category-specific content
+    * Example: #machine-learning AND #neural-networks → Returns tagged notes
+  - **MOC**: Domain-based content
+    * Example: Start from [[Machine Learning MOC]] → Follow links
+  - **Links**: Relationship-focused content
+    * Example: Notes linking to [[Gradient Descent]] → Find connected notes
+  - **Hybrid**: Complex topics needing multiple perspectives
+    * Example: Semantic + Tags + MOC → Comprehensive retrieval
+
+  ## Wikilink Transformation Strategies
+
+  **Strategy selection guide:**
+  - **URLs**: When published notes have public URLs (blog posts, articles)
+  - **Plain text**: When concepts not published separately (most common)
+  - **Remove**: When clean text desired (academic papers, PDFs)
+  - **Preserve**: When publishing to another knowledge system (rare)
+
+  User should specify strategy per publication type.
+
+  ## Citation Style Selection
+
+  **Domain-appropriate styles:**
+  - **APA**: Psychology, education, social sciences
+  - **MLA**: Humanities, literature, arts
+  - **Chicago**: History, business, fine arts
+  - **IEEE**: Engineering, computer science, technical
+
+  Use IEEE for technical content, APA for most other domains.
+
+  ## Privacy Checking Importance
+
+  **Always run privacy checks before publication:**
+  - PII leaks can cause legal liability (GDPR, privacy laws)
+  - Confidential information disclosure harms trust
+  - Private content exposure damages relationships
+
+  Block publication on critical privacy violations. Never skip privacy checks.
+
+  ## Gap Detection and Research Integration
+
+  Gaps detected during brief creation are **high-priority research**:
+  - Context: Content creation provides research motivation
+  - Urgency: Often time-sensitive (deadlines)
+  - Value: Filling gaps improves content quality
+
+  Integration flow:
+  1. detect-brief-gaps identifies gap
+  2. Content Brief Agent calls Gap Detector Agent (create gap-analysis)
+  3. Research Coordinator fills gap (if critical)
+  4. Brief updated with new info
+  5. Content creation proceeds
+
+  ## Argument Extraction Principles
+
+  **Evidence types:**
+  - **Empirical**: Data, experiments, observations (strongest)
+  - **Theoretical**: Frameworks, models, principles (strong)
+  - **Anecdotal**: Examples, case studies (moderate)
+  - **Authority**: Expert opinions, citations (moderate)
+
+  Prioritize empirical and theoretical evidence. Use anecdotal for illustration.
+
+  ## Unique Angle Importance
+
+  Content without unique angles is **commodity content**:
+  - Already well-covered elsewhere
+  - Low reader value
+  - Wastes KB potential
+
+  Content with unique angles is **differentiated content**:
+  - KB-specific synthesis
+  - High reader value
+  - Leverages personal expertise
+
+  Always identify ≥1 unique angle before creating content.
+
+  ## Publication Versioning
+
+  Track versions to enable:
+  - **Updates**: Republish with new insights (v1.0 → v2.0)
+  - **Corrections**: Fix errors quickly (v1.0 → v1.1)
+  - **History**: See how content evolved
+  - **Rollback**: Revert if update causes issues
+
+  Version in publication manifest, track all versions in Neo4j.
+
+  ## Platform-Specific Optimization
+
+  Generic markdown works, but **platform optimization improves engagement**:
+  - **Medium**: Large images, pull quotes, narrative style
+  - **Substack**: Email-friendly, short paragraphs, minimal images
+  - **PDF**: Professional styling, page layout, print-ready
+  - **Blog**: SEO metadata, internal linking, responsive
+  - **GitHub**: Code-focused, developer audience, technical
+
+  Always apply platform-specific formatting for best results.
+
+  ## Example Task Execution Flow
+
+  **User**: "Create and publish article on Machine Learning"
+
+  **Phase 1: Brief Creation (Content Brief Agent)**
+  1. Execute: query-knowledge-base.md
+     - Input: topic="Machine Learning", strategy=hybrid
+     - Output: 15 relevant notes
+  2. Execute: extract-arguments.md
+     - Input: note_list
+     - Output: 1 primary argument, 3 supporting arguments, 8 evidence pieces
+  3. Execute: identify-angles.md
+     - Input: topic, note_list, arguments
+     - Output: Unique angle = "Frame ML as optimization, not algorithm catalog"
+  4. Execute: detect-brief-gaps.md
+     - Input: arguments, citation_manifest
+     - Output: 2 medium gaps, 0 critical gaps
+  5. Execute: create-content-brief.md
+     - Input: all above outputs
+     - Output: Complete content brief
+
+  **Phase 2: Writing (External or assisted)**
+  - User writes article based on brief
+  - Draft: 2340 words
+
+  **Phase 3: Publishing (Publication Formatter Agent)**
+  1. Execute: format-publication.md
+     - Input: content, platform=Medium, wikilink_strategy=plaintext
+     - Output: Medium-formatted markdown
+  2. Execute: generate-bibliography.md
+     - Input: citation_manifest, style=APA
+     - Output: APA-formatted bibliography (8 citations)
+  3. Execute: check-privacy.md
+     - Input: formatted_content
+     - Output: Privacy check passed, 0 violations
+  4. Execute: validate-publication.md
+     - Input: formatted_content, manifest
+     - Output: Validation passed, all required items OK
+  5. Execute: create-publication-manifest.md
+     - Input: all metadata
+     - Output: Publication manifest with v1.0
+
+  **Result**: Published article on Medium with bibliography and manifest
+
+dependencies:
+  - STORY-024: Content Brief Agent (uses content brief tasks)
+  - STORY-025: Publication Formatter Agent (uses publication tasks)
+  - STORY-033: Phase 3 Templates (content-brief-tmpl, publication-manifest-tmpl)
+  - STORY-034: Additional Templates (bibliography-tmpl)
+  - STORY-035: Phase 2-5 Checklists (brief-completeness, publication-quality, publication-privacy)
+  - STORY-003: Query Interpreter Agent (query routing)
+  - STORY-040: Gap Detector Agent (gap analysis)
+  - Neo4j integration - optional for graph queries
+  - common/utils/bmad-doc-template.md (for task format)
+
+testing:
+  - Test create-content-brief with article/presentation/video/tutorial
+  - Test query-knowledge-base with all strategies (semantic, tags, MOC, links, hybrid)
+  - Test extract-arguments with various note sets
+  - Test identify-angles (verify uniqueness identification)
+  - Test detect-brief-gaps (verify severity categorization)
+  - Test format-publication for all platforms (HTML, PDF, markdown, Medium, GitHub)
+  - Test generate-bibliography for all styles (APA, MLA, Chicago, IEEE)
+  - Test check-privacy (verify PII detection)
+  - Test validate-publication (verify quality checks)
+  - Test create-publication-manifest (verify metadata generation)
+  - Verify task integration (orchestration workflows)
+  - Test with Neo4j enabled and disabled
+  - Test wikilink transformation strategies (URLs, plaintext, remove, preserve)
+
+definition_of_done:
+  - All 10 task files created (5 content brief + 5 publication)
+  - All tasks follow standard format (purpose, inputs, process, outputs, quality)
+  - Content Brief tasks fully specified and integrated
+  - Publication tasks fully specified and integrated
+  - Task dependencies documented
+  - Query strategy selection guide documented
+  - Wikilink transformation strategies documented
+  - Citation style guidance documented
+  - Privacy checking process documented
+  - Platform-specific formatting documented
+  - Quality criteria defined for all tasks
+  - Task execution examples provided
+  - Integration patterns documented
+  - All tasks tested with various scenarios
+  - Task versioning strategy defined
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Phase 3 tasks
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

@@ -1,0 +1,405 @@
+name: monthly-deep-review
+title: Monthly Deep Review Workflow
+description: |
+  Comprehensive monthly knowledge synthesis and evolution analysis workflow.
+  Creates/updates Maps of Content for knowledge domains, generates temporal
+  narratives for actively evolving concepts, reviews knowledge gaps, and plans
+  next month's focus areas.
+
+  Designed for monthly execution (recommended: first Sunday of the month) as a
+  strategic review complementing weekly maintenance routines. Integrates Phase 2
+  synthesis and temporal capabilities.
+
+triggers:
+  - intent: "monthly review"
+  - intent: "monthly deep review"
+  - command: /monthly-deep-review
+  - schedule: "First Sunday of month"
+
+agents:
+  - query-interpreter-agent
+  - moc-constructor-agent
+  - timeline-constructor-agent
+  - quality-auditor-agent
+
+steps:
+  - id: identify_domains
+    title: "Step 1: Identify Domains for Review"
+    agent: query-interpreter-agent
+    duration: "10 minutes"
+    outputs: domain_list
+    exit_criteria: |
+      Active knowledge domains identified.
+      Domains prioritized for MOC creation/update.
+      Temporal analysis candidates selected.
+    notes: |
+      Use query-interpreter-agent command: *query
+
+      Identify domains that need synthesis attention:
+
+      Query 1: "What domains grew most this month?"
+      - Identify areas with high capture/edit activity
+      - Surface domains crossing maturity thresholds (10, 30, 60 notes)
+      - Prioritize domains for MOC creation or enhancement
+
+      Query 2: "Which concepts show active evolution?"
+      - Find notes with significant edit activity (5+ edits)
+      - Identify concepts with understanding shifts
+      - Select candidates for temporal narrative generation
+
+      Query 3: "What knowledge gaps exist?"
+      - Identify isolated clusters (strong internal linking, weak external)
+      - Find domains with missing foundational concepts
+      - Surface questions without answers
+
+      Document findings:
+      - 2-3 domains for MOC creation/update
+      - 1-2 concepts for temporal narrative analysis
+      - Top 3 knowledge gaps to address next month
+
+  - id: update_create_mocs
+    title: "Step 2: Update/Create Maps of Content"
+    agent: moc-constructor-agent
+    duration: "30 minutes"
+    inputs: domain_list
+    outputs: moc_files
+    exit_criteria: |
+      MOCs created for new domains (nascent → developing maturity).
+      Existing MOCs updated with new notes and branches.
+      All MOCs pass moc-completeness-checklist.md.
+    notes: |
+      Use moc-constructor-agent commands: *create-moc, *update-moc, *check-maturity
+
+      For each domain identified in Step 1:
+
+      **New Domains (no existing MOC)**:
+      1. Run *create-moc for domain
+         - Domain will be analyzed and clustered into 3-6 branches
+         - Hierarchical structure created (2-3 levels optimal)
+         - Core concepts defined, summaries generated
+         - Bidirectional links established
+      2. Run *check-maturity to calculate initial maturity level
+      3. Document creation in MOC temporal history
+
+      **Existing Domains (MOC needs update)**:
+      1. Run *update-moc for domain
+         - New notes integrated into structure
+         - Branch summaries regenerated if significant changes
+         - Bridge paragraphs updated for new connections
+         - Maturity recalculated
+      2. If maturity advanced, celebrate milestone in temporal history
+      3. Update review frequency based on new maturity level
+
+      **Quality Assurance**:
+      - Each MOC must pass moc-completeness-checklist.md (9/11 items minimum)
+      - Verify no orphaned notes within domain
+      - Ensure balanced branch distribution (no single branch > 50%)
+      - Check that overview synthesizes rather than enumerates
+
+      Target: 2-3 MOCs created/updated per monthly review
+
+  - id: generate_temporal_narratives
+    title: "Step 3: Generate Temporal Narratives"
+    agent: timeline-constructor-agent
+    duration: "20 minutes"
+    inputs: domain_list
+    outputs: temporal_narratives
+    exit_criteria: |
+      Temporal evolution narratives created for actively evolving concepts.
+      Understanding shifts documented and explained.
+      Maturation metrics calculated and compared to vault averages.
+    notes: |
+      Use timeline-constructor-agent command: *analyze-evolution
+
+      For each concept identified as actively evolving in Step 1:
+
+      **Temporal Analysis Workflow**:
+      1. Run *analyze-evolution "[[Concept Name]]"
+         - Queries Neo4j for temporal events (CAPTURE, EDIT, PROMOTION, LINK, MOC_ADDED)
+         - Identifies evolution periods (capture → development → maturation → maintenance)
+         - Detects understanding shifts (contradictions, integrations, synthesis, perspectives)
+         - Calculates maturation metrics (days-to-evergreen, edit velocity, link accumulation, etc.)
+         - Generates chronological narrative using temporal-narrative-tmpl.yaml
+
+      2. Review narrative quality:
+         - Run temporal-accuracy-checklist.md (9/10 items minimum)
+         - Run narrative-completeness-checklist.md (8/10 items minimum)
+         - Verify understanding shifts are justified by evidence
+         - Confirm metrics are reasonable vs vault averages
+
+      3. Use insights for action planning:
+         - If concept still in development phase: continue regular editing
+         - If maturation stalled: identify blocking questions or missing sources
+         - If maintenance phase: reduce edit frequency, focus on linking
+
+      **Graceful Degradation**:
+      If Neo4j unavailable, Timeline Constructor will use Obsidian-only mode:
+      - Edit history from file system timestamps
+      - Link analysis from wikilink parsing
+      - Phase detection from frontmatter metadata
+      - Reduced precision but still valuable
+
+      Target: 1-2 temporal narratives per monthly review
+
+  - id: review_knowledge_gaps
+    title: "Step 4: Review Knowledge Gaps"
+    agent: quality-auditor-agent
+    duration: "10 minutes"
+    inputs: moc_files, temporal_narratives
+    outputs: gap_analysis
+    exit_criteria: |
+      Knowledge gaps documented and categorized.
+      Structural issues identified (weak branches, missing bridges).
+      Recommendations generated for next month's focus.
+    notes: |
+      Use quality-auditor-agent command: *audit-full (focused on structure)
+
+      Analyze vault structure for gaps and weaknesses:
+
+      **Domain Coverage Gaps**:
+      - Domains with <10 notes that need development
+      - MOC branches with <3 notes (underdeveloped themes)
+      - Isolated note clusters not yet integrated into MOCs
+
+      **Conceptual Gaps**:
+      - Questions without answer notes
+      - Arguments without supporting evidence
+      - Models without application examples
+      - Contradictions without resolution or synthesis
+
+      **Structural Gaps**:
+      - Missing bridge paragraphs between related MOC branches
+      - Weak cross-domain connections (potential for analogy, transfer)
+      - Notes in development phase that should be promoted to evergreen
+
+      **Temporal Gaps**:
+      - Concepts stagnant for >90 days in development phase
+      - High-value domains without temporal narratives
+      - Missing maturation milestones in temporal history
+
+      Document top 3-5 gaps to address next month.
+      Prioritize based on: impact (value if filled), effort (time to address), interest (motivation).
+
+  - id: plan_next_month
+    title: "Step 5: Plan Next Month's Focus"
+    agent: query-interpreter-agent
+    duration: "10 minutes"
+    inputs: gap_analysis, temporal_narratives
+    outputs: monthly_plan
+    exit_criteria: |
+      Next month's knowledge work focus areas defined.
+      Specific learning goals and capture priorities identified.
+      Review plan documented in monthly review note.
+    notes: |
+      Use query-interpreter-agent command: *query (for context gathering)
+
+      Create next month's knowledge work plan:
+
+      **Learning Priorities** (based on gaps):
+      - Identify 2-3 domains to develop (target: bring to next maturity level)
+      - List 3-5 specific concepts to capture/research
+      - Set goals: "Advance [Domain] from nascent to developing (10 → 30 notes)"
+
+      **Capture Priorities**:
+      - Areas needing foundational concepts
+      - Questions needing answer notes
+      - Sources to integrate (books, articles, courses in progress)
+
+      **Synthesis Priorities**:
+      - Existing MOCs needing major updates
+      - Concepts ready for temporal narrative analysis
+      - Bridge paragraphs to write between domains
+
+      **Linking Priorities**:
+      - High-value isolated notes to integrate
+      - Cross-domain connections to explore
+      - Potential analogies between domains
+
+      Document plan in monthly review note with:
+      - 3 domain goals (with measurable targets)
+      - 5 capture priorities (concepts/questions)
+      - 2 synthesis projects (MOC updates, narratives)
+      - 1 linking focus (cross-domain theme)
+
+      Refer back to plan during weekly reviews to track progress.
+
+outputs:
+  - domain_list # Active domains and evolving concepts identified
+  - moc_files # MOCs created/updated (2-3 per review)
+  - temporal_narratives # Evolution narratives for active concepts (1-2 per review)
+  - gap_analysis # Knowledge gaps and structural weaknesses documented
+  - monthly_plan # Next month's knowledge work focus areas
+
+diagram: |
+  ```mermaid
+  graph TD
+      Start([Monthly Deep Review]) --> A[Step 1: Identify Domains]
+      A --> B[Step 2: Update/Create MOCs]
+      B --> C[Step 3: Generate Temporal Narratives]
+      C --> D[Step 4: Review Knowledge Gaps]
+      D --> E[Step 5: Plan Next Month]
+      E --> End([Review Complete])
+
+      A -->|domain_list| B
+      A -->|domain_list| C
+      B -->|moc_files| D
+      C -->|temporal_narratives| D
+      D -->|gap_analysis| E
+
+      subgraph "Agents"
+          QI[Query Interpreter]
+          MOC[MOC Constructor]
+          TL[Timeline Constructor]
+          QA[Quality Auditor]
+      end
+
+      A -.-> QI
+      B -.-> MOC
+      C -.-> TL
+      D -.-> QA
+      E -.-> QI
+
+      style Start fill:#e1f5dd
+      style End fill:#e1f5dd
+      style B fill:#fff4e6
+      style C fill:#fff4e6
+  ```
+
+notes: |
+  ## Monthly Deep Review Execution
+
+  This workflow is designed for monthly execution with a recommended schedule:
+  - **When**: First Sunday of the month (or your preferred monthly review time)
+  - **Duration**: 80 minutes total (1 hour 20 minutes)
+  - **Frequency**: Once per month
+
+  **Step Breakdown**:
+  1. Identify Domains (10 min) - Find what needs attention
+  2. Update/Create MOCs (30 min) - Synthesize domain knowledge
+  3. Generate Temporal Narratives (20 min) - Analyze concept evolution
+  4. Review Knowledge Gaps (10 min) - Identify structural weaknesses
+  5. Plan Next Month (10 min) - Set knowledge work focus
+
+  ## Preparation
+
+  Before starting the monthly deep review:
+  - Complete weekly review for the current week
+  - Review last month's plan and assess progress
+  - Ensure Neo4j Graphiti is running (for temporal analysis)
+  - Set aside uninterrupted time (80-90 min)
+  - Have monthly review note ready for documentation
+  - Clear mindset for strategic reflection
+
+  ## Integration with Other Workflows
+
+  This workflow complements existing maintenance routines:
+  - **Daily**: Capture processing (inbox zero, atomicity, quick linking)
+  - **Weekly**: Quality audit, batch link processing, exploratory queries
+  - **Monthly**: Deep synthesis, temporal analysis, strategic planning
+
+  Together, these create a comprehensive knowledge management rhythm:
+  - Daily: Capture and clarify
+  - Weekly: Connect and maintain
+  - Monthly: Synthesize and strategize
+
+  ## Phase 2 Integration
+
+  This workflow is the primary execution point for Phase 2 capabilities:
+
+  **Synthesis (MOCs)**:
+  - Transforms isolated notes into structured knowledge domains
+  - Creates hierarchical organization (2-3 levels)
+  - Generates summaries and bridge paragraphs
+  - Tracks domain maturity progression
+
+  **Temporal Analysis**:
+  - Documents concept evolution over time
+  - Identifies understanding shifts and maturation patterns
+  - Calculates comparative metrics vs vault averages
+  - Creates chronological narratives of knowledge development
+
+  ## Neo4j Graphiti Requirements
+
+  Optimal execution requires Neo4j Graphiti for temporal features:
+  - Timeline Constructor uses Graphiti MCP for event queries
+  - Temporal narratives require edit history and link events
+  - Maturation metrics calculated from graph data
+
+  **Graceful Degradation**:
+  If Neo4j unavailable, agents fall back to Obsidian-only mode:
+  - File system timestamps instead of captured events
+  - Frontmatter metadata for phase tracking
+  - Link analysis from wikilink parsing
+  - Reduced temporal precision but workflow still functional
+
+  ## Customization Options
+
+  Adjust based on your vault size and activity level:
+
+  **Large vaults (500+ notes)**:
+  - Extend Step 2 to 45 minutes (more MOCs to update)
+  - Focus domain identification on high-activity areas only
+  - Use query filters to reduce result sets
+
+  **High growth months**:
+  - Increase Step 1 to 15 minutes (more domains to evaluate)
+  - May create 4-5 new MOCs if many domains crossed maturity thresholds
+  - Consider splitting review across two sessions
+
+  **Low activity months**:
+  - Reduce total time to 60 minutes
+  - Skip Step 3 if no concepts show significant evolution
+  - Focus more on strategic planning (Step 5) for next month
+
+  **First-time execution**:
+  - Expect 2-3 hours for initial MOC creation across multiple domains
+  - Focus on establishing 3-5 core domain MOCs in first review
+  - Build comprehensive structure incrementally over 3-6 months
+
+  ## Success Metrics
+
+  Track these indicators to measure workflow effectiveness:
+  - **MOCs created/updated**: 2-3 per review (nascent → developing → established progression)
+  - **Temporal narratives generated**: 1-2 per review for high-value concepts
+  - **Knowledge gaps identified**: 3-5 actionable gaps documented
+  - **Monthly plan completion**: 70%+ of previous month's goals achieved
+  - **Domain maturity growth**: 1-2 domains advance maturity level per quarter
+
+  ## Action Items from Review
+
+  Monthly deep review typically generates action items:
+  - **Immediate** (this week):
+    - Fix structural issues in MOCs (missing bridges, orphaned notes)
+    - Promote concepts ready for evergreen status
+  - **This month**:
+    - Capture foundational concepts for identified gaps
+    - Research answers to open questions
+    - Write bridge paragraphs between related domains
+  - **Ongoing**:
+    - Continue developing nascent domains toward maturity
+    - Maintain link density in established MOCs
+    - Regular editing for concepts in development phase
+
+  Track action items in monthly plan note.
+  Review progress during weekly reviews to maintain momentum.
+
+  ## Long-term Benefits
+
+  Consistent monthly deep reviews provide compounding benefits:
+  - **Knowledge synthesis**: Transforms scattered notes into structured domains
+  - **Evolution awareness**: Tracks how your understanding develops over time
+  - **Strategic focus**: Guides learning toward high-value areas
+  - **Maturation tracking**: Celebrates progress as domains grow
+  - **Gap awareness**: Prevents knowledge blind spots
+  - **Motivation**: Visible progress creates positive feedback loop
+
+  ## Integration with Knowledge Lifecycle
+
+  This workflow synthesizes outputs from all lifecycle phases:
+  - **Capture**: Notes created during daily capture processing
+  - **Develop**: Edits and refinements from weekly reviews
+  - **Synthesize**: MOCs and temporal narratives (this workflow)
+  - **Maintain**: Quality assurance and gap filling
+
+  Monthly deep review is the strategic capstone of the knowledge lifecycle,
+  creating structure and meaning from accumulated captures and connections.

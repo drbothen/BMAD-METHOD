@@ -1,0 +1,228 @@
+---
+story_id: STORY-089
+title: Define Agent Output Directory Organization and File Creation Rules
+epic_id: EPIC-001
+phase: 1
+priority: high
+estimated_effort: 14 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a user
+  I want agent-generated content organized in a clear, predictable structure
+  So that I can easily find, review, and manage AI-created notes and reports
+
+acceptance_criteria:
+  - "AC1: Define agent output folder structure within Obsidian vaults"
+  - "AC2: Specify file creation rules for each agent type"
+  - "AC3: Implement timestamped organization for agent output"
+  - "AC4: Define integration points with user's organizational system"
+  - "AC5: Create file naming conventions for agent-generated content"
+  - "AC6: Document agent output organization in user guide"
+
+tasks_subtasks: |
+  - [ ] Task 1: Define agent output folder structure (AC1)
+    - [ ] Create specification for `agentOutput` location (from vault-mappings)
+    - [ ] Default location: `99 Agent Output/` (configurable per vault)
+    - [ ] Define subfolder hierarchy:
+      ```
+      99 Agent Output/
+      ├── YYYY-MM/              # Month-level organization
+      │   ├── YYYY-MM-DD/       # Daily agent runs
+      │   │   ├── HH-MM-agent-name-output.md
+      │   │   └── audit-reports/
+      │   │       ├── orphaned-notes-YYYY-MM-DD.md
+      │   │       ├── duplicate-candidates-YYYY-MM-DD.md
+      │   │       └── link-validation-YYYY-MM-DD.md
+      ├── pending-review/        # Content awaiting user approval
+      │   └── suggested-moc-YYYY-MM-DD-UUID.md
+      ├── approved/              # User-approved content (temporary holding)
+      │   └── ...
+      └── rejected/              # Rejected suggestions (for learning)
+          └── ...
+      ```
+    - [ ] Document purpose of each subdirectory
+    - [ ] Define retention/cleanup policies
+    - [ ] Add configuration options for structure customization
+
+  - [ ] Task 2: Specify file creation rules per agent (AC2)
+    - [ ] **Inbox Triage Agent:**
+      - Creates: Processing reports in `YYYY-MM/YYYY-MM-DD/`
+      - Moves: Processed notes to user's organizational structure
+      - Reports: Summary of processing actions
+      - Naming: `HH-MM-inbox-processing-results.md`
+    - [ ] **Structural Analysis Agent:**
+      - Creates: New atomic notes in user's atomic notes location
+      - Creates: Fragmentation reports in agent output
+      - Does NOT modify: Original user notes
+      - Naming: Atomic notes follow user's convention
+    - [ ] **Semantic Linker Agent:**
+      - Creates: Link suggestion reports in agent output
+      - Modifies: User notes (if authorized) to add links
+      - Reports: Summary of links added
+      - Naming: `HH-MM-semantic-linking-report.md`
+    - [ ] **Query Interpreter Agent:**
+      - Creates: Query result notes in agent output
+      - Creates: Answer notes for user questions
+      - Naming: `HH-MM-query-QUERY-SUMMARY.md`
+    - [ ] **Quality Auditor Agent:**
+      - Creates: Audit reports in `audit-reports/` subfolder
+      - Reports: Orphaned notes, duplicates, broken links, staleness
+      - Naming: `[type]-audit-YYYY-MM-DD.md`
+    - [ ] Document each agent's output patterns
+    - [ ] Define which content stays in agent output vs integrates
+
+  - [ ] Task 3: Implement timestamped organization (AC3)
+    - [ ] Use YYYY-MM/YYYY-MM-DD folder structure
+    - [ ] Add HH-MM prefix to files within daily folders
+    - [ ] Implement automatic folder creation on agent execution
+    - [ ] Handle concurrent agent runs (multiple files per minute)
+    - [ ] Use UUIDs for uniqueness when needed
+    - [ ] Create utility functions:
+      - `getAgentOutputPath(vaultConfig, agentName, timestamp)`
+      - `createTimestampedFolder(basePath, date)`
+      - `generateAgentOutputFilename(agentName, description, timestamp)`
+    - [ ] Add to `tools/output-manager.js`
+
+  - [ ] Task 4: Define integration points (AC4)
+    - [ ] **Content That Integrates (leaves agent output):**
+      - Processed inbox notes → User's organizational structure
+      - Created atomic notes → User's atomic notes location
+      - Generated MOCs → User's MOCs location
+      - Approved suggestions → Designated user folders
+    - [ ] **Content That Stays (permanent in agent output):**
+      - Processing reports and summaries
+      - Audit reports and analytics
+      - Query results and analyses
+      - Agent execution logs
+    - [ ] **Workflow for Integration:**
+      1. Agent creates content in `pending-review/`
+      2. User reviews and approves/rejects
+      3. Approved content moves to final location
+      4. Reference note created in agent output linking to final location
+      5. Rejected content moves to `rejected/` with reason
+    - [ ] Document integration workflow
+    - [ ] Create move/copy utilities
+
+  - [ ] Task 5: Create file naming conventions (AC5)
+    - [ ] **Timestamped Reports:**
+      - Format: `HH-MM-agent-name-action-description.md`
+      - Example: `09-00-inbox-processing-results.md`
+      - Example: `14-30-quality-audit-summary.md`
+    - [ ] **Audit Reports:**
+      - Format: `[audit-type]-audit-YYYY-MM-DD.md`
+      - Example: `orphaned-notes-audit-2025-11-05.md`
+      - Example: `duplicate-candidates-audit-2025-11-05.md`
+    - [ ] **Pending Review Content:**
+      - Format: `suggested-[type]-YYYY-MM-DD-UUID.md`
+      - Example: `suggested-moc-workspace-2025-11-05-a1b2c3d4.md`
+      - Example: `suggested-atomic-note-2025-11-05-e5f6g7h8.md`
+    - [ ] **Query Results:**
+      - Format: `HH-MM-query-[summary].md`
+      - Example: `10-15-query-related-to-obsidian-plugins.md`
+    - [ ] Document conventions in developer guide
+    - [ ] Create filename sanitization utility
+    - [ ] Handle special characters and Unicode
+
+  - [ ] Task 6: Document in user guide (AC6)
+    - [ ] Add section to user guide: "Understanding Agent Output"
+    - [ ] Explain folder structure and organization
+    - [ ] Show examples of agent output for each agent
+    - [ ] Explain pending/approved/rejected workflow
+    - [ ] Document how to find agent output
+    - [ ] Explain retention and cleanup
+    - [ ] Add troubleshooting section
+    - [ ] Include FAQ about agent output
+    - [ ] Update `docs/user-guide.md`
+
+dev_notes: |
+  ## Research-Based Insights
+
+  **Dedicated Agent Output Zone (from deep research):**
+  - Separates AI-generated content from organic knowledge base
+  - Timestamped organization enables historical auditing
+  - Easy cleanup of old content
+  - Prevents clutter in main knowledge areas
+  - Allows excluding from certain operations (publishing, etc.)
+
+  **Integration Philosophy:**
+  - Agent output should be *temporary staging area*
+  - Final content should integrate into user's system
+  - Reports and logs stay in agent output permanently
+  - User maintains control over what integrates
+
+  ## File Creation Safety
+
+  Critical principles from research:
+  1. **Never modify existing user notes** (unless explicitly authorized)
+  2. **Create new notes** rather than appending
+  3. **Use distinct naming** to make AI generation obvious
+  4. **Track all modifications** in file registry
+  5. **Provide undo/rollback** capabilities
+
+  ## Naming Convention Rationale
+
+  - **Timestamps first** (`HH-MM-`) ensures chronological sorting
+  - **Agent name** identifies source
+  - **Action/description** clarifies purpose
+  - **UUID when needed** prevents collisions
+  - **Obsidian-friendly** (no special chars, proper Markdown)
+
+  ## Performance Considerations
+
+  - Nested YYYY-MM/YYYY-MM-DD prevents huge flat directories
+  - Monthly folders keep daily folder count manageable
+  - Cleanup old months to prevent indefinite growth
+  - Consider automatic archiving after N months
+
+  ## Configuration Options
+
+  Users should be able to customize:
+  - Agent output root folder name
+  - Whether to use timestamped subdirectories
+  - Retention period for old output
+  - Auto-cleanup settings
+  - Naming convention preferences
+
+  ## Implementation Notes
+
+  - Use consistent date/time formatting (ISO 8601)
+  - Handle timezone considerations
+  - Ensure folder creation is atomic
+  - Handle concurrent writes safely
+  - Log all file operations
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-019: Vault mappings configuration
+  - STORY-021: File registry system (for tracking)
+  - STORY-023: Vault initialization (for created output paths)
+  - All Phase 1 agent stories (for output requirements)
+  - Node.js fs/path modules
+  - Date/time handling library (dayjs or similar)
+
+testing:
+  - Test folder creation on first agent run
+  - Test concurrent agent execution (multiple runs per minute)
+  - Test timestamped filename generation
+  - Test file name sanitization (special characters, Unicode)
+  - Test integration workflow (pending → approved → moved)
+  - Test cleanup of old output
+  - Test with different vault organizational structures
+  - Verify no overwrites of user content
+  - Test error handling (permission denied, disk full, etc.)
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation based on research findings
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

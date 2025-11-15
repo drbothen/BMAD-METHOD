@@ -1,0 +1,551 @@
+name: temporal-evolution-analysis
+title: Temporal Evolution Analysis Workflow
+description: |
+  On-demand workflow for analyzing how a specific concept or domain has evolved
+  over time. Queries temporal event history, identifies evolution periods, detects
+  understanding shifts, calculates maturation metrics, and generates chronological
+  narratives with visualizations.
+
+  Designed for ad-hoc execution when you want to understand how your thinking
+  about a concept has developed. Useful for reflection, writing, research, and
+  identifying patterns in your knowledge development process.
+
+  Requires Neo4j Graphiti for full temporal capabilities (falls back to
+  Obsidian-only mode with reduced precision if unavailable).
+
+triggers:
+  - intent: "analyze concept evolution"
+  - intent: "show how my understanding changed"
+  - intent: "create temporal narrative"
+  - command: /analyze-evolution
+  - manual: "When curious about concept development history"
+
+agents:
+  - query-interpreter-agent
+  - timeline-constructor-agent
+
+steps:
+  - id: select_concept
+    title: "Step 1: Select Concept/Domain"
+    agent: query-interpreter-agent
+    duration: "5 minutes"
+    outputs: concept_selection
+    exit_criteria: |
+      Target concept or domain identified.
+      Concept path/name confirmed.
+      User intent for analysis clarified (reflection, writing, research).
+    notes: |
+      Use query-interpreter-agent command: *query
+
+      Two approaches for concept selection:
+
+      **Approach A: User Already Knows** (skip directly to Step 2)
+      - User explicitly requests analysis: "analyze evolution of [[Concept Name]]"
+      - Provide concept wikilink or path directly
+      - Clarify analysis intent (optional)
+
+      **Approach B: Discovery Mode**
+      - User wants to find interesting concepts to analyze
+      - Use queries to surface candidates:
+
+      Query 1: "What concepts have evolved significantly?"
+      - Find notes with high edit counts (10+ edits)
+      - Identify notes promoted from fleeting to evergreen
+      - Surface notes with understanding shifts documented
+
+      Query 2: "What domains show interesting development patterns?"
+      - Find domains with non-linear growth (bursts, plateaus, revivals)
+      - Identify domains crossing maturity thresholds recently
+      - Surface domains with contradictions or synthesis achievements
+
+      Query 3: "What am I working on actively right now?"
+      - Find concepts edited in last 7-30 days
+      - Identify concepts added to MOCs recently
+      - Surface concepts with recent citation additions
+
+      **Selection Criteria**:
+      Good candidates for temporal analysis:
+      - Age: At least 30 days old (enough history to analyze)
+      - Activity: 5+ edits or recent promotion event
+      - Significance: Domain-critical or personally meaningful
+      - Complexity: Understanding has shifted or deepened over time
+
+      Document selected concept with:
+      - Concept name/title: "[[Concept Name]]"
+      - Vault path: `path/to/note.md`
+      - Analysis intent: reflection / writing / research / curiosity
+
+  - id: query_temporal_events
+    title: "Step 2: Query Temporal Events"
+    agent: timeline-constructor-agent
+    duration: "5 minutes"
+    inputs: concept_selection
+    outputs: temporal_events
+    exit_criteria: |
+      Temporal event history retrieved from Neo4j.
+      Events include: CAPTURE, EDIT, PROMOTION, LINK, MOC_ADDED.
+      Event timeline verified (no gaps, reasonable timestamps).
+    notes: |
+      Use timeline-constructor-agent command: *analyze-evolution (Step 1 of analysis)
+
+      Timeline Constructor will automatically query Neo4j Graphiti:
+
+      **Temporal Events Retrieved**:
+      - **CAPTURE**: When note was first created
+      - **EDIT**: Each significant edit (line count, diff, edit type)
+      - **PROMOTION**: Status changes (fleeting → permanent → evergreen)
+      - **LINK**: Incoming/outgoing wikilinks added
+      - **MOC_ADDED**: When note was integrated into Maps of Content
+
+      **Event Query Parameters**:
+      - Time range: Full note lifetime (CAPTURE to present)
+      - Event types: All temporal events
+      - Order: Chronological (oldest first)
+      - Include metadata: Timestamps, edit diffs, link targets, MOC names
+
+      **Data Validation**:
+      Agent will validate retrieved events:
+      - CAPTURE event exists (note creation timestamp)
+      - No impossible timestamps (future dates, pre-vault dates)
+      - Edit events have reasonable intervals (not all simultaneous)
+      - PROMOTION events follow valid state transitions
+
+      **Graceful Degradation** (if Neo4j unavailable):
+      - File system: Creation/modification timestamps
+      - Frontmatter: Promotion events from metadata
+      - Wikilinks: Parse markdown for link history
+      - Note: Reduced precision, approximate periods only
+
+      Events are passed automatically to Step 3 for period identification.
+
+  - id: identify_evolution_periods
+    title: "Step 3: Identify Evolution Periods"
+    agent: timeline-constructor-agent
+    duration: "5 minutes"
+    inputs: temporal_events
+    outputs: evolution_periods
+    exit_criteria: |
+      Evolution periods identified: capture, development, maturation, maintenance.
+      Phase boundaries determined based on activity thresholds.
+      Phase transitions and triggers documented.
+    notes: |
+      Timeline Constructor automatically identifies evolution periods
+      (this is Step 2 of *analyze-evolution, runs automatically after event query):
+
+      **Period Detection Algorithm**:
+
+      **Capture Phase** (0-7 days):
+      - Threshold: >1 edit/day
+      - Characteristics: Initial note creation, rapid iteration
+      - Ends: When edit frequency drops OR promotion to permanent
+
+      **Development Phase** (1-3 months):
+      - Threshold: 1-3 edits/week
+      - Characteristics: Active refinement, source integration
+      - Ends: <1 edit/week for 2 consecutive weeks
+
+      **Maturation Phase** (3-12 months):
+      - Threshold: <1 edit/week
+      - Characteristics: Stabilization, linking, MOC integration
+      - Ends: <1 edit/month for 2 consecutive months
+
+      **Maintenance Phase** (12+ months):
+      - Threshold: <1 edit/month
+      - Characteristics: Evergreen status, occasional refinement
+      - Indefinite: Long-term knowledge preservation
+
+      **Phase Transition Triggers**:
+      Timeline Constructor identifies what caused phase transitions:
+      - PROMOTION events (fleeting → permanent → evergreen)
+      - Major edits (>20 lines changed, >50% rewrite)
+      - Integration events (MOC_ADDED, significant linking)
+      - Stagnation (inactivity thresholds reached)
+
+      **Special Cases**:
+      - **Revival**: Return to active editing after long maintenance (>90 days)
+      - **Abandoned**: Development phase with >365 days inactivity
+      - **Evergreen acceleration**: Rapid maturation (<30 days to evergreen)
+
+      Periods with metadata are passed to Step 4 for narrative generation.
+
+  - id: create_narrative
+    title: "Step 4: Create Chronological Narrative"
+    agent: timeline-constructor-agent
+    duration: "10 minutes"
+    inputs: evolution_periods, temporal_events
+    outputs: temporal_narrative
+    exit_criteria: |
+      Temporal narrative generated using temporal-narrative-tmpl.yaml.
+      Understanding shifts identified and explained with evidence.
+      Maturation metrics calculated and compared to vault averages.
+      Narrative passes temporal-accuracy-checklist.md (9/10 items).
+      Narrative passes narrative-completeness-checklist.md (8/10 items).
+    notes: |
+      Timeline Constructor generates comprehensive narrative
+      (this is Step 3 of *analyze-evolution, runs automatically after period identification):
+
+      **Narrative Components**:
+
+      1. **Overview** (3-sentence summary):
+         - Time span covered
+         - Major evolution arc
+         - Current state
+
+      2. **Phase Narratives**:
+         For each evolution period:
+         - Duration and activity level
+         - Key events (significant edits, promotions, integrations)
+         - Understanding shifts (if any)
+         - Phase transition trigger
+
+      3. **Understanding Shifts**:
+         Detected shift types with evidence:
+         - **Contradiction**: New info contradicts previous understanding
+         - **Source Integration**: Multiple sources synthesized
+         - **Synthesis**: Separate concepts combined into new insight
+         - **Perspective Change**: Framing or interpretation shifted
+         Each shift includes: date, trigger event, before/after comparison
+
+      4. **Influences**:
+         What shaped this concept's development:
+         - Citations added (sources, books, articles)
+         - Related concepts linked
+         - Conversations or events mentioned
+         - Projects or applications
+
+      5. **Maturation Metrics**:
+         Quantitative development measures:
+         - Days to evergreen (CAPTURE → PROMOTION timestamp)
+         - Edit velocity (edits/week during development phase)
+         - Link accumulation rate (links/month during maturation)
+         - Reference velocity (backlinks/month)
+         - Maturation speed index (composite score 0.0-10.0)
+         - Vault average comparison (percentile ranking)
+
+      6. **Current State**:
+         - Current phase and duration in phase
+         - Recent activity (last 30 days)
+         - Trajectory (active, stable, stagnant)
+         - Recommendations for next steps
+
+      **Quality Assurance** (automatic):
+      - temporal-accuracy-checklist.md: Verify dates, metrics, phase durations
+      - narrative-completeness-checklist.md: Ensure all sections present
+      - Report checklist results with narrative
+
+      Narrative saved as markdown file using temporal-narrative-tmpl.yaml.
+
+  - id: generate_visualizations
+    title: "Step 5: Generate Timeline Visualizations"
+    agent: timeline-constructor-agent
+    duration: "5 minutes"
+    inputs: temporal_narrative, evolution_periods, temporal_events
+    outputs: timeline_visualizations
+    exit_criteria: |
+      ASCII timeline generated with event icons and phase bars.
+      Mermaid timeline diagram created for visual representation.
+      Visualizations embedded in temporal narrative document.
+    notes: |
+      Timeline Constructor generates multiple visualization formats
+      (this is Step 4 of *analyze-evolution, runs automatically after narrative creation):
+
+      **ASCII Timeline Format**:
+      ```
+      2024-01-15  📥 CAPTURE Initial note created
+      2024-01-17  ✏️ EDIT Added core definition
+      2024-01-22  ✏️ EDIT Integrated Ahrens (2017)
+      2024-02-03  ⬆️ PROMOTION fleeting → permanent
+      2024-02-14  🔗 LINK Connected to [[Spaced Repetition]]
+      2024-03-20  🗺️ MOC_ADDED Added to [[Learning Systems MOC]]
+      2024-04-10  ⬆️ PROMOTION permanent → evergreen
+
+      Phase Summary:
+      Capture      [██] 8 days
+      Development  [████████████] 42 days
+      Maturation   [██████] 28 days
+      Maintenance  [████████████████] ongoing (215 days)
+      ```
+
+      **Mermaid Timeline Format**:
+      Sectioned by evolution period with key events:
+      ```mermaid
+      timeline
+          title Evolution of [[Concept Name]]
+          section Capture (8 days)
+              2024-01-15 : CAPTURE - Initial note
+              2024-01-17 : First refinement
+              2024-01-22 : Source integration
+          section Development (42 days)
+              2024-02-03 : PROMOTION to permanent
+              2024-02-14 : Major linking phase
+              2024-03-10 : Understanding shift
+          section Maturation (28 days)
+              2024-03-20 : MOC integration
+              2024-04-10 : PROMOTION to evergreen
+          section Maintenance (215 days)
+              2024-08-15 : Minor refinement
+              2024-11-10 : Current state
+      ```
+
+      **Visualization Options** (based on analysis intent):
+      - **Reflection**: ASCII timeline (simple, readable in text)
+      - **Writing**: Mermaid diagram (embeddable in documents)
+      - **Research**: Both formats for comprehensive documentation
+      - **Presentation**: Mermaid for visual slides
+
+      **Event Sampling** (for long histories):
+      - Maximum 20 events displayed (prevents overwhelming timelines)
+      - Sampling priority:
+        1. All CAPTURE, PROMOTION, MOC_ADDED events (never skip)
+        2. Major edits (>20 lines changed)
+        3. Understanding shift triggers
+        4. Phase transition triggers
+        5. Representative edits from each period
+
+      Visualizations embedded at top of temporal narrative document.
+
+outputs:
+  - concept_selection # Target concept identified with analysis intent
+  - temporal_events # Event history (CAPTURE, EDIT, PROMOTION, LINK, MOC_ADDED)
+  - evolution_periods # Capture → Development → Maturation → Maintenance phases
+  - temporal_narrative # Chronological narrative with shifts and metrics
+  - timeline_visualizations # ASCII and Mermaid timeline diagrams
+
+diagram: |
+  ```mermaid
+  graph LR
+      Start([Select Concept]) --> A[Step 1: Select Concept/Domain]
+      A --> B[Step 2: Query Temporal Events]
+      B --> C[Step 3: Identify Evolution Periods]
+      C --> D[Step 4: Create Narrative]
+      D --> E[Step 5: Generate Visualizations]
+      E --> End([Analysis Complete])
+
+      A -->|concept_selection| B
+      B -->|temporal_events| C
+      C -->|evolution_periods| D
+      B -->|temporal_events| D
+      D -->|temporal_narrative| E
+
+      subgraph "Agents"
+          QI[Query Interpreter<br/>Step 1 only]
+          TL[Timeline Constructor<br/>Steps 2-5 automatic]
+      end
+
+      A -.-> QI
+      B -.-> TL
+      C -.-> TL
+      D -.-> TL
+      E -.-> TL
+
+      subgraph "Neo4j Graphiti"
+          DB[(Temporal Events<br/>CAPTURE, EDIT, LINK,<br/>PROMOTION, MOC_ADDED)]
+      end
+
+      B -.->|query| DB
+
+      style Start fill:#e1f5dd
+      style End fill:#e1f5dd
+      style D fill:#fff4e6
+      style E fill:#fff4e6
+      style DB fill:#e3f2fd
+  ```
+
+notes: |
+  ## Temporal Evolution Analysis Execution
+
+  This workflow is designed for on-demand execution when you want to understand
+  how your thinking about a specific concept has evolved over time.
+
+  - **When**: Ad-hoc, whenever curious about concept development
+  - **Duration**: 30 minutes total
+  - **Frequency**: As needed (typical: 2-4 times per month for different concepts)
+
+  **Step Breakdown**:
+  1. Select Concept (5 min) - Identify target for analysis
+  2. Query Events (5 min) - Retrieve temporal history from Neo4j
+  3. Identify Periods (5 min) - Detect evolution phases (automatic)
+  4. Create Narrative (10 min) - Generate chronological story (automatic)
+  5. Generate Visualizations (5 min) - Create timeline diagrams (automatic)
+
+  ## Automation Note
+
+  Steps 2-5 are fully automatic once concept is selected:
+  - Timeline Constructor command: `*analyze-evolution "[[Concept Name]]"`
+  - Agent executes all steps and generates complete temporal narrative
+  - Human involvement only needed for Step 1 (concept selection) and reviewing output
+
+  ## Use Cases
+
+  **Reflection and Metacognition**:
+  - Understand how your thinking has evolved on important topics
+  - Identify patterns in your learning process
+  - Celebrate knowledge development milestones
+  - Recognize understanding shifts and breakthroughs
+
+  **Writing and Communication**:
+  - Generate chronological narratives for blog posts about learning
+  - Document research journey for academic papers
+  - Create "how I learned" stories for teaching
+  - Provide evolution context in knowledge-sharing
+
+  **Research and Analysis**:
+  - Track concept development for literature reviews
+  - Identify knowledge gaps filled over time
+  - Document synthesis achievements
+  - Compare evolution patterns across related concepts
+
+  **Project Retrospectives**:
+  - Analyze how project-related concepts evolved
+  - Identify critical learning moments
+  - Document influences and sources
+  - Create project knowledge timeline
+
+  **Curiosity and Exploration**:
+  - Satisfy curiosity about knowledge development
+  - Discover forgotten insights or connections
+  - Find concepts ready for blog posts or sharing
+  - Identify stagnant concepts needing revival
+
+  ## Neo4j Graphiti Requirements
+
+  **Optimal Execution** (Neo4j available):
+  - Complete temporal event history with precise timestamps
+  - Edit diffs and line count changes
+  - Link creation/deletion events
+  - MOC integration tracking
+  - High-precision period detection
+  - Accurate maturation metrics
+
+  **Graceful Degradation** (Obsidian-only mode):
+  - File system timestamps (creation, last modified)
+  - Frontmatter metadata for promotions
+  - Wikilink parsing for link history
+  - Approximate periods based on timestamps
+  - Estimated metrics (lower precision)
+  - Still valuable for general understanding
+
+  **Recommendation**: Install and run Neo4j Graphiti for full temporal capabilities.
+  See `data/neo4j-graphiti-guide.md` for setup instructions.
+
+  ## Output Artifacts
+
+  Workflow generates these artifacts:
+
+  **Primary Output**:
+  - Temporal narrative document (markdown file)
+    - File: `analysis/temporal-evolution-[[Concept Name]].md`
+    - Template: temporal-narrative-tmpl.yaml
+    - Sections: Overview, phase narratives, shifts, influences, metrics, current state
+    - Visualizations: ASCII and Mermaid timelines embedded
+
+  **Supporting Data**:
+  - Temporal events JSON (for advanced analysis if needed)
+  - Evolution periods with boundaries
+  - Maturation metrics CSV (if comparing multiple concepts)
+
+  **Storage Location**:
+  Recommended vault organization:
+  ```
+  analysis/
+    temporal-evolution-[[Concept 1]].md
+    temporal-evolution-[[Concept 2]].md
+    temporal-evolution-[[Domain Name]].md
+  ```
+
+  Or integrate into concept note:
+  - Add temporal narrative as section in note itself
+  - Use callout for visual separation
+  - Keep narrative updated on significant milestones
+
+  ## Integration with Monthly Deep Review
+
+  This workflow complements monthly-deep-review-workflow.yaml:
+
+  **Monthly Review** (proactive synthesis):
+  - Identifies concepts for temporal analysis
+  - Generates narratives for active projects
+  - Systematic coverage of evolving domains
+  - Scheduled execution (first Sunday)
+
+  **Evolution Analysis** (on-demand curiosity):
+  - User-initiated for specific concepts
+  - Ad-hoc reflection and exploration
+  - Detailed deep-dive into single concept
+  - Executed when curious or writing
+
+  Use monthly review for systematic coverage, evolution analysis for deep dives.
+
+  ## Success Indicators
+
+  A successful temporal evolution analysis provides:
+  - **Clarity**: You understand how your thinking changed and why
+  - **Evidence**: Understanding shifts supported by specific events
+  - **Metrics**: Quantitative measures of concept maturation
+  - **Insights**: Recognition of patterns in your learning process
+  - **Utility**: Narrative useful for reflection, writing, or research
+
+  Quality thresholds:
+  - temporal-accuracy-checklist.md: 9/10 items (90%)
+  - narrative-completeness-checklist.md: 8/10 items (80%)
+  - Understanding shifts: At least 1 shift identified and explained
+  - Maturation metrics: Compared to vault averages for context
+
+  ## Troubleshooting
+
+  **No events found**:
+  - Concept too new (<7 days old, minimal history)
+  - Neo4j not capturing events (check Graphiti MCP configuration)
+  - Concept not in vault (typo in wikilink or path)
+  - Solution: Verify concept exists, check Neo4j connection, try older concept
+
+  **Incomplete narrative**:
+  - Insufficient data for period detection (need 5+ events minimum)
+  - All edits clustered in short time (no clear phases)
+  - Solution: Combine with related concepts, analyze domain instead of single note
+
+  **Low quality scores**:
+  - Temporal accuracy failures: Check Neo4j event timestamps
+  - Narrative completeness failures: May need manual enhancement
+  - Solution: Review checklists, add missing context manually
+
+  **No understanding shifts detected**:
+  - Concept developed linearly without contradictions or synthesis
+  - This is normal - not all concepts have dramatic shifts
+  - Narrative still valuable for documenting steady growth
+
+  ## Advanced Usage
+
+  **Domain Evolution Analysis**:
+  Instead of single concept, analyze entire domain:
+  - Select domain MOC as target
+  - Timeline Constructor analyzes MOC temporal history
+  - Includes branch development, note integration, maturity progression
+  - Longer narratives (1500-2500 words)
+
+  **Comparative Analysis**:
+  Analyze multiple related concepts:
+  - Run workflow for 2-3 related concepts
+  - Compare evolution patterns (parallel, sequential, divergent)
+  - Identify common influences or synthesis points
+  - Generate comparative metrics table
+
+  **Longitudinal Tracking**:
+  Re-analyze same concept periodically:
+  - Run every 3-6 months for actively developing concepts
+  - Track maturation speed index changes
+  - Document new understanding shifts
+  - Create evolution-of-evolution meta-narrative
+
+  ## Integration with Timeline Constructor Commands
+
+  This workflow uses Timeline Constructor's `*analyze-evolution` command,
+  which executes Steps 2-5 automatically. Other related commands:
+
+  - `*create-timeline "[[Concept]]"`: Generate timeline visualization only
+  - `*detect-shifts "[[Concept]]"`: Find understanding shifts only
+  - `*calculate-maturation "[[Concept]]"`: Compute metrics only
+  - `*compare-concepts "[[A]]" "[[B]]"`: Comparative evolution analysis
+  - `*domain-evolution "[[MOC]]"`: Analyze entire domain development
+
+  Use full workflow for comprehensive analysis, individual commands for quick insights.

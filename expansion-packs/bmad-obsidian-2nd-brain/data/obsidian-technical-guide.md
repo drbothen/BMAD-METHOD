@@ -1,9 +1,9 @@
 # Obsidian Technical Guide
 
-**Version:** 1.0
-**Phase:** 1 - MVP
-**Last Updated:** 2025-11-09
-**Purpose:** Comprehensive technical guide to Obsidian architecture, Smart Connections plugin, and community plugin integration for AI agents in the BMAD Obsidian 2nd Brain expansion pack
+**Version:** 2.0
+**Phase:** 2 - Synthesis & Temporal Analysis
+**Last Updated:** 2025-11-11
+**Purpose:** Comprehensive technical guide to Obsidian architecture, Smart Connections plugin, Neo4j Graphiti integration, and temporal query patterns for AI agents in the BMAD Obsidian 2nd Brain expansion pack
 
 ---
 
@@ -15,8 +15,9 @@
 4. [Community Plugins for Integration](#community-plugins-for-integration)
 5. [Integration Points](#integration-points)
 6. [Troubleshooting](#troubleshooting)
-7. [Cross-References](#cross-references)
-8. [Future Phases](#future-phases)
+7. [Temporal Query Patterns (Phase 2)](#temporal-query-patterns-phase-2)
+8. [Cross-References](#cross-references)
+9. [Future Phases](#future-phases)
 
 ---
 
@@ -2212,25 +2213,387 @@ Migrate monolithic application to microservices architecture.
 
 ---
 
+## Temporal Query Patterns (Phase 2)
+
+**Phase 2 Integration: Neo4j + Graphiti MCP**
+
+This section documents temporal query patterns for Neo4j Graphiti integration, enabling AI agents to track how concepts evolve over time. These patterns are used by the Timeline Constructor Agent and MOC Constructor Agent for temporal analysis and narrative generation.
+
+### Overview
+
+**What is Temporal Analysis?**
+
+Temporal analysis tracks how your understanding of concepts develops over time by:
+- Recording events: CAPTURE (creation), EDIT (modifications), PROMOTION (status changes), LINK (connections), MOC_ADDED (integration)
+- Identifying evolution periods: capture → development → maturation → maintenance
+- Detecting understanding shifts: contradictions, integrations, synthesis, perspective changes
+- Calculating maturation metrics: days-to-evergreen, edit velocity, link accumulation rate
+
+**Graceful Degradation:**
+All temporal features work in Obsidian-only mode when Neo4j is unavailable, using file system timestamps and frontmatter metadata. Neo4j provides higher precision and richer analysis capabilities.
+
+### Temporal Event Types
+
+```cypher
+// Event types tracked in Neo4j Graphiti
+// All events have: timestamp, note_path, event_type
+
+CAPTURE      // Note creation
+EDIT         // Content modification (includes diff, line_count, edit_type)
+PROMOTION    // Status transition (fleeting → permanent → evergreen)
+LINK         // Wikilink added/removed (includes target_note, direction)
+MOC_ADDED    // Note integrated into Map of Content (includes moc_name)
+```
+
+### Pattern 1: Evolution Timeline
+
+**Use Case:** Trace a concept's journey from initial capture to current state
+
+**Query:**
+
+```cypher
+// Get complete timeline for a concept
+MATCH (n:Note {path: $note_path})-[r:HAS_EVENT]->(e:Event)
+RETURN e.timestamp, e.event_type, e.metadata
+ORDER BY e.timestamp ASC
+```
+
+**Example Output:**
+
+```
+2024-01-15 | CAPTURE      | {initial_content: "fleeting thought..."}
+2024-01-17 | EDIT         | {lines_changed: 12, edit_type: "expansion"}
+2024-01-22 | EDIT         | {lines_changed: 8, edit_type: "source_integration"}
+2024-02-03 | PROMOTION    | {from: "fleeting", to: "permanent"}
+2024-02-14 | LINK         | {target: "Spaced Repetition", direction: "outgoing"}
+2024-03-20 | MOC_ADDED    | {moc_name: "Learning Systems MOC"}
+2024-04-10 | PROMOTION    | {from: "permanent", to: "evergreen"}
+```
+
+**Agent Usage:** Timeline Constructor uses this to generate chronological narratives
+
+### Pattern 2: Relationship Strength Over Time
+
+**Use Case:** Track how connections between concepts strengthen or weaken
+
+**Query:**
+
+```cypher
+// Analyze link evolution between two concepts
+MATCH (source:Note {path: $source_path})-[r:HAS_EVENT]->(e:Event {event_type: 'LINK'})
+WHERE e.metadata.target_note = $target_path
+WITH e.timestamp AS link_time,
+     e.metadata.direction AS direction,
+     e.metadata.context_added AS context
+ORDER BY link_time
+RETURN link_time, direction, context
+```
+
+**Example Output:**
+
+```
+2024-02-14 | outgoing | "This relates to spaced repetition"
+2024-03-01 | bidirectional | "Spaced repetition is the practical application of..."
+2024-04-15 | bidirectional | "Core evidence supporting the forgetting curve theory"
+```
+
+**Interpretation:**
+- Link started unidirectional (weak relationship)
+- Became bidirectional with richer context (strong relationship)
+- Link strength increased over 2 months as understanding deepened
+
+**Agent Usage:** Semantic Linker uses this for temporal confidence boosting in link suggestions
+
+### Pattern 3: Contradiction Detection
+
+**Use Case:** Identify when conflicting claims or understanding emerged
+
+**Query:**
+
+```cypher
+// Find understanding shifts marked as contradictions
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(e:Event {event_type: 'EDIT'})
+WHERE e.metadata.understanding_shift = 'contradiction'
+RETURN e.timestamp AS shift_date,
+       e.metadata.before AS previous_understanding,
+       e.metadata.after AS new_understanding,
+       e.metadata.trigger AS what_caused_shift
+ORDER BY shift_date
+```
+
+**Example Output:**
+
+```
+shift_date: 2024-02-10
+previous_understanding: "Memory works like a filing cabinet (storage/retrieval)"
+new_understanding: "Memory is reconstructive, not reproductive"
+what_caused_shift: "Loftus & Palmer (1974) eyewitness testimony study"
+```
+
+**Agent Usage:** Timeline Constructor detects these shifts for narrative inclusion
+
+### Pattern 4: Influence Analysis
+
+**Use Case:** Understand what sources and concepts shaped understanding shifts
+
+**Query:**
+
+```cypher
+// Trace influences for a concept's development
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(e:Event)
+WHERE e.event_type IN ['EDIT', 'LINK']
+  AND e.metadata.source_cited IS NOT NULL
+WITH e.timestamp AS when,
+     e.metadata.source_cited AS source,
+     e.event_type AS event
+ORDER BY when
+RETURN source, collect(event) AS influence_events, min(when) AS first_influence
+```
+
+**Example Output:**
+
+```
+source: "Ahrens (2017) - How to Take Smart Notes"
+influence_events: [EDIT, EDIT, LINK]
+first_influence: 2024-01-22
+
+source: "Tiago Forte - Building a Second Brain"
+influence_events: [EDIT, LINK]
+first_influence: 2024-02-05
+```
+
+**Agent Usage:** Timeline Constructor documents influences in temporal narratives
+
+### Pattern 5: Maturation Metrics
+
+**Use Case:** Calculate concept development speed and compare to vault averages
+
+**Query:**
+
+```cypher
+// Calculate days-to-evergreen for a concept
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(capture:Event {event_type: 'CAPTURE'})
+MATCH (n)-[:HAS_EVENT]->(promotion:Event {event_type: 'PROMOTION'})
+WHERE promotion.metadata.to = 'evergreen'
+WITH duration.between(capture.timestamp, promotion.timestamp).days AS days_to_evergreen
+RETURN days_to_evergreen
+
+// Calculate edit velocity during development phase
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(e:Event {event_type: 'EDIT'})
+WHERE e.timestamp >= $development_start AND e.timestamp < $development_end
+WITH count(e) AS edit_count,
+     duration.between($development_start, $development_end).days / 7.0 AS weeks
+RETURN edit_count / weeks AS edits_per_week
+
+// Calculate link accumulation rate
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(e:Event {event_type: 'LINK'})
+WHERE e.timestamp >= $maturation_start AND e.timestamp < $maturation_end
+WITH count(e) AS link_count,
+     duration.between($maturation_start, $maturation_end).days / 30.0 AS months
+RETURN link_count / months AS links_per_month
+```
+
+**Maturation Speed Index Formula:**
+
+```
+MSI = (0.3 × days_to_evergreen_percentile) +
+      (0.3 × edit_velocity_percentile) +
+      (0.2 × link_accumulation_percentile) +
+      (0.2 × reference_velocity_percentile)
+
+Scale: 0.0 (slowest) to 10.0 (fastest maturation)
+```
+
+**Agent Usage:** Timeline Constructor calculates these for comparative analysis
+
+### Pattern 6: Vault-Wide Comparison Queries
+
+**Use Case:** Get vault averages for maturation metrics to provide context
+
+**Query:**
+
+```cypher
+// Vault average days-to-evergreen
+MATCH (n:Note)-[:HAS_EVENT]->(capture:Event {event_type: 'CAPTURE'})
+MATCH (n)-[:HAS_EVENT]->(promotion:Event {event_type: 'PROMOTION'})
+WHERE promotion.metadata.to = 'evergreen'
+WITH duration.between(capture.timestamp, promotion.timestamp).days AS days
+RETURN avg(days) AS vault_avg_days_to_evergreen,
+       percentileDisc(days, 0.5) AS median_days_to_evergreen
+
+// Vault average edit velocity (development phase)
+MATCH (n:Note)-[:HAS_EVENT]->(e:Event {event_type: 'EDIT'})
+WHERE e.metadata.phase = 'development'
+WITH n, count(e) AS edits,
+     duration.between(
+       [(n)-[:HAS_EVENT]->(start {event_type: 'CAPTURE'}) | start.timestamp][0],
+       [(n)-[:HAS_EVENT]->(end {event_type: 'PROMOTION'}) WHERE end.metadata.to = 'permanent' | end.timestamp][0]
+     ).days / 7.0 AS weeks
+WHERE weeks > 0
+RETURN avg(edits / weeks) AS vault_avg_edit_velocity
+```
+
+**Agent Usage:** Timeline Constructor uses vault averages for percentile ranking
+
+### Pattern 7: Evolution Period Detection
+
+**Use Case:** Algorithmically determine phase boundaries based on activity
+
+**Query:**
+
+```cypher
+// Detect phase transitions based on edit frequency
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(e:Event {event_type: 'EDIT'})
+WITH e.timestamp AS edit_time
+ORDER BY edit_time
+WITH collect(edit_time) AS edit_times
+UNWIND range(0, size(edit_times)-2) AS i
+WITH edit_times[i] AS current_edit,
+     edit_times[i+1] AS next_edit,
+     duration.between(edit_times[i], edit_times[i+1]).days AS gap_days
+RETURN current_edit, next_edit, gap_days,
+       CASE
+         WHEN gap_days > 60 THEN 'phase_transition_likely'
+         WHEN gap_days > 14 THEN 'activity_decrease'
+         ELSE 'active_development'
+       END AS activity_status
+```
+
+**Phase Detection Algorithm:**
+- **Capture**: 0-7 days, >1 edit/day
+- **Development**: 1-3 months, 1-3 edits/week, ends when <1 edit/week for 2 weeks
+- **Maturation**: 3-12 months, <1 edit/week, ends when <1 edit/month for 2 months
+- **Maintenance**: 12+ months, <1 edit/month
+
+**Agent Usage:** Timeline Constructor identifies evolution periods automatically
+
+### Pattern 8: Concept Emergence
+
+**Use Case:** Find concepts that recently crossed maturity thresholds
+
+**Query:**
+
+```cypher
+// Find concepts promoted to evergreen in last 30 days
+MATCH (n:Note)-[:HAS_EVENT]->(e:Event {event_type: 'PROMOTION'})
+WHERE e.metadata.to = 'evergreen'
+  AND e.timestamp > datetime() - duration({days: 30})
+RETURN n.path AS concept_path,
+       n.title AS concept_title,
+       e.timestamp AS promoted_date,
+       duration.between(
+         [(n)-[:HAS_EVENT]->(capture {event_type: 'CAPTURE'}) | capture.timestamp][0],
+         e.timestamp
+       ).days AS maturation_time_days
+ORDER BY promoted_date DESC
+```
+
+**Agent Usage:** Used in monthly-deep-review workflow to identify accomplishments
+
+### Pattern 9: Stagnation Detection
+
+**Use Case:** Identify concepts stuck in development without progress
+
+**Query:**
+
+```cypher
+// Find notes in development phase with >90 days inactivity
+MATCH (n:Note)-[:HAS_EVENT]->(capture:Event {event_type: 'CAPTURE'})
+MATCH (n)-[:HAS_EVENT]->(promotion:Event {event_type: 'PROMOTION'})
+WHERE promotion.metadata.to = 'permanent'
+  AND NOT exists((n)-[:HAS_EVENT]->(:Event {event_type: 'PROMOTION', metadata: {to: 'evergreen'}}))
+OPTIONAL MATCH (n)-[:HAS_EVENT]->(last_edit:Event {event_type: 'EDIT'})
+WITH n, capture, promotion, max(last_edit.timestamp) AS last_activity
+WHERE duration.between(last_activity, datetime()).days > 90
+RETURN n.path, n.title,
+       last_activity,
+       duration.between(last_activity, datetime()).days AS days_stagnant
+ORDER BY days_stagnant DESC
+```
+
+**Agent Usage:** MOC Constructor identifies stagnant concepts needing revival
+
+### Pattern 10: Cross-Domain Evolution
+
+**Use Case:** Track how concepts from different domains influenced each other
+
+**Query:**
+
+```cypher
+// Find temporal links between domains (via MOCs)
+MATCH (source:Note)-[:BELONGS_TO]->(moc1:MOC)
+MATCH (target:Note)-[:BELONGS_TO]->(moc2:MOC)
+WHERE moc1 <> moc2
+MATCH (source)-[:HAS_EVENT]->(link:Event {event_type: 'LINK'})
+WHERE link.metadata.target_note = target.path
+RETURN moc1.title AS source_domain,
+       moc2.title AS target_domain,
+       source.title AS source_concept,
+       target.title AS target_concept,
+       link.timestamp AS when_linked
+ORDER BY when_linked
+```
+
+**Agent Usage:** Identifies cross-domain synthesis opportunities
+
+### Query Execution via Graphiti MCP
+
+**MCP Tool Pattern:**
+
+```javascript
+// Agents use Graphiti MCP tools to execute these queries
+await mcp.tools.graphiti.executeCypher({
+  query: "MATCH (n:Note {path: $note_path})-[r:HAS_EVENT]->(e:Event)...",
+  params: {
+    note_path: "concepts/spaced-repetition.md"
+  }
+});
+```
+
+**Error Handling:**
+
+Agents must handle:
+- Neo4j unavailable → fall back to Obsidian-only mode
+- No events found → concept too new or not tracked
+- Incomplete data → use available data, note limitations in narrative
+
+### Integration with Agents
+
+**Timeline Constructor Agent:**
+- Patterns 1, 3, 4, 5, 6, 7: Full temporal evolution analysis
+- Generates narratives using temporal-narrative-tmpl.yaml
+
+**MOC Constructor Agent:**
+- Patterns 5, 8, 9: Domain maturity tracking
+- Pattern 10: Cross-domain relationships
+
+**Semantic Linker Agent:**
+- Pattern 2: Temporal confidence boosting for link suggestions
+- Historical linking patterns validation
+
+---
+
 ## Future Phases
 
-This guide covers **Phase 1 foundations**. Future phases will expand with:
+This guide covers **Phase 1 and Phase 2** foundations. Future phases will expand with:
 
-### Phase 2: Temporal Graph Database
+### Phase 2: Temporal Graph Database ✅ IMPLEMENTED
 
 **Neo4j + Graphiti MCP Integration**
 
-- Graph database for temporal knowledge representation
-- Graphiti MCP server for AI-powered graph queries
-- Time-based relationship tracking
-- Knowledge evolution visualization
+- Graph database for temporal knowledge representation ✅
+- Graphiti MCP server for AI-powered graph queries ✅
+- Time-based relationship tracking ✅
+- Knowledge evolution visualization ✅
 
 **Use cases:**
 
-- Track how ideas evolve over time
-- Visualize concept emergence and decay
-- Query historical knowledge states
-- Identify knowledge gaps and connections
+- Track how ideas evolve over time ✅
+- Visualize concept emergence and decay ✅
+- Query historical knowledge states ✅
+- Identify knowledge gaps and connections ✅
+
+**See "Temporal Query Patterns (Phase 2)" section above for implementation details.**
 
 ### Phase 3: Advanced Graph Analysis
 

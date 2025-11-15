@@ -1,0 +1,375 @@
+---
+story_id: STORY-080
+title: MOC Constructor Agent (Phase 2)
+epic_id: EPIC-001
+phase: 2
+priority: high
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want an AI agent that builds Maps of Content
+  So that I can navigate and synthesize knowledge domains systematically
+
+acceptance_criteria:
+  - MOC Constructor Agent markdown file created
+  - Agent can analyze domain structure and identify core concepts
+  - Agent can create MOC structure with sections (overview, core concepts, branches, resources)
+  - Agent can establish bidirectional links between MOC and notes
+  - Agent tracks MOC maturity levels (nascent, developing, established)
+  - Agent validates MOCs using moc-completeness-checklist
+  - Agent uses moc-tmpl.yaml for MOC generation
+  - Agent integrates with Structural Analysis Agent for note discovery
+  - Agent supports Neo4j domain node creation (optional)
+  - Agent prevents MOC overload (recommends sub-MOCs for >50 notes)
+
+tasks_subtasks: |
+  - [ ] Task 1: Define MOC Constructor Agent persona and capabilities (AC1)
+    - [ ] Create agent markdown file: moc-constructor-agent.md
+    - [ ] Define agent purpose:
+      - Build comprehensive Maps of Content (MOCs)
+      - Organize knowledge domains
+      - Create navigational structures
+      - Track domain maturity
+    - [ ] Define core capabilities:
+      - Domain structure analysis
+      - Concept extraction and organization
+      - MOC section creation (overview, concepts, branches, resources)
+      - Bidirectional link establishment
+      - Maturity assessment (nascent/developing/established)
+      - MOC validation against completeness checklist
+    - [ ] Define activation triggers:
+      - User requests "Create MOC for domain X"
+      - Monthly Deep Review identifies nascent domain
+      - Domain reaches critical mass (≥10 related notes)
+      - Structural Analysis recommends MOC creation
+    - [ ] Define agent personality:
+      - Systematic organizer
+      - Domain-focused synthesizer
+      - Structure-oriented thinker
+      - Quality-conscious validator
+
+  - [ ] Task 2: Define MOC analysis and planning process (AC2)
+    - [ ] Domain Structure Analysis:
+      - Identify all notes in target domain (via tags, folders, semantic search)
+      - Extract core concepts from notes
+      - Identify conceptual clusters
+      - Map note relationships
+      - Assess domain coverage (comprehensive vs sparse)
+      - Recommend domain boundaries
+    - [ ] MOC Planning:
+      - Determine MOC scope (breadth vs depth)
+      - Select maturity level (nascent/developing/established)
+      - Plan section structure:
+        * Overview: 2-3 sentence synthesis
+        * Core Concepts: Foundational ideas with definitions
+        * Knowledge Branches: Subcategories or aspects
+        * Resources: Key sources, tools, references
+        * Emerging Questions: Unresolved questions (for nascent/developing)
+      - Identify dataview queries (if applicable)
+      - Plan MOC hierarchy (parent MOCs, sub-MOCs)
+
+  - [ ] Task 3: Define MOC creation workflow (AC3)
+    - [ ] MOC Generation Process:
+      1. Analyze domain structure (identify notes, concepts, clusters)
+      2. Create MOC draft from moc-tmpl.yaml template
+      3. Populate frontmatter:
+         - domain: text (domain name)
+         - maturity: nascent|developing|established
+         - note_count: number (notes in domain)
+         - last_updated: datetime
+      4. Write Overview section (2-3 sentence synthesis)
+      5. Create Core Concepts section (≥3 concepts with definitions)
+      6. Create Knowledge Branches (if domain has subcategories)
+      7. Add Resources section (key sources, tools)
+      8. Add Emerging Questions (for nascent/developing MOCs)
+      9. Establish bidirectional links:
+         - MOC links to notes
+         - Update notes to link back to MOC
+      10. Validate using moc-completeness-checklist.md
+      11. Fix any validation failures
+      12. Save final MOC
+    - [ ] Output:
+      - MOC markdown file
+      - Bidirectional links established
+      - Validation report
+      - Recommendations (sub-MOCs, research gaps)
+
+  - [ ] Task 4: Define MOC validation and quality checks (AC4)
+    - [ ] Validation using moc-completeness-checklist.md:
+      - ✓ Domain clearly defined in frontmatter
+      - ✓ Overview provides 2-3 sentence synthesis
+      - ✓ Core concepts section has ≥3 concepts with definitions
+      - ✓ At least one knowledge branch defined
+      - ✓ All referenced notes exist and are accessible
+      - ✓ Bidirectional links present (MOC links to notes, notes link back)
+      - Emerging questions section present (if nascent/developing)
+      - Dataview queries functional (if included)
+      - Maturity level appropriate for content coverage
+      - Last updated date within acceptable staleness threshold
+      - MOC not too broad (≤50 direct note links recommended)
+      - ✓ No broken wikilinks
+    - [ ] Quality Thresholds:
+      - Pass criteria: All required items (✓) checked
+      - Warn if MOC has >50 direct links (recommend sub-MOCs)
+      - Warn if maturity level doesn't match content depth
+      - Block if broken wikilinks detected
+
+  - [ ] Task 5: Define MOC maintenance and maturation (AC5)
+    - [ ] MOC Maturity Lifecycle:
+      - **Nascent**: New domain, <10 notes, exploratory
+        - Emerging questions section required
+        - Expect frequent changes
+        - Focus on breadth over depth
+      - **Developing**: Growing domain, 10-30 notes, active research
+        - Some structure established
+        - Knowledge branches forming
+        - Balance breadth and depth
+      - **Established**: Mature domain, >30 notes, stable structure
+        - Comprehensive coverage
+        - Well-defined branches
+        - Focus on depth and connections
+    - [ ] Maintenance Triggers:
+      - New notes added to domain (update MOC)
+      - Domain structure shifts (reorganize branches)
+      - Maturity threshold reached (upgrade maturity level)
+      - MOC becomes too broad (create sub-MOCs)
+      - Staleness detected (refresh overview and synthesis)
+    - [ ] Maturation Process:
+      - Review note count and coverage
+      - Assess structural stability
+      - Evaluate question resolution (emerging questions answered?)
+      - Upgrade maturity level if criteria met
+      - Expand sections as domain grows
+
+  - [ ] Task 6: Define Neo4j integration (optional) (AC9)
+    - [ ] Neo4j Domain Node Creation:
+      ```cypher
+      CREATE (moc:MOC {
+        id: "moc-uuid",
+        domain: "Domain Name",
+        maturity: "developing",
+        note_count: 25,
+        created_date: "2025-11-05",
+        last_updated: "2025-11-05"
+      })
+
+      // Link MOC to notes in domain
+      MATCH (note:Note)
+      WHERE note.domain = "Domain Name" OR "domain-tag" IN note.tags
+      CREATE (moc)-[:ORGANIZES]->(note)
+
+      // Link to core concepts
+      MATCH (moc:MOC {domain: "Domain Name"})
+      MATCH (concept:Note {type: "concept"})
+      WHERE concept.domain = "Domain Name"
+      CREATE (moc)-[:HAS_CORE_CONCEPT]->(concept)
+
+      // Track maturity evolution
+      MATCH (moc:MOC {id: "moc-uuid"})
+      CREATE (event:MaturityEvent {
+        timestamp: "2025-11-05",
+        old_maturity: "nascent",
+        new_maturity: "developing",
+        reason: "Reached 15 notes, stable structure emerged"
+      })
+      CREATE (moc)-[:MATURED_VIA]->(event)
+      ```
+    - [ ] Provenance Tracking:
+      - Record MOC creation events
+      - Track maturity transitions
+      - Link to notes that triggered MOC creation
+
+  - [ ] Task 7: Define dependencies and integration points (AC8, AC10)
+    - [ ] Dependencies:
+      - Tasks: create-moc, analyze-domain-structure, validate-moc
+      - Templates: moc-tmpl.yaml, moc-section-tmpl.yaml
+      - Checklists: moc-completeness-checklist.md
+      - Data: Domain taxonomy, maturity criteria
+    - [ ] Integration Points:
+      - **Structural Analysis Agent**: Provides domain note lists
+      - **Semantic Linker Agent**: Identifies related notes for linking
+      - **Monthly Deep Review**: Triggers MOC creation/updates
+      - **Gap Detector Agent**: MOCs help identify coverage gaps
+      - **Query Interpreter**: MOCs used for domain navigation
+      - **Neo4j**: Optional domain node and relationship tracking
+
+  - [ ] Task 8: Define agent constraints and best practices (AC10)
+    - [ ] Constraints:
+      - MOC should not exceed 50 direct note links (recommend sub-MOCs)
+      - Must have ≥3 core concepts
+      - Overview must be concise (2-3 sentences)
+      - All wikilinks must resolve
+      - Bidirectional links required
+    - [ ] Best Practices:
+      - Start with nascent MOC, mature over time
+      - Create sub-MOCs for large domains (>50 notes)
+      - Update MOC when adding 5+ new notes to domain
+      - Review and refresh MOCs monthly
+      - Use dataview for dynamic content
+      - Link MOCs to each other (hierarchical relationships)
+    - [ ] Anti-Patterns to Avoid:
+      - Creating MOC too early (<5 notes in domain)
+      - Making MOC too broad (trying to cover multiple domains)
+      - Not establishing bidirectional links
+      - Marking as "established" prematurely
+      - Letting MOC become stale (no updates for 6+ months)
+
+technical_notes: |
+  ## MOC Philosophy
+
+  Maps of Content (MOCs) serve as **navigational hubs** for knowledge domains:
+  - Provide domain overviews and synthesis
+  - Organize concepts into coherent structures
+  - Enable domain-based navigation
+  - Track domain maturity and evolution
+
+  ## MOC vs Traditional Index
+
+  MOCs are **active synthesis documents**, not passive indexes:
+  - Include conceptual overview (synthesis)
+  - Organize by meaningful categories (knowledge branches)
+  - Evolve with domain understanding (maturity levels)
+  - Facilitate sense-making, not just finding
+
+  ## Maturity-Driven Approach
+
+  MOCs mature alongside domain understanding:
+  - **Nascent**: Exploratory, questions > answers
+  - **Developing**: Structure emerging, active growth
+  - **Established**: Stable, comprehensive, deep connections
+
+  ## MOC Size Management
+
+  Large domains need hierarchical MOCs:
+  - Parent MOC: High-level domain overview
+  - Sub-MOCs: Focused on specific branches
+  - Threshold: 50 direct note links → create sub-MOCs
+
+  Example: "Machine Learning" parent MOC with sub-MOCs for:
+  - Supervised Learning
+  - Unsupervised Learning
+  - Neural Networks
+  - Model Evaluation
+
+  ## Bidirectional Linking
+
+  Critical for MOC effectiveness:
+  - MOC → Note: Domain organization
+  - Note → MOC: Contextual anchoring
+  - Ensures notes aren't orphaned
+  - Enables two-way navigation
+
+  ## Integration with Phase 1
+
+  MOC Constructor builds on Phase 1 foundation:
+  - Uses Structural Analysis to find domain notes
+  - Uses Semantic Linker to identify relationships
+  - Validates link integrity
+  - Tracks provenance in Neo4j (optional)
+
+  ## Example MOC Structure
+
+  ```markdown
+  ---
+  domain: Machine Learning
+  maturity: developing
+  note_count: 23
+  last_updated: 2025-11-05
+  tags: [moc, machine-learning]
+  ---
+
+  # Machine Learning MOC
+
+  ## Overview
+  Machine learning enables systems to learn from data without explicit programming. This domain covers supervised and unsupervised learning, neural networks, and model evaluation techniques.
+
+  ## Core Concepts
+  - [[Training and Testing]]: Splitting data for model validation
+  - [[Loss Functions]]: Measuring prediction error
+  - [[Gradient Descent]]: Optimization algorithm for learning
+  - [[Overfitting]]: When models memorize training data
+
+  ## Knowledge Branches
+
+  ### Supervised Learning
+  - [[Linear Regression]]
+  - [[Logistic Regression]]
+  - [[Decision Trees]]
+  - [[Random Forests]]
+
+  ### Unsupervised Learning
+  - [[K-Means Clustering]]
+  - [[Principal Component Analysis]]
+  - [[Hierarchical Clustering]]
+
+  ### Neural Networks
+  - [[Perceptrons]]
+  - [[Backpropagation]]
+  - [[Activation Functions]]
+  - [[Convolutional Neural Networks]]
+
+  ## Resources
+  - Books: "Pattern Recognition and Machine Learning" by Bishop
+  - Tools: scikit-learn, TensorFlow, PyTorch
+  - Courses: Andrew Ng's ML Course
+
+  ## Emerging Questions
+  - How do transformers compare to CNNs for image classification?
+  - What are best practices for hyperparameter tuning?
+  - When should we use ensemble methods?
+  ```
+
+dependencies:
+  - STORY-030: Phase 2 Templates (moc-tmpl.yaml)
+  - STORY-034: Additional Templates (moc-section-tmpl.yaml)
+  - STORY-035: Phase 2-5 Checklists (moc-completeness-checklist.md)
+  - STORY-001: Structural Analysis Agent (domain note discovery)
+  - STORY-002: Semantic Linker Agent (relationship identification)
+  - STORY-024: Monthly Deep Review Workflow (triggers MOC creation)
+  - Neo4j integration - optional
+  - Tasks: create-moc.md, analyze-domain-structure.md, validate-moc.md
+
+testing:
+  - Test MOC creation for nascent domain (<10 notes)
+  - Test MOC creation for developing domain (10-30 notes)
+  - Test MOC creation for established domain (>30 notes)
+  - Test bidirectional link establishment
+  - Verify moc-completeness-checklist validation
+  - Test MOC maturation (nascent → developing → established)
+  - Test sub-MOC recommendation for >50 notes
+  - Verify broken wikilink detection
+  - Test Neo4j domain node creation
+  - Test integration with Structural Analysis Agent
+  - Test monthly MOC refresh workflow
+  - Verify dataview query functionality in MOCs
+
+definition_of_done:
+  - moc-constructor-agent.md created with complete persona and capabilities
+  - Domain analysis process documented
+  - MOC creation workflow defined with 10-step process
+  - MOC validation using moc-completeness-checklist integrated
+  - Maturity lifecycle documented (nascent/developing/established)
+  - MOC maintenance and maturation triggers defined
+  - Neo4j integration documented (optional)
+  - Dependencies and integration points specified
+  - Best practices and anti-patterns documented
+  - Example MOC structure provided
+  - Testing scenarios defined
+  - Agent tested with multiple domain types
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for MOC Constructor Agent
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

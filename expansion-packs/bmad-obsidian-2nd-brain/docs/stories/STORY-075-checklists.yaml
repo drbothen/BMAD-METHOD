@@ -1,0 +1,516 @@
+---
+story_id: STORY-075
+title: Create Transcript & Task Management Checklists
+epic_id: EPIC-001
+phase: 1.5
+priority: high
+estimated_effort: 12 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a developer
+  I want quality checklists for transcript processing and task management
+  So that agents can validate output quality consistently
+
+acceptance_criteria: |
+  **3 Checklists to Create:**
+  1. transcript-quality-checklist.md
+  2. task-quality-checklist.md
+  3. gtd-workflow-checklist.md
+
+  **Checklist Requirements:**
+  - Clear, actionable items
+  - Measurable quality criteria
+  - Organized by category
+  - Include pass/fail thresholds
+  - Include examples of good/bad
+  - Reference relevant standards
+
+technical_notes: |
+  Checklist 1: transcript-quality-checklist.md
+  Purpose: Validate quality of transcript processing outputs
+
+  ```markdown
+  # Transcript Quality Checklist
+
+  Use this checklist to validate transcript processing outputs meet quality standards.
+
+  ## Input Validation
+
+  - [ ] Transcript format recognized (plain text, VTT, SRT, JSON)
+  - [ ] Speaker labels present (or marked as Unknown Speaker)
+  - [ ] Timestamps present (or marked as estimates)
+  - [ ] Transcript completeness >95% (minimal [inaudible] sections)
+  - [ ] No encoding errors (garbled characters)
+
+  ## Speaker Diarization
+
+  - [ ] All speakers identified and labeled
+  - [ ] Speaker names normalized (consistent spelling/formatting)
+  - [ ] Speaker statistics calculated (time, word count, segments)
+  - [ ] Speaker role identified (if applicable)
+  - [ ] Speaking time adds up to total duration (±10%)
+
+  ## Action Item Extraction
+
+  - [ ] All action items extracted (minimum 90% recall)
+  - [ ] Each action item has clear description
+  - [ ] Owner identified for each action item (or marked TBD)
+  - [ ] Deadline extracted (if mentioned)
+  - [ ] Source reference included (speaker, timestamp)
+  - [ ] Priority assessed (critical/high/medium/low)
+  - [ ] No false positives (non-actionable statements extracted)
+
+  ## Key Point Identification
+
+  - [ ] 10-20 key points identified (not too few, not too many)
+  - [ ] Key points capture most important topics
+  - [ ] Each point is clear and self-contained
+  - [ ] Points ranked by importance
+  - [ ] Timestamp reference included
+  - [ ] No trivial details included (only significant points)
+
+  ## Decision Logging
+
+  - [ ] All decisions extracted
+  - [ ] Decision statement is clear and unambiguous
+  - [ ] Rationale documented
+  - [ ] Participants identified
+  - [ ] Alternatives considered noted (if discussed)
+  - [ ] Implications documented
+  - [ ] Timestamp reference included
+
+  ## Topic Segmentation
+
+  - [ ] Transcript segmented into logical topics
+  - [ ] Topic labels are descriptive and accurate
+  - [ ] No overlapping segments (clear boundaries)
+  - [ ] All content assigned to a topic
+  - [ ] Duration calculated for each segment
+  - [ ] Key speakers identified per topic
+
+  ## Entity Extraction
+
+  - [ ] People mentioned extracted and linked
+  - [ ] Organizations mentioned extracted and linked
+  - [ ] Technologies/products mentioned extracted
+  - [ ] Dates/deadlines extracted
+  - [ ] Entity mentions counted
+  - [ ] Context snippets included
+  - [ ] Links to vault notes created (where applicable)
+
+  ## Output Structure
+
+  - [ ] Appropriate template used (meeting/interview/lecture)
+  - [ ] All required sections present
+  - [ ] YAML frontmatter valid and complete
+  - [ ] Markdown formatting correct
+  - [ ] All wiki-links use correct format [[Note Title]]
+  - [ ] All timestamps use correct format [HH:MM:SS]
+  - [ ] Checkboxes formatted correctly - [ ] or - [x]
+
+  ## Content Quality
+
+  - [ ] Executive summary is 2-3 sentences (not too long/short)
+  - [ ] Summary captures main outcomes
+  - [ ] No repetitive or redundant information
+  - [ ] Language is clear and professional
+  - [ ] No transcription artifacts (" um", "uh" cleaned up)
+  - [ ] Acronyms explained on first use
+
+  ## Metadata Completeness
+
+  - [ ] Source file referenced
+  - [ ] Date/time recorded
+  - [ ] Duration calculated
+  - [ ] All participants listed
+  - [ ] Tags assigned
+  - [ ] Related links included
+
+  ## Accuracy
+
+  - [ ] No factual errors introduced
+  - [ ] Quotes preserved accurately
+  - [ ] Numbers/dates not altered
+  - [ ] Speaker attribution correct
+  - [ ] Technical terms spelled correctly
+
+  ## Pass/Fail Thresholds
+
+  **Pass**: 90% of checklist items satisfied
+  **Warning**: 75-89% of checklist items satisfied (manual review recommended)
+  **Fail**: <75% of checklist items satisfied (reprocess required)
+
+  ## Examples
+
+  ### Good Action Item Extraction
+  ```
+  - [ ] Complete Q4 budget analysis (@sarah, due: Friday EOD)
+    - Context: Needed for Monday board meeting
+    - Source: Sarah, 00:14:32
+    - Priority: high
+  ```
+
+  ✅ Clear description, owner, deadline, context, source
+
+  ### Poor Action Item Extraction
+  ```
+  - [ ] Sarah will do the budget thing
+  ```
+
+  ❌ Vague description, no deadline, no context, no source
+
+  ### Good Key Point
+  ```
+  - [00:05:12] Q4 revenue target increased to $2M due to new enterprise deals
+  ```
+
+  ✅ Specific, important, includes timestamp, clear
+
+  ### Poor Key Point
+  ```
+  - Sarah mentioned something about revenue
+  ```
+
+  ❌ Vague, no timestamp, not informative
+  ```
+
+  ---
+
+  Checklist 2: task-quality-checklist.md
+  Purpose: Validate quality of task extraction and organization
+
+  ```markdown
+  # Task Quality Checklist
+
+  Use this checklist to validate task management outputs meet GTD standards.
+
+  ## Task Extraction
+
+  - [ ] All actionable items identified (minimum 90% recall)
+  - [ ] Task descriptions start with action verbs
+  - [ ] Each task is clear and unambiguous
+  - [ ] No false positives (non-actionable statements)
+  - [ ] Source reference preserved (where task came from)
+  - [ ] Confidence score assessed
+
+  ## Task Structure
+
+  - [ ] Unique task ID assigned
+  - [ ] Task type identified (individual/recurring/project)
+  - [ ] Status set appropriately (todo/in_progress/blocked/completed)
+  - [ ] Owner assigned (or marked TBD)
+  - [ ] Created date recorded
+  - [ ] Source link preserved
+
+  ## Priority Classification
+
+  - [ ] Priority level assigned (critical/high/medium/low)
+  - [ ] Priority justification provided
+  - [ ] Urgency assessed (deadline-based)
+  - [ ] Importance assessed (goal-based)
+  - [ ] Blocking impact assessed
+  - [ ] Priority score calculated (if applicable)
+
+  ## Context Assignment
+
+  - [ ] At least one context tag assigned
+  - [ ] Context tags are appropriate (@work, @home, @computer, etc.)
+  - [ ] Multiple contexts assigned if needed
+  - [ ] Primary context identified
+  - [ ] Context rationale provided
+
+  ## Effort Estimation
+
+  - [ ] Time estimate provided
+  - [ ] Estimate is reasonable (validated against similar tasks)
+  - [ ] Confidence level assessed
+  - [ ] Complexity factors identified
+  - [ ] Estimate rounded to standard intervals (15m, 30m, 1h, 2h, 4h)
+
+  ## Dependency Tracking
+
+  - [ ] Dependencies identified (if any)
+  - [ ] Blocking tasks linked
+  - [ ] Blocked tasks linked
+  - [ ] No circular dependencies present
+  - [ ] Dependency rationale clear
+  - [ ] Critical path identified (if applicable)
+
+  ## Recurring Tasks
+
+  - [ ] Recurrence pattern defined (daily/weekly/monthly/custom)
+  - [ ] Recurrence schedule specified
+  - [ ] Start date set
+  - [ ] End condition set (forever/until date/X occurrences)
+  - [ ] Next occurrence calculated
+  - [ ] Recurrence template created
+
+  ## Daily Todo Lists
+
+  - [ ] 5-10 tasks selected (not overloaded)
+  - [ ] Tasks match available contexts
+  - [ ] High-priority tasks included
+  - [ ] Tasks due today prioritized
+  - [ ] Total time estimated ≤ available time
+  - [ ] Energy levels matched to tasks
+  - [ ] Must-do section clearly identified
+  - [ ] Time buffer included (20-30%)
+
+  ## Weekly Reviews
+
+  - [ ] All tasks from week analyzed
+  - [ ] Completion statistics calculated
+  - [ ] Completion rate calculated (X%)
+  - [ ] Tasks grouped by priority
+  - [ ] Overdue tasks identified
+  - [ ] Blocked tasks identified
+  - [ ] Productivity insights generated
+  - [ ] Patterns analyzed (times, contexts)
+  - [ ] Recommendations provided (5-7 items)
+  - [ ] Next week preview included
+
+  ## Output Quality
+
+  - [ ] Appropriate template used
+  - [ ] All required sections present
+  - [ ] YAML frontmatter valid
+  - [ ] Markdown formatting correct
+  - [ ] Checkboxes formatted correctly
+  - [ ] Wiki-links formatted correctly
+  - [ ] No duplicate tasks
+
+  ## GTD Compliance
+
+  - [ ] Task is actionable (not vague or conceptual)
+  - [ ] Task can be completed in available time
+  - [ ] Task has clear completion criteria
+  - [ ] Task fits GTD categorization (Next Action, Waiting For, Someday)
+  - [ ] Task has appropriate context tags
+  - [ ] Task properly linked to project (if applicable)
+
+  ## Metadata Completeness
+
+  - [ ] All required metadata fields populated
+  - [ ] Tags assigned
+  - [ ] Project link included (if applicable)
+  - [ ] Source link included
+  - [ ] Related tasks linked
+
+  ## Pass/Fail Thresholds
+
+  **Pass**: 85% of applicable checklist items satisfied
+  **Warning**: 70-84% of checklist items satisfied (manual review recommended)
+  **Fail**: <70% of checklist items satisfied (reprocess required)
+
+  ## Examples
+
+  ### Good Task
+  ```markdown
+  ---
+  type: task
+  id: TASK-123
+  status: todo
+  priority: high
+  owner: mike
+  deadline: 2025-11-08
+  created: 2025-11-04
+  context: [computer, work]
+  energy: high
+  estimate: 2h
+  ---
+
+  # Setup React development environment
+
+  Clear, actionable description with verb.
+  All required metadata present.
+  Appropriate priority, context, estimate.
+  ```
+
+  ✅ Complete, clear, actionable
+
+  ### Poor Task
+  ```markdown
+  # React stuff
+
+  Do something with React.
+  ```
+
+  ❌ Vague, no metadata, not actionable
+
+  ### Good Daily Todo
+  ```markdown
+  ## Must Do (Due Today)
+  - [ ] [[TASK-120]] Budget analysis (2h) @sarah
+  - [ ] [[TASK-122]] Review PR #234 (30m) @mike
+
+  ## High Priority
+  - [ ] [[TASK-123]] React setup (2h) @mike
+
+  Total: 4.5h / 6h available (1.5h buffer)
+  ```
+
+  ✅ Realistic, prioritized, includes buffer
+
+  ### Poor Daily Todo
+  ```markdown
+  - [ ] 20 tasks listed
+  Total: 18h estimated
+  ```
+
+  ❌ Overloaded, unrealistic
+  ```
+
+  ---
+
+  Checklist 3: gtd-workflow-checklist.md
+  Purpose: Validate GTD workflow implementation
+
+  ```markdown
+  # GTD Workflow Checklist
+
+  Use this checklist to validate GTD methodology is correctly implemented.
+
+  ## Capture Phase
+
+  - [ ] Tasks can be captured from any source (notes, transcripts, emails)
+  - [ ] Capture is fast and frictionless
+  - [ ] All captured items go to inbox
+  - [ ] Source reference is preserved
+  - [ ] Capture timestamp recorded
+  - [ ] No tasks lost in capture process
+
+  ## Clarify Phase
+
+  - [ ] Actionability assessed for each item
+  - [ ] Non-actionable items moved to reference/archive
+  - [ ] 2-minute rule applied (quick tasks done immediately)
+  - [ ] Multi-step items identified as projects
+  - [ ] Single-step items identified as tasks
+  - [ ] Waiting-for items identified
+
+  ## Organize Phase
+
+  - [ ] Next Actions list maintained
+  - [ ] Tasks organized by context
+  - [ ] Tasks organized by project
+  - [ ] Waiting For list maintained
+  - [ ] Someday/Maybe list maintained
+  - [ ] Projects list maintained
+  - [ ] All tasks have clear next action
+
+  ## Reflect Phase
+
+  - [ ] Daily review performed (review today, plan tomorrow)
+  - [ ] Weekly review performed (review all lists)
+  - [ ] Inbox cleared during reviews
+  - [ ] Next Actions updated during reviews
+  - [ ] Projects reviewed for progress
+  - [ ] Someday/Maybe reviewed quarterly
+  - [ ] Statistics tracked (completion rates)
+
+  ## Engage Phase
+
+  - [ ] Tasks selected by context (where am I?)
+  - [ ] Tasks selected by energy (how alert am I?)
+  - [ ] Tasks selected by time (how much time do I have?)
+  - [ ] Tasks selected by priority (what's most important?)
+  - [ ] Task selection is intuitive
+  - [ ] Focus on one task at a time
+
+  ## Lists and Organization
+
+  - [ ] Next Actions list contains only actionable items
+  - [ ] Next Actions grouped by context
+  - [ ] Projects have defined outcomes
+  - [ ] Projects have identified next actions
+  - [ ] Waiting For items tracked with dates
+  - [ ] Someday/Maybe items reviewed periodically
+  - [ ] No tasks fall through the cracks
+
+  ## Context System
+
+  - [ ] Contexts are meaningful and useful
+  - [ ] Contexts match real-world scenarios
+  - [ ] Tasks easy to find by context
+  - [ ] Standard GTD contexts supported (@work, @home, @computer, @phone, @errands)
+  - [ ] Custom contexts supported (if needed)
+  - [ ] Context system not over-complicated
+
+  ## Project Management
+
+  - [ ] Projects clearly defined (outcome statements)
+  - [ ] Each project has next action
+  - [ ] Projects linked to tasks
+  - [ ] Project progress tracked
+  - [ ] Completed projects archived
+  - [ ] Project reviews conducted regularly
+
+  ## Review System
+
+  - [ ] Daily review template exists
+  - [ ] Weekly review template exists
+  - [ ] Review checklists comprehensive
+  - [ ] Reviews generate actionable insights
+  - [ ] Reviews track completion patterns
+  - [ ] Reviews identify blockers
+  - [ ] Reviews update all lists
+
+  ## Integration
+
+  - [ ] Integrates with Transcript Processing (action items → tasks)
+  - [ ] Integrates with Inbox Triage (captured content → tasks)
+  - [ ] Integrates with Neo4j (temporal task tracking)
+  - [ ] Integrates with Obsidian Tasks plugin
+  - [ ] Integrates with Calendar plugin (deadlines)
+  - [ ] Works offline (local vault)
+
+  ## Usability
+
+  - [ ] Workflow is intuitive
+  - [ ] Friction points minimized
+  - [ ] Quick capture available
+  - [ ] Quick task creation available
+  - [ ] Daily planning takes <10 minutes
+  - [ ] Weekly review takes <30 minutes
+  - [ ] System is sustainable long-term
+
+  ## Pass/Fail Thresholds
+
+  **Pass**: 90% of checklist items satisfied (GTD workflow fully functional)
+  **Warning**: 75-89% of checklist items satisfied (some areas need work)
+  **Fail**: <75% of checklist items satisfied (GTD workflow incomplete)
+  ```
+
+  Quality Standards:
+  - Checklists are comprehensive but not overwhelming
+  - Items are specific and measurable
+  - Pass/fail thresholds are clear
+  - Examples illustrate good vs. bad practices
+  - Checklists align with industry best practices (GTD methodology, transcript processing standards)
+
+dependencies:
+  - BMAD core checklist format
+  - GTD methodology documentation
+  - Transcript processing best practices
+
+testing:
+  - Apply transcript-quality-checklist.md to sample meeting notes
+  - Apply task-quality-checklist.md to sample tasks
+  - Apply gtd-workflow-checklist.md to overall system
+  - Validate checklist items are measurable
+  - Test pass/fail thresholds are appropriate
+  - Verify examples are helpful
+  - Get feedback from beta testers
+
+definition_of_done:
+  - All 3 checklists created in bmad-obsidian-2nd-brain/checklists/
+  - All checklists are comprehensive and actionable
+  - All checklist items are measurable
+  - Pass/fail thresholds defined
+  - Examples provided for clarity
+  - Checklists aligned with best practices
+  - Checklists tested with sample outputs
+  - Documentation complete
+  - Code review approved

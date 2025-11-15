@@ -1,10 +1,10 @@
 # <!-- Powered by BMAD™ Core -->
 ---
 template:
-  id: moc-template-v1
+  id: moc-template-v2
   name: Map of Content (MOC)
-  version: 1.0
-  description: Template for Maps of Content - knowledge domain navigation structures (Phase 1 Basic)
+  version: 2.0
+  description: Template for Maps of Content - knowledge domain navigation structures (Phase 2 Enhanced with temporal tracking and maturity metrics)
   output:
     format: markdown
     filename: "{{domain}}-moc.md"
@@ -61,6 +61,38 @@ variables:
     description: Date and summary of last update
     required: false
     default: ""
+  - name: note_count
+    description: Number of notes organized by this MOC
+    required: false
+    default: 0
+  - name: branch_count
+    description: Number of knowledge branches in this MOC
+    required: false
+    default: 0
+  - name: review_frequency
+    description: Review frequency based on maturity (weekly, bi-weekly, monthly, quarterly)
+    required: false
+    default: "weekly"
+  - name: next_review
+    description: Next scheduled review date
+    required: false
+    default: null
+  - name: temporal_history
+    description: Major updates and maturity milestones with dates
+    required: false
+    default: ""
+  - name: contribution_graph
+    description: Notes, sources, or people that contributed to this MOC
+    required: false
+    default: ""
+  - name: maturity_metrics
+    description: Metrics like link density, review frequency, coverage
+    required: false
+    default: ""
+  - name: related_mocs
+    description: Links to related MOCs with connection descriptions
+    required: false
+    default: ""
 
 workflow:
   elicitation: false
@@ -75,6 +107,7 @@ sections:
       Type indicates this is a map_of_content or MOC.
       Status is active for working MOCs, archived for retired ones.
       Maturity level tracks development: nascent, developing, established, comprehensive.
+      Phase 2 additions: note_count, branch_count, review_frequency, next_review for temporal tracking.
     template: |
       ---
       title: {{title}}
@@ -85,6 +118,10 @@ sections:
       status: {{status}}
       last_review: {{last_review}}
       maturity_level: {{maturity_level}}
+      note_count: {{note_count}}
+      branch_count: {{branch_count}}
+      review_frequency: {{review_frequency}}
+      next_review: {{next_review}}
       ---
 
   - id: overview
@@ -182,6 +219,76 @@ sections:
       ## Dynamic Content
 
       {{dataview_queries}}
+
+  - id: temporal_history
+    title: Temporal History (Phase 2)
+    type: paragraphs
+    condition: temporal_history is not empty
+    instruction: |
+      Track major MOC updates and maturity milestones over time.
+      This section shows how the MOC evolved from creation to current state.
+
+      Format: **YYYY-MM-DD**: Description of update or milestone
+      Example: **2024-11-01**: MOC created with 3 branches (nascent)
+      Example: **2024-12-15**: Added 4th branch, maturity upgraded to developing
+    placeholder: |
+      ## Temporal History
+
+      **{{created}}**: MOC created
+    template: |
+      ## Temporal History
+
+      {{temporal_history}}
+
+  - id: contribution_graph
+    title: Contribution Graph (Phase 2)
+    type: paragraphs
+    condition: contribution_graph is not empty
+    instruction: |
+      Document what notes, sources, or contributors shaped this MOC.
+      This reveals the intellectual lineage and knowledge sources.
+
+      Format:
+      - **[[Note Name]]**: How it contributed
+      - **Source (Author, Book)**: What insights it provided
+      - **Person Name**: Their role in MOC development
+    template: |
+      ## Contribution Graph
+
+      {{contribution_graph}}
+
+  - id: maturity_metrics
+    title: Maturity Metrics (Phase 2)
+    type: paragraphs
+    condition: maturity_metrics is not empty
+    instruction: |
+      Quantitative metrics showing MOC health and coverage.
+
+      Typical metrics:
+      - Note count: {{note_count}} notes
+      - Link density: X bidirectional links (Y% coverage)
+      - Review frequency: {{review_frequency}}
+      - Last review: {{last_review}}
+      - Next review: {{next_review}}
+      - Coverage gaps: Identified areas needing more notes
+    template: |
+      ## Maturity Metrics
+
+      {{maturity_metrics}}
+
+  - id: related_mocs
+    title: Related MOCs (Phase 2)
+    type: bullet-list
+    condition: related_mocs is not empty
+    instruction: |
+      Link to related MOCs and explain the connections.
+
+      Format: - [[Related MOC Name]] - Connection explanation
+      Example: - [[Learning Strategies MOC]] - Spaced repetition is one learning strategy
+    template: |
+      ## Related MOCs
+
+      {{related_mocs}}
 
   - id: maintenance_history
     title: Last Updated

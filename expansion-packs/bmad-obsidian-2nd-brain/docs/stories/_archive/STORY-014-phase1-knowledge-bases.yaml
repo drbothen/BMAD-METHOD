@@ -1,0 +1,92 @@
+---
+story_id: STORY-014
+title: Create Phase 1 Knowledge Bases (3 knowledge bases)
+epic_id: EPIC-001
+phase: 1
+priority: medium
+estimated_effort: 24 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As an AI agent
+  I want access to comprehensive knowledge bases about methodologies and technical systems
+  So that I can provide informed guidance to users
+
+acceptance_criteria:
+  - Create data/ directory
+  - Inherit bmad-kb.md from bmad-core (symbolic link or copy)
+  - Create second-brain-methodologies.md (focused on Zettelkasten + PARA for Phase 1)
+  - Create obsidian-technical-guide.md (basics for Phase 1)
+  - All knowledge bases in markdown format
+  - Knowledge bases include examples and patterns
+  - Knowledge bases cross-reference each other
+
+technical_notes: |
+  Knowledge Base 1: bmad-kb.md (inherited)
+  - Source: bmad-core/data/bmad-kb.md
+  - Purpose: Core BMAD methodology and framework principles
+  - Content: Agent system, task structure, template format, workflow patterns
+  - Implementation: Symbolic link or copy during installation
+  - Usage: Referenced by all agents for BMAD conventions
+
+  Knowledge Base 2: second-brain-methodologies.md
+  - Purpose: Guide to 2nd brain methodologies (Phase 1 focus)
+  - Content (Phase 1):
+    - Zettelkasten Method:
+      - History and principles (Niklas Luhmann)
+      - Atomic notes definition and 6 building block types
+      - Atomicity as outcome vs. input requirement
+      - Fleeting → Literature → Permanent note workflow
+      - Unique identifiers and linking conventions
+    - PARA Method:
+      - Projects, Areas, Resources, Archives taxonomy
+      - Actionability-based organization
+      - Information lifecycle management
+      - Project vs. Area distinction
+  - Note: Phase 2 will add LYT, Phase 6 will add Johnny Decimal, Progressive Summarization
+  - Usage: Reference for agents implementing methodology features
+
+  Knowledge Base 3: obsidian-technical-guide.md
+  - Purpose: Technical details of Obsidian ecosystem (Phase 1 basics)
+  - Content (Phase 1):
+    - Obsidian Architecture:
+      - Vault structure (folders, files, hidden files)
+      - Markdown format and Obsidian extensions
+      - Wikilink syntax: [[note]], [[note|display]], [[note#section]]
+      - Tag syntax: #tag, #nested/tag
+      - Frontmatter (YAML metadata)
+    - Smart Connections:
+      - .smart-env/ directory structure
+      - Embedding model: BGE-micro-v2 specifications
+      - .ajson format (Annotated JSON)
+      - Semantic search API basics
+      - Performance characteristics (10,000+ notes)
+    - Community Plugins:
+      - Local REST API plugin setup
+      - MCP Tools plugin setup
+      - Smart Connections plugin setup
+  - Note: Phase 2 will add Neo4j/Graphiti details, Phase 5 will add research MCP details
+  - Usage: Technical reference for agents interfacing with Obsidian
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - bmad-core/data/bmad-kb.md (inherited)
+  - All Phase 1 agents (consumers of knowledge bases)
+
+testing:
+  - Validate markdown formatting
+  - Verify cross-references between knowledge bases
+  - Test agent access to knowledge bases
+  - Ensure examples are accurate
+  - Verify technical specifications
+
+definition_of_done:
+  - bmad-kb.md inherited (symlink or copy)
+  - second-brain-methodologies.md created with Zettelkasten + PARA
+  - obsidian-technical-guide.md created with Phase 1 basics
+  - All knowledge bases in markdown format
+  - Examples and patterns included
+  - Cross-references documented
+  - Knowledge bases validated for accuracy
+  - Documentation added to developer guide

@@ -1,0 +1,107 @@
+---
+story_id: STORY-009
+title: Implement Retrieval Tasks (4 tasks)
+epic_id: EPIC-001
+phase: 1
+priority: high
+estimated_effort: 20 hours
+status: duplicate
+created: 2025-11-04
+closed: 2025-11-06
+resolution: |
+  DUPLICATE - All work already completed in STORY-005 (Query Interpreter Agent).
+
+  All 4 retrieval tasks already exist and are fully implemented:
+  - parse-natural-language-query.md (466 lines)
+  - execute-obsidian-query.md (567 lines)
+  - execute-neo4j-query.md (717 lines)
+  - merge-results.md (621 lines)
+  Total: 2,371 lines of comprehensive task documentation
+
+  Location: expansion-packs/bmad-obsidian-2nd-brain/tasks/
+
+  Note: File naming differs slightly - actual files do NOT have "retrieve-" prefix,
+  which matches the requirements document specification (section 3.4).
+
+  See STORY-005 Dev Agent Record for implementation details.
+
+user_story: |
+  As a developer
+  I want to create the retrieval workflow tasks
+  So that Query Interpreter Agent can execute multi-source queries
+
+acceptance_criteria:
+  - Implement retrieve-parse-natural-language-query.md task in tasks/ directory
+  - Implement retrieve-execute-obsidian-query.md task in tasks/ directory
+  - Implement retrieve-execute-neo4j-query.md task in tasks/ directory (optional, Neo4j)
+  - Implement retrieve-merge-results.md task in tasks/ directory
+  - All tasks follow BMAD task specification format
+  - Tasks include query patterns and examples
+  - Tasks specify result formats
+
+technical_notes: |
+  Task 1: parse-natural-language-query.md
+  - Input: Natural language query string
+  - Process: Intent classification, entity extraction, query decomposition
+  - Output: Structured query object (intent, entities, sub-queries, filters)
+  - Intent types: factual, temporal, causal, comparative, exploratory
+  - Query decomposition patterns:
+    - "How has X evolved?" → temporal intent + entity X + time range filter
+    - "Compare X and Y" → comparative intent + entities [X, Y]
+    - "Why does X happen?" → causal intent + entity X
+
+  Task 2: execute-obsidian-query.md
+  - Input: Structured query object
+  - Process: Execute appropriate Obsidian query
+  - Output: List of matching notes with metadata
+  - Query types:
+    - Text search: obsidian.search_notes (text query)
+    - Semantic search: smart_connections.semantic_search (embedding query)
+    - Tag search: obsidian.search_notes (tag filter)
+    - Metadata search: obsidian.search_notes (frontmatter filter)
+  - MCP tools: obsidian.search_notes, smart_connections.semantic_search
+
+  Task 3: execute-neo4j-query.md
+  - Input: Structured query object
+  - Process: Generate and execute Cypher query
+  - Output: List of matching nodes/relationships with temporal metadata
+  - Query patterns:
+    - Temporal: "How has X evolved?" → Query edit history, promotions
+    - Causal: "Why X?" → Query [:INFLUENCED] relationships
+    - Graph traversal: "Related to X" → Query [:LINKED_TO] relationships
+  - MCP tools: graphiti.search_facts, graphiti.query_temporal (optional)
+
+  Task 4: merge-results.md
+  - Input: Results from Obsidian + Neo4j (if available)
+  - Process: Deduplicate, rank by relevance, identify contradictions
+  - Output: Unified result set with source attribution
+  - Merging algorithm:
+    - Deduplicate by note ID
+    - Rank by combined relevance score (Obsidian + Neo4j signals)
+    - Detect contradictions (conflicting claims from different notes)
+    - Add source attribution (which queries contributed each result)
+    - Format based on query intent (narrative, list, table, timeline)
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-005: Query Interpreter Agent (consumer)
+  - query-result-tmpl.yaml template
+  - query-completeness-checklist.md
+
+testing:
+  - Parse factual query: "What is Zettelkasten?"
+  - Parse temporal query: "How has my understanding evolved?"
+  - Execute Obsidian text search
+  - Execute Obsidian semantic search
+  - Execute Neo4j temporal query
+  - Merge results from multiple sources
+  - Detect contradictions in results
+
+definition_of_done:
+  - All 4 task files created in tasks/ with retrieve- prefix
+  - Tasks follow BMAD specification format
+  - Query patterns documented with examples
+  - Result formats specified
+  - MCP tool dependencies documented
+  - Tasks tested individually and in workflows
+  - Documentation added to developer guide

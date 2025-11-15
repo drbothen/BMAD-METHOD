@@ -1,0 +1,571 @@
+---
+story_id: STORY-073
+title: Implement Task Management Tasks
+epic_id: EPIC-001
+phase: 1.5
+priority: high
+estimated_effort: 20 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a developer
+  I want reusable task management tasks
+  So that the Task Management Agent can implement GTD workflow consistently
+
+acceptance_criteria: |
+  **9 Tasks to Create:**
+  1. extract-tasks-from-content.md
+  2. create-task-note.md
+  3. classify-task-priority.md
+  4. assign-task-context.md
+  5. estimate-task-effort.md
+  6. track-task-dependencies.md
+  7. setup-recurring-task.md
+  8. generate-daily-todo.md
+  9. generate-weekly-review.md
+
+  **Task Format:**
+  - All tasks follow BMAD task specification
+  - Clear step-by-step procedures
+  - Input/output specifications
+  - Error handling instructions
+  - Example outputs
+  - Quality validation steps
+
+  **Task Coverage:**
+  - All GTD workflow operations covered
+  - Tasks are composable (can be chained)
+  - Tasks handle multiple input sources
+  - Tasks support Obsidian Tasks plugin format
+
+technical_notes: |
+  Task 1: extract-tasks-from-content.md
+  Purpose: Extract tasks from any content type
+
+  Process:
+  1. Detect action verbs: "will", "should", "need to", "must", "plan to", "todo", "action"
+  2. Identify commitment language: "I'll", "we'll", "X will"
+  3. Parse checkbox syntax: "- [ ]", "- [x]", "* [ ]"
+  4. Extract explicit task markers: "TODO:", "ACTION:", "TASK:"
+  5. Identify ownership patterns: "@name", "assigned to", "X is responsible"
+  6. Extract deadline patterns: "by", "due", "deadline", date formats
+  7. Classify actionability: Is this a concrete action?
+
+  Input:
+  - Any text content (notes, transcripts, emails, web clips)
+
+  Output:
+  - List of extracted tasks
+  - Each task includes:
+    - Raw description
+    - Detected owner (if present)
+    - Detected deadline (if present)
+    - Source reference (which note/line)
+    - Confidence score (0.0-1.0)
+
+  Example Output:
+  ```yaml
+  extracted_tasks:
+    - description: "Complete Q4 budget analysis"
+      owner: "sarah"
+      deadline: "Friday EOD"
+      source: "[[Meeting Notes/2025-11-04 Exec Meeting]]"
+      confidence: 0.95
+
+    - description: "Review pull request #234"
+      owner: null
+      deadline: null
+      source: "[[Daily Notes/2025-11-04]]"
+      confidence: 0.88
+  ```
+
+  ---
+
+  Task 2: create-task-note.md
+  Purpose: Create structured task note in vault
+
+  Process:
+  1. Validate task has actionable description
+  2. Assign task ID (unique identifier)
+  3. Populate task template (task-tmpl.yaml)
+  4. Generate YAML frontmatter with metadata
+  5. Determine file location (project-based or date-based)
+  6. Create file in vault
+  7. Link to source note (where task came from)
+  8. Link to project (if applicable)
+
+  Input:
+  - Task data (description, owner, deadline, priority, context, etc.)
+
+  Output:
+  - Task note file created in vault
+  - File path returned
+
+  Example Output:
+  File: `03-Projects/Web Portal/tasks/TASK-123.md`
+
+  ```markdown
+  ---
+  type: task
+  id: TASK-123
+  status: todo
+  priority: high
+  owner: mike
+  deadline: 2025-11-08
+  created: 2025-11-04
+  context: [computer, work]
+  energy: high
+  estimate: 2h
+  project: "[[03-Projects/Web Portal]]"
+  source: "[[Meeting Notes/2025-11-04 Exec Meeting]]"
+  tags: [development, react]
+  ---
+
+  # TASK-123: Setup React development environment
+
+  ## Description
+
+  Install and configure React development environment for new web portal project.
+  Need to setup webpack, babel, linting, and testing infrastructure.
+
+  ## Dependencies
+
+  - [ ] [[TASK-122]] Install Node.js LTS
+
+  ## Context
+
+  Needed for web portal project. Decided in exec meeting to use React over Angular.
+
+  ## Completion Criteria
+
+  - [ ] React project initialized
+  - [ ] All dev dependencies installed
+  - [ ] Linting configured
+  - [ ] Test runner configured
+  - [ ] Build process working
+
+  ## Links
+
+  Project: [[03-Projects/Web Portal]]
+  Related: [[Tech/React]], [[Meeting Notes/2025-11-04 Exec Meeting]]
+  ```
+
+  ---
+
+  Task 3: classify-task-priority.md
+  Purpose: Assign priority level to task
+
+  Process:
+  1. Assess urgency: Is there a tight deadline?
+  2. Assess importance: Is this critical to goals?
+  3. Assess blocking: Does this block other tasks/projects?
+  4. Assess impact: What happens if not done?
+  5. Calculate priority score
+  6. Assign priority level
+
+  Priority Algorithm:
+  - Critical: Urgent + important + blocking
+  - High: Important + (urgent OR blocking)
+  - Medium: Important OR urgent
+  - Low: Neither urgent nor important
+
+  Input:
+  - Task description
+  - Deadline (if present)
+  - Dependencies (if present)
+  - Project context
+
+  Output:
+  - Priority level (critical, high, medium, low)
+  - Priority score (0-100)
+  - Rationale (why this priority)
+
+  Example Output:
+  ```yaml
+  priority:
+    level: high
+    score: 85
+    rationale: "Important for project milestone, deadline in 4 days, blocks 2 other tasks"
+    factors:
+      urgency: 8
+      importance: 9
+      blocking: 2
+      impact: 9
+  ```
+
+  ---
+
+  Task 4: assign-task-context.md
+  Purpose: Assign GTD context tags to task
+
+  Process:
+  1. Analyze task verb: What action is required?
+  2. Identify location requirements: Where can this be done?
+  3. Identify tool requirements: What tools are needed?
+  4. Identify people requirements: Who needs to be present?
+  5. Assign context tags
+
+  Standard GTD Contexts:
+  - @computer: Requires computer
+  - @phone: Requires phone call
+  - @email: Email-based task
+  - @home: Must be done at home
+  - @work: Must be done at work
+  - @office: Must be done at office
+  - @errands: Out-and-about task
+  - @online: Requires internet
+  - @offline: Can be done offline
+  - @meeting: Requires meeting/collaboration
+  - @focus: Requires deep focus
+
+  Input:
+  - Task description
+  - Task type
+
+  Output:
+  - List of applicable contexts
+  - Primary context (most relevant)
+
+  Example Output:
+  ```yaml
+  contexts:
+    primary: "computer"
+    all: [computer, work, online, focus]
+    rationale: "Requires computer with dev tools, best done at work with focus time"
+  ```
+
+  ---
+
+  Task 5: estimate-task-effort.md
+  Purpose: Estimate time required to complete task
+
+  Process:
+  1. Analyze task complexity: Simple, moderate, complex?
+  2. Identify subtasks: What steps are involved?
+  3. Consider dependencies: What must happen first?
+  4. Apply estimation model: Similar past tasks?
+  5. Adjust for uncertainty: Add buffer if needed
+  6. Round to standard intervals: 15m, 30m, 1h, 2h, 4h, 8h, 2d
+
+  Estimation Guidelines:
+  - Quick (< 15 min): Simple, routine tasks
+  - Short (15-30 min): Straightforward tasks
+  - Medium (30 min - 2 hours): Moderate complexity
+  - Long (2-4 hours): Complex, multi-step tasks
+  - Very Long (4-8 hours): Full day tasks
+  - Project (> 8 hours): Break into smaller tasks
+
+  Input:
+  - Task description
+  - Task complexity indicators
+
+  Output:
+  - Time estimate (in hours or minutes)
+  - Confidence level (low, medium, high)
+  - Estimation factors
+
+  Example Output:
+  ```yaml
+  estimate:
+    time: 2h
+    confidence: medium
+    factors:
+      complexity: moderate
+      uncertainty: medium
+      dependencies: 1
+    rationale: "Similar React setups took 1.5-2.5 hours in past"
+  ```
+
+  ---
+
+  Task 6: track-task-dependencies.md
+  Purpose: Identify and track task dependencies
+
+  Process:
+  1. Analyze task prerequisites: What must be done first?
+  2. Identify blocking tasks: Tasks that prevent this one
+  3. Identify blocked tasks: Tasks that wait on this one
+  4. Create dependency graph
+  5. Calculate critical path
+  6. Flag circular dependencies (error condition)
+
+  Input:
+  - Task description
+  - All tasks in project
+
+  Output:
+  - List of blocking tasks (must complete before)
+  - List of blocked tasks (waiting on this)
+  - Dependency graph
+  - Critical path flag
+
+  Example Output:
+  ```yaml
+  dependencies:
+    blocks:
+      - "[[TASK-122]] Install Node.js LTS"
+    blocked_by:
+      - "[[TASK-124]] Configure CI/CD pipeline"
+      - "[[TASK-125]] Write integration tests"
+    critical_path: true
+    circular: false
+  ```
+
+  ---
+
+  Task 7: setup-recurring-task.md
+  Purpose: Configure recurring task pattern
+
+  Process:
+  1. Determine recurrence type: Daily, weekly, monthly, custom
+  2. Set recurrence schedule: Specific days/dates
+  3. Set start date: When does recurrence begin?
+  4. Set end condition: Forever, until date, or X occurrences
+  5. Create recurrence template
+  6. Configure completion behavior: Create new on complete?
+
+  Recurrence Patterns:
+  - Daily: Every day, every X days, weekdays only
+  - Weekly: Specific days of week (Mon, Wed, Fri)
+  - Monthly: Specific day of month (1st, 15th)
+  - Custom: Complex patterns (every 2 weeks on Tue/Thu)
+
+  Input:
+  - Task description
+  - Recurrence parameters
+
+  Output:
+  - Recurrence configuration
+  - Next occurrence date
+
+  Example Output:
+  ```yaml
+  recurrence:
+    type: weekly
+    schedule:
+      days: [monday, wednesday, friday]
+      time: "09:00"
+    start_date: 2025-11-04
+    end_condition: "forever"
+    next_occurrence: 2025-11-08
+    template: "Review team standup notes"
+  ```
+
+  ---
+
+  Task 8: generate-daily-todo.md
+  Purpose: Generate daily todo list based on GTD
+
+  Process:
+  1. Load all pending tasks
+  2. Filter by available contexts (where am I today?)
+  3. Filter by deadlines (what's due today/soon?)
+  4. Assess available time blocks
+  5. Match tasks to time/energy available
+  6. Prioritize by importance + urgency
+  7. Select 5-10 tasks for today
+  8. Generate daily todo note
+
+  Selection Criteria:
+  1. Due today (must do)
+  2. High priority + matching context
+  3. Can be completed in available time
+  4. Energy level matches current state
+  5. Blocking other tasks
+
+  Input:
+  - All pending tasks
+  - Today's date
+  - Available contexts (e.g., @work, @computer)
+  - Available time (e.g., 6 hours)
+  - Energy level (high, medium, low)
+
+  Output:
+  - Daily todo list (daily-todo-tmpl.yaml format)
+  - 5-10 selected tasks
+  - Organized by time block
+
+  Example Output:
+  ```markdown
+  ---
+  type: daily-todo
+  date: 2025-11-04
+  contexts: [work, computer]
+  available_time: 6h
+  energy_level: high
+  ---
+
+  # Daily Todo - Monday, November 4, 2025
+
+  ## Must Do (Due Today)
+
+  - [ ] [[TASK-120]] Complete Q4 budget analysis (2h) @sarah
+  - [ ] [[TASK-122]] Review pull request #234 (30m) @mike
+
+  ## High Priority
+
+  - [ ] [[TASK-123]] Setup React development environment (2h) @mike
+  - [ ] [[TASK-125]] Write integration tests (1.5h) @alex
+
+  ## If Time Allows
+
+  - [ ] [[TASK-130]] Update API documentation (1h)
+  - [ ] [[TASK-135]] Refactor authentication module (2h)
+
+  ## Notes
+
+  Total planned: 5.5h (1.5h buffer available)
+  Focus blocks: 9-11am (high energy), 2-4pm (medium energy)
+  Meetings: 11:30-12pm standup, 4-5pm design review
+  ```
+
+  ---
+
+  Task 9: generate-weekly-review.md
+  Purpose: Generate GTD weekly review report
+
+  Process:
+  1. Load all tasks from past week
+  2. Calculate completion statistics
+  3. Identify overdue tasks
+  4. Identify blocked tasks
+  5. Analyze productivity patterns
+  6. Generate recommendations
+  7. Create weekly review note
+
+  Analysis Areas:
+  1. **Completion Rate**: X% of planned tasks completed
+  2. **Priority Distribution**: How much time on high vs. low priority?
+  3. **Context Analysis**: Which contexts most productive?
+  4. **Time Analysis**: Estimated vs. actual time
+  5. **Blockers**: What's preventing progress?
+  6. **Patterns**: When are you most productive?
+
+  Input:
+  - All tasks from past week
+  - Week start/end dates
+
+  Output:
+  - Weekly review report (weekly-review-tmpl.yaml format)
+  - Statistics and insights
+  - Recommendations for next week
+
+  Example Output:
+  ```markdown
+  ---
+  type: weekly-review
+  week_start: 2025-10-28
+  week_end: 2025-11-03
+  total_tasks: 42
+  completed: 35
+  completion_rate: 83%
+  ---
+
+  # Weekly Review - Week of October 28, 2025
+
+  ## Overview
+
+  Completed 35 of 42 planned tasks (83% completion rate). Strong week
+  overall with good progress on Web Portal project. Two high-priority
+  tasks rolled to next week.
+
+  ## Completed Tasks by Priority
+
+  - Critical: 3/3 (100%)
+  - High: 12/15 (80%)
+  - Medium: 15/18 (83%)
+  - Low: 5/6 (83%)
+
+  ## Overdue/Rolled Tasks
+
+  - [ ] [[TASK-140]] Complete API security audit (high) - rolled to next week
+  - [ ] [[TASK-145]] Update user documentation (medium) - overdue by 2 days
+
+  ## Productivity Insights
+
+  **Most Productive Times:**
+  - Tuesday 9-11am: Completed 4 high-priority tasks
+  - Thursday 2-4pm: Completed 3 medium-priority tasks
+
+  **Most Productive Contexts:**
+  - @computer: 25 tasks completed
+  - @focus: 12 tasks completed
+  - @meeting: 8 tasks completed
+
+  **Time Accuracy:**
+  - Average estimation error: +15% (tasks took longer than estimated)
+  - Best estimates: Short tasks (< 1 hour)
+  - Worst estimates: Complex tasks (> 2 hours)
+
+  ## Blockers
+
+  - API security audit blocked by pending security review
+  - Documentation updates blocked by final feature specs
+
+  ## Recommendations for Next Week
+
+  1. Add 20% buffer to complex task estimates
+  2. Schedule focus blocks Tuesday/Thursday mornings (most productive)
+  3. Address 2 overdue tasks first thing Monday
+  4. Follow up on security review blocker
+  5. Consider breaking large tasks into smaller chunks
+
+  ## Next Week Preview
+
+  - 18 tasks scheduled
+  - 3 high-priority deadlines
+  - 2 project milestones
+  - Estimated total: 32 hours (realistic with meetings)
+  ```
+
+  Error Handling Guidelines:
+  - Ambiguous task descriptions: Flag for clarification
+  - Missing critical metadata: Use defaults, warn user
+  - Invalid deadlines: Parse common formats, fallback to null
+  - Circular dependencies: Flag error, prevent infinite loops
+  - Invalid recurrence patterns: Use safe defaults
+
+  Quality Validation:
+  - All extracted tasks are actionable (have verb)
+  - Task priorities are appropriate
+  - Context assignments are logical
+  - Time estimates are reasonable
+  - Dependencies are valid (no circular)
+  - Recurring tasks have valid schedules
+  - Daily todos are realistic (not overloaded)
+  - Weekly reviews have complete statistics
+
+dependencies:
+  - Common BMAD task structure
+  - templates/task-tmpl.yaml (for task 2)
+  - templates/daily-todo-tmpl.yaml (for task 8)
+  - templates/weekly-review-tmpl.yaml (for task 9)
+  - checklists/task-quality-checklist.md
+
+testing:
+  - Test task 1 with various content types (notes, transcripts, emails)
+  - Test task 2 creates valid task notes
+  - Test task 3 classifies priorities correctly
+  - Test task 4 assigns appropriate contexts
+  - Test task 5 estimates are reasonable
+  - Test task 6 detects dependencies and circular references
+  - Test task 7 handles all recurrence patterns
+  - Test task 8 generates realistic daily todos
+  - Test task 9 generates complete weekly reviews
+  - Test with Obsidian Tasks plugin format
+  - Verify error handling for all edge cases
+
+definition_of_done:
+  - All 9 tasks created in bmad-obsidian-2nd-brain/tasks/
+  - All tasks follow BMAD task specification
+  - All tasks include clear step-by-step procedures
+  - All tasks include example outputs
+  - All tasks include error handling
+  - All tasks include quality validation steps
+  - Tasks are composable and reusable
+  - All tasks tested independently
+  - Task chaining tested (GTD workflow end-to-end)
+  - Obsidian Tasks plugin format supported
+  - Documentation complete
+  - Code review approved

@@ -456,6 +456,435 @@ OPTIONAL MATCH (n:Note)-[:EDITED_AT]->(e)
 RETURN e.timestamp, e.capture_method, n.title, "edit" AS event_type
 ORDER BY e.timestamp DESC;
 
+// =============================================================================
+// PHASE 2 TEMPORAL QUERIES - Evolution Tracking & Maturation Metrics
+// =============================================================================
+// Version: 2.0
+// Added: 2025-11-11
+// Purpose: Advanced temporal analysis for concept evolution, understanding shifts,
+//          maturation metrics, and synthesis tracking
+
+// ----------------------------------------------------------------------------
+// QUERY P2-1: Complete Evolution Timeline for a Concept
+// ----------------------------------------------------------------------------
+// Use Case: Get full temporal history with PROMOTION, LINK, MOC_ADDED events
+// Agent: Timeline Constructor
+// Parameters: Replace $note_path with actual path
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note {path: $note_path})-[r:HAS_EVENT]->(e:Event)
+RETURN e.timestamp AS when,
+       e.event_type AS event,
+       e.metadata AS details
+ORDER BY e.timestamp ASC;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-2: Calculate Days to Evergreen
+// ----------------------------------------------------------------------------
+// Use Case: Measure maturation speed for a concept
+// Agent: Timeline Constructor
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(capture:Event {event_type: 'CAPTURE'})
+MATCH (n)-[:HAS_EVENT]->(promotion:Event {event_type: 'PROMOTION'})
+WHERE promotion.metadata.to = 'evergreen'
+WITH duration.between(capture.timestamp, promotion.timestamp).days AS days_to_evergreen
+RETURN days_to_evergreen;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-3: Calculate Edit Velocity (Development Phase)
+// ----------------------------------------------------------------------------
+// Use Case: Edits per week during active development
+// Agent: Timeline Constructor
+// Parameters: $development_start, $development_end
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(e:Event {event_type: 'EDIT'})
+WHERE e.timestamp >= $development_start AND e.timestamp < $development_end
+WITH count(e) AS edit_count,
+     duration.between($development_start, $development_end).days / 7.0 AS weeks
+RETURN edit_count / weeks AS edits_per_week;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-4: Find Understanding Shifts
+// ----------------------------------------------------------------------------
+// Use Case: Detect contradictions and belief revisions
+// Agent: Timeline Constructor
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(e:Event {event_type: 'EDIT'})
+WHERE e.metadata.understanding_shift = 'contradiction'
+RETURN e.timestamp AS shift_date,
+       e.metadata.before AS previous_understanding,
+       e.metadata.after AS new_understanding,
+       e.metadata.trigger AS what_caused_shift,
+       e.metadata.evidence AS evidence
+ORDER BY shift_date;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-5: Track Relationship Strength Evolution
+// ----------------------------------------------------------------------------
+// Use Case: How link between concepts strengthened over time
+// Agent: Semantic Linker
+// Parameters: $source_path, $target_path
+// ----------------------------------------------------------------------------
+
+MATCH (source:Note {path: $source_path})-[r:HAS_EVENT]->(e:Event {event_type: 'LINK'})
+WHERE e.metadata.target_note = $target_path
+WITH e.timestamp AS link_time,
+     e.metadata.direction AS direction,
+     e.metadata.context_added AS context,
+     e.metadata.strength AS strength
+ORDER BY link_time
+RETURN link_time, direction, context, strength;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-6: Identify Concept Influences
+// ----------------------------------------------------------------------------
+// Use Case: Find sources and concepts that shaped development
+// Agent: Timeline Constructor
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(e:Event)
+WHERE e.event_type IN ['EDIT', 'LINK']
+  AND e.metadata.source_cited IS NOT NULL
+WITH e.timestamp AS when,
+     e.metadata.source_cited AS source,
+     e.event_type AS event
+ORDER BY when
+RETURN source,
+       collect(event) AS influence_events,
+       min(when) AS first_influence,
+       max(when) AS last_influence,
+       count(event) AS influence_count
+ORDER BY influence_count DESC;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-7: Vault Average Days to Evergreen
+// ----------------------------------------------------------------------------
+// Use Case: Baseline for percentile ranking
+// Agent: Timeline Constructor
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note)-[:HAS_EVENT]->(capture:Event {event_type: 'CAPTURE'})
+MATCH (n)-[:HAS_EVENT]->(promotion:Event {event_type: 'PROMOTION'})
+WHERE promotion.metadata.to = 'evergreen'
+WITH duration.between(capture.timestamp, promotion.timestamp).days AS days
+RETURN avg(days) AS vault_avg_days_to_evergreen,
+       percentileDisc(days, 0.5) AS median_days_to_evergreen,
+       percentileDisc(days, 0.25) AS p25_days,
+       percentileDisc(days, 0.75) AS p75_days,
+       count(days) AS sample_size;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-8: Detect Phase Transitions
+// ----------------------------------------------------------------------------
+// Use Case: Identify when concept moved between evolution phases
+// Agent: Timeline Constructor
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(e:Event {event_type: 'EDIT'})
+WITH e.timestamp AS edit_time
+ORDER BY edit_time
+WITH collect(edit_time) AS edit_times
+UNWIND range(0, size(edit_times)-2) AS i
+WITH edit_times[i] AS current_edit,
+     edit_times[i+1] AS next_edit,
+     duration.between(edit_times[i], edit_times[i+1]).days AS gap_days
+RETURN current_edit,
+       next_edit,
+       gap_days,
+       CASE
+         WHEN gap_days > 60 THEN 'phase_transition_likely'
+         WHEN gap_days > 14 THEN 'activity_decrease'
+         ELSE 'active_development'
+       END AS activity_status
+ORDER BY gap_days DESC;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-9: Find Recently Promoted Evergreen Concepts
+// ----------------------------------------------------------------------------
+// Use Case: Identify accomplishments in last 30 days
+// Agent: Monthly Deep Review Workflow
+// Parameters: $days_back (default 30)
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note)-[:HAS_EVENT]->(e:Event {event_type: 'PROMOTION'})
+WHERE e.metadata.to = 'evergreen'
+  AND e.timestamp > datetime() - duration({days: $days_back})
+RETURN n.path AS concept_path,
+       n.title AS concept_title,
+       e.timestamp AS promoted_date,
+       duration.between(
+         [(n)-[:HAS_EVENT]->(capture {event_type: 'CAPTURE'}) | capture.timestamp][0],
+         e.timestamp
+       ).days AS maturation_time_days
+ORDER BY promoted_date DESC;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-10: Identify Stagnant Concepts (>90 Days Inactive)
+// ----------------------------------------------------------------------------
+// Use Case: Find concepts stuck in development
+// Agent: MOC Constructor
+// Parameters: $stagnation_threshold_days (default 90)
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note)-[:HAS_EVENT]->(capture:Event {event_type: 'CAPTURE'})
+MATCH (n)-[:HAS_EVENT]->(promotion:Event {event_type: 'PROMOTION'})
+WHERE promotion.metadata.to = 'permanent'
+  AND NOT exists((n)-[:HAS_EVENT]->(:Event {event_type: 'PROMOTION'}) WHERE .metadata.to = 'evergreen')
+OPTIONAL MATCH (n)-[:HAS_EVENT]->(last_edit:Event {event_type: 'EDIT'})
+WITH n,
+     capture,
+     promotion,
+     max(last_edit.timestamp) AS last_activity
+WHERE duration.between(last_activity, datetime()).days > $stagnation_threshold_days
+RETURN n.path,
+       n.title,
+       last_activity,
+       duration.between(last_activity, datetime()).days AS days_stagnant,
+       duration.between(capture.timestamp, promotion.timestamp).days AS time_in_development
+ORDER BY days_stagnant DESC;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-11: Find Cross-Domain Connections
+// ----------------------------------------------------------------------------
+// Use Case: Identify synthesis opportunities between MOCs
+// Agent: MOC Constructor
+// Parameters: $min_cross_links (default 3)
+// ----------------------------------------------------------------------------
+
+MATCH (moc1:MOC)<-[:BELONGS_TO]-(n1:Note)
+MATCH (n1)-[:HAS_EVENT]->(link:Event {event_type: 'LINK'})
+MATCH (n2:Note {path: link.metadata.target_note})-[:BELONGS_TO]->(moc2:MOC)
+WHERE moc1 <> moc2
+WITH moc1.title AS domain1,
+     moc2.title AS domain2,
+     count(link) AS cross_link_count,
+     collect({
+       note1: n1.title,
+       note2: n2.title,
+       when: link.timestamp
+     }) AS connections
+WHERE cross_link_count >= $min_cross_links
+RETURN domain1,
+       domain2,
+       cross_link_count,
+       connections
+ORDER BY cross_link_count DESC;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-12: Track MOC Domain Maturation
+// ----------------------------------------------------------------------------
+// Use Case: Monitor MOC growth over time
+// Agent: MOC Constructor
+// Parameters: $moc_title
+// ----------------------------------------------------------------------------
+
+MATCH (moc:MOC {title: $moc_title})
+OPTIONAL MATCH (moc)-[:MATURED_AT]->(milestone:MilestoneEvent)
+OPTIONAL MATCH (moc)<-[:BELONGS_TO]-(notes:Note)
+WITH moc,
+     count(DISTINCT notes) AS current_note_count,
+     moc.maturity AS current_maturity,
+     collect({
+       from: milestone.metadata.from_maturity,
+       to: milestone.metadata.to_maturity,
+       when: milestone.timestamp,
+       note_count_at_milestone: milestone.metadata.note_count
+     }) AS maturation_history
+RETURN moc.title AS domain,
+       moc.created AS created_date,
+       current_note_count,
+       current_maturity,
+       maturation_history
+ORDER BY current_note_count DESC;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-13: Calculate Link Accumulation Rate
+// ----------------------------------------------------------------------------
+// Use Case: Linking velocity during maturation
+// Agent: Timeline Constructor
+// Parameters: $note_path, $maturation_start, $maturation_end
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note {path: $note_path})-[:HAS_EVENT]->(e:Event {event_type: 'LINK'})
+WHERE e.timestamp >= $maturation_start AND e.timestamp < $maturation_end
+WITH count(e) AS link_count,
+     duration.between($maturation_start, $maturation_end).days / 30.0 AS months
+RETURN link_count / months AS links_per_month;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-14: Find Concepts with Multiple Understanding Shifts
+// ----------------------------------------------------------------------------
+// Use Case: Identify complex evolution trajectories
+// Agent: Timeline Constructor
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note)-[:HAS_EVENT]->(e:Event)
+WHERE e.metadata.understanding_shift IS NOT NULL
+WITH n.title AS concept,
+     n.path AS path,
+     count(e) AS shift_count,
+     collect({
+       type: e.metadata.understanding_shift,
+       when: e.timestamp,
+       trigger: e.metadata.trigger
+     }) AS shifts
+WHERE shift_count >= 2
+RETURN concept,
+       path,
+       shift_count,
+       shifts
+ORDER BY shift_count DESC;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-15: Temporal Co-occurrence Analysis
+// ----------------------------------------------------------------------------
+// Use Case: Find concepts edited in same time windows
+// Agent: Semantic Linker
+// Parameters: $time_window_days (default 7), $concept_path
+// ----------------------------------------------------------------------------
+
+MATCH (n1:Note {path: $concept_path})-[:HAS_EVENT]->(e1:Event {event_type: 'EDIT'})
+MATCH (n2:Note)-[:HAS_EVENT]->(e2:Event {event_type: 'EDIT'})
+WHERE n1 <> n2
+  AND abs(duration.between(e1.timestamp, e2.timestamp).days) <= $time_window_days
+WITH n1.title AS concept1,
+     n2.title AS concept2,
+     n2.path AS concept2_path,
+     count(*) AS cooccurrence_count,
+     collect({
+       time1: e1.timestamp,
+       time2: e2.timestamp,
+       gap_days: duration.between(e1.timestamp, e2.timestamp).days
+     }) AS cooccurrences
+WHERE cooccurrence_count >= 3
+RETURN concept1,
+       concept2,
+       concept2_path,
+       cooccurrence_count,
+       cooccurrences
+ORDER BY cooccurrence_count DESC
+LIMIT 10;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-16: Vault Edit Velocity Distribution
+// ----------------------------------------------------------------------------
+// Use Case: Percentile distribution for comparison baseline
+// Agent: Timeline Constructor
+// ----------------------------------------------------------------------------
+
+MATCH (n:Note)-[:HAS_EVENT]->(capture:Event {event_type: 'CAPTURE'})
+MATCH (n)-[:HAS_EVENT]->(perm:Event {event_type: 'PROMOTION'})
+WHERE perm.metadata.to = 'permanent'
+OPTIONAL MATCH (n)-[:HAS_EVENT]->(edit:Event {event_type: 'EDIT'})
+WHERE edit.timestamp >= capture.timestamp AND edit.timestamp < perm.timestamp
+WITH n,
+     count(edit) AS edit_count,
+     duration.between(capture.timestamp, perm.timestamp).days / 7.0 AS development_weeks
+WHERE development_weeks > 0
+WITH edit_count / development_weeks AS edit_velocity
+RETURN avg(edit_velocity) AS vault_avg_edit_velocity,
+       percentileDisc(edit_velocity, 0.25) AS p25_velocity,
+       percentileDisc(edit_velocity, 0.5) AS median_velocity,
+       percentileDisc(edit_velocity, 0.75) AS p75_velocity,
+       percentileDisc(edit_velocity, 0.9) AS p90_velocity;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-17: Find Synthesis Events
+// ----------------------------------------------------------------------------
+// Use Case: Identify when multiple concepts were combined
+// Agent: Timeline Constructor
+// ----------------------------------------------------------------------------
+
+MATCH (synthesis:Note)-[:HAS_EVENT]->(e:Event {event_type: 'EDIT'})
+WHERE e.metadata.edit_type = 'synthesis'
+OPTIONAL MATCH (synthesis)-[:HAS_EVENT]->(link:Event {event_type: 'LINK'})
+WHERE link.timestamp <= e.timestamp + duration({days: 7})
+WITH synthesis.title AS synthesis_concept,
+     synthesis.path AS synthesis_path,
+     e.timestamp AS synthesis_date,
+     collect(DISTINCT link.metadata.target_note) AS component_concepts
+WHERE size(component_concepts) >= 2
+RETURN synthesis_concept,
+       synthesis_path,
+       synthesis_date,
+       component_concepts,
+       size(component_concepts) AS component_count
+ORDER BY synthesis_date DESC;
+
+
+// ----------------------------------------------------------------------------
+// QUERY P2-18: All Understanding Shifts in Vault
+// ----------------------------------------------------------------------------
+// Use Case: Generate vault-wide shift catalog
+// Agent: Timeline Constructor, Monthly Review
+// ----------------------------------------------------------------------------
+
+MATCH (new:Note)-[c:CONTRADICTS]->(old:Note)
+OPTIONAL MATCH (new)-[:INFLUENCED_BY]->(evidence)
+OPTIONAL MATCH (synthesis)-[:SYNTHESIZED_INTO]->(new)
+OPTIONAL MATCH (synthesis)-[:SYNTHESIZED_INTO]->(old)
+RETURN new.title AS new_understanding,
+       old.title AS old_understanding,
+       c.discovered_at AS when_shifted,
+       c.evidence AS what_caused_shift,
+       evidence.title AS evidence_source,
+       synthesis.title AS synthesis_note,
+       c.resolution_status AS resolution
+ORDER BY c.discovered_at DESC;
+
+
+// =============================================================================
+// USAGE NOTES FOR PHASE 2 QUERIES
+// =============================================================================
+//
+// Parameter Substitution:
+// - Replace $note_path with "atomic/concept-name.md"
+// - Replace $moc_title with "Domain Name MOC"
+// - Replace $days_back with number (e.g., 30)
+// - Replace date ranges with actual datetime values
+//
+// Graphiti MCP Execution:
+// await mcp.tools.graphiti.executeCypher({
+//   query: "MATCH (n:Note {path: $note_path})...",
+//   params: { note_path: "atomic/spaced-repetition.md" }
+// });
+//
+// Performance:
+// - Create indexes: Note.path, Event.timestamp, Event.event_type
+// - Use LIMIT for large result sets
+// - Profile slow queries with EXPLAIN/PROFILE
+//
+// Testing:
+// - Validate timestamps are chronological
+// - Check edge cases (no events, missing promotions)
+// - Verify vault averages are reasonable
+//
+// Documentation:
+// - See obsidian-technical-guide.md for pattern details
+// - See knowledge-graph-patterns.md for relationship types
+// - See temporal-schema.md for complete schema
+//
+// =============================================================================
+
 // -----------------------------------------------------------------------------
 // END OF QUERIES
 // -----------------------------------------------------------------------------

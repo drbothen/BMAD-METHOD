@@ -1,0 +1,695 @@
+---
+story_id: STORY-076
+title: Create Transcript & Task Management Workflows
+epic_id: EPIC-001
+phase: 1.5
+priority: high
+estimated_effort: 12 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a user
+  I want workflows for processing transcripts and managing tasks
+  So that I have clear procedures for common operations
+
+acceptance_criteria: |
+  **3 Workflows to Create:**
+  1. transcript-to-notes-workflow.yaml
+  2. gtd-daily-workflow.yaml
+  3. gtd-weekly-review-workflow.yaml
+
+  **Workflow Requirements:**
+  - Clear step-by-step procedures
+  - Agent roles specified for each step
+  - Input/output specifications
+  - Decision points identified
+  - Error handling procedures
+  - Mermaid diagram visualization
+  - Integration with existing workflows
+
+technical_notes: |
+  Workflow 1: transcript-to-notes-workflow.yaml
+  Purpose: Process transcript into structured notes with tasks
+
+  ```yaml
+  workflow_id: transcript-to-notes
+  version: 1.0
+  name: "Transcript to Structured Notes Workflow"
+  description: |
+    Process audio/video transcript into structured meeting notes,
+    extract action items, and create tasks.
+
+  phases: 4
+  estimated_duration: 5-10 minutes
+
+  inputs:
+    - transcript_file (text, VTT, SRT, or JSON)
+    - transcript_type (meeting, interview, lecture)
+    - meeting_metadata (date, participants, topic)
+
+  outputs:
+    - structured_meeting_note (markdown)
+    - task_notes (multiple markdown files)
+    - updated_project_task_list (markdown)
+
+  agents_involved:
+    - Transcript Processing Agent
+    - Task Management Agent
+    - Inbox Triage Agent
+    - Semantic Linker Agent
+
+  workflow:
+    phase_1:
+      name: "Process Transcript"
+      agent: Transcript Processing Agent
+      steps:
+        - step: 1
+          action: "Validate transcript format and quality"
+          task: validate-transcript-quality
+          inputs: [transcript_file]
+          outputs: [validation_report]
+          decision_point: "Is transcript quality adequate (>90%)?"
+          if_no: "Request reprocessing or manual cleanup"
+
+        - step: 2
+          action: "Extract speaker diarization"
+          task: extract-speaker-diarization
+          inputs: [transcript_file]
+          outputs: [speaker_list, speaker_stats]
+
+        - step: 3
+          action: "Segment transcript by topics"
+          task: segment-transcript-by-topic
+          inputs: [transcript_file]
+          outputs: [topic_segments]
+
+        - step: 4
+          action: "Extract entities mentioned"
+          task: extract-entities-from-transcript
+          inputs: [transcript_file]
+          outputs: [entity_list]
+
+        - step: 5
+          action: "Identify key points"
+          task: identify-key-points-in-transcript
+          inputs: [transcript_file, topic_segments]
+          outputs: [key_points]
+
+        - step: 6
+          action: "Log decisions made"
+          task: log-decisions-from-transcript
+          inputs: [transcript_file]
+          outputs: [decisions]
+
+        - step: 7
+          action: "Extract action items"
+          task: extract-action-items-from-transcript
+          inputs: [transcript_file]
+          outputs: [action_items]
+
+        - step: 8
+          action: "Generate structured meeting note"
+          task: generate-meeting-note-from-transcript
+          inputs: [transcript_file, speaker_list, key_points, decisions, action_items, entity_list]
+          template: meeting-note-tmpl.yaml
+          outputs: [meeting_note_file]
+          checklist: transcript-quality-checklist.md
+
+    phase_2:
+      name: "Create Tasks from Action Items"
+      agent: Task Management Agent
+      steps:
+        - step: 9
+          action: "Extract tasks from action items"
+          task: extract-tasks-from-content
+          inputs: [action_items]
+          outputs: [task_list]
+
+        - step: 10
+          action: "For each task: classify priority"
+          task: classify-task-priority
+          inputs: [task_list]
+          outputs: [task_list_with_priority]
+
+        - step: 11
+          action: "For each task: assign context"
+          task: assign-task-context
+          inputs: [task_list_with_priority]
+          outputs: [task_list_with_context]
+
+        - step: 12
+          action: "For each task: estimate effort"
+          task: estimate-task-effort
+          inputs: [task_list_with_context]
+          outputs: [task_list_with_estimates]
+
+        - step: 13
+          action: "Create individual task notes"
+          task: create-task-note
+          inputs: [task_list_with_estimates, meeting_note_file]
+          template: task-tmpl.yaml
+          outputs: [task_note_files]
+          checklist: task-quality-checklist.md
+
+    phase_3:
+      name: "Organize and Link"
+      agent: Inbox Triage Agent, Semantic Linker Agent
+      steps:
+        - step: 14
+          action: "Classify meeting note"
+          agent: Inbox Triage Agent
+          task: classify-content-type
+          inputs: [meeting_note_file]
+          outputs: [classification, suggested_location]
+
+        - step: 15
+          action: "Move meeting note to appropriate location"
+          agent: Inbox Triage Agent
+          inputs: [meeting_note_file, suggested_location]
+          outputs: [final_note_location]
+
+        - step: 16
+          action: "Link meeting note to related notes"
+          agent: Semantic Linker Agent
+          task: suggest-links
+          inputs: [meeting_note_file]
+          outputs: [suggested_links]
+
+        - step: 17
+          action: "Create bidirectional links"
+          agent: Semantic Linker Agent
+          task: create-bidirectional-link
+          inputs: [meeting_note_file, suggested_links]
+          outputs: [updated_notes]
+
+        - step: 18
+          action: "Link tasks to meeting note and projects"
+          agent: Semantic Linker Agent
+          inputs: [task_note_files, meeting_note_file]
+          outputs: [linked_task_notes]
+
+    phase_4:
+      name: "Update Project Task Lists"
+      agent: Task Management Agent
+      steps:
+        - step: 19
+          action: "Identify projects for each task"
+          inputs: [task_note_files]
+          outputs: [task_project_mapping]
+
+        - step: 20
+          action: "Update project task lists"
+          inputs: [task_project_mapping, task_note_files]
+          template: project-task-list-tmpl.yaml
+          outputs: [updated_project_task_lists]
+
+        - step: 21
+          action: "Validate workflow completion"
+          checklist: transcript-quality-checklist.md
+          decision_point: "Does output meet quality standards?"
+          if_no: "Review and correct issues"
+
+  error_handling:
+    - error: "Transcript quality too low"
+      action: "Request reprocessing with better transcript service"
+      fallback: "Allow manual cleanup of transcript"
+
+    - error: "No action items found"
+      action: "Continue without task creation (valid for some meetings)"
+      note: "Not all meetings produce action items"
+
+    - error: "Speaker diarization missing"
+      action: "Process with 'Unknown Speaker' labels"
+      note: "Can be manually corrected later"
+
+    - error: "Template processing fails"
+      action: "Use fallback plain markdown format"
+      note: "Manual formatting may be needed"
+
+  success_criteria:
+    - Meeting note created with all required sections
+    - All action items converted to tasks
+    - Tasks linked to source meeting note
+    - Tasks linked to appropriate projects
+    - All quality checklists pass (>90%)
+
+  mermaid_diagram: |
+    flowchart TD
+      Start([Transcript File]) --> Validate{Quality OK?}
+      Validate -->|No| Reprocess[Request Reprocessing]
+      Validate -->|Yes| Extract[Extract Information]
+
+      Extract --> Speakers[Speaker Diarization]
+      Extract --> Topics[Topic Segmentation]
+      Extract --> Entities[Entity Extraction]
+      Extract --> KeyPoints[Key Points]
+      Extract --> Decisions[Decisions]
+      Extract --> Actions[Action Items]
+
+      Speakers --> Generate[Generate Meeting Note]
+      Topics --> Generate
+      Entities --> Generate
+      KeyPoints --> Generate
+      Decisions --> Generate
+      Actions --> Generate
+
+      Generate --> CreateTasks[Create Tasks from Action Items]
+      CreateTasks --> Classify[Classify Priority]
+      Classify --> AssignContext[Assign Context]
+      AssignContext --> Estimate[Estimate Effort]
+      Estimate --> TaskNotes[Create Task Notes]
+
+      TaskNotes --> Triage[Classify & Organize Meeting Note]
+      Triage --> Link[Link to Related Notes]
+      Link --> UpdateProjects[Update Project Task Lists]
+
+      UpdateProjects --> QualityCheck{Quality OK?}
+      QualityCheck -->|No| Review[Review & Correct]
+      QualityCheck -->|Yes| Complete([Complete])
+  ```
+
+  ---
+
+  Workflow 2: gtd-daily-workflow.yaml
+  Purpose: Daily GTD planning and review workflow
+
+  ```yaml
+  workflow_id: gtd-daily
+  version: 1.0
+  name: "GTD Daily Planning Workflow"
+  description: |
+    Daily workflow for reviewing tasks, planning the day,
+    and conducting end-of-day review.
+
+  phases: 2
+  estimated_duration: 10-15 minutes
+  frequency: daily
+  best_time: "Morning (8-9am) and Evening (5-6pm)"
+
+  agents_involved:
+    - Task Management Agent
+
+  workflow:
+    phase_1:
+      name: "Morning Planning"
+      timing: "Start of workday (8-9am)"
+      agent: Task Management Agent
+      steps:
+        - step: 1
+          action: "Review yesterday's tasks"
+          inputs: [yesterday_todo_list]
+          note: "What got done? What didn't? Why?"
+
+        - step: 2
+          action: "Check overdue tasks"
+          inputs: [all_tasks]
+          filter: "status = todo AND deadline < today"
+          outputs: [overdue_tasks]
+          decision_point: "Any overdue tasks?"
+          if_yes: "Prioritize for today or reschedule with new deadline"
+
+        - step: 3
+          action: "Check today's deadlines"
+          inputs: [all_tasks]
+          filter: "deadline = today"
+          outputs: [due_today_tasks]
+
+        - step: 4
+          action: "Identify available contexts"
+          note: "Where will you be today? (@work, @home, @computer)"
+          inputs: [calendar, schedule]
+          outputs: [available_contexts]
+
+        - step: 5
+          action: "Assess available time"
+          note: "How much work time available after meetings?"
+          inputs: [calendar]
+          outputs: [available_time]
+
+        - step: 6
+          action: "Assess energy level"
+          note: "Do you feel high/medium/low energy today?"
+          inputs: [user_input]
+          outputs: [energy_level]
+
+        - step: 7
+          action: "Generate daily todo list"
+          task: generate-daily-todo
+          inputs: [all_tasks, available_contexts, available_time, energy_level, due_today_tasks]
+          template: daily-todo-tmpl.yaml
+          outputs: [daily_todo_file]
+          checklist: task-quality-checklist.md
+
+        - step: 8
+          action: "Review daily todo"
+          decision_point: "Is this realistic? (total ≤ available time)"
+          if_no: "Remove low-priority tasks or extend deadlines"
+          outputs: [final_daily_todo]
+
+    phase_2:
+      name: "Evening Review"
+      timing: "End of workday (5-6pm)"
+      agent: Task Management Agent
+      steps:
+        - step: 9
+          action: "Review today's todo list"
+          inputs: [daily_todo_file]
+          note: "Check completed checkboxes"
+
+        - step: 10
+          action: "Mark completed tasks"
+          inputs: [daily_todo_file]
+          filter: "checkbox = [x]"
+          action_on_tasks: "Set status = completed, set completion_date = today"
+
+        - step: 11
+          action: "Review incomplete tasks"
+          inputs: [daily_todo_file]
+          filter: "checkbox = [ ]"
+          outputs: [incomplete_tasks]
+          decision_point: "Why weren't these completed?"
+
+        - step: 12
+          action: "For incomplete tasks: reschedule or deprioritize"
+          inputs: [incomplete_tasks]
+          options:
+            - "Reschedule with new deadline"
+            - "Lower priority (not as important as thought)"
+            - "Block (waiting on something)"
+            - "Delete (no longer needed)"
+
+        - step: 13
+          action: "Capture new tasks from today"
+          note: "Any new commitments or realizations?"
+          inputs: [user_input, meeting_notes]
+          task: extract-tasks-from-content
+          outputs: [new_tasks]
+
+        - step: 14
+          action: "Update task notes"
+          inputs: [completed_tasks, incomplete_tasks, new_tasks]
+          outputs: [updated_task_notes]
+
+        - step: 15
+          action: "Brief reflection"
+          note: "What went well? What could improve tomorrow?"
+          outputs: [daily_reflection]
+
+  success_criteria:
+    - Daily todo generated every morning
+    - 5-10 tasks selected (not overloaded)
+    - Realistic time estimates
+    - Evening review completed
+    - All completed tasks marked
+    - Incomplete tasks rescheduled
+    - New tasks captured
+
+  mermaid_diagram: |
+    flowchart TD
+      Morning([Morning Planning]) --> ReviewYesterday[Review Yesterday]
+      ReviewYesterday --> CheckOverdue{Overdue Tasks?}
+      CheckOverdue -->|Yes| Prioritize[Prioritize or Reschedule]
+      CheckOverdue -->|No| CheckToday[Check Today's Deadlines]
+      Prioritize --> CheckToday
+
+      CheckToday --> AssessContext[Identify Contexts]
+      AssessContext --> AssessTime[Assess Available Time]
+      AssessTime --> AssessEnergy[Assess Energy Level]
+      AssessEnergy --> GenerateTodo[Generate Daily Todo]
+
+      GenerateTodo --> Realistic{Realistic?}
+      Realistic -->|No| Adjust[Remove Low Priority]
+      Realistic -->|Yes| StartDay[Start Day]
+      Adjust --> StartDay
+
+      StartDay --> ... --> Evening([Evening Review])
+      Evening --> ReviewCompleted[Mark Completed Tasks]
+      ReviewCompleted --> ReviewIncomplete[Review Incomplete]
+      ReviewIncomplete --> Reschedule[Reschedule/Deprioritize]
+      Reschedule --> CaptureNew[Capture New Tasks]
+      CaptureNew --> Reflect[Brief Reflection]
+      Reflect --> Done([Done])
+  ```
+
+  ---
+
+  Workflow 3: gtd-weekly-review-workflow.yaml
+  Purpose: GTD weekly review workflow
+
+  ```yaml
+  workflow_id: gtd-weekly-review
+  version: 1.0
+  name: "GTD Weekly Review Workflow"
+  description: |
+    Comprehensive weekly review following GTD methodology.
+    Clear inbox, review all lists, analyze patterns, plan next week.
+
+  phases: 5
+  estimated_duration: 30-45 minutes
+  frequency: weekly
+  best_time: "Friday afternoon or Sunday evening"
+
+  agents_involved:
+    - Task Management Agent
+    - Inbox Triage Agent
+    - Quality Auditor Agent
+
+  workflow:
+    phase_1:
+      name: "Get Clear"
+      purpose: "Empty inbox and collect loose ends"
+      agent: Inbox Triage Agent, Task Management Agent
+      steps:
+        - step: 1
+          action: "Collect all loose items"
+          note: "Email inboxes, physical inbox, notes, voice memos"
+          inputs: [inbox_folder, capture_notes, emails]
+          outputs: [collected_items]
+
+        - step: 2
+          action: "Process inbox to zero"
+          agent: Inbox Triage Agent
+          task: classify-content-type
+          inputs: [collected_items]
+          outputs: [classified_items]
+
+        - step: 3
+          action: "Extract tasks from inbox items"
+          agent: Task Management Agent
+          task: extract-tasks-from-content
+          inputs: [classified_items]
+          outputs: [new_tasks]
+
+        - step: 4
+          action: "Classify and organize new tasks"
+          inputs: [new_tasks]
+          outputs: [organized_tasks]
+
+    phase_2:
+      name: "Get Current"
+      purpose: "Review all task lists and update"
+      agent: Task Management Agent
+      steps:
+        - step: 5
+          action: "Review completed tasks from past week"
+          inputs: [all_tasks]
+          filter: "status = completed AND completion_date >= week_start"
+          outputs: [completed_tasks]
+
+        - step: 6
+          action: "Review pending tasks"
+          inputs: [all_tasks]
+          filter: "status = todo OR status = in_progress"
+          outputs: [pending_tasks]
+
+        - step: 7
+          action: "Identify overdue tasks"
+          inputs: [pending_tasks]
+          filter: "deadline < today"
+          outputs: [overdue_tasks]
+          decision_point: "For each overdue task: reschedule or cancel?"
+
+        - step: 8
+          action: "Identify blocked tasks"
+          inputs: [pending_tasks]
+          filter: "status = blocked"
+          outputs: [blocked_tasks]
+          decision_point: "For each blocked task: can blocker be removed?"
+
+        - step: 9
+          action: "Review project task lists"
+          inputs: [all_projects]
+          note: "Does each project have clear next action?"
+          outputs: [projects_needing_next_action]
+
+        - step: 10
+          action: "Review Waiting For list"
+          note: "Follow up on items waiting >1 week"
+          inputs: [waiting_for_tasks]
+          outputs: [items_to_follow_up]
+
+    phase_3:
+      name: "Get Creative"
+      purpose: "Review future possibilities"
+      agent: Task Management Agent
+      steps:
+        - step: 11
+          action: "Review Someday/Maybe list"
+          inputs: [someday_maybe_tasks]
+          decision_point: "Ready to commit to any of these?"
+
+        - step: 12
+          action: "Brainstorm new ideas"
+          note: "Any new projects or initiatives?"
+          outputs: [new_ideas]
+
+        - step: 13
+          action: "Review goals"
+          note: "Am I making progress on important goals?"
+          inputs: [goals, completed_tasks]
+          outputs: [goal_progress_assessment]
+
+    phase_4:
+      name: "Analyze Patterns"
+      purpose: "Identify productivity patterns and blockers"
+      agent: Task Management Agent
+      steps:
+        - step: 14
+          action: "Calculate completion statistics"
+          inputs: [completed_tasks, pending_tasks]
+          outputs: [completion_rate, priority_distribution]
+
+        - step: 15
+          action: "Analyze productivity by time"
+          inputs: [completed_tasks]
+          note: "When were you most productive?"
+          outputs: [time_analysis]
+
+        - step: 16
+          action: "Analyze productivity by context"
+          inputs: [completed_tasks]
+          note: "Which contexts most productive?"
+          outputs: [context_analysis]
+
+        - step: 17
+          action: "Analyze estimation accuracy"
+          inputs: [completed_tasks]
+          note: "How accurate were time estimates?"
+          outputs: [estimation_analysis]
+
+        - step: 18
+          action: "Identify blockers and patterns"
+          inputs: [blocked_tasks, overdue_tasks, incomplete_tasks]
+          outputs: [blocker_analysis, pattern_insights]
+
+    phase_5:
+      name: "Plan Next Week"
+      purpose: "Prepare for upcoming week"
+      agent: Task Management Agent
+      steps:
+        - step: 19
+          action: "Review next week's calendar"
+          inputs: [calendar]
+          outputs: [next_week_meetings, available_time]
+
+        - step: 20
+          action: "Identify next week's priorities"
+          inputs: [pending_tasks, projects, goals]
+          outputs: [next_week_priorities]
+
+        - step: 21
+          action: "Generate recommendations"
+          note: "Based on patterns, what should change next week?"
+          inputs: [pattern_insights, goal_progress_assessment]
+          outputs: [recommendations]
+
+        - step: 22
+          action: "Create weekly review report"
+          task: generate-weekly-review
+          inputs: [completion_rate, time_analysis, context_analysis, blocker_analysis, recommendations, next_week_priorities]
+          template: weekly-review-tmpl.yaml
+          outputs: [weekly_review_file]
+          checklist: gtd-workflow-checklist.md
+
+  success_criteria:
+    - Inbox cleared to zero
+    - All task lists reviewed and updated
+    - Overdue tasks rescheduled or cancelled
+    - Blocked tasks addressed
+    - Projects have clear next actions
+    - Completion statistics calculated
+    - Productivity patterns identified
+    - Recommendations generated
+    - Next week priorities identified
+    - Weekly review report created
+
+  mermaid_diagram: |
+    flowchart TD
+      Start([Weekly Review]) --> Collect[Collect All Items]
+      Collect --> ProcessInbox[Process Inbox to Zero]
+      ProcessInbox --> ExtractTasks[Extract New Tasks]
+
+      ExtractTasks --> ReviewCompleted[Review Completed Tasks]
+      ReviewCompleted --> ReviewPending[Review Pending Tasks]
+      ReviewPending --> Overdue{Overdue Tasks?}
+      Overdue -->|Yes| RescheduleCancel[Reschedule or Cancel]
+      Overdue -->|No| Blocked{Blocked Tasks?}
+      Blocked -->|Yes| RemoveBlockers[Address Blockers]
+      Blocked -->|No| ReviewProjects[Review Project Lists]
+
+      RescheduleCancel --> ReviewProjects
+      RemoveBlockers --> ReviewProjects
+      ReviewProjects --> ReviewWaiting[Review Waiting For]
+      ReviewWaiting --> ReviewSomeday[Review Someday/Maybe]
+
+      ReviewSomeday --> AnalyzeStats[Calculate Statistics]
+      AnalyzeStats --> AnalyzeTime[Analyze Time Patterns]
+      AnalyzeTime --> AnalyzeContext[Analyze Context Patterns]
+      AnalyzeContext --> AnalyzeEstimation[Analyze Estimation Accuracy]
+      AnalyzeEstimation --> IdentifyBlockers[Identify Blockers]
+
+      IdentifyBlockers --> ReviewCalendar[Review Next Week Calendar]
+      ReviewCalendar --> IdentifyPriorities[Identify Next Week Priorities]
+      IdentifyPriorities --> GenerateRecommendations[Generate Recommendations]
+      GenerateRecommendations --> CreateReport[Create Weekly Review Report]
+      CreateReport --> Done([Done])
+  ```
+
+  Integration with Existing Workflows:
+  - transcript-to-notes-workflow integrates with knowledge-lifecycle-workflow (Phase 1)
+  - gtd-daily-workflow runs parallel to daily-capture-processing-workflow (Phase 1)
+  - gtd-weekly-review-workflow integrates with weekly-review-workflow (Phase 1)
+
+  All workflows use existing agents where possible and introduce new capabilities
+  through Transcript Processing Agent and Task Management Agent.
+
+dependencies:
+  - All Phase 1 workflows (knowledge-lifecycle, daily-capture-processing, weekly-review)
+  - Transcript Processing Agent (STORY-070)
+  - Task Management Agent (STORY-071)
+  - All tasks from STORY-072 and STORY-073
+  - All templates from STORY-074
+  - All checklists from STORY-075
+
+testing:
+  - Execute transcript-to-notes-workflow end-to-end with sample transcript
+  - Execute gtd-daily-workflow for 5 consecutive days
+  - Execute gtd-weekly-review-workflow with sample week data
+  - Validate all decision points work correctly
+  - Validate error handling procedures
+  - Verify Mermaid diagrams render correctly
+  - Test integration with existing Phase 1 workflows
+  - Get user feedback on workflow usability
+
+definition_of_done:
+  - All 3 workflows created in bmad-obsidian-2nd-brain/workflows/
+  - All workflows have clear step-by-step procedures
+  - All agent roles specified
+  - All decision points identified
+  - All error handling procedures defined
+  - All Mermaid diagrams created and verified
+  - All workflows tested end-to-end
+  - Integration with Phase 1 workflows verified
+  - Documentation complete
+  - Code review approved

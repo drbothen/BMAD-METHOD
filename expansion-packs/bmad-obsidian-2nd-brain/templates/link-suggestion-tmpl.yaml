@@ -1,10 +1,10 @@
 # <!-- Powered by BMAD™ Core -->
 ---
 template:
-  id: link-suggestion-template-v1
+  id: link-suggestion-template-v2
   name: Link Suggestion
-  version: 1.0
-  description: Template for semantic link suggestions between atomic notes
+  version: 2.0
+  description: Template for semantic link suggestions between atomic notes with temporal awareness (Phase 2)
   output:
     format: markdown
     filename: "link-suggestion-{{suggestion_id}}.md"
@@ -64,6 +64,24 @@ variables:
   - name: discovered_at
     description: ISO 8601 timestamp when this suggestion was generated
     required: true
+  - name: temporal_co_occurrence
+    description: How often these notes were edited/viewed within same time windows (0.0-1.0)
+    required: false
+  - name: historical_links
+    description: Previous linking patterns between these notes (if any)
+    required: false
+  - name: link_strength_trend
+    description: Evolution of link strength over time (increasing, stable, decreasing, new)
+    required: false
+  - name: temporal_confidence_boost
+    description: Confidence adjustment based on temporal patterns (+/- 0.0-0.2)
+    required: false
+  - name: creation_proximity_days
+    description: Number of days between note creation dates
+    required: false
+  - name: edit_synchronization_score
+    description: How often notes were edited in similar timeframes (0.0-1.0)
+    required: false
 
 workflow:
   elicitation: false
@@ -148,6 +166,40 @@ sections:
       **Shared Concepts:**
       {{shared_concepts}}
 
+  - id: temporal_analysis
+    title: Temporal Context (Phase 2)
+    type: template-text
+    instruction: |
+      Analyze temporal patterns between notes to strengthen link confidence.
+      This section is OPTIONAL - only include when Neo4j Graphiti is available.
+      Include:
+      - Creation proximity (how close in time notes were created)
+      - Edit synchronization (how often notes were edited together)
+      - Temporal co-occurrence (viewed/edited in similar time windows)
+      - Historical linking patterns (if these notes were linked before)
+      - Link strength trend (if relationship has evolved over time)
+      - Temporal confidence boost (adjustment to base confidence)
+    template: |
+      ## Temporal Context
+
+      **Creation Proximity:** {{creation_proximity_days}} days apart
+      **Edit Synchronization:** {{edit_synchronization_score}}
+      **Temporal Co-occurrence:** {{temporal_co_occurrence}}
+
+      {{#if historical_links}}
+      ### Historical Linking Patterns
+
+      {{historical_links}}
+      {{/if}}
+
+      {{#if link_strength_trend}}
+      ### Link Strength Trend
+
+      {{link_strength_trend}}
+      {{/if}}
+
+      **Temporal Confidence Adjustment:** {{temporal_confidence_boost}}
+
   - id: suggested_context
     title: Suggested Context Sentences
     type: template-text
@@ -210,6 +262,22 @@ examples:
     - cognitive-psychology
     - forgetting
     - retrieval-practice
+
+    ## Temporal Context
+
+    **Creation Proximity:** 3 days apart
+    **Edit Synchronization:** 0.72
+    **Temporal Co-occurrence:** 0.68
+
+    ### Historical Linking Patterns
+
+    These notes were previously linked 45 days ago (link removed during vault reorganization on 2025-09-21). Historical link strength was 0.78, indicating this is a re-discovery of a valuable relationship.
+
+    ### Link Strength Trend
+
+    increasing - Link strength has grown from 0.78 (original) to 0.82 (current) as both notes have matured and accumulated more context. The relationship has strengthened by 5% over the past month.
+
+    **Temporal Confidence Adjustment:** +0.12 (high edit synchronization and historical validation boost confidence)
 
     ## Suggested Context
 

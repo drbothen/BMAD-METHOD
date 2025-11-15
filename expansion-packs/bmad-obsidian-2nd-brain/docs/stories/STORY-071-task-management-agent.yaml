@@ -1,0 +1,244 @@
+---
+story_id: STORY-071
+title: Implement Task Management Agent
+epic_id: EPIC-001
+phase: 1.5
+priority: high
+estimated_effort: 24 hours
+status: todo
+created: 2025-11-04
+
+user_story: |
+  As a knowledge worker
+  I want an AI agent to extract, organize, and manage tasks using GTD methodology
+  So that I can maintain actionable task lists and track progress efficiently
+
+acceptance_criteria: |
+  **Agent Implementation:**
+  - Create agent file: bmad-obsidian-2nd-brain/agents/task-management-agent.md
+  - Define agent persona and capabilities
+  - Specify dependencies (tasks, templates, checklists)
+  - Define agent commands and parameters
+
+  **Core Capabilities:**
+  - Extract tasks from any content (notes, transcripts, emails, captured text)
+  - Implement Getting Things Done (GTD) workflow
+  - Create and manage project task lists
+  - Generate daily todo lists
+  - Generate weekly review reports
+  - Track task dependencies
+  - Manage recurring tasks
+  - Priority and urgency classification
+  - Context tagging (@home, @work, @errands)
+  - Energy level tagging (high, medium, low)
+  - Time estimation
+  - Progress tracking
+  - Task completion analysis
+
+  **Agent Commands:**
+  - *extract-tasks: Extract tasks from any content
+  - *create-task: Create individual task with metadata
+  - *create-project-tasks: Create task list for project
+  - *generate-daily-todo: Generate daily todo list
+  - *generate-weekly-review: Create weekly review report
+  - *classify-task: Classify task by priority, context, energy
+  - *track-dependencies: Identify and track task dependencies
+  - *setup-recurring: Configure recurring task
+  - *analyze-completion: Analyze task completion patterns
+
+  **GTD Workflow Support:**
+  - Capture: Extract tasks from any source
+  - Clarify: Classify actionable vs. non-actionable
+  - Organize: Assign context, priority, project
+  - Reflect: Generate weekly review
+  - Engage: Generate daily todo based on context
+
+  **Task Structure:**
+  - Description (what needs to be done)
+  - Owner (who is responsible)
+  - Deadline (when it's due)
+  - Priority (critical, high, medium, low)
+  - Status (todo, in_progress, blocked, completed)
+  - Context tags (@work, @home, @computer, @phone, @errands)
+  - Energy level (high, medium, low)
+  - Time estimate (minutes/hours)
+  - Dependencies (blocking tasks)
+  - Recurrence pattern (daily, weekly, monthly)
+  - Source reference (where task came from)
+  - Created date
+  - Completion date
+
+  **Output Formats:**
+  - Individual task notes (task-tmpl.yaml)
+  - Project task lists (project-task-list-tmpl.yaml)
+  - Daily todo lists (daily-todo-tmpl.yaml)
+  - Weekly review reports (weekly-review-tmpl.yaml)
+  - All outputs in Obsidian markdown format
+  - YAML frontmatter for metadata
+  - Markdown checkboxes for task tracking
+
+  **Quality Standards:**
+  - Task extraction accuracy >90%
+  - Actionable task clarity >95%
+  - Priority classification accuracy >85%
+  - Context assignment appropriateness >90%
+  - All outputs pass task-quality-checklist.md
+
+technical_notes: |
+  Agent Dependencies:
+  - tasks/extract-tasks-from-content.md
+  - tasks/create-task-note.md
+  - tasks/classify-task-priority.md
+  - tasks/assign-task-context.md
+  - tasks/estimate-task-effort.md
+  - tasks/track-task-dependencies.md
+  - tasks/setup-recurring-task.md
+  - tasks/generate-daily-todo.md
+  - tasks/generate-weekly-review.md
+  - templates/task-tmpl.yaml
+  - templates/project-task-list-tmpl.yaml
+  - templates/daily-todo-tmpl.yaml
+  - templates/weekly-review-tmpl.yaml
+  - checklists/task-quality-checklist.md
+
+  Agent Architecture:
+  1. Task Extraction Layer:
+     - Detect action verbs (will, should, need to, must, plan to)
+     - Identify commitment language (I'll, we'll, X will)
+     - Extract deadline phrases (by Friday, next week, EOD)
+     - Identify ownership (who is responsible)
+     - Parse checkbox syntax (- [ ], - [x])
+
+  2. Task Classification Layer:
+     - Priority Assessment:
+       - Critical: Urgent + important + blocking
+       - High: Important + time-sensitive
+       - Medium: Important but not urgent
+       - Low: Nice to have
+
+     - Context Assignment:
+       - Analyze task verb for location clues
+       - Identify required tools/resources
+       - Match to GTD contexts
+
+     - Energy Level:
+       - High: Complex, creative, decision-making
+       - Medium: Routine, moderate focus
+       - Low: Simple, repetitive, minimal focus
+
+  3. Task Organization Layer:
+     - Project grouping (related tasks)
+     - Dependency graph creation
+     - Recurrence pattern configuration
+     - Priority ordering
+     - Context clustering
+
+  4. Review & Planning Layer:
+     - Daily planning: Select tasks by context, energy, time
+     - Weekly review: Analyze completion rate, identify blockers
+     - Progress tracking: Completed vs. planned
+     - Pattern analysis: When are you most productive?
+
+  GTD Implementation Details:
+
+  **Capture Phase:**
+  - Task sources: Notes, transcripts, emails, web clips, quick captures
+  - Inbox: All tasks land in "00-Inbox/tasks/"
+  - Batch processing: Process inbox daily
+
+  **Clarify Phase:**
+  - Is it actionable? (Yes → task, No → reference/archive)
+  - Can it be done in <2 minutes? (Yes → do now, No → schedule)
+  - Is it a project? (>1 step → project task list)
+
+  **Organize Phase:**
+  - Next Actions: Tasks ready to be done (by context)
+  - Projects: Multi-step outcomes
+  - Waiting For: Tasks blocked by others
+  - Someday/Maybe: Future possibilities
+
+  **Reflect Phase:**
+  - Daily: Review today's tasks, plan tomorrow
+  - Weekly: Review all lists, clear inbox, plan week
+
+  **Engage Phase:**
+  - Choose tasks based on:
+    1. Context (where am I?)
+    2. Energy (how alert am I?)
+    3. Time (how long do I have?)
+    4. Priority (what's most important?)
+
+  Integration with Existing Agents:
+  - Inbox Triage Agent: Classify task notes
+  - Transcript Processing Agent: Extract action items from transcripts
+  - Semantic Linker Agent: Link tasks to related projects/notes
+  - Timeline Constructor: Track task evolution over time
+  - Query Interpreter: Query tasks by various criteria
+
+  Neo4j Integration (Optional):
+  - Create Task nodes
+  - Link tasks to projects, meetings, notes
+  - Track task dependencies (BLOCKS, DEPENDS_ON)
+  - Temporal tracking (created, started, completed dates)
+  - Query patterns:
+    - "What tasks are blocking project X?"
+    - "What did I complete last week?"
+    - "What recurring tasks are overdue?"
+
+  Obsidian Plugin Integration:
+  - Tasks plugin: Advanced task queries with DataviewJS
+  - TODO plugin: Quick task capture
+  - Calendar plugin: Deadline visualization
+  - Dataview: Task aggregation and reporting
+
+  Performance Targets:
+  - Extract tasks from 1000-word note in <10 seconds
+  - Generate daily todo in <5 seconds
+  - Generate weekly review in <30 seconds
+  - Support 10,000+ tasks in vault
+
+  Error Handling:
+  - Handle ambiguous task descriptions (flag for clarification)
+  - Handle missing deadlines (default to "none")
+  - Handle missing owners (default to user)
+  - Validate task actionability (verb present?)
+  - Detect duplicate tasks
+
+dependencies:
+  - STORY-073: Task management tasks must be created first
+  - STORY-074: Templates must be created first
+  - STORY-075: Checklists must be created first
+  - STORY-070: Transcript Processing Agent (for action item extraction)
+  - Obsidian Tasks plugin (recommended)
+
+testing:
+  - Extract tasks from meeting note (should find 5-15 tasks)
+  - Extract tasks from project note (should find 10-30 tasks)
+  - Classify task priorities (validate priority scores)
+  - Assign task contexts (validate context appropriateness)
+  - Estimate task effort (validate time estimates)
+  - Track task dependencies (create dependency graph)
+  - Setup recurring task (daily, weekly, monthly)
+  - Generate daily todo (should select 5-10 actionable tasks)
+  - Generate weekly review (should include completion stats)
+  - Test GTD workflow end-to-end
+  - Validate output against task-quality-checklist.md
+  - Verify integration with Transcript Processing Agent
+  - Test with 100, 1K, 10K tasks
+  - Test Obsidian Tasks plugin integration
+
+definition_of_done:
+  - Agent file created with complete persona and capabilities
+  - All 9 agent commands implemented and tested
+  - GTD workflow fully implemented
+  - All task structures properly defined
+  - All 4 output formats working
+  - All dependencies declared in agent metadata
+  - Integration with existing Phase 1 agents verified
+  - Obsidian Tasks plugin integration working
+  - Neo4j integration working (optional)
+  - Performance targets met
+  - Error handling comprehensive
+  - Documentation complete
+  - Passes all test scenarios
+  - Code review approved

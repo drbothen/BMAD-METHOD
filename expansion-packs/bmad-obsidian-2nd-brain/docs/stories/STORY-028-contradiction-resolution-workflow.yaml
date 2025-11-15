@@ -1,0 +1,382 @@
+---
+story_id: STORY-028
+title: Create Contradiction Resolution Workflow
+epic_id: EPIC-001
+phase: 2
+priority: medium
+estimated_effort: 6 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want a systematic workflow for identifying and resolving contradictory claims
+  So that I can maintain logical consistency and understand context-dependent truths
+
+acceptance_criteria:
+  - Create contradiction-resolution-workflow.yaml
+  - Define 5 phases from detection through resolution
+  - Support multiple resolution strategies (refine, research, accept paradox, update)
+  - Include temporal investigation
+  - Document contradiction tracking in Neo4j
+  - Add Mermaid diagram visualization
+  - Support both automated detection and manual investigation
+
+tasks_subtasks: |
+  - [ ] Task 1: Create workflow structure (AC1)
+    - [ ] Create workflows/contradiction-resolution-workflow.yaml
+    - [ ] Define workflow metadata:
+      - workflow_id: contradiction-resolution
+      - version: 1.0
+      - name: "Contradiction Resolution Workflow"
+      - phases: 5
+      - estimated_duration: "15-30 minutes per contradiction"
+      - trigger: "automated detection or manual investigation"
+    - [ ] List agents involved:
+      - Semantic Linker Agent
+      - Timeline Constructor Agent
+      - Structural Analysis Agent
+      - User (key decision maker)
+
+  - [ ] Task 2: Define Phase 1 - Detect Contradiction (AC2)
+    - [ ] Phase name: "Detect Contradiction"
+    - [ ] Agent: Semantic Linker Agent
+    - [ ] Trigger options:
+      - Automated: Semantic Linker detects during linking
+      - Manual: User notices inconsistency
+    - [ ] Steps:
+      1. Identify logically incompatible claims:
+         - Direct contradictions ("X is true" vs "X is false")
+         - Incompatible implications
+         - Mutually exclusive categories
+         - Conflicting definitions
+      2. Extract specific contradictory statements from each note
+      3. Assess severity:
+         - Critical: Core claim contradictions
+         - Important: Significant detail conflicts
+         - Minor: Edge case or context-dependent
+      4. Create Contradiction node in Neo4j (if enabled):
+         - Link to both notes
+         - Store contradictory claims
+         - Mark severity
+         - Set status = "detected"
+    - [ ] Inputs: [note_a, note_b, semantic_similarity]
+    - [ ] Outputs: [contradiction_record, severity_level]
+    - [ ] Exit criteria: Contradiction identified and logged
+
+  - [ ] Task 3: Define Phase 2 - Investigate Temporal Context (AC3)
+    - [ ] Phase name: "Investigate Temporal Context"
+    - [ ] Agent: Timeline Constructor Agent
+    - [ ] Steps:
+      1. Query creation dates of both notes:
+         - Which claim came first?
+         - Time gap between claims?
+      2. Query edit history:
+         - Has understanding evolved between notes?
+         - Were both notes active simultaneously?
+         - Is one claim more recently edited?
+      3. Analyze temporal relationships:
+         - Is newer claim a refinement?
+         - Is one claim superseded?
+         - Are both from same time period?
+      4. Identify sources that influenced each claim:
+         - What sources informed Note A?
+         - What sources informed Note B?
+         - Are sources in conflict?
+      5. Generate temporal context report
+    - [ ] Outputs: [temporal_context, chronological_order, source_analysis]
+    - [ ] Exit criteria: Temporal context established
+
+  - [ ] Task 4: Define Phase 3 - User Examination (AC4)
+    - [ ] Phase name: "User Examines Contradiction"
+    - [ ] Agent: User
+    - [ ] Steps:
+      1. Read both notes in full context
+      2. Review temporal context report
+      3. Assess reliability of each claim:
+         - Source credibility
+         - Evidence strength
+         - Recency of information
+         - Personal confidence
+      4. Determine resolution strategy:
+         - **Strategy A: Refine Definition**
+           - Contradiction due to ambiguous terminology
+           - Terms mean different things in different contexts
+           - Need clarification note
+         - **Strategy B: Gather More Evidence**
+           - Insufficient information to judge
+           - More research needed
+           - Create research gap
+         - **Strategy C: Accept Paradox**
+           - Both claims valid in different contexts
+           - Context-dependent truth
+           - Need synthesis note explaining contexts
+         - **Strategy D: Update Understanding**
+           - One claim is outdated or incorrect
+           - Mark old claim as superseded
+           - Update or archive old note
+         - **Strategy E: Merge Notes**
+           - Both notes cover same concept
+           - Merge into single coherent note
+           - Resolve discrepancy in merging
+      5. Document resolution decision and rationale
+    - [ ] Inputs: [note_a, note_b, temporal_context]
+    - [ ] Outputs: [resolution_strategy, rationale]
+    - [ ] Decision point: "Which resolution strategy to use?"
+    - [ ] Exit criteria: Resolution strategy chosen
+
+  - [ ] Task 5: Define Phase 4 - Implement Resolution (AC5)
+    - [ ] Phase name: "Implement Resolution"
+    - [ ] Agent: Structural Analysis Agent (with User)
+    - [ ] Conditional steps based on strategy:
+
+      **If Strategy A: Refine Definition**
+      - step: 1
+        action: "Create clarification note"
+        template: clarification-note-tmpl.yaml
+        content:
+          - Define ambiguous term
+          - Explain context-dependent meanings
+          - Link to both original notes
+          - Provide usage guidelines
+
+      **If Strategy B: Gather Evidence**
+      - step: 2
+        action: "Create gap analysis"
+        task: create-research-gap
+        content:
+          - Document what needs researching
+          - Link to contradictory notes
+          - Set priority
+          - Add to research queue
+
+      **If Strategy C: Accept Paradox**
+      - step: 3
+        action: "Create synthesis note"
+        template: paradox-synthesis-tmpl.yaml
+        content:
+          - Explain both perspectives
+          - Define contexts where each applies
+          - Acknowledge complexity
+          - Link to both notes
+          - Tag as "paradox" or "context-dependent"
+
+      **If Strategy D: Update Understanding**
+      - step: 4
+        action: "Mark old claim as superseded"
+        content:
+          - Add frontmatter: superseded_by: [[new-note]]
+          - Add banner to old note explaining supersession
+          - Option: Archive old note
+          - Update links pointing to old note
+
+      **If Strategy E: Merge Notes**
+      - step: 5
+        action: "Merge notes into coherent whole"
+        content:
+          - Create new merged note
+          - Incorporate insights from both
+          - Resolve discrepancy explicitly
+          - Redirect old notes to merged note
+    - [ ] Outputs: [resolution_artifacts, updated_notes]
+    - [ ] Exit criteria: Resolution implemented
+
+  - [ ] Task 6: Define Phase 5 - Update Relationships (AC6)
+    - [ ] Phase name: "Update Knowledge Graph Relationships"
+    - [ ] Agent: Semantic Linker Agent
+    - [ ] Condition: Neo4j enabled
+    - [ ] Steps:
+      1. Update Contradiction node status:
+         - Set status = "resolved"
+         - Record resolution_strategy
+         - Record resolution_date
+      2. Create appropriate relationships:
+         - If Strategy A: Link clarification note to both notes
+         - If Strategy B: Create Gap node, link to contradiction
+         - If Strategy C: Link synthesis note to both notes
+         - If Strategy D: Create [:SUPERSEDES] relationship
+         - If Strategy E: Create [:MERGED_INTO] relationships
+      3. Update note metadata:
+         - Add resolution tags
+         - Update last_reviewed dates
+      4. Enable future queries:
+         - "What contradictions have been resolved?"
+         - "What claims supersede this one?"
+         - "What paradoxes exist in domain X?"
+    - [ ] Outputs: [updated_graph_relationships]
+    - [ ] Exit criteria: Relationships updated in Neo4j
+
+  - [ ] Task 7: Create Mermaid diagram (AC6)
+    - [ ] Show workflow from detection through resolution
+    - [ ] Highlight different resolution strategies
+    - [ ] Show decision tree for strategy selection
+
+  - [ ] Task 8: Define success criteria (AC2)
+    - [ ] Success criteria:
+      - Contradiction detected and logged
+      - Temporal context investigated
+      - Resolution strategy chosen with rationale
+      - Resolution implemented appropriately
+      - Knowledge graph relationships updated
+    - [ ] Quality indicators:
+      - Resolution addresses core contradiction
+      - Context is well-documented
+      - Future users can understand resolution
+      - No new contradictions introduced
+
+technical_notes: |
+  ## Contradiction Detection Methods
+
+  ### Automated Detection (Semantic Linker Agent)
+
+  Look for:
+  - **Negation patterns**: "X is Y" vs "X is not Y"
+  - **Exclusive categories**: "X is type A" vs "X is type B" (when A and B mutually exclusive)
+  - **Conflicting definitions**: Different definitions of same term
+  - **Incompatible implications**: Statements that can't both be true
+
+  ### Manual Detection (User-Initiated)
+
+  User notices:
+  - Feeling confused when reading related notes
+  - Remembering contradictory information
+  - Sources that disagree
+  - Personal belief conflicts with note
+
+  ## Neo4j Contradiction Tracking
+
+  ```cypher
+  // Create contradiction
+  CREATE (c:Contradiction {
+    id: "uuid",
+    severity: "critical",
+    status: "detected",
+    detected_date: "2025-11-05",
+    claim_a: "Machine learning requires big data",
+    claim_b: "Machine learning works well with small data",
+    context: "Detected during semantic linking"
+  })
+  MATCH (note_a:Note {id: "note-123"})
+  MATCH (note_b:Note {id: "note-456"})
+  CREATE (note_a)-[:CONTRADICTS]->(c)
+  CREATE (note_b)-[:CONTRADICTS]->(c)
+
+  // Resolve contradiction
+  MATCH (c:Contradiction {id: "uuid"})
+  SET c.status = "resolved"
+  SET c.resolution_strategy = "accept_paradox"
+  SET c.resolution_date = "2025-11-06"
+
+  // Create synthesis note
+  CREATE (synthesis:Note {id: "note-789", title: "ML Data Requirements: Context Matters"})
+  CREATE (synthesis)-[:RESOLVES]->(c)
+  ```
+
+  ## Resolution Strategy Decision Tree
+
+  ```
+  Is terminology ambiguous? → YES → Refine Definition (Strategy A)
+                           ↓ NO
+  Is there sufficient evidence? → NO → Gather Evidence (Strategy B)
+                                ↓ YES
+  Can both be true in different contexts? → YES → Accept Paradox (Strategy C)
+                                          ↓ NO
+  Is one claim clearly superior? → YES → Update Understanding (Strategy D)
+                                 ↓ NO
+  Are notes covering same concept? → YES → Merge Notes (Strategy E)
+                                   ↓ NO
+  → Requires deeper investigation (back to research)
+  ```
+
+  ## Common Contradiction Patterns
+
+  ### 1. False Dichotomy
+  - Appears as contradiction but both can be true
+  - Example: "Introversion is genetic" vs "Introversion is learned"
+  - Resolution: Accept paradox (both nature and nurture)
+
+  ### 2. Outdated Information
+  - One note reflects old understanding
+  - Example: Old medical guideline vs new guideline
+  - Resolution: Update understanding (Strategy D)
+
+  ### 3. Definitional Ambiguity
+  - Same term, different meanings
+  - Example: "Leadership requires authority" vs "Leadership doesn't need authority"
+  - Resolution: Refine definition (formal vs informal leadership)
+
+  ### 4. Missing Context
+  - Claims true in different contexts
+  - Example: "Fasting is healthy" vs "Fasting is unhealthy"
+  - Resolution: Accept paradox (depends on health condition)
+
+  ### 5. Source Conflict
+  - Reputable sources disagree
+  - Example: Conflicting research findings
+  - Resolution: Gather evidence (more research needed)
+
+  ## Integration with Other Workflows
+
+  - Triggered by semantic-linker during linking phase
+  - Can emerge during quality-auditor reviews
+  - Feeds temporal-evolution-analysis (understanding shifts)
+  - May trigger research-integration-workflow (Strategy B)
+
+  ## Best Practices
+
+  1. **Don't Rush Resolution**: Contradictions reveal complexity
+  2. **Document Reasoning**: Future you needs context
+  3. **Accept Paradox When Appropriate**: Not everything resolves neatly
+  4. **Track Resolution History**: Understand how you resolve contradictions
+  5. **Learn from Patterns**: Recurring contradiction types reveal thinking biases
+
+dependencies:
+  - STORY-004: Semantic Linker Agent (detection)
+  - STORY-020: Timeline Constructor Agent (temporal context)
+  - STORY-003: Structural Analysis Agent (resolution implementation)
+  - Neo4j integration (for contradiction tracking) - optional
+  - STORY-011: Templates (clarification-note-tmpl, paradox-synthesis-tmpl)
+  - STORY-025: research-integration-workflow (for Strategy B)
+
+testing:
+  - Test automated contradiction detection
+  - Test manual contradiction flagging
+  - Test temporal context investigation
+  - Test each resolution strategy:
+      - Strategy A: Refine definition
+      - Strategy B: Gather evidence
+      - Strategy C: Accept paradox
+      - Strategy D: Update understanding
+      - Strategy E: Merge notes
+  - Validate Neo4j relationship updates
+  - Test contradiction severity classification
+  - Validate decision tree logic
+  - Test with different contradiction types
+  - Verify resolution artifacts quality
+
+definition_of_done:
+  - contradiction-resolution-workflow.yaml created
+  - All 5 phases defined with clear steps
+  - All resolution strategies specified
+  - Decision tree for strategy selection documented
+  - Neo4j tracking implemented
+  - Temporal investigation defined
+  - Mermaid diagram created and verified
+  - Common contradiction patterns documented
+  - Success criteria defined
+  - Workflow tested for all strategies
+  - Documentation complete
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for contradiction resolution workflow
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

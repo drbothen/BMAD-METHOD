@@ -1,0 +1,637 @@
+---
+story_id: STORY-086
+title: Gap Detector Agent (Phase 4)
+epic_id: EPIC-001
+phase: 4
+priority: high
+estimated_effort: 18 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want an AI agent that identifies and prioritizes knowledge gaps
+  So that I can systematically improve my knowledge base through targeted research
+
+acceptance_criteria:
+  - Gap Detector Agent markdown file created
+  - Agent can detect five gap types (coverage, evidence, prerequisite, assumption, conceptual)
+  - Agent can identify gap locations (within_notes, cross_domain, foundational, methodological)
+  - Agent calculates priority scores based on blocking work, references, centrality, feasibility
+  - Agent creates gap analyses using gap-analysis-tmpl.yaml
+  - Agent validates gaps using gap-identification-checklist and prioritization-checklist
+  - Agent handles contradiction-driven gaps
+  - Agent creates research priority queues
+  - Agent tracks gap lifecycle (identified → researching → researched → closed)
+  - Agent integrates with Research Coordinator and Monthly Deep Review
+
+tasks_subtasks: |
+  - [ ] Task 1: Define Gap Detector Agent persona and capabilities (AC1)
+    - [ ] Create agent markdown file: gap-detector-agent.md
+    - [ ] Define agent purpose:
+      - Identify knowledge gaps systematically
+      - Prioritize gaps for research
+      - Track gap resolution lifecycle
+      - Create research queues
+      - Improve KB completeness over time
+    - [ ] Define core capabilities:
+      - Automated gap detection (coverage, evidence, prerequisite, assumption, conceptual)
+      - Manual gap capture (user-reported gaps)
+      - Gap prioritization (scoring based on importance and feasibility)
+      - Gap analysis creation (structured documentation)
+      - Research queue management (prioritized lists)
+      - Gap lifecycle tracking (identified → closed)
+      - Integration with research workflow
+    - [ ] Define activation triggers:
+      - User requests "Identify knowledge gaps"
+      - Monthly Deep Review includes gap detection
+      - Content Brief Agent detects gaps during brief creation
+      - Contradiction Resolution identifies missing knowledge
+      - User manually reports gap
+      - Periodic gap audits (quarterly)
+    - [ ] Define agent personality:
+      - Systematic quality auditor
+      - Research prioritization strategist
+      - Completeness-focused analyst
+      - Improvement-oriented advisor
+
+  - [ ] Task 2: Define gap type taxonomy (AC2)
+    - [ ] Gap Types:
+      - **Coverage Gap**: Missing topic or domain entirely
+        * Example: "We have notes on JavaScript but nothing on TypeScript"
+        * Detection: Domain analysis reveals missing areas
+        * Location: Usually cross_domain or foundational
+      - **Evidence Gap**: Claims without sufficient support
+        * Example: "Note claims X but provides no sources or data"
+        * Detection: Citation analysis, source validation
+        * Location: Within_notes
+      - **Prerequisite Gap**: Missing foundational knowledge
+        * Example: "Can't understand advanced topic without basics"
+        * Detection: Concept dependency analysis
+        * Location: Foundational
+      - **Assumption Gap**: Implicit assumptions not examined
+        * Example: "Argument relies on unstated premise P"
+        * Detection: Logical analysis, argumentation structure
+        * Location: Within_notes or methodological
+      - **Conceptual Gap**: Incomplete or shallow understanding
+        * Example: "Surface-level note without deep exploration"
+        * Detection: Depth analysis, question identification
+        * Location: Within_notes
+    - [ ] Gap Locations:
+      - **Within Notes**: Missing content in individual notes
+      - **Cross Domain**: Missing connections between domains
+      - **Foundational**: Missing basic concepts or frameworks
+      - **Methodological**: Missing research or analysis methods
+
+  - [ ] Task 3: Define automated gap detection methods (AC3)
+    - [ ] Automated Detection Techniques:
+      - **Unresolved Question Detection**:
+        * Search for: ?, TODO, RESEARCH, INVESTIGATE markers
+        * Parse note content for question marks
+        * Identify explicit TODOs
+        * Extract research requests
+      - **Undeveloped Concept Detection**:
+        * Stub notes (<100 words)
+        * Low link density (<2 links)
+        * No sources cited
+        * Created but never updated (>6 months old, last_modified = created)
+      - **Missing Prerequisite Detection**:
+        * Dependency analysis (advanced concepts without basics)
+        * Follow concept hierarchies
+        * Identify "jumped ahead" patterns
+      - **Evidence Gap Detection**:
+        * Claims without sources (assertions lacking citations)
+        * Arguments without supporting notes
+        * Comparisons without data
+      - **Domain Boundary Detection**:
+        * Unexplored adjacent areas (MOC shows related domains missing)
+        * Incomplete domain coverage (MOC has emerging questions)
+    - [ ] Detection Frequency:
+      - Monthly Deep Review: Full vault scan
+      - Content Brief Creation: Topic-specific scan
+      - Contradiction Resolution: Context-specific scan
+      - User request: On-demand scan
+
+  - [ ] Task 4: Define gap priority calculation (AC4)
+    - [ ] Priority Scoring Formula:
+      ```
+      Importance Score = (Blocking Work Count × 50) + (Reference Count × 10) + (Domain Centrality × 20)
+      Feasibility Score = Accessible Sources + (1 / Estimated Hours) + Expertise Match
+      Net Priority = Importance / Feasibility
+      ```
+    - [ ] Importance Factors:
+      - **Blocking Work Count**: How many projects/outputs wait on gap resolution
+        * Critical: ≥3 blocking items → +150 points
+        * High: 1-2 blocking items → +50-100 points
+        * Low: 0 blocking items → +0 points
+      - **Reference Count**: How often gap appears in notes
+        * High: ≥10 references → +100 points
+        * Medium: 5-9 references → +50 points
+        * Low: 1-4 references → +10-40 points
+      - **Domain Centrality**: Importance within domain
+        * Central concept: Core to domain → +100 points
+        * Supporting concept: Enriches domain → +40 points
+        * Peripheral concept: Nice to have → +10 points
+    - [ ] Feasibility Factors:
+      - **Accessible Sources**: Can info be found?
+        * Easy: Authoritative sources readily available → High feasibility
+        * Moderate: Sources exist but require access → Medium feasibility
+        * Hard: Sources scarce or non-existent → Low feasibility
+      - **Estimated Hours**: Time to fill gap
+        * Quick: <2 hours → High feasibility
+        * Medium: 2-8 hours → Medium feasibility
+        * Long: >8 hours → Low feasibility
+      - **Expertise Match**: Do you have background?
+        * Match: Within expertise → High feasibility
+        * Stretch: Learnable → Medium feasibility
+        * Gap: Outside expertise → Low feasibility
+    - [ ] Priority Levels:
+      - **Critical**: Net Priority ≥ 90 (high importance, high feasibility)
+      - **High**: Net Priority 70-89
+      - **Medium**: Net Priority 40-69
+      - **Low**: Net Priority 0-39
+
+  - [ ] Task 5: Define gap analysis creation process (AC5, AC6)
+    - [ ] Gap Analysis Creation:
+      1. Detect or receive gap report
+      2. Classify gap type (coverage/evidence/prerequisite/assumption/conceptual)
+      3. Identify gap location (within_notes/cross_domain/foundational/methodological)
+      4. Collect context:
+         - Where gap appears (specific notes)
+         - Why gap matters (impact assessment)
+         - Blocking work (projects waiting on resolution)
+      5. Calculate priority score:
+         - Importance factors (blocking work, references, centrality)
+         - Feasibility factors (sources, hours, expertise)
+         - Net priority
+      6. Suggest research approach:
+         - Recommended methods (reading, experimentation, consultation)
+         - Potential sources (books, experts, datasets)
+         - Estimated effort (hours or days)
+         - Required expertise level
+      7. Define success criteria:
+         - Questions that should be answerable
+         - Artifacts that should exist (notes, data)
+         - Validation method
+      8. Load gap-analysis-tmpl.yaml template
+      9. Populate gap analysis sections
+      10. Validate using gap-identification-checklist.md
+      11. Validate using prioritization-checklist.md
+      12. Save gap analysis
+    - [ ] Output:
+      - Gap analysis markdown file
+      - Priority score
+      - Research approach
+      - Success criteria
+
+  - [ ] Task 6: Define gap validation (AC6)
+    - [ ] Validation using gap-identification-checklist.md:
+      - ✓ Gap clearly described
+      - ✓ Gap type correctly classified
+      - ✓ Gap location specified
+      - ✓ At least one note where gap appears identified
+      - ✓ Impact assessment completed (why gap matters)
+      - Priority level assigned
+      - ✓ Research approach suggested
+      - ✓ Success criteria defined
+      - Estimated effort provided
+      - Required expertise level noted
+      - Blocking work identified (if applicable)
+      - Related gaps documented (dependencies)
+    - [ ] Validation using prioritization-checklist.md:
+      - ✓ Priority score calculated using standard formula
+      - ✓ Importance factors documented (reference count, blocking work, centrality)
+      - ✓ Feasibility assessed (accessible sources, time, expertise)
+      - ✓ Net priority = Importance / (Feasibility × Hours)
+      - Blocking work count accurate
+      - ✓ Domain centrality score justified
+      - ✓ Research method appropriate for gap type
+      - Quick wins identified (high value, low effort)
+      - Dependencies respected (prerequisite gaps prioritized)
+      - Research capacity considered
+    - [ ] Quality Thresholds:
+      - Pass criteria: All required items (✓) checked
+      - Warn if priority score unjustified
+      - Warn if research approach infeasible
+      - Block if gap description unclear
+
+  - [ ] Task 7: Define research queue management (AC8)
+    - [ ] Research Priority Queue:
+      - Gaps sorted by net priority (descending)
+      - Critical gaps (≥90) at top
+      - High gaps (70-89) next
+      - Medium gaps (40-69) after
+      - Low gaps (0-39) last
+    - [ ] Queue Optimization:
+      - **Dependency Ordering**: Prerequisite gaps before dependent gaps
+      - **Quick Wins**: High-value, low-effort gaps highlighted
+      - **Blocking Work**: Gaps blocking projects prioritized
+      - **Capacity Allocation**: Time allocated per gap
+    - [ ] Research Roadmap:
+      - Sequence gaps based on dependencies
+      - Estimate timeline (weeks or months)
+      - Identify parallel research opportunities
+      - Plan research phases
+    - [ ] Queue Templates:
+      - Use research-priority-tmpl.yaml (from STORY-034)
+      - Priority ranking
+      - Research roadmap
+      - Capacity allocation
+      - Quick wins list
+
+  - [ ] Task 8: Define gap lifecycle tracking (AC9)
+    - [ ] Gap Status Lifecycle:
+      - **Identified**: Gap discovered and documented
+        * Gap analysis created
+        * Priority assigned
+        * Research approach suggested
+      - **Researching**: Active research in progress
+        * Research initiated
+        * Sources being consulted
+        * Progress notes being added
+      - **Researched**: Research completed, integration pending
+        * Sufficient information gathered
+        * Ready for integration into KB
+        * Notes to be created from findings
+      - **Closed**: Gap filled and integrated
+        * Notes created from research
+        * Links established
+        * Original gap-analysis archived or updated
+    - [ ] Status Transitions:
+      - Identified → Researching: Research Coordinator starts research
+      - Researching → Researched: Research findings complete
+      - Researched → Closed: Notes integrated into KB
+    - [ ] Gap Tracking:
+      - Frontmatter status field updated
+      - Neo4j gap nodes updated (if enabled)
+      - Research progress logged
+      - Closed date recorded
+
+  - [ ] Task 9: Define contradiction-driven gap detection (AC10)
+    - [ ] Contradiction Resolution Integration:
+      - Contradiction Resolution Workflow (Strategy B: Accept Both) creates gaps
+      - When contradiction unresolvable due to missing knowledge:
+        * Create gap analysis
+        * Type: assumption or conceptual gap
+        * Priority: High (contradiction blocks understanding)
+        * Research approach: Investigate missing context
+      - Link gap to contradiction record
+      - Resolve gap before resolving contradiction
+    - [ ] Contradiction-Driven Gap Structure:
+      ```yaml
+      gap_type: assumption
+      trigger: contradiction_resolution
+      contradiction_id: "contra-123"
+      contradictory_claims:
+        - "[[Note A]]: Claims X"
+        - "[[Note B]]: Claims not-X"
+      missing_knowledge: "Understanding of context C needed to resolve"
+      research_approach: "Investigate context C to determine which claim valid"
+      ```
+    - [ ] Integration Flow:
+      1. Contradiction detected (Semantic Linker)
+      2. Resolution attempted (Contradiction Resolution Workflow)
+      3. If Strategy B (Accept Both): Create gap for missing context
+      4. Gap Detector creates gap analysis
+      5. Research Coordinator fills gap
+      6. Contradiction Resolution Workflow resumes
+
+  - [ ] Task 10: Define Neo4j gap tracking (optional) (AC9)
+    - [ ] Neo4j Gap Node Structure:
+      ```cypher
+      CREATE (gap:Gap {
+        id: "uuid",
+        type: "evidence",
+        location: "within_notes",
+        priority: "high",
+        status: "identified",
+        discovery_date: "2025-11-05",
+        priority_score: 85,
+        importance: 120,
+        feasibility: 0.7,
+        estimated_hours: 4
+      })
+
+      // Link to notes where gap appears
+      MATCH (note:Note {id: "note-123"})
+      CREATE (note)-[:HAS_GAP]->(gap)
+
+      // Link to blocking work
+      MATCH (project:Project {id: "proj-456"})
+      CREATE (gap)-[:BLOCKS]->(project)
+
+      // Track research progress
+      MATCH (gap:Gap {id: "uuid"})
+      SET gap.status = "researching"
+      SET gap.research_started = "2025-11-06"
+
+      // Close gap
+      MATCH (gap:Gap {id: "uuid"})
+      MATCH (note:Note {id: "note-789"})
+      CREATE (note)-[:FILLS_GAP]->(gap)
+      SET gap.status = "closed"
+      SET gap.closed_date = "2025-11-07"
+
+      // Query priority queue
+      MATCH (gap:Gap {status: "identified"})
+      RETURN gap
+      ORDER BY gap.priority_score DESC
+      ```
+    - [ ] Provenance Tracking:
+      - Record gap discovery events
+      - Track research progress
+      - Link to filled notes
+
+  - [ ] Task 11: Define dependencies and integration points (AC10)
+    - [ ] Dependencies:
+      - Tasks: detect-gaps, calculate-gap-priority, create-gap-analysis, manage-research-queue
+      - Templates: gap-analysis-tmpl.yaml, research-priority-tmpl.yaml
+      - Checklists: gap-identification-checklist.md, prioritization-checklist.md, contradiction-resolution-checklist.md
+      - Data: Gap taxonomy, priority rubric
+    - [ ] Integration Points:
+      - **Monthly Deep Review Workflow**: Triggers full gap detection
+      - **Content Brief Agent**: Detects gaps during brief creation (detect-brief-gaps)
+      - **Research Coordinator Agent**: Fills identified gaps
+      - **Contradiction Resolution Workflow**: Creates gaps for missing knowledge (Strategy B)
+      - **MOC Constructor Agent**: MOCs reveal domain coverage gaps
+      - **Structural Analysis Agent**: Detects undeveloped concepts
+      - **Query Interpreter**: Users can query for gap lists
+      - **Neo4j**: Gap tracking and priority queries (optional)
+
+  - [ ] Task 12: Define agent constraints and best practices (AC10)
+    - [ ] Constraints:
+      - Gap description must be clear (≥100 chars)
+      - Gap type must be valid (coverage/evidence/prerequisite/assumption/conceptual)
+      - Priority calculation must use standard formula
+      - Success criteria must be defined
+      - Research approach must be feasible
+    - [ ] Best Practices:
+      - Run full gap detection monthly (during Deep Review)
+      - Prioritize gaps blocking active work (critical priority)
+      - Focus on quick wins (high value, low effort)
+      - Respect dependencies (fill prerequisite gaps first)
+      - Track gap lifecycle (don't lose track of identified gaps)
+      - Close feedback loop (mark gaps closed when filled)
+      - Review research queue quarterly (reprioritize)
+    - [ ] Anti-Patterns to Avoid:
+      - Creating gap analyses for every minor question (focus on significant gaps)
+      - Not prioritizing gaps (unmanaged queue becomes overwhelming)
+      - Ignoring blocking work (projects stall)
+      - Not tracking status (lose visibility into progress)
+      - Skipping feasibility assessment (pursue infeasible research)
+      - Not closing gaps (gap list grows indefinitely)
+
+technical_notes: |
+  ## Gap Detection Philosophy
+
+  Gap detection is **systematic KB quality improvement**:
+  - Not ad-hoc "I wonder about X" (that's research interest, not gap)
+  - Structured identification (what's missing that matters)
+  - Priority-based (what to research first)
+  - Lifecycle-managed (tracked from identification to closure)
+
+  ## Gap vs Research Interest
+
+  **Gap**: Missing knowledge that **impairs current work or understanding**
+  - Blocks content creation
+  - Prevents argument completion
+  - Creates contradictions
+  - Leaves assumptions unexamined
+
+  **Research Interest**: Curious about something, but **not blocking**
+  - "I'd like to learn about X someday"
+  - No current impact on work
+  - Low priority
+
+  Create gap analyses for gaps, not research interests.
+
+  ## Priority Calculation Rationale
+
+  **Why this formula?**
+  ```
+  Net Priority = Importance / Feasibility
+  ```
+
+  - **Importance**: Why does this gap matter? (blocking work, references, centrality)
+  - **Feasibility**: Can we realistically fill this gap? (sources, time, expertise)
+  - **Net Priority**: Value divided by cost
+
+  **High net priority = high value, low cost** (do these first!)
+
+  ## Quick Wins Strategy
+
+  Quick wins are **high-priority gaps with low effort**:
+  - High importance (≥70 points)
+  - Low effort (<2 hours)
+  - Net priority ≥ 90
+
+  Quick wins provide:
+  - Immediate value (unblock work)
+  - Momentum (visible progress)
+  - Motivation (easy wins encourage more research)
+
+  Always prioritize quick wins in research queue.
+
+  ## Dependency Management
+
+  Some gaps depend on others:
+  - **Prerequisite Gap**: Must fill basic concepts before advanced
+  - **Methodological Gap**: Must establish method before applying it
+  - **Foundational Gap**: Must understand foundation before building on it
+
+  Research queue must respect dependencies: **fill prerequisite gaps first**.
+
+  ## Contradiction-Driven Gaps
+
+  Contradictions often reveal **missing knowledge**:
+  - Note A: "X is true"
+  - Note B: "X is false"
+  - Why contradiction? **Missing context C** that reconciles them
+
+  Contradiction Resolution Strategy B (Accept Both) creates gap:
+  - Gap type: assumption or conceptual
+  - Research needed: Investigate context C
+  - Once gap filled, contradiction often resolves
+
+  ## Gap Lifecycle Importance
+
+  Track gap lifecycle to:
+  - **Maintain visibility**: Don't lose track of identified gaps
+  - **Measure progress**: How many gaps closed per month?
+  - **Prevent duplication**: Don't create duplicate gap analyses
+  - **Enable reporting**: Show KB improvement over time
+
+  Update gap status in frontmatter and Neo4j (if enabled).
+
+  ## Integration with Research Workflow
+
+  Gap Detector feeds directly into Research Coordinator:
+  1. Gap identified → Gap analysis created
+  2. Gap prioritized → Added to research queue
+  3. Research initiated → Status: "researching"
+  4. Research completed → Research Integration Workflow triggered
+  5. Findings integrated → Gap status: "closed"
+
+  This creates **closed-loop quality improvement**: detect → prioritize → research → integrate → close.
+
+  ## Neo4j Gap Tracking Benefits
+
+  Neo4j enables:
+  - **Priority queries**: "Show all critical gaps"
+  - **Blocking work queries**: "Which gaps block project X?"
+  - **Dependency queries**: "Which gaps depend on gap Y?"
+  - **Progress tracking**: "How many gaps closed this month?"
+  - **Domain coverage**: "Which domains have most gaps?"
+
+  If Neo4j enabled, use it for gap management.
+
+  ## Example Gap Analysis Structure
+
+  ```markdown
+  ---
+  gap_type: evidence
+  gap_location: within_notes
+  discovery_date: 2025-11-05
+  priority: high
+  priority_score: 85
+  research_status: identified
+  blocking_work:
+    - "[[Content Brief: ML as Optimization]]"
+    - "[[Article: Loss Functions Explained]]"
+  ---
+
+  # Knowledge Gap: Loss Function Design Principles
+
+  ## Knowledge Gap Description
+  Our notes on loss functions explain what they are and provide examples (MSE, cross-entropy), but lack **design principles** for choosing or creating custom loss functions. This creates uncertainty when starting new ML projects: "Which loss function should I use? How do I know if I need a custom loss?"
+
+  ## Why This Gap Matters
+  **Impact on current work**:
+  - Blocks content creation: Article "Loss Functions Explained" incomplete without design principles
+  - Limits project work: Upcoming computer vision project may need custom loss, but no framework for deciding
+
+  **Potential insights if gap filled**:
+  - Systematic loss function selection (decision tree or rubric)
+  - Understanding when/why to create custom losses
+  - Avoiding poor loss function choices that hurt model performance
+
+  **Risks of leaving gap unaddressed**:
+  - Suboptimal loss function choices in projects
+  - Incomplete article (reduced credibility)
+  - Trial-and-error approach (inefficient)
+
+  ## Where Gap Appears
+  - [[Loss Functions]]: Lists examples but no design principles
+  - [[Project: Custom Loss for Segmentation]]: Created custom loss but process was ad-hoc
+  - [[Content Brief: ML as Optimization]]: Wants to discuss loss design but lacks source material
+
+  ## Suggested Research Approach
+  **Methods**:
+  - Read: "Deep Learning" by Goodfellow (Chapter 6.2 on loss functions)
+  - Read: "Loss Function Engineering" papers (search arXiv)
+  - Consult: ML practitioners who design custom losses
+
+  **Potential sources**:
+  - Goodfellow et al., "Deep Learning" (MIT Press, 2016)
+  - arXiv papers on loss function design
+  - Blog posts from practitioners (distill.pub, colah.github.io)
+
+  **Estimated effort**: 4 hours
+  - 2 hours reading Goodfellow Chapter 6.2
+  - 1 hour reading 2-3 arXiv papers
+  - 1 hour synthesizing into notes
+
+  **Required expertise level**: Intermediate ML (have background, extending knowledge)
+
+  ## Success Criteria
+  **Questions that should be answerable**:
+  - How do I choose a loss function for a new ML problem?
+  - When should I create a custom loss vs use standard losses?
+  - What properties make a loss function effective?
+
+  **Artifacts that should exist**:
+  - [[Loss Function Design Principles]] note
+  - [[Loss Function Selection Rubric]] note
+  - Updates to [[Loss Functions]] with design principles section
+
+  **Validation method**:
+  - Can use rubric to select loss for new projects
+  - Article "Loss Functions Explained" includes design principles section
+  - Next custom loss creation is systematic, not ad-hoc
+
+  ## Related Gaps
+  - **Depends on**: None (foundational gap, no dependencies)
+  - **Blocks**: None identified (but would improve future work)
+  - **Related**: "[[Gap: Model Architecture Design Principles]]" (similar design frameworks needed)
+
+  ## Research Progress
+  - 2025-11-05: Gap identified during content brief creation
+  - 2025-11-06: Gap prioritized as High (priority score: 85)
+  - 2025-11-07: Research initiated, reading Goodfellow Chapter 6.2
+  - [To be updated as research progresses]
+  ```
+
+dependencies:
+  - STORY-032: Phase 4 Templates (gap-analysis-tmpl.yaml)
+  - STORY-034: Additional Templates (research-priority-tmpl.yaml)
+  - STORY-035: Phase 2-5 Checklists (gap-identification-checklist, prioritization-checklist, contradiction-resolution-checklist)
+  - STORY-024: Monthly Deep Review Workflow (triggers gap detection)
+  - STORY-024: Content Brief Agent (detects gaps during brief creation)
+  - STORY-038: Research Coordinator Agent (fills gaps)
+  - STORY-028: Contradiction Resolution Workflow (creates gaps via Strategy B)
+  - STORY-001: Structural Analysis Agent (detects undeveloped concepts)
+  - STORY-021: MOC Constructor Agent (reveals domain coverage gaps)
+  - STORY-003: Query Interpreter (gap query routing)
+  - Neo4j integration - optional for gap tracking
+  - Tasks: detect-gaps.md, calculate-gap-priority.md, create-gap-analysis.md, manage-research-queue.md
+
+testing:
+  - Test automated gap detection (unresolved questions, undeveloped concepts, missing prerequisites, evidence gaps)
+  - Test manual gap capture (user-reported gaps)
+  - Test gap type classification (coverage, evidence, prerequisite, assumption, conceptual)
+  - Test gap location identification (within_notes, cross_domain, foundational, methodological)
+  - Test priority calculation (importance and feasibility factors)
+  - Test gap analysis creation from template
+  - Validate using gap-identification-checklist
+  - Validate using prioritization-checklist
+  - Test research queue generation and sorting
+  - Test quick wins identification
+  - Test dependency ordering (prerequisite gaps first)
+  - Test gap lifecycle tracking (identified → closed)
+  - Test contradiction-driven gap creation (Strategy B)
+  - Test Neo4j gap tracking queries
+  - Verify integration with Content Brief Agent
+  - Verify integration with Research Coordinator Agent
+  - Test with Monthly Deep Review Workflow
+
+definition_of_done:
+  - gap-detector-agent.md created with complete persona and capabilities
+  - Gap type taxonomy documented (5 types)
+  - Gap location taxonomy documented (4 locations)
+  - Automated gap detection methods defined
+  - Priority calculation formula documented with examples
+  - Gap analysis creation process defined (12 steps)
+  - Gap validation using checklists integrated
+  - Research queue management documented
+  - Gap lifecycle tracking defined (4 states)
+  - Contradiction-driven gap detection documented
+  - Neo4j gap tracking queries provided (optional)
+  - Dependencies and integration points specified
+  - Best practices and anti-patterns documented
+  - Example gap analysis structure provided
+  - Testing scenarios defined
+  - Agent tested with multiple gap types and priorities
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Gap Detector Agent
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

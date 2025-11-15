@@ -1,0 +1,341 @@
+---
+story_id: STORY-026
+title: Create Creation Project Workflow
+epic_id: EPIC-001
+phase: 3
+priority: medium
+estimated_effort: 8 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want a workflow for using my knowledge base to create external content
+  So that I can efficiently produce articles, presentations, and other outputs
+
+acceptance_criteria:
+  - Create creation-project-workflow.yaml
+  - Define 8 phases from brief creation through publication
+  - Include feedback loop for knowledge base updates
+  - Specify integration with Content Brief and Publication Formatter agents
+  - Document usage tracking in Neo4j
+  - Add Mermaid diagram visualization
+  - Support various creation types (articles, presentations, code, etc.)
+
+tasks_subtasks: |
+  - [ ] Task 1: Create workflow structure (AC1)
+    - [ ] Create workflows/creation-project-workflow.yaml
+    - [ ] Define workflow metadata:
+      - workflow_id: creation-project
+      - version: 1.0
+      - name: "Creation Project Workflow"
+      - phases: 8
+      - estimated_duration: "hours to weeks (project-dependent)"
+      - adaptive: true
+    - [ ] List agents involved:
+      - Content Brief Agent (Phase 3)
+      - Gap Detector Agent (Phase 4)
+      - Research Coordinator Agent (Phase 5, optional)
+      - Publication Formatter Agent (Phase 3)
+      - User (primary creator)
+
+  - [ ] Task 2: Define Phase 1 - Initiate Creation Project (AC2)
+    - [ ] Phase name: "Initiate Creation Project"
+    - [ ] Agent: User
+    - [ ] Steps:
+      1. Define creation project type:
+         - Article/Blog post
+         - Academic paper
+         - Presentation/Talk
+         - Video script
+         - Code documentation
+         - Book chapter
+         - Tutorial
+      2. Define target audience
+      3. Define scope and objectives
+      4. Set deadline (if applicable)
+      5. Identify key topics/concepts to cover
+    - [ ] Outputs: [project_definition, topics_list, target_audience, deadline]
+    - [ ] Exit criteria: Project clearly defined with scope
+
+  - [ ] Task 3: Define Phase 2 - Prepare Creation Brief (AC3)
+    - [ ] Phase name: "Prepare Creation Context Brief"
+    - [ ] Agent: Content Brief Agent
+    - [ ] Steps:
+      1. Query relevant notes using semantic search:
+         - Search for topics from project definition
+         - Include related concepts
+         - Pull in linked notes
+      2. Query temporal context:
+         - How have key concepts evolved?
+         - What's the current understanding?
+         - Any recent insights?
+      3. Organize materials into outline
+      4. Identify research gaps
+      5. Gather supporting evidence (quotes, data, examples)
+      6. Generate brief document with:
+         - Suggested outline
+         - Key points with supporting notes
+         - Relevant quotes and citations
+         - Identified gaps
+         - Related MOCs and overviews
+    - [ ] Task: generate-content-brief
+    - [ ] Template: content-brief-tmpl.yaml
+    - [ ] Outputs: [content_brief_file, identified_gaps]
+    - [ ] Exit criteria: Comprehensive brief created
+
+  - [ ] Task 4: Define Phase 3 - Assess Completeness (AC3)
+    - [ ] Phase name: "Assess Knowledge Completeness"
+    - [ ] Agent: Gap Detector Agent
+    - [ ] Condition: Brief has identified gaps
+    - [ ] Steps:
+      1. Review identified gaps from brief
+      2. Assess impact of gaps on creation quality
+      3. Prioritize gaps:
+         - Critical: Must address before creating
+         - Important: Should address for quality
+         - Nice-to-have: Can proceed without
+      4. Estimate research effort needed
+      5. Generate gap assessment report
+    - [ ] Outputs: [gap_assessment, prioritized_gaps]
+    - [ ] Decision point: "Are there critical gaps?"
+    - [ ] Exit criteria: Gaps assessed and prioritized
+
+  - [ ] Task 5: Define Phase 4 - Fill Gaps (Optional) (AC3)
+    - [ ] Phase name: "Fill Critical Knowledge Gaps"
+    - [ ] Agent: Research Coordinator Agent
+    - [ ] Condition: Critical gaps identified
+    - [ ] Steps:
+      1. Execute targeted research for missing information
+      2. Use research-integration-workflow for each gap
+      3. Integrate findings into knowledge base
+      4. Update content brief with new information
+    - [ ] Note: This phase triggers research-integration-workflow
+    - [ ] Outputs: [research_findings, updated_brief]
+    - [ ] Exit criteria: Critical gaps filled
+
+  - [ ] Task 6: Define Phase 5 - Create Content (AC4)
+    - [ ] Phase name: "Create Content Using Brief"
+    - [ ] Agent: User (primary creator)
+    - [ ] Steps:
+      1. Review content brief
+      2. Open relevant notes referenced in brief
+      3. Use suggested outline or create custom structure
+      4. Write/present/code using organized materials
+      5. Track which notes and concepts are referenced
+      6. Track which quotes/citations are used
+      7. Note any insights that emerge during creation
+      8. Create draft content
+    - [ ] Inputs: [content_brief, relevant_notes]
+    - [ ] Outputs: [draft_content, used_notes_list, creation_insights]
+    - [ ] Exit criteria: Draft content created
+
+  - [ ] Task 7: Define Phase 6 - Track Usage (AC5)
+    - [ ] Phase name: "Track Knowledge Usage"
+    - [ ] Agent: Content Brief Agent
+    - [ ] Condition: Neo4j enabled
+    - [ ] Steps:
+      1. Record which notes were used in creation
+      2. Create CreativeOutput node in Neo4j:
+         - output_type (article, presentation, etc.)
+         - title
+         - creation_date
+         - target_audience
+         - publication_status
+      3. Link used notes to CreativeOutput:
+         - [:INFORMED_BY] relationships
+         - Usage weight (how central was the note?)
+      4. Track quote/citation usage
+      5. Enable future queries:
+         - "What outputs did this note inform?"
+         - "What notes were most used in outputs?"
+         - "What knowledge gets used vs unused?"
+    - [ ] Outputs: [usage_tracking_graph]
+    - [ ] Exit criteria: Usage tracked in Neo4j
+
+  - [ ] Task 8: Define Phase 7 - Prepare for Publication (Optional) (AC6)
+    - [ ] Phase name: "Prepare for Publication"
+    - [ ] Agent: Publication Formatter Agent
+    - [ ] Condition: Content will be published
+    - [ ] Steps:
+      1. Convert wikilinks to target format:
+         - URLs for web publishing
+         - Citations for academic papers
+         - Remove for general publishing
+      2. Generate bibliography from cited sources
+      3. Check privacy compliance:
+         - Flag any personal information
+         - Flag unpublished private notes
+         - Warn if sensitive content referenced
+      4. Format for target platform:
+         - HTML for web
+         - LaTeX for academic
+         - Markdown for GitHub
+         - PDF for distribution
+      5. Create publication manifest:
+         - What was published
+         - Where it was published
+         - What notes were referenced
+         - Publication date
+    - [ ] Task: prepare-for-publication
+    - [ ] Template: publication-manifest-tmpl.yaml
+    - [ ] Checklist: publication-privacy-checklist.md
+    - [ ] Outputs: [formatted_content, bibliography, publication_manifest]
+    - [ ] Exit criteria: Content ready for publication
+
+  - [ ] Task 9: Define Phase 8 - Feedback Loop (AC7)
+    - [ ] Phase name: "Update Knowledge Base with Insights"
+    - [ ] Agent: User with Structural Analysis Agent
+    - [ ] Steps:
+      1. Review creation insights from Phase 5
+      2. What insights emerged during creation?
+      3. Were any assumptions challenged?
+      4. New connections discovered?
+      5. Did research reveal errors in notes?
+      6. Create new notes for novel insights
+      7. Update relevant notes with creation learnings
+      8. Add retrospective to CreativeOutput:
+         - What went well?
+         - What knowledge was missing?
+         - How can future creations improve?
+    - [ ] Outputs: [new_insight_notes, updated_notes, retrospective]
+    - [ ] Exit criteria: Knowledge base enriched with creation learnings
+
+  - [ ] Task 10: Create Mermaid diagram (AC6)
+    - [ ] Show project initiation through publication
+    - [ ] Highlight optional phases (gap filling, publication)
+    - [ ] Show feedback loop back to knowledge base
+    - [ ] Include decision points
+
+  - [ ] Task 11: Define success criteria (AC2)
+    - [ ] Success criteria:
+      - Content brief prepared with relevant notes
+      - Gaps identified and assessed
+      - Critical gaps filled (if needed)
+      - Content created using brief
+      - Usage tracked in Neo4j
+      - Content published (if applicable)
+      - Knowledge base updated with insights
+    - [ ] Quality indicators:
+      - Brief includes 10+ relevant notes
+      - Critical gaps addressed before creation
+      - Creation references knowledge base extensively
+      - New insights captured
+
+technical_notes: |
+  ## Workflow Structure
+
+  This workflow is **adaptive** based on:
+  - Creation type (article, presentation, code, etc.)
+  - Gap presence (skip Phase 4-5 if no gaps)
+  - Publication needs (skip Phase 7 if not publishing)
+
+  ## Creation Brief Structure
+
+  The content brief includes:
+  - **Suggested Outline**: Based on coverage in vault
+  - **Key Points**: Main concepts with supporting notes
+  - **Quotes & Citations**: Ready-to-use evidence
+  - **Gaps**: Missing information identified
+  - **Related MOCs**: For broader context
+  - **Temporal Context**: How understanding has evolved
+
+  ## Usage Tracking Benefits
+
+  Tracking which notes inform creative outputs enables:
+  - Understanding what knowledge is actually useful
+  - Identifying heavily-used vs unused notes
+  - Justifying research investments
+  - Finding gaps based on creation needs
+  - Building citation graphs
+
+  ## Neo4j CreativeOutput Node
+
+  ```cypher
+  CREATE (output:CreativeOutput {
+    id: "uuid",
+    type: "article",
+    title: "How to Build a Second Brain",
+    creation_date: "2025-11-05",
+    target_audience: "knowledge workers",
+    publication_status: "published",
+    publication_url: "https://example.com/article"
+  })
+
+  // Link notes used
+  MATCH (note:Note {id: "note-123"})
+  CREATE (note)-[:INFORMED_BY {weight: 0.8}]->(output)
+  ```
+
+  ## Privacy Compliance
+
+  Before publishing, check:
+  - Personal information (names, emails, private details)
+  - Unpublished private notes (work projects, sensitive topics)
+  - Copyright concerns (quoted material, images)
+  - Attribution requirements (properly cite sources)
+
+  ## Feedback Loop Philosophy
+
+  Creation is a **two-way street**:
+  - **KB → Content**: Knowledge base informs creation
+  - **Content → KB**: Creation reveals gaps and insights
+
+  The feedback loop ensures the knowledge base improves through use.
+
+  ## Integration Points
+
+  - Uses research-integration-workflow for gap filling
+  - Connects to knowledge-lifecycle-workflow (Phase 5: Creation)
+  - Leverages gap-detection from monthly-deep-review-workflow
+  - Feeds back into capture/organization phases
+
+dependencies:
+  - STORY-030: Content Brief Agent (Phase 3)
+  - STORY-030: Publication Formatter Agent (Phase 3)
+  - STORY-040: Gap Detector Agent (Phase 4)
+  - STORY-050: Research Coordinator Agent (Phase 5, optional)
+  - STORY-003: Structural Analysis Agent (for feedback loop)
+  - STORY-025: research-integration-workflow (for gap filling)
+  - Neo4j integration (for usage tracking) - optional
+  - STORY-011: Templates (content-brief-tmpl, publication-manifest-tmpl)
+  - STORY-012: Checklists (publication-privacy-checklist)
+
+testing:
+  - Test article creation workflow end-to-end
+  - Test presentation creation workflow
+  - Test code documentation workflow
+  - Test with no gaps (skip research phase)
+  - Test with critical gaps (trigger research)
+  - Test publication formatting for different platforms
+  - Validate usage tracking in Neo4j
+  - Test feedback loop note creation
+  - Validate privacy compliance checks
+  - Test bibliography generation
+
+definition_of_done:
+  - creation-project-workflow.yaml created
+  - All 8 phases defined with clear steps
+  - Optional phases properly conditioned
+  - Integration with agents documented
+  - Usage tracking in Neo4j specified
+  - Publication formatting defined
+  - Feedback loop implemented
+  - Mermaid diagram created and verified
+  - Success criteria defined
+  - Workflow tested for multiple creation types
+  - Documentation complete
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for creation project workflow
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

@@ -1,0 +1,552 @@
+---
+story_id: STORY-036
+title: Create Core Knowledge Bases
+epic_id: EPIC-001
+phase: 2-6
+priority: high
+estimated_effort: 36 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker and developer
+  I want comprehensive knowledge bases covering core system concepts
+  So that agents and users have complete reference documentation
+
+acceptance_criteria:
+  - Create 6 core knowledge bases
+  - neo4j-graphiti-guide.md (complete version)
+  - mcp-protocol-guide.md (MCP integration patterns)
+  - knowledge-graph-patterns.md (graph patterns and metrics)
+  - zettelkasten-implementation.md (detailed Zettelkasten guide)
+  - para-implementation.md (detailed PARA guide)
+  - quality-standards.md (complete quality criteria)
+  - All KBs include comprehensive content
+  - All KBs follow markdown format with clear sections
+  - All KBs include examples and usage guidance
+
+tasks_subtasks: |
+  - [ ] Task 1: Create neo4j-graphiti-guide.md (complete version) (AC2)
+    - [ ] Define KB metadata:
+      - Purpose: Technical details of Neo4j and Graphiti MCP
+      - Audience: Developers, power users
+      - Scope: Complete reference for Neo4j integration
+    - [ ] Section: Neo4j Fundamentals
+      - Graph database concepts (nodes, relationships, properties)
+      - Cypher query language basics:
+        - MATCH patterns
+        - WHERE clauses
+        - RETURN statements
+        - CREATE/MERGE operations
+        - Aggregations and sorting
+      - Indexing and performance optimization
+      - Data persistence and backup
+      - Neo4j Desktop vs Aura Cloud comparison
+      - Installation options (Docker, Desktop, Cloud)
+    - [ ] Section: Graphiti Architecture
+      - Bi-temporal tracking (4 timestamps):
+        - created_at: When entity/relationship first created
+        - expired_at: When entity/relationship became invalid
+        - valid_at: When fact became true in real world
+        - invalid_at: When fact stopped being true
+      - Episodic memory model
+      - Entity and relationship extraction
+      - Automatic contradiction detection
+      - Invalidation agent behavior
+      - Episode boundaries and contexts
+    - [ ] Section: Temporal Queries
+      - Time-travel queries (as-of date)
+      - Validity window queries
+      - Change detection queries
+      - Influence and causality queries
+      - Maturation metrics calculations
+      - Evolution timeline reconstruction
+      - Contradiction detection queries
+    - [ ] Section: Schema Design
+      - Node types:
+        - Note (atomic notes, MOCs, inbox notes)
+        - CaptureEvent (when content was captured)
+        - Date (temporal anchors)
+        - Source (external references)
+        - MOC (Maps of Content)
+        - Concept (extracted entities)
+        - Contradiction (conflicting claims)
+        - Gap (knowledge gaps)
+        - ResearchProject (research provenance)
+        - CreativeOutput (publications)
+      - Relationship types:
+        - CAPTURED_AT (note → capture event)
+        - EDITED_AT (note → edit event)
+        - LINKED_TO (note → note, bidirectional)
+        - CONCEPTUALLY_RELATED (semantic similarity)
+        - SYNTHESIZED_IN (note → MOC)
+        - INFLUENCED (source → note)
+        - SUPERSEDES (note → note, temporal)
+        - CONTRADICTS (note → contradiction)
+        - HAS_GAP (note → gap)
+        - FILLS_GAP (note → gap)
+        - ADDRESSES (research → gap)
+        - CREATED (research → note)
+        - INFORMED_BY (output → note)
+      - Property standards (timestamps, confidence scores, metadata)
+    - [ ] Section: Graphiti MCP Server
+      - Installation via Docker or Python
+      - Environment configuration (.env files)
+      - OpenAI API requirements (entity extraction)
+      - MCP tool endpoints:
+        - add_episode (create episodic memory)
+        - get_episodes (retrieve episodes)
+        - search_facts (semantic search in graph)
+        - add_entity (manual entity creation)
+        - add_relation (manual relationship creation)
+      - Performance considerations
+      - Graceful degradation (system works without Neo4j)
+    - [ ] Section: Integration Patterns
+      - When to use Neo4j vs Obsidian
+      - Dual-write patterns (write to both)
+      - Query routing logic
+      - Conflict resolution
+      - Backup and recovery
+    - [ ] Include Cypher examples for all common operations
+    - [ ] Include temporal query examples
+
+  - [ ] Task 2: Create mcp-protocol-guide.md (AC3)
+    - [ ] Define KB metadata:
+      - Purpose: Model Context Protocol integration patterns
+      - Audience: Developers
+      - Scope: MCP architecture and usage patterns
+    - [ ] Section: MCP Fundamentals
+      - Protocol specification overview
+      - Server-client architecture
+      - Tool discovery and invocation
+      - Resource management
+      - Prompt engineering for MCP tools
+      - JSON-RPC communication
+    - [ ] Section: Available MCP Servers
+      - Obsidian MCP Tools:
+        - Vault operations (create, read, update, delete)
+        - Search operations (text, tag, metadata)
+        - Graph queries (backlinks, outgoing links, orphans)
+      - Neo4j MCP (Graphiti):
+        - Graph database queries
+        - Temporal queries
+        - Entity/relationship management
+      - Smart Connections MCP:
+        - Semantic search
+        - Embedding queries
+        - Similarity calculations
+      - WebSearch MCP:
+        - External research
+        - Web content retrieval
+      - Perplexity MCP:
+        - Deep research queries
+        - Reasoning queries
+        - Quick search
+      - Context7 MCP:
+        - Documentation lookup
+        - Library reference
+    - [ ] Section: Integration Patterns
+      - Multi-server orchestration
+      - Error handling and retries
+      - Rate limiting and throttling
+      - Result caching strategies
+      - Authentication and security
+      - Tool selection logic
+    - [ ] Section: Agent-MCP Coordination
+      - Which agents use which MCP servers (mapping table)
+      - Tool selection logic by agent
+      - Fallback strategies (server unavailable)
+      - Parallel vs sequential tool calls
+      - Error handling patterns
+    - [ ] Include MCP tool invocation examples
+    - [ ] Include multi-tool orchestration patterns
+
+  - [ ] Task 3: Create knowledge-graph-patterns.md (AC4)
+    - [ ] Define KB metadata:
+      - Purpose: Common patterns in personal knowledge graphs
+      - Audience: All users, especially advanced users
+      - Scope: Graph patterns, metrics, and best practices
+    - [ ] Section: Relationship Types
+      - Supports: Note A provides evidence for Note B
+      - Contradicts: Note A conflicts with Note B
+      - Elaborates: Note A explains Note B in detail
+      - Analogous_to: Note A structurally similar to Note B
+      - Generalizes: Note A is broader case of Note B
+      - Specializes: Note A is specific instance of Note B
+      - Influences: Note A influenced creation/revision of Note B
+      - Supersedes: Note A replaces outdated Note B
+      - Refines: Note A is more precise version of Note B
+    - [ ] Section: Graph Metrics
+      - Node centrality (most-linked notes)
+      - Clustering coefficient (densely connected subgraphs)
+      - Shortest paths (conceptual distance)
+      - PageRank (note importance)
+      - Community detection (natural knowledge domains)
+      - Link density (avg links per note)
+      - Orphan detection
+      - Hub identification (highly connected notes)
+    - [ ] Section: Evolution Patterns
+      - Rapid development: Many edits in short timeframe
+      - Stable maturation: Edits slow, note promoted to evergreen
+      - Conceptual splits: One note fragments into multiple
+      - Synthesis: Multiple notes merge into MOC
+      - Paradigm shifts: Core assumption changes, cascading updates
+      - Accumulation: Steady growth over time
+      - Consolidation: Pruning and archiving
+    - [ ] Section: Anti-Patterns
+      - Link bombing: Excessive linking reduces signal
+      - Circular reasoning: A→B→C→A with no external support
+      - Orphaned clusters: Disconnected knowledge islands
+      - Stale evergreens: "Evergreen" notes that haven't been touched in years
+      - Tag proliferation: Too many overlapping tags
+      - Over-fragmentation: Notes too small to be meaningful
+      - Under-fragmentation: Notes too large, violating atomicity
+      - Hub overload: MOCs with >50 direct links
+    - [ ] Section: Quality Indicators
+      - Healthy link density: 3-5 links per note average
+      - Orphan rate: <5% of notes
+      - Evergreen update frequency: At least annually
+      - MOC coverage: >80% of notes in at least one MOC
+      - Source citation rate: >70% of claims have sources
+    - [ ] Include visualization examples
+    - [ ] Include Cypher queries for metrics
+
+  - [ ] Task 4: Create zettelkasten-implementation.md (AC5)
+    - [ ] Define KB metadata:
+      - Purpose: Detailed guide to implementing Zettelkasten in Obsidian
+      - Audience: Users wanting pure Zettelkasten approach
+      - Scope: Complete Zettelkasten implementation guide
+    - [ ] Section: Zettelkasten Principles
+      - History and principles (Niklas Luhmann)
+      - Atomicity as outcome vs input requirement
+      - Building block types (6 types: concept, argument, model, question, claim, phenomenon)
+      - Connection pressure principle
+      - Writing for future self
+    - [ ] Section: Note Types
+      - Fleeting notes: Quick captures, temporary
+      - Literature notes: Source-based notes with citations
+      - Permanent notes: Atomic, evergreen knowledge
+      - Structure notes: Navigation (similar to MOCs)
+      - Index notes: Entry points to domains
+    - [ ] Section: Atomic Note Structure
+      - Title: Descriptive statement (not just topic)
+      - Core claim: 1-2 sentence main idea
+      - Evidence/context: Supporting details
+      - Related concepts: Links to other notes
+      - Source attribution: Citations
+    - [ ] Section: Unique Identifier Schemes
+      - Timestamp-based: YYYYMMDDHHmmss
+      - Sequential: 001, 002, 003...
+      - Hybrid: YYYYMMDD-sequential
+      - Folgezettel: 1, 1a, 1b, 1a1...
+      - Pros/cons of each approach
+      - Obsidian integration (wikilinks vs UIDs)
+    - [ ] Section: Workflow
+      - Capture: Fleeting notes from any source
+      - Process: Transform to literature notes (if from source)
+      - Atomize: Create permanent atomic notes
+      - Link: Connect related concepts
+      - Synthesize: Create structure notes
+      - Review: Regular maintenance
+    - [ ] Section: Progressive Note Maturation
+      - Stage 1: Fleeting (rough capture)
+      - Stage 2: Literature (source processed)
+      - Stage 3: Permanent (atomic, refined)
+      - Stage 4: Evergreen (stable, well-connected)
+      - Stage 5: Synthesized (part of structure note)
+    - [ ] Section: Common Pitfalls and Solutions
+      - Pitfall: Over-processing at capture
+        - Solution: Capture quickly, process later
+      - Pitfall: Copying without thinking
+        - Solution: Always rephrase in your own words
+      - Pitfall: Link anxiety (connecting too early)
+        - Solution: Links emerge naturally during use
+      - Pitfall: Perfect note syndrome
+        - Solution: Notes evolve, start simple
+      - Pitfall: Isolation (not linking)
+        - Solution: Always add at least 2 links
+    - [ ] Include example note templates
+    - [ ] Include workflow diagrams
+
+  - [ ] Task 5: Create para-implementation.md (AC6)
+    - [ ] Define KB metadata:
+      - Purpose: Detailed guide to implementing PARA in Obsidian
+      - Audience: Users wanting actionability-focused organization
+      - Scope: Complete PARA implementation guide
+    - [ ] Section: PARA Principles
+      - Projects: Short-term efforts with goals
+      - Areas: Long-term responsibilities
+      - Resources: Topics of ongoing interest
+      - Archives: Inactive items from other categories
+      - Actionability-based organization philosophy
+    - [ ] Section: Folder Structure
+      - `/Projects/` - Active projects with deadlines
+      - `/Areas/` - Areas of responsibility
+      - `/Resources/` - Reference materials by topic
+      - `/Archives/` - Completed or inactive items
+      - Optional: `/Inbox/` for capture
+      - Integration with Zettelkasten (hybrid approach)
+    - [ ] Section: Project Lifecycle
+      - Define: Clear goal and deadline
+      - Active: Regular work toward goal
+      - Complete: Goal achieved, move to archive
+      - Archive: No longer active but preserved
+      - Project structure: Goals, tasks, notes, resources
+    - [ ] Section: Area of Responsibility Identification
+      - Personal areas: Health, finance, relationships
+      - Professional areas: Role-specific responsibilities
+      - Creative areas: Writing, art, hobbies
+      - Learning areas: Skills being developed
+      - Distinguishing areas from projects (ongoing vs finite)
+    - [ ] Section: Resource Organization
+      - By topic, not by source
+      - Cross-cutting topics (appear in multiple areas)
+      - Evergreen resources vs temporary references
+      - Integration with Zettelkasten atomic notes
+    - [ ] Section: Archive Management
+      - When to archive:
+        - Projects completed or abandoned
+        - Areas no longer relevant
+        - Resources no longer referenced
+      - Archive search strategies
+      - Archive review (annual cleanup)
+      - Resurrection (moving back from archive)
+    - [ ] Section: PARA + Zettelkasten Hybrid
+      - PARA for projects/actionability
+      - Zettelkasten for knowledge building
+      - Folder structure: PARA at top level, atomic notes cross-linked
+      - MOCs bridge PARA and Zettelkasten
+      - Example: Project note links to atomic knowledge notes
+    - [ ] Section: Integration with Daily Notes
+      - Daily notes reference active projects
+      - Task tracking within PARA structure
+      - Weekly review touches all projects and areas
+      - Monthly review for area health checks
+    - [ ] Include folder structure examples
+    - [ ] Include migration patterns
+
+  - [ ] Task 6: Create quality-standards.md (complete version) (AC7)
+    - [ ] Define KB metadata:
+      - Purpose: Define quality criteria for knowledge base content
+      - Audience: All agents (especially Quality Auditor)
+      - Scope: Complete quality standards reference
+    - [ ] Section: Accuracy Standards
+      - All factual claims must have sources
+      - Claims should have confidence levels (high/medium/low)
+      - Outdated information should be marked as superseded
+      - Contradictions should be identified and resolved
+      - Data should be verifiable
+      - Quotes must be exact and attributed
+    - [ ] Section: Completeness Standards
+      - Atomic notes must be self-contained
+      - MOCs must cover all notes in domain (≥80% coverage)
+      - Temporal records must have complete timestamps
+      - Arguments must have premises and conclusions
+      - Research gaps should be documented
+      - Context should be sufficient for future understanding
+    - [ ] Section: Consistency Standards
+      - Terminology usage consistent across vault
+      - Metadata formatting standardized (frontmatter)
+      - Link types clearly distinguished
+      - Date formats consistent (ISO 8601)
+      - Tag taxonomy followed (if using tags)
+      - File naming conventions followed
+    - [ ] Section: Freshness Standards
+      - Critical domain notes reviewed every 3 months
+      - Evergreen notes reviewed annually
+      - Stale notes (6+ months) flagged for review
+      - Temporal relevance checked (is info current?)
+      - Dead links identified and updated
+      - Superseded notes marked explicitly
+    - [ ] Section: Attribution Standards
+      - All quotes must have source
+      - Paraphrased content should cite source
+      - Synthesis notes should reference constituent notes
+      - Ideas from others attributed properly
+      - Personal insights marked as such
+      - Bibliography format consistent
+    - [ ] Section: Atomicity Standards
+      - One knowledge building block per note
+      - Building block type identified
+      - Core claim stated clearly
+      - No tangled ideas
+      - Self-contained explanation
+      - Links to related concepts (not full explanations)
+    - [ ] Section: Link Quality Standards
+      - Links represent genuine conceptual relationships
+      - Link types identified (supports, contradicts, etc.)
+      - Context explains why link exists
+      - Bidirectional links present
+      - No excessive linking (link bombing)
+      - No circular reasoning
+    - [ ] Section: Structural Standards
+      - Folder organization follows chosen methodology
+      - File naming descriptive and unique
+      - Frontmatter complete for note type
+      - Sections follow template structure
+      - Formatting consistent (headings, lists, etc.)
+      - No duplicated content
+    - [ ] Section: Privacy and Security Standards
+      - Private content marked appropriately
+      - No PII without consent
+      - Confidential information protected
+      - Source permissions verified for publication
+      - Sensitive data encrypted if necessary
+    - [ ] Section: Quality Metrics
+      - Link density: 3-5 links per note (target)
+      - Orphan rate: <5% (target)
+      - Atomicity compliance: >90% (target)
+      - Source citation rate: >70% (target)
+      - Freshness compliance: >85% (target)
+      - MOC coverage: >80% (target)
+    - [ ] Include quality scoring rubrics
+    - [ ] Include remediation guidance
+
+  - [ ] Task 7: Document KB format and usage (AC8)
+    - [ ] Define standard KB structure:
+      - Title and purpose
+      - Audience
+      - Scope
+      - Sections with clear headings
+      - Examples throughout
+      - Usage notes
+      - References
+    - [ ] Document KB versioning strategy
+    - [ ] Create KB maintenance guidelines
+    - [ ] Define KB review frequency
+
+technical_notes: |
+  ## Knowledge Base Design Philosophy
+
+  Core knowledge bases provide **foundational reference** for:
+  - Technical integration (Neo4j, MCP)
+  - Methodology implementation (Zettelkasten, PARA)
+  - Graph patterns and metrics
+  - Quality standards and criteria
+
+  ## KB vs Agent Documentation
+
+  **Knowledge Bases:**
+  - Comprehensive reference material
+  - Explain concepts and principles
+  - Provide examples and patterns
+  - Used by multiple agents
+  - Updated infrequently
+
+  **Agent Instructions:**
+  - Task-specific procedures
+  - Step-by-step workflows
+  - Agent-specific context
+  - Updated frequently
+
+  ## KB Integration with Agents
+
+  Agents load KBs via dependencies:
+  ```yaml
+  dependencies:
+    data:
+      - neo4j-graphiti-guide.md
+      - knowledge-graph-patterns.md
+  ```
+
+  Agent prompts reference KB content:
+  "Refer to neo4j-graphiti-guide.md for Cypher query patterns"
+
+  ## Neo4j Bi-Temporal Model
+
+  **Four Timestamps:**
+  - `created_at`: When we first recorded this fact
+  - `expired_at`: When we stopped believing this fact
+  - `valid_at`: When the fact became true in reality
+  - `invalid_at`: When the fact stopped being true in reality
+
+  **Example:**
+  ```cypher
+  // Create temporal entity
+  CREATE (e:Entity {
+    name: "My understanding of X",
+    created_at: "2024-01-15T10:00:00Z",  // When I first captured this
+    valid_at: "2024-01-10T00:00:00Z",    // When this became true for me
+    expired_at: null,                     // Still current
+    invalid_at: null                      // Still valid
+  })
+
+  // Invalidate when understanding changes
+  MATCH (e:Entity {name: "My understanding of X"})
+  SET e.expired_at = "2024-03-20T14:30:00Z"
+  SET e.invalid_at = "2024-03-20T14:30:00Z"
+  ```
+
+  ## PARA + Zettelkasten Hybrid
+
+  **Best of both worlds:**
+  - PARA provides actionability structure
+  - Zettelkasten provides knowledge depth
+  - MOCs bridge the two systems
+  - Projects reference atomic knowledge notes
+  - Atomic notes cross-link beyond project boundaries
+
+  **Example Structure:**
+  ```
+  /Projects/
+    /Project-A/
+      project-plan.md → links to atomic notes
+  /Areas/
+    /Area-X/
+      area-overview.md → links to MOCs and atomic notes
+  /Resources/
+    /Topic-Y/
+      moc-topic-y.md → organizes atomic notes
+  /Zettelkasten/
+    /atomic-note-001.md
+    /atomic-note-002.md
+  ```
+
+dependencies:
+  - All agents reference these knowledge bases
+  - Phase 2+ agents especially need complete versions
+  - Neo4j integration requires neo4j-graphiti-guide.md
+  - MCP integrations require mcp-protocol-guide.md
+  - Methodology agents require zettelkasten-implementation.md and para-implementation.md
+  - Quality Auditor Agent requires quality-standards.md
+  - All agents benefit from knowledge-graph-patterns.md
+
+testing:
+  - Validate all KB content against requirements
+  - Test Cypher queries in Neo4j
+  - Verify MCP tool examples
+  - Test Zettelkasten workflow patterns
+  - Validate PARA folder structures
+  - Test quality standards checklists
+  - Verify graph pattern queries
+  - Test KB loading by agents
+  - Validate all examples and code snippets
+
+definition_of_done:
+  - All 6 core knowledge bases created in data/ directory
+  - neo4j-graphiti-guide.md (complete) with all sections
+  - mcp-protocol-guide.md with all MCP servers documented
+  - knowledge-graph-patterns.md with patterns and metrics
+  - zettelkasten-implementation.md with complete workflow
+  - para-implementation.md with complete implementation guide
+  - quality-standards.md with all quality criteria
+  - All KBs follow standard format
+  - All KBs include comprehensive examples
+  - All Cypher queries tested
+  - All code examples validated
+  - KB integration with agents verified
+  - Documentation complete
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for core knowledge bases
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

@@ -1,0 +1,562 @@
+---
+story_id: STORY-001
+title: Create BMAD Obsidian 2nd Brain Expansion Pack Infrastructure
+epic_id: EPIC-001
+phase: 1
+priority: critical
+estimated_effort: 8 hours
+status: Done
+created: 2025-11-04
+
+user_story: |
+  As a developer
+  I want to set up the expansion pack directory structure and configuration
+  So that the BMAD framework can discover and load the Obsidian 2nd Brain expansion pack
+
+acceptance_criteria:
+  - "AC1: Create bmad-obsidian-2nd-brain/ directory in expansion-packs/"
+  - "AC2: Create standard subdirectories - agents/, tasks/, templates/, checklists/, workflows/, data/, docs/"
+  - "AC3: Create tasks/ directory with flat structure (no subdirectories per BMAD requirement)"
+  - "AC4: Create config.yaml with expansion pack metadata"
+  - "AC5: Create README.md with expansion pack overview and quickstart"
+  - "AC6: Create CHANGELOG.md for version tracking"
+  - "AC7: Verify expansion pack discoverable by BMAD build system"
+  - "AC8: Run npm run validate to ensure structure is correct"
+
+tasks_subtasks: |
+  - [x] Task 1: Create expansion pack directory structure (AC1, AC2, AC3)
+    - [x] Navigate to /Users/jmagady/Dev/BMAD-METHOD/expansion-packs/
+    - [x] Create directory: bmad-obsidian-2nd-brain/
+    - [x] Create subdirectory: agents/
+    - [x] Create subdirectory: agent-teams/
+    - [x] Create subdirectory: templates/
+    - [x] Create subdirectory: checklists/
+    - [x] Create subdirectory: workflows/
+    - [x] Create subdirectory: data/
+    - [x] Create subdirectory: docs/
+    - [x] Create subdirectory: tasks/ (flat structure - no subdirectories)
+    - [x] Verify all directories created successfully
+
+  - [x] Task 2: Create config.yaml with proper structure (AC4)
+    - [x] Create file: bmad-obsidian-2nd-brain/config.yaml
+    - [x] Add name: bmad-obsidian-2nd-brain
+    - [x] Add version: 1.0.0
+    - [x] Add short-title: Obsidian 2nd Brain
+    - [x] Add description with expansion pack summary
+    - [x] Add author field
+    - [x] Add slashPrefix: bmad-2b
+    - [x] Add vault configuration section (inbox, archive, mocs, daily_notes, periodic_reviews)
+    - [x] Add neo4j configuration section (enabled, uri, username, password, database)
+    - [x] Add required_plugins list (Smart Connections, MCP Tools, Local REST API, Dataview, Templater)
+    - [x] Add mcp_servers section (obsidian-mcp, graphiti-mcp, perplexity, context7)
+    - [x] Add agents configuration section (yolo_mode_default, auto_link_threshold)
+    - [x] Add quality_thresholds section (atomic_score_min, link_density_min, staleness_threshold_days)
+    - [x] Validate YAML syntax
+
+  - [x] Task 3: Create README.md with quickstart guide (AC5)
+    - [x] Create file: bmad-obsidian-2nd-brain/README.md
+    - [x] Add title and overview section
+    - [x] Add key capabilities bullet list
+    - [x] Add prerequisites section (BMAD core, Obsidian, Node.js, Docker optional)
+    - [x] Add quick start installation steps
+    - [x] Add available agents section (to be populated in future stories)
+    - [x] Add workflows section (to be populated in future stories)
+    - [x] Add configuration section linking to config.yaml
+    - [x] Add troubleshooting section (basic)
+    - [x] Add links to documentation
+    - [x] Add contributing section
+    - [x] Add license information
+
+  - [x] Task 4: Create CHANGELOG.md (AC6)
+    - [x] Create file: bmad-obsidian-2nd-brain/CHANGELOG.md
+    - [x] Add changelog header and format guide
+    - [x] Add [Unreleased] section
+    - [x] Add [1.0.0] - 2025-11-04 section
+    - [x] Add "Initial infrastructure setup" entry under Added
+    - [x] Add "Expansion pack directory structure" entry
+    - [x] Add "Config.yaml with vault and Neo4j settings" entry
+    - [x] Add "README.md with quickstart guide" entry
+
+  - [x] Task 5: Verify BMAD build system integration (AC7, AC8)
+    - [x] Run: npm run validate
+    - [x] Check for validation errors specific to bmad-obsidian-2nd-brain
+    - [x] Run: npm run build
+    - [x] Verify dist/expansion-packs/bmad-obsidian-2nd-brain/ is created
+    - [x] Check build output for any warnings or errors
+    - [x] Run: npm run list:agents (if command exists)
+    - [x] Verify bmad-2b prefix is recognized (agents will be empty for now)
+    - [x] Document any issues encountered in completion notes
+
+dev_notes: |
+  ## Project Context
+
+  This is a GREENFIELD story creating NEW expansion pack infrastructure from scratch. The expansion pack directory and all its contents do not exist yet and will be created as part of this story.
+
+  ## BMAD Expansion Pack Structure
+
+  **Location:** All expansion packs live in `/Users/jmagady/Dev/BMAD-METHOD/expansion-packs/`
+
+  **Reference Example:** `/Users/jmagady/Dev/BMAD-METHOD/expansion-packs/bmad-creative-writing/`
+  - Use this as a structural reference for TOP-LEVEL directory layout
+  - NOTE: All folders (tasks, templates, checklists, etc.) use FLAT structure - no subdirectories
+  - Task files are placed directly in tasks/ folder (e.g., tasks/capture-inbox.md, NOT tasks/capture/capture-inbox.md)
+  - Note: It has config.yaml and README.md but no package.json or CHANGELOG.md
+  - Our expansion pack will add CHANGELOG.md as a new standard
+
+  **Standard Expansion Pack Contents:**
+  - config.yaml - Metadata and configuration (REQUIRED)
+  - README.md - Overview and quickstart (REQUIRED)
+  - CHANGELOG.md - Version history (NEW STANDARD)
+  - agents/ - Agent definition files (.md with YAML frontmatter)
+  - agent-teams/ - Team bundle definitions
+  - tasks/ - Reusable workflow procedures (.md files)
+  - templates/ - Document templates (.yaml files)
+  - checklists/ - Quality assurance checklists (.md files)
+  - workflows/ - Project workflow definitions (.yaml files)
+  - data/ - Knowledge base and reference data (.md files)
+  - docs/ - Additional documentation
+
+  ## Config.yaml Structure (from requirements doc Appendix C)
+
+  The config.yaml file must follow this structure (reference: `/manuscripts/bmad-obsidian-2nd-brain-requirements.md` Appendix C):
+
+  ```yaml
+  # BMAD Obsidian 2nd Brain Expansion Pack Configuration
+  name: bmad-obsidian-2nd-brain
+  version: 1.0.0
+  short-title: Obsidian 2nd Brain
+  description: >-
+    Transform Obsidian into a powerful second brain with temporal RAG architecture.
+    Combines semantic search with bi-temporal graph database for knowledge evolution tracking.
+  author: BMAD Team
+  slashPrefix: bmad-2b
+
+  # Vault directory structure configuration
+  vault:
+    inbox: inbox
+    archive: archive
+    mocs: mocs
+    daily_notes: daily-notes
+    periodic_reviews: reviews
+
+  # Neo4j configuration (optional)
+  neo4j:
+    enabled: true  # Set to false for Obsidian-only mode
+    uri: bolt://localhost:7687
+    username: neo4j
+    password: changeme
+    database: obsidian
+
+  # Required Obsidian plugins
+  required_plugins:
+    - name: Smart Connections
+      purpose: Local semantic search
+    - name: MCP Tools
+      purpose: Claude integration
+    - name: Local REST API
+      purpose: External tool access
+    - name: Dataview
+      purpose: Dynamic queries
+    - name: Templater
+      purpose: Note templates
+
+  # MCP servers configuration
+  mcp_servers:
+    - name: obsidian-mcp
+      purpose: Vault operations
+    - name: graphiti-mcp
+      purpose: Temporal graph database
+    - name: perplexity
+      purpose: External research
+    - name: context7
+      purpose: Documentation lookup
+
+  # Agent configurations
+  agents:
+    yolo_mode_default: false
+    auto_link_threshold: 0.8
+
+  # Quality thresholds
+  quality_thresholds:
+    atomic_score_min: 0.7
+    link_density_min: 0.3
+    staleness_threshold_days: 90
+  ```
+
+  ## Build System Integration
+
+  **Builder Location:** `/Users/jmagady/Dev/BMAD-METHOD/tools/builders/web-builder.js`
+  - Automatically discovers expansion packs in `/expansion-packs/` directory
+  - Reads config.yaml for metadata (name, version, slashPrefix)
+  - Bundles agents/teams into .txt files for web UI
+  - Outputs to `/dist/expansion-packs/<pack-name>/`
+
+  **Validation System:**
+  - `npm run validate` - Runs validation across all expansion packs
+  - Checks for required files (config.yaml at minimum)
+  - Validates YAML syntax
+  - Verifies agent dependencies
+
+  **Build Commands:**
+  - `npm run build` - Builds all agents and expansion packs
+  - `npm run build:agents` - Builds only agent bundles
+  - `npm run build:teams` - Builds only team bundles
+
+  ## Tasks Directory Structure
+
+  **CRITICAL:** Tasks MUST be in a flat directory structure (no subdirectories).
+
+  The BMAD dependency resolver expects: `expansion-packs/{pack-name}/tasks/{task-file}.md`
+
+  For logical organization, use file naming prefixes:
+  - capture-*.md (e.g., capture-triage-inbox.md)
+  - organize-*.md (e.g., organize-auto-link.md)
+  - synthesis-*.md (e.g., synthesis-build-moc.md)
+  - retrieve-*.md (e.g., retrieve-semantic-search.md)
+  - create-*.md (e.g., create-content-brief.md)
+  - review-*.md (e.g., review-quality-audit.md)
+  - temporal-*.md (e.g., temporal-evolution-analysis.md)
+  - gap-*.md (e.g., gap-detect-knowledge-gaps.md)
+  - publish-*.md (e.g., publish-format-content.md)
+
+  **Rationale:** The build system's dependency-resolver.js (line 124) uses
+  `path.join(this.bmadCore, type, id)` which expects flat structure.
+  All existing expansion packs follow this pattern.
+
+  ## Implementation Notes
+
+  **File Creation Sequence:**
+  1. Create all directories first (parent before children)
+  2. Create config.yaml second (required for discovery)
+  3. Create README.md and CHANGELOG.md
+  4. Run validation to verify structure
+
+  **No Code Dependencies:**
+  - This expansion pack is pure markdown/YAML like other BMAD expansion packs
+  - No package.json needed (MCP server deps documented in README, installed separately)
+  - No build artifacts to create beyond directory structure
+
+  **Greenfield Considerations:**
+  - All directories will be empty except for the root-level config/README/CHANGELOG files
+  - Future stories will populate agents/, tasks/, templates/, etc.
+  - This story establishes the foundation for all subsequent development
+
+testing:
+  validation_steps:
+    - Run `npm run validate` from BMAD-METHOD root directory
+    - Expected: No validation errors for bmad-obsidian-2nd-brain
+    - Check output for "Validating expansion pack: bmad-obsidian-2nd-brain" message
+    - Verify config.yaml is recognized and parsed successfully
+
+  build_verification:
+    - Run `npm run build` from BMAD-METHOD root directory
+    - Expected: Build completes without errors
+    - Check `dist/expansion-packs/bmad-obsidian-2nd-brain/` directory exists
+    - Verify config.yaml is copied to dist folder
+
+  structure_verification:
+    - Use `tree expansion-packs/bmad-obsidian-2nd-brain/` or `ls -R`
+    - Verify all required directories exist
+    - Verify tasks/ folder contains NO subdirectories (must be flat)
+    - Verify config.yaml, README.md, CHANGELOG.md files exist
+
+  config_syntax_validation:
+    - Run `cat expansion-packs/bmad-obsidian-2nd-brain/config.yaml | grep -E "name:|version:|slashPrefix:"`
+    - Expected: All required fields present with correct values
+    - Manually verify YAML syntax is valid (proper indentation, no tabs)
+
+  discoverable_verification:
+    - After build, check if slashPrefix is recognized
+    - "In future: /bmad-2b: should be valid prefix for agents"
+    - "For now: Just verify build includes the expansion pack in output"
+
+dependencies:
+  - BMAD-METHOD core framework v4.x+ installed at /Users/jmagady/Dev/BMAD-METHOD/
+  - Write access to expansion-packs/ directory
+  - Node.js and npm installed (for running build/validate commands)
+  - Understanding of BMAD expansion pack structure (reference bmad-creative-writing)
+
+change_log:
+  - date: 2025-11-04
+    version: 1.0.0
+    description: Initial story creation for expansion pack infrastructure
+    author: Product Owner
+  - date: 2025-11-04
+    version: 1.1.0
+    description: Fixed tasks directory structure to use flat layout per BMAD framework requirement
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+
+  ## Agent Model Used
+  Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
+
+  ## Debug Log References
+  No debug log entries required - infrastructure setup completed without issues.
+
+  ## Completion Notes
+  Successfully created complete BMAD Obsidian 2nd Brain expansion pack infrastructure.
+
+  **All Acceptance Criteria Met:**
+  - AC1-AC3: Directory structure created with all required subdirectories in flat layout
+  - AC4: config.yaml created with complete metadata, vault config, Neo4j settings, plugin requirements, MCP servers, agent configs, and quality thresholds
+  - AC5: README.md created with comprehensive quickstart guide, prerequisites, configuration details, and troubleshooting
+  - AC6: CHANGELOG.md created following Keep a Changelog format with v1.0.0 initial release entry
+  - AC7: Verified expansion pack is discoverable by BMAD build system (appears in build output)
+  - AC8: npm run validate passed successfully with no errors
+
+  **Build System Integration Verified:**
+  - Expansion pack detected by web-builder.js
+  - config.yaml parsed successfully
+  - slashPrefix "bmad-2b" registered
+  - Warning about empty agent-teams/ is expected (no agents created yet)
+
+  **Infrastructure Ready:**
+  - Foundation established for future agent, task, template, and workflow development
+  - All directories follow BMAD flat structure requirement
+  - No package.json needed (MCP dependencies documented in README)
+
+  **No Issues Encountered:**
+  - All validations passed
+  - Build system integration successful
+  - Directory structure matches BMAD conventions
+  - YAML syntax validated
+
+  ## File List
+  **Created Files:**
+  - expansion-packs/bmad-obsidian-2nd-brain/config.yaml
+  - expansion-packs/bmad-obsidian-2nd-brain/README.md
+  - expansion-packs/bmad-obsidian-2nd-brain/CHANGELOG.md
+
+  **Created Directories:**
+  - expansion-packs/bmad-obsidian-2nd-brain/
+  - expansion-packs/bmad-obsidian-2nd-brain/agents/
+  - expansion-packs/bmad-obsidian-2nd-brain/agent-teams/
+  - expansion-packs/bmad-obsidian-2nd-brain/tasks/
+  - expansion-packs/bmad-obsidian-2nd-brain/templates/
+  - expansion-packs/bmad-obsidian-2nd-brain/checklists/
+  - expansion-packs/bmad-obsidian-2nd-brain/workflows/
+  - expansion-packs/bmad-obsidian-2nd-brain/data/
+  - expansion-packs/bmad-obsidian-2nd-brain/docs/
+
+  **Modified Files:**
+  - manuscripts/stories/obsidian-2nd-brain/STORY-001-expansion-pack-infrastructure.yaml (this file - tasks marked complete, dev_agent_record updated, status changed to Ready for Review)
+
+qa_results: |
+  # QA Results
+
+  ## Review Date: 2025-11-04
+
+  ## Reviewed By: Quinn (Test Architect)
+
+  ## Risk Assessment
+
+  **Story Characteristics:**
+  - Type: Greenfield infrastructure setup
+  - Complexity: Low (configuration and directory creation)
+  - Risk Triggers: >5 ACs (8 total) - but appropriate for infrastructure scope
+  - Files Changed: 3 config/docs + 9 directories
+  - Testing Strategy: Validation testing (npm run validate, build verification)
+
+  **Risk Level: LOW**
+  - No executable code involved
+  - No security-sensitive logic
+  - All changes are declarative (YAML/Markdown)
+  - Validation passed successfully
+
+  ## Code Quality Assessment
+
+  This story creates the foundational infrastructure for the BMAD Obsidian 2nd Brain expansion pack. The implementation is **exemplary** for an infrastructure setup story.
+
+  **config.yaml (61 lines):**
+  - ✅ Matches specification from requirements doc (Appendix C) exactly
+  - ✅ All required sections present (vault, neo4j, required_plugins, mcp_servers, agents, quality_thresholds)
+  - ✅ Valid YAML syntax with proper indentation
+  - ✅ Appropriate default values
+  - ✅ Secure placeholder password ("changeme" - good practice to require user change)
+  - ✅ Clear inline comments
+  - ✅ Logical section organization
+
+  **README.md (178 lines):**
+  - ✅ Comprehensive overview of expansion pack purpose
+  - ✅ Clear prerequisites section
+  - ✅ Step-by-step quickstart guide with actual commands
+  - ✅ Practical troubleshooting section covering common issues
+  - ✅ Proper documentation links
+  - ✅ Professional structure and formatting
+  - ✅ Realistic about current state (notes agents/workflows coming in future)
+
+  **CHANGELOG.md (43 lines):**
+  - ✅ Follows Keep a Changelog standard format
+  - ✅ Proper semantic versioning
+  - ✅ Clear initial release entry with comprehensive added items
+  - ✅ Unreleased section for future planning
+  - ✅ Proper GitHub release links
+
+  **Directory Structure:**
+  - ✅ All 9 required directories created (agents/, agent-teams/, tasks/, templates/, checklists/, workflows/, data/, docs/)
+  - ✅ **CRITICAL**: tasks/ uses flat structure (no subdirectories) per BMAD framework requirement
+  - ✅ No package.json (correct - pure markdown/YAML expansion pack)
+  - ✅ Follows bmad-creative-writing reference structure
+
+  ## Refactoring Performed
+
+  **No refactoring required.** This is infrastructure setup with no executable code. All configuration files are well-structured and follow established conventions.
+
+  ## Compliance Check
+
+  - **BMAD Expansion Pack Standards**: ✅ PASS
+    - Correct directory location (expansion-packs/bmad-obsidian-2nd-brain/)
+    - All standard subdirectories present
+    - config.yaml with required fields (name, version, short-title, description, author, slashPrefix)
+    - README.md and CHANGELOG.md present
+
+  - **BMAD Build System Integration**: ✅ PASS
+    - Expansion pack discoverable by web-builder.js
+    - slashPrefix "bmad-2b" registered
+    - npm run validate passed with no errors
+    - npm run build successful
+
+  - **Critical Framework Requirements**: ✅ PASS
+    - **Tasks directory flat structure** (no subdirectories) - VERIFIED
+    - Config.yaml follows established pattern
+    - No code dependencies (pure markdown/YAML)
+
+  - **All Acceptance Criteria Met**: ✅ PASS (8/8)
+    - AC1: bmad-obsidian-2nd-brain/ directory created ✅
+    - AC2: Standard subdirectories created ✅
+    - AC3: tasks/ flat structure (no subdirectories) ✅
+    - AC4: config.yaml with complete metadata ✅
+    - AC5: README.md with overview and quickstart ✅
+    - AC6: CHANGELOG.md for version tracking ✅
+    - AC7: BMAD build system discovery verified ✅
+    - AC8: npm run validate successful ✅
+
+  ## Requirements Traceability
+
+  **All 8 Acceptance Criteria → Validation Tests:**
+
+  | AC | Requirement | Validation Method | Result |
+  |---|---|---|---|
+  | AC1 | Create bmad-obsidian-2nd-brain/ directory | Directory existence check (tree command) | ✅ PASS |
+  | AC2 | Create standard subdirectories | Directory structure verification | ✅ PASS |
+  | AC3 | tasks/ flat structure | Verify no subdirectories in tasks/ | ✅ PASS |
+  | AC4 | config.yaml with metadata | YAML syntax validation + content verification | ✅ PASS |
+  | AC5 | README.md with overview | File existence + content structure check | ✅ PASS |
+  | AC6 | CHANGELOG.md for tracking | File existence + format validation | ✅ PASS |
+  | AC7 | BMAD build system discovery | npm run build output check | ✅ PASS |
+  | AC8 | npm run validate passes | Validation execution | ✅ PASS |
+
+  **Coverage: 100%** - All acceptance criteria have corresponding validation steps and all passed.
+
+  ## Test Architecture Assessment
+
+  **Testing Strategy: Validation Testing (Appropriate for Infrastructure Stories)**
+
+  For infrastructure setup stories involving configuration and directory creation, the appropriate testing strategy is:
+  - ✅ Validation testing (npm run validate)
+  - ✅ Build verification (npm run build)
+  - ✅ Structure verification (directory existence, file syntax)
+  - ✅ Integration testing (build system recognition)
+
+  **Not Required:**
+  - ❌ Unit tests (no executable code)
+  - ❌ Integration tests (no API endpoints)
+  - ❌ E2E tests (no user flows)
+
+  **Assessment: EXCELLENT** - Testing strategy perfectly matches story type.
+
+  ## Non-Functional Requirements (NFRs)
+
+  ### Security
+  **Status: PASS**
+  - No security vulnerabilities (no executable code)
+  - Password placeholder "changeme" requires user to set actual password (good security practice)
+  - No secrets committed to repository
+  - Neo4j credentials clearly marked as configurable
+
+  ### Performance
+  **Status: N/A**
+  - No executable code to assess
+  - Configuration files are minimal (61-178 lines each)
+
+  ### Reliability
+  **Status: PASS**
+  - Simple directory and file structure with no dependencies
+  - YAML syntax validated
+  - Build system integration tested
+  - Clear error handling in README troubleshooting section
+
+  ### Maintainability
+  **Status: PASS**
+  - Well-organized directory structure following established conventions
+  - Comprehensive README documentation
+  - Version tracking via CHANGELOG
+  - Clear configuration structure with inline comments
+  - Follows Keep a Changelog and Semantic Versioning standards
+
+  ## Technical Debt Identification
+
+  **No technical debt identified.** This is a clean greenfield implementation that establishes a solid foundation for future development.
+
+  **Positive Patterns to Maintain:**
+  - Clear documentation
+  - Standards compliance
+  - Comprehensive configuration
+  - Version tracking from day one
+
+  ## Improvements Checklist
+
+  **All items complete - no additional work required:**
+
+  - [x] Directory structure created per BMAD standards
+  - [x] config.yaml matches specification exactly
+  - [x] README.md comprehensive and professional
+  - [x] CHANGELOG.md following Keep a Changelog format
+  - [x] Build system integration verified
+  - [x] Validation passing
+  - [x] Tasks directory flat structure (critical requirement)
+  - [x] Documentation complete
+
+  ## Security Review
+
+  **No security concerns identified.**
+
+  - Configuration uses secure defaults (password placeholder)
+  - No hardcoded credentials
+  - Neo4j optional (can be disabled)
+  - Clear documentation on security-relevant settings
+
+  ## Performance Considerations
+
+  **N/A for infrastructure story.** No performance concerns for static configuration files.
+
+  ## Files Modified During Review
+
+  **None.** All implementation is correct as delivered. No refactoring or fixes needed.
+
+  ## Gate Status
+
+  **Gate: PASS** → docs/qa/gates/EPIC-001.STORY-001-expansion-pack-infrastructure.yml
+
+  **Justification:**
+  - All 8 acceptance criteria met and validated
+  - All compliance checks passed
+  - No issues identified (security, reliability, maintainability all PASS)
+  - Testing strategy appropriate for story type
+  - Build system integration successful
+  - Clean, professional implementation following all framework standards
+
+  ## Recommended Status
+
+  **✅ Ready for Done**
+
+  This story is complete and ready to merge. The expansion pack infrastructure is solid, well-documented, and properly integrated with the BMAD build system. Future stories can now safely build agents, tasks, templates, and workflows on this foundation.
+
+  **Commendations:**
+  - Excellent attention to detail in matching the specification
+  - Comprehensive documentation from day one
+  - Proper version tracking established
+  - Critical flat directory structure requirement followed
+  - Professional README with realistic quickstart guide

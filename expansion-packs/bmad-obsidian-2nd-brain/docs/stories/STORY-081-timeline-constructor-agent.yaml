@@ -1,0 +1,509 @@
+---
+story_id: STORY-081
+title: Timeline Constructor Agent (Phase 2)
+epic_id: EPIC-001
+phase: 2
+priority: high
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want an AI agent that tracks how my understanding evolves over time
+  So that I can see conceptual shifts, learning patterns, and knowledge maturation
+
+acceptance_criteria:
+  - Timeline Constructor Agent markdown file created
+  - Agent can analyze note evolution over time
+  - Agent can identify key shifts in understanding
+  - Agent can create temporal narratives showing evolution
+  - Agent can generate timeline visualizations (Mermaid diagrams)
+  - Agent validates timelines using temporal-accuracy-checklist
+  - Agent validates narratives using narrative-completeness-checklist
+  - Agent uses temporal-narrative-tmpl.yaml for output
+  - Agent integrates with Neo4j for temporal graph queries (optional)
+  - Agent identifies shift triggers (sources, contradictions, synthesis)
+
+tasks_subtasks: |
+  - [ ] Task 1: Define Timeline Constructor Agent persona and capabilities (AC1)
+    - [ ] Create agent markdown file: timeline-constructor-agent.md
+    - [ ] Define agent purpose:
+      - Track conceptual evolution over time
+      - Identify shifts in understanding
+      - Create temporal narratives
+      - Visualize knowledge maturation
+      - Enable meta-cognitive insights
+    - [ ] Define core capabilities:
+      - Temporal analysis (note history, edit patterns)
+      - Shift detection (when understanding changed)
+      - Trigger identification (what caused shifts)
+      - Narrative construction (story of learning)
+      - Timeline visualization (Mermaid diagrams)
+      - Maturation tracking (days from initial to current understanding)
+    - [ ] Define activation triggers:
+      - User requests "Show evolution of concept X"
+      - Monthly Deep Review includes temporal analysis
+      - Research Integration reveals understanding shift
+      - Contradiction resolution changes conceptual framing
+      - User wants to understand learning patterns
+    - [ ] Define agent personality:
+      - Temporal detective
+      - Pattern-seeking meta-cognitive guide
+      - Story-oriented synthesizer
+      - Evolution-focused analyst
+
+  - [ ] Task 2: Define temporal analysis process (AC2)
+    - [ ] Data Collection:
+      - Extract note creation dates (frontmatter, file metadata)
+      - Extract note modification history (git history, file timestamps)
+      - Query Neo4j for temporal events (if enabled):
+        * Capture events (when note created)
+        * Modification events (when note edited)
+        * Link creation events (when relationships established)
+        * Source citation events (when evidence added)
+      - Identify related notes across time (versions, revisions, synthesis notes)
+    - [ ] Evolution Phase Identification:
+      - **Initial Understanding**: First note on concept
+      - **Shifts**: Significant changes in framing or interpretation
+      - **Current Understanding**: Most recent state
+      - Maturation days: Date span from initial to current
+    - [ ] Shift Detection Criteria:
+      - Major content changes (>30% rewrite)
+      - Conceptual reframing (definition or core claims changed)
+      - Contradiction resolution (conflicting claims reconciled)
+      - New evidence integrated (sources added that change conclusion)
+      - Synthesis from multiple sources (combining prior separate notes)
+
+  - [ ] Task 3: Define shift trigger identification (AC10)
+    - [ ] Trigger Types:
+      - **Source-Driven**: New source provided new information
+        * Example: Read paper X, changed understanding of Y
+      - **Contradiction-Driven**: Resolving conflict forced reconceptualization
+        * Example: Note A and Note B contradicted, synthesis resolved it
+      - **Synthesis-Driven**: Combining multiple ideas revealed new insight
+        * Example: Connecting concept X and Y revealed pattern Z
+      - **Experience-Driven**: Real-world application changed perspective
+        * Example: Implementing X in project revealed limitation Y
+      - **Question-Driven**: Answering emerging question led to shift
+        * Example: Investigating "Why X?" led to discovering Y
+    - [ ] Trigger Documentation:
+      - What: Specific event or input
+      - When: Date of trigger
+      - How: Mechanism of change (what aspect shifted)
+      - Evidence: Link to source, note, or event that triggered shift
+    - [ ] Trigger Analysis:
+      - Identify most common trigger types (learning pattern)
+      - Track trigger → shift latency (how long to integrate new information)
+      - Assess trigger quality (did shift improve understanding?)
+
+  - [ ] Task 4: Define timeline narrative construction (AC3, AC4)
+    - [ ] Narrative Structure:
+      - **Initial Understanding**: How concept was first understood
+        * Date
+        * Key claims
+        * Confidence level
+        * Sources (if any)
+      - **Key Shifts**: Significant changes over time
+        * Date
+        * What changed (specific aspect of understanding)
+        * Trigger (what caused shift)
+        * Old vs New framing
+        * Confidence level change
+      - **Current Understanding**: Where understanding stands now
+        * Date
+        * Key claims
+        * Confidence level
+        * Sources
+        * Remaining questions
+    - [ ] Narrative Qualities:
+      - Chronological flow (shifts ordered by date)
+      - Causal explanations (why shifts occurred)
+      - Source attribution (evidence for claims)
+      - Confidence tracking (certainty evolution)
+      - Question tracking (resolved vs emerging questions)
+    - [ ] Meta-Insights:
+      - Learning patterns (how this person learns)
+      - Maturation speed (days from initial to stable understanding)
+      - Trigger preferences (source-driven vs synthesis-driven learner)
+      - Confidence calibration (does confidence match accuracy?)
+
+  - [ ] Task 5: Define timeline visualization (AC5)
+    - [ ] Mermaid Timeline Diagram:
+      ```mermaid
+      timeline
+        title Evolution of Machine Learning Understanding
+        2024-01-15 : Initial Understanding : "ML is about algorithms that learn from data"
+        2024-02-03 : Key Shift #1 : "Discovered ML is really optimization + representation learning"
+                   : Trigger: Read "Deep Learning" by Goodfellow
+        2024-03-12 : Key Shift #2 : "Realized loss functions define what model learns"
+                   : Trigger: Implemented custom loss function in project
+        2024-04-20 : Key Shift #3 : "Understanding now includes bias-variance tradeoff"
+                   : Trigger: Contradiction resolution between overfitting notes
+        2024-11-05 : Current Understanding : "ML is optimization over hypothesis spaces"
+                   : "guided by loss functions, constrained by inductive biases"
+      ```
+    - [ ] Visualization Requirements:
+      - All shifts shown chronologically
+      - Shift triggers labeled
+      - Initial and current understanding clearly marked
+      - Maturation duration visible (time span)
+      - Confidence levels indicated (if tracked)
+    - [ ] Alternative Visualizations:
+      - Graph timeline (Neo4j query result visualization)
+      - Confidence curve (confidence over time)
+      - Source integration timeline (when sources added)
+
+  - [ ] Task 6: Define temporal narrative generation workflow (AC6, AC7, AC8)
+    - [ ] Temporal Narrative Creation Process:
+      1. Collect temporal data (note history, git log, Neo4j events)
+      2. Identify initial understanding (first note or earliest reference)
+      3. Detect shifts (major changes, reframings)
+      4. Identify shift triggers (sources, contradictions, synthesis)
+      5. Document each shift (what changed, why, evidence)
+      6. Identify current understanding (most recent state)
+      7. Generate timeline visualization (Mermaid diagram)
+      8. Calculate maturation metrics (days, shift count)
+      9. Extract meta-insights (learning patterns)
+      10. Create narrative from temporal-narrative-tmpl.yaml
+      11. Validate using temporal-accuracy-checklist.md
+      12. Validate using narrative-completeness-checklist.md
+      13. Fix validation failures
+      14. Save final temporal narrative
+    - [ ] Output:
+      - Temporal narrative document
+      - Timeline visualization
+      - Maturation metrics
+      - Meta-insights about learning patterns
+      - Validation reports
+
+  - [ ] Task 7: Define validation and quality checks (AC7, AC8)
+    - [ ] Validation using temporal-accuracy-checklist.md:
+      - ✓ All timestamps in ISO 8601 format
+      - ✓ Evolution phases correctly identified
+      - ✓ Phase transitions have dates
+      - ✓ Temporal events sourced from Neo4j or git history
+      - ✓ Timeline visualization present and renders correctly
+      - Shift triggers identified with evidence
+      - Current understanding reflects latest note state
+      - ✓ Maturation days calculated correctly
+      - ✓ No temporal paradoxes (effects before causes)
+      - Unresolved tensions documented (if any exist)
+    - [ ] Validation using narrative-completeness-checklist.md:
+      - ✓ Initial understanding documented with date
+      - ✓ At least one key shift identified
+      - ✓ Current understanding documented
+      - ✓ Timeline visualization included
+      - Shift triggers explained (what caused changes)
+      - ✓ Source attribution for all shifts
+      - ✓ Narrative flows chronologically
+      - Confidence levels provided for understanding states
+      - Influences documented (sources, events, connections)
+      - Unresolved tensions noted (if applicable)
+      - Meta-insights about learning patterns included
+    - [ ] Quality Thresholds:
+      - Pass criteria: All required items (✓) checked
+      - Warn if no shifts detected (understanding hasn't evolved?)
+      - Warn if shift triggers missing (why did changes occur?)
+      - Block if temporal paradoxes detected
+
+  - [ ] Task 8: Define Neo4j temporal queries (optional) (AC9)
+    - [ ] Neo4j Temporal Event Queries:
+      ```cypher
+      // Find all temporal events for a concept
+      MATCH (note:Note {title: "Machine Learning"})-[:HAS_EVENT]->(event:TemporalEvent)
+      RETURN event.timestamp, event.type, event.description
+      ORDER BY event.timestamp
+
+      // Identify shifts (major modification events)
+      MATCH (note:Note {title: "Machine Learning"})-[:HAS_EVENT]->(event:TemporalEvent)
+      WHERE event.type = "major_modification" OR event.type = "conceptual_shift"
+      RETURN event
+      ORDER BY event.timestamp
+
+      // Find shift triggers (sources added around shift dates)
+      MATCH (note:Note {title: "Machine Learning"})-[:HAS_EVENT]->(shift:TemporalEvent)
+      WHERE shift.type = "conceptual_shift"
+      MATCH (note)-[:CITES]->(source:Source)
+      WHERE source.added_date >= shift.timestamp - duration('P7D')
+        AND source.added_date <= shift.timestamp + duration('P7D')
+      RETURN shift, source
+      ORDER BY shift.timestamp
+
+      // Calculate maturation metrics
+      MATCH (note:Note {title: "Machine Learning"})-[:HAS_EVENT]->(initial:TemporalEvent)
+      WHERE initial.type = "creation"
+      MATCH (note)-[:HAS_EVENT]->(current:TemporalEvent)
+      WHERE current.type = "last_modified"
+      RETURN duration.between(initial.timestamp, current.timestamp).days AS maturation_days
+
+      // Find learning patterns (common trigger types)
+      MATCH (user:User)-[:OWNS]->(note:Note)-[:HAS_EVENT]->(shift:TemporalEvent)
+      WHERE shift.type = "conceptual_shift"
+      RETURN shift.trigger_type, count(*) AS frequency
+      ORDER BY frequency DESC
+      ```
+    - [ ] Temporal Graph Structure:
+      - TemporalEvent nodes (creation, modification, shift)
+      - HAS_EVENT relationships (note → event)
+      - TRIGGERED_BY relationships (shift → source/note)
+
+  - [ ] Task 9: Define dependencies and integration points (AC9)
+    - [ ] Dependencies:
+      - Tasks: create-temporal-narrative, analyze-note-evolution, detect-shifts
+      - Templates: temporal-narrative-tmpl.yaml
+      - Checklists: temporal-accuracy-checklist.md, narrative-completeness-checklist.md
+      - Data: Temporal event taxonomy, shift detection criteria
+    - [ ] Integration Points:
+      - **Git History**: Source of note modification timestamps
+      - **Neo4j**: Temporal event tracking (optional)
+      - **Research Integration Workflow**: May trigger shifts
+      - **Contradiction Resolution Workflow**: Often causes conceptual shifts
+      - **Monthly Deep Review**: Triggers temporal analysis
+      - **MOC Constructor Agent**: MOCs can have temporal narratives
+      - **Query Interpreter**: Users can query for evolution timelines
+
+  - [ ] Task 10: Define agent constraints and best practices (AC10)
+    - [ ] Constraints:
+      - Must have at least initial and current understanding
+      - Shifts require dates and triggers
+      - All timestamps must be valid ISO 8601
+      - Timeline must be chronologically coherent
+      - No temporal paradoxes
+    - [ ] Best Practices:
+      - Document shifts as they occur (don't retrospectively reconstruct)
+      - Always identify shift triggers (why understanding changed)
+      - Track confidence levels alongside understanding
+      - Use git commits as temporal markers
+      - Enable Neo4j for rich temporal queries
+      - Create temporal narratives for core concepts (not every note)
+      - Review temporal narratives quarterly (add new shifts)
+    - [ ] Anti-Patterns to Avoid:
+      - Creating temporal narratives for trivial edits (typo fixes, formatting)
+      - Fabricating shifts without evidence
+      - Ignoring shift triggers (how did understanding change?)
+      - Treating all modifications as shifts (only significant reframings)
+      - Not documenting current understanding (narrative incomplete)
+
+technical_notes: |
+  ## Temporal Analysis Philosophy
+
+  Temporal analysis reveals **how understanding matures**:
+  - Not just what you know, but how you learned it
+  - Not just current state, but evolution trajectory
+  - Not just content, but learning patterns
+
+  ## Shift Detection Principles
+
+  Shifts are **significant conceptual changes**, not minor edits:
+  - Definition changes (what is X?)
+  - Framework shifts (how to think about X?)
+  - Evidence integration (X is true because...)
+  - Contradiction resolution (X and Y both true via Z)
+  - Synthesis insights (X + Y = Z)
+
+  **Not shifts:**
+  - Typo fixes
+  - Formatting changes
+  - Adding examples without changing claims
+  - Minor clarifications
+
+  ## Temporal Data Sources
+
+  **Git History** (always available):
+  - Note creation dates
+  - Modification timestamps
+  - Commit messages (may indicate shift triggers)
+  - File diffs (show what changed)
+
+  **Neo4j** (optional, richer):
+  - Explicit temporal event nodes
+  - Capture events (when note created)
+  - Modification events (when note edited)
+  - Source citation events (when evidence added)
+  - Link creation events (when relationships established)
+  - Shift events (explicit conceptual shifts)
+
+  ## Maturation Metrics
+
+  **Maturation Days**: Time from initial to current understanding
+  - Fast maturation (<30 days): Quick learning, immediate synthesis
+  - Medium maturation (30-180 days): Gradual exploration
+  - Slow maturation (>180 days): Long-term research, complex concepts
+
+  **Shift Count**: Number of significant conceptual changes
+  - Few shifts (1-2): Stable understanding from start
+  - Moderate shifts (3-5): Normal learning progression
+  - Many shifts (>5): Complex concept, evolving field, or unstable understanding
+
+  ## Learning Pattern Insights
+
+  Temporal analysis reveals **personal learning patterns**:
+  - **Source-driven learner**: Most shifts triggered by reading
+  - **Synthesis-driven learner**: Most shifts from combining ideas
+  - **Experience-driven learner**: Most shifts from application
+  - **Question-driven learner**: Most shifts from investigating questions
+
+  Understanding these patterns enables:
+  - Optimizing research strategies (double down on effective learning modes)
+  - Identifying weaknesses (e.g., not enough synthesis)
+  - Recognizing domain-specific learning needs
+
+  ## Integration with Phase 1
+
+  Timeline Constructor builds on Phase 1 foundation:
+  - Uses Structural Analysis for note history
+  - Uses Semantic Linker to track relationship evolution
+  - Uses Neo4j temporal events (if enabled)
+  - Complements MOC Constructor (domains also have temporal narratives)
+
+  ## Example Temporal Narrative Structure
+
+  ```markdown
+  ---
+  concept: Machine Learning
+  analysis_date: 2025-11-05
+  evolution_phases: 4
+  total_shifts: 3
+  maturation_days: 294
+  maturation_complete: true
+  trigger_pattern: source-driven (2/3 shifts), synthesis-driven (1/3 shifts)
+  ---
+
+  # Evolution of Machine Learning Understanding
+
+  ## Initial Understanding
+  **Date**: 2024-01-15
+  **Understanding**: "Machine learning is about algorithms that automatically learn from data without being explicitly programmed."
+  **Confidence**: Low (0.4) - High-level conceptual understanding only
+  **Sources**: None (based on general knowledge)
+
+  ## Key Shift #1: Optimization + Representation
+  **Date**: 2024-02-03
+  **What Changed**: Realized ML is fundamentally about optimization over hypothesis spaces and representation learning.
+  **Trigger**: Read "Deep Learning" by Goodfellow et al., Chapter 5 on representation learning
+  **New Understanding**: "ML is optimization (gradient descent) applied to parameterized models (hypothesis spaces) to learn representations from data."
+  **Confidence**: Medium (0.7) - Technical understanding emerging
+  **Evidence**: [[Deep Learning Book Notes]], [[Gradient Descent]], [[Hypothesis Spaces]]
+
+  ## Key Shift #2: Loss Functions Define Learning
+  **Date**: 2024-03-12
+  **What Changed**: Understood that loss functions fundamentally shape what models learn.
+  **Trigger**: Implemented custom loss function in computer vision project, observed model behavior change dramatically
+  **New Understanding**: "The loss function defines the optimization objective, which determines what patterns the model learns. Different losses = different learned behaviors."
+  **Confidence**: High (0.85) - Experiential validation
+  **Evidence**: [[Loss Functions]], [[Project: Custom Loss for Segmentation]], [[Loss Function Design Patterns]]
+
+  ## Key Shift #3: Bias-Variance Tradeoff Integration
+  **Date**: 2024-04-20
+  **What Changed**: Integrated bias-variance tradeoff into core understanding, resolved contradictions about overfitting.
+  **Trigger**: Resolved contradiction between [[Overfitting Note A]] (claimed regularization always helps) and [[Overfitting Note B]] (claimed some models need no regularization)
+  **New Understanding**: "ML balances bias (model flexibility) and variance (sensitivity to training data). Loss functions guide optimization, but model capacity and regularization control generalization."
+  **Confidence**: High (0.9) - Comprehensive framework
+  **Evidence**: [[Bias-Variance Tradeoff]], [[Regularization Techniques]], [[Model Capacity]]
+
+  ## Current Understanding
+  **Date**: 2024-11-05
+  **Understanding**: "Machine learning is optimization over hypothesis spaces (model families) guided by loss functions, constrained by inductive biases (architectural priors and regularization), to learn representations from data that generalize beyond the training set."
+  **Confidence**: High (0.9)
+  **Key Components**:
+  - Optimization: Gradient descent and variants
+  - Hypothesis spaces: Neural networks, trees, linear models
+  - Loss functions: Define learning objectives
+  - Inductive biases: Architectural constraints that enable generalization
+  - Representation learning: Transforming raw inputs into useful features
+  - Generalization: Performance on unseen data (bias-variance tradeoff)
+  **Sources**: [[Deep Learning Book]], [[Project: Custom Loss]], [[Bias-Variance Tradeoff]], [[ML Course Notes]]
+  **Remaining Questions**:
+  - How do transformers' inductive biases differ from CNNs?
+  - What loss functions work best for multi-task learning?
+
+  ## Timeline Visualization
+
+  ```mermaid
+  timeline
+    title Evolution of Machine Learning Understanding
+    2024-01-15 : Initial : "Algorithms that learn from data"
+    2024-02-03 : Shift #1 : "Optimization + representation learning"
+                 : Trigger: Deep Learning Book
+    2024-03-12 : Shift #2 : "Loss functions define learning"
+                 : Trigger: Implemented custom loss in project
+    2024-04-20 : Shift #3 : "Integrated bias-variance tradeoff"
+                 : Trigger: Contradiction resolution
+    2024-11-05 : Current : "Optimization over hypothesis spaces"
+                 : "guided by loss functions, constrained by inductive biases"
+  ```
+
+  ## Meta-Insights
+
+  **Learning Pattern**: Source-driven (2/3 shifts) + Experience-driven (1/3 shifts)
+  - Reading foundational texts triggered major conceptual shifts
+  - Hands-on implementation provided experiential validation
+  - Contradiction resolution integrated disparate knowledge
+
+  **Maturation Speed**: Medium (294 days from initial to stable understanding)
+  - Concept complexity: Machine learning is a broad domain requiring time to synthesize
+
+  **Confidence Calibration**: Confidence grew from 0.4 → 0.9 as understanding deepened
+  - Appropriate confidence trajectory (started uncertain, gained certainty with evidence)
+
+  **Recommendation**: Continue source-driven learning (effective for this person), but seek more synthesis opportunities (only 1/3 shifts were synthesis-driven).
+  ```
+
+dependencies:
+  - STORY-031: Phase 2 Templates (temporal-narrative-tmpl.yaml)
+  - STORY-035: Phase 2-5 Checklists (temporal-accuracy-checklist.md, narrative-completeness-checklist.md)
+  - STORY-001: Structural Analysis Agent (note history analysis)
+  - STORY-002: Semantic Linker Agent (relationship evolution)
+  - STORY-024: Monthly Deep Review Workflow (triggers temporal analysis)
+  - STORY-025: Research Integration Workflow (may trigger shifts)
+  - STORY-028: Contradiction Resolution Workflow (often causes shifts)
+  - Neo4j integration - optional for rich temporal queries
+  - Git history - required for temporal data
+  - Tasks: create-temporal-narrative.md, analyze-note-evolution.md, detect-shifts.md
+
+testing:
+  - Test temporal analysis for concept with 0 shifts (stable understanding)
+  - Test temporal analysis for concept with 1-2 shifts (normal evolution)
+  - Test temporal analysis for concept with 5+ shifts (complex evolution)
+  - Verify shift detection (only significant changes, not minor edits)
+  - Verify shift trigger identification
+  - Test timeline visualization generation (Mermaid)
+  - Validate using temporal-accuracy-checklist
+  - Validate using narrative-completeness-checklist
+  - Test Neo4j temporal event queries
+  - Test maturation metrics calculation
+  - Test learning pattern insights extraction
+  - Verify integration with git history
+  - Test temporal paradox detection (effects before causes)
+
+definition_of_done:
+  - timeline-constructor-agent.md created with complete persona and capabilities
+  - Temporal analysis process documented
+  - Shift detection criteria defined
+  - Shift trigger identification process documented
+  - Timeline narrative construction process defined (10-14 steps)
+  - Timeline visualization generation documented (Mermaid)
+  - Validation using both checklists integrated
+  - Neo4j temporal queries documented (optional)
+  - Maturation metrics defined
+  - Learning pattern insights framework documented
+  - Dependencies and integration points specified
+  - Best practices and anti-patterns documented
+  - Example temporal narrative structure provided
+  - Testing scenarios defined
+  - Agent tested with multiple evolution patterns
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Timeline Constructor Agent
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

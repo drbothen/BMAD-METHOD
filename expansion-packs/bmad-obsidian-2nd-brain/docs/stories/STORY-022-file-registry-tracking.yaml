@@ -1,0 +1,292 @@
+---
+story_id: STORY-022
+title: Implement File Registry and Tracking System
+epic_id: EPIC-001
+phase: 1
+priority: high
+estimated_effort: 14 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a user
+  I want the system to track all files created by agents
+  So that I can audit, manage, and potentially rollback agent-generated content
+
+acceptance_criteria:
+  - "AC1: Create file-registry.json data structure"
+  - "AC2: Implement file registration on agent file creation"
+  - "AC3: Track file metadata (creator, timestamp, status, relationships)"
+  - "AC4: Support file registry queries and filtering"
+  - "AC5: Implement cleanup/archival utilities"
+  - "AC6: Provide file registry reporting and auditing"
+
+tasks_subtasks: |
+  - [ ] Task 1: Design file-registry.json structure (AC1)
+    - [ ] Define schema for tracking agent-created files:
+      ```json
+      {
+        "registryVersion": "1.0.0",
+        "vaultPath": "/path/to/vault",
+        "vaultId": "vault-001",
+        "files": [
+          {
+            "id": "uuid-1234-5678",
+            "path": "99 Agent Output/2025-11/2025-11-05/09-00-inbox-processing.md",
+            "relativePath": "99 Agent Output/2025-11/2025-11-05/09-00-inbox-processing.md",
+            "absolutePath": "/full/path/to/vault/99 Agent Output/...",
+            "createdBy": "inbox-triage-agent",
+            "createdAt": "2025-11-05T09:00:00Z",
+            "lastModifiedAt": "2025-11-05T09:15:30Z",
+            "lastModifiedBy": "user",  # or "system" or agent name
+            "status": "active",  # active, archived, deleted, moved, integrated
+            "fileType": "report",  # report, note, moc, audit, query-result
+            "metadata": {
+              "sourceFile": "Inbox/capture-2025-11-04.md",
+              "processingRules": "para-method",
+              "tags": ["#processed", "#project"],
+              "moveToLocation": "10 Projects/ProjectX/",
+              "approval": {
+                "required": false,
+                "status": null,  # null, pending, approved, rejected
+                "reviewedAt": null,
+                "reviewedBy": null
+              }
+            },
+            "relationships": {
+              "generates": [],  # Files this file led to creating
+              "generatedFrom": "uuid-0000-1111",  # Parent file
+              "references": ["uuid-2222-3333"],  # Files this file links to
+              "referencedBy": []  # Files that link to this file
+            },
+            "contentHash": "sha256:abc123...",  # For change detection
+            "sizeBytes": 1024
+          }
+        ],
+        "statistics": {
+          "totalFilesTracked": 1,
+          "filesByAgent": {
+            "inbox-triage-agent": 1
+          },
+          "filesByType": {
+            "report": 1
+          },
+          "filesByStatus": {
+            "active": 1
+          }
+        },
+        "lastUpdated": "2025-11-05T09:00:00Z"
+      }
+      ```
+    - [ ] Define required vs optional fields
+    - [ ] Add validation rules
+    - [ ] Support versioning for schema evolution
+
+  - [ ] Task 2: Implement file registration (AC2)
+    - [ ] Create `FileRegistry` class in `tools/file-registry.js`
+    - [ ] Implement core methods:
+      - `registerFile(fileInfo)` - Add new file to registry
+      - `updateFile(fileId, updates)` - Update existing file metadata
+      - `removeFile(fileId)` - Mark file as deleted
+      - `getFile(fileId)` - Retrieve file record
+      - `queryFiles(criteria)` - Search/filter files
+    - [ ] Implement auto-registration hooks:
+      - Hook into agent file creation
+      - Auto-populate metadata
+      - Generate unique IDs
+      - Calculate content hash
+      - Set initial status
+    - [ ] Handle concurrent writes safely (file locking)
+    - [ ] Implement backup/restore for registry
+    - [ ] Add error handling and recovery
+
+  - [ ] Task 3: Track comprehensive metadata (AC3)
+    - [ ] **Creation metadata:**
+      - Agent that created file
+      - Timestamp of creation
+      - User or system initiated
+      - Source files/triggers
+    - [ ] **Modification metadata:**
+      - Last modified timestamp
+      - Modified by (user/agent)
+      - Modification count
+    - [ ] **Status tracking:**
+      - active, archived, deleted, moved, integrated
+      - Status change history
+      - Reason for status change
+    - [ ] **Relationship tracking:**
+      - Parent-child relationships
+      - Cross-references
+      - Dependencies
+    - [ ] **Approval workflow:**
+      - Whether approval required
+      - Approval status
+      - Reviewer and timestamp
+    - [ ] **Content tracking:**
+      - Content hash for change detection
+      - File size
+      - File type/category
+    - [ ] Implement metadata validation
+    - [ ] Support custom metadata per agent
+
+  - [ ] Task 4: Implement query system (AC4)
+    - [ ] Build query interface:
+      ```javascript
+      registry.queryFiles({
+        createdBy: 'inbox-triage-agent',
+        createdAfter: '2025-11-01',
+        status: 'active',
+        fileType: 'report'
+      });
+      ```
+    - [ ] Support multiple filter criteria
+    - [ ] Implement common queries:
+      - Files created by specific agent
+      - Files created in date range
+      - Files with specific status
+      - Files needing approval
+      - Orphaned files (no references)
+      - Modified files (hash mismatch)
+    - [ ] Implement sorting and pagination
+    - [ ] Add aggregation queries (counts, statistics)
+    - [ ] Create CLI query interface:
+      - `bmad-2b registry:query --agent inbox-triage --since 2025-11-01`
+      - `bmad-2b registry:list --status pending --type report`
+      - `bmad-2b registry:stats`
+
+  - [ ] Task 5: Implement cleanup utilities (AC5)
+    - [ ] Create cleanup tools:
+      - `archiveOldFiles(daysOld)` - Archive files older than N days
+      - `removeDeletedFiles()` - Remove files marked as deleted
+      - `validateRegistry()` - Check for orphaned entries
+      - `reconcileFiles()` - Sync registry with actual filesystem
+      - `exportRegistry(format)` - Export registry data
+    - [ ] Implement retention policies:
+      - Auto-archive after N days (configurable)
+      - Delete archived files after M days (configurable)
+      - Keep permanent files indefinitely
+    - [ ] Add confirmation prompts for destructive operations
+    - [ ] Support dry-run mode
+    - [ ] Create scheduled cleanup tasks
+    - [ ] Log all cleanup operations
+
+  - [ ] Task 6: Provide reporting and auditing (AC6)
+    - [ ] Create reporting tools:
+      - Daily/weekly/monthly agent activity reports
+      - File creation trends over time
+      - Agent performance metrics
+      - Storage usage by agent
+      - User interaction with agent output (approvals/rejections)
+    - [ ] Implement audit reports:
+      - All files created by agent X
+      - Files modified after creation
+      - Files moved/integrated into user system
+      - Approval workflow statistics
+      - Error/failure tracking
+    - [ ] Create visualization utilities:
+      - Generate markdown reports
+      - Create CSV exports for analysis
+      - Timeline views of agent activity
+    - [ ] Add CLI reporting commands:
+      - `bmad-2b registry:report --agent inbox-triage --period week`
+      - `bmad-2b registry:audit --since 2025-11-01`
+      - `bmad-2b registry:stats --by-agent`
+    - [ ] Document reporting capabilities
+
+dev_notes: |
+  ## Purpose of File Registry
+
+  **Core Functions:**
+  1. **Audit Trail**: Know what agents have created
+  2. **Rollback Capability**: Undo agent actions if needed
+  3. **Conflict Prevention**: Detect duplicate creation attempts
+  4. **Relationship Tracking**: Understand file dependencies
+  5. **Cleanup Management**: Identify old/unused agent output
+  6. **User Transparency**: Show users what AI has changed
+
+  ## Registry Locations
+
+  - **Global Registry**: `.bmad-obsidian-2nd-brain/state/file-registry.json`
+    - Tracks files across all vaults
+    - Master record of all agent activity
+  - **Per-Vault Registry**: `.obsidian/.bmad/file-registry.json`
+    - Tracks files only in this vault
+    - Syncs with global registry
+    - Faster vault-specific queries
+
+  ## Performance Considerations
+
+  - Large registries (10K+ files) need optimization
+  - Consider SQLite for better query performance
+  - Implement indexing for common queries
+  - Cache frequently accessed data
+  - Periodic compaction/cleanup
+
+  ## Content Hash Strategy
+
+  - Use SHA-256 for file content hashing
+  - Calculate hash on file creation
+  - Recalculate periodically to detect modifications
+  - Flag files with hash mismatches
+  - User edits change hash (expected)
+  - Helps detect corruption
+
+  ## Relationship Tracking
+
+  Complex but valuable:
+  - Track when processing inbox note A creates project note B
+  - Track when MOC C references notes D, E, F
+  - Track when audit report G identifies problems in notes H, I
+  - Enables "impact analysis" when deleting files
+
+  ## Approval Workflow Integration
+
+  Some agent output requires approval:
+  1. Agent creates file in `pending-review/`
+  2. Registry marks as `approval.required: true, status: pending`
+  3. User reviews and approves/rejects
+  4. On approval: Move to final location, update registry
+  5. On rejection: Move to rejected/, record reason
+
+  ## Sync Considerations
+
+  - Registry files should sync with vault (if vault syncs)
+  - Consider conflict resolution if edited on multiple devices
+  - Use timestamps to resolve conflicts (last-write-wins)
+  - Consider operational transforms for concurrent edits
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure
+  - STORY-019: Vault mappings system
+  - STORY-020: Agent output organization
+  - STORY-021: Per-vault configuration
+  - Node.js fs/path/crypto modules
+  - JSON storage or SQLite for larger registries
+  - UUID generation library
+
+testing:
+  - Test file registration on creation
+  - Test metadata tracking accuracy
+  - Test query system with various criteria
+  - Test relationship tracking
+  - Test cleanup utilities (dry-run and actual)
+  - Test registry with 0, 10, 1000, 10000 files
+  - Test concurrent registration (race conditions)
+  - Test registry corruption recovery
+  - Test registry export/import
+  - Verify performance with large registries
+  - Test cross-vault queries
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for file registry system
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

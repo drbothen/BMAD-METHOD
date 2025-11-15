@@ -1,0 +1,699 @@
+---
+story_id: STORY-029
+title: Implement Centralized Configuration System for Expansion Pack
+epic_id: EPIC-001
+phase: 1
+priority: critical
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a developer
+  I want all expansion pack configuration centralized in config.yaml
+  So that all agents, tasks, workflows, and templates load consistent settings like BMAD core does
+
+acceptance_criteria:
+  - "AC1: Create comprehensive config.yaml matching core-config.yaml pattern"
+  - "AC2: Define all configuration variables needed by agents, tasks, workflows"
+  - "AC3: Create config loading utility (lib/config-loader.js)"
+  - "AC4: Document configuration hierarchy (global → vault → vault-local)"
+  - "AC5: Update all agents to reference config variables"
+  - "AC6: Update all tasks/workflows to load from config"
+  - "AC7: Create config validation utility"
+
+tasks_subtasks: |
+  - [ ] Task 1: Analyze configuration needs across all components (AC2)
+    - [ ] Review all agents for hardcoded values
+    - [ ] Review all tasks for configuration needs
+    - [ ] Review all workflows for settings
+    - [ ] Review all templates for variable requirements
+    - [ ] List all configuration variables needed:
+      - Vault paths and structure
+      - Agent behavior settings
+      - Quality thresholds
+      - Neo4j connection settings
+      - MCP server configurations
+      - File naming patterns
+      - Retention policies
+      - Temporal settings
+      - Research settings
+      - Publication settings
+    - [ ] Document where each variable is used
+    - [ ] Create configuration requirements specification
+
+  - [ ] Task 2: Design comprehensive config.yaml (AC1, AC2)
+    - [ ] Follow BMAD core pattern (like core-config.yaml)
+    - [ ] Define config.yaml structure:
+      ```yaml
+      # === BMAD Framework Metadata ===
+      name: bmad-obsidian-2nd-brain
+      version: 1.0.0
+      short-title: Obsidian 2nd Brain
+      description: >
+        Transform Obsidian into a powerful second brain with temporal RAG architecture.
+      author: BMAD Team
+      slashPrefix: bmad-2b
+
+      # === Vault Configuration ===
+      # Default vault structure (can be overridden per vault)
+      vault:
+        inbox: "00 Inbox"
+        projects: "10 Projects"
+        areas: "20 Areas"
+        resources: "30 Resources"
+        archive: "40 Archive"
+        atomicNotes: "50 Atomic Notes"
+        mocs: "60 MOCs"
+        agentOutput: "99 Agent Output"
+        templates: "Templates"
+        dailyNotes: "Daily Notes"
+        periodicReviews: "Reviews"
+
+      # === Vault Mappings ===
+      # Loaded from vault-mappings.yaml (managed by vault discovery)
+      vaultMappingsFile: "config/vault-mappings.yaml"
+
+      # === Agent Configuration ===
+      agents:
+        # Global agent settings
+        yoloModeDefault: false
+        requireApproval: true
+        autoProcessInbox: false
+
+        # Specific agent settings
+        inboxTriage:
+          autoClassify: true
+          defaultPriority: "medium"
+          tagRoutingEnabled: true
+
+        semanticLinker:
+          autoLinkThreshold: 0.8
+          maxLinkSuggestions: 10
+          requireApproval: true
+          minSimilarityScore: 0.7
+
+        structuralAnalysis:
+          atomicScoreMin: 0.7
+          fragmentationThreshold: 500  # words
+          autoFragment: false
+
+        qualityAuditor:
+          schedule: "weekly"
+          dayOfWeek: "sunday"
+          time: "10:00"
+          enabledChecks:
+            - freshness
+            - links
+            - citations
+            - orphans
+
+        mocConstructor:
+          criticalMassThreshold: 10  # notes
+          autoCreateMOC: false
+          updateFrequency: "weekly"
+
+        timelineConstructor:
+          enableTemporal: true
+          visualizationFormat: "mermaid"
+
+        gapDetector:
+          scanFrequency: "monthly"
+          prioritizationCriteria:
+            - "domain_importance"
+            - "usage_patterns"
+            - "creation_needs"
+
+        contentBrief:
+          minRelevantNotes: 10
+          includeTemporalContext: true
+          includeEvolution: true
+
+        publicationFormatter:
+          privacyCheckEnabled: true
+          bibliographyFormat: "apa"
+          defaultFormat: "markdown"
+
+        researchCoordinator:
+          enableToolDetection: true
+          defaultStrategy: "adaptive"
+          credibilityThresholdMin: 75
+          enableProvenance: true
+
+      # === Quality Thresholds ===
+      quality:
+        # Freshness
+        freshnessThresholdDays: 180
+        criticalNotesFreshnessThresholdDays: 90
+
+        # Links
+        linkDensityTarget: 3.5  # links per note
+        orphanRateTarget: 0.05  # 5% max orphans
+
+        # Citations
+        requireCitations: true
+        citationRequiredForClaims: true
+
+        # Atomicity
+        atomicScoreMin: 0.7
+        noteMaxLength: 500  # words for atomic notes
+
+        # Completeness
+        completenessScoreMin: 0.8
+
+      # === File Organization ===
+      fileOrganization:
+        # Agent output structure
+        agentOutputStructure:
+          useTimestamps: true
+          timestampFormat: "YYYY-MM/YYYY-MM-DD"
+          filenameFormat: "HH-MM-{agent}-{description}.md"
+          retentionDays: 90
+
+        # File naming
+        fileNaming:
+          useUUIDs: true
+          sanitizeSpecialChars: true
+          maxFilenameLength: 100
+
+        # File registry
+        fileRegistry:
+          enabled: true
+          registryLocation: "state/file-registry.json"
+          trackModifications: true
+          trackRelationships: true
+
+      # === Neo4j Configuration ===
+      neo4j:
+        enabled: true  # Set to false for Obsidian-only mode
+        uri: "bolt://localhost:7687"
+        database: "neo4j"
+        # Authentication via environment variables:
+        # NEO4J_USER, NEO4J_PASSWORD
+
+        # Graphiti settings
+        graphiti:
+          enabled: true
+          episodicMemory: true
+          autoContradictionDetection: true
+          invalidationAgentEnabled: true
+
+      # === Temporal Settings ===
+      temporal:
+        captureTimestampFormat: "iso8601"
+        maturationThresholdDays: 30
+        editHistoryRetention: "all"  # all, limited, none
+        trackEvolution: true
+        enableTimeTravel: true
+
+      # === MCP Integration ===
+      mcp:
+        # Required MCP servers
+        required:
+          - name: "obsidian-mcp"
+            purpose: "Vault operations"
+
+        # Optional MCP servers (detected at runtime)
+        optional:
+          - name: "graphiti-mcp"
+            purpose: "Temporal graph database"
+          - name: "perplexity"
+            purpose: "External research"
+          - name: "web-search"
+            purpose: "Web research"
+          - name: "context7"
+            purpose: "Documentation lookup"
+
+      # === Obsidian Plugin Requirements ===
+      obsidianPlugins:
+        required:
+          - name: "local-rest-api"
+            purpose: "MCP server communication"
+          - name: "smart-connections"
+            purpose: "Semantic search"
+          - name: "mcp-tools"
+            purpose: "MCP integration"
+
+        optional:
+          - name: "templater"
+            purpose: "Template automation"
+          - name: "dataview"
+            purpose: "Dynamic queries"
+          - name: "periodic-notes"
+            purpose: "Daily/weekly/monthly notes"
+
+      # === Workflow Settings ===
+      workflows:
+        daily:
+          enabled: true
+          morningTime: "09:00"
+          eveningTime: "17:00"
+          duration: "15-20 minutes"
+
+        weekly:
+          enabled: true
+          dayOfWeek: "sunday"
+          time: "19:00"
+          duration: "30-45 minutes"
+
+        monthly:
+          enabled: true
+          dayOfMonth: -1  # Last day of month
+          time: "14:00"
+          duration: "90-120 minutes"
+
+      # === Research Settings ===
+      research:
+        adaptiveStrategy: true
+        toolDetectionEnabled: true
+
+        # Credibility scoring
+        credibility:
+          minScore: 75
+          scoringRubric: "data/credibility-scoring-rubric.md"
+
+        # Quality assurance
+        qa:
+          crossValidation: true
+          conflictResolution: true
+          confidenceLevels: true
+          minCompleteness: 80
+
+        # Provenance tracking
+        provenance:
+          enabled: true
+          trackToolsUsed: true
+          trackSourcesConsulted: true
+          trackEffort: true
+
+      # === Publication Settings ===
+      publication:
+        privacyCheckEnabled: true
+        bibliographyEnabled: true
+        bibliographyFormat: "apa"  # apa, mla, chicago, ieee
+
+        # Format options
+        formats:
+          markdown: true
+          html: true
+          pdf: false
+          latex: false
+
+        # Wikilink conversion
+        wikilinkConversion:
+          enabled: true
+          targetFormat: "markdown"  # markdown, url, citation
+
+      # === Backup and State ===
+      state:
+        stateDirectory: "state"
+        backupEnabled: true
+        backupFrequency: "daily"
+        backupRetentionDays: 30
+
+        # State files
+        fileRegistry: "state/file-registry.json"
+        agentState: "state/agent-state.json"
+        executionLogs: "state/execution-logs"
+
+      # === Logging and Debug ===
+      logging:
+        logLevel: "info"  # debug, info, warn, error
+        logDirectory: "state/logs"
+        logRotation: true
+        logRetentionDays: 30
+        debugMode: false
+
+      # === Development Settings ===
+      # (Similar to core-config.yaml devLoadAlwaysFiles pattern)
+      dev:
+        loadAlwaysFiles:
+          - "data/bmad-kb.md"
+          - "data/obsidian-api-guide.md"
+          - "data/neo4j-graphiti-guide.md"
+
+        debugLog: "state/debug-log.md"
+        storyLocation: "docs/stories"
+      ```
+
+    - [ ] Document each configuration section
+    - [ ] Define which settings are global vs per-vault
+    - [ ] Define which settings can be overridden
+
+  - [ ] Task 3: Create config loading utility (AC3)
+    - [ ] Create `lib/config-loader.js`:
+      ```javascript
+      // Config loader for bmad-obsidian-2nd-brain
+      const fs = require('fs');
+      const path = require('path');
+      const yaml = require('js-yaml');
+
+      class ConfigLoader {
+        constructor(expansionPackPath) {
+          this.expansionPackPath = expansionPackPath;
+          this.config = null;
+        }
+
+        /**
+         * Load and merge configuration from hierarchy:
+         * 1. Default config (config.yaml)
+         * 2. Vault mappings (config/vault-mappings.yaml)
+         * 3. Vault-local overrides (.obsidian/.bmad/config.yaml)
+         * 4. Environment variables
+         */
+        async load(vaultId = null) {
+          // Load base config
+          this.config = await this.loadBaseConfig();
+
+          // Load vault mappings
+          const vaultMappings = await this.loadVaultMappings();
+          this.config.vaults = vaultMappings;
+
+          // If vaultId specified, apply vault-specific overrides
+          if (vaultId) {
+            const vaultConfig = vaultMappings[vaultId];
+            if (vaultConfig) {
+              this.config = this.mergeVaultConfig(this.config, vaultConfig);
+            }
+
+            // Load vault-local overrides
+            const vaultLocalConfig = await this.loadVaultLocalConfig(vaultConfig.path);
+            if (vaultLocalConfig) {
+              this.config = this.deepMerge(this.config, vaultLocalConfig);
+            }
+          }
+
+          // Apply environment variable overrides
+          this.applyEnvOverrides();
+
+          return this.config;
+        }
+
+        async loadBaseConfig() {
+          const configPath = path.join(this.expansionPackPath, 'config.yaml');
+          const content = await fs.promises.readFile(configPath, 'utf8');
+          return yaml.load(content);
+        }
+
+        async loadVaultMappings() {
+          const mappingsPath = path.join(this.expansionPackPath, 'config/vault-mappings.yaml');
+          if (!fs.existsSync(mappingsPath)) {
+            return {};
+          }
+          const content = await fs.promises.readFile(mappingsPath, 'utf8');
+          const data = yaml.load(content);
+          return data.vaults || {};
+        }
+
+        async loadVaultLocalConfig(vaultPath) {
+          const localConfigPath = path.join(vaultPath, '.obsidian/.bmad/config.yaml');
+          if (!fs.existsSync(localConfigPath)) {
+            return null;
+          }
+          const content = await fs.promises.readFile(localConfigPath, 'utf8');
+          return yaml.load(content);
+        }
+
+        applyEnvOverrides() {
+          // Neo4j credentials from environment
+          if (process.env.NEO4J_URI) {
+            this.config.neo4j.uri = process.env.NEO4J_URI;
+          }
+          if (process.env.NEO4J_USER) {
+            this.config.neo4j.username = process.env.NEO4J_USER;
+          }
+          if (process.env.NEO4J_PASSWORD) {
+            this.config.neo4j.password = process.env.NEO4J_PASSWORD;
+          }
+
+          // Debug mode
+          if (process.env.BMAD_DEBUG === 'true') {
+            this.config.logging.debugMode = true;
+            this.config.logging.logLevel = 'debug';
+          }
+        }
+
+        deepMerge(target, source) {
+          // Deep merge utility
+          const result = { ...target };
+          for (const key in source) {
+            if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+              result[key] = this.deepMerge(target[key] || {}, source[key]);
+            } else {
+              result[key] = source[key];
+            }
+          }
+          return result;
+        }
+
+        mergeVaultConfig(baseConfig, vaultConfig) {
+          // Apply vault-specific overrides
+          const merged = { ...baseConfig };
+
+          if (vaultConfig.organizationMethod) {
+            merged.vault.organizationMethod = vaultConfig.organizationMethod;
+          }
+
+          if (vaultConfig.keyLocations) {
+            merged.vault = { ...merged.vault, ...vaultConfig.keyLocations };
+          }
+
+          if (vaultConfig.agentsEnabled) {
+            // Filter enabled agents
+            merged.agents.enabled = vaultConfig.agentsEnabled;
+          }
+
+          return merged;
+        }
+
+        get(path) {
+          // Get config value by path (e.g., "agents.semanticLinker.autoLinkThreshold")
+          return path.split('.').reduce((obj, key) => obj?.[key], this.config);
+        }
+
+        getVaultPath(vaultId, location) {
+          // Get vault path for a specific location (e.g., "inbox", "mocs")
+          const vault = this.config.vaults[vaultId];
+          if (!vault) return null;
+
+          const locationPath = vault.keyLocations?.[location] || this.config.vault[location];
+          return path.join(vault.path, locationPath);
+        }
+      }
+
+      module.exports = ConfigLoader;
+      ```
+
+    - [ ] Create `lib/config-validator.js` for validation
+    - [ ] Add error handling for missing config
+    - [ ] Add config schema validation
+
+  - [ ] Task 4: Document configuration hierarchy (AC4)
+    - [ ] Create `docs/configuration-guide.md`:
+      - Configuration hierarchy explanation
+      - Precedence order (1-6)
+      - How to override settings
+      - Environment variable reference
+      - Per-vault configuration
+      - Vault-local overrides
+    - [ ] Document which settings can be overridden at each level
+    - [ ] Provide examples for common scenarios
+    - [ ] Add troubleshooting section
+
+  - [ ] Task 5: Update agent references to use config (AC5)
+    - [ ] Add to each agent's activation section:
+      ```markdown
+      ## Configuration Loading
+
+      This agent loads configuration from the expansion pack config.yaml:
+
+      ```javascript
+      const ConfigLoader = require('../lib/config-loader');
+      const config = new ConfigLoader(expansionPackPath);
+      await config.load(vaultId);
+
+      // Access settings
+      const autoLinkThreshold = config.get('agents.semanticLinker.autoLinkThreshold');
+      const inboxPath = config.getVaultPath(vaultId, 'inbox');
+      ```
+
+      Configuration variables used:
+      - `agents.semanticLinker.autoLinkThreshold` - Similarity threshold for auto-linking
+      - `agents.semanticLinker.maxLinkSuggestions` - Max suggestions per note
+      - `agents.semanticLinker.requireApproval` - Whether to require user approval
+      - `quality.linkDensityTarget` - Target links per note
+      - `vault.atomicNotes` - Location for atomic notes
+      ```
+    - [ ] Update all agents (10 agents):
+      - Inbox Triage Agent
+      - Structural Analysis Agent
+      - Semantic Linker Agent
+      - Query Interpreter Agent
+      - Quality Auditor Agent
+      - MOC Constructor Agent
+      - Timeline Constructor Agent
+      - Gap Detector Agent
+      - Content Brief Agent
+      - Publication Formatter Agent
+    - [ ] Remove hardcoded values from agents
+    - [ ] Replace with config.get() calls
+
+  - [ ] Task 6: Update tasks/workflows to use config (AC6)
+    - [ ] Add config loading to task execution pattern
+    - [ ] Update tasks to reference config variables
+    - [ ] Update workflows to use config for:
+      - Scheduling (daily, weekly, monthly times)
+      - Duration estimates
+      - Quality thresholds
+      - Agent settings
+    - [ ] Remove hardcoded values from workflows
+
+  - [ ] Task 7: Update templates to use config variables (AC6)
+    - [ ] Define template variable substitution pattern
+    - [ ] Templates can access config via {{config.path.to.value}}
+    - [ ] Update templates to use config for:
+      - File locations
+      - Quality thresholds
+      - Formatting preferences
+    - [ ] Document template config access
+
+  - [ ] Task 8: Create config validation utility (AC7)
+    - [ ] Create `tools/validate-config.js`:
+      - Load config.yaml
+      - Validate all required fields present
+      - Validate value types (strings, numbers, booleans)
+      - Validate value ranges (e.g., thresholds 0-1)
+      - Check file path references exist
+      - Validate vault mappings
+    - [ ] Add to npm scripts: `npm run validate:config`
+    - [ ] Integrate with pre-release validation
+
+  - [ ] Task 9: Create config initialization script (AC7)
+    - [ ] Create `tools/init-config.js`:
+      - Generate default config.yaml if missing
+      - Create config/ directory structure
+      - Initialize vault-mappings.yaml
+      - Create state/ directory
+      - Set up logging directories
+    - [ ] Run during expansion pack installation
+    - [ ] Support config reset/regeneration
+
+  - [ ] Task 10: Update STORY-001 to create config.yaml (AC1)
+    - [ ] Add config.yaml creation to STORY-001 tasks
+    - [ ] Use the comprehensive structure from Task 2
+    - [ ] Ensure config.yaml created during installation
+
+technical_notes: |
+  ## Configuration Hierarchy (Precedence Order)
+
+  1. **Hardcoded Defaults** (in code)
+     - Fallback values if config missing
+     - Example: `autoLinkThreshold = config.get('agents.semanticLinker.autoLinkThreshold') || 0.8`
+
+  2. **Global Base Config** (`.bmad-obsidian-2nd-brain/config.yaml`)
+     - Main configuration file
+     - Expansion pack defaults
+     - Applies to all vaults
+
+  3. **Vault Mappings** (`.bmad-obsidian-2nd-brain/config/vault-mappings.yaml`)
+     - Per-vault settings
+     - Organizational method
+     - Key folder locations
+     - Enabled agents
+
+  4. **Vault-Local Config** (`{vault}/.obsidian/.bmad/config.yaml`)
+     - Vault-specific overrides
+     - Highest priority for vault settings
+     - Syncs with vault (if using sync)
+
+  5. **Environment Variables**
+     - Runtime overrides
+     - Credentials (NEO4J_USER, NEO4J_PASSWORD)
+     - Debug mode (BMAD_DEBUG=true)
+
+  6. **Runtime Parameters** (CLI flags, function arguments)
+     - Highest priority
+     - Temporary, not persisted
+
+  ## Config Pattern Match with Core
+
+  This follows the same pattern as BMAD core's `core-config.yaml`:
+  - Top-level metadata (name, version, slashPrefix)
+  - Structured sections (agents, quality, temporal, etc.)
+  - File location references (devLoadAlwaysFiles pattern)
+  - Debug and logging settings
+  - Development settings
+
+  ## Environment Variable Conventions
+
+  - `NEO4J_URI` - Neo4j connection URI
+  - `NEO4J_USER` - Neo4j username
+  - `NEO4J_PASSWORD` - Neo4j password
+  - `BMAD_DEBUG` - Enable debug mode (true/false)
+  - `BMAD_LOG_LEVEL` - Override log level (debug, info, warn, error)
+  - `BMAD_VAULT_ID` - Default vault to use
+
+  ## Configuration Best Practices
+
+  1. **Don't duplicate values** - Define once in config, reference everywhere
+  2. **Provide defaults** - Config should work out of the box
+  3. **Allow overrides** - Users should be able to customize
+  4. **Validate early** - Catch config errors at startup
+  5. **Document everything** - Every config option needs docs
+  6. **Use semantic names** - `freshnessThresholdDays` not `fThresh`
+  7. **Group related settings** - Use nested objects
+
+dependencies:
+  - STORY-001: Expansion pack infrastructure (where config.yaml lives)
+  - STORY-019: Vault mappings (vault-level config)
+  - STORY-021: Per-vault config system (vault-local overrides)
+  - All agent stories (will reference config)
+  - All task stories (will load config)
+  - All workflow stories (will use config for scheduling)
+  - Node.js fs/path modules
+  - js-yaml library for YAML parsing
+
+testing:
+  - Test config loading from config.yaml
+  - Test vault mapping overlay
+  - Test vault-local override
+  - Test environment variable override
+  - Test configuration hierarchy precedence
+  - Test config.get() with nested paths
+  - Test getVaultPath() with various vaults
+  - Test validation with valid config
+  - Test validation with invalid config (missing required fields)
+  - Test validation with wrong types
+  - Test config initialization script
+  - Test with multiple vaults
+  - Verify all agents load config correctly
+  - Verify no hardcoded values remain in agents
+
+definition_of_done:
+  - Comprehensive config.yaml created with all variables
+  - ConfigLoader class implemented and tested
+  - Configuration hierarchy documented
+  - All 10 agents updated to load from config
+  - All tasks updated to load from config
+  - All workflows updated to use config for scheduling
+  - Templates support config variable substitution
+  - Config validation utility created
+  - Config initialization script created
+  - STORY-001 updated to create config.yaml
+  - Documentation complete (configuration-guide.md)
+  - All tests pass
+  - No hardcoded configuration values in codebase
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for centralized configuration system
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

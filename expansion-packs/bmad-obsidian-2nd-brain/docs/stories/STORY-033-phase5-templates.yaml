@@ -1,0 +1,539 @@
+---
+story_id: STORY-033
+title: Create Phase 5 Templates (Research Integration)
+epic_id: EPIC-001
+phase: 5
+priority: medium
+estimated_effort: 8 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want comprehensive templates for research integration
+  So that I can systematically conduct, document, and integrate external research
+
+acceptance_criteria:
+  - Create research-report-tmpl.yaml
+  - Create tool-detection-report-tmpl.yaml
+  - Create research-query-set-tmpl.yaml
+  - Create source-assessment-tmpl.yaml
+  - Create research-synthesis-tmpl.yaml
+  - Create research-conflict-tmpl.yaml
+  - Create research-provenance-tmpl.yaml
+  - All templates include comprehensive YAML structure
+  - All templates include frontmatter fields, sections, and instructions
+  - All templates include validation rules
+  - Templates follow bmad-doc-template.md specification
+
+tasks_subtasks: |
+  - [ ] Task 1: Create research-report-tmpl.yaml (AC1)
+    - [ ] Define template metadata:
+      - template_id: research-report-tmpl
+      - version: 1.0
+      - description: "Comprehensive research documentation"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - research_topic: text (required)
+      - research_date: datetime (required)
+      - research_strategy: [automated, manual, hybrid] (required)
+      - tools_used: list (MCP tools, databases, etc.)
+      - total_sources: number
+      - avg_credibility: number [0-100]
+      - completeness_score: number [0-100]
+      - research_duration_hours: number
+    - [ ] Define sections:
+      - id: executive_summary
+        title: Executive Summary
+        required: true
+        instructions: 2-3 paragraph overview of key findings
+        validation:
+          min_length: 200
+      - id: research_questions
+        title: Research Questions
+        required: true
+        instructions: List of questions this research aimed to answer
+        validation:
+          min_items: 1
+      - id: key_findings
+        title: Key Findings
+        required: true
+        instructions: Main discoveries with supporting evidence
+        validation:
+          min_items: 1
+      - id: sources_consulted
+        title: Sources Consulted
+        required: true
+        instructions: Complete list with credibility scores
+        validation:
+          min_items: 3
+      - id: conflicts_identified
+        title: Conflicts & Contradictions
+        required: false
+        instructions: Where sources disagreed and how resolved
+      - id: confidence_assessment
+        title: Confidence Assessment
+        required: true
+        instructions: Confidence levels for each finding
+      - id: integration_notes
+        title: Integration Notes
+        required: true
+        instructions: How to integrate into knowledge base
+      - id: remaining_gaps
+        title: Remaining Gaps
+        required: false
+        instructions: What questions remain unanswered
+    - [ ] Add variable substitution and LLM instructions
+
+  - [ ] Task 2: Create tool-detection-report-tmpl.yaml (AC2)
+    - [ ] Define template metadata:
+      - template_id: tool-detection-report-tmpl
+      - version: 1.0
+      - description: "Report of discovered MCP research tools"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - detection_date: datetime (required)
+      - tools_detected: number
+      - recommended_strategy: [automated, manual, hybrid]
+      - optimization_potential: [high, medium, low]
+    - [ ] Define sections:
+      - id: detected_tools
+        title: Detected Tools
+        required: true
+        instructions: List of available MCP tools with capabilities
+        validation:
+          min_items: 0
+      - id: tool_capabilities
+        title: Tool Capabilities
+        required: true
+        instructions: What each tool can do
+      - id: recommended_usage
+        title: Recommended Usage
+        required: true
+        instructions: Optimal tool selection for research types
+      - id: installation_gaps
+        title: Missing Tools
+        required: false
+        instructions: Recommended tools not installed
+    - [ ] Add variable substitution and LLM instructions
+
+  - [ ] Task 3: Create research-query-set-tmpl.yaml (AC3)
+    - [ ] Define template metadata:
+      - template_id: research-query-set-tmpl
+      - version: 1.0
+      - description: "Organized collection of research queries"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - research_topic: text (required)
+      - total_queries: number
+      - query_generation_strategy: [comprehensive, targeted, exploratory]
+      - target_tools: list (which MCP tools queries are for)
+    - [ ] Define sections:
+      - id: deep_research_queries
+        title: Deep Research Queries
+        required: false
+        instructions: Comprehensive queries for Perplexity deep_research
+        validation:
+          min_items: 0
+      - id: reasoning_queries
+        title: Reasoning Queries
+        required: false
+        instructions: Complex analysis queries for Perplexity reason
+      - id: quick_search_queries
+        title: Quick Search Queries
+        required: false
+        instructions: Factual lookup queries for Perplexity search or WebSearch
+      - id: documentation_queries
+        title: Documentation Queries
+        required: false
+        instructions: Library/API queries for Context7
+      - id: execution_plan
+        title: Execution Plan
+        required: true
+        instructions: Order and parallelization strategy
+    - [ ] Add variable substitution and LLM instructions
+
+  - [ ] Task 4: Create source-assessment-tmpl.yaml (AC4)
+    - [ ] Define template metadata:
+      - template_id: source-assessment-tmpl
+      - version: 1.0
+      - description: "Source credibility evaluation"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - source_title: text (required)
+      - source_url: text
+      - source_type: [academic, technical_docs, news, blog, expert, general]
+      - credibility_score: number [0-100] (required)
+      - assessment_date: datetime (required)
+    - [ ] Define sections:
+      - id: source_details
+        title: Source Details
+        required: true
+        instructions: Author, publication, date, etc.
+      - id: credibility_factors
+        title: Credibility Factors
+        required: true
+        instructions: What makes this source reliable or unreliable
+        validation:
+          min_items: 3
+      - id: bias_assessment
+        title: Bias Assessment
+        required: true
+        instructions: Potential biases or conflicts of interest
+      - id: usage_recommendations
+        title: Usage Recommendations
+        required: true
+        instructions: How to cite and weight this source
+    - [ ] Add credibility scoring rubric (0-100 scale)
+    - [ ] Add variable substitution and LLM instructions
+
+  - [ ] Task 5: Create research-synthesis-tmpl.yaml (AC5)
+    - [ ] Define template metadata:
+      - template_id: research-synthesis-tmpl
+      - version: 1.0
+      - description: "Multi-source finding merger"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - synthesis_topic: text (required)
+      - sources_synthesized: number (required)
+      - synthesis_date: datetime (required)
+      - confidence_level: [high, medium, low] (required)
+    - [ ] Define sections:
+      - id: consensus_findings
+        title: Consensus Findings
+        required: true
+        instructions: What all or most sources agree on
+        validation:
+          min_items: 1
+      - id: divergent_findings
+        title: Divergent Findings
+        required: false
+        instructions: Where sources disagree
+      - id: confidence_by_claim
+        title: Confidence by Claim
+        required: true
+        instructions: Confidence level for each synthesized claim
+      - id: integration_strategy
+        title: Integration Strategy
+        required: true
+        instructions: How to create notes from synthesis
+    - [ ] Add variable substitution and LLM instructions
+
+  - [ ] Task 6: Create research-conflict-tmpl.yaml (AC6)
+    - [ ] Define template metadata:
+      - template_id: research-conflict-tmpl
+      - version: 1.0
+      - description: "Contradiction identification in research"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - conflict_topic: text (required)
+      - conflicting_sources: number (required)
+      - conflict_severity: [major, moderate, minor]
+      - resolution_status: [unresolved, partially_resolved, resolved]
+    - [ ] Define sections:
+      - id: conflict_description
+        title: Conflict Description
+        required: true
+        instructions: What sources disagree about
+        validation:
+          min_length: 100
+      - id: source_positions
+        title: Source Positions
+        required: true
+        instructions: What each source claims with credibility scores
+        validation:
+          min_items: 2
+      - id: resolution_analysis
+        title: Resolution Analysis
+        required: true
+        instructions: How to resolve or understand conflict
+      - id: recommended_action
+        title: Recommended Action
+        required: true
+        instructions: Accept paradox, prioritize sources, or seek more evidence
+    - [ ] Add variable substitution and LLM instructions
+
+  - [ ] Task 7: Create research-provenance-tmpl.yaml (AC7)
+    - [ ] Define template metadata:
+      - template_id: research-provenance-tmpl
+      - version: 1.0
+      - description: "Neo4j research provenance tracking"
+      - output_format: markdown
+    - [ ] Define frontmatter fields:
+      - research_project_id: text (required)
+      - gap_id: text (links to gap that triggered research)
+      - tools_used: list
+      - sources_count: number
+      - notes_created: list_of_links
+      - research_date: datetime (required)
+      - effort_hours: number
+    - [ ] Define sections:
+      - id: research_metadata
+        title: Research Metadata
+        required: true
+        instructions: Project ID, dates, duration, strategy
+      - id: tools_and_sources
+        title: Tools & Sources
+        required: true
+        instructions: MCP tools used and sources consulted
+        validation:
+          min_items: 1
+      - id: knowledge_artifacts
+        title: Knowledge Artifacts
+        required: true
+        instructions: Notes created, links established
+        validation:
+          min_items: 1
+      - id: neo4j_relationships
+        title: Neo4j Relationships
+        required: true
+        instructions: Graph structure for provenance tracking
+    - [ ] Add Neo4j Cypher examples
+    - [ ] Add variable substitution and LLM instructions
+
+  - [ ] Task 8: Follow bmad-doc-template.md specification (AC11)
+    - [ ] Ensure all templates follow standard format:
+      - YAML structure with metadata
+      - Frontmatter field definitions with types and constraints
+      - Section definitions with IDs, titles, instructions
+      - Validation rules for required sections
+      - Variable substitution patterns
+      - LLM instructions embedded
+      - Usage notes for agents
+    - [ ] Validate YAML syntax for all templates
+    - [ ] Test variable substitution
+    - [ ] Verify validation rules
+
+  - [ ] Task 9: Document credibility scoring rubric (AC4)
+    - [ ] Define 0-100 scale:
+      - 90-100: Peer-reviewed academic, official documentation
+      - 75-89: Reputable news, established experts, verified
+      - 60-74: General websites with citations, secondary sources
+      - 40-59: Uncited claims, opinion pieces, unverified
+      - 0-39: Known unreliable, misinformation, propaganda
+    - [ ] Document scoring factors:
+      - Author credentials (+10-20)
+      - Peer review (+20-30)
+      - Citations provided (+10-15)
+      - Publication reputation (+10-20)
+      - Recency (±5-10)
+      - Conflicts of interest (-10-30)
+
+  - [ ] Task 10: Create template usage documentation (AC11)
+    - [ ] Document research report usage:
+      - When to create (after research completion)
+      - How to document findings
+      - Integration with research-integration-workflow
+    - [ ] Document tool detection report usage:
+      - When to run (before research, periodically)
+      - How to interpret results
+      - Strategy recommendations
+    - [ ] Document research query set usage:
+      - Query generation patterns
+      - Tool-specific optimization
+      - Execution planning
+    - [ ] Document source assessment usage:
+      - Credibility evaluation process
+      - Bias identification
+      - Citation recommendations
+    - [ ] Document synthesis template usage:
+      - Multi-source integration
+      - Conflict resolution
+      - Confidence assignment
+    - [ ] Document conflict template usage:
+      - When conflicts arise
+      - Resolution strategies
+      - Paradox acceptance
+    - [ ] Document provenance template usage:
+      - Neo4j tracking
+      - Research lifecycle documentation
+      - Future queries enabled
+
+technical_notes: |
+  ## Template Design Philosophy
+
+  These Phase 5 templates support **adaptive research integration**:
+  - Tool detection enables strategy optimization
+  - Query generation maximizes research efficiency
+  - Source assessment ensures quality
+  - Synthesis handles multi-source findings
+  - Conflict resolution manages contradictions
+  - Provenance tracking enables meta-analysis
+
+  ## Research Template Workflow
+
+  **Phase 1: Tool Detection**
+  1. Detect available MCP tools
+  2. Generate tool-detection-report
+  3. Recommend research strategy (automated/manual/hybrid)
+
+  **Phase 2: Query Generation**
+  1. Generate 10-30 queries based on gap
+  2. Optimize queries for detected tools
+  3. Create research-query-set
+  4. Plan execution (parallel/sequential)
+
+  **Phase 3: Research Execution**
+  1. Execute queries using available tools
+  2. Collect findings from each tool
+  3. Assess source credibility (source-assessment per source)
+  4. Track progress
+
+  **Phase 4: Synthesis**
+  1. Cross-validate findings across sources
+  2. Identify conflicts (research-conflict if found)
+  3. Synthesize consensus (research-synthesis)
+  4. Generate comprehensive research-report
+
+  **Phase 5: Provenance Tracking**
+  1. Create research-provenance record
+  2. Link to Neo4j ResearchProject node
+  3. Track tools, sources, notes created
+  4. Enable future queries
+
+  ## Multi-Tool Research Strategy
+
+  **Automated Mode (tools available):**
+  - Perplexity deep_research: Comprehensive topics (3-5 queries)
+  - Perplexity reason: Complex analysis (5-10 queries)
+  - Perplexity search: Quick lookups (5-10 queries)
+  - WebSearch: Current events, trending topics
+  - Context7: Library/API documentation
+
+  **Manual Mode (no tools):**
+  - Generate queries for manual execution
+  - User conducts research externally
+  - Import findings via structured interview
+  - Lower automation, higher effort
+
+  ## Source Credibility Assessment
+
+  **Rubric (0-100 scale):**
+  - **90-100**: Academic papers, official docs, primary sources
+  - **75-89**: Reputable journalism, established experts, verified data
+  - **60-74**: Secondary sources, general websites with citations
+  - **40-59**: Opinion pieces, uncited claims, unverified
+  - **0-39**: Misinformation, propaganda, discredited sources
+
+  **Factors:**
+  - Author credentials and expertise
+  - Publication reputation
+  - Peer review status
+  - Citations and references provided
+  - Recency and relevance
+  - Conflicts of interest
+  - Corroboration from other sources
+
+  ## Conflict Resolution Strategies
+
+  When sources disagree:
+  1. **Compare credibility**: Trust higher-scored sources
+  2. **Seek consensus**: Look for what majority agrees on
+  3. **Temporal check**: Is one source outdated?
+  4. **Context check**: Are sources discussing same thing?
+  5. **Accept paradox**: If both credible, accept context-dependent truth
+  6. **Further research**: If critical, seek additional sources
+
+  ## Neo4j Provenance Tracking
+
+  ```cypher
+  // Create research project
+  CREATE (research:ResearchProject {
+    id: "uuid",
+    topic: "Knowledge Management Systems",
+    strategy: "automated",
+    date: "2025-11-05",
+    duration_hours: 0.5
+  })
+
+  // Link to gap
+  MATCH (gap:Gap {id: "gap-123"})
+  CREATE (research)-[:ADDRESSES]->(gap)
+
+  // Link to tools used
+  CREATE (research)-[:USED_TOOL {name: "Perplexity deep_research", queries: 3}]->(:Tool)
+
+  // Link to sources
+  MATCH (source:Source {url: "https://example.com/article"})
+  CREATE (research)-[:CONSULTED {credibility: 85}]->(source)
+
+  // Link to notes created
+  MATCH (note:Note {id: "note-456"})
+  CREATE (research)-[:CREATED]->(note)
+  CREATE (note)-[:DERIVED_FROM]->(research)
+
+  // Enable queries
+  // What research informed this note?
+  MATCH (note:Note {id: "note-456"})<-[:CREATED]-(research:ResearchProject)
+  RETURN research
+
+  // What notes came from research on topic X?
+  MATCH (research:ResearchProject {topic: "Knowledge Management"})-[:CREATED]->(note:Note)
+  RETURN note
+
+  // Which tools were most effective?
+  MATCH (research:ResearchProject)-[u:USED_TOOL]->(:Tool)
+  RETURN u.name, COUNT(*) as usage_count
+  ORDER BY usage_count DESC
+  ```
+
+  ## Integration with Research Workflow
+
+  These templates are used throughout research-integration-workflow:
+  - **Phase 2**: tool-detection-report-tmpl
+  - **Phase 3**: research-query-set-tmpl, source-assessment-tmpl
+  - **Phase 4**: research-synthesis-tmpl, research-conflict-tmpl
+  - **Phase 5**: research-report-tmpl
+  - **Phase 8**: research-provenance-tmpl
+
+dependencies:
+  - STORY-025: research-integration-workflow (uses all templates)
+  - STORY-050: Research Coordinator Agent v2.0 (uses templates)
+  - MCP research tools (Perplexity, WebSearch, Context7) - optional
+  - Neo4j integration (for provenance tracking) - optional
+  - common/utils/bmad-doc-template.md (template format specification)
+
+testing:
+  - Validate YAML syntax for all 7 templates
+  - Test variable substitution patterns
+  - Verify validation rules work correctly
+  - Test template instantiation with sample data
+  - Test research report with different strategies
+  - Validate tool detection report structure
+  - Test query set generation for different tools
+  - Verify source assessment credibility scoring
+  - Test synthesis with multiple sources
+  - Validate conflict resolution documentation
+  - Test provenance tracking Neo4j queries
+  - Verify integration with Research Coordinator Agent
+  - Test complete workflow with all templates
+
+definition_of_done:
+  - All 7 research templates created with complete sections
+  - All templates follow bmad-doc-template.md format
+  - All frontmatter fields defined with types and constraints
+  - All sections include instructions and validation rules
+  - Credibility scoring rubric documented (0-100 scale)
+  - Conflict resolution strategies documented
+  - Variable substitution patterns documented
+  - LLM instructions embedded in all templates
+  - Neo4j Cypher examples provided
+  - Usage documentation created for all templates
+  - YAML syntax validated for all templates
+  - Templates tested with sample research data
+  - Integration with Research Coordinator Agent verified
+  - Workflow integration documented
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Phase 5 research templates
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

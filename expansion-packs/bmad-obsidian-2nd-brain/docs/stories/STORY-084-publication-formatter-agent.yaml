@@ -1,0 +1,581 @@
+---
+story_id: STORY-084
+title: Publication Formatter Agent (Phase 3)
+epic_id: EPIC-001
+phase: 3
+priority: high
+estimated_effort: 16 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a content publisher
+  I want an AI agent that formats content for publication
+  So that I can safely and professionally publish knowledge base content
+
+acceptance_criteria:
+  - Publication Formatter Agent markdown file created
+  - Agent can format content for multiple platforms (HTML, PDF, markdown, web)
+  - Agent converts wikilinks to target format
+  - Agent generates bibliographies in multiple citation styles (APA, MLA, Chicago, IEEE)
+  - Agent applies privacy checks (no PII, no private content)
+  - Agent validates publications using publication-quality-checklist
+  - Agent validates privacy using publication-privacy-checklist
+  - Agent uses publication-manifest-tmpl.yaml for metadata
+  - Agent uses bibliography-tmpl.yaml for citations
+  - Agent supports version tracking and publication history
+
+tasks_subtasks: |
+  - [ ] Task 1: Define Publication Formatter Agent persona and capabilities (AC1)
+    - [ ] Create agent markdown file: publication-formatter-agent.md
+    - [ ] Define agent purpose:
+      - Format content for publication platforms
+      - Convert internal links to external format
+      - Generate professional bibliographies
+      - Ensure privacy compliance
+      - Track publication metadata
+      - Optimize for target platforms
+    - [ ] Define core capabilities:
+      - Multi-format conversion (HTML, PDF, markdown, web)
+      - Wikilink transformation (internal → external)
+      - Bibliography generation (APA, MLA, Chicago, IEEE)
+      - Privacy scanning (PII detection, private content filtering)
+      - Metadata generation (publication manifests)
+      - Version tracking (publication history)
+      - Platform optimization (formatting for Medium, Substack, blog, PDF, etc.)
+      - Quality validation (completeness, formatting, privacy)
+    - [ ] Define activation triggers:
+      - User requests "Publish content X"
+      - Creation Project Workflow reaches publication phase
+      - User wants to export KB content
+      - Periodic content publication review
+    - [ ] Define agent personality:
+      - Professional publisher
+      - Privacy-conscious gatekeeper
+      - Quality-focused formatter
+      - Platform-savvy optimizer
+
+  - [ ] Task 2: Define format conversion process (AC2)
+    - [ ] Target Formats:
+      - **HTML**: Web publishing (blogs, websites)
+        * Convert wikilinks to hyperlinks or remove
+        * Apply semantic HTML tags
+        * Embed images/media
+        * Generate table of contents
+      - **PDF**: Document publishing (reports, articles)
+        * Convert to LaTeX or use markdown → PDF tool
+        * Apply professional styling
+        * Generate title page, headers, footers
+        * Include page numbers, table of contents
+      - **Markdown**: Platform-agnostic publishing (GitHub, static sites)
+        * Convert wikilinks to standard markdown links
+        * Preserve formatting
+        * Inline or reference images
+      - **Web Platforms**: Medium, Substack, WordPress, etc.
+        * Platform-specific markdown flavor
+        * Optimize for platform constraints
+        * Apply platform-specific formatting
+    - [ ] Conversion Rules:
+      - Wikilinks → Hyperlinks (if URLs available)
+      - Wikilinks → Plain text (if no external URLs)
+      - Obsidian callouts → Styled blocks (HTML) or quotes (markdown)
+      - Dataview queries → Static rendered output
+      - Embedded notes → Inline content or references
+      - Private notes → Removed or redacted
+
+  - [ ] Task 3: Define wikilink transformation (AC3)
+    - [ ] Wikilink Patterns:
+      - `[[Note Name]]` → Standard internal link
+      - `[[Note Name|Display Text]]` → Link with custom text
+      - `[[Note Name#Section]]` → Link to specific section
+      - `![[Embedded Note]]` → Inline note content
+    - [ ] Transformation Strategies:
+      - **Strategy A: Convert to URLs** (if external URLs known)
+        * `[[Gradient Descent]]` → `[Gradient Descent](https://yourblog.com/gradient-descent)`
+        * Requires: URL mapping (note → public URL)
+      - **Strategy B: Convert to plain text** (if no external representation)
+        * `[[Gradient Descent]]` → `Gradient Descent` or `*Gradient Descent*`
+        * For concepts not published separately
+      - **Strategy C: Remove links** (for clean public text)
+        * `[[Gradient Descent]]` → `Gradient Descent`
+        * Most common for articles not relying on hyperlinks
+      - **Strategy D: Preserve as reference** (for knowledge bases)
+        * `[[Gradient Descent]]` → `[Gradient Descent]` (reference marker)
+        * Use when publishing to another knowledge system
+    - [ ] User Configuration:
+      - Allow user to specify transformation strategy per publication
+      - Provide URL mapping file (note name → public URL)
+      - Allow per-note override (some links convert, others don't)
+
+  - [ ] Task 4: Define bibliography generation (AC4)
+    - [ ] Citation Styles:
+      - **APA** (American Psychological Association):
+        * Author, A. A. (Year). Title of work. Source. URL
+        * Example: "Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press."
+      - **MLA** (Modern Language Association):
+        * Author Last, First. "Title of Work." Source, Year.
+        * Example: "Goodfellow, Ian, et al. *Deep Learning*. MIT Press, 2016."
+      - **Chicago** (Chicago Manual of Style):
+        * Author Last, First. *Title of Work*. Source, Year.
+        * Example: "Goodfellow, Ian, Yoshua Bengio, and Aaron Courville. *Deep Learning*. Cambridge, MA: MIT Press, 2016."
+      - **IEEE** (Institute of Electrical and Electronics Engineers):
+        * [1] A. A. Author, "Title of work," Source, Year.
+        * Example: "[1] I. Goodfellow, Y. Bengio, and A. Courville, *Deep Learning*, Cambridge, MA: MIT Press, 2016."
+    - [ ] Bibliography Generation Process:
+      1. Extract citation manifest from content brief
+      2. For each cited note:
+         - Extract bibliographic metadata (author, year, title, source, URL)
+         - Format according to selected citation style
+         - Handle missing metadata (use defaults or mark incomplete)
+      3. Sort citations (alphabetically by author for APA/MLA/Chicago, numerically for IEEE)
+      4. Generate bibliography section
+      5. Load bibliography-tmpl.yaml template
+      6. Populate bibliography
+      7. Append to publication
+    - [ ] Metadata Extraction:
+      - From note frontmatter: author, year, title, source, URL, type
+      - From note content: Title (if not in frontmatter)
+      - From filename: Title (fallback)
+      - Handle incomplete metadata gracefully
+
+  - [ ] Task 5: Define privacy checking (AC5)
+    - [ ] Privacy Validation using publication-privacy-checklist.md:
+      - ✓ No #private tags in content
+      - ✓ No notes from /private/ folders included
+      - ✓ Frontmatter privacy flags checked (private: true)
+      - ✓ No email addresses (except author's public email)
+      - ✓ No phone numbers
+      - ✓ No street addresses
+      - ✓ No social security numbers or personal IDs
+      - ✓ No confidential work information
+      - ✓ All personal names have consent or are public figures
+      - No unpublished sensitive research
+      - Image permissions verified
+      - Quote permissions verified (for extensive quotes)
+      - Source permissions checked
+      - Copyright compliance verified
+    - [ ] PII Detection:
+      - Email addresses: Regex pattern `\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b`
+      - Phone numbers: Regex pattern `\b\d{3}[-.]?\d{3}[-.]?\d{4}\b` (US format)
+      - SSNs: Regex pattern `\b\d{3}-\d{2}-\d{4}\b`
+      - Addresses: Pattern matching (street, city, state, zip)
+    - [ ] Private Content Detection:
+      - Scan for #private tags
+      - Check frontmatter `private: true`
+      - Exclude notes from /private/ folder
+      - Check for `CONFIDENTIAL`, `INTERNAL`, `DO NOT SHARE` markers
+    - [ ] Privacy Actions:
+      - Block publication if required privacy checks fail
+      - Warn for optional privacy items
+      - Provide detailed privacy report
+      - Suggest redactions or removals
+
+  - [ ] Task 6: Define publication manifest and metadata (AC6)
+    - [ ] Publication Manifest Purpose:
+      - Track publication metadata
+      - Enable version control
+      - Support republishing and updates
+      - Link published content to KB source
+    - [ ] Manifest Structure:
+      ```yaml
+      publication_manifest:
+        publication_id: "uuid"
+        title: "Machine Learning as Optimization"
+        content_type: article
+        target_platform: Medium
+        format: markdown
+        publication_date: 2025-12-01
+        version: "1.0"
+        status: published
+        source_brief: "[[Content Brief: ML as Optimization]]"
+        citation_style: APA
+        word_count: 2340
+        public_url: "https://medium.com/@user/ml-as-optimization"
+        source_notes_used: 8
+        citation_count: 8
+        privacy_checked: true
+        quality_checked: true
+      ```
+    - [ ] Version Tracking:
+      - v1.0: Initial publication
+      - v1.1: Minor updates (typo fixes, clarifications)
+      - v2.0: Major updates (new sections, significant revisions)
+    - [ ] Publication History:
+      - Track all versions
+      - Link to source content briefs
+      - Enable rollback if needed
+
+  - [ ] Task 7: Define platform-specific optimization (AC7)
+    - [ ] Platform Optimizations:
+      - **Medium**:
+        * Use Medium-flavored markdown
+        * Optimize image sizes (large, centered)
+        * Add pull quotes for engagement
+        * Include calls to action
+      - **Substack**:
+        * Email-friendly formatting
+        * Short paragraphs (mobile-friendly)
+        * Minimize images (email size constraints)
+      - **PDF**:
+        * Professional styling (fonts, spacing)
+        * Page breaks at logical sections
+        * Title page with metadata
+        * Table of contents
+        * Headers and footers with page numbers
+      - **Blog (Hugo/Jekyll)**:
+        * Frontmatter with SEO metadata
+        * Image paths relative to site structure
+        * Internal links to other blog posts
+      - **GitHub (markdown)**:
+        * GitHub-flavored markdown
+        * Code syntax highlighting
+        * Relative links to other files
+        * No Obsidian-specific syntax
+    - [ ] User Configuration:
+      - Allow user to specify target platform
+      - Provide platform-specific templates
+      - Enable custom formatting rules per platform
+
+  - [ ] Task 8: Define publication workflow (AC8, AC9)
+    - [ ] Publication Process:
+      1. Load content (from draft file)
+      2. Load content brief (for citation manifest)
+      3. Select target platform and format
+      4. Convert content to target format:
+         - Transform wikilinks (strategy A/B/C/D)
+         - Convert Obsidian syntax to target syntax
+         - Optimize formatting for platform
+      5. Generate bibliography:
+         - Extract citation manifest
+         - Format citations in selected style (APA/MLA/Chicago/IEEE)
+         - Append bibliography section
+      6. Run privacy checks:
+         - Validate using publication-privacy-checklist.md
+         - Detect PII, private content, confidential info
+         - Block if critical privacy violations
+      7. Run quality checks:
+         - Validate using publication-quality-checklist.md
+         - Check formatting, links, metadata
+         - Warn for optional items
+      8. Generate publication manifest:
+         - Create metadata (version, date, platform, etc.)
+         - Load publication-manifest-tmpl.yaml
+         - Populate manifest
+      9. Save formatted publication
+      10. Generate publication report (validation results, manifest)
+    - [ ] Output:
+      - Formatted publication file (HTML/PDF/markdown)
+      - Bibliography (if applicable)
+      - Publication manifest
+      - Privacy validation report
+      - Quality validation report
+
+  - [ ] Task 9: Define validation and quality checks (AC9)
+    - [ ] Validation using publication-quality-checklist.md:
+      - ✓ All wikilinks converted to target format
+      - ✓ Bibliography generated and formatted
+      - ✓ No private/confidential content included
+      - ✓ No PII without explicit consent
+      - ✓ All images/media have proper permissions
+      - ✓ Source attribution complete
+      - ✓ Target format correct (HTML, PDF, markdown, etc.)
+      - ✓ Version number assigned
+      - ✓ Publication date set
+      - ✓ Content status set (draft/review/published)
+      - Formatting validated for target platform
+      - Links tested (for web publications)
+      - Metadata complete (author, title, description)
+      - Copyright/license specified
+      - Publication manifest created
+    - [ ] Quality Thresholds:
+      - Pass criteria: All required items (✓) checked
+      - Block if privacy violations detected
+      - Block if broken links in HTML/web output
+      - Warn if metadata incomplete (author, license)
+      - Warn if formatting issues detected
+
+  - [ ] Task 10: Define dependencies and integration points (AC10)
+    - [ ] Dependencies:
+      - Tasks: format-publication, generate-bibliography, check-privacy, validate-publication
+      - Templates: publication-manifest-tmpl.yaml, bibliography-tmpl.yaml
+      - Checklists: publication-quality-checklist.md, publication-privacy-checklist.md
+      - Data: Citation style guides, platform formatting rules
+    - [ ] Integration Points:
+      - **Content Brief Agent**: Uses briefs and citation manifests
+      - **Creation Project Workflow**: Final phase of content creation
+      - **Usage-manifest**: Generate after publication for feedback loop
+      - **Query Interpreter**: May query publications for republishing
+      - **Neo4j**: Track publication events (optional)
+
+  - [ ] Task 11: Define agent constraints and best practices (AC10)
+    - [ ] Constraints:
+      - All wikilinks must be transformed (no raw wikilinks in output)
+      - All privacy checks must pass (blocking)
+      - Bibliography must be generated if citations present
+      - Publication manifest must be created for all publications
+      - Version number must be assigned
+    - [ ] Best Practices:
+      - Always run privacy checks before publication (never skip)
+      - Generate bibliographies for all cited sources (proper attribution)
+      - Track publication history (enable updates and republishing)
+      - Test formatting on target platform before publishing
+      - Create usage manifest after publication (close feedback loop)
+      - Review publications quarterly (update with new KB insights)
+      - Use version control (v1.0 → v1.1 → v2.0)
+    - [ ] Anti-Patterns to Avoid:
+      - Publishing without privacy checks (leaks PII)
+      - Not converting wikilinks (broken links in publication)
+      - Skipping bibliography (plagiarism risk, no attribution)
+      - Not tracking publication metadata (can't update later)
+      - Publishing private content (confidentiality breach)
+      - Using wrong citation style (unprofessional)
+
+technical_notes: |
+  ## Publication Formatting Philosophy
+
+  Publication formatting is **KB-to-public transformation**:
+  - Internal → External (wikilinks, syntax, structure)
+  - Private → Public (privacy filtering, PII removal)
+  - Raw → Polished (professional formatting, citations)
+  - Traceable → Versioned (publication history, updates)
+
+  ## Wikilink Transformation Strategies
+
+  **Strategy Selection**:
+  - **Convert to URLs** when:
+    * Published notes have public URLs
+    * Content is web-published with hyperlinks
+    * Internal KB has public mirror
+  - **Convert to plain text** when:
+    * Concepts not published separately
+    * Article doesn't rely on hyperlinks
+    * Clean reading experience desired
+  - **Remove links** when:
+    * Academic/professional publication (no inline links)
+    * PDF or print format
+  - **Preserve as reference** when:
+    * Publishing to another knowledge system
+    * Cross-referencing other notes
+
+  ## Citation Style Selection
+
+  **When to use each style:**
+  - **APA**: Psychology, education, social sciences
+  - **MLA**: Humanities, literature, arts
+  - **Chicago**: History, business, fine arts
+  - **IEEE**: Engineering, computer science, technical fields
+
+  User should specify style based on target audience and domain.
+
+  ## Privacy Checking Importance
+
+  Privacy violations can:
+  - Leak personal information (PII exposure)
+  - Violate confidentiality (work information disclosure)
+  - Harm relationships (private names, communications)
+  - Create legal liability (GDPR, privacy laws)
+
+  **Always block publication on critical privacy failures.** Better to over-check than leak.
+
+  ## Publication Versioning
+
+  Track versions to enable:
+  - **Updates**: Republish with new insights (v1.0 → v2.0)
+  - **Corrections**: Fix errors quickly (v1.0 → v1.1)
+  - **History**: See how published content evolved
+  - **Rollback**: Revert if update causes issues
+
+  Version scheme:
+  - **Major (v1.0 → v2.0)**: Significant revisions, new sections
+  - **Minor (v1.0 → v1.1)**: Typo fixes, clarifications, small updates
+  - **Patch (v1.1.0 → v1.1.1)**: Formatting fixes (rare)
+
+  ## Platform-Specific Optimization
+
+  Each platform has unique constraints:
+  - **Medium**: Large images, pull quotes, narrative style
+  - **Substack**: Email-friendly, short paragraphs, minimal images
+  - **PDF**: Professional styling, page layout, print-ready
+  - **Blog**: SEO metadata, internal linking, responsive design
+  - **GitHub**: Code-focused, developer audience, technical formatting
+
+  Generic markdown works, but **platform optimization improves readability and engagement**.
+
+  ## Bibliography Generation
+
+  Bibliography enables:
+  - **Attribution**: Credit original sources
+  - **Credibility**: Show evidence backing
+  - **Traceability**: Readers can verify claims
+  - **Professionalism**: Academic/professional standards
+
+  Even for blog posts, bibliographies add credibility. For academic/professional content, bibliographies are mandatory.
+
+  ## Integration with Content Creation Workflow
+
+  Publication Formatter is **Phase 3 of content creation**:
+  1. **Phase 1: Brief** (Content Brief Agent)
+     - Create content brief, identify arguments, angles, evidence
+  2. **Phase 2: Write** (External or assisted)
+     - Transform brief into draft content
+  3. **Phase 3: Publish** (Publication Formatter Agent) ← THIS AGENT
+     - Format for platform
+     - Generate bibliography
+     - Apply privacy checks
+     - Create publication manifest
+     - Output: Published content
+  4. **Phase 4: Feedback** (Content Brief Agent)
+     - Generate usage manifest
+     - Identify KB improvements
+
+  ## Neo4j Publication Tracking
+
+  ```cypher
+  // Create publication node
+  CREATE (pub:Publication {
+    id: "uuid",
+    title: "Machine Learning as Optimization",
+    type: "article",
+    platform: "Medium",
+    published_date: "2025-12-01",
+    version: "1.0",
+    url: "https://medium.com/@user/ml-as-optimization",
+    word_count: 2340
+  })
+
+  // Link to source brief
+  MATCH (brief:ContentBrief {id: "brief-uuid"})
+  CREATE (pub)-[:CREATED_FROM]->(brief)
+
+  // Link to cited notes
+  MATCH (note:Note)
+  WHERE note.id IN ["note1", "note2", "note3"]
+  CREATE (pub)-[:CITES]->(note)
+
+  // Track publication event
+  CREATE (event:PublicationEvent {
+    timestamp: "2025-12-01T10:00:00Z",
+    action: "published",
+    version: "1.0"
+  })
+  CREATE (pub)-[:HAS_EVENT]->(event)
+
+  // Track updates
+  MATCH (pub:Publication {id: "uuid"})
+  CREATE (event:PublicationEvent {
+    timestamp: "2025-12-15T14:00:00Z",
+    action: "updated",
+    old_version: "1.0",
+    new_version: "1.1",
+    changes: "Fixed typos, added clarification"
+  })
+  CREATE (pub)-[:HAS_EVENT]->(event)
+  SET pub.version = "1.1"
+  ```
+
+  ## Example Publication Manifest
+
+  ```yaml
+  ---
+  publication_id: "pub-12345"
+  title: "Machine Learning as Optimization"
+  author: "Your Name"
+  content_type: article
+  target_platform: Medium
+  format: markdown
+  citation_style: APA
+  publication_date: 2025-12-01
+  version: "1.0"
+  status: published
+  public_url: "https://medium.com/@yourname/ml-as-optimization"
+
+  # Source tracking
+  source_brief: "[[Content Brief: ML as Optimization]]"
+  source_notes_used: 8
+  citation_count: 8
+
+  # Metrics
+  word_count: 2340
+  character_count: 14820
+  estimated_reading_time: "10 minutes"
+
+  # Validation
+  privacy_checked: true
+  privacy_check_date: 2025-11-30
+  quality_checked: true
+  quality_check_date: 2025-11-30
+
+  # Metadata
+  tags: [machine-learning, optimization, gradient-descent]
+  description: "Reframe machine learning as optimization over hypothesis spaces"
+  copyright: "CC BY 4.0"
+  license_url: "https://creativecommons.org/licenses/by/4.0/"
+
+  # Citations
+  notes_cited:
+    - "[[Gradient Descent]]"
+    - "[[Loss Functions]]"
+    - "[[Hypothesis Spaces]]"
+    - "[[Project: Custom Loss for Segmentation]]"
+    - "[[Bias-Variance Tradeoff]]"
+    - "[[Overfitting]]"
+    - "[[Regularization Techniques]]"
+    - "[[Deep Learning Book Notes]]"
+  ---
+  ```
+
+dependencies:
+  - STORY-033: Phase 3 Templates (publication-manifest-tmpl.yaml)
+  - STORY-034: Additional Templates (bibliography-tmpl.yaml)
+  - STORY-035: Phase 2-5 Checklists (publication-quality-checklist.md, publication-privacy-checklist.md)
+  - STORY-024: Content Brief Agent (provides briefs and citation manifests)
+  - STORY-026: Creation Project Workflow (orchestrates brief → content → publication)
+  - Neo4j integration - optional for publication tracking
+  - Tasks: format-publication.md, generate-bibliography.md, check-privacy.md, validate-publication.md
+
+testing:
+  - Test HTML formatting and conversion
+  - Test PDF generation with bibliography
+  - Test markdown formatting for GitHub
+  - Test Medium-specific formatting
+  - Test wikilink transformation (all strategies A/B/C/D)
+  - Test bibliography generation (APA, MLA, Chicago, IEEE)
+  - Test privacy checking (PII detection, private content filtering)
+  - Validate using publication-quality-checklist
+  - Validate using publication-privacy-checklist
+  - Test publication manifest generation
+  - Test version tracking (v1.0 → v1.1 → v2.0)
+  - Test platform-specific optimizations
+  - Verify integration with Content Brief Agent
+  - Test Neo4j publication tracking
+
+definition_of_done:
+  - publication-formatter-agent.md created with complete persona and capabilities
+  - Format conversion process documented (HTML, PDF, markdown, web)
+  - Wikilink transformation strategies defined (A/B/C/D)
+  - Bibliography generation documented (APA, MLA, Chicago, IEEE)
+  - Privacy checking process defined with PII detection
+  - Publication manifest and metadata structure specified
+  - Platform-specific optimization documented
+  - Publication workflow defined (10 steps)
+  - Validation using both checklists integrated
+  - Dependencies and integration points specified
+  - Best practices and anti-patterns documented
+  - Example publication manifest provided
+  - Neo4j publication tracking documented (optional)
+  - Testing scenarios defined
+  - Agent tested with multiple platforms and formats
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Publication Formatter Agent
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

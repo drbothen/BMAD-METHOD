@@ -8,15 +8,24 @@ The BMAD Obsidian 2nd Brain expansion pack extends the BMAD framework to work se
 
 ## Key Capabilities
 
+### Phase 1: Foundation & Capture
 - **Natural Language Querying**: Execute multi-source queries across your vault with automatic intent classification
 - **Intelligent Inbox Triage**: Automatically classify, tag, and route incoming notes
 - **Smart Auto-Linking**: Discover and create connections between related notes
 - **Atomicity Analysis**: Fragment complex notes into atomic building blocks
-- **Temporal Tracking**: Track how notes and concepts evolve over time using Neo4j
-- **Contradiction Detection**: Identify and flag conflicting information in your knowledge base
 - **Content Generation**: Transform notes into polished content (blog posts, documentation, etc.)
 - **Quality Assurance**: Assess note atomicity, link density, and staleness
 - **Semantic Search**: Find relevant notes using local embeddings (no cloud required)
+
+### Phase 2: Synthesis & Temporal Analysis (✨ NEW)
+- **Maps of Content (MOCs)**: Transform scattered notes into structured knowledge domains with hierarchical organization
+- **Domain Maturity Tracking**: Track knowledge domains through maturity levels (nascent → developing → established → comprehensive)
+- **Temporal Evolution Analysis**: Generate chronological narratives showing how your understanding of concepts evolved over time
+- **Understanding Shift Detection**: Identify contradictions, source integrations, synthesis events, and perspective changes
+- **Maturation Metrics**: Calculate days-to-evergreen, edit velocity, link accumulation rate, and comparative vault rankings
+- **Monthly Deep Reviews**: Comprehensive workflow for domain synthesis and strategic knowledge work planning
+- **On-Demand Evolution Analysis**: Analyze any concept's development history with timeline visualizations
+- **Temporal Tracking**: Track how notes and concepts evolve over time using Neo4j Graphiti
 
 ## Prerequisites
 
@@ -292,12 +301,130 @@ Performs comprehensive vault quality audits across 7 dimensions to detect stale 
 - Timeout enforcement: 10-second timeout per external request
 - SHA-256 hashing: Secure content hashing for duplicate detection
 
+### MOC Constructor Agent (🗺️)
+
+**Status:** ✓ Available (Phase 2)
+**Command:** `/bmad-2b:moc-constructor-agent`
+
+Transform scattered notes into navigable Maps of Content (MOCs) that reveal the architecture of your knowledge domains. MapMaker is your knowledge cartographer, building hierarchical structures that help you understand relationships and track intellectual growth. Features:
+
+- **Domain Coverage Analysis:** Discovers all notes in a domain via tags, links, and semantic similarity (>0.75 threshold)
+- **Hierarchical Structure Creation:** Organizes knowledge into 2-3 level hierarchies (Domain → Branches → Sub-branches, 3-6 branches optimal)
+- **MOC Maturity Tracking:** Monitors domain evolution through 4 stages (nascent 0-10 notes → developing 11-30 → established 31-60 → comprehensive 60+)
+- **Summary Generation:** Synthesizes 2-3 sentence summaries for each section that explain relationships, not just list contents
+- **Bidirectional Linking:** Creates MOC↔notes navigation paths with contextual phrases
+- **Bridge Paragraphs:** Explains connections between knowledge branches to reveal conceptual relationships
+- **Temporal Awareness:** Tracks MOC creation and major updates with optional Neo4j integration
+- **Quality Curation:** Emphasizes quality over quantity - 20 well-organized notes beats 100 scattered links
+- **Graceful Degradation:** Full MOC construction works without Neo4j (temporal tracking only)
+
+**Commands:**
+
+- `*help` - Show all available commands
+- `*create-moc {domain}` - Create new Map of Content for specified knowledge domain
+- `*update-moc {moc_path}` - Update existing MOC with new notes and relationships
+- `*analyze-coverage {domain}` - Analyze domain coverage and identify knowledge gaps
+- `*suggest-branches {domain}` - Suggest hierarchical branches for domain organization
+- `*check-maturity {moc_path}` - Calculate and display MOC maturity level with recommendations
+- `*exit` - Exit agent mode
+
+**MOC Structure:**
+
+Each MOC includes:
+- **Overview:** 2-3 sentence domain synthesis
+- **Core Concepts:** 5-10 foundational pillars with definitions
+- **Knowledge Branches:** Hierarchical organization with summaries and sub-topics
+- **Emerging Questions:** Unanswered questions in the domain
+- **Temporal History:** Major updates and evolution tracking
+- **Related MOCs:** Cross-domain connections
+
+**Maturity Levels:**
+
+- **Nascent (0-10 notes):** Initial exploration, basic structure, minimal synthesis
+- **Developing (11-30 notes):** Active growth, 2-3 branches, emerging patterns
+- **Established (31-60 notes):** Stable structure, comprehensive coverage, quality synthesis
+- **Comprehensive (60+ notes):** Expert-level coverage, 3-4 hierarchy levels, dense linking network
+
+**Requirements:**
+
+- Obsidian MCP Tools configured
+- (Optional) Neo4j Graphiti for temporal MOC tracking and evolution queries
+
+**Use Cases:**
+
+- Monthly deep reviews: Organize knowledge domains systematically
+- Domain synthesis: Transform scattered notes into navigable structures
+- Knowledge gap identification: Discover under-represented areas
+- Learning consolidation: Build comprehensive understanding of complex topics
+
+### Timeline Constructor Agent (⏳)
+
+**Status:** ✓ Available (Phase 2)
+**Command:** `/bmad-2b:timeline-constructor-agent`
+
+Reveal how your understanding evolves over time by analyzing temporal event data from Neo4j. Chronicler is your temporal analyst, transforming event streams into meaningful narratives that show how concepts develop, thinking shifts, and knowledge matures. Features:
+
+- **Temporal Event Queries:** Retrieves captures, edits, promotions, links from Neo4j Graphiti with millisecond precision
+- **Evolution Phase Identification:** Detects transitions through capture (0-7 days) → development (1-3 months) → maturation (3-12 months) → maintenance (12+ months)
+- **Understanding Shift Detection:** Identifies 5 shift types (contradiction, source integration, perspective shift, synthesis, restructuring) with explanations
+- **Maturation Metrics:** Calculates days-to-evergreen, edit velocity (edits/week), link accumulation rate (links/month), reference velocity (refs/month), maturation speed index
+- **Vault-Wide Comparisons:** Compares individual concept metrics to vault averages to identify fast/slow maturers
+- **Chronological Narratives:** Crafts temporal stories explaining concept evolution with context on why shifts happened
+- **Timeline Visualizations:** Generates both ASCII (terminal) and Mermaid (Obsidian rendering) timeline formats
+- **Influence Tracking:** Documents what sources informed understanding shifts with attribution
+- **Domain Evolution Analysis:** Analyzes temporal evolution of entire knowledge domains, not just individual concepts
+- **Performance Optimized:** Cypher query patterns optimized for large event histories (1000+ events/concept)
+
+**Commands:**
+
+- `*help` - Show all available commands
+- `*analyze-evolution {concept}` - Full temporal analysis from capture to present with narrative generation
+- `*create-timeline {concept} {timeframe}` - Generate timeline visualization (timeframe: 3m, 6m, 1y, all)
+- `*detect-shifts {concept}` - Identify and explain key understanding shifts with dates
+- `*calculate-maturation {concept}` - Calculate maturation metrics and compare to vault averages
+- `*compare-concepts {concept1} {concept2}` - Compare evolution patterns of two concepts side-by-side
+- `*domain-evolution {domain}` - Analyze temporal evolution of entire knowledge domain
+- `*exit` - Exit agent mode
+
+**Maturation Metrics:**
+
+- **Days to Evergreen:** Time from capture to promotion (<7 days = fast, 7-30 = normal, 30-90 = slow, >90 = stalled)
+- **Edit Velocity:** Edits per week during development phase (>3/week = high, 1-3 = moderate, <1 = low)
+- **Link Accumulation Rate:** New connections per month during maturation (>5/month = high, 2-5 = moderate, <2 = low)
+- **Reference Velocity:** Rate at which other notes reference this note (>2/month = high influence, 0.5-2 = moderate, <0.5 = low)
+- **Maturation Speed Index:** Composite metric comparing to vault average (<0.5 = slow, 0.5-1.5 = normal, >1.5 = fast)
+
+**Understanding Shifts Detected:**
+
+1. **Contradiction Introduction:** New content conflicts with existing content
+2. **Source Integration:** External source significantly influences understanding
+3. **Perspective Shift:** Viewpoint or framing changes fundamentally
+4. **Synthesis Achievement:** Multiple concepts merge into new insight
+5. **Hierarchical Restructuring:** Organization or abstraction level changes
+
+**Requirements:**
+
+- Obsidian MCP Tools configured
+- **Neo4j Graphiti REQUIRED** for core functionality (temporal event queries)
+- Temporal events must be captured via Inbox Triage Agent for analysis
+
+**Important Notes:**
+
+- **Neo4j Required:** This agent has severely limited functionality without Neo4j (no temporal analysis, only basic file timestamps)
+- **Retroactive Analysis:** Cannot analyze concepts captured before temporal event tracking was enabled
+- **Graceful Degradation:** Warns user on activation if Neo4j unavailable, provides setup instructions
+
+**Use Cases:**
+
+- **Reflection:** See how your understanding of a concept evolved over months/years
+- **Writing:** Generate temporal narratives for essays or documentation showing knowledge development
+- **Research:** Identify patterns in how you learn (fast/slow maturation, shift triggers)
+- **Curiosity:** Explore "How did I get here?" for any evergreen concept
+
 ### Future Agents
 
 The following agents are planned for future releases:
 
-- MOC Constructor Agent
-- Timeline Constructor Agent
 - Content Brief Agent
 - Publication Formatter Agent
 - Gap Detector Agent

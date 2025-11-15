@@ -1,0 +1,642 @@
+---
+story_id: STORY-038
+title: Implement Phase 5 Research Coordinator Tasks (Enhanced)
+epic_id: EPIC-001
+phase: 5
+priority: medium
+estimated_effort: 40 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a knowledge worker
+  I want adaptive, tool-aware research execution tasks
+  So that the Research Coordinator Agent can automatically optimize research strategies based on available tools
+
+acceptance_criteria:
+  - Create 19 research coordination tasks
+  - Tool Detection & Profiling: 4 tasks
+  - Query Generation: 4 tasks
+  - Research Execution: 5 tasks
+  - Source Evaluation: 3 tasks
+  - Synthesis & Integration: 3 tasks
+  - All tasks follow bmad task format with step-by-step instructions
+  - All tasks include input/output specifications
+  - All tasks include quality criteria and validation logic
+
+tasks_subtasks: |
+  - [ ] Task 1: Tool Detection & Profiling Tasks (AC1)
+    - [ ] Create detect-research-tools.md:
+      - Purpose: Automatically discover available MCP research tools
+      - Input: MCP server configuration, available tool list
+      - Process:
+        1. Query MCP environment for available servers
+        2. Identify research-capable tools by patterns (mcp__perplexity__*, mcp__web_search__*, mcp__context7__*)
+        3. Test tool availability (ping/health check)
+        4. Record tool names, capabilities, and status
+        5. Generate tool detection report
+      - Output:
+        - List of detected tools with status
+        - Tool capability profile (search/reasoning/docs)
+        - Recommendations for missing tools
+        - Tool detection report document
+      - Quality Criteria:
+        - All available tools detected (100%)
+        - No false positives (tools marked available but unreachable)
+        - Clear capability categorization
+        - Actionable recommendations
+
+    - [ ] Create profile-tool-capabilities.md:
+      - Purpose: Analyze detected tools to understand strengths and optimal use cases
+      - Input: Detected tool list, tool metadata from MCP registry
+      - Process:
+        1. For each tool identify: primary capability, query optimization requirements, rate limits, result format, strengths/limitations
+        2. Create capability profile
+        3. Map capabilities to research workflow phases
+        4. Generate optimization recommendations
+      - Output:
+        - Tool capability profile for each detected tool
+        - Mapping of tools to research scenarios
+        - Query optimization guidelines
+        - Performance expectations
+      - Quality Criteria:
+        - Accurate capability classification
+        - Clear strength/limitation analysis
+        - Actionable optimization guidance
+        - Scenario-to-tool mapping complete
+
+    - [ ] Create recommend-research-tools.md:
+      - Purpose: Suggest optimal tool configuration for user's research needs
+      - Input: Tool detection results, user's research patterns, topic complexity
+      - Process:
+        1. Analyze detected tools and gaps
+        2. Identify missing high-value tools
+        3. Generate installation recommendations
+        4. Prioritize by impact on research quality
+        5. Provide installation instructions
+        6. Suggest alternative workflows if tools unavailable
+      - Output:
+        - Prioritized tool recommendation list
+        - Installation instructions for each
+        - Expected quality improvement
+        - Fallback strategies
+      - Quality Criteria:
+        - Clear prioritization rationale
+        - Accurate installation instructions
+        - Realistic quality impact estimates
+        - Viable fallbacks provided
+
+    - [ ] Create monitor-tool-availability.md:
+      - Purpose: Track tool status during research session
+      - Input: Initial tool detection results, active research session
+      - Process:
+        1. Periodic health checks during research
+        2. Detect tool failures or rate limiting
+        3. Trigger fallback strategies if tool becomes unavailable
+        4. Log tool usage statistics
+        5. Update tool status in session context
+      - Output:
+        - Real-time tool availability status
+        - Tool failure alerts
+        - Usage statistics (queries per tool)
+        - Fallback trigger events
+      - Quality Criteria:
+        - Failures detected within 5 seconds
+        - Fallbacks activated automatically
+        - No research interruption from tool failures
+        - Complete usage statistics tracked
+
+  - [ ] Task 2: Query Generation Tasks (AC2)
+    - [ ] Create generate-research-queries.md:
+      - Purpose: Generate focused research queries optimized for detected tools
+      - Input: Research topic, detected tool capabilities, research depth (quick/medium/comprehensive), target audience level
+      - Process:
+        1. Analyze topic to identify key concepts
+        2. Break down into sub-questions
+        3. Categorize by type (factual, conceptual, procedural, comparative, historical, critical)
+        4. Generate 10-25 queries based on depth requirement
+        5. Optimize each query for best-fit tool
+        6. Organize by execution order (foundations → advanced)
+        7. Format for easy copy/paste if manual workflow
+      - Output:
+        - Organized query set (10-25 queries)
+        - Tool assignment for each query
+        - Execution order recommendation
+        - Estimated research time
+        - Query set document using template
+      - Quality Criteria:
+        - Comprehensive coverage of topic
+        - Logical progression from basic to advanced
+        - Optimal tool assignment
+        - Copy/paste friendly formatting
+
+    - [ ] Create generate-deep-questions.md:
+      - Purpose: Generate 20-30 comprehensive Perplexity-style research questions
+      - Input: Research topic, specific focus areas (optional), depth level (standard/expert)
+      - Process:
+        1. Analyze topic for multiple dimensions (historical, current state, future trends, practical applications, theoretical foundations, controversies, ecosystem, performance, security, community)
+        2. Generate 2-3 questions per dimension
+        3. Frame questions to encourage comprehensive responses
+        4. Optimize for Perplexity deep research format
+        5. Include context and constraints in questions
+        6. Order by logical learning progression
+      - Output:
+        - 20-30 comprehensive research questions
+        - Grouped by dimension
+        - Optimized for deep research tool
+        - Expected research depth per question
+      - Quality Criteria:
+        - Questions invite comprehensive answers
+        - Cover multiple dimensions of topic
+        - Avoid yes/no or simple factual questions
+        - Include sufficient context
+        - Logical progression
+
+    - [ ] Create optimize-query-for-tool.md:
+      - Purpose: Adapt a research query to specific tool capabilities
+      - Input: Original query, target tool (perplexity_search/deep_research/reason/context7/websearch), tool capability profile
+      - Process:
+        1. Analyze query characteristics (complexity, scope, format)
+        2. Retrieve tool optimization patterns from KB
+        3. Apply tool-specific transformations:
+           - Perplexity Search: Concise, keyword-focused, specific
+           - Perplexity Deep Research: Natural language, context-rich, comprehensive
+           - Perplexity Reasoning: Multi-step, logical, analytical
+           - Context7: Library/framework name, version, specific API
+           - WebSearch: SEO-optimized, keyword combinations
+        4. Add constraints if needed (date ranges, domains, file types)
+        5. Validate optimized query against tool limitations
+        6. Provide reasoning for changes made
+      - Output:
+        - Optimized query for target tool
+        - Explanation of optimization changes
+        - Expected result quality
+        - Alternative tools if optimization not possible
+      - Quality Criteria:
+        - Query matches tool's optimal input format
+        - Respects tool constraints (length, complexity)
+        - Maintains original intent
+        - Improves expected result quality
+
+    - [ ] Create categorize-queries.md:
+      - Purpose: Organize queries by type, priority, and execution strategy
+      - Input: Generated query set, topic requirements
+      - Process:
+        1. Classify queries by type (foundational, deep dive, code examples, advanced topics, community/ecosystem)
+        2. Assign priority (critical, high, medium, low)
+        3. Identify dependencies (queries that build on others)
+        4. Determine execution strategy (parallel, sequential, hybrid)
+        5. Group related queries
+        6. Calculate estimated time per category
+      - Output:
+        - Categorized query set
+        - Priority rankings
+        - Dependency map
+        - Execution strategy recommendation
+        - Time estimates per category
+      - Quality Criteria:
+        - All queries categorized appropriately
+        - Dependencies correctly identified
+        - Execution strategy optimized for speed and quality
+        - Time estimates realistic
+
+  - [ ] Task 3: Research Execution Tasks (AC3)
+    - [ ] Create execute-automated-research.md:
+      - Purpose: Orchestrate multi-tool research execution with adaptive strategy
+      - Input: Research topic, generated query set, tool detection results, research depth preference
+      - Process:
+        1. Strategy Selection: Analyze query set, select execution strategy (parallel/sequential/hybrid), estimate time
+        2. Query Execution: Assign queries to optimal tools, execute based on strategy, handle tool failures with fallbacks, respect rate limits
+        3. Result Collection: Gather findings from all tools, extract key information/citations/examples, track source URLs and timestamps, record tool provenance
+        4. Quality Assessment: Assess source credibility, identify conflicts, flag low-confidence findings, calculate completeness score
+        5. Synthesis: Merge findings from multiple sources, resolve conflicts, organize by topic/subtopic, generate research report
+      - Output:
+        - Comprehensive research report
+        - Organized findings with citations
+        - Source credibility assessments
+        - Conflict identification
+        - Completeness score (0-100)
+        - Tool usage statistics
+      - Quality Criteria:
+        - All queries executed successfully or fallbacks used
+        - Sources assessed for credibility
+        - Conflicts identified and addressed
+        - Complete research report generated
+        - Provenance tracked
+
+    - [ ] Create execute-parallel-research.md:
+      - Purpose: Execute multiple research queries simultaneously across available tools
+      - Input: Query set categorized by tool, tool availability status, rate limit constraints
+      - Process:
+        1. Group queries by assigned tool
+        2. Calculate parallel execution limits (rate limits, API quotas)
+        3. Launch queries in batches (Batch size = MIN(available_tools, rate_limit, user_preference))
+        4. Wait for batch completion before next batch
+        5. Collect results as they arrive
+        6. Handle failures individually without blocking other queries
+        7. Aggregate results when all queries complete
+      - Output:
+        - Collected findings from all queries
+        - Execution statistics (time per query, success rate)
+        - Failed queries with error details
+        - Tool usage summary
+      - Quality Criteria:
+        - Maximum parallelism without violating rate limits
+        - Individual failures don't block other queries
+        - All results collected and tagged with source
+        - Performance metrics tracked
+
+    - [ ] Create execute-sequential-research.md:
+      - Purpose: Execute research queries with progressive refinement
+      - Input: Initial query set, tool availability, refinement strategy (depth-first/breadth-first)
+      - Process:
+        1. Execute foundational queries first
+        2. Analyze results to identify gaps, topics needing deeper investigation, contradictions requiring clarification
+        3. Generate follow-up queries based on findings
+        4. Execute follow-up queries
+        5. Repeat refinement cycle until completeness threshold reached, max depth reached, or user satisfaction achieved
+      - Output:
+        - Comprehensive findings with refinement history
+        - Generated follow-up queries and rationale
+        - Depth reached per topic
+        - Refinement decision log
+      - Quality Criteria:
+        - Each refinement improves completeness
+        - Follow-up queries address real gaps
+        - Refinement stops at appropriate depth
+        - Decision log shows clear reasoning
+
+    - [ ] Create execute-targeted-research.md:
+      - Purpose: Execute research using single specific tool
+      - Input: Query set, target tool, tool configuration
+      - Process:
+        1. Validate tool availability
+        2. Optimize all queries for target tool
+        3. Execute queries sequentially or in parallel based on tool limits
+        4. Collect results
+        5. Generate tool-specific report
+      - Output:
+        - Findings from target tool
+        - Tool-specific statistics
+        - Optimization notes
+        - Limitations encountered
+      - Quality Criteria:
+        - All queries optimized for target tool
+        - Tool used efficiently (respecting limits)
+        - Complete results collected
+        - Limitations documented
+
+    - [ ] Create execute-fallback-research.md:
+      - Purpose: Provide manual research workflow when tools unavailable
+      - Input: Query set, research topic, manual research guidelines
+      - Process:
+        1. Generate formatted query list for manual execution
+        2. Provide search engine suggestions
+        3. Create research template for manual note-taking
+        4. Include source credibility assessment guidelines
+        5. Provide import instructions for manual findings
+      - Output:
+        - Formatted query list (copy/paste ready)
+        - Research execution guide
+        - Manual research template
+        - Import instructions
+      - Quality Criteria:
+        - Queries clearly formatted
+        - Comprehensive execution guide
+        - Template facilitates structured capture
+        - Import process straightforward
+
+  - [ ] Task 4: Source Evaluation Tasks (AC4)
+    - [ ] Create assess-source-credibility.md:
+      - Purpose: Evaluate source authority and reliability using evidence-based criteria
+      - Input: Source URL/reference, content excerpt, publication date, author/organization
+      - Process:
+        1. Authority Assessment: Check domain reputation, identify author credentials, assess organization authority (High/Medium/Low/Unknown)
+        2. Currency Assessment: Check publication date, compare to topic evolution timeline, flag outdated information (Current/Recent/Dated/Outdated)
+        3. Accuracy Indicators: Look for citations/references, check for factual errors, compare with other sources (Well-sourced/Partially-sourced/Unsourced)
+        4. Objectivity Assessment: Identify bias indicators, check for commercial interests, assess balance (Objective/Somewhat-biased/Highly-biased)
+        5. Coverage Assessment: Evaluate depth, check comprehensiveness (Comprehensive/Moderate/Superficial)
+        6. Calculate Overall Credibility Score: Weight factors, generate 0-100 score, classify (Authoritative/Reliable/Questionable/Unreliable)
+      - Output:
+        - Source credibility score (0-100)
+        - Classification (Authoritative 85-100 / Reliable 70-84 / Questionable 50-69 / Unreliable 0-49)
+        - Detailed assessment report
+        - Recommendations for use
+      - Quality Criteria:
+        - Evidence-based assessment (not subjective)
+        - Clear rationale for each rating
+        - Consistent scoring across sources
+        - Actionable recommendations
+
+    - [ ] Create validate-research-accuracy.md:
+      - Purpose: Cross-validate findings across multiple sources to ensure accuracy
+      - Input: Research findings from multiple sources, source credibility assessments
+      - Process:
+        1. Fact Extraction: Identify factual claims, extract specific assertions
+        2. Cross-Validation: Compare claims across sources, identify consensus (3+ sources agree), identify conflicts (sources disagree), identify single-source claims
+        3. Confidence Assessment:
+           - High Confidence: Consensus from authoritative sources
+           - Medium Confidence: Consensus from reliable sources, or single authoritative source
+           - Low Confidence: Conflicts present, or single questionable source
+           - Unverified: Single source, no corroboration possible
+        4. Conflict Resolution: For conflicts prioritize more authoritative sources, check publication dates, flag for manual review if unclear
+        5. Recommendation Generation: Accept high-confidence, flag medium for follow-up, require manual review for low-confidence, mark unverified clearly
+      - Output:
+        - Accuracy validation report
+        - Findings categorized by confidence level
+        - Identified conflicts with resolution recommendations
+        - Manual review queue for uncertain findings
+      - Quality Criteria:
+        - All factual claims validated
+        - Clear confidence levels assigned
+        - Conflicts identified and analyzed
+        - Actionable recommendations provided
+
+    - [ ] Create identify-research-conflicts.md:
+      - Purpose: Detect contradictions and disagreements across research sources
+      - Input: Research findings from multiple sources, source credibility scores
+      - Process:
+        1. Conflict Detection: Identify claims about same topic from different sources, compare for agreement/disagreement, classify conflicts (Hard/Soft/Context)
+        2. Conflict Analysis: Retrieve source credibility scores, check publication dates, identify reasons (temporal/contextual/philosophical/error)
+        3. Resolution Strategy:
+           - Hard Conflicts: Manual review, favor authoritative source
+           - Soft Conflicts: Present both perspectives with context
+           - Context Conflicts: Clarify contexts, both may be correct
+           - Temporal Conflicts: Show evolution timeline
+        4. Integration Recommendation: Accept if resolvable, flag for manual review if complex, suggest additional research if needed
+      - Output:
+        - Conflict identification report
+        - Classification of each conflict
+        - Resolution recommendations
+        - Manual review queue
+      - Quality Criteria:
+        - All conflicts identified
+        - Clear classification and analysis
+        - Practical resolution strategies
+        - Actionable next steps
+
+  - [ ] Task 5: Synthesis & Integration Tasks (AC5)
+    - [ ] Create synthesize-multi-source-findings.md:
+      - Purpose: Merge research findings from multiple sources with conflict resolution
+      - Input: Raw findings from all research tools, source credibility assessments, conflict identification results
+      - Process:
+        1. Organize Findings: Group by topic/subtopic, identify overlapping coverage, detect gaps (sparse coverage)
+        2. Merge Overlapping Content: Extract unique insights from each, combine complementary information, resolve conflicts using credibility scores, create comprehensive synthesis
+        3. Handle Gaps: Flag topics with sparse coverage, recommend additional research if critical, note limitations
+        4. Synthesize Narrative: Create coherent synthesis text, integrate multiple perspectives, highlight consensus vs. debate, note confidence levels
+        5. Citation Integration: Provide citation for every claim, use multiple citations for critical claims, format consistently
+        6. Generate Research Report: Use research-report-tmpl.yaml, include synthesis/sources/conflicts/gaps, provide confidence assessment, recommend next steps
+      - Output:
+        - Comprehensive research report
+        - Synthesized findings with citations
+        - Confidence levels per section
+        - Identified gaps and recommendations
+        - Source list with credibility scores
+      - Quality Criteria:
+        - All sources integrated
+        - Conflicts resolved or clearly noted
+        - Every claim has citation
+        - Gaps identified
+        - Coherent narrative flow
+
+    - [ ] Create integrate-research-findings.md:
+      - Purpose: Convert research findings into atomic notes and integrate into knowledge base
+      - Input: Research report with synthesized findings, source credibility data, existing vault structure
+      - Process:
+        1. Atomization: Break research report into atomic concepts, one concept per note, apply structural-analysis-agent principles
+        2. Note Creation: For each atomic concept create note with atomic-note-tmpl.yaml, add source citations in frontmatter, add research provenance metadata, set appropriate tags
+        3. Link Discovery: Query Smart Connections for related notes, create bidirectional links, update relevant MOCs
+        4. Neo4j Integration: Create (:ResearchNote) nodes, link to (:CaptureEvent) from original request, create [:SUPPORTS] edges to related notes, add temporal metadata
+        5. MOC Updates: Identify relevant MOCs, add new notes to appropriate sections, update MOC summaries if needed
+        6. Tracking: Record research → notes mapping, track usage in content creation, enable provenance queries
+      - Output:
+        - Created atomic notes in vault
+        - Updated MOCs
+        - Neo4j provenance graph
+        - Integration report
+      - Quality Criteria:
+        - All findings atomized appropriately
+        - Sources preserved with citations
+        - Links created to existing knowledge
+        - Neo4j graph updated
+        - MOCs reflect new knowledge
+
+    - [ ] Create track-research-provenance.md:
+      - Purpose: Record research execution in Neo4j temporal graph for provenance tracking
+      - Input: Research report ID, tool usage statistics, source credibility data, created atomic notes
+      - Process:
+        1. Create Research Node:
+           CREATE (r:ResearchProject {id: UUID, topic: "...", created_at: timestamp, method: "automated"|"manual"|"import", tools_used: ["perplexity", "context7"], query_count: 25, source_count: 42, duration_seconds: 1200})
+        2. Link to Tools:
+           CREATE (r)-[:USED_TOOL {query_count: 15, success_rate: 1.0}]->(t:ResearchTool {name: "perplexity"})
+        3. Link to Sources:
+           CREATE (r)-[:CONSULTED {credibility_score: 85}]->(s:Source {url: "...", domain: "..."})
+        4. Link to Created Notes:
+           CREATE (r)-[:PRODUCED]->(n:AtomicNote {id: "...", title: "..."})
+        5. Temporal Tracking:
+           CREATE (r)-[:OCCURRED_AT]->(date:Date {date: "2025-11-04"})
+           CREATE (r)-[:TRIGGERED_BY]->(gap:KnowledgeGap {identified_at: timestamp})
+        6. Enable Queries: "What research informed this note?", "Which tools most effective?", "What sources relied on most?", "How has research activity evolved?"
+      - Output:
+        - Created Neo4j research provenance graph
+        - Queryable research history
+        - Tool effectiveness metrics
+        - Source usage patterns
+      - Quality Criteria:
+        - Complete provenance chain
+        - All relationships created
+        - Temporal metadata recorded
+        - Queries validated
+
+technical_notes: |
+  ## Task Organization
+
+  These **19 enhanced research tasks** enable the Research Coordinator Agent v2.0 to:
+  - Automatically detect and profile available research tools
+  - Generate optimized queries for detected tools (10-30 per topic)
+  - Execute research using adaptive strategies (parallel/sequential/hybrid)
+  - Assess source credibility with evidence-based scoring (0-100)
+  - Synthesize findings from multiple sources with conflict resolution
+  - Integrate research into knowledge base with full provenance tracking
+
+  ## Tool Detection Flow
+
+  ```
+  1. detect-research-tools.md
+     ↓ (tool list with status)
+  2. profile-tool-capabilities.md
+     ↓ (capability profiles)
+  3. recommend-research-tools.md
+     ↓ (installation recommendations)
+  4. monitor-tool-availability.md
+     ↓ (ongoing status tracking)
+  ```
+
+  ## Query Generation Flow
+
+  ```
+  1. generate-research-queries.md
+     ↓ (10-25 queries)
+  2. categorize-queries.md
+     ↓ (organized by category/priority)
+  3. optimize-query-for-tool.md
+     ↓ (tool-specific optimization)
+  4. generate-deep-questions.md (optional for comprehensive research)
+     ↓ (20-30 deep questions)
+  ```
+
+  ## Research Execution Flow
+
+  ```
+  1. execute-automated-research.md (orchestrator)
+     ├→ execute-parallel-research.md (fast, independent queries)
+     ├→ execute-sequential-research.md (refinement needed)
+     ├→ execute-targeted-research.md (specific tool)
+     └→ execute-fallback-research.md (manual workflow)
+  ```
+
+  ## Source Evaluation Flow
+
+  ```
+  1. assess-source-credibility.md
+     ↓ (credibility scores 0-100)
+  2. validate-research-accuracy.md
+     ↓ (cross-validation, confidence levels)
+  3. identify-research-conflicts.md
+     ↓ (conflict detection and classification)
+  ```
+
+  ## Synthesis & Integration Flow
+
+  ```
+  1. synthesize-multi-source-findings.md
+     ↓ (comprehensive research report)
+  2. integrate-research-findings.md
+     ↓ (atomic notes created)
+  3. track-research-provenance.md
+     ↓ (Neo4j provenance graph)
+  ```
+
+  ## Adaptive Strategy Selection
+
+  Research Coordinator uses these tasks to adapt to tool availability:
+
+  **Full Tool Stack Available (Perplexity + Context7 + WebSearch):**
+  - detect-research-tools → profile-tool-capabilities
+  - generate-research-queries (comprehensive, 20-30 queries)
+  - execute-parallel-research (foundational queries)
+  - execute-sequential-research (deep dives with refinement)
+  - All source evaluation tasks
+  - Full synthesis with conflict resolution
+
+  **Perplexity Only:**
+  - detect-research-tools → profile-tool-capabilities
+  - generate-research-queries (moderate, 10-20 queries)
+  - execute-automated-research (adaptive strategy)
+  - All source evaluation tasks
+  - Full synthesis
+
+  **No Tools Available:**
+  - detect-research-tools → recommend-research-tools
+  - generate-research-queries (manual execution)
+  - execute-fallback-research (manual workflow)
+  - Manual source evaluation (with guidelines)
+  - Import and synthesize manual findings
+
+  ## Quality Standards
+
+  **Query Generation:**
+  - Comprehensive coverage (all aspects of topic)
+  - Logical progression (foundational → advanced)
+  - Tool-optimized (queries match tool strengths)
+  - Executable (clear, actionable queries)
+
+  **Research Execution:**
+  - High success rate (>95% queries complete)
+  - Adaptive (handles tool failures gracefully)
+  - Efficient (parallel execution where possible)
+  - Complete (all findings captured with provenance)
+
+  **Source Evaluation:**
+  - Evidence-based credibility scoring (not subjective)
+  - Consistent methodology (same criteria for all sources)
+  - Transparent rationale (clear reasoning for scores)
+  - Actionable recommendations (how to use each source)
+
+  **Synthesis Quality:**
+  - Complete integration (all sources)
+  - Conflict resolution (contradictions addressed)
+  - Proper attribution (every claim cited)
+  - Confidence levels (high/medium/low/unverified)
+  - Gap identification (missing coverage noted)
+
+  ## Integration with Other Agents
+
+  **Gap Detector Agent → Research Coordinator:**
+  - Gap analysis identifies research needs
+  - Research Coordinator executes research to fill gaps
+  - track-research-provenance links research to gaps
+
+  **Research Coordinator → Structural Analysis Agent:**
+  - integrate-research-findings creates atomic notes
+  - Structural Analysis validates atomicity
+
+  **Research Coordinator → Semantic Linker Agent:**
+  - integrate-research-findings discovers related notes
+  - Semantic Linker creates bidirectional links
+
+  **Research Coordinator → MOC Constructor Agent:**
+  - integrate-research-findings identifies relevant MOCs
+  - MOC Constructor adds new notes to MOCs
+
+dependencies:
+  - STORY-050: Phase 5 Research Integration (summary)
+  - STORY-033: Phase 5 Templates (7 research templates)
+  - STORY-035: Phase 2-5 Checklists (5 research checklists)
+  - STORY-037: Research & Agent-Specific Knowledge Bases (13 KBs)
+  - Research Coordinator Agent (from STORY-050)
+  - Optional MCP tools: Perplexity, WebSearch, Context7 (auto-detected)
+  - Neo4j Graphiti MCP (for provenance tracking)
+  - Obsidian MCP Tools (for note creation)
+
+testing:
+  - Test tool detection with different MCP configurations (Perplexity only, full stack, no tools)
+  - Test query generation for various topics (simple, complex, technical)
+  - Test parallel execution with rate limits
+  - Test sequential execution with refinement
+  - Test source credibility scoring (authoritative, reliable, questionable, unreliable sources)
+  - Test conflict detection and resolution
+  - Test synthesis with multiple sources (3, 5, 10+ sources)
+  - Test integration with atomic note creation
+  - Test Neo4j provenance tracking
+  - Test fallback workflow (manual research)
+  - Validate all 19 tasks with sample research scenarios
+
+definition_of_done:
+  - All 19 research tasks created in bmad-core/tasks/
+  - All tasks follow standard markdown format with step-by-step instructions
+  - All tasks include input/output specifications
+  - All tasks include quality criteria
+  - All tasks tested with sample research scenarios
+  - Tool detection tasks validated with multiple MCP configurations
+  - Query generation tasks validated with diverse topics
+  - Execution tasks validated with parallel and sequential strategies
+  - Source evaluation tasks validated with various source types
+  - Synthesis tasks validated with multi-source findings
+  - Integration with Research Coordinator Agent verified
+  - Integration with other agents (Gap Detector, Structural Analysis, Semantic Linker, MOC Constructor) tested
+  - All tasks documented with usage examples
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Phase 5 research tasks (enhanced)
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]

@@ -1,0 +1,406 @@
+---
+story_id: STORY-035
+title: Create Phase 2-5 Checklists
+epic_id: EPIC-001
+phase: 2-5
+priority: high
+estimated_effort: 24 hours
+status: todo
+created: 2025-11-05
+
+user_story: |
+  As a developer
+  I want validation checklists for Phases 2-5 workflows
+  So that agents can enforce quality standards systematically across all phases
+
+acceptance_criteria:
+  - Create 15 checklists for Phases 2-5
+  - Phase 2: 3 checklists (MOC, temporal analysis, narrative)
+  - Phase 3: 2 checklists (content brief, publication)
+  - Phase 4: 2 checklists (gap identification, prioritization)
+  - Phase 5: 5 checklists (research quality, source credibility, tool optimization, synthesis, accuracy)
+  - Additional: 3 checklists (duplicate detection, privacy compliance, contradiction resolution)
+  - All checklists include items, pass criteria, and usage notes
+  - Checklists specify required vs. optional items
+  - Checklists include validation logic
+
+tasks_subtasks: |
+  - [ ] Task 1: Create Phase 2 Checklists (AC2)
+    - [ ] Create moc-completeness-checklist.md:
+      - Purpose: Validate MOC completeness and quality
+      - Items (12 total, 8 required):
+        - ✓ Domain clearly defined in frontmatter
+        - ✓ Overview provides 2-3 sentence synthesis
+        - ✓ Core concepts section has ≥3 concepts with definitions
+        - ✓ At least one knowledge branch defined
+        - ✓ All referenced notes exist and are accessible
+        - ✓ Bidirectional links present (MOC links to notes, notes link back)
+        - Emerging questions section present (if nascent/developing)
+        - Dataview queries functional (if included)
+        - Maturity level appropriate for content coverage
+        - Last updated date within acceptable staleness threshold
+        - MOC not too broad (≤50 direct note links recommended)
+        - ✓ No broken wikilinks
+      - Pass criteria: All required items (✓) checked
+      - Used by: MOC Constructor Agent
+
+    - [ ] Create temporal-accuracy-checklist.md:
+      - Purpose: Validate temporal analysis accuracy
+      - Items (10 total, 7 required):
+        - ✓ All timestamps in ISO 8601 format
+        - ✓ Evolution phases correctly identified
+        - ✓ Phase transitions have dates
+        - ✓ Temporal events sourced from Neo4j or git history
+        - ✓ Timeline visualization present and renders correctly
+        - Shift triggers identified with evidence
+        - Current understanding reflects latest note state
+        - ✓ Maturation days calculated correctly
+        - ✓ No temporal paradoxes (effects before causes)
+        - Unresolved tensions documented (if any exist)
+      - Pass criteria: All required items checked
+      - Used by: Timeline Constructor Agent
+
+    - [ ] Create narrative-completeness-checklist.md:
+      - Purpose: Validate temporal narrative completeness
+      - Items (11 total, 6 required):
+        - ✓ Initial understanding documented with date
+        - ✓ At least one key shift identified
+        - ✓ Current understanding documented
+        - ✓ Timeline visualization included
+        - Shift triggers explained (what caused changes)
+        - ✓ Source attribution for all shifts
+        - ✓ Narrative flows chronologically
+        - Confidence levels provided for understanding states
+        - Influences documented (sources, events, connections)
+        - Unresolved tensions noted (if applicable)
+        - Meta-insights about learning patterns included
+      - Pass criteria: All required items checked
+      - Used by: Timeline Constructor Agent
+
+  - [ ] Task 2: Create Phase 3 Checklists (AC3)
+    - [ ] Create brief-completeness-checklist.md:
+      - Purpose: Validate content brief completeness
+      - Items (14 total, 8 required):
+        - ✓ Topic clearly defined
+        - ✓ Target audience specified
+        - ✓ Creation type identified
+        - ✓ At least one core argument with supporting note
+        - ✓ At least 3 pieces of supporting evidence
+        - ✓ At least one unique angle identified
+        - ✓ Citation manifest includes all used notes
+        - ✓ All wikilinks resolve to existing notes
+        - Counterarguments addressed (if applicable)
+        - Temporal context provided (if relevant)
+        - Research gaps identified (if any)
+        - Tone specified
+        - Length target defined
+        - Deadline set (if time-sensitive)
+      - Pass criteria: All required items checked
+      - Used by: Content Brief Agent
+
+    - [ ] Create publication-quality-checklist.md:
+      - Purpose: Validate publication readiness
+      - Items (15 total, 10 required):
+        - ✓ All wikilinks converted to target format
+        - ✓ Bibliography generated and formatted
+        - ✓ No private/confidential content included
+        - ✓ No PII without explicit consent
+        - ✓ All images/media have proper permissions
+        - ✓ Source attribution complete
+        - ✓ Target format correct (HTML, PDF, markdown, etc.)
+        - ✓ Version number assigned
+        - ✓ Publication date set
+        - ✓ Content status set (draft/review/published)
+        - Formatting validated for target platform
+        - Links tested (for web publications)
+        - Metadata complete (author, title, description)
+        - Copyright/license specified
+        - Publication manifest created
+      - Pass criteria: All required items checked
+      - Used by: Publication Formatter Agent
+
+  - [ ] Task 3: Create Phase 4 Checklists (AC4)
+    - [ ] Create gap-identification-checklist.md:
+      - Purpose: Validate gap identification accuracy
+      - Items (12 total, 7 required):
+        - ✓ Gap clearly described
+        - ✓ Gap type correctly classified (coverage/evidence/prerequisite/assumption/conceptual)
+        - ✓ Gap location specified (within_notes/cross_domain/foundational/methodological)
+        - ✓ At least one note where gap appears identified
+        - ✓ Impact assessment completed (why gap matters)
+        - Priority level assigned (critical/high/medium/low)
+        - ✓ Research approach suggested
+        - ✓ Success criteria defined
+        - Estimated effort provided
+        - Required expertise level noted
+        - Blocking work identified (if applicable)
+        - Related gaps documented (dependencies)
+      - Pass criteria: All required items checked
+      - Used by: Gap Detector Agent
+
+    - [ ] Create prioritization-checklist.md:
+      - Purpose: Validate gap prioritization logic
+      - Items (10 total, 6 required):
+        - ✓ Priority score calculated using standard formula
+        - ✓ Importance factors documented (reference count, blocking work, domain centrality)
+        - ✓ Feasibility assessed (accessible sources, time, expertise)
+        - ✓ Net priority = Importance / (Feasibility * Hours)
+        - Blocking work count accurate
+        - ✓ Domain centrality score justified
+        - ✓ Research method appropriate for gap type
+        - Quick wins identified (high value, low effort)
+        - Dependencies respected (prerequisite gaps prioritized)
+        - Research capacity considered
+      - Pass criteria: All required items checked
+      - Used by: Gap Detector Agent
+
+  - [ ] Task 4: Create Phase 5 Checklists (AC5)
+    - [ ] Create research-quality-checklist.md:
+      - Purpose: Validate research quality and completeness
+      - Items (15 total, 10 required):
+        - ✓ All research questions answered
+        - ✓ At least 3 sources consulted
+        - ✓ Average source credibility ≥ 75
+        - ✓ Key findings documented with evidence
+        - ✓ Conflicts/contradictions identified and addressed
+        - ✓ Confidence levels assigned to findings
+        - ✓ Integration notes provided
+        - ✓ Cross-validation performed (multiple sources agree)
+        - ✓ Completeness score ≥ 80/100
+        - ✓ Remaining gaps documented
+        - Sources include publication dates
+        - Research strategy documented (automated/manual/hybrid)
+        - Tools used listed
+        - Research duration tracked
+        - Provenance tracking complete (if Neo4j enabled)
+      - Pass criteria: All required items checked, quality thresholds met
+      - Used by: Research Coordinator Agent
+
+    - [ ] Create source-credibility-checklist.md:
+      - Purpose: Validate source credibility assessment
+      - Items (13 total, 8 required):
+        - ✓ Source type identified (academic/technical/news/blog/expert/general)
+        - ✓ Credibility score (0-100) assigned
+        - ✓ Author credentials assessed
+        - ✓ Publication reputation evaluated
+        - ✓ At least 3 credibility factors documented
+        - ✓ Bias assessment completed
+        - Peer review status noted (for academic sources)
+        - Citations/references checked (source cites others)
+        - ✓ Recency considered (publication date)
+        - ✓ Conflicts of interest identified
+        - Corroboration checked (other sources agree)
+        - Access date recorded (for web sources)
+        - Usage recommendations provided
+      - Pass criteria: All required items checked
+      - Used by: Research Coordinator Agent
+
+    - [ ] Create tool-optimization-checklist.md:
+      - Purpose: Validate research tool usage optimization
+      - Items (11 total, 6 required):
+        - ✓ Tool detection performed before research
+        - ✓ Available tools profiled (capabilities documented)
+        - ✓ Research strategy selected based on available tools
+        - ✓ Queries optimized for detected tools
+        - Tool-specific query count appropriate (2-5 for deep research, 5-10 for reasoning)
+        - ✓ Execution strategy chosen (parallel/sequential/hybrid)
+        - ✓ Tool usage tracked for provenance
+        - Fallback strategy defined (if tools unavailable)
+        - Rate limits respected
+        - Tool recommendations provided (if gaps in coverage)
+        - Cost tracking enabled (for paid tools)
+      - Pass criteria: All required items checked
+      - Used by: Research Coordinator Agent
+
+    - [ ] Create research-synthesis-checklist.md:
+      - Purpose: Validate multi-source synthesis quality
+      - Items (12 total, 7 required):
+        - ✓ At least 2 sources synthesized
+        - ✓ Consensus findings identified (sources agree)
+        - ✓ Divergent findings documented (sources disagree)
+        - ✓ Confidence levels assigned per claim
+        - ✓ Source credibility scores compared
+        - High-credibility sources prioritized in conflicts
+        - ✓ Contradictions explicitly flagged
+        - ✓ Synthesis strategy documented
+        - Integration plan provided (how to create notes)
+        - No circular reasoning (synthesis doesn't just cite other syntheses)
+        - Temporal context considered (are some sources outdated?)
+        - Unresolved conflicts escalated appropriately
+      - Pass criteria: All required items checked
+      - Used by: Research Coordinator Agent
+
+    - [ ] Create research-accuracy-checklist.md:
+      - Purpose: Validate research accuracy and validation
+      - Items (10 total, 6 required):
+        - ✓ Cross-validated claims ≥ 95%
+        - ✓ Unresolved conflicts < 5%
+        - ✓ Factual claims have sources
+        - ✓ No known misinformation included
+        - ✓ Verification method documented
+        - Quality metrics thresholds met
+        - ✓ Known unreliable sources excluded or flagged
+        - Expert consensus identified (where applicable)
+        - Outlier claims investigated
+        - Accuracy spot-checked against authoritative sources
+      - Pass criteria: All required items checked, accuracy thresholds met
+      - Used by: Research Coordinator Agent
+
+  - [ ] Task 5: Create Additional Checklists (AC6)
+    - [ ] Create duplicate-detection-checklist.md:
+      - Purpose: Validate duplicate content detection
+      - Items (9 total, 5 required):
+        - ✓ Semantic similarity query performed
+        - ✓ Similarity threshold ≥ 0.85 for duplicates
+        - ✓ Exact match detection performed (content hash)
+        - ✓ Near-duplicates identified (80-95% similar)
+        - Title similarity checked
+        - ✓ User notified of potential duplicates
+        - Merge recommendation provided (if duplicate)
+        - Source attribution preserved
+        - Fragmentation history checked (was this intentionally split?)
+      - Pass criteria: All required items checked
+      - Used by: Structural Analysis Agent
+
+    - [ ] Create publication-privacy-checklist.md:
+      - Purpose: Validate privacy compliance before publication
+      - Items (14 total, 9 required):
+        - ✓ No #private tags in content
+        - ✓ No notes from /private/ folders included
+        - ✓ Frontmatter privacy flags checked (private: true)
+        - ✓ No email addresses (except author's public email)
+        - ✓ No phone numbers
+        - ✓ No street addresses
+        - ✓ No social security numbers or personal IDs
+        - ✓ No confidential work information
+        - ✓ All personal names have consent or are public figures
+        - No unpublished sensitive research
+        - Image permissions verified
+        - Quote permissions verified (for extensive quotes)
+        - Source permissions checked
+        - Copyright compliance verified
+      - Pass criteria: All required items checked, no violations
+      - Used by: Publication Formatter Agent
+
+    - [ ] Create contradiction-resolution-checklist.md:
+      - Purpose: Validate contradiction resolution completeness
+      - Items (11 total, 6 required):
+        - ✓ Contradiction clearly identified
+        - ✓ Both contradictory claims documented
+        - ✓ Temporal context investigated
+        - ✓ Resolution strategy selected (A-E)
+        - ✓ Resolution implemented appropriately
+        - ✓ Relationships updated in Neo4j (if enabled)
+        - Contradiction type classified (factual/assumptive/definitional)
+        - Sources for both claims identified
+        - Severity level assigned
+        - Resolution rationale documented
+        - Future users can understand resolution
+      - Pass criteria: All required items checked
+      - Used by: Semantic Linker Agent, Gap Detector Agent
+
+  - [ ] Task 6: Document checklist format and usage (AC7)
+    - [ ] Define standard checklist structure:
+      - Purpose statement
+      - Items list with checkboxes
+      - Required items marked with ✓
+      - Optional items unmarked
+      - Pass criteria specification
+      - Usage notes (which agents use it)
+      - Integration points
+    - [ ] Document validation logic patterns
+    - [ ] Create checklist usage examples
+    - [ ] Define checklist versioning strategy
+
+technical_notes: |
+  ## Checklist Design Philosophy
+
+  All checklists follow **consistent structure**:
+  - Purpose: What quality dimension does this validate?
+  - Items: Specific checks to perform (10-15 items typical)
+  - Required vs Optional: ✓ marks required items
+  - Pass Criteria: What must be true to pass?
+  - Usage: Which agents use this checklist?
+
+  ## Checklist Integration Patterns
+
+  **Agent Usage:**
+  - Agents load checklists via dependencies
+  - Checklists run during task execution
+  - Failed checks block workflow (unless Yolo mode)
+  - Check results logged for quality tracking
+
+  **Validation Logic:**
+  - Required items must all pass
+  - Optional items are recommendations
+  - Thresholds must be met (e.g., credibility ≥ 75)
+  - Counts must be satisfied (e.g., ≥ 3 sources)
+
+  ## Quality Thresholds
+
+  **Research Quality Standards:**
+  - Average credibility ≥ 75 (Reliable+)
+  - Cross-validated claims ≥ 95%
+  - Unresolved conflicts < 5%
+  - Completeness score ≥ 80/100
+
+  **Content Quality Standards:**
+  - MOC coverage: ≤50 direct links (avoid overload)
+  - Brief evidence: ≥3 pieces minimum
+  - Publication: All privacy checks pass (100%)
+
+  ## Checklist Versioning
+
+  Checklists may evolve:
+  - v1.0: Initial checklist
+  - v1.1: Added items based on usage
+  - v2.0: Major revision (new validation logic)
+
+  Track version in checklist file header.
+
+dependencies:
+  - All Phase 2-5 agents use these checklists
+  - MOC Constructor Agent (moc-completeness)
+  - Timeline Constructor Agent (temporal-accuracy, narrative-completeness)
+  - Content Brief Agent (brief-completeness)
+  - Publication Formatter Agent (publication-quality, publication-privacy)
+  - Gap Detector Agent (gap-identification, prioritization, contradiction-resolution)
+  - Research Coordinator Agent (research-quality, source-credibility, tool-optimization, research-synthesis, research-accuracy)
+  - Structural Analysis Agent (duplicate-detection)
+  - Semantic Linker Agent (contradiction-resolution)
+
+testing:
+  - Test each checklist with passing scenarios
+  - Test each checklist with failing scenarios
+  - Validate required vs optional item logic
+  - Test threshold validation (credibility, completeness, etc.)
+  - Verify agent integration (checklists load correctly)
+  - Test Yolo mode bypass (warnings but no blocking)
+  - Validate checklist versioning
+  - Test with edge cases (empty values, boundary conditions)
+
+definition_of_done:
+  - All 15 checklists created in checklists/ directory
+  - Each checklist follows standard structure
+  - Required items clearly marked with ✓
+  - Pass criteria defined for each checklist
+  - Usage notes specify which agents use checklist
+  - Validation logic documented
+  - Quality thresholds specified where applicable
+  - All checklists tested with passing and failing scenarios
+  - Integration with agents verified
+  - Checklist format and usage documented
+
+change_log:
+  - date: 2025-11-05
+    version: 1.0.0
+    description: Initial story creation for Phase 2-5 checklists
+    author: Product Owner
+
+dev_agent_record: |
+  # Dev Agent Record
+  [To be populated by dev agent]
+
+qa_results: |
+  # QA Results
+  [To be populated by QA agent]
